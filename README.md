@@ -20,3 +20,7 @@ This repository studies semantic divergence between C code and its Rust translat
 - Proposal recorded in `docs/proposal.md`.
 - C2Rust build/transpile steps recorded in `docs/c2rust_instruction.md`.
 - Example translation produced in `projects/qsort_example/translated/src/qsort.rs`.
+
+## Notes: 
+
+Libafl 0.15.4 works on: rustup default nightly-2025-09-01, rustc 1.91.0-nightly 

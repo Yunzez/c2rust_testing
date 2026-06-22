@@ -11,7 +11,8 @@ the **SCC DAG** of the call graph, so the components are built in that order.
 | 1. C call graph → SCC DAG | `callgraph.py` | ✅ done, verified on qsort |
 | 2. Cross-language region mapping (C ↔ Rust) | `mapping.py` + `rust_callgraph/` | ✅ done, verified on qsort |
 | 3. Region distance / feature vector `x_f` | `features.py` | ✅ done — empirical feature study (results/feature_study_v1.md) |
-| 4. Harness-validity model `P(valid \| x_f)` + frontier (antichain) selection | `frontier.py` | ⬜ next (needs G1/G2/G3 labels) |
+| 4. Frontier selection (interpretable baseline) | `frontier.py` | ✅ v1 — 17/18 STU recognition on c2rust (results/stu_recognition_v1.md) |
+| 4b. Learned harness-validity model `P(valid \| x_f)` | `frontier.py` | ⬜ next (needs G1/G2/G3 labels) |
 
 ## Stage 1 — `callgraph.py`
 

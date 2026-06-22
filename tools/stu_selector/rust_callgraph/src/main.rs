@@ -1,24 +1,39 @@
-//! Extract a Rust call graph from a single .rs file using `syn`.
+//! Extract a Rust call graph + per-function metrics from a single .rs file using `syn`.
 //!
-//! Mirrors the C-side extractor (tools/stu_selector/callgraph.py): it emits function
-//! definitions, resolved-by-name call edges, and unresolved/indirect call sites. Graph
-//! algorithms (SCC, condensation) are done in Python so they are shared with the C side;
-//! this tool only does faithful AST extraction.
+//! Rust-side mirror of tools/stu_selector/callgraph.py + the C metrics in features.py.
+//! Emits, per function: call edges (by name), indirect/method calls, and a metric vector
+//! (cyclomatic complexity, statement count, loops, max loop nesting, pointer derefs,
+//! allocation calls, method calls). Graph algorithms stay in Python.
 //!
 //! Usage: rust_callgraph <file.rs>   (prints JSON to stdout)
 
 use std::collections::BTreeSet;
+use std::collections::HashMap;
 use std::fs;
 
 use serde::Serialize;
 use syn::spanned::Spanned;
 use syn::visit::{self, Visit};
-use syn::{Expr, ExprCall, ExprMethodCall, ImplItemFn, ItemFn};
+use syn::{
+    BinOp, Expr, ExprCall, ExprMethodCall, ImplItemFn, ItemFn, Stmt, UnOp,
+};
+
+#[derive(Serialize, Default, Clone)]
+struct Metrics {
+    cyclomatic: u32,
+    stmts: u32,
+    loops: u32,
+    max_loop_depth: u32,
+    derefs: u32,
+    allocs: u32,
+    method_calls: u32,
+}
 
 #[derive(Serialize)]
 struct FnRec {
     name: String,
     line: usize,
+    metrics: Metrics,
 }
 
 #[derive(Serialize)]
@@ -41,29 +56,60 @@ struct Output {
     indirect_calls: Vec<Indirect>,
 }
 
+const ALLOC_FNS: &[&str] = &["malloc", "calloc", "realloc", "free", "alloc", "dealloc"];
+
 struct Cg {
-    functions: Vec<FnRec>,
+    order: Vec<(String, usize)>,
+    metrics: HashMap<String, Metrics>,
     edges: BTreeSet<(String, String)>,
     indirect: Vec<Indirect>,
     current: Vec<String>,
+    loop_depth: u32,
 }
 
 impl Cg {
     fn new() -> Self {
         Cg {
-            functions: Vec::new(),
+            order: Vec::new(),
+            metrics: HashMap::new(),
             edges: BTreeSet::new(),
             indirect: Vec::new(),
             current: Vec::new(),
+            loop_depth: 0,
         }
     }
 
+    fn cur(&self) -> Option<String> {
+        self.current.last().cloned()
+    }
+
+    fn m(&mut self) -> Option<&mut Metrics> {
+        let c = self.current.last()?.clone();
+        self.metrics.get_mut(&c)
+    }
+
     fn enter_fn(&mut self, name: String, line: usize) {
-        self.functions.push(FnRec {
-            name: name.clone(),
-            line,
+        // cyclomatic complexity starts at 1.
+        self.metrics.entry(name.clone()).or_insert(Metrics {
+            cyclomatic: 1,
+            ..Default::default()
         });
+        self.order.push((name.clone(), line));
         self.current.push(name);
+    }
+
+    fn visit_loop_body<F: FnOnce(&mut Self)>(&mut self, f: F) {
+        self.loop_depth += 1;
+        let depth = self.loop_depth;
+        if let Some(m) = self.m() {
+            m.loops += 1;
+            m.cyclomatic += 1;
+            if depth > m.max_loop_depth {
+                m.max_loop_depth = depth;
+            }
+        }
+        f(self);
+        self.loop_depth -= 1;
     }
 }
 
@@ -82,14 +128,78 @@ impl<'ast> Visit<'ast> for Cg {
         self.current.pop();
     }
 
+    fn visit_stmt(&mut self, node: &'ast Stmt) {
+        if let Some(m) = self.m() {
+            m.stmts += 1;
+        }
+        visit::visit_stmt(self, node);
+    }
+
+    fn visit_expr_if(&mut self, node: &'ast syn::ExprIf) {
+        if let Some(m) = self.m() {
+            m.cyclomatic += 1;
+        }
+        visit::visit_expr_if(self, node);
+    }
+
+    fn visit_expr_match(&mut self, node: &'ast syn::ExprMatch) {
+        if let Some(m) = self.m() {
+            // each arm beyond the first is an extra path
+            m.cyclomatic += node.arms.len().saturating_sub(1) as u32;
+        }
+        visit::visit_expr_match(self, node);
+    }
+
+    fn visit_expr_while(&mut self, node: &'ast syn::ExprWhile) {
+        self.visit_loop_body(|s| visit::visit_expr_while(s, node));
+    }
+
+    fn visit_expr_for_loop(&mut self, node: &'ast syn::ExprForLoop) {
+        self.visit_loop_body(|s| visit::visit_expr_for_loop(s, node));
+    }
+
+    fn visit_expr_loop(&mut self, node: &'ast syn::ExprLoop) {
+        self.visit_loop_body(|s| visit::visit_expr_loop(s, node));
+    }
+
+    fn visit_expr_binary(&mut self, node: &'ast syn::ExprBinary) {
+        if matches!(node.op, BinOp::And(_) | BinOp::Or(_)) {
+            if let Some(m) = self.m() {
+                m.cyclomatic += 1;
+            }
+        }
+        visit::visit_expr_binary(self, node);
+    }
+
+    fn visit_expr_unary(&mut self, node: &'ast syn::ExprUnary) {
+        if matches!(node.op, UnOp::Deref(_)) {
+            if let Some(m) = self.m() {
+                m.derefs += 1;
+            }
+        }
+        visit::visit_expr_unary(self, node);
+    }
+
+    fn visit_expr_try(&mut self, node: &'ast syn::ExprTry) {
+        if let Some(m) = self.m() {
+            m.cyclomatic += 1;
+        }
+        visit::visit_expr_try(self, node);
+    }
+
     fn visit_expr_call(&mut self, node: &'ast ExprCall) {
-        if let Some(cur) = self.current.last().cloned() {
+        if let Some(cur) = self.cur() {
             if let Expr::Path(p) = &*node.func {
                 if let Some(seg) = p.path.segments.last() {
-                    self.edges.insert((cur, seg.ident.to_string()));
+                    let callee = seg.ident.to_string();
+                    if ALLOC_FNS.contains(&callee.as_str()) {
+                        if let Some(m) = self.m() {
+                            m.allocs += 1;
+                        }
+                    }
+                    self.edges.insert((cur, callee));
                 }
             } else {
-                // Calling a non-path expression: function pointer / closure / etc.
                 self.indirect.push(Indirect {
                     from: cur,
                     line: node.func.span().start().line,
@@ -101,8 +211,10 @@ impl<'ast> Visit<'ast> for Cg {
     }
 
     fn visit_expr_method_call(&mut self, node: &'ast ExprMethodCall) {
-        if let Some(cur) = self.current.last().cloned() {
-            // Method dispatch cannot be resolved to a free function statically.
+        if let Some(cur) = self.cur() {
+            if let Some(m) = self.m() {
+                m.method_calls += 1;
+            }
             self.indirect.push(Indirect {
                 from: cur,
                 line: node.method.span().start().line,
@@ -133,8 +245,18 @@ fn main() {
     let mut cg = Cg::new();
     cg.visit_file(&file);
 
+    let functions = cg
+        .order
+        .iter()
+        .map(|(name, line)| FnRec {
+            name: name.clone(),
+            line: *line,
+            metrics: cg.metrics.get(name).cloned().unwrap_or_default(),
+        })
+        .collect();
+
     let out = Output {
-        functions: cg.functions,
+        functions,
         raw_edges: cg
             .edges
             .into_iter()

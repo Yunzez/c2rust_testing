@@ -18,8 +18,11 @@ This repository studies semantic divergence between C code and its Rust translat
 ## Current status
 
 - Proposal recorded in `docs/proposal.md`.
+- **Core contribution spec reconstructed in `docs/stu_selection.md`** (the differential-testing
+  frontier; supersedes the informal "smallest testing unit" framing).
 - C2Rust build/transpile steps recorded in `docs/c2rust_instruction.md`.
 - Example translation produced in `projects/qsort_example/translated/src/qsort.rs`.
+- Two working differential fuzz demos in `fuzz/qsort_example/` and `fuzz/urlparser_example/`.
 
 ## Notes: 
 

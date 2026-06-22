@@ -1,0 +1,25 @@
+# Rust / Cargo
+target/
+**/target/
+
+# cargo-fuzz generated state (keep harness code, drop runtime data)
+**/fuzz/corpus/
+**/fuzz/artifacts/
+**/fuzz/coverage/
+
+# CMake build output — keep only compile_commands.json (needed by c2rust + stu_selector)
+projects/*/build/*
+!projects/*/build/compile_commands.json
+
+# Object / binary artifacts
+*.o
+*.a
+*.bin
+a.out
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor
+*.swp

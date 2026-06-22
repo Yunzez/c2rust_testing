@@ -61,17 +61,15 @@ def _sig_features(fn) -> dict:
     has_fnptr = False
     for a in args:
         t = a.type
-        spelling = t.spelling
         if t.kind == clang.cindex.TypeKind.POINTER:
             n_ptr += 1
-            pointee = t.get_pointee()
+            pointee = t.get_pointee().get_canonical()
             if pointee.kind == clang.cindex.TypeKind.POINTER:
                 n_nested += 1
+            # Resolve typedefs via get_canonical() so e.g. `cmp_fn` is detected too.
             if pointee.kind in (clang.cindex.TypeKind.FUNCTIONPROTO,
                                  clang.cindex.TypeKind.FUNCTIONNOPROTO):
                 has_fnptr = True
-        if "(*" in spelling:  # function pointer typedef-free form
-            has_fnptr = True
     ret = fn.result_type
     returns_pointer = ret.kind == clang.cindex.TypeKind.POINTER
     # fuzzability: scalars are cheap; pointers add cost; nested pointers / fn-pointers expensive.
@@ -94,14 +92,19 @@ def _sig_features(fn) -> dict:
 
 
 def _fn_metrics(fn) -> dict:
-    stmts = loops = allocs = ptr = dp = 0
+    stmts = loops = allocs = ptr = dp = nodes = 0
     maxd = 0
     toks = [t.spelling for t in fn.get_tokens()]
     dp += toks.count("&&") + toks.count("||")
 
     def rec(node, depth: int) -> None:
-        nonlocal stmts, loops, allocs, ptr, dp, maxd
+        nonlocal stmts, loops, allocs, ptr, dp, maxd, nodes
         k = node.kind
+        # Count expr/stmt nodes, but skip UNEXPOSED_EXPR (mostly implicit casts that
+        # libclang materializes but syn has no equivalent for) to keep node counts
+        # comparable across the two languages.
+        if (k.is_expression() or k.is_statement()) and k != CursorKind.UNEXPOSED_EXPR:
+            nodes += 1
         if k.name.endswith("_STMT"):
             stmts += 1
         if k in (CursorKind.IF_STMT, CursorKind.FOR_STMT, CursorKind.WHILE_STMT,
@@ -133,6 +136,7 @@ def _fn_metrics(fn) -> dict:
     m = {
         "cyclomatic": 1 + dp,
         "stmts": stmts,
+        "nodes": nodes,
         "loops": loops,
         "max_loop_depth": maxd,
         "pointer_access": ptr,
@@ -184,16 +188,24 @@ def features_for_pair(cc_dir: Path, rust_file: Path, rust_bin: Path, label: str)
     c_met = c_metrics_from_cc(cc_dir)
     r_met = rust_metrics(rust_file, rust_bin)
 
+    # boundary uncertainty: indirect/unresolved call sites per C function.
+    c_indirect: dict[str, int] = {}
+    for ic in c_cond.get("indirect_calls", []):
+        c_indirect[ic["from"]] = c_indirect.get(ic["from"], 0) + 1
+
     rows = []
     for mrec in aln["matched"]:
         name = mrec["name"]
         cm = c_met.get(name, {})
         rm = r_met.get(name, {})
         row = {"pair": label, "fn": name}
-        for k in ["cyclomatic", "stmts", "loops", "max_loop_depth"]:
+        for k in ["cyclomatic", "stmts", "nodes", "loops", "max_loop_depth"]:
             row[f"c_{k}"] = cm.get(k, 0)
             row[f"r_{k}"] = rm.get(k, 0)
             row[f"d_{k}"] = abs(cm.get(k, 0) - rm.get(k, 0))
+        # size-normalized divergence: >1 = c2rust grew the function, <1 = shrank it.
+        row["size_ratio"] = round(row["r_nodes"] / max(row["c_nodes"], 1), 2)
+        row["c_indirect_calls"] = c_indirect.get(name, 0)
         row["c_pointer_access"] = cm.get("pointer_access", 0)
         row["r_pointer_intensity"] = rm.get("derefs", 0) + rm.get("method_calls", 0)
         row["c_allocs"] = cm.get("allocs", 0)

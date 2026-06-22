@@ -22,6 +22,9 @@ use syn::{
 struct Metrics {
     cyclomatic: u32,
     stmts: u32,
+    // Representation-agnostic size: expr + stmt AST nodes. Robust across C switch vs Rust
+    // match (raw stmt counts are not comparable; nodes are).
+    nodes: u32,
     loops: u32,
     max_loop_depth: u32,
     derefs: u32,
@@ -131,8 +134,16 @@ impl<'ast> Visit<'ast> for Cg {
     fn visit_stmt(&mut self, node: &'ast Stmt) {
         if let Some(m) = self.m() {
             m.stmts += 1;
+            m.nodes += 1;
         }
         visit::visit_stmt(self, node);
+    }
+
+    fn visit_expr(&mut self, node: &'ast Expr) {
+        if let Some(m) = self.m() {
+            m.nodes += 1;
+        }
+        visit::visit_expr(self, node);
     }
 
     fn visit_expr_if(&mut self, node: &'ast syn::ExprIf) {

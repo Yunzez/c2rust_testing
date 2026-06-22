@@ -52,3 +52,34 @@ It does **not** yet measure the real target: whether a feature predicts **harnes
 (`docs/stu_selection.md` §7) — the next loop. Two corpus gaps to close first: (1) multi-file /
 restructured projects to exercise call-correspondence & 1:N mapping; (2) nested-pointer /
 fn-pointer inputs to exercise the fuzzability gates.
+
+---
+
+# v2 update — metric fix + harder corpus (2026-06-22)
+
+Closed gap (2) above and fixed the `d_stmts` artifact.
+
+- **Corpus → 18 programs / 85 matched functions** (added `fn_pointers/` ×3 and
+  `nested_pointers/` ×3; all transpiled by c2rust). `benchmark/features.csv` regenerated.
+- **Metric fix (the `d_stmts` artifact):** added a representation-agnostic size = expr+stmt AST
+  **node count** (`c_nodes`/`r_nodes`), excluding libclang `UNEXPOSED_EXPR` (implicit casts syn
+  has no equivalent for), plus a size-normalized **`size_ratio = r_nodes / c_nodes`**. The
+  absurd `intmath_eval` 13→1 stmt case is now `c_nodes=36, r_nodes=29, size_ratio=0.81` — sane.
+  Across the corpus `size_ratio` ranges 0.8–2.4, **mean 1.48** (c2rust grows AST ~1.5×).
+- **Previously-flat features now fire (corpus gap closed):**
+  `has_fn_pointer_param` (on `array_map_reduce`), `n_nested_pointer_params` (on
+  `matrix_reduce`/`word_tokens`/`graph_dfs`), and a new **`c_indirect_calls`** boundary-uncertainty
+  feature (on the dispatch-table programs). Fixed a false positive: pointer-to-array
+  `(*edges)[2]` was misread as a fn-pointer; now uses the canonical pointee TypeKind only.
+- **Still flat — now a robust finding across 18 programs, not a corpus gap:**
+  - `d_loops`, `d_max_loop_depth` = 0 everywhere → **c2rust preserves loop structure exactly.**
+  - `callee_mismatch`, `callee_agreement` flat → **c2rust single-TU output is 1:1 by name**; the
+    call-correspondence / 1:N features will only matter for **multi-file projects or LLM
+    transpilers**, not single-file c2rust. Defer them to that setting.
+
+**Reduced feature set going into Stage 4:** C-side complexity (`c_cyclomatic`, `c_nodes`),
+divergence (`size_ratio`, `d_cyclomatic`), pointer intensity (`c_pointer_access` + C→Rust ratio),
+boundary uncertainty (`c_indirect_calls`), and signature gates (`n_pointer_params`,
+`n_nested_pointer_params`, `has_fn_pointer_param`, `returns_pointer`, `allocs`). Drop loop deltas
+and the redundant `fuzzability`/`norm_burden` re-encodings. The real usefulness test (vs harness
+validity) still requires the G1/G2/G3 labels — that is the next loop.

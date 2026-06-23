@@ -25,7 +25,7 @@
   .p-now{background:rgba(255,206,92,.16);color:var(--now);border:1px solid rgba(255,206,92,.35)}
   .p-next{background:rgba(106,166,255,.14);color:var(--next);border:1px solid rgba(106,166,255,.32)}
   .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
-  .step{flex:1;min-width:120px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  .step{flex:1;min-width:110px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
     padding:10px 12px;position:relative}
   .step b{display:block;font-size:13px} .step span{color:var(--muted);font-size:12px}
   .arrow{align-self:center;color:var(--muted);font-size:18px}
@@ -46,6 +46,8 @@
   .kpi .n{font-size:22px;font-weight:800} .kpi .l{color:var(--muted);font-size:12px}
   code{background:#0c1124;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12.5px}
   .legend{color:var(--muted);font-size:12.5px;margin-top:6px}
+  .bar{display:flex;height:22px;border-radius:7px;overflow:hidden;border:1px solid var(--line);margin:6px 0}
+  .bar div{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#0c1020}
   .foot{color:var(--muted);font-size:12.5px;margin-top:26px;text-align:center}
 </style>
 </head>
@@ -54,99 +56,108 @@
 
   <h1>C → Rust Translation: STU-Guided Differential Fuzzing</h1>
   <p class="sub">Measuring C-to-Rust translation correctness by fuzzing the C original against its
-  Rust translation — and choosing <b>where</b> to fuzz (the Smallest/Verifiable Testing Unit).
-  <span style="color:#7d88a8">Snapshot 2026-06-23</span></p>
+  Rust translation — and learning <b>where</b> a differential test is valid (the boundary).
+  <span style="color:#7d88a8">Snapshot 2026-06-23 · generator v0.4</span></p>
 
   <div class="kpis">
-    <div class="kpi"><div class="n" style="color:var(--done)">59</div><div class="l">unit tests passing</div></div>
-    <div class="kpi"><div class="n" style="color:var(--done)">16/16</div><div class="l">harness byte-identity regression</div></div>
-    <div class="kpi"><div class="n" style="color:var(--done)">16</div><div class="l">ENTRYs generatable (of 18)</div></div>
-    <div class="kpi"><div class="n" style="color:var(--now)">2</div><div class="l">real divergences found (C-UB class)</div></div>
+    <div class="kpi"><div class="n" style="color:var(--done)">95</div><div class="l">unit tests passing</div></div>
+    <div class="kpi"><div class="n" style="color:var(--done)">17/17</div><div class="l">harness byte-identity regression</div></div>
+    <div class="kpi"><div class="n" style="color:var(--done)">127</div><div class="l">boundaries harvested (v2.1)</div></div>
+    <div class="kpi"><div class="n" style="color:var(--now)">66 : 34</div><div class="l">labeled valid : invalid</div></div>
   </div>
 
   <h2>The core idea</h2>
   <div class="card">
-    <b>STU = the differential-testing frontier.</b> C2Rust restructures code, so fuzzing at an
-    arbitrary function makes "divergences" that are really bad-boundary artifacts. The STU selector
-    finds boundaries where a differential harness is <i>valid</i> (inputs constructible, outputs
-    comparable, no UB) — and the classifier proves every divergence with independent evidence.
-    <div class="legend">Novelty (literature-checked): not the fuzzing, but the
-    static-analysis <b>boundary selection</b> + an evidence-backed divergence taxonomy.</div>
+    <b>STU = the differential-testing frontier.</b> c2rust restructures code, so fuzzing at an
+    arbitrary function makes "divergences" that are really bad-boundary artifacts. The contribution
+    is <b>predicting where a differential harness is valid</b> (inputs constructible, outputs
+    comparable, no UB / unmet precondition) — turned into a <b>labeled boundary-validity dataset</b>
+    plus the static features that explain it.
+    <div class="legend">Novelty (literature-checked): not the fuzzing, but the static
+    <b>boundary-validity prediction</b> + an evidence-backed, independently-audited label taxonomy.</div>
   </div>
 
-  <h2>Pipeline</h2>
+  <h2>Pipeline (built end-to-end)</h2>
   <div class="card">
     <div class="flow">
-      <div class="step"><b>C ↔ Rust pair</b><span>c2rust 0.22 output</span></div>
+      <div class="step"><b>40 C↔Rust pairs</b><span>c2rust 0.22, 40/40 clean</span></div>
       <div class="arrow">→</div>
-      <div class="step"><b>STU selector</b><span>callgraph · mapping · features · frontier</span></div>
+      <div class="step"><b>Census (Stage A)</b><span>every fn → 153 boundaries</span></div>
       <div class="arrow">→</div>
-      <div class="step"><b>Harness gen</b><span>schema-driven, ABI-correct</span></div>
+      <div class="step"><b>Harness gen</b><span>schema / inferred, ABI-correct</span></div>
       <div class="arrow">→</div>
       <div class="step"><b>Differential fuzz</b><span>LibAFL, C oracle vs Rust</span></div>
       <div class="arrow">→</div>
-      <div class="step"><b>Classifier</b><span>replay + UBSan + Rust-only → label</span></div>
+      <div class="step"><b>Classify + audit</b><span>evidence → label → semi-auto+panel</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Feature analysis</b><span>what explains valid vs invalid</span></div>
     </div>
   </div>
 
   <h2>Where we are</h2>
   <div class="tl">
-    <div class="it done"><b>Recovery + STU spec</b> <span class="pill p-done">done</span><br>
-      <span>Rebuilt after SSD loss; <code>docs/stu_selection.md</code> locked.</span></div>
-    <div class="it done"><b>STU selector (Stages 1–4)</b> <span class="pill p-done">done</span><br>
-      <span>C callgraph→SCC DAG, C↔Rust mapping, feature study, frontier selection — 17/18 fixture conformance.</span></div>
-    <div class="it done"><b>G1 harness generator + classifier</b> <span class="pill p-done">done</span><br>
-      <span>Generic differential harness; conservative evidence-backed labels (C_UB_CONFIRMED, RUST_PANIC, HARNESS_DIVERGENCE, … UNKNOWN).</span></div>
-    <div class="it done"><b>Explicit harness schema (P3)</b> <span class="pill p-done">done</span><br>
-      <span>Roles from a versioned schema, byte-identical migration, strong validation, canonical type parser.</span></div>
-    <div class="it now"><b>Nested-pointer coverage</b> <span class="pill p-now">in progress</span><br>
-      <span>ptr-to-array ✓ · rectangular table <code>int**</code> ✓ · <b>char** next</b> · callback after.</span></div>
-    <div class="it next"><b>G3 → G2 → learned risk model</b> <span class="pill p-next">planned</span><br>
-      <span>Semantics-preserving refactors, injected bugs, then P(valid harness | features) with per-program CV.</span></div>
+    <div class="it done"><b>STU selector + G1 harness generator + classifier</b> <span class="pill p-done">done</span><br>
+      <span>callgraph→SCC DAG, C↔Rust mapping, features; generic differential harness; conservative evidence-backed labels.</span></div>
+    <div class="it done"><b>Generator coverage → v0.4</b> <span class="pill p-done">done</span><br>
+      <span>scalars · buffers · NUL strings · ptr-to-array · rectangular <code>int**</code> · <code>char**</code> · POD struct · struct-array. Schema clobber-guard (<code>--check</code>).</span></div>
+    <div class="it done"><b>Boundary harvester + dataset v1 (4-agent audit)</b> <span class="pill p-done">done</span><br>
+      <span>per-function boundaries; independent adversarial audit overturned 17% of labels → <code>validity_v2</code>. Frozen baseline (28:10).</span></div>
+    <div class="it done"><b>Dataset v2 scale-out + semi-auto audit + v2.1 fix</b> <span class="pill p-done">done</span><br>
+      <span>18→40 programs; 127 boundaries; heuristic audit (catches 8/8 v1-overturned) + 3-agent spot-check; recovered 8 mislabeled ASan crashes.</span></div>
+    <div class="it done"><b>Feature-vs-validity analysis</b> <span class="pill p-done">done</span><br>
+      <span>No current static feature strongly separates valid/invalid (best |AUC−0.5|≈0.3) → motivates boundary-specific semantic features.</span></div>
+    <div class="it now"><b>Boundary-specific features → P(valid | x) baseline</b> <span class="pill p-now">next</span><br>
+      <span>engineer semantic features (unguarded arithmetic; trusted-index struct/buffer), then program-grouped CV. No model until features separate.</span></div>
+  </div>
+
+  <h2>Boundary-validity dataset</h2>
+  <div class="card">
+    <div class="bar">
+      <div style="width:52%;background:var(--done)">66 valid</div>
+      <div style="width:27%;background:var(--bad)">34 invalid</div>
+      <div style="width:21%;background:var(--muted)">27 dropped</div>
+    </div>
+    <table>
+      <tr><th>validity_v2</th><th>n</th><th>meaning</th></tr>
+      <tr><td><span class="pill p-done">valid</span></td><td class="num">66</td><td>real, exercised, no divergence (weak positive)</td></tr>
+      <tr><td><span class="pill p-now">invalid_isolation_invariant</span></td><td class="num">19</td><td>OOB from a trusted struct/buffer index the caller must establish</td></tr>
+      <tr><td><span class="pill p-now">invalid_intrinsic_ub</span></td><td class="num">15</td><td>genuine UB in the function (overflow / div / shift / self-overflow)</td></tr>
+      <tr><td style="color:var(--muted)">weak_exclude</td><td class="num">7</td><td>uninformative positive (trivial decoder / cursor early-return)</td></tr>
+      <tr><td style="color:var(--muted)">excluded_generator</td><td class="num">8</td><td>harness mis-model, not a boundary property (a generator gap)</td></tr>
+      <tr><td style="color:var(--muted)">excluded (return-type)</td><td class="num">12</td><td>enum/struct/pointer returns — not yet generatable</td></tr>
+    </table>
+    <div class="legend">Negatives span <b>15 programs</b> and <b>both mechanisms</b> (16 invariant + 15 UB) — v1's single-VM-family bias resolved.
+    Audit provenance: 72 auto · 35 reviewed · 20 n/a. public/internal layered per row. <code>validity_v2</code> is authoritative; the raw fuzz label is not.</div>
   </div>
 
   <h2>Input-type coverage (the generator)</h2>
   <div class="card grid g3">
     <div><span class="pill p-done">done</span> scalars + bounded scalars</div>
-    <div><span class="pill p-done">done</span> input / inout / output buffers (+ capacity)</div>
-    <div><span class="pill p-done">done</span> out-scalar</div>
-    <div><span class="pill p-done">done</span> NUL-terminated input string</div>
+    <div><span class="pill p-done">done</span> input / inout / output buffers</div>
+    <div><span class="pill p-done">done</span> out-scalar · NUL string</div>
     <div><span class="pill p-done">done</span> ptr-to-array <code>T(*)[N]</code></div>
     <div><span class="pill p-done">done</span> rectangular table <code>int**</code></div>
-    <div><span class="pill p-now">next</span> string table <code>char**</code></div>
-    <div><span class="pill p-next">after</span> callback <code>fn-ptr</code></div>
-    <div style="color:var(--muted)">each shape: identical bytes across differential / C-only / Rust-only decoders</div>
-  </div>
-
-  <h2>G1 support matrix (18 ENTRYs)</h2>
-  <div class="card">
-    <table>
-      <tr><th>Outcome</th><th>Count</th><th>Meaning</th></tr>
-      <tr><td><span class="pill p-done">NO_DIVERGENCE_OBSERVED</span></td><td class="num">14</td>
-        <td>30 s fuzzing found nothing (≠ proof of equivalence)</td></tr>
-      <tr><td><span class="pill p-now">C_UB_CONFIRMED</span></td><td class="num">2</td>
-        <td>rpn_eval, opcode_dispatch — signed-overflow UB → Rust panic (real, classified)</td></tr>
-      <tr><td><span class="pill p-next">UNSUPPORTED_SIGNATURE</span></td><td class="num">2</td>
-        <td>word_tokens (<code>char**</code>), array_map_reduce (callback) — the next two steps</td></tr>
-    </table>
-    <div class="legend">0 observed harness false positives. Each divergence carries toolchain, artifact
-    sha256, and independent C-UBSan / Rust-only / diff-replay evidence.</div>
+    <div><span class="pill p-done">done</span> string table <code>char**</code></div>
+    <div><span class="pill p-done">done</span> POD struct by pointer</div>
+    <div><span class="pill p-done">done</span> struct-array <code>T* + size</code></div>
+    <div><span class="pill p-next">backlog</span> sliced buffer · n×n matrix · out-array · ptr-pair span · destructor · callback</div>
   </div>
 
   <h2>Next steps</h2>
   <div class="card grid g2">
-    <div><b>1 · char** string table</b><br><span style="color:var(--muted)">word_tokens — pointer table over
-      independent NUL-terminated backings (distinct from the rectangular table).</span></div>
-    <div><b>2 · callback binding</b><br><span style="color:var(--muted)">array_map_reduce — bind a finite set of
-      functions; semantic choice of which behavior to fuzz.</span></div>
-    <div><b>3 · G3 semantics-preserving refactors</b><br><span style="color:var(--muted)">inline/outline, wrapper,
-      CFG rewrite — reliable "structure-changed, semantics-preserved" labels to test false-positive avoidance.</span></div>
-    <div><b>4 · G2 injected bugs → learned model</b><br><span style="color:var(--muted)">measure bug recall, then learn
-      P(valid harness | x) with per-program grouped cross-validation.</span></div>
+    <div><b>1 · boundary-specific features</b><br><span style="color:var(--muted)">unguarded signed arithmetic (→ intrinsic UB),
+      struct/buffer indexed by a trusted field without a bounds check (→ isolation invariant). Re-measure separation.</span></div>
+    <div><b>2 · P(valid | x) baseline</b><br><span style="color:var(--muted)">only after features separate; program-grouped K-fold
+      (36 groups, 17 carry invalids — stratify carefully).</span></div>
+    <div><b>3 · close generator gaps</b><br><span style="color:var(--muted)">sliced-buffer / n×n matrix / output-array /
+      pointer-pair span / destructor / callback — each recovers real boundaries (surfaced by the audit).</span></div>
+    <div><b>4 · external c2rust-clean libs</b><br><span style="color:var(--muted)">add real-world code for external validity beyond the
+      authored corpus.</span></div>
   </div>
 
   <p class="foot">Toolchain: c2rust 0.22.1 · clang 21 · nightly-2025-09-01 + LibAFL 0.15.4.
-  All STU tooling under <code>tools/stu_selector/</code>; evidence under <code>results/</code>.</p>
+  Branches: <code>checkpoint/boundary-dataset-v1</code> (frozen) · <code>dataset-v2</code> · <code>dataset-v2.1</code> (+v2.1 fix +feature analysis).
+  Tooling under <code>tools/stu_selector/</code> &amp; <code>scripts/</code>; data &amp; evidence under <code>dataset/</code>, <code>results/</code>.</p>
 
 </div>
 </body>

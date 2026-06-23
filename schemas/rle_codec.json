@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "program": "rle_codec",
+  "entry": "rle_encode",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "usize"
+  },
+  "params": [
+    {
+      "name": "src",
+      "role": "input_buffer",
+      "decode": "vector",
+      "elem": "u8",
+      "elem_width": 1,
+      "length_param": "len"
+    },
+    {
+      "name": "len",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "src",
+      "rust": "usize",
+      "width": 8
+    },
+    {
+      "name": "dst",
+      "role": "output_buffer",
+      "decode": "vector",
+      "elem": "u8",
+      "elem_width": 1,
+      "capacity_param": "dst_cap",
+      "written_length": "return"
+    },
+    {
+      "name": "dst_cap",
+      "role": "capacity",
+      "decode": "derived_from_buffer",
+      "of_buffer": "dst",
+      "rust": "usize",
+      "width": 8
+    }
+  ]
+}

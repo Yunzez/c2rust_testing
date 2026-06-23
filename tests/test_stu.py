@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import gen_diff_harness as gdh          # noqa: E402
 import classify_artifact as ca          # noqa: E402
 import run_g1_matrix as mx              # noqa: E402
+import harness_schema as hs             # noqa: E402
 
 CASES = []
 
@@ -84,6 +85,35 @@ check("run_label full run, no artifact -> NO_DIVERGENCE_OBSERVED",
       mx.run_label({"terminated_by_timeout": True}, []), "NO_DIVERGENCE_OBSERVED")
 check("run_label early exit, no artifact -> FUZZER_EXITED_EARLY",
       mx.run_label({"terminated_by_timeout": False}, []), "FUZZER_EXITED_EARLY")
+
+
+# ---- harness_schema.validate ----
+_GOOD = {"schema_version": 1, "program": "p", "entry": "e", "return": {"rust": "i32"},
+         "params": [
+             {"name": "src", "role": "input_buffer", "decode": "vector", "elem": "u8",
+              "elem_width": 1, "length_param": "len"},
+             {"name": "len", "role": "length", "decode": "derived_from_buffer", "of_buffer": "src",
+              "rust": "usize", "width": 8}]}
+check("validate good schema", hs.validate(_GOOD), [])
+_BADROLE = {"schema_version": 1, "params": [{"name": "x", "role": "frobnicate", "decode": "scalar"}]}
+check("validate bad role flagged", any("bad role" in e for e in hs.validate(_BADROLE)), True)
+_DANGLING = {"schema_version": 1, "params": [
+    {"name": "src", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1,
+     "length_param": "nope"}]}
+check("validate dangling length_param flagged",
+      any("unknown param" in e for e in hs.validate(_DANGLING)), True)
+
+# ---- persisted schemas carry the reviewed roles ----
+SCHEMAS = ROOT / "schemas"
+if (SCHEMAS / "rle_codec.json").exists():
+    def role_of(prog, pname):
+        s = hs.load(SCHEMAS / f"{prog}.json")
+        return next(p["role"] for p in s["params"] if p["name"] == pname)
+    check("rle_codec dst = output_buffer", role_of("rle_codec", "dst"), "output_buffer")
+    check("rle_codec dst_cap = capacity", role_of("rle_codec", "dst_cap"), "capacity")
+    check("mergesort a = inout_buffer", role_of("mergesort_search", "a"), "inout_buffer")
+    check("rpn_eval result = out_scalar", role_of("rpn_eval", "result"), "out_scalar")
+    check("intmath op = scalar", role_of("intmath", "op"), "scalar")
 
 
 def main():

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "program": "dynamic_array",
+  "entry": "da_run",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "i64"
+  },
+  "params": [
+    {
+      "name": "ops",
+      "role": "input_buffer",
+      "decode": "vector",
+      "elem": "i32",
+      "elem_width": 4,
+      "length_param": "n"
+    },
+    {
+      "name": "n",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "ops",
+      "rust": "usize",
+      "width": 8
+    }
+  ]
+}

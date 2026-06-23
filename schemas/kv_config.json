@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "program": "kv_config",
+  "entry": "kv_parse",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "i32"
+  },
+  "params": [
+    {
+      "name": "line",
+      "role": "out_scalar",
+      "decode": "out_scalar_zero",
+      "elem": "i8",
+      "elem_width": 1
+    },
+    {
+      "name": "key",
+      "role": "output_buffer",
+      "decode": "vector",
+      "elem": "i8",
+      "elem_width": 1,
+      "capacity_param": "key_cap",
+      "written_length": "return"
+    },
+    {
+      "name": "key_cap",
+      "role": "capacity",
+      "decode": "derived_from_buffer",
+      "of_buffer": "key",
+      "rust": "usize",
+      "width": 8
+    },
+    {
+      "name": "val",
+      "role": "output_buffer",
+      "decode": "vector",
+      "elem": "i8",
+      "elem_width": 1,
+      "capacity_param": "val_cap",
+      "written_length": "return"
+    },
+    {
+      "name": "val_cap",
+      "role": "capacity",
+      "decode": "derived_from_buffer",
+      "of_buffer": "val",
+      "rust": "usize",
+      "width": 8
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "program": "leb128",
+  "entry": "leb128_roundtrip",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "i32"
+  },
+  "params": [
+    {
+      "name": "in_",
+      "role": "input_buffer",
+      "decode": "vector",
+      "elem": "u8",
+      "elem_width": 1,
+      "length_param": "len"
+    },
+    {
+      "name": "len",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "in_",
+      "rust": "usize",
+      "width": 8
+    },
+    {
+      "name": "out",
+      "role": "output_buffer",
+      "decode": "vector",
+      "elem": "u8",
+      "elem_width": 1,
+      "capacity_param": "out_cap",
+      "written_length": "return"
+    },
+    {
+      "name": "out_cap",
+      "role": "capacity",
+      "decode": "derived_from_buffer",
+      "of_buffer": "out",
+      "rust": "usize",
+      "width": 8
+    }
+  ]
+}

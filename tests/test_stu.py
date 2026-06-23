@@ -107,6 +107,46 @@ check("items_from_schema: output_buffer -> io_buf with capacity as len",
            "rust": "usize", "width": 8}]})[0]["len_name"], "c")
 
 
+# ---- ABI order: a length param that PRECEDES its buffer stays first in the call/signature ----
+_ABI = [
+    {"name": "n", "role": "length", "decode": "derived_from_buffer", "of_buffer": "buf",
+     "rust": "usize", "width": 8},
+    {"name": "buf", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1,
+     "length_param": "n"},
+    {"name": "mode", "role": "scalar", "decode": "scalar", "rust": "i32", "width": 4}]
+_CA, _RA, _DECL = gdh._call_and_decl(_ABI)
+check("ABI order: call args follow schema order (length first)",
+      _CA, ["n", "buf_buf.as_ptr()", "mode"])
+check("ABI order: extern decl follows schema order",
+      _DECL, ["n: usize", "buf: *const u8", "mode: i32"])
+
+# ---- validate_against_signature ----
+_SIG_PARAMS = [
+    {"kind": "ptr", "const": True, "elem": "u8", "elem_w": 1, "name": "buf"},
+    {"kind": "scalar", "rust": "usize", "w": 8, "name": "n"}]
+_SIG_SCHEMA = {"schema_version": 1, "entry": "f", "params": [
+    {"name": "buf", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1,
+     "length_param": "n"},
+    {"name": "n", "role": "length", "decode": "derived_from_buffer", "of_buffer": "buf",
+     "rust": "usize", "width": 8}]}
+check("validate_against_signature: matching", hs.validate_against_signature(_SIG_SCHEMA, _SIG_PARAMS, "i32"), [])
+_SIG_BAD = {"params": [
+    {"name": "n", "role": "length", "decode": "derived_from_buffer", "of_buffer": "buf",
+     "rust": "usize", "width": 8},
+    {"name": "buf", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1,
+     "length_param": "n"}]}
+check("validate_against_signature: order mismatch flagged",
+      any("mismatch" in e for e in hs.validate_against_signature(_SIG_BAD, _SIG_PARAMS, "i32")), True)
+
+# length referenced by two buffers must be flagged (exactly-one-owner)
+_TWO_OWNERS = {"schema_version": 1, "params": [
+    {"name": "a", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1, "length_param": "n"},
+    {"name": "b", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1, "length_param": "n"},
+    {"name": "n", "role": "length", "decode": "derived_from_buffer", "of_buffer": "a", "rust": "usize", "width": 8}]}
+check("validate: length owned by 2 buffers flagged",
+      any("exactly 1" in e for e in hs.validate(_TWO_OWNERS)), True)
+
+
 # ---- harness_schema.validate ----
 _GOOD = {"schema_version": 1, "program": "p", "entry": "e", "return": {"rust": "i32"},
          "params": [

@@ -88,7 +88,10 @@ def derive(cc_dir: Path, entry: str) -> dict:
                     "elem": it["elem"], "elem_width": it["elem_w"]}
             if role == "output_buffer":
                 spec["capacity_param"] = it["len_name"]
-                spec["written_length"] = "return" if ret != "void" else None
+                # How much of the output buffer is meaningful is NOT inferable from the signature
+                # (the return value might be a status code, not a written length). Default unknown;
+                # a human sets {"kind": "return_value"} or {"kind": "nul_terminated"} after review.
+                spec["observable_length"] = {"kind": "unknown"}
             else:
                 spec["length_param"] = it["len_name"]
             sparams.append(spec)
@@ -141,10 +144,63 @@ def validate(schema: dict) -> list[str]:
             errs.append(f"{p['name']}: {p['role']} missing length_param")
         if p.get("role") == "output_buffer" and "capacity_param" not in p:
             errs.append(f"{p['name']}: output_buffer missing capacity_param")
-    # every length/capacity must be owned by exactly one buffer reference
+    # observable_length kind must be known
     for p in schema.get("params", []):
-        if p.get("role") in ("length", "capacity") and p.get("of_buffer") not in names:
-            errs.append(f"{p['name']}: {p['role']} of_buffer unresolved")
+        if p.get("role") == "output_buffer":
+            ol = p.get("observable_length", {})
+            if ol.get("kind") not in ("unknown", "return_value", "nul_terminated"):
+                errs.append(f"{p['name']}: bad observable_length {ol}")
+    # every length/capacity must be referenced by EXACTLY one buffer (not just exist)
+    refs: dict[str, int] = {}
+    for p in schema.get("params", []):
+        for ref in ("length_param", "capacity_param"):
+            if ref in p:
+                refs[p[ref]] = refs.get(p[ref], 0) + 1
+    for p in schema.get("params", []):
+        if p.get("role") in ("length", "capacity"):
+            n = refs.get(p["name"], 0)
+            if n != 1:
+                errs.append(f"{p['name']}: {p['role']} referenced by {n} buffers (must be exactly 1)")
+            if p.get("of_buffer") not in names:
+                errs.append(f"{p['name']}: of_buffer unresolved")
+    return errs
+
+
+# role -> the single legal decode kind
+_ROLE_DECODE = {
+    "scalar": "scalar", "input_buffer": "vector", "inout_buffer": "vector",
+    "output_buffer": "vector", "out_scalar": "out_scalar_zero", "input_string": "nul_string",
+    "length": "derived_from_buffer", "capacity": "derived_from_buffer",
+}
+
+
+def validate_against_signature(schema: dict, params: list[dict], ret: str) -> list[str]:
+    """Fail-closed cross-check of a schema against the libclang signature.
+
+    Verifies param count, order, names, scalar/element types, and role/decode legality so a
+    stale or hand-edited schema cannot silently generate a wrong harness.
+    """
+    errs = []
+    sp = schema.get("params", [])
+    if len(sp) != len(params):
+        return [f"param count mismatch: schema {len(sp)} vs signature {len(params)}"]
+    for s, p in zip(sp, params):
+        if s["name"] != p["name"]:
+            errs.append(f"order/name mismatch: schema {s['name']} vs signature {p['name']}")
+            continue
+        if _ROLE_DECODE.get(s.get("role")) != s.get("decode"):
+            errs.append(f"{s['name']}: role {s.get('role')} incompatible with decode {s.get('decode')}")
+        if p["kind"] == "ptr":
+            if s["role"] not in ("input_buffer", "inout_buffer", "output_buffer",
+                                 "out_scalar", "input_string"):
+                errs.append(f"{s['name']}: pointer param has non-pointer role {s['role']}")
+            elif s.get("elem") != p["elem"]:
+                errs.append(f"{s['name']}: elem {s.get('elem')} != signature {p['elem']}")
+        else:
+            if s["role"] not in ("scalar", "length", "capacity"):
+                errs.append(f"{s['name']}: scalar param has non-scalar role {s['role']}")
+            elif s.get("rust") != p["rust"]:
+                errs.append(f"{s['name']}: rust {s.get('rust')} != signature {p['rust']}")
     return errs
 
 

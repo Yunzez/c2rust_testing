@@ -19,11 +19,17 @@ FIX = ROOT / "tests" / "fixtures" / "harness"
 GEN = ROOT / "tools" / "stu_selector" / "gen_diff_harness.py"
 
 
+# These two fixtures were intentionally re-baselined when the input_string role landed (their
+# decode changed on purpose). The other 12 are byte-identical to the pre-migration generator.
+REVIEWED_CHANGE = {"glob_match", "kv_config"}
+
+
 def main():
     fixtures = sorted(FIX.glob("*_ft.rs"))
     if not fixtures:
         print("no fixtures found"); return 1
     failed = 0
+    print("(12 expected migration-identical; 2 reviewed semantic changes: glob_match, kv_config)\n")
     with tempfile.TemporaryDirectory() as td:
         for fix in fixtures:
             prog = fix.name[:-len("_ft.rs")]
@@ -38,12 +44,14 @@ def main():
                 print(f"  FAIL  {prog}: generation failed ({r.stderr.strip()[-120:]})")
                 failed += 1
                 continue
+            kind = "reviewed-change golden" if prog in REVIEWED_CHANGE else "migration-identical"
             if gen_file.read_text() == fix.read_text():
-                print(f"  PASS  {prog}: byte-identical")
+                print(f"  PASS  {prog}: matches {kind}")
             else:
                 print(f"  FAIL  {prog}: schema-driven output differs from fixture")
                 failed += 1
-    print(f"\n{len(fixtures) - failed}/{len(fixtures)} byte-identical")
+    print(f"\n{len(fixtures) - failed}/{len(fixtures)} match current golden "
+          f"(12 migration-identical + 2 reviewed changes)")
     return 1 if failed else 0
 
 

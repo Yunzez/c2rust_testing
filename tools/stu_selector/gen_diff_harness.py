@@ -157,15 +157,61 @@ def items_from_schema(schema: dict) -> list[dict]:
     return items
 
 
-def resolve_items(name: str, cc_dir: Path, entry: str):
-    """(params, ret, all_fns, items): prefer the explicit schema; fall back to inference."""
+def _infer_abi(params: list[dict]) -> list[dict]:
+    """Synthesize an ABI-ordered schema-param list from inference (the --infer-schema fallback)."""
+    its = classify(params)
+    by = {p["name"]: p for p in params}
+    buf_role, len_owner = {}, {}
+    for it in its:
+        if it["role"] == "in_buf":
+            buf_role[it["name"]] = "input_buffer"; len_owner[it["len_name"]] = (it["name"], "length")
+        elif it["role"] == "io_buf":
+            buf_role[it["name"]] = "inout_buffer"; len_owner[it["len_name"]] = (it["name"], "length")
+    out_scalars = {it["name"] for it in its if it["role"] == "out_scalar"}
+    abi = []
+    for p in params:
+        n = p["name"]
+        if n in buf_role:
+            it = next(i for i in its if i["name"] == n)
+            abi.append({"name": n, "role": buf_role[n], "decode": "vector",
+                        "elem": it["elem"], "elem_width": it["elem_w"], "length_param": it["len_name"]})
+        elif n in len_owner:
+            buf, kind = len_owner[n]
+            abi.append({"name": n, "role": kind, "decode": "derived_from_buffer",
+                        "of_buffer": buf, "rust": p["rust"], "width": p["w"]})
+        elif n in out_scalars:
+            it = next(i for i in its if i["name"] == n)
+            role = "input_string" if by[n].get("const") else "out_scalar"
+            decode = "nul_string" if by[n].get("const") else "out_scalar_zero"
+            abi.append({"name": n, "role": role, "decode": decode,
+                        "elem": it["elem"], "elem_width": it["elem_w"]})
+        else:
+            abi.append({"name": n, "role": "scalar", "decode": "scalar",
+                        "rust": p["rust"], "width": p["w"]})
+    return abi
+
+
+def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False):
+    """(params, ret, all_fns, items, abi). Require + strongly validate the schema; --infer to fall back.
+
+    items drive byte-decode (role-based, order preserved per buffer); abi is the schema params in
+    ABI order and drives the call arguments + extern signature.
+    """
     params, ret, all_fns = parse_entry_signature(cc_dir, entry)
     schema_path = ROOT / "schemas" / f"{name}.json"
     if schema_path.exists():
-        items = items_from_schema(json.loads(schema_path.read_text(encoding="utf-8")))
-    else:
-        items = classify(params)
-    return params, ret, all_fns, items
+        import harness_schema as hs
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        errs = hs.validate(schema)
+        if schema.get("entry") != entry:
+            errs.append(f"schema entry {schema.get('entry')!r} != requested {entry!r}")
+        errs += hs.validate_against_signature(schema, params, ret)
+        if errs:
+            raise SystemExit(f"schema {schema_path} invalid: {errs}")
+        return params, ret, all_fns, items_from_schema(schema), schema["params"]
+    if infer:
+        return params, ret, all_fns, classify(params), _infer_abi(params)
+    raise SystemExit(f"no schema for '{name}' at {schema_path}; pass --infer-schema to fall back")
 
 
 def classify(params: list[dict]) -> list[dict]:
@@ -188,44 +234,67 @@ def classify(params: list[dict]) -> list[dict]:
     return out
 
 
-def gen_target(entry: str, items: list[dict], ret: str) -> str:
-    """Generate the fuzz_target body."""
-    decode, c_args, r_args, post = [], [], [], []
+def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
+    """Storage + byte-decode + comparison, driven by item ROLE (not order).
+
+    Decode text is identical to the pre-ABI-refactor generator (so the 12 migration entries stay
+    byte-identical): each buffer emits its take + its derived-length binding right after it.
+    """
+    decode, post = [], []
     for it in items:
         n = it["name"]
         if it["role"] == "scalar":
             decode.append(f"    let {n} = cur.take_{it['rust']}();")
-            c_args.append(n)
-            r_args.append(n)
         elif it["role"] == "in_buf":
             decode.append(f"    let {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    let {it['len_name']} = {n}_buf.len();")
-            c_args += [f"{n}_buf.as_ptr()", it["len_name"]]
-            r_args += [f"{n}_buf.as_ptr()", it["len_name"]]
         elif it["role"] == "io_buf":
             decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    let {it['len_name']} = {n}_c.len();")
             decode.append(f"    let mut {n}_r = {n}_c.clone();")
-            c_args += [f"{n}_c.as_mut_ptr()", it["len_name"]]
-            r_args += [f"{n}_r.as_mut_ptr()", it["len_name"]]
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: buffer {n}"); }}')
         elif it["role"] == "out_scalar":
             decode.append(f"    let mut {n}_c: {it['elem']} = 0 as {it['elem']};")
             decode.append(f"    let mut {n}_r: {it['elem']} = 0 as {it['elem']};")
-            c_args.append(f"&mut {n}_c")
-            r_args.append(f"&mut {n}_r")
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: out param {n}"); }}')
         elif it["role"] == "in_str":
             decode.append(f"    let mut {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    {n}_buf.push(0 as {it['elem']});")
-            c_args.append(f"{n}_buf.as_ptr()")
-            r_args.append(f"{n}_buf.as_ptr()")
+    return decode, post
 
-    # length params are scalars too in the C signature but provided by buffers above;
-    # ensure any scalar that is actually a consumed length is not double-decoded.
-    len_names = {it["len_name"] for it in items if "len_name" in it}
-    decode = [d for d in decode
-              if not any(d.strip().startswith(f"let {ln} =") and "cur.take_" in d for ln in len_names)]
+
+def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
+    """Call arguments and extern signature in STRICT schema (ABI) order.
+
+    Iterating the schema params in declaration order is what makes a length param that PRECEDES
+    its buffer (e.g. f(size_t n, T* buf, ...)) come out in the right ABI position.
+    """
+    c_args, r_args, decl = [], [], []
+    for p in abi:
+        role, n = p["role"], p["name"]
+        if role in ("scalar", "length", "capacity"):
+            c_args.append(n); r_args.append(n); decl.append(f"{n}: {p['rust']}")
+        elif role == "input_buffer":
+            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            decl.append(f"{n}: *const {p['elem']}")
+        elif role in ("inout_buffer", "output_buffer"):
+            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
+            decl.append(f"{n}: *mut {p['elem']}")
+        elif role == "out_scalar":
+            c_args.append(f"&mut {n}_c"); r_args.append(f"&mut {n}_r")
+            decl.append(f"{n}: *mut {p['elem']}")
+        elif role == "input_string":
+            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            decl.append(f"{n}: *const {p['elem']}")
+    return c_args, r_args, decl
+
+
+def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str) -> str:
+    """Generate the fuzz_target source: decode from items, call/signature in ABI order."""
+    decode, post = _decode_and_post(items)
+    c_args, r_args, decl = _call_and_decl(abi)
+    extern_args = ", ".join(decl)
+    extern_ret = "" if ret == "void" else f"-> {ret}"
 
     call_c = f"c_{entry}({', '.join(c_args)})"
     call_r = f"translated::{entry}({', '.join(r_args)})"
@@ -252,9 +321,9 @@ def gen_target(entry: str, items: list[dict], ret: str) -> str:
         "",
         "fn cd() -> i8 { 0 }  // silence unused on some shapes",
         "",
-        f"use {ENTRY_CRATE} as translated;",
+        f"use {crate} as translated;",
         "extern \"C\" {",
-        f"    fn c_{entry}({EXTERN_ARGS}) {EXTERN_RET};",
+        f"    fn c_{entry}({extern_args}) {extern_ret};",
         "}",
         "",
         "fuzz_target!(|data: &[u8]| {",
@@ -271,48 +340,23 @@ def gen_target(entry: str, items: list[dict], ret: str) -> str:
     ])
 
 
-# placeholders filled in main (kept module-level for the f-string above)
-ENTRY_CRATE = "CRATE"
-EXTERN_ARGS = ""
-EXTERN_RET = ""
-
-
 def main() -> int:
-    global ENTRY_CRATE, EXTERN_ARGS, EXTERN_RET
     ap = argparse.ArgumentParser(description="Generate a differential fuzz harness for an STU")
     ap.add_argument("--pair", required=True, help="benchmark/pairs/<name>")
     ap.add_argument("--entry", required=True)
     ap.add_argument("--out", default=None, help="output project dir (default fuzz_gen/<name>)")
+    ap.add_argument("--infer-schema", action="store_true",
+                    help="fall back to signature inference when no schema exists (default: require schema)")
     args = ap.parse_args()
 
     pair = Path(args.pair)
     name = pair.name
+    crate = name.replace("-", "_")
     cc = pair / "build"
     rs = next((pair / "translated").glob("*.rs"))
     c_src = next((pair / "source").glob("*.c"))
 
-    params, ret, all_fns, items = resolve_items(name, cc, args.entry)
-
-    # extern "C" decl types/args for c_<entry>
-    decl_parts = []
-    for it in items:
-        if it["role"] == "scalar":
-            decl_parts.append(f"{it['name']}: {it['rust']}")
-        elif it["role"] in ("in_buf",):
-            decl_parts.append(f"{it['name']}: *const {it['elem']}")
-        elif it["role"] in ("io_buf",):
-            decl_parts.append(f"{it['name']}: *mut {it['elem']}")
-        elif it["role"] == "out_scalar":
-            decl_parts.append(f"{it['name']}: *mut {it['elem']}")
-        elif it["role"] == "in_str":
-            decl_parts.append(f"{it['name']}: *const {it['elem']}")
-        if "len_name" in it:
-            # the length scalar param keeps its place in the C signature
-            ln = next(p for p in params if p["name"] == it["len_name"])
-            decl_parts.append(f"{it['len_name']}: {ln['rust']}")
-    ENTRY_CRATE = name.replace("-", "_")
-    EXTERN_ARGS = ", ".join(decl_parts)
-    EXTERN_RET = "" if ret == "void" else f"-> {ret}"
+    params, ret, all_fns, items, abi = resolve(name, cc, args.entry, infer=args.infer_schema)
 
     out = Path(args.out) if args.out else (ROOT / "fuzz_gen" / name)
     out.mkdir(parents=True, exist_ok=True)
@@ -324,7 +368,7 @@ def main() -> int:
     (out / "src" / "lib.rs").write_text(rs.read_text(), encoding="utf-8")
 
     (out / "Cargo.toml").write_text(
-        f'[package]\nname = "{ENTRY_CRATE}"\nversion = "0.1.0"\nedition = "2021"\n\n'
+        f'[package]\nname = "{crate}"\nversion = "0.1.0"\nedition = "2021"\n\n'
         f'[build-dependencies]\ncc = "1"\n\n[dependencies]\n', encoding="utf-8")
 
     defines = "\n".join(f'        .define("{fn}", "c_{fn}")' for fn in all_fns)
@@ -346,7 +390,7 @@ def main() -> int:
 ''', encoding="utf-8")
 
     (out / "fuzz" / "Cargo.toml").write_text(f'''[package]
-name = "{ENTRY_CRATE}-fuzz"
+name = "{crate}-fuzz"
 version = "0.0.0"
 publish = false
 edition = "2021"
@@ -357,7 +401,7 @@ cargo-fuzz = true
 [dependencies]
 libfuzzer-sys = {{ version = "0.15.4", package = "libafl_libfuzzer" }}
 
-[dependencies.{ENTRY_CRATE}]
+[dependencies.{crate}]
 path = ".."
 
 [workspace]
@@ -367,18 +411,18 @@ members = ["."]
 debug = 1
 
 [[bin]]
-name = "{ENTRY_CRATE}_ft"
-path = "fuzz_targets/{ENTRY_CRATE}_ft.rs"
+name = "{crate}_ft"
+path = "fuzz_targets/{crate}_ft.rs"
 test = false
 doc = false
 ''', encoding="utf-8")
 
-    (out / "fuzz" / "fuzz_targets" / f"{ENTRY_CRATE}_ft.rs").write_text(
-        gen_target(args.entry, items, ret), encoding="utf-8")
+    (out / "fuzz" / "fuzz_targets" / f"{crate}_ft.rs").write_text(
+        gen_target(args.entry, items, abi, ret, crate), encoding="utf-8")
 
     print(f"generated harness at {out}")
-    print(f"  entry: {args.entry}({EXTERN_ARGS}) {EXTERN_RET}")
-    print(f"  roles: {[(it['name'], it['role']) for it in items]}")
+    print(f"  entry: {args.entry} -> {ret}")
+    print(f"  abi roles: {[(p['name'], p['role']) for p in abi]}")
     return 0
 
 

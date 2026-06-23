@@ -69,32 +69,41 @@ def tail(s: str, n: int = 1500) -> str:
 
 # ---------- C-only driver (UBSan + ASan) ----------
 
-def gen_c_driver(items: list[dict], entry: str, source_abs: str) -> str:
-    decode, call = [], []
+def _c_call_args(abi: list[dict]) -> list[str]:
+    """C call arguments in strict ABI order (mirrors the harness)."""
+    call = []
+    for p in abi:
+        role, n = p["role"], p["name"]
+        if role == "out_scalar":
+            call.append(f"&{n}")
+        else:  # scalar / length / capacity / *_buffer / input_string all pass by name
+            call.append(n)
+    return call
+
+
+def gen_c_driver(items: list[dict], abi: list[dict], entry: str, source_abs: str) -> str:
+    decode = []  # storage/decode in byte-consume order (from items)
     for it in items:
         n = it["name"]
         if it["role"] == "scalar":
             ct = RUST_TO_C[it["rust"]]
             decode.append(f"    {ct} {n} = ({ct})cuint({it['w']});")
-            call.append(n)
         elif it["role"] in ("in_buf", "io_buf"):
             ct = RUST_TO_C[it["elem"]]
             ln = it["len_name"]
             decode.append(f"    size_t {ln} = (size_t)(cb() % 64);")
             decode.append(f"    {ct}* {n} = ({ct}*)malloc(({ln} ? {ln} : 1) * sizeof({ct}));")
             decode.append(f"    for (size_t i = 0; i < {ln}; i++) {n}[i] = ({ct})cuint({it['elem_w']});")
-            call += [n, ln]
         elif it["role"] == "out_scalar":
             ct = RUST_TO_C[it["elem"]]
             decode.append(f"    {ct} {n} = 0;")
-            call.append(f"&{n}")
         elif it["role"] == "in_str":
             ct = RUST_TO_C[it["elem"]]
             decode.append(f"    size_t {n}_len = (size_t)(cb() % 64);")
             decode.append(f"    {ct}* {n} = ({ct}*)malloc({n}_len + 1);")
             decode.append(f"    for (size_t i = 0; i < {n}_len; i++) {n}[i] = ({ct})cuint({it['elem_w']});")
             decode.append(f"    {n}[{n}_len] = 0;")
-            call.append(n)
+    call = _c_call_args(abi)
     return f'''#include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -120,9 +129,9 @@ int main(int argc, char** argv) {{
 '''
 
 
-def run_c(items, entry, source_abs, artifact, workdir) -> dict:
+def run_c(items, abi, entry, source_abs, artifact, workdir) -> dict:
     drv = workdir / "cdriver.c"
-    drv.write_text(gen_c_driver(items, entry, source_abs), encoding="utf-8")
+    drv.write_text(gen_c_driver(items, abi, entry, source_abs), encoding="utf-8")
     binp = workdir / "cdriver"
     flags = ["clang", "-g", "-O0", "-fsanitize=undefined,address",
              "-fno-omit-frame-pointer", str(drv), "-o", str(binp)]
@@ -142,7 +151,7 @@ def run_c(items, entry, source_abs, artifact, workdir) -> dict:
 
 # ---------- Rust-only driver (overflow checks on) ----------
 
-def run_rust(items, entry, crate_dir: Path, crate_name: str, artifact, workdir) -> dict:
+def run_rust(items, abi, entry, crate_dir: Path, crate_name: str, artifact, workdir) -> dict:
     """Build a tiny binary that depends on the translated crate and calls only the entry."""
     proj = workdir / "rustonly"
     (proj / "src").mkdir(parents=True, exist_ok=True)
@@ -158,23 +167,30 @@ path = "src/main.rs"
 [workspace]
 ''', encoding="utf-8")
 
-    decode, call = [], []
+    decode = []  # storage/decode in byte-consume order (from items)
     for it in items:
         n = it["name"]
         if it["role"] == "scalar":
             decode.append(f"    let {n} = cur.take_{it['rust']}();")
-            call.append(n)
         elif it["role"] in ("in_buf", "io_buf"):
             decode.append(f"    let mut {n}: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    let {it['len_name']} = {n}.len();")
-            call += [f"{n}.as_mut_ptr()", it["len_name"]]
         elif it["role"] == "out_scalar":
             decode.append(f"    let mut {n}: {it['elem']} = 0 as {it['elem']};")
-            call.append(f"&mut {n}")
         elif it["role"] == "in_str":
             decode.append(f"    let mut {n}: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    {n}.push(0 as {it['elem']});")
+    call = []  # call arguments in strict ABI order
+    for p in abi:
+        role, n = p["role"], p["name"]
+        if role in ("input_buffer", "inout_buffer", "output_buffer"):
+            call.append(f"{n}.as_mut_ptr()")
+        elif role == "out_scalar":
+            call.append(f"&mut {n}")
+        elif role == "input_string":
             call.append(f"{n}.as_ptr()")
+        else:  # scalar / length / capacity
+            call.append(n)
     takes = "\n".join(
         f"    fn take_{t}(&mut self) -> {t} {{ let mut v=[0u8;{w}]; for i in 0..{w}{{v[i]=self.byte();}} {t}::from_le_bytes(v) }}"
         for t, w in [("u8",1),("i8",1),("u16",2),("i16",2),("u32",4),("i32",4),("u64",8),("i64",8),("usize",8)])
@@ -307,12 +323,12 @@ def main() -> int:
     artifact = Path(args.artifact)
     crate_dir = ROOT / "fuzz_gen" / name
 
-    params, ret, _, items = gdh.resolve_items(name, cc, args.entry)
+    params, ret, _, items, abi = gdh.resolve(name, cc, args.entry)
 
     with tempfile.TemporaryDirectory() as td:
         work = Path(td)
-        c_res = run_c(items, args.entry, str(source.resolve()), artifact, work)
-        rust_res = (run_rust(items, args.entry, crate_dir, crate_name, artifact, work)
+        c_res = run_c(items, abi, args.entry, str(source.resolve()), artifact, work)
+        rust_res = (run_rust(items, abi, args.entry, crate_dir, crate_name, artifact, work)
                     if crate_dir.exists() else {"built": False, "stderr": "no translated crate dir"})
     diff_res = replay_diff(crate_dir, crate_name, artifact)
     label, evidence = classify(diff_res, c_res, rust_res)

@@ -73,15 +73,18 @@ confirms the spec §11 assumption that name-preserving output makes mapping near
 1:N / rust-only (helper-absorption) path is implemented but not yet exercised on a restructured
 case (qsort is 1:1); needs a project where the translation outlines/inlines.
 
-## Stage 3 — `features.py` (next)
+## Stages 3 & 4 — done (see `results/`)
 
-Compute the per-region feature vector `x_f` (spec §6) over each matched region — candidates:
-call-graph correspondence, control-flow distance (Δ basic blocks / cyclomatic / loop nesting),
-side-effect surface, input-domain fuzzability, boundary uncertainty, normalization burden.
-**Design note:** the feature set + the learned `P(valid harness | x_f)` model are exactly where
-the project lead's critique applies (don't hand-weight; keep the vector; learn validity) — align
-on the feature list before committing the model, and generate the G3 (semantics-preserving
-refactor) data needed to train/evaluate it.
+- Stage 3 (`features.py`): empirical feature study — `results/feature_study_v1.md`.
+- Stage 4 (`frontier.py`): interpretable-baseline frontier selection; the `// ENTRY` check is a
+  **controlled fixture conformance test** (the benchmark is agent-authored with its expected
+  entry baked in), not independent selector-accuracy evidence — `results/stu_recognition_v1.md`.
+- G1 harness (`gen_diff_harness.py`) + `scripts/run_g1.sh` — `results/g1_validation_v1.md`.
+
+**Next (per project-lead review):** an artifact replay + structured classifier (P0/P1), a
+generator support matrix (P2), generator correctness via explicit param schemas (P3), then G3
+semantics-preserving refactors before any learned `P(valid | x_f)` model (P4). The learned model
+is deferred — 85 functions with almost no outcome labels is not enough to train on.
 
 ## Requirements
 

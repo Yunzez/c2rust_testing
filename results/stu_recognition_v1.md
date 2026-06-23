@@ -14,9 +14,17 @@ to the LLM pipeline later.
   human-intended fuzz target. We check whether the selected frontier recovers it.
 - Corpus: the 18-program benchmark (`benchmark/pairs/`).
 
-## Result
+## Status of this result — a *controlled fixture conformance test*, NOT selector accuracy
 
-**17 / 18 entries recovered. The single non-recovery is a *correct rejection*.**
+⚠️ The benchmark is **agent-authored with its expected `// ENTRY` baked in**, so this measures
+that the plumbing (call graph → mapping → features → frontier) behaves as intended on controlled
+fixtures. It is **not** independent ground-truth evidence of selector accuracy and must not be
+cited as such in the paper. Real accuracy evidence requires G2/G3 outcome labels and held-out /
+non-self-authored programs.
+
+## Result (fixture conformance)
+
+**17 / 18 fixtures conformant. The single non-conformance is a *correct rejection*.**
 
 | Outcome | Programs |
 |---|---|

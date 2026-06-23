@@ -87,7 +87,11 @@ def gen_c_driver(items: list[dict], abi: list[dict], entry: str, source_abs: str
         n = it["name"]
         if it["role"] == "scalar":
             ct = RUST_TO_C[it["rust"]]
-            decode.append(f"    {ct} {n} = ({ct})cuint({it['w']});")
+            if it.get("decode") == "bounded_scalar":
+                lo, hi = it["min_value"], it["max_value"]
+                decode.append(f"    {ct} {n} = ({ct})({lo} + (cuint({it['w']}) % ({hi} - {lo} + 1)));")
+            else:
+                decode.append(f"    {ct} {n} = ({ct})cuint({it['w']});")
         elif it["role"] in ("in_buf", "io_buf"):
             ct = RUST_TO_C[it["elem"]]
             ln = it["len_name"]
@@ -179,7 +183,11 @@ path = "src/main.rs"
     for it in items:
         n = it["name"]
         if it["role"] == "scalar":
-            decode.append(f"    let {n} = cur.take_{it['rust']}();")
+            if it.get("decode") == "bounded_scalar":
+                lo, hi, ty = it["min_value"], it["max_value"], it["rust"]
+                decode.append(f"    let {n} = ({lo} as {ty}) + (cur.take_{ty}() % (({hi} - {lo} + 1) as {ty}));")
+            else:
+                decode.append(f"    let {n} = cur.take_{it['rust']}();")
         elif it["role"] in ("in_buf", "io_buf"):
             decode.append(f"    let mut {n}: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    let {it['len_name']} = {n}.len();")

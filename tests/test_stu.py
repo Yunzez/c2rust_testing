@@ -99,6 +99,24 @@ check("items_from_schema: count (length consumed)", len(_ITEMS), 2)
 check("items_from_schema: buffer -> in_buf",
       (_ITEMS[0]["role"], _ITEMS[0]["name"], _ITEMS[0]["len_name"]), ("in_buf", "buf", "n"))
 check("items_from_schema: scalar role", (_ITEMS[1]["role"], _ITEMS[1]["name"]), ("scalar", "k"))
+# bounded scalar
+_BS = {"params": [{"name": "n", "role": "scalar", "decode": "bounded_scalar",
+                   "rust": "usize", "width": 8, "min_value": 0, "max_value": 64}]}
+_BI = gdh.items_from_schema(_BS)
+check("items_from_schema: bounded scalar carries bounds",
+      (_BI[0]["decode"], _BI[0]["min_value"], _BI[0]["max_value"]), ("bounded_scalar", 0, 64))
+_BD, _ = gdh._decode_and_post(_BI)
+check("bounded scalar decode maps into [min,max]",
+      "(0 as usize) + (cur.take_usize() % ((64 - 0 + 1) as usize))" in _BD[0], True)
+_BS_BAD = {"params": [{"name": "n", "role": "scalar", "decode": "bounded_scalar",
+                       "rust": "usize", "width": 8}]}
+check("validate_against_signature: bounded_scalar without bounds flagged",
+      any("bounded_scalar needs" in e for e in hs.validate_against_signature(
+          _BS_BAD, [{"kind": "scalar", "rust": "usize", "w": 8, "name": "n"}], "i32")), True)
+if (ROOT / "schemas" / "graph_dfs.json").exists():
+    _np = next(p for p in hs.load(ROOT / "schemas" / "graph_dfs.json")["params"] if p["name"] == "n")
+    check("graph_dfs n is bounded_scalar", _np.get("decode"), "bounded_scalar")
+
 # ptr-to-array (input_fixed_array_buffer)
 _ARR = {"params": [
     {"name": "edges", "role": "input_fixed_array_buffer", "decode": "fixed_array_vector",

@@ -72,6 +72,51 @@ def safe_name(name: str, idx: int) -> str:
     return f"{name}_" if name in RUST_KEYWORDS else name
 
 
+def describe_type(t) -> dict:
+    """Recursive, canonical-aware type descriptor (shared by ptr-to-array and future T**).
+
+    Typedef/elaborated wrappers are peeled to reveal the structural kind, so `typedef size_t
+    Edge[2]; const Edge *` is recognized as pointer->array. The scalar leaf prefers the ORIGINAL
+    spelling (keeps size_t->usize) and falls back to the canonical one.
+    """
+    s = t
+    seen = 0
+    while s.kind in (TypeKind.TYPEDEF, TypeKind.ELABORATED) and seen < 8:
+        s = s.get_canonical()
+        seen += 1
+    if s.kind == TypeKind.POINTER:
+        pointee = s.get_pointee()
+        return {"kind": "pointer", "const": pointee.is_const_qualified(),
+                "inner": describe_type(pointee)}
+    if s.kind == TypeKind.CONSTANTARRAY:
+        et = s.element_type
+        return {"kind": "array", "extent": s.element_count,
+                "const": et.is_const_qualified(), "elem": describe_type(et)}
+    sc = map_scalar(t.spelling) or map_scalar(s.spelling)
+    if sc:
+        return {"kind": "scalar", "rust": sc[0], "width": sc[1]}
+    return {"kind": "unsupported", "spelling": t.spelling}
+
+
+def _param_from_descriptor(desc: dict, name: str) -> dict:
+    """Map a type descriptor to a harness param. T** is recognized but deferred."""
+    if desc["kind"] == "scalar":
+        return {"kind": "scalar", "rust": desc["rust"], "w": desc["width"], "name": name}
+    if desc["kind"] == "pointer":
+        inner = desc["inner"]
+        if inner["kind"] == "scalar":
+            return {"kind": "ptr", "const": desc["const"],
+                    "elem": inner["rust"], "elem_w": inner["width"], "name": name}
+        if inner["kind"] == "array" and inner["elem"]["kind"] == "scalar":
+            return {"kind": "ptr_array", "const": desc["const"] or inner["const"],
+                    "elem": inner["elem"]["rust"], "elem_w": inner["elem"]["width"],
+                    "inner_extent": inner["extent"], "name": name}
+        if inner["kind"] == "pointer":
+            raise SystemExit(f"unsupported: pointer-to-pointer (T**) param {name} (not yet supported)")
+        raise SystemExit(f"unsupported pointer target for {name}: {inner.get('kind')} {inner.get('spelling','')}")
+    raise SystemExit(f"unsupported param type for {name}: {desc.get('spelling', desc['kind'])}")
+
+
 def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, list[str]]:
     """Return (params, ret_rust_type, all_function_names) for the entry via libclang."""
     cgmod._configure_libclang()
@@ -102,32 +147,8 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
             if cur.spelling != entry:
                 continue
             for idx, a in enumerate(cur.get_arguments()):
-                t = a.type
                 pname = safe_name(a.spelling, idx)
-                if t.kind == TypeKind.POINTER:
-                    pointee = t.get_pointee()
-                    is_const = pointee.is_const_qualified()
-                    if pointee.kind == TypeKind.CONSTANTARRAY:
-                        # pointer-to-fixed-array, e.g. `const size_t (*)[2]`: contiguous flat storage.
-                        elem_t = pointee.element_type
-                        base = map_scalar(elem_t.spelling)
-                        if base is None:
-                            raise SystemExit(f"unsupported array element type: {elem_t.spelling}")
-                        params.append({"kind": "ptr_array",
-                                       "const": is_const or elem_t.is_const_qualified(),
-                                       "elem": base[0], "elem_w": base[1],
-                                       "inner_extent": pointee.element_count, "name": pname})
-                        continue
-                    base = map_scalar(pointee.spelling)
-                    if base is None:
-                        raise SystemExit(f"unsupported pointer element type: {pointee.spelling}")
-                    params.append({"kind": "ptr", "const": is_const,
-                                   "elem": base[0], "elem_w": base[1], "name": pname})
-                else:
-                    sc = map_scalar(t.spelling)
-                    if sc is None:
-                        raise SystemExit(f"unsupported scalar param type: {t.spelling}")
-                    params.append({"kind": "scalar", "rust": sc[0], "w": sc[1], "name": pname})
+                params.append(_param_from_descriptor(describe_type(a.type), pname))
             rt = cur.result_type
             if rt.kind == TypeKind.VOID:
                 ret = "void"
@@ -149,8 +170,12 @@ def items_from_schema(schema: dict) -> list[dict]:
     for p in schema["params"]:
         role = p["role"]
         if role == "scalar":
-            items.append({"kind": "scalar", "role": "scalar", "name": p["name"],
-                          "rust": p["rust"], "w": p["width"]})
+            it = {"kind": "scalar", "role": "scalar", "name": p["name"],
+                  "rust": p["rust"], "w": p["width"], "decode": p.get("decode", "scalar")}
+            if p.get("decode") == "bounded_scalar":
+                it["min_value"] = p["min_value"]
+                it["max_value"] = p["max_value"]
+            items.append(it)
         elif role == "input_buffer":
             items.append({"kind": "ptr", "role": "in_buf", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"], "len_name": p["length_param"]})
@@ -276,7 +301,12 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
     for it in items:
         n = it["name"]
         if it["role"] == "scalar":
-            decode.append(f"    let {n} = cur.take_{it['rust']}();")
+            if it.get("decode") == "bounded_scalar":
+                lo, hi, ty = it["min_value"], it["max_value"], it["rust"]
+                decode.append(f"    let {n} = ({lo} as {ty}) + (cur.take_{ty}() "
+                              f"% (({hi} - {lo} + 1) as {ty}));")
+            else:
+                decode.append(f"    let {n} = cur.take_{it['rust']}();")
         elif it["role"] == "in_buf":
             decode.append(f"    let {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    let {it['len_name']} = {n}_buf.len();")

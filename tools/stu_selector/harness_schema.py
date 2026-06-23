@@ -42,8 +42,8 @@ SCHEMA_VERSION = 1
 
 ROLES = {"scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
          "input_string", "input_fixed_array_buffer", "length", "capacity"}
-DECODES = {"scalar", "vector", "derived_from_buffer", "out_scalar_zero", "nul_string",
-           "fixed_array_vector"}
+DECODES = {"scalar", "bounded_scalar", "vector", "derived_from_buffer", "out_scalar_zero",
+           "nul_string", "fixed_array_vector"}
 
 # name hints used only to DRAFT output- vs inout-buffer; provenance flags this for human review.
 _OUT_HINTS = ("dst", "out", "output", "result", "res")
@@ -148,8 +148,11 @@ def validate(schema: dict) -> list[str]:
         for ref in ("length_param", "capacity_param", "of_buffer"):
             if ref in p and p[ref] not in names:
                 errs.append(f"{p['name']}: {ref} -> unknown param {p[ref]}")
-        if p.get("role") in ("input_buffer", "inout_buffer") and "length_param" not in p:
+        if p.get("role") in ("input_buffer", "inout_buffer", "input_fixed_array_buffer") \
+                and "length_param" not in p:
             errs.append(f"{p['name']}: {p['role']} missing length_param")
+        if p.get("role") == "input_fixed_array_buffer" and not isinstance(p.get("inner_extent"), int):
+            errs.append(f"{p['name']}: input_fixed_array_buffer missing inner_extent")
         if p.get("role") == "output_buffer" and "capacity_param" not in p:
             errs.append(f"{p['name']}: output_buffer missing capacity_param")
     # observable_length kind must be known
@@ -205,8 +208,15 @@ def validate_against_signature(schema: dict, params: list[dict], ret: str) -> li
         if s["name"] != p["name"]:
             errs.append(f"order/name mismatch: schema {s['name']} vs signature {p['name']}")
             continue
-        if _ROLE_DECODE.get(s.get("role")) != s.get("decode"):
-            errs.append(f"{s['name']}: role {s.get('role')} incompatible with decode {s.get('decode')}")
+        _dec = s.get("decode")
+        _ok = (_ROLE_DECODE.get(s.get("role")) == _dec
+               or (s.get("role") == "scalar" and _dec == "bounded_scalar"))
+        if not _ok:
+            errs.append(f"{s['name']}: role {s.get('role')} incompatible with decode {_dec}")
+        if _dec == "bounded_scalar":
+            lo, hi = s.get("min_value"), s.get("max_value")
+            if not isinstance(lo, int) or not isinstance(hi, int) or lo > hi:
+                errs.append(f"{s['name']}: bounded_scalar needs integer min_value <= max_value")
         if p["kind"] == "ptr_array":
             if s["role"] != "input_fixed_array_buffer":
                 errs.append(f"{s['name']}: pointer-to-array param has role {s['role']}")

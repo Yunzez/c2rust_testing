@@ -33,7 +33,7 @@ extern "C" {
 fuzz_target!(|data: &[u8]| {
     let _ = cd();
     let mut cur = Cur::new(data);
-    let n = cur.take_usize();
+    let n = (0 as usize) + (cur.take_usize() % ((64 - 0 + 1) as usize));
     let edges_cnt = (cur.byte() as usize) % 64;
     let mut edges_buf: Vec<[usize; 2]> = Vec::with_capacity(edges_cnt);
     for _ in 0..edges_cnt { let mut a = [0 as usize; 2]; for j in 0..2 { a[j] = cur.take_usize(); } edges_buf.push(a); }

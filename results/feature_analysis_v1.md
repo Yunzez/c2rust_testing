@@ -15,11 +15,11 @@ Authoritative label `validity_v2`. Binary: **66 valid : 34 invalid** (invalid = 
 | c_cyclomatic | 3.70 | 3.47 | 0.27 | 0.23 |
 | r_cyclomatic | 3.79 | 3.68 | 0.27 | 0.23 |
 | c_stmts | 8.71 | 8.56 | 0.27 | 0.23 |
+| rf_compares | 2.48 | 1.94 | 0.28 | 0.22 |
 | r_stmts | 8.97 | 8.50 | 0.29 | 0.21 |
-| c_loops | 0.64 | 0.26 | 0.34 | 0.16 |
-| r_loops | 0.64 | 0.26 | 0.34 | 0.16 |
-| c_max_loop_depth | 0.62 | 0.26 | 0.34 | 0.16 |
-| r_max_loop_depth | 0.62 | 0.26 | 0.34 | 0.16 |
+| rf_struct_index_field | 0.09 | 0.47 | 0.69 | 0.19 |
+| rf_unmasked_field_index | 0.00 | 0.71 | 0.68 | 0.18 |
+| rf_struct_ptr | 0.12 | 0.47 | 0.67 | 0.17 |
 
 ## valid vs invalid_intrinsic_ub (15) (AUC = P(neg scores higher); 0.5 = no signal)
 
@@ -27,29 +27,29 @@ Authoritative label `validity_v2`. Binary: **66 valid : 34 invalid** (invalid = 
 |---|---|---|---|---|
 | r_nodes | 57.70 | 48.40 | 0.29 | 0.21 |
 | c_nodes | 41.23 | 34.27 | 0.29 | 0.21 |
+| rf_internal | 0.45 | 0.07 | 0.31 | 0.19 |
 | d_nodes | 16.83 | 14.13 | 0.33 | 0.17 |
 | size_ratio | 1.38 | 1.24 | 0.35 | 0.15 |
+| rf_compares | 2.48 | 2.00 | 0.35 | 0.15 |
 | c_cyclomatic | 3.70 | 3.40 | 0.35 | 0.15 |
 | c_stmts | 8.71 | 8.93 | 0.36 | 0.14 |
 | r_cyclomatic | 3.79 | 3.60 | 0.36 | 0.14 |
 | r_pointer_intensity | 4.55 | 3.13 | 0.37 | 0.13 |
-| r_stmts | 8.97 | 8.20 | 0.37 | 0.13 |
-| fuzzability | 0.86 | 0.91 | 0.60 | 0.10 |
 
 ## valid vs invalid_isolation_invariant (19) (AUC = P(neg scores higher); 0.5 = no signal)
 
 | feature | mean(valid) | mean(neg) | AUC | |sep| |
 |---|---|---|---|---|
+| rf_struct_index_field | 0.09 | 0.84 | 0.88 | 0.38 |
+| rf_struct_ptr | 0.12 | 0.84 | 0.86 | 0.36 |
 | c_nodes | 41.23 | 42.11 | 0.19 | 0.31 |
 | r_cyclomatic | 3.79 | 3.74 | 0.19 | 0.31 |
 | c_cyclomatic | 3.70 | 3.53 | 0.20 | 0.30 |
 | c_stmts | 8.71 | 8.26 | 0.20 | 0.30 |
+| rf_unmasked_field_index | 0.00 | 1.21 | 0.79 | 0.29 |
+| rf_field_index | 0.02 | 1.21 | 0.78 | 0.28 |
 | r_stmts | 8.97 | 8.74 | 0.23 | 0.27 |
-| r_nodes | 57.70 | 68.84 | 0.23 | 0.27 |
-| c_loops | 0.64 | 0.16 | 0.29 | 0.21 |
-| r_loops | 0.64 | 0.16 | 0.29 | 0.21 |
-| c_max_loop_depth | 0.62 | 0.16 | 0.29 | 0.21 |
-| r_max_loop_depth | 0.62 | 0.16 | 0.29 | 0.21 |
+| rf_compares | 2.48 | 1.89 | 0.23 | 0.27 |
 
 ## Stratified by boundary scope
 

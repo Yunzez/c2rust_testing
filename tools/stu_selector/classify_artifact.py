@@ -184,13 +184,17 @@ fn main() {{
 }}
 ''', encoding="utf-8")
 
-    env = dict(os.environ, RUSTFLAGS="-Cdebug-assertions=on -Coverflow-checks=on")
+    # Isolate this build's target dir: a shared CARGO_TARGET_DIR may be inherited from the
+    # caller (e.g. the G1 matrix), which would put the binary somewhere we don't look.
+    target = proj / "target"
+    env = dict(os.environ, RUSTFLAGS="-Cdebug-assertions=on -Coverflow-checks=on",
+               CARGO_TARGET_DIR=str(target))
     env["PATH"] = os.path.expanduser("~/.cargo/bin") + ":" + env.get("PATH", "")
     build = subprocess.run(["cargo", f"+{TOOLCHAIN}", "build", "-q"], cwd=proj,
                            capture_output=True, text=True, env=env)
     if build.returncode != 0:
         return {"built": False, "stderr": tail(build.stderr)}
-    binp = proj / "target" / "debug" / "rustonly"
+    binp = target / "debug" / "rustonly"
     run = subprocess.run([str(binp), str(artifact)], capture_output=True, text=True, env=env)
     panicked = "panicked at" in run.stderr
     msg = ""
@@ -204,7 +208,16 @@ fn main() {{
 # ---------- diff target replay ----------
 
 def replay_diff(crate_dir: Path, crate_name: str, artifact, runs: int = 2) -> dict:
-    binp = next((crate_dir / "fuzz" / "target").rglob(f"{crate_name}_ft"), None)
+    # The diff binary may live under the per-crate fuzz/target or a shared CARGO_TARGET_DIR.
+    search_dirs = [crate_dir / "fuzz" / "target"]
+    if os.environ.get("CARGO_TARGET_DIR"):
+        search_dirs.append(Path(os.environ["CARGO_TARGET_DIR"]))
+    binp = None
+    for d in search_dirs:
+        if d.exists():
+            binp = next((b for b in d.rglob(f"{crate_name}_ft") if b.is_file() and os.access(b, os.X_OK)), None)
+            if binp:
+                break
     if binp is None or not binp.exists():
         return {"available": False}
     env = dict(os.environ, PATH=os.path.expanduser("~/.cargo/bin") + ":" + os.environ.get("PATH", ""))

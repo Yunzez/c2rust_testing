@@ -55,6 +55,22 @@ def map_scalar(spelling: str) -> tuple[str, int] | None:
     return SCALAR_MAP.get(s)
 
 
+# C param names that are Rust keywords/reserved would produce invalid Rust in the harness.
+RUST_KEYWORDS = {
+    "as", "break", "const", "continue", "crate", "dyn", "else", "enum", "extern", "false",
+    "fn", "for", "if", "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub",
+    "ref", "return", "self", "Self", "static", "struct", "super", "trait", "true", "type",
+    "unsafe", "use", "where", "while", "async", "await", "abstract", "become", "box", "do",
+    "final", "macro", "override", "priv", "typeof", "unsized", "virtual", "yield", "try", "gen",
+}
+
+
+def safe_name(name: str, idx: int) -> str:
+    if not name:
+        return f"arg{idx}"
+    return f"{name}_" if name in RUST_KEYWORDS else name
+
+
 def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, list[str]]:
     """Return (params, ret_rust_type, all_function_names) for the entry via libclang."""
     cgmod._configure_libclang()
@@ -84,8 +100,9 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
             all_fns.append(cur.spelling)
             if cur.spelling != entry:
                 continue
-            for a in cur.get_arguments():
+            for idx, a in enumerate(cur.get_arguments()):
                 t = a.type
+                pname = safe_name(a.spelling, idx)
                 if t.kind == TypeKind.POINTER:
                     pointee = t.get_pointee()
                     is_const = pointee.is_const_qualified()
@@ -93,12 +110,12 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
                     if base is None:
                         raise SystemExit(f"unsupported pointer element type: {pointee.spelling}")
                     params.append({"kind": "ptr", "const": is_const,
-                                   "elem": base[0], "elem_w": base[1], "name": a.spelling})
+                                   "elem": base[0], "elem_w": base[1], "name": pname})
                 else:
                     sc = map_scalar(t.spelling)
                     if sc is None:
                         raise SystemExit(f"unsupported scalar param type: {t.spelling}")
-                    params.append({"kind": "scalar", "rust": sc[0], "w": sc[1], "name": a.spelling})
+                    params.append({"kind": "scalar", "rust": sc[0], "w": sc[1], "name": pname})
             rt = cur.result_type
             if rt.kind == TypeKind.VOID:
                 ret = "void"

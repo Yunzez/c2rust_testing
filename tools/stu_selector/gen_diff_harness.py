@@ -25,6 +25,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -123,6 +124,45 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
                 sc = map_scalar(rt.spelling)
                 ret = sc[0] if sc else "i32"
     return params, ret, sorted(set(all_fns))
+
+
+def items_from_schema(schema: dict) -> list[dict]:
+    """Reproduce classify()'s items from an explicit schema (schemas/<prog>.json).
+
+    Roles come from the schema, not adjacency. The mapping is exact so that switching the
+    generator from classify() to the schema is byte-identical (the schema was derived from
+    classify()). output_buffer maps to the same io_buf decode as today (capacity used as the
+    vector length) — the richer semantics are deferred to keep byte-identity.
+    """
+    items = []
+    for p in schema["params"]:
+        role = p["role"]
+        if role == "scalar":
+            items.append({"kind": "scalar", "role": "scalar", "name": p["name"],
+                          "rust": p["rust"], "w": p["width"]})
+        elif role == "input_buffer":
+            items.append({"kind": "ptr", "role": "in_buf", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": p["length_param"]})
+        elif role in ("inout_buffer", "output_buffer"):
+            ln = p.get("length_param") or p.get("capacity_param")
+            items.append({"kind": "ptr", "role": "io_buf", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": ln})
+        elif role == "out_scalar":
+            items.append({"kind": "ptr", "role": "out_scalar", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"]})
+        # length / capacity params are consumed by their owning buffer (not standalone items)
+    return items
+
+
+def resolve_items(name: str, cc_dir: Path, entry: str):
+    """(params, ret, all_fns, items): prefer the explicit schema; fall back to inference."""
+    params, ret, all_fns = parse_entry_signature(cc_dir, entry)
+    schema_path = ROOT / "schemas" / f"{name}.json"
+    if schema_path.exists():
+        items = items_from_schema(json.loads(schema_path.read_text(encoding="utf-8")))
+    else:
+        items = classify(params)
+    return params, ret, all_fns, items
 
 
 def classify(params: list[dict]) -> list[dict]:
@@ -243,8 +283,7 @@ def main() -> int:
     rs = next((pair / "translated").glob("*.rs"))
     c_src = next((pair / "source").glob("*.c"))
 
-    params, ret, all_fns = parse_entry_signature(cc, args.entry)
-    items = classify(params)
+    params, ret, all_fns, items = resolve_items(name, cc, args.entry)
 
     # extern "C" decl types/args for c_<entry>
     decl_parts = []

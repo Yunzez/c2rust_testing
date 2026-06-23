@@ -87,6 +87,26 @@ check("run_label early exit, no artifact -> FUZZER_EXITED_EARLY",
       mx.run_label({"terminated_by_timeout": False}, []), "FUZZER_EXITED_EARLY")
 
 
+# ---- items_from_schema: roles drive the items; length param is consumed, not standalone ----
+_SYNTH = {"params": [
+    {"name": "buf", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1,
+     "length_param": "n"},
+    {"name": "n", "role": "length", "decode": "derived_from_buffer", "of_buffer": "buf",
+     "rust": "usize", "width": 8},
+    {"name": "k", "role": "scalar", "decode": "scalar", "rust": "i32", "width": 4}]}
+_ITEMS = gdh.items_from_schema(_SYNTH)
+check("items_from_schema: count (length consumed)", len(_ITEMS), 2)
+check("items_from_schema: buffer -> in_buf",
+      (_ITEMS[0]["role"], _ITEMS[0]["name"], _ITEMS[0]["len_name"]), ("in_buf", "buf", "n"))
+check("items_from_schema: scalar role", (_ITEMS[1]["role"], _ITEMS[1]["name"]), ("scalar", "k"))
+check("items_from_schema: output_buffer -> io_buf with capacity as len",
+      gdh.items_from_schema({"params": [
+          {"name": "d", "role": "output_buffer", "decode": "vector", "elem": "u8",
+           "elem_width": 1, "capacity_param": "c", "written_length": "return"},
+          {"name": "c", "role": "capacity", "decode": "derived_from_buffer", "of_buffer": "d",
+           "rust": "usize", "width": 8}]})[0]["len_name"], "c")
+
+
 # ---- harness_schema.validate ----
 _GOOD = {"schema_version": 1, "program": "p", "entry": "e", "return": {"rust": "i32"},
          "params": [

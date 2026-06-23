@@ -296,8 +296,7 @@ def main() -> int:
     artifact = Path(args.artifact)
     crate_dir = ROOT / "fuzz_gen" / name
 
-    params, ret, _ = gdh.parse_entry_signature(cc, args.entry)
-    items = gdh.classify(params)
+    params, ret, _, items = gdh.resolve_items(name, cc, args.entry)
 
     with tempfile.TemporaryDirectory() as td:
         work = Path(td)

@@ -205,6 +205,8 @@ def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False):
         errs = hs.validate(schema)
         if schema.get("entry") != entry:
             errs.append(f"schema entry {schema.get('entry')!r} != requested {entry!r}")
+        if schema.get("program") != name:
+            errs.append(f"schema program {schema.get('program')!r} != pair {name!r}")
         errs += hs.validate_against_signature(schema, params, ret)
         if errs:
             raise SystemExit(f"schema {schema_path} invalid: {errs}")

@@ -124,7 +124,7 @@ check("ABI order: extern decl follows schema order",
 _SIG_PARAMS = [
     {"kind": "ptr", "const": True, "elem": "u8", "elem_w": 1, "name": "buf"},
     {"kind": "scalar", "rust": "usize", "w": 8, "name": "n"}]
-_SIG_SCHEMA = {"schema_version": 1, "entry": "f", "params": [
+_SIG_SCHEMA = {"schema_version": 1, "entry": "f", "return": {"rust": "i32"}, "params": [
     {"name": "buf", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1,
      "length_param": "n"},
     {"name": "n", "role": "length", "decode": "derived_from_buffer", "of_buffer": "buf",
@@ -137,6 +137,35 @@ _SIG_BAD = {"params": [
      "length_param": "n"}]}
 check("validate_against_signature: order mismatch flagged",
       any("mismatch" in e for e in hs.validate_against_signature(_SIG_BAD, _SIG_PARAMS, "i32")), True)
+
+# counterexamples: each must produce a non-empty error (these previously slipped through)
+import copy as _copy
+_GP = [
+    {"kind": "ptr", "const": True, "elem": "u8", "elem_w": 1, "name": "buf"},
+    {"kind": "scalar", "rust": "usize", "w": 8, "name": "n"},
+    {"kind": "scalar", "rust": "i32", "w": 4, "name": "k"}]
+_GS = {"schema_version": 1, "entry": "f", "program": "p", "return": {"rust": "i32"}, "params": [
+    {"name": "buf", "role": "input_buffer", "decode": "vector", "elem": "u8", "elem_width": 1, "length_param": "n"},
+    {"name": "n", "role": "length", "decode": "derived_from_buffer", "of_buffer": "buf", "rust": "usize", "width": 8},
+    {"name": "k", "role": "scalar", "decode": "scalar", "rust": "i32", "width": 4}]}
+check("vas baseline clean", hs.validate_against_signature(_GS, _GP, "i32"), [])
+
+def _vas_err(mut_ret="i32", **mut):
+    s = _copy.deepcopy(_GS)
+    for path, val in mut.items():
+        idx, key = path.split("_", 1)
+        s["params"][int(idx)][key] = val
+    return hs.validate_against_signature(s, _GP, mut_ret)
+
+check("vas: wrong return type flagged", any("return type" in e for e in _vas_err(mut_ret="u32")), True)
+check("vas: wrong elem_width flagged", any("elem_width" in e for e in _vas_err(**{"0_elem_width": 2})), True)
+check("vas: wrong scalar width flagged", any("width" in e for e in _vas_err(**{"2_width": 8})), True)
+check("vas: const ptr as output_buffer flagged",
+      any("mutable pointer" in e for e in _vas_err(**{"0_role": "output_buffer"})), True)
+
+_OFB = _copy.deepcopy(_GS); _OFB["params"][1]["of_buffer"] = "k"
+check("validate: of_buffer != referencing buffer flagged",
+      any("referencing buffer" in e for e in hs.validate(_OFB)), True)
 
 # length referenced by two buffers must be flagged (exactly-one-owner)
 _TWO_OWNERS = {"schema_version": 1, "params": [

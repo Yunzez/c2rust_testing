@@ -150,17 +150,20 @@ def validate(schema: dict) -> list[str]:
             ol = p.get("observable_length", {})
             if ol.get("kind") not in ("unknown", "return_value", "nul_terminated"):
                 errs.append(f"{p['name']}: bad observable_length {ol}")
-    # every length/capacity must be referenced by EXACTLY one buffer (not just exist)
-    refs: dict[str, int] = {}
+    # every length/capacity must be referenced by EXACTLY one buffer, and its of_buffer must name
+    # that same buffer (not merely an existing param).
+    owners: dict[str, list[str]] = {}
     for p in schema.get("params", []):
         for ref in ("length_param", "capacity_param"):
             if ref in p:
-                refs[p[ref]] = refs.get(p[ref], 0) + 1
+                owners.setdefault(p[ref], []).append(p["name"])
     for p in schema.get("params", []):
         if p.get("role") in ("length", "capacity"):
-            n = refs.get(p["name"], 0)
-            if n != 1:
-                errs.append(f"{p['name']}: {p['role']} referenced by {n} buffers (must be exactly 1)")
+            owning = owners.get(p["name"], [])
+            if len(owning) != 1:
+                errs.append(f"{p['name']}: {p['role']} referenced by {len(owning)} buffers (must be exactly 1)")
+            elif p.get("of_buffer") != owning[0]:
+                errs.append(f"{p['name']}: of_buffer {p.get('of_buffer')!r} != referencing buffer {owning[0]!r}")
             if p.get("of_buffer") not in names:
                 errs.append(f"{p['name']}: of_buffer unresolved")
     return errs
@@ -182,8 +185,13 @@ def validate_against_signature(schema: dict, params: list[dict], ret: str) -> li
     """
     errs = []
     sp = schema.get("params", [])
+    sret = (schema.get("return") or {}).get("rust")
+    if sret != ret:
+        errs.append(f"return type {sret!r} != signature {ret!r}")
     if len(sp) != len(params):
-        return [f"param count mismatch: schema {len(sp)} vs signature {len(params)}"]
+        return errs + [f"param count mismatch: schema {len(sp)} vs signature {len(params)}"]
+    const_roles = ("input_buffer", "input_string")
+    mut_roles = ("output_buffer", "inout_buffer", "out_scalar")
     for s, p in zip(sp, params):
         if s["name"] != p["name"]:
             errs.append(f"order/name mismatch: schema {s['name']} vs signature {p['name']}")
@@ -191,16 +199,25 @@ def validate_against_signature(schema: dict, params: list[dict], ret: str) -> li
         if _ROLE_DECODE.get(s.get("role")) != s.get("decode"):
             errs.append(f"{s['name']}: role {s.get('role')} incompatible with decode {s.get('decode')}")
         if p["kind"] == "ptr":
-            if s["role"] not in ("input_buffer", "inout_buffer", "output_buffer",
-                                 "out_scalar", "input_string"):
+            if s["role"] not in const_roles + mut_roles:
                 errs.append(f"{s['name']}: pointer param has non-pointer role {s['role']}")
-            elif s.get("elem") != p["elem"]:
+                continue
+            if s.get("elem") != p["elem"]:
                 errs.append(f"{s['name']}: elem {s.get('elem')} != signature {p['elem']}")
+            if s.get("elem_width") != p["elem_w"]:
+                errs.append(f"{s['name']}: elem_width {s.get('elem_width')} != signature {p['elem_w']}")
+            if s["role"] in const_roles and not p["const"]:
+                errs.append(f"{s['name']}: {s['role']} requires a const pointer")
+            if s["role"] in mut_roles and p["const"]:
+                errs.append(f"{s['name']}: {s['role']} requires a mutable pointer")
         else:
             if s["role"] not in ("scalar", "length", "capacity"):
                 errs.append(f"{s['name']}: scalar param has non-scalar role {s['role']}")
-            elif s.get("rust") != p["rust"]:
+                continue
+            if s.get("rust") != p["rust"]:
                 errs.append(f"{s['name']}: rust {s.get('rust')} != signature {p['rust']}")
+            if s.get("width") != p["w"]:
+                errs.append(f"{s['name']}: width {s.get('width')} != signature {p['w']}")
     return errs
 
 

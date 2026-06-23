@@ -99,6 +99,153 @@ check("items_from_schema: count (length consumed)", len(_ITEMS), 2)
 check("items_from_schema: buffer -> in_buf",
       (_ITEMS[0]["role"], _ITEMS[0]["name"], _ITEMS[0]["len_name"]), ("in_buf", "buf", "n"))
 check("items_from_schema: scalar role", (_ITEMS[1]["role"], _ITEMS[1]["name"]), ("scalar", "k"))
+# T** rectangular pointer table (matrix int**)
+_RT = {"schema_version": 1, "params": [
+    {"name": "mat", "role": "input_rectangular_pointer_table", "decode": "rectangular_pointer_table",
+     "elem": "i32", "elem_width": 4, "outer_length_param": "rows", "inner_length_param": "cols",
+     "outer_max": 16, "inner_max": 16, "mutation": "backing_observable"},
+    {"name": "rows", "role": "length", "decode": "derived_from_buffer", "of_buffer": "mat",
+     "rust": "usize", "width": 8},
+    {"name": "cols", "role": "length", "decode": "derived_from_buffer", "of_buffer": "mat",
+     "rust": "usize", "width": 8}]}
+_RI = gdh.items_from_schema(_RT)
+check("items_from_schema: T** -> in_table with dims",
+      (_RI[0]["role"], _RI[0]["outer_name"], _RI[0]["inner_name"], _RI[0]["outer_max"]),
+      ("in_table", "rows", "cols", 16))
+_RCA, _RRA, _RDECL = gdh._call_and_decl(_RT["params"])
+check("T** decl is *mut *mut elem", _RDECL[0], "mat: *mut *mut i32")
+check("T** call uses per-side table ptr in ABI order",
+      (_RCA, _RRA), (["mat_tab_c.as_mut_ptr()", "rows", "cols"], ["mat_tab_r.as_mut_ptr()", "rows", "cols"]))
+check("T** decode reads dims then data",
+      any("(cur.byte() as usize) % (16 + 1)" in d for d in gdh._decode_and_post(_RI)[0]), True)
+check("validate: rectangular table clean", hs.validate(_RT), [])
+_RT_BAD = {"schema_version": 1, "params": [dict(_RT["params"][0], outer_max=None), _RT["params"][1], _RT["params"][2]]}
+check("validate: rectangular table missing outer_max flagged",
+      any("outer_max" in e for e in hs.validate(_RT_BAD)), True)
+_RT_BIG = {"schema_version": 1, "params": [dict(_RT["params"][0], outer_max=300), _RT["params"][1], _RT["params"][2]]}
+check("validate: dimension max>255 flagged (1-byte)",
+      any("[0,255]" in e for e in hs.validate(_RT_BIG)), True)
+_RT_NOMUT = {"schema_version": 1, "params": [{k: v for k, v in _RT["params"][0].items() if k != "mutation"},
+                                             _RT["params"][1], _RT["params"][2]]}
+check("validate: missing mutation contract flagged",
+      any("backing_observable" in e for e in hs.validate(_RT_NOMUT)), True)
+
+# char** string-pointer table (word_tokens char**) — DISTINCT from the rectangular table:
+# ptr_ptr + ONE scalar count, each backing an independent NUL-terminated string.
+_CPP = [{"kind": "ptr_ptr", "const": False, "inner_const": False, "elem": "i8", "elem_w": 1, "name": "words"},
+        {"kind": "scalar", "rust": "usize", "w": 8, "name": "count"}]
+_CC = gdh.classify(_CPP)
+check("classify: char** + one scalar -> in_str_table",
+      (_CC[0]["role"], _CC[0]["len_name"], _CC[0]["count_max"], len(_CC)), ("in_str_table", "count", 16, 1))
+_ST = {"schema_version": 1, "params": [
+    {"name": "words", "role": "input_string_pointer_table", "decode": "string_pointer_table",
+     "elem": "i8", "elem_width": 1, "length_param": "count", "count_max": 16, "mutation": "backing_observable"},
+    {"name": "count", "role": "length", "decode": "derived_from_buffer", "of_buffer": "words",
+     "rust": "usize", "width": 8}]}
+_SI = gdh.items_from_schema(_ST)
+check("items_from_schema: char** -> in_str_table",
+      (_SI[0]["role"], _SI[0]["len_name"], _SI[0]["count_max"], len(_SI)), ("in_str_table", "count", 16, 1))
+_SCA, _SRA, _SDECL = gdh._call_and_decl(_ST["params"])
+check("char** decl is *mut *mut elem", _SDECL[0], "words: *mut *mut i8")
+check("char** call uses per-side table ptr in ABI order",
+      (_SCA, _SRA), (["words_tab_c.as_mut_ptr()", "count"], ["words_tab_r.as_mut_ptr()", "count"]))
+_SDEC, _SPOST = gdh._decode_and_post(_SI)
+check("char** decode reads count then per-item NUL strings",
+      any("(cur.byte() as usize) % (16 + 1)" in d for d in _SDEC)
+      and any("take_vec_i8" in d and "push(0 as i8)" in d for d in _SDEC), True)
+check("char** post compares the two backings", any("string table words" in p for p in _SPOST), True)
+check("validate: string table clean", hs.validate(_ST), [])
+_ST_BIG = {"schema_version": 1, "params": [dict(_ST["params"][0], count_max=300), _ST["params"][1]]}
+check("validate: string table count_max>255 flagged (1-byte)",
+      any("[0,255]" in e for e in hs.validate(_ST_BIG)), True)
+_ST_NOMUT = {"schema_version": 1, "params": [{k: v for k, v in _ST["params"][0].items() if k != "mutation"},
+                                             _ST["params"][1]]}
+check("validate: string table missing mutation contract flagged",
+      any("backing_observable" in e for e in hs.validate(_ST_NOMUT)), True)
+check("validate_against_signature: char** accepts input_string_pointer_table",
+      hs.validate_against_signature(
+          {"return": {"rust": "u64"}, "params": _ST["params"]},
+          [{"kind": "ptr_ptr", "const": False, "inner_const": False, "elem": "i8", "elem_w": 1, "name": "words"},
+           {"kind": "scalar", "rust": "usize", "w": 8, "name": "count"}], "u64"), [])
+
+# POD struct-by-pointer (opcode_dispatch VM = {int32 stack[64]; int32 sp}) — construct by value.
+_STSCH = {"schema_version": 1, "params": [
+    {"name": "vm", "role": "inout_struct", "decode": "struct_value", "struct_name": "VM",
+     "fields": [{"name": "stack", "kind": "array", "elem": "i32", "elem_width": 4, "extent": 4},
+                {"name": "sp", "kind": "scalar", "rust": "i32", "width": 4}]}]}
+_STI = gdh.items_from_schema(_STSCH)
+check("items_from_schema: struct -> io_struct with name+fields",
+      (_STI[0]["role"], _STI[0]["struct"]["name"], len(_STI[0]["struct"]["fields"])),
+      ("io_struct", "VM", 2))
+_STCA, _STRA, _STDECL = gdh._call_and_decl(_STSCH["params"])
+check("struct decl is *mut translated::<Name>", _STDECL[0], "vm: *mut translated::VM")
+check("struct call uses per-side &mut in ABI order",
+      (_STCA, _STRA), (["&mut vm_c"], ["&mut vm_r"]))
+_STDEC, _STPOST = gdh._decode_and_post(_STI)
+check("struct decode builds literal (fields in decl order) + two copies",
+      any("translated::VM { stack:" in d for d in _STDEC)
+      and any("let mut vm_c = vm_val;" in d for d in _STDEC)
+      and any("let mut vm_r = vm_val;" in d for d in _STDEC), True)
+check("struct post compares fields (arrays + scalars impl PartialEq)",
+      any("vm_c.stack != vm_r.stack || vm_c.sp != vm_r.sp" in p for p in _STPOST), True)
+# real signature: POD struct pointer -> ptr_struct, classify -> io_struct
+if (ROOT / "benchmark" / "pairs" / "opcode_dispatch" / "build").exists():
+    _vp, _, _ = gdh.parse_entry_signature(ROOT / "benchmark" / "pairs" / "opcode_dispatch" / "build", "vm_pop")
+    check("vm_pop param is ptr_struct (VM, pod)",
+          (_vp[0]["kind"], _vp[0]["struct"]["name"], _vp[0]["struct"]["pod"]), ("ptr_struct", "VM", True))
+    check("classify: POD struct pointer (mutable) -> io_struct", gdh.classify(_vp)[0]["role"], "io_struct")
+    # derived struct schema validates and reproduces the inferred decode byte-for-byte
+    _dsch = hs.derive(ROOT / "benchmark" / "pairs" / "opcode_dispatch" / "build", "vm_pop")
+    _vp2, _ret2, _ = gdh.parse_entry_signature(ROOT / "benchmark" / "pairs" / "opcode_dispatch" / "build", "vm_pop")
+    check("derive: struct schema role + name", (_dsch["params"][0]["role"], _dsch["params"][0]["struct_name"]),
+          ("inout_struct", "VM"))
+    check("derive: struct schema validates", hs.validate(_dsch), [])
+    check("derive: struct schema matches signature", hs.validate_against_signature(_dsch, _vp2, _ret2), [])
+    check("struct: schema-driven decode == inferred decode (byte-identical)",
+          gdh._decode_and_post(gdh.items_from_schema(_dsch)) == gdh._decode_and_post(gdh.classify(_vp2)), True)
+
+# struct-ARRAY buffer (hash_table Slot* slots + size_t cap) — POD struct ptr + size_t length => array.
+# Distinct from a single struct ptr (vm_pop) and from a struct ptr + non-usize scalar (op_add operand).
+_SASCH = {"schema_version": 1, "params": [
+    {"name": "slots", "role": "inout_struct_array", "decode": "struct_array_vector", "struct_name": "Slot",
+     "length_param": "cap", "fields": [{"name": "key", "kind": "scalar", "rust": "i32", "width": 4},
+                                       {"name": "value", "kind": "scalar", "rust": "i32", "width": 4},
+                                       {"name": "used", "kind": "scalar", "rust": "u8", "width": 1}]},
+    {"name": "cap", "role": "length", "decode": "derived_from_buffer", "of_buffer": "slots",
+     "rust": "usize", "width": 8}]}
+_SAI = gdh.items_from_schema(_SASCH)
+check("items_from_schema: struct-array -> io_struct_arr with len + struct",
+      (_SAI[0]["role"], _SAI[0]["len_name"], _SAI[0]["struct"]["name"]), ("io_struct_arr", "cap", "Slot"))
+_SACA, _SARA, _SADECL = gdh._call_and_decl(_SASCH["params"])
+check("struct-array decl is *mut translated::<Name>", _SADECL[0], "slots: *mut translated::Slot")
+check("struct-array call uses per-side as_mut_ptr in ABI order",
+      (_SACA, _SARA), (["slots_c.as_mut_ptr()", "cap"], ["slots_r.as_mut_ptr()", "cap"]))
+_SADEC, _SAPOST = gdh._decode_and_post(_SAI)
+check("struct-array decode builds Vec<translated::Slot> sized by len",
+      any("Vec<translated::Slot> = (0..cap).map(|_| translated::Slot {" in d for d in _SADEC), True)
+check("struct-array post compares element-wise (no PartialEq on structs)",
+      any("slots_c.iter().zip(slots_r.iter()).any(|(a, b)| a.key != b.key" in p for p in _SAPOST), True)
+check("validate: struct-array clean", hs.validate(_SASCH), [])
+check("validate: struct-array missing length_param flagged",
+      any("length_param" in e for e in hs.validate({"schema_version": 1, "params": [
+          {k: v for k, v in _SASCH["params"][0].items() if k != "length_param"}, _SASCH["params"][1]]})), True)
+# real signature: Slot* + size_t cap -> io_struct_arr; the size_t disambiguates from single-struct
+if (ROOT / "benchmark" / "pairs" / "hash_table" / "build").exists():
+    _hp, _, _ = gdh.parse_entry_signature(ROOT / "benchmark" / "pairs" / "hash_table" / "build", "ht_insert_into")
+    _hc = gdh.classify(_hp)
+    check("classify: PODStruct* + size_t -> io_struct_arr (Slot[])",
+          (_hc[0]["role"], _hc[0]["len_name"], _hc[0]["struct"]["name"]), ("io_struct_arr", "cap", "Slot"))
+
+# real signature: invariant-bearing struct (DynArray{int* data; ...}) is hard-gated with a precise reason
+if (ROOT / "benchmark" / "pairs" / "dynamic_array" / "build").exists():
+    try:
+        gdh.parse_entry_signature(ROOT / "benchmark" / "pairs" / "dynamic_array" / "build", "da_push")
+        _da_err = "(no error)"
+    except SystemExit as e:
+        _da_err = str(e)
+    check("non-POD struct (pointer field) gives a precise struct-invariant gate",
+          "struct-invariant" in _da_err and "pointer field" in _da_err, True)
+
 # bounded scalar
 _BS = {"params": [{"name": "n", "role": "scalar", "decode": "bounded_scalar",
                    "rust": "usize", "width": 8, "min_value": 0, "max_value": 64}]}
@@ -116,6 +263,49 @@ check("validate_against_signature: bounded_scalar without bounds flagged",
 if (ROOT / "schemas" / "graph_dfs.json").exists():
     _np = next(p for p in hs.load(ROOT / "schemas" / "graph_dfs.json")["params"] if p["name"] == "n")
     check("graph_dfs n is bounded_scalar", _np.get("decode"), "bounded_scalar")
+
+# CLOBBER GUARD: derive() alone re-derives a PLAIN scalar (loses the manual bound); derive_merged()
+# must re-apply the human annotation from the on-disk schema so `--all` is non-destructive.
+_fresh = {"params": [{"name": "n", "role": "scalar", "decode": "scalar", "rust": "usize", "width": 8}]}
+_exist = {"params": [{"name": "n", "role": "scalar", "decode": "bounded_scalar", "rust": "usize",
+                      "width": 8, "min_value": 0, "max_value": 64}]}
+_merged = hs.merge_overrides(_fresh, _exist)
+check("merge_overrides re-applies bounded_scalar annotation",
+      (_merged["params"][0]["decode"], _merged["params"][0]["min_value"], _merged["params"][0]["max_value"]),
+      ("bounded_scalar", 0, 64))
+check("merge_overrides carries observable_length/mutation policy",
+      hs.merge_overrides({"params": [{"name": "d", "role": "output_buffer"}]},
+                         {"params": [{"name": "d", "role": "output_buffer",
+                                      "observable_length": {"kind": "return_value"}}]}
+                         )["params"][0]["observable_length"]["kind"], "return_value")
+if (ROOT / "benchmark" / "pairs" / "graph_dfs" / "build").exists():
+    _gp = ROOT / "benchmark" / "pairs" / "graph_dfs"
+    _gentry = hs.load(ROOT / "schemas" / "graph_dfs.json")["entry"]
+    _raw_n = next(p for p in hs.derive(_gp / "build", _gentry)["params"] if p["name"] == "n")
+    check("raw derive() WOULD clobber bounded n (so merge is load-bearing)", _raw_n.get("decode"), "scalar")
+    _dm_n = next(p for p in hs.derive_merged(_gp / "build", _gentry,
+                                             ROOT / "schemas" / "graph_dfs.json")["params"] if p["name"] == "n")
+    check("derive_merged preserves bounded n (--all no longer clobbers)", _dm_n.get("decode"), "bounded_scalar")
+
+# bounded scalar type-range validation (item 1)
+def _bs_vas(rust, w, lo, hi):
+    sch = {"return": {"rust": "i32"}, "params": [
+        {"name": "x", "role": "scalar", "decode": "bounded_scalar", "rust": rust, "width": w,
+         "min_value": lo, "max_value": hi}]}
+    return hs.validate_against_signature(sch, [{"kind": "scalar", "rust": rust, "w": w, "name": "x"}], "i32")
+check("bounded: usize negative lower bound flagged", any("outside" in e for e in _bs_vas("usize", 8, -1, 10)), True)
+check("bounded: u8 max 300 flagged", any("outside" in e for e in _bs_vas("u8", 1, 0, 300)), True)
+check("bounded: u64 full-range span flagged", any("not representable" in e for e in _bs_vas("u64", 8, 0, 2**64 - 1)), True)
+check("bounded: valid [0,64] usize clean", _bs_vas("usize", 8, 0, 64), [])
+
+# function-pointer (callback) deferral (item 4): describe_type expresses kind=function
+if (ROOT / "benchmark" / "pairs" / "array_map_reduce" / "build").exists():
+    try:
+        gdh.parse_entry_signature(ROOT / "benchmark" / "pairs" / "array_map_reduce" / "build", "map_then_reduce")
+        _cb_err = "(no error)"
+    except SystemExit as e:
+        _cb_err = str(e)
+    check("callback param gives a clear deferral message", "callback" in _cb_err.lower(), True)
 
 # ptr-to-array (input_fixed_array_buffer)
 _ARR = {"params": [

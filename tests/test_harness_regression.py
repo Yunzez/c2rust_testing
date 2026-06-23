@@ -23,7 +23,7 @@ GEN = ROOT / "tools" / "stu_selector" / "gen_diff_harness.py"
 # (ptr-to-array) with no pre-migration baseline. The other 12 are byte-identical to the
 # pre-migration generator.
 REVIEWED_CHANGE = {"glob_match", "kv_config"}
-NEW_CAPABILITY = {"graph_dfs"}
+NEW_CAPABILITY = {"graph_dfs", "matrix_reduce", "word_tokens"}
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
         print("no fixtures found"); return 1
     failed = 0
     print("(12 migration-identical; 2 reviewed changes: glob_match, kv_config; "
-          "1 new capability: graph_dfs)\n")
+          "3 new capabilities: graph_dfs, matrix_reduce, word_tokens)\n")
     with tempfile.TemporaryDirectory() as td:
         for fix in fixtures:
             prog = fix.name[:-len("_ft.rs")]
@@ -56,7 +56,7 @@ def main():
                 print(f"  FAIL  {prog}: schema-driven output differs from fixture")
                 failed += 1
     print(f"\n{len(fixtures) - failed}/{len(fixtures)} match current golden "
-          f"(12 migration-identical + 2 reviewed changes)")
+          f"(12 migration-identical + 2 reviewed changes + 3 new capabilities)")
     return 1 if failed else 0
 
 

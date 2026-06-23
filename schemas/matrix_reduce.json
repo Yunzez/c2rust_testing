@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "program": "matrix_reduce",
+  "entry": "matrix_transpose_and_sum",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "i64"
+  },
+  "params": [
+    {
+      "name": "mat",
+      "role": "input_rectangular_pointer_table",
+      "decode": "rectangular_pointer_table",
+      "elem": "i32",
+      "elem_width": 4,
+      "outer_length_param": "rows",
+      "inner_length_param": "cols",
+      "outer_max": 16,
+      "inner_max": 16,
+      "mutation": "backing_observable"
+    },
+    {
+      "name": "rows",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "mat",
+      "rust": "usize",
+      "width": 8
+    },
+    {
+      "name": "cols",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "mat",
+      "rust": "usize",
+      "width": 8
+    }
+  ]
+}

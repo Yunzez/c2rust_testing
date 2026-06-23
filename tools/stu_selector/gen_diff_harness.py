@@ -92,10 +92,55 @@ def describe_type(t) -> dict:
         et = s.element_type
         return {"kind": "array", "extent": s.element_count,
                 "const": et.is_const_qualified(), "elem": describe_type(et)}
+    if s.kind in (TypeKind.FUNCTIONPROTO, TypeKind.FUNCTIONNOPROTO):
+        return {"kind": "function", "spelling": t.spelling}
     sc = map_scalar(t.spelling) or map_scalar(s.spelling)
     if sc:
         return {"kind": "scalar", "rust": sc[0], "width": sc[1]}
+    if s.kind == TypeKind.RECORD:
+        return _describe_record(t, s)
     return {"kind": "unsupported", "spelling": t.spelling}
+
+
+def _rust_record_name(t) -> str:
+    """The Rust type name c2rust gives this record: the C typedef/tag spelling, qualifiers stripped."""
+    name = t.spelling
+    for q in ("const ", "volatile ", "struct ", "union "):
+        name = name.replace(q, "")
+    return name.strip()
+
+
+def _describe_record(t, s) -> dict:
+    """Struct/union descriptor: fields in declaration order + a POD verdict.
+
+    POD (this increment) = every field is a scalar or a fixed array of scalars. Pointer / nested
+    struct / function-pointer / union fields make the struct non-POD; we keep a precise reason so
+    the boundary census can report WHY (a strong static feature for the validity model)."""
+    decl = s.get_declaration()
+    is_union = decl.kind == CursorKind.UNION_DECL
+    fields = []
+    pod = not is_union
+    reason = "is a union" if is_union else None
+    for f in decl.get_children():
+        if f.kind != CursorKind.FIELD_DECL:
+            continue
+        fd = describe_type(f.type)
+        fields.append({"name": f.spelling, "desc": fd})
+        if pod:
+            if fd["kind"] == "scalar":
+                pass
+            elif fd["kind"] == "array" and fd["elem"]["kind"] == "scalar":
+                pass
+            elif fd["kind"] == "pointer":
+                pod, reason = False, f"has pointer field '{f.spelling}'"
+            elif fd["kind"] == "struct":
+                pod, reason = False, f"has nested struct field '{f.spelling}'"
+            elif fd["kind"] == "function":
+                pod, reason = False, f"has function-pointer field '{f.spelling}'"
+            else:
+                pod, reason = False, f"has unsupported field '{f.spelling}' ({fd.get('kind')})"
+    return {"kind": "struct", "name": _rust_record_name(t), "fields": fields,
+            "pod": pod, "reason": reason}
 
 
 def _param_from_descriptor(desc: dict, name: str) -> dict:
@@ -111,8 +156,20 @@ def _param_from_descriptor(desc: dict, name: str) -> dict:
             return {"kind": "ptr_array", "const": desc["const"] or inner["const"],
                     "elem": inner["elem"]["rust"], "elem_w": inner["elem"]["width"],
                     "inner_extent": inner["extent"], "name": name}
+        if inner["kind"] == "struct":
+            if not inner["pod"]:
+                raise SystemExit(f"struct-invariant param {name}: {inner['name']} "
+                                 f"{inner['reason']} (needs invariant reconstruction)")
+            return {"kind": "ptr_struct", "const": desc["const"], "struct": inner, "name": name}
+        if inner["kind"] == "function":
+            raise SystemExit(f"callback parameter {name} deferred: function pointers "
+                             f"(callback binding) not yet supported")
         if inner["kind"] == "pointer":
-            raise SystemExit(f"unsupported: pointer-to-pointer (T**) param {name} (not yet supported)")
+            inner2 = inner["inner"]
+            if inner2["kind"] == "scalar":
+                return {"kind": "ptr_ptr", "const": desc["const"], "inner_const": inner["const"],
+                        "elem": inner2["rust"], "elem_w": inner2["width"], "name": name}
+            raise SystemExit(f"unsupported: pointer-to-pointer-to-{inner2.get('kind')} param {name}")
         raise SystemExit(f"unsupported pointer target for {name}: {inner.get('kind')} {inner.get('spelling','')}")
     raise SystemExit(f"unsupported param type for {name}: {desc.get('spelling', desc['kind'])}")
 
@@ -193,6 +250,25 @@ def items_from_schema(schema: dict) -> list[dict]:
             items.append({"kind": "ptr_array", "role": "in_arr", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"],
                           "inner_extent": p["inner_extent"], "len_name": p["length_param"]})
+        elif role == "input_rectangular_pointer_table":
+            items.append({"kind": "ptr_ptr", "role": "in_table", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"],
+                          "outer_name": p["outer_length_param"], "inner_name": p["inner_length_param"],
+                          "outer_max": p["outer_max"], "inner_max": p["inner_max"]})
+        elif role == "input_string_pointer_table":
+            items.append({"kind": "ptr_ptr", "role": "in_str_table", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"],
+                          "len_name": p["length_param"], "count_max": p["count_max"]})
+        elif role in ("input_struct", "inout_struct"):
+            items.append({"kind": "ptr_struct",
+                          "role": "in_struct" if role == "input_struct" else "io_struct",
+                          "name": p["name"],
+                          "struct": _struct_from_schema(p["struct_name"], p["fields"])})
+        elif role in ("input_struct_array", "inout_struct_array"):
+            items.append({"kind": "ptr_struct",
+                          "role": "in_struct_arr" if role == "input_struct_array" else "io_struct_arr",
+                          "name": p["name"], "len_name": p["length_param"],
+                          "struct": _struct_from_schema(p["struct_name"], p["fields"])})
         # length / capacity params are consumed by their owning buffer (not standalone items)
     return items
 
@@ -201,7 +277,7 @@ def _infer_abi(params: list[dict]) -> list[dict]:
     """Synthesize an ABI-ordered schema-param list from inference (the --infer-schema fallback)."""
     its = classify(params)
     by = {p["name"]: p for p in params}
-    buf_role, len_owner = {}, {}
+    buf_role, len_owner, table_meta = {}, {}, {}
     for it in its:
         if it["role"] == "in_buf":
             buf_role[it["name"]] = "input_buffer"; len_owner[it["len_name"]] = (it["name"], "length")
@@ -209,12 +285,47 @@ def _infer_abi(params: list[dict]) -> list[dict]:
             buf_role[it["name"]] = "inout_buffer"; len_owner[it["len_name"]] = (it["name"], "length")
         elif it["role"] == "in_arr":
             buf_role[it["name"]] = "input_fixed_array_buffer"; len_owner[it["len_name"]] = (it["name"], "length")
+        elif it["role"] == "in_table":
+            buf_role[it["name"]] = "input_rectangular_pointer_table"; table_meta[it["name"]] = it
+            len_owner[it["outer_name"]] = (it["name"], "length")
+            len_owner[it["inner_name"]] = (it["name"], "length")
+        elif it["role"] == "in_str_table":
+            buf_role[it["name"]] = "input_string_pointer_table"; table_meta[it["name"]] = it
+            len_owner[it["len_name"]] = (it["name"], "length")
+        elif it["role"] in ("in_struct_arr", "io_struct_arr"):
+            len_owner[it["len_name"]] = (it["name"], "length")
     out_scalars = {it["name"] for it in its if it["role"] == "out_scalar"}
+    struct_items = {it["name"]: it for it in its
+                    if it["role"] in ("in_struct", "io_struct", "in_struct_arr", "io_struct_arr")}
     abi = []
     for p in params:
         n = p["name"]
+        if n in struct_items:
+            it = struct_items[n]
+            base = {"name": n, "struct_name": it["struct"]["name"],
+                    "fields": _struct_fields_to_schema(it["struct"])}
+            if it["role"] in ("in_struct_arr", "io_struct_arr"):
+                base.update(role="input_struct_array" if it["role"] == "in_struct_arr" else "inout_struct_array",
+                            decode="struct_array_vector", length_param=it["len_name"])
+            else:
+                base.update(role="input_struct" if it["role"] == "in_struct" else "inout_struct",
+                            decode="struct_value")
+            abi.append(base)
+            continue
         if n in buf_role:
             it = next(i for i in its if i["name"] == n)
+            if buf_role[n] == "input_rectangular_pointer_table":
+                abi.append({"name": n, "role": buf_role[n], "decode": "rectangular_pointer_table",
+                            "elem": it["elem"], "elem_width": it["elem_w"],
+                            "outer_length_param": it["outer_name"], "inner_length_param": it["inner_name"],
+                            "outer_max": 16, "inner_max": 16})
+                continue
+            if buf_role[n] == "input_string_pointer_table":
+                abi.append({"name": n, "role": buf_role[n], "decode": "string_pointer_table",
+                            "elem": it["elem"], "elem_width": it["elem_w"],
+                            "length_param": it["len_name"], "count_max": 16,
+                            "mutation": "backing_observable"})
+                continue
             spec = {"name": n, "role": buf_role[n], "decode": "vector",
                     "elem": it["elem"], "elem_width": it["elem_w"], "length_param": it["len_name"]}
             if buf_role[n] == "input_fixed_array_buffer":
@@ -237,13 +348,28 @@ def _infer_abi(params: list[dict]) -> list[dict]:
     return abi
 
 
-def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False):
+def _infer_items_abi(params: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Inference path: derive the ABI (schema params) then build items the SAME way the schema path
+    does (items_from_schema). This guarantees the decode (items) and the call/signature (abi) agree —
+    e.g. a `const char*` with no length is input_string in BOTH, not out_scalar in one and
+    input_string in the other (which produced `cannot find value _buf`)."""
+    abi = _infer_abi(params)
+    items = items_from_schema({"params": abi})
+    return items, abi
+
+
+def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False, ignore_schema: bool = False):
     """(params, ret, all_fns, items, abi). Require + strongly validate the schema; --infer to fall back.
 
     items drive byte-decode (role-based, order preserved per buffer); abi is the schema params in
-    ABI order and drives the call arguments + extern signature.
+    ABI order and drives the call arguments + extern signature. ignore_schema forces inference even
+    when a schemas/<name>.json exists (used by the boundary harvester, where the on-disk schema is
+    keyed to the program's canonical entry, not the boundary being harvested).
     """
     params, ret, all_fns = parse_entry_signature(cc_dir, entry)
+    if ignore_schema:
+        items, abi = _infer_items_abi(params)
+        return params, ret, all_fns, items, abi
     schema_path = ROOT / "schemas" / f"{name}.json"
     if schema_path.exists():
         import harness_schema as hs
@@ -258,7 +384,8 @@ def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False):
             raise SystemExit(f"schema {schema_path} invalid: {errs}")
         return params, ret, all_fns, items_from_schema(schema), schema["params"]
     if infer:
-        return params, ret, all_fns, classify(params), _infer_abi(params)
+        items, abi = _infer_items_abi(params)
+        return params, ret, all_fns, items, abi
     raise SystemExit(f"no schema for '{name}' at {schema_path}; pass --infer-schema to fall back")
 
 
@@ -268,6 +395,37 @@ def classify(params: list[dict]) -> list[dict]:
     i = 0
     while i < len(params):
         p = params[i]
+        if p["kind"] == "ptr_ptr":
+            n1 = params[i + 1] if i + 1 < len(params) else None
+            n2 = params[i + 2] if i + 2 < len(params) else None
+            if n1 and n1["kind"] == "scalar" and n2 and n2["kind"] == "scalar":
+                # T** + (rows, cols) -> rectangular pointer table (e.g. int** matrix)
+                out.append({**p, "role": "in_table", "outer_name": n1["name"], "inner_name": n2["name"]})
+                i += 3
+                continue
+            if n1 and n1["kind"] == "scalar":
+                # T** + ONE scalar count -> string-pointer table: a pointer table over
+                # independent NUL-terminated backings (e.g. char** words + size_t count).
+                # Distinct from the rectangular table: each backing has its own length.
+                out.append({**p, "role": "in_str_table", "len_name": n1["name"], "count_max": 16})
+                i += 2
+                continue
+            raise SystemExit(f"unsupported: T** param {p['name']} without dimensions")
+        if p["kind"] == "ptr_struct":
+            nxt = params[i + 1] if i + 1 < len(params) else None
+            # PODStruct* followed by a size_t length -> array of structs (e.g. Slot* slots, size_t
+            # cap). The size_t requirement disambiguates from a single struct + unrelated scalar
+            # (e.g. op_add(VM* vm, uint8_t operand) stays a single struct).
+            if nxt and nxt["kind"] == "scalar" and nxt["rust"] == "usize":
+                role = "in_struct_arr" if p["const"] else "io_struct_arr"
+                out.append({**p, "role": role, "len_name": nxt["name"]})
+                i += 2
+                continue
+            # Otherwise a struct pointer is a standalone single in/out parameter.
+            role = "in_struct" if p["const"] else "io_struct"
+            out.append({**p, "role": role})
+            i += 1
+            continue
         if p["kind"] == "ptr_array":
             nxt = params[i + 1] if i + 1 < len(params) else None
             if nxt and nxt["kind"] == "scalar":
@@ -289,6 +447,68 @@ def classify(params: list[dict]) -> list[dict]:
             out.append({**p, "role": "scalar"})
         i += 1
     return out
+
+
+def _struct_fields_to_schema(sd: dict) -> list[dict]:
+    """Serialize a POD struct descriptor's fields into compact, JSON-friendly schema specs."""
+    specs = []
+    for f in sd["fields"]:
+        fd = f["desc"]
+        if fd["kind"] == "scalar":
+            specs.append({"name": f["name"], "kind": "scalar",
+                          "rust": fd["rust"], "width": fd["width"]})
+        elif fd["kind"] == "array" and fd["elem"]["kind"] == "scalar":
+            specs.append({"name": f["name"], "kind": "array", "elem": fd["elem"]["rust"],
+                          "elem_width": fd["elem"]["width"], "extent": fd["extent"]})
+        else:
+            raise SystemExit(f"non-POD field {f['name']} cannot be serialized")
+    return specs
+
+
+def _struct_from_schema(struct_name: str, field_specs: list[dict]) -> dict:
+    """Rebuild a struct descriptor (for codegen) from compact schema field specs."""
+    fields = []
+    for s in field_specs:
+        if s["kind"] == "scalar":
+            desc = {"kind": "scalar", "rust": s["rust"], "width": s["width"]}
+        elif s["kind"] == "array":
+            desc = {"kind": "array", "extent": s["extent"],
+                    "elem": {"kind": "scalar", "rust": s["elem"], "width": s["elem_width"]}}
+        else:
+            raise SystemExit(f"bad struct field spec {s}")
+        fields.append({"name": s["name"], "desc": desc})
+    return {"kind": "struct", "name": struct_name, "fields": fields, "pod": True, "reason": None}
+
+
+def _rust_field_decode(fd: dict) -> str:
+    """A Rust expression that consumes bytes and yields one struct-field value."""
+    if fd["kind"] == "scalar":
+        return f"cur.take_{fd['rust']}()"
+    if fd["kind"] == "array" and fd["elem"]["kind"] == "scalar":
+        ext, el = fd["extent"], fd["elem"]["rust"]
+        return (f"{{ let mut a = [0 as {el}; {ext}]; "
+                f"for j in 0..{ext} {{ a[j] = cur.take_{el}(); }} a }}")
+    raise SystemExit(f"unsupported struct field kind {fd.get('kind')}")
+
+
+def _rust_struct_literal(sd: dict, prefix: str = "translated::") -> str:
+    """Build a struct literal; fields emitted in DECLARATION order so byte-consume order is fixed
+    (Rust evaluates struct-literal fields in source order)."""
+    parts = [f"{f['name']}: {_rust_field_decode(f['desc'])}" for f in sd["fields"]]
+    return f"{prefix}{sd['name']} {{ {', '.join(parts)} }}"
+
+
+def _struct_field_cmp(name: str, sd: dict) -> str:
+    """`a.f != b.f || ...` over all fields (scalars and [T;N] both impl PartialEq)."""
+    return " || ".join(f"{name}_c.{f['name']} != {name}_r.{f['name']}" for f in sd["fields"])
+
+
+def _struct_arr_cmp(name: str, sd: dict) -> str:
+    """Element-wise, field-wise comparison of two struct arrays (c2rust structs don't derive
+    PartialEq, so Vec<T> != Vec<T> is unavailable — compare lengths then each field per element)."""
+    fields = " || ".join(f"a.{f['name']} != b.{f['name']}" for f in sd["fields"])
+    return (f"{name}_c.len() != {name}_r.len() || "
+            f"{name}_c.iter().zip({name}_r.iter()).any(|(a, b)| {fields})")
 
 
 def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
@@ -329,6 +549,50 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             decode.append(f"    for _ in 0..{n}_cnt {{ let mut a = [0 as {it['elem']}; {ext}];"
                           f" for j in 0..{ext} {{ a[j] = cur.take_{it['elem']}(); }} {n}_buf.push(a); }}")
             decode.append(f"    let {it['len_name']} = {n}_buf.len();")
+        elif it["role"] == "in_table":
+            el, om, im = it["elem"], it["outer_max"], it["inner_max"]
+            o, ix = it["outer_name"], it["inner_name"]
+            decode.append(f"    let {o} = (cur.byte() as usize) % ({om} + 1);")
+            decode.append(f"    let {ix} = (cur.byte() as usize) % ({im} + 1);")
+            decode.append(f"    let {n}_data: Vec<Vec<{el}>> = (0..{o}).map(|_| "
+                          f"(0..{ix}).map(|_| cur.take_{el}()).collect()).collect();")
+            for side in ("c", "r"):
+                decode.append(f"    let mut {n}_back_{side} = {n}_data.clone();")
+                decode.append(f"    let mut {n}_tab_{side}: Vec<*mut {el}> = "
+                              f"{n}_back_{side}.iter_mut().map(|row| row.as_mut_ptr()).collect();")
+            post.append(f'    if {n}_back_c != {n}_back_r {{ panic!("divergence: table {n}"); }}')
+        elif it["role"] == "in_str_table":
+            el, cm, ln = it["elem"], it["count_max"], it["len_name"]
+            decode.append(f"    let {ln} = (cur.byte() as usize) % ({cm} + 1);")
+            decode.append(f"    let {n}_data: Vec<Vec<{el}>> = (0..{ln}).map(|_| "
+                          f"{{ let mut s = cur.take_vec_{el}(); s.push(0 as {el}); s }}).collect();")
+            for side in ("c", "r"):
+                decode.append(f"    let mut {n}_back_{side} = {n}_data.clone();")
+                decode.append(f"    let mut {n}_tab_{side}: Vec<*mut {el}> = "
+                              f"{n}_back_{side}.iter_mut().map(|s| s.as_mut_ptr()).collect();")
+            post.append(f'    if {n}_back_c != {n}_back_r {{ panic!("divergence: string table {n}"); }}')
+        elif it["role"] == "in_struct":
+            # const struct pointer: one decoded value shared by both sides (callee must not mutate).
+            decode.append(f"    let {n}_val = {_rust_struct_literal(it['struct'])};")
+        elif it["role"] == "io_struct":
+            # mutable struct pointer: decode once, give each side its own copy (struct is Copy),
+            # compare field-wise afterwards.
+            decode.append(f"    let {n}_val = {_rust_struct_literal(it['struct'])};")
+            decode.append(f"    let mut {n}_c = {n}_val;")
+            decode.append(f"    let mut {n}_r = {n}_val;")
+            post.append(f'    if {_struct_field_cmp(n, it["struct"])} '
+                        f'{{ panic!("divergence: struct {n}"); }}')
+        elif it["role"] in ("in_struct_arr", "io_struct_arr"):
+            sd, ln = it["struct"], it["len_name"]
+            el = f"translated::{sd['name']}"
+            decode.append(f"    let {ln} = (cur.byte() as usize) % 64;")
+            decode.append(f"    let {n}_data: Vec<{el}> = (0..{ln}).map(|_| "
+                          f"{_rust_struct_literal(sd)}).collect();")
+            if it["role"] == "io_struct_arr":
+                decode.append(f"    let mut {n}_c = {n}_data.clone();")
+                decode.append(f"    let mut {n}_r = {n}_data.clone();")
+                post.append(f'    if {_struct_arr_cmp(n, sd)} '
+                            f'{{ panic!("divergence: struct array {n}"); }}')
     return decode, post
 
 
@@ -358,6 +622,21 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
         elif role == "input_fixed_array_buffer":
             c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
             decl.append(f"{n}: *const [{p['elem']}; {p['inner_extent']}]")
+        elif role in ("input_rectangular_pointer_table", "input_string_pointer_table"):
+            c_args.append(f"{n}_tab_c.as_mut_ptr()"); r_args.append(f"{n}_tab_r.as_mut_ptr()")
+            decl.append(f"{n}: *mut *mut {p['elem']}")
+        elif role == "input_struct":
+            c_args.append(f"&{n}_val"); r_args.append(f"&{n}_val")
+            decl.append(f"{n}: *const translated::{p['struct_name']}")
+        elif role == "inout_struct":
+            c_args.append(f"&mut {n}_c"); r_args.append(f"&mut {n}_r")
+            decl.append(f"{n}: *mut translated::{p['struct_name']}")
+        elif role == "input_struct_array":
+            c_args.append(f"{n}_data.as_ptr()"); r_args.append(f"{n}_data.as_ptr()")
+            decl.append(f"{n}: *const translated::{p['struct_name']}")
+        elif role == "inout_struct_array":
+            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
+            decl.append(f"{n}: *mut translated::{p['struct_name']}")
     return c_args, r_args, decl
 
 
@@ -412,6 +691,27 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
     ])
 
 
+def expose_entry(rs_text: str, entry: str) -> tuple[str, bool]:
+    """Make `entry` callable from the harness: if c2rust emitted it as a private (`static` C)
+    `extern "C" fn`, prepend `#[no_mangle] pub`. No-op if it is already `pub`. Returns
+    (text, changed). This is what lets the harvester test an internal boundary."""
+    import re
+    if re.search(rf'(?m)^\s*pub\s+(?:unsafe\s+)?extern\s+"C"\s+fn\s+{re.escape(entry)}\b', rs_text):
+        return rs_text, False
+    pat = rf'(?m)^(\s*)((?:unsafe\s+)?extern\s+"C"\s+fn\s+{re.escape(entry)}\b)'
+    new = re.sub(pat, r'\1#[no_mangle]\n\1pub \2', rs_text, count=1)
+    return new, (new != rs_text)
+
+
+def strip_static_c(c_text: str, entry: str) -> tuple[str, bool]:
+    """Give the renamed C oracle symbol `c_<entry>` external linkage by dropping `static` from the
+    entry's definition (a `static` C function isn't linkable even after the f->c_f #define rename)."""
+    import re
+    pat = rf'(?m)^(\s*)static(\s+[^\n;{{]*\b{re.escape(entry)}\s*\()'
+    new = re.sub(pat, r'\1\2', c_text, count=1)
+    return new, (new != c_text)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Generate a differential fuzz harness for an STU")
     ap.add_argument("--pair", required=True, help="benchmark/pairs/<name>")
@@ -419,6 +719,10 @@ def main() -> int:
     ap.add_argument("--out", default=None, help="output project dir (default fuzz_gen/<name>)")
     ap.add_argument("--infer-schema", action="store_true",
                     help="fall back to signature inference when no schema exists (default: require schema)")
+    ap.add_argument("--ignore-schema", action="store_true",
+                    help="force inference even if schemas/<name>.json exists (harvesting non-entry boundaries)")
+    ap.add_argument("--expose-entry", action="store_true",
+                    help="make a private (static) entry callable by prepending #[no_mangle] pub")
     args = ap.parse_args()
 
     pair = Path(args.pair)
@@ -428,7 +732,8 @@ def main() -> int:
     rs = next((pair / "translated").glob("*.rs"))
     c_src = next((pair / "source").glob("*.c"))
 
-    params, ret, all_fns, items, abi = resolve(name, cc, args.entry, infer=args.infer_schema)
+    params, ret, all_fns, items, abi = resolve(
+        name, cc, args.entry, infer=args.infer_schema, ignore_schema=args.ignore_schema)
 
     out = Path(args.out) if args.out else (ROOT / "fuzz_gen" / name)
     out.mkdir(parents=True, exist_ok=True)
@@ -436,8 +741,13 @@ def main() -> int:
     (out / "c").mkdir(exist_ok=True)
     (out / "fuzz" / "fuzz_targets").mkdir(parents=True, exist_ok=True)
 
-    (out / "c" / c_src.name).write_text(c_src.read_text(), encoding="utf-8")
-    (out / "src" / "lib.rs").write_text(rs.read_text(), encoding="utf-8")
+    c_text = c_src.read_text()
+    rs_text = rs.read_text()
+    if args.expose_entry:
+        rs_text, _ = expose_entry(rs_text, args.entry)
+        c_text, _ = strip_static_c(c_text, args.entry)
+    (out / "c" / c_src.name).write_text(c_text, encoding="utf-8")
+    (out / "src" / "lib.rs").write_text(rs_text, encoding="utf-8")
 
     (out / "Cargo.toml").write_text(
         f'[package]\nname = "{crate}"\nversion = "0.1.0"\nedition = "2021"\n\n'

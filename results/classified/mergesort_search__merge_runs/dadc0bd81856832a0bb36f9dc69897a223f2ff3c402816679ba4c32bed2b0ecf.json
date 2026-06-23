@@ -1,0 +1,38 @@
+{
+  "program": "mergesort_search",
+  "entry": "merge_runs",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/mergesort_search__merge_runs/fuzz/artifacts/mergesort_search_ft/crash-94d1ff82ddcf91fc",
+  "artifact_sha256": "dadc0bd81856832a0bb36f9dc69897a223f2ff3c402816679ba4c32bed2b0ecf",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "crash",
+      "crash"
+    ],
+    "reproducible": true,
+    "outcome": "crash",
+    "stderr": "ez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/mergesort_search_ft+0x2ebbf4) (BuildId: f42d7e8c3b08ddc63911e56bc726f2a8b78e0197)\n    #7 0x5c32d9e6c239  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/mergesort_search_ft+0x2eb239) (BuildId: f42d7e8c3b08ddc63911e56bc726f2a8b78e0197)\n    #8 0x74671d62a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #9 0x74671d62a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #10 0x5c32d9da90a4  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/mergesort_search_ft+0x2280a4) (BuildId: f42d7e8c3b08ddc63911e56bc726f2a8b78e0197)\n\n==251741==Register values:\nrax = 0x0000000000000000  rbx = 0xe8e25044fa5fc683  rcx = 0x00005c32da8bb250  rdx = 0x0000000000000007  \nrdi = 0x00005c32da387378  rsi = 0xe8e25044fa5fc68b  rbp = 0x00007ffe8b719cf0  rsp = 0x00007ffe8b719c90  \n r8 = 0x738bd1322430ce5f   r9 = 0x0000000000000000  r10 = 0x00000e12e393c023  r11 = 0x0000000000000004  \nr12 = 0x000070971c9e00d0  r13 = 0x000000000000ffcc  r14 = 0xe8e25044fa5fc68b  r15 = 0x000070671b90063c  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/mergesort_search_ft+0x2eb094) (BuildId: f42d7e8c3b08ddc63911e56bc726f2a8b78e0197) \n==251741==ABORTING\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmpc_mznmtg/cdriver.c -o /tmp/tmpc_mznmtg/cdriver",
+    "sanitizers": [],
+    "asan_crash": true,
+    "exit": 1,
+    "stderr": "rust_testing/benchmark/pairs/mergesort_search/source/mergesort_search.c:25:20 in merge_runs\nShadow bytes around the buggy address:\n  0x77322d4ffd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x77322d4ffe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x77322d4ffe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x77322d4fff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x77322d4fff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x77322d500000: f1 f1 f1 f1 04 f3 f3[f3]00 00 00 00 00 00 00 00\n  0x77322d500080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x77322d500100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x77322d500180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x77322d500200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x77322d500280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==251541==ABORTING\n"
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": false,
+    "message": "",
+    "exit": -11,
+    "stderr": ""
+  },
+  "label": "C_CRASH",
+  "evidence": "C AddressSanitizer reported a memory error on the same input"
+}

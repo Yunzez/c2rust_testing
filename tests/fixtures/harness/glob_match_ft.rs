@@ -27,20 +27,19 @@ fn cd() -> i8 { 0 }  // silence unused on some shapes
 
 use glob_match as translated;
 extern "C" {
-    fn c_glob_match(pattern: *mut i8, text: *const u8, tlen: usize) -> i32;
+    fn c_glob_match(pattern: *const i8, text: *const u8, tlen: usize) -> i32;
 }
 
 fuzz_target!(|data: &[u8]| {
     let _ = cd();
     let mut cur = Cur::new(data);
-    let mut pattern_c: i8 = 0 as i8;
-    let mut pattern_r: i8 = 0 as i8;
+    let mut pattern_buf: Vec<i8> = cur.take_vec_i8();
+    pattern_buf.push(0 as i8);
     let text_buf: Vec<u8> = cur.take_vec_u8();
     let tlen = text_buf.len();
     unsafe {
-        let c_ret = c_glob_match(&mut pattern_c, text_buf.as_ptr(), tlen);
-        let r_ret = translated::glob_match(&mut pattern_r, text_buf.as_ptr(), tlen);
+        let c_ret = c_glob_match(pattern_buf.as_ptr(), text_buf.as_ptr(), tlen);
+        let r_ret = translated::glob_match(pattern_buf.as_ptr(), text_buf.as_ptr(), tlen);
         if c_ret != r_ret { panic!("divergence: return value"); }
-    if pattern_c != pattern_r { panic!("divergence: out param pattern"); }
     }
 });

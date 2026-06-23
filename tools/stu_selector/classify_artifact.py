@@ -88,6 +88,13 @@ def gen_c_driver(items: list[dict], entry: str, source_abs: str) -> str:
             ct = RUST_TO_C[it["elem"]]
             decode.append(f"    {ct} {n} = 0;")
             call.append(f"&{n}")
+        elif it["role"] == "in_str":
+            ct = RUST_TO_C[it["elem"]]
+            decode.append(f"    size_t {n}_len = (size_t)(cb() % 64);")
+            decode.append(f"    {ct}* {n} = ({ct}*)malloc({n}_len + 1);")
+            decode.append(f"    for (size_t i = 0; i < {n}_len; i++) {n}[i] = ({ct})cuint({it['elem_w']});")
+            decode.append(f"    {n}[{n}_len] = 0;")
+            call.append(n)
     return f'''#include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -164,6 +171,10 @@ path = "src/main.rs"
         elif it["role"] == "out_scalar":
             decode.append(f"    let mut {n}: {it['elem']} = 0 as {it['elem']};")
             call.append(f"&mut {n}")
+        elif it["role"] == "in_str":
+            decode.append(f"    let mut {n}: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
+            decode.append(f"    {n}.push(0 as {it['elem']});")
+            call.append(f"{n}.as_ptr()")
     takes = "\n".join(
         f"    fn take_{t}(&mut self) -> {t} {{ let mut v=[0u8;{w}]; for i in 0..{w}{{v[i]=self.byte();}} {t}::from_le_bytes(v) }}"
         for t, w in [("u8",1),("i8",1),("u16",2),("i16",2),("u32",4),("i32",4),("u64",8),("i64",8),("usize",8)])

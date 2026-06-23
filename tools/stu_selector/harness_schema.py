@@ -41,8 +41,8 @@ SCHEMA_DIR = ROOT / "schemas"
 SCHEMA_VERSION = 1
 
 ROLES = {"scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
-         "length", "capacity"}
-DECODES = {"scalar", "vector", "derived_from_buffer", "out_scalar_zero"}
+         "input_string", "length", "capacity"}
+DECODES = {"scalar", "vector", "derived_from_buffer", "out_scalar_zero", "nul_string"}
 
 # name hints used only to DRAFT output- vs inout-buffer; provenance flags this for human review.
 _OUT_HINTS = ("dst", "out", "output", "result", "res")
@@ -98,8 +98,14 @@ def derive(cc_dir: Path, entry: str) -> dict:
                             "of_buffer": buf, "rust": p["rust"], "width": p["w"]})
         elif n in out_scalars:
             it = next(i for i in items if i["name"] == n)
-            sparams.append({"name": n, "role": "out_scalar", "decode": "out_scalar_zero",
-                            "elem": it["elem"], "elem_width": it["elem_w"]})
+            # A *const* pointer with no length is an input string (NUL-terminated), not an output
+            # scalar. Adjacency inference got this wrong (it ignored const); the schema fixes it.
+            if by_name[n].get("const"):
+                sparams.append({"name": n, "role": "input_string", "decode": "nul_string",
+                                "elem": it["elem"], "elem_width": it["elem_w"]})
+            else:
+                sparams.append({"name": n, "role": "out_scalar", "decode": "out_scalar_zero",
+                                "elem": it["elem"], "elem_width": it["elem_w"]})
         else:  # plain scalar
             sparams.append({"name": n, "role": "scalar", "decode": "scalar",
                             "rust": p["rust"], "width": p["w"]})

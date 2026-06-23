@@ -27,14 +27,14 @@ fn cd() -> i8 { 0 }  // silence unused on some shapes
 
 use kv_config as translated;
 extern "C" {
-    fn c_kv_parse(line: *mut i8, key: *mut i8, key_cap: usize, val: *mut i8, val_cap: usize) -> i32;
+    fn c_kv_parse(line: *const i8, key: *mut i8, key_cap: usize, val: *mut i8, val_cap: usize) -> i32;
 }
 
 fuzz_target!(|data: &[u8]| {
     let _ = cd();
     let mut cur = Cur::new(data);
-    let mut line_c: i8 = 0 as i8;
-    let mut line_r: i8 = 0 as i8;
+    let mut line_buf: Vec<i8> = cur.take_vec_i8();
+    line_buf.push(0 as i8);
     let mut key_c: Vec<i8> = cur.take_vec_i8();
     let key_cap = key_c.len();
     let mut key_r = key_c.clone();
@@ -42,10 +42,9 @@ fuzz_target!(|data: &[u8]| {
     let val_cap = val_c.len();
     let mut val_r = val_c.clone();
     unsafe {
-        let c_ret = c_kv_parse(&mut line_c, key_c.as_mut_ptr(), key_cap, val_c.as_mut_ptr(), val_cap);
-        let r_ret = translated::kv_parse(&mut line_r, key_r.as_mut_ptr(), key_cap, val_r.as_mut_ptr(), val_cap);
+        let c_ret = c_kv_parse(line_buf.as_ptr(), key_c.as_mut_ptr(), key_cap, val_c.as_mut_ptr(), val_cap);
+        let r_ret = translated::kv_parse(line_buf.as_ptr(), key_r.as_mut_ptr(), key_cap, val_r.as_mut_ptr(), val_cap);
         if c_ret != r_ret { panic!("divergence: return value"); }
-    if line_c != line_r { panic!("divergence: out param line"); }
     if key_c != key_r { panic!("divergence: buffer key"); }
     if val_c != val_r { panic!("divergence: buffer val"); }
     }

@@ -150,6 +150,9 @@ def items_from_schema(schema: dict) -> list[dict]:
         elif role == "out_scalar":
             items.append({"kind": "ptr", "role": "out_scalar", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"]})
+        elif role == "input_string":
+            items.append({"kind": "ptr", "role": "in_str", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"]})
         # length / capacity params are consumed by their owning buffer (not standalone items)
     return items
 
@@ -212,6 +215,11 @@ def gen_target(entry: str, items: list[dict], ret: str) -> str:
             c_args.append(f"&mut {n}_c")
             r_args.append(f"&mut {n}_r")
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: out param {n}"); }}')
+        elif it["role"] == "in_str":
+            decode.append(f"    let mut {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
+            decode.append(f"    {n}_buf.push(0 as {it['elem']});")
+            c_args.append(f"{n}_buf.as_ptr()")
+            r_args.append(f"{n}_buf.as_ptr()")
 
     # length params are scalars too in the C signature but provided by buffers above;
     # ensure any scalar that is actually a consumed length is not double-decoded.
@@ -296,6 +304,8 @@ def main() -> int:
             decl_parts.append(f"{it['name']}: *mut {it['elem']}")
         elif it["role"] == "out_scalar":
             decl_parts.append(f"{it['name']}: *mut {it['elem']}")
+        elif it["role"] == "in_str":
+            decl_parts.append(f"{it['name']}: *const {it['elem']}")
         if "len_name" in it:
             # the length scalar param keeps its place in the C signature
             ln = next(p for p in params if p["name"] == it["len_name"])

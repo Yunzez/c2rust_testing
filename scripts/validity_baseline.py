@@ -146,11 +146,13 @@ def main() -> int:
         md.append(f"| {t} | " + " | ".join(f"{res[t][g]:.3f}" for g in
                   ("generic", "boundary_specific", "combined")) + " |")
     md += ["\n## Honest reading\n",
-           "- **On the LUMPED task generic ≈ or > boundary-specific.** That generic edge is largely "
-           "a **size confound**: the authored negatives (tiny UB functions, small accessors) are "
-           "systematically smaller, so `c_nodes`/`c_stmts` predict INVALID within this corpus — a "
-           "property unlikely to transfer to real code. combined < generic is small-data overfit "
-           "(33 features, ~17 invalid-bearing programs).",
+           "- **On the LUMPED task generic ≈ or > boundary-specific.** A size-confound control "
+           "(`results/validity_baseline_size_control_v1.md`) tested whether this is a size artifact "
+           "and **found it is NOT**: under grouped CV `size_only` ≈ chance and ablating size does not "
+           "hurt generic — grouped CV already neutralizes the within-sample size separation. "
+           "generic's residual lumped signal is its NON-size signature features (pointer / nested-"
+           "pointer / alloc counts), a coarse proxy for the same struct/pointer risk our rf features "
+           "target. combined < generic is small-data overfit (33 features, ~17 invalid-bearing programs).",
            "- **Split by MECHANISM, the picture is the intended one:** for "
            "`invalid_isolation_invariant`, boundary-specific features win the grouped-CV baseline "
            f"(**{res['valid vs isolation_invariant']['boundary_specific']:.3f}** vs generic "

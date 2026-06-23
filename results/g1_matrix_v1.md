@@ -9,12 +9,17 @@ caches LibAFL); each artifact auto-classified by `classify_artifact.py`. Raw tab
 
 | label | n | programs |
 |---|---|---|
-| CLEAN | 12 | bitutils, dynamic_array, glob_match, hash_table, intmath, kv_config, leb128, linked_list, mergesort_search, rle_codec, state_machine, tiny_vm |
+| NO_DIVERGENCE_OBSERVED (30 s) | 12 | bitutils, dynamic_array, glob_match, hash_table, intmath, kv_config, leb128, linked_list, mergesort_search, rle_codec, state_machine, tiny_vm |
 | C_UB_CONFIRMED | 2 | rpn_eval, opcode_dispatch |
 | UNSUPPORTED_SIGNATURE | 4 | array_map_reduce (fn-ptr), graph_dfs (ptr-to-array `size_t[2]`), matrix_reduce (`int**`), word_tokens (`char**`) |
 
-**14 generatable ENTRYs: 12 CLEAN + 2 real divergences. 0 harness false positives** (no
-HARNESS_DIVERGENCE, no CLASSIFY_ERROR, no NON_REPRODUCIBLE).
+**14 generatable ENTRYs: 12 NO_DIVERGENCE_OBSERVED under 30-second fuzzing + 2 real divergences.
+0 *observed* harness false positives** (no NON_REPRODUCIBLE, no CLASSIFY_ERROR).
+
+> NOTE: `NO_DIVERGENCE_OBSERVED` is exactly that — 30 s of fuzzing found nothing; it is **not**
+> evidence of semantic equivalence. The matrix also records per-run telemetry (elapsed, exit code,
+> terminated_by_timeout, executions); a fuzzer that dies early with no artifact is
+> `FUZZER_EXITED_EARLY`, never counted as no-divergence.
 
 ## What the two divergences are
 

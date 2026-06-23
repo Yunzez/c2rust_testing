@@ -11,10 +11,13 @@ happened, instead of recording "an artifact exists". It:
   3. Runs the Rust translation ALONE on the same input (overflow-checks on) -> panic or not.
   4. Applies explicit, conservative rules to emit one label. Anything uncertain -> UNKNOWN.
 
-Conservative label set (never auto-promote to TRANSLATION_BUG_CONFIRMED — that needs a human or
-an independent oracle):
-  C_UB_CONFIRMED  HARNESS_DIVERGENCE  RUST_PANIC  C_CRASH
-  NON_REPRODUCIBLE  TRANSLATION_BUG_CANDIDATE  UNKNOWN
+Label set. Auto-emitted by this classifier (conservative):
+  C_UB_CONFIRMED  HARNESS_DIVERGENCE  RUST_PANIC  C_CRASH  NON_REPRODUCIBLE  UNKNOWN
+Human-only (never auto-assigned — require human review or an independent oracle):
+  TRANSLATION_BUG_CANDIDATE  TRANSLATION_BUG_CONFIRMED
+A reproducible value difference with no C-UB and no crash is reported as the conservative
+HARNESS_DIVERGENCE (cause not yet isolated: could be output normalization / harness semantics);
+a human promotes it to TRANSLATION_BUG_CANDIDATE/CONFIRMED.
 
 All three executions decode the artifact bytes with the SAME cursor semantics as the diff harness
 (scalar = W little-endian bytes, 0-padded past end; vec = 1 length byte % 64, then elements), so
@@ -258,7 +261,9 @@ def classify(diff: dict, c: dict, rust: dict) -> tuple[str, str]:
     if outcome == "rust_panic" or rust.get("panicked"):
         return "RUST_PANIC", f"Rust translation panicked ({rust.get('message','')}) with no C UB found"
     if outcome == "harness_divergence":
-        return "TRANSLATION_BUG_CANDIDATE", "outputs differ; no C UB and no crash found (needs independent oracle)"
+        return ("HARNESS_DIVERGENCE",
+                "outputs differ; no C UB and no crash found — cause not isolated (could be output "
+                "normalization / harness semantics). Human review to promote to TRANSLATION_BUG_CANDIDATE.")
     return "UNKNOWN", f"insufficient evidence (diff={outcome}, ubsan={ubsan}, rust={rust})"
 
 

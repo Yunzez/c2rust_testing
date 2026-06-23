@@ -15,11 +15,11 @@ Labels: NO_DIVERGENCE_OBSERVED (full run, no artifact) / FUZZER_EXITED_EARLY / U
 | kv_config | kv_parse | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | leb128 | leb128_roundtrip | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | linked_list | ll_run | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
-| matrix_reduce | matrix_transpose_and_sum | False | False | None | None | 0 | 0 | UNSUPPORTED_SIGNATURE |
+| matrix_reduce | matrix_transpose_and_sum | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | mergesort_search | sort_and_find | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | opcode_dispatch | run_program | True | True | 1.0 | False | 1 | 1 | C_UB_CONFIRMED |
 | rle_codec | rle_encode | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | rpn_eval | rpn_eval | True | True | 1.0 | False | 1 | 1 | C_UB_CONFIRMED |
 | state_machine | simulate | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | tiny_vm | vm_run | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
-| word_tokens | fold_unique_words | False | False | None | None | 0 | 0 | UNSUPPORTED_SIGNATURE |
+| word_tokens | fold_unique_words | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |

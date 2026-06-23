@@ -5,18 +5,19 @@ evidence-backed conservative classification; then produce a structured G1 table 
 generatable ENTRYs.* Driver: `scripts/run_g1_matrix.py` (DUR=30 s/program, shared `CARGO_TARGET_DIR`
 caches LibAFL); each artifact auto-classified by `classify_artifact.py`. Raw table: `g1_matrix.md`.
 
-## Outcome (18 ENTRYs) — refreshed after ptr-to-array + bounded scalar
+## Outcome (18 ENTRYs) — refreshed after the char** string-pointer table
 
 | label | n | programs |
 |---|---|---|
-| NO_DIVERGENCE_OBSERVED (30 s) | 13 | bitutils, dynamic_array, glob_match, **graph_dfs**, hash_table, intmath, kv_config, leb128, linked_list, mergesort_search, rle_codec, state_machine, tiny_vm |
+| NO_DIVERGENCE_OBSERVED (30 s) | 15 | bitutils, dynamic_array, glob_match, **graph_dfs**, hash_table, intmath, kv_config, leb128, linked_list, **matrix_reduce**, mergesort_search, rle_codec, state_machine, tiny_vm, **word_tokens** |
 | C_UB_CONFIRMED | 2 | rpn_eval, opcode_dispatch |
-| UNSUPPORTED_SIGNATURE | 3 | array_map_reduce (fn-ptr / callback), matrix_reduce (`int**`, T**), word_tokens (`char**`, T**) |
+| UNSUPPORTED_SIGNATURE | 1 | array_map_reduce (callback / fn-ptr) |
 
-**15 generatable ENTRYs: 13 NO_DIVERGENCE_OBSERVED under 30-second fuzzing + 2 real divergences.
-0 *observed* harness false positives.** `graph_dfs` moved from UNSUPPORTED to a real result once
-ptr-to-array landed and its `n` was bounded (no more OOM). The 3 remaining unsupported are the two
-T** programs and the one callback program — the next P3 steps.
+**17 generatable ENTRYs: 15 NO_DIVERGENCE_OBSERVED under 30-second fuzzing + 2 real divergences.
+0 *observed* harness false positives.** All three nested-pointer shapes are now supported:
+`graph_dfs` (ptr-to-array, bounded `n`), `matrix_reduce` (`int**` rectangular table), and
+`word_tokens` (`char**` string-pointer table over independent NUL-terminated backings). The single
+remaining unsupported ENTRY is the callback / fn-ptr program — the next P3 step.
 
 > NOTE: `NO_DIVERGENCE_OBSERVED` is exactly that — 30 s of fuzzing found nothing; it is **not**
 > evidence of semantic equivalence. The matrix also records per-run telemetry (elapsed, exit code,
@@ -33,11 +34,12 @@ divergences in the **C-UB class**, not harness artifacts and not (yet) confirmed
 
 ## Why this matrix shape matters (vs CLEAN/DIVERGENCE)
 
-- **UNSUPPORTED_SIGNATURE is tracked separately** — nested-pointer / callback / ptr-to-array
-  entries are out of the generator's current coverage, NOT "clean" and NOT selector failures.
-  This keeps `generator_supported` distinct from `runnable_now` and from `theoretically_valid`
-  (the selector treats nested pointers as a soft cost; the generator currently rejects them — the
-  gap is now explicit in the data).
+- **UNSUPPORTED_SIGNATURE is tracked separately** — entries out of the generator's current coverage,
+  NOT "clean" and NOT selector failures. All three nested-pointer shapes are now supported
+  (ptr-to-array=graph_dfs, `int**`=matrix_reduce, `char**`=word_tokens); the 1 remaining is the
+  callback program. This keeps `generator_supported` distinct from `runnable_now` and from
+  `theoretically_valid` (the selector treats nested pointers as a soft cost; the generator currently
+  rejects only the callback/fn-ptr boundary — the gap is explicit in the data).
 - Every divergence carries an evidence-backed label (`results/classified/<prog>.json`): toolchain,
   flags, artifact sha256, and the independent C-UBSan / Rust-only / diff-replay outcomes.
 
@@ -54,6 +56,8 @@ divergences in the **C-UB class**, not harness artifacts and not (yet) confirmed
   inference; persist a harness schema per benchmark; separate input-buf / output-buf / capacity /
   logical-output-length; generator unit tests + replay fixtures. (Adjacency pairing happens to be
   correct on this corpus but is not robust.)
-- Extend generator coverage to nested pointers / ptr-to-array to shrink UNSUPPORTED_SIGNATURE.
+- Extend generator coverage: ptr-to-array (graph_dfs), `int**` rectangular table (matrix_reduce),
+  and `char**` string-pointer table (word_tokens) all done; only callback binding remains, to close
+  the last UNSUPPORTED_SIGNATURE.
 - **P4:** G3 semantics-preserving refactors (reliable "structure-changed, semantics-preserved"
   labels) → then G2 injected bugs → only then a learned `P(valid|x_f)` with per-program grouped CV.

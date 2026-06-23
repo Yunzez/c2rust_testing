@@ -74,7 +74,7 @@ def _c_call_args(abi: list[dict]) -> list[str]:
     call = []
     for p in abi:
         role, n = p["role"], p["name"]
-        if role == "out_scalar":
+        if role in ("out_scalar", "input_struct", "inout_struct"):
             call.append(f"&{n}")
         else:  # scalar / length / capacity / *_buffer / input_string all pass by name
             call.append(n)
@@ -115,6 +115,47 @@ def gen_c_driver(items: list[dict], abi: list[dict], entry: str, source_abs: str
             decode.append(f"    {ct} (*{n})[{ext}] = ({ct}(*)[{ext}])malloc(({ln} ? {ln} : 1) * {ext} * sizeof({ct}));")
             decode.append(f"    for (size_t i = 0; i < {ln}; i++) for (size_t j = 0; j < {ext}; j++) "
                           f"{n}[i][j] = ({ct})cuint({it['elem_w']});")
+        elif it["role"] == "in_table":
+            ct = RUST_TO_C[it["elem"]]
+            o, ix, om, im = it["outer_name"], it["inner_name"], it["outer_max"], it["inner_max"]
+            decode.append(f"    size_t {o} = (size_t)(cb() % ({om} + 1));")
+            decode.append(f"    size_t {ix} = (size_t)(cb() % ({im} + 1));")
+            decode.append(f"    {ct}** {n} = ({ct}**)malloc(({o} ? {o} : 1) * sizeof({ct}*));")
+            decode.append(f"    for (size_t i = 0; i < {o}; i++) {{ {n}[i] = ({ct}*)malloc(({ix} ? {ix} : 1) * sizeof({ct}));"
+                          f" for (size_t j = 0; j < {ix}; j++) {n}[i][j] = ({ct})cuint({it['elem_w']}); }}")
+        elif it["role"] == "in_str_table":
+            ct = RUST_TO_C[it["elem"]]
+            cm, ln = it["count_max"], it["len_name"]
+            decode.append(f"    size_t {ln} = (size_t)(cb() % ({cm} + 1));")
+            decode.append(f"    {ct}** {n} = ({ct}**)malloc(({ln} ? {ln} : 1) * sizeof({ct}*));")
+            decode.append(f"    for (size_t i = 0; i < {ln}; i++) {{ size_t li = (size_t)(cb() % 64);"
+                          f" {n}[i] = ({ct}*)malloc(li + 1);"
+                          f" for (size_t j = 0; j < li; j++) {n}[i][j] = ({ct})cuint({it['elem_w']});"
+                          f" {n}[i][li] = 0; }}")
+        elif it["role"] in ("in_struct", "io_struct"):
+            sd = it["struct"]
+            decode.append(f"    {sd['name']} {n};")
+            for f in sd["fields"]:
+                fd, fn = f["desc"], f["name"]
+                if fd["kind"] == "scalar":
+                    decode.append(f"    {n}.{fn} = ({RUST_TO_C[fd['rust']]})cuint({fd['width']});")
+                else:  # fixed array of scalar
+                    ct, ext, ew = RUST_TO_C[fd["elem"]["rust"]], fd["extent"], fd["elem"]["width"]
+                    decode.append(f"    for (size_t j = 0; j < {ext}; j++) "
+                                  f"{n}.{fn}[j] = ({ct})cuint({ew});")
+        elif it["role"] in ("in_struct_arr", "io_struct_arr"):
+            sd, ln, tn = it["struct"], it["len_name"], it["struct"]["name"]
+            decode.append(f"    size_t {ln} = (size_t)(cb() % 64);")
+            decode.append(f"    {tn}* {n} = ({tn}*)malloc(({ln} ? {ln} : 1) * sizeof({tn}));")
+            body = []
+            for f in sd["fields"]:
+                fd, fn = f["desc"], f["name"]
+                if fd["kind"] == "scalar":
+                    body.append(f"{n}[i].{fn} = ({RUST_TO_C[fd['rust']]})cuint({fd['width']});")
+                else:
+                    ct, ext, ew = RUST_TO_C[fd["elem"]["rust"]], fd["extent"], fd["elem"]["width"]
+                    body.append(f"for (size_t j = 0; j < {ext}; j++) {n}[i].{fn}[j] = ({ct})cuint({ew});")
+            decode.append(f"    for (size_t i = 0; i < {ln}; i++) {{ {' '.join(body)} }}")
     call = _c_call_args(abi)
     return f'''#include <stdint.h>
 #include <stddef.h>
@@ -203,6 +244,30 @@ path = "src/main.rs"
             decode.append(f"    for _ in 0..{n}_cnt {{ let mut a = [0 as {it['elem']}; {ext}];"
                           f" for j in 0..{ext} {{ a[j] = cur.take_{it['elem']}(); }} {n}.push(a); }}")
             decode.append(f"    let {it['len_name']} = {n}.len();")
+        elif it["role"] == "in_table":
+            el, om, im = it["elem"], it["outer_max"], it["inner_max"]
+            o, ix = it["outer_name"], it["inner_name"]
+            decode.append(f"    let {o} = (cur.byte() as usize) % ({om} + 1);")
+            decode.append(f"    let {ix} = (cur.byte() as usize) % ({im} + 1);")
+            decode.append(f"    let mut {n}_back: Vec<Vec<{el}>> = (0..{o}).map(|_| "
+                          f"(0..{ix}).map(|_| cur.take_{el}()).collect()).collect();")
+            decode.append(f"    let mut {n}_tab: Vec<*mut {el}> = "
+                          f"{n}_back.iter_mut().map(|row| row.as_mut_ptr()).collect();")
+        elif it["role"] == "in_str_table":
+            el, cm, ln = it["elem"], it["count_max"], it["len_name"]
+            decode.append(f"    let {ln} = (cur.byte() as usize) % ({cm} + 1);")
+            decode.append(f"    let mut {n}_back: Vec<Vec<{el}>> = (0..{ln}).map(|_| "
+                          f"{{ let mut s = cur.take_vec_{el}(); s.push(0 as {el}); s }}).collect();")
+            decode.append(f"    let mut {n}_tab: Vec<*mut {el}> = "
+                          f"{n}_back.iter_mut().map(|s| s.as_mut_ptr()).collect();")
+        elif it["role"] in ("in_struct", "io_struct"):
+            decode.append(f"    let mut {n} = {gdh._rust_struct_literal(it['struct'])};")
+        elif it["role"] in ("in_struct_arr", "io_struct_arr"):
+            sd, ln = it["struct"], it["len_name"]
+            el = f"translated::{sd['name']}"
+            decode.append(f"    let {ln} = (cur.byte() as usize) % 64;")
+            decode.append(f"    let mut {n}: Vec<{el}> = (0..{ln}).map(|_| "
+                          f"{gdh._rust_struct_literal(sd)}).collect();")
     call = []  # call arguments in strict ABI order
     for p in abi:
         role, n = p["role"], p["name"]
@@ -212,6 +277,12 @@ path = "src/main.rs"
             call.append(f"&mut {n}")
         elif role in ("input_string", "input_fixed_array_buffer"):
             call.append(f"{n}.as_ptr()")
+        elif role in ("input_rectangular_pointer_table", "input_string_pointer_table"):
+            call.append(f"{n}_tab.as_mut_ptr()")
+        elif role in ("input_struct", "inout_struct"):
+            call.append(f"&mut {n}")
+        elif role in ("input_struct_array", "inout_struct_array"):
+            call.append(f"{n}.as_mut_ptr()")
         else:  # scalar / length / capacity
             call.append(n)
     takes = "\n".join(
@@ -336,6 +407,11 @@ def main() -> int:
     ap.add_argument("--entry", required=True)
     ap.add_argument("--artifact", required=True)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--ignore-schema", action="store_true",
+                    help="force inference (for harvested non-entry boundaries)")
+    ap.add_argument("--crate-dir", default=None,
+                    help="override the translated-crate dir (default fuzz_gen/<name>); the harvester "
+                         "points this at the exposed per-boundary project")
     args = ap.parse_args()
 
     pair = Path(args.pair)
@@ -344,9 +420,9 @@ def main() -> int:
     cc = pair / "build"
     source = next((pair / "source").glob("*.c"))
     artifact = Path(args.artifact)
-    crate_dir = ROOT / "fuzz_gen" / name
+    crate_dir = Path(args.crate_dir) if args.crate_dir else ROOT / "fuzz_gen" / name
 
-    params, ret, _, items, abi = gdh.resolve(name, cc, args.entry)
+    params, ret, _, items, abi = gdh.resolve(name, cc, args.entry, ignore_schema=args.ignore_schema)
 
     with tempfile.TemporaryDirectory() as td:
         work = Path(td)

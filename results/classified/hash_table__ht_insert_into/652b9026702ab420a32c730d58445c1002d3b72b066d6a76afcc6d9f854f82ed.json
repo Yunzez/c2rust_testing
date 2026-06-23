@@ -1,0 +1,38 @@
+{
+  "program": "hash_table",
+  "entry": "ht_insert_into",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/hash_table__ht_insert_into/fuzz/artifacts/hash_table_ft/crash-d22c64b4201709db",
+  "artifact_sha256": "652b9026702ab420a32c730d58445c1002d3b72b066d6a76afcc6d9f854f82ed",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "crash",
+      "crash"
+    ],
+    "reproducible": true,
+    "outcome": "crash",
+    "stderr": "020e5e07574  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/hash_table_ft+0x2e5574) (BuildId: 82c6a52d1635e9e48f76acfee6b4537d596d4f7e)\n    #7 0x6020e5e06bb9  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/hash_table_ft+0x2e4bb9) (BuildId: 82c6a52d1635e9e48f76acfee6b4537d596d4f7e)\n    #8 0x7071cb42a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #9 0x7071cb42a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #10 0x6020e5d46fa4  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/hash_table_ft+0x224fa4) (BuildId: 82c6a52d1635e9e48f76acfee6b4537d596d4f7e)\n\n==249067==Register values:\nrax = 0x0000000211800066  rbx = 0x00000000f6dfd9cb  rcx = 0x00006c71c93002e0  rdx = 0x00000000f6dfd9cb  \nrdi = 0x0000000000000000  rsi = 0x27958ba0bcc0c8a3  rbp = 0x00007fffad2e39d0  rsp = 0x00007fffad2e3980  \n r8 = 0x00008ba0bcc0c8a3   r9 = 0x000000a000000000  r10 = 0x00008b0000000000  r11 = 0x2700000000000000  \nr12 = 0x00000000f6dfd9cb  r13 = 0x27958ba0bcc0c8a2  r14 = 0x00006c7a0f300478  r15 = 0x00000000b0800022  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/hash_table_ft+0x2e4a5c) (BuildId: 82c6a52d1635e9e48f76acfee6b4537d596d4f7e) \n==249067==ABORTING\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmphj3vhtcc/cdriver.c -o /tmp/tmphj3vhtcc/cdriver",
+    "sanitizers": [],
+    "asan_crash": true,
+    "exit": 1,
+    "stderr": "AddressSanitizer:DEADLYSIGNAL\n=================================================================\n==248870==ERROR: AddressSanitizer: SEGV on unknown address 0x76e4c29001c0 (pc 0x5fe0cbddd749 bp 0x7ffdafdcb650 sp 0x7ffdafdcb560 T0)\n==248870==The signal is caused by a READ memory access.\n    #0 0x5fe0cbddd749 in ht_insert_into /home/yunzez/c2rust_testing/benchmark/pairs/hash_table/source/hash_table.c:47:14\n    #1 0x5fe0cbddd482 in main /tmp/tmphj3vhtcc/cdriver.c:26:11\n    #2 0x7adc7ea2a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16\n    #3 0x7adc7ea2a717 in __libc_start_main csu/../csu/libc-start.c:360:3\n    #4 0x5fe0cbcf2364 in _start (/tmp/tmphj3vhtcc/cdriver+0x2e364) (BuildId: c97e45dfc018cf8be3206a0f82164143c48cabf6)\n\n==248870==Register values:\nrax = 0x000076e4c29001c0  rbx = 0x00007ffdafdcb660  rcx = 0x0000000000000001  rdx = 0x00000000f6dfd9ff  \nrdi = 0x0000000846000101  rsi = 0x000076dc7c900020  rbp = 0x00007ffdafdcb650  rsp = 0x00007ffdafdcb560  \n r8 = 0x00000000000001d8   r9 = 0x0000791c7dde0000  r10 = 0x00007fffffffff01  r11 = 0x0000000000000001  \nr12 = 0x00007ffdafdcb8c8  r13 = 0x0000000000000002  r14 = 0x00007adc7ee52000  r15 = 0x00005fe0cbe185b0  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV /home/yunzez/c2rust_testing/benchmark/pairs/hash_table/source/hash_table.c:47:14 in ht_insert_into\n==248870==ABORTING\n"
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": false,
+    "message": "",
+    "exit": -11,
+    "stderr": ""
+  },
+  "label": "C_CRASH",
+  "evidence": "C AddressSanitizer reported a memory error on the same input"
+}

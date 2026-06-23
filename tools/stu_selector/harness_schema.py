@@ -40,10 +40,21 @@ ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_DIR = ROOT / "schemas"
 SCHEMA_VERSION = 1
 
+# inclusive [min, max] domain per Rust scalar type, for validating bounded_scalar ranges.
+TYPE_RANGE = {
+    "u8": (0, 2**8 - 1), "u16": (0, 2**16 - 1), "u32": (0, 2**32 - 1),
+    "u64": (0, 2**64 - 1), "usize": (0, 2**64 - 1),
+    "i8": (-2**7, 2**7 - 1), "i16": (-2**15, 2**15 - 1),
+    "i32": (-2**31, 2**31 - 1), "i64": (-2**63, 2**63 - 1),
+}
+
 ROLES = {"scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
-         "input_string", "input_fixed_array_buffer", "length", "capacity"}
+         "input_string", "input_fixed_array_buffer", "input_rectangular_pointer_table",
+         "input_string_pointer_table", "input_struct", "inout_struct",
+         "input_struct_array", "inout_struct_array", "length", "capacity"}
 DECODES = {"scalar", "bounded_scalar", "vector", "derived_from_buffer", "out_scalar_zero",
-           "nul_string", "fixed_array_vector"}
+           "nul_string", "fixed_array_vector", "rectangular_pointer_table",
+           "string_pointer_table", "struct_value", "struct_array_vector"}
 
 # name hints used only to DRAFT output- vs inout-buffer; provenance flags this for human review.
 _OUT_HINTS = ("dst", "out", "output", "result", "res")
@@ -67,7 +78,14 @@ def derive(cc_dir: Path, entry: str) -> dict:
     len_owner: dict[str, tuple[str, str]] = {}  # int param -> (buffer name, "length"|"capacity")
     by_name = {p["name"]: p for p in params}
     for it in items:
-        if it["role"] == "in_arr":
+        if it["role"] == "in_table":
+            buf_role[it["name"]] = "input_rectangular_pointer_table"
+            len_owner[it["outer_name"]] = (it["name"], "length")
+            len_owner[it["inner_name"]] = (it["name"], "length")
+        elif it["role"] == "in_str_table":
+            buf_role[it["name"]] = "input_string_pointer_table"
+            len_owner[it["len_name"]] = (it["name"], "length")
+        elif it["role"] == "in_arr":
             buf_role[it["name"]] = "input_fixed_array_buffer"
             len_owner[it["len_name"]] = (it["name"], "length")
         elif it["role"] == "in_buf":
@@ -80,17 +98,53 @@ def derive(cc_dir: Path, entry: str) -> dict:
             else:
                 buf_role[it["name"]] = "inout_buffer"
                 len_owner[it["len_name"]] = (it["name"], "length")
+    for it in items:
+        if it["role"] in ("in_struct_arr", "io_struct_arr"):
+            len_owner[it["len_name"]] = (it["name"], "length")
     out_scalars = {it["name"] for it in items if it["role"] == "out_scalar"}
+    struct_items = {it["name"]: it for it in items
+                    if it["role"] in ("in_struct", "io_struct", "in_struct_arr", "io_struct_arr")}
 
     sparams = []
     for p in params:
         n = p["name"]
-        if n in buf_role:
+        if n in struct_items:
+            it = struct_items[n]
+            spec = {"name": n, "struct_name": it["struct"]["name"],
+                    "fields": gdh._struct_fields_to_schema(it["struct"])}
+            if it["role"] in ("in_struct_arr", "io_struct_arr"):
+                spec["role"] = "input_struct_array" if it["role"] == "in_struct_arr" else "inout_struct_array"
+                spec["decode"] = "struct_array_vector"
+                spec["length_param"] = it["len_name"]
+            else:
+                spec["role"] = "input_struct" if it["role"] == "in_struct" else "inout_struct"
+                spec["decode"] = "struct_value"
+            sparams.append(spec)
+        elif n in buf_role:
             it = next(i for i in items if i["name"] == n)
             role = buf_role[n]
             spec = {"name": n, "role": role, "decode": "vector",
                     "elem": it["elem"], "elem_width": it["elem_w"]}
-            if role == "input_fixed_array_buffer":
+            if role == "input_rectangular_pointer_table":
+                spec["decode"] = "rectangular_pointer_table"
+                spec["outer_length_param"] = it["outer_name"]
+                spec["inner_length_param"] = it["inner_name"]
+                # dimension bounds are not inferable; default to 16 — REVIEW (rows×cols allocation).
+                # Each dimension is one decoded byte, so max must stay in [0,255].
+                spec["outer_max"] = 16
+                spec["inner_max"] = 16
+                # v1 contract: callee must not rewrite the row-pointer table (we compare backing
+                # contents, not pointer addresses). REVIEW if a callee reorders/replaces rows.
+                spec["mutation"] = "backing_observable"
+            elif role == "input_string_pointer_table":
+                spec["decode"] = "string_pointer_table"
+                spec["length_param"] = it["len_name"]
+                # count is one decoded byte, so its max must stay in [0,255]; default 16 — REVIEW.
+                spec["count_max"] = 16
+                # Each backing is an independent NUL-terminated string (per-item length). v1
+                # contract: callee must not rewrite the pointer table; we compare backing contents.
+                spec["mutation"] = "backing_observable"
+            elif role == "input_fixed_array_buffer":
                 spec["decode"] = "fixed_array_vector"
                 spec["inner_extent"] = it["inner_extent"]
                 spec["length_param"] = it["len_name"]
@@ -153,6 +207,44 @@ def validate(schema: dict) -> list[str]:
             errs.append(f"{p['name']}: {p['role']} missing length_param")
         if p.get("role") == "input_fixed_array_buffer" and not isinstance(p.get("inner_extent"), int):
             errs.append(f"{p['name']}: input_fixed_array_buffer missing inner_extent")
+        if p.get("role") == "input_rectangular_pointer_table":
+            for req in ("outer_length_param", "inner_length_param"):
+                if p.get(req) not in names:
+                    errs.append(f"{p['name']}: rectangular table {req} unresolved")
+            # v1: each dimension is decoded from ONE byte, so its max must fit [0, 255].
+            for dim in ("outer_max", "inner_max"):
+                v = p.get(dim)
+                if not isinstance(v, int) or not (0 <= v <= 255):
+                    errs.append(f"{p['name']}: rectangular table {dim} must be an int in [0,255] (1-byte dimension)")
+            # Mutation contract: v1 only supports a callee that does not rewrite the row-pointer
+            # table (we compare backing contents, not pointer topology / addresses).
+            if p.get("mutation") != "backing_observable":
+                errs.append(f"{p['name']}: rectangular table requires mutation=\"backing_observable\" "
+                            f"(row-pointer rewriting not supported in v1)")
+        if p.get("role") == "input_string_pointer_table":
+            if p.get("length_param") not in names:
+                errs.append(f"{p['name']}: string table length_param unresolved")
+            # count is decoded from ONE byte, so its max must fit [0, 255].
+            cm = p.get("count_max")
+            if not isinstance(cm, int) or not (0 <= cm <= 255):
+                errs.append(f"{p['name']}: string table count_max must be an int in [0,255] (1-byte count)")
+            # Same v1 mutation contract as the rectangular table: backing contents are observable,
+            # the pointer table itself must not be rewritten by the callee.
+            if p.get("mutation") != "backing_observable":
+                errs.append(f"{p['name']}: string table requires mutation=\"backing_observable\" "
+                            f"(pointer-table rewriting not supported in v1)")
+        if p.get("role") in ("input_struct", "inout_struct", "input_struct_array", "inout_struct_array"):
+            if not p.get("struct_name"):
+                errs.append(f"{p['name']}: struct role missing struct_name")
+            fs = p.get("fields")
+            if not isinstance(fs, list) or not fs:
+                errs.append(f"{p['name']}: struct role needs a non-empty fields list")
+            else:
+                for fspec in fs:
+                    if fspec.get("kind") not in ("scalar", "array"):
+                        errs.append(f"{p['name']}: struct field {fspec.get('name')} bad kind {fspec.get('kind')}")
+            if p.get("role") in ("input_struct_array", "inout_struct_array") and "length_param" not in p:
+                errs.append(f"{p['name']}: struct array missing length_param")
         if p.get("role") == "output_buffer" and "capacity_param" not in p:
             errs.append(f"{p['name']}: output_buffer missing capacity_param")
     # observable_length kind must be known
@@ -165,7 +257,7 @@ def validate(schema: dict) -> list[str]:
     # that same buffer (not merely an existing param).
     owners: dict[str, list[str]] = {}
     for p in schema.get("params", []):
-        for ref in ("length_param", "capacity_param"):
+        for ref in ("length_param", "capacity_param", "outer_length_param", "inner_length_param"):
             if ref in p:
                 owners.setdefault(p[ref], []).append(p["name"])
     for p in schema.get("params", []):
@@ -185,6 +277,10 @@ _ROLE_DECODE = {
     "scalar": "scalar", "input_buffer": "vector", "inout_buffer": "vector",
     "output_buffer": "vector", "out_scalar": "out_scalar_zero", "input_string": "nul_string",
     "input_fixed_array_buffer": "fixed_array_vector",
+    "input_rectangular_pointer_table": "rectangular_pointer_table",
+    "input_string_pointer_table": "string_pointer_table",
+    "input_struct": "struct_value", "inout_struct": "struct_value",
+    "input_struct_array": "struct_array_vector", "inout_struct_array": "struct_array_vector",
     "length": "derived_from_buffer", "capacity": "derived_from_buffer",
 }
 
@@ -214,9 +310,30 @@ def validate_against_signature(schema: dict, params: list[dict], ret: str) -> li
         if not _ok:
             errs.append(f"{s['name']}: role {s.get('role')} incompatible with decode {_dec}")
         if _dec == "bounded_scalar":
-            lo, hi = s.get("min_value"), s.get("max_value")
+            lo, hi, rng = s.get("min_value"), s.get("max_value"), TYPE_RANGE.get(s.get("rust"))
             if not isinstance(lo, int) or not isinstance(hi, int) or lo > hi:
                 errs.append(f"{s['name']}: bounded_scalar needs integer min_value <= max_value")
+            elif rng and not (rng[0] <= lo <= hi <= rng[1]):
+                errs.append(f"{s['name']}: bounded range [{lo},{hi}] outside {s.get('rust')} {rng}")
+            elif rng and (hi - lo) >= (rng[1] - rng[0]):
+                errs.append(f"{s['name']}: bounded span ({hi}-{lo}+1) not representable in {s.get('rust')}")
+        if p["kind"] == "ptr_struct":
+            single = "inout_struct" if not p["const"] else "input_struct"
+            arr = "inout_struct_array" if not p["const"] else "input_struct_array"
+            if s.get("role") not in (single, arr):
+                errs.append(f"{s['name']}: struct pointer (const={p['const']}) should be {single}/{arr}, got {s.get('role')}")
+            elif s.get("struct_name") != p["struct"]["name"]:
+                errs.append(f"{s['name']}: struct_name {s.get('struct_name')} != signature {p['struct']['name']}")
+            continue
+        if p["kind"] == "ptr_ptr":
+            if s["role"] not in ("input_rectangular_pointer_table", "input_string_pointer_table"):
+                errs.append(f"{s['name']}: T** param has role {s['role']}")
+                continue
+            if s.get("elem") != p["elem"]:
+                errs.append(f"{s['name']}: elem {s.get('elem')} != signature {p['elem']}")
+            if s.get("elem_width") != p["elem_w"]:
+                errs.append(f"{s['name']}: elem_width {s.get('elem_width')} != signature {p['elem_w']}")
+            continue
         if p["kind"] == "ptr_array":
             if s["role"] != "input_fixed_array_buffer":
                 errs.append(f"{s['name']}: pointer-to-array param has role {s['role']}")
@@ -252,6 +369,47 @@ def validate_against_signature(schema: dict, params: list[dict], ret: str) -> li
     return errs
 
 
+# Human POLICY annotations that derive() cannot reproduce from the signature alone; these must
+# survive a re-derive. derive() produces STRUCTURE (roles, decode kinds, elem types); a human sets
+# POLICY (bounded ranges, what the observable output length is, tuned dimension caps, NUL-termination).
+_POLICY_FIELDS = ("observable_length", "mutation", "outer_max", "inner_max", "count_max",
+                  "nul_terminated")
+
+
+def merge_overrides(fresh: dict, existing: dict) -> dict:
+    """Re-apply human policy annotations from an existing schema onto a freshly-derived one,
+    matched by param name. Without this, `--all` silently CLOBBERS hand annotations (e.g. graph_dfs
+    `n` bounded_scalar [0,64] -> plain scalar; kv_config nul_terminated; rle/leb observable_length).
+    Re-derive becomes IDEMPOTENT on a hand-annotated schema."""
+    old = {p["name"]: p for p in existing.get("params", [])}
+    for p in fresh.get("params", []):
+        o = old.get(p["name"])
+        if not o:
+            continue
+        # bounded_scalar is a manual decode override on a scalar param.
+        if o.get("decode") == "bounded_scalar" and p.get("role") == "scalar":
+            p["decode"] = "bounded_scalar"
+            for k in ("min_value", "max_value"):
+                if k in o:
+                    p[k] = o[k]
+        for k in _POLICY_FIELDS:
+            if k in o:
+                p[k] = o[k]
+    # preserve a human-curated provenance note if one was set
+    if existing.get("provenance") and existing["provenance"] != fresh.get("provenance"):
+        fresh.setdefault("provenance_original", fresh.get("provenance"))
+        fresh["provenance"] = existing["provenance"]
+    return fresh
+
+
+def derive_merged(cc_dir: Path, entry: str, schema_path: Path) -> dict:
+    """derive() then re-apply policy from the on-disk schema (if any) so annotations survive."""
+    fresh = derive(cc_dir, entry)
+    if schema_path.exists():
+        fresh = merge_overrides(fresh, load(schema_path))
+    return fresh
+
+
 def load(path: Path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -285,20 +443,44 @@ def main() -> int:
     g.add_argument("--all", action="store_true", help="every generatable entry")
     g.add_argument("--pair", help="single pair dir")
     ap.add_argument("--entry")
+    ap.add_argument("--check", action="store_true",
+                    help="do NOT write; verify each EXISTING on-disk schema equals derive()+overrides "
+                         "(detects drift / accidental clobber) and exit nonzero on mismatch. Pairs "
+                         "with no schema are skipped — they are harvested via --ignore-schema, not "
+                         "schema-managed.")
     args = ap.parse_args()
 
     targets = _generatable_pairs() if args.all else [(Path(args.pair), args.entry)]
     bad = 0
+    drift = 0
+    checked = skipped = 0
     for pair, entry in targets:
-        schema = derive(pair / "build", entry)
-        errs = validate(schema)
         out = SCHEMA_DIR / f"{pair.name}.json"
-        save(schema, out)
-        status = "OK" if not errs else f"INVALID: {errs}"
+        # --check verifies the schemas we MAINTAIN; a pair with no on-disk schema is not drift,
+        # it is simply inference-harvested (not under schema management).
+        if args.check and not out.exists():
+            skipped += 1
+            continue
+        schema = derive_merged(pair / "build", entry, out)  # re-applies human policy annotations
+        errs = validate(schema)
         if errs:
             bad += 1
         roles = ", ".join(f"{p['name']}:{p['role']}" for p in schema["params"])
+        if args.check:
+            checked += 1
+            if load(out) != schema:
+                drift += 1
+                print(f"[{pair.name}] DRIFT: on-disk schema != derive()+overrides")
+            else:
+                print(f"[{pair.name}] OK (in sync)  ({roles})")
+            continue
+        save(schema, out)
+        status = "OK" if not errs else f"INVALID: {errs}"
         print(f"[{pair.name}] {status}  ({roles})")
+    if args.check:
+        print(f"\nchecked {checked} existing schema(s); {drift} drift, {bad} invalid; "
+              f"{skipped} pair(s) skipped (no schema, inference-harvested)")
+        return 1 if (drift or bad) else 0
     print(f"\nwrote {len(targets)} schema(s) to {SCHEMA_DIR}/" + (f"; {bad} invalid" if bad else ""))
     return 1 if bad else 0
 

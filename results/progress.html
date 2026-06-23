@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C→Rust STU Differential Fuzzing — Progress</title>
+<style>
+  :root{
+    --bg:#0f1320; --panel:#171c2e; --panel2:#1f2740; --ink:#e8ecf5; --muted:#9aa6c4;
+    --done:#3ddc97; --now:#ffce5c; --next:#6aa6ff; --bad:#ff7a90;
+    --line:#2b3350; --accent:#8b9dff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0c1020,#0f1320);color:var(--ink);
+    font:15px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px}
+  h1{font-size:26px;margin:0 0 4px} h2{font-size:17px;margin:30px 0 12px;color:var(--accent)}
+  .sub{color:var(--muted);margin:0 0 18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0}
+  .grid{display:grid;gap:12px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:760px){.g3,.g2{grid-template-columns:1fr}}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+  .p-done{background:rgba(61,220,151,.16);color:var(--done);border:1px solid rgba(61,220,151,.35)}
+  .p-now{background:rgba(255,206,92,.16);color:var(--now);border:1px solid rgba(255,206,92,.35)}
+  .p-next{background:rgba(106,166,255,.14);color:var(--next);border:1px solid rgba(106,166,255,.32)}
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+  .step{flex:1;min-width:120px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+    padding:10px 12px;position:relative}
+  .step b{display:block;font-size:13px} .step span{color:var(--muted);font-size:12px}
+  .arrow{align-self:center;color:var(--muted);font-size:18px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600}
+  .num{font-variant-numeric:tabular-nums;font-weight:700}
+  .tl{position:relative;margin-left:8px;padding-left:20px;border-left:2px solid var(--line)}
+  .tl .it{position:relative;margin:0 0 14px}
+  .tl .it::before{content:"";position:absolute;left:-27px;top:4px;width:11px;height:11px;border-radius:50%;
+    background:var(--panel);border:2px solid var(--muted)}
+  .tl .it.done::before{background:var(--done);border-color:var(--done)}
+  .tl .it.now::before{background:var(--now);border-color:var(--now)}
+  .tl .it.next::before{background:transparent;border-color:var(--next)}
+  .it b{font-size:14px} .it span{color:var(--muted);font-size:13px}
+  .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;flex:1;min-width:120px}
+  .kpi .n{font-size:22px;font-weight:800} .kpi .l{color:var(--muted);font-size:12px}
+  code{background:#0c1124;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12.5px}
+  .legend{color:var(--muted);font-size:12.5px;margin-top:6px}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:26px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>C → Rust Translation: STU-Guided Differential Fuzzing</h1>
+  <p class="sub">Measuring C-to-Rust translation correctness by fuzzing the C original against its
+  Rust translation — and choosing <b>where</b> to fuzz (the Smallest/Verifiable Testing Unit).
+  <span style="color:#7d88a8">Snapshot 2026-06-23</span></p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="n" style="color:var(--done)">59</div><div class="l">unit tests passing</div></div>
+    <div class="kpi"><div class="n" style="color:var(--done)">16/16</div><div class="l">harness byte-identity regression</div></div>
+    <div class="kpi"><div class="n" style="color:var(--done)">16</div><div class="l">ENTRYs generatable (of 18)</div></div>
+    <div class="kpi"><div class="n" style="color:var(--now)">2</div><div class="l">real divergences found (C-UB class)</div></div>
+  </div>
+
+  <h2>The core idea</h2>
+  <div class="card">
+    <b>STU = the differential-testing frontier.</b> C2Rust restructures code, so fuzzing at an
+    arbitrary function makes "divergences" that are really bad-boundary artifacts. The STU selector
+    finds boundaries where a differential harness is <i>valid</i> (inputs constructible, outputs
+    comparable, no UB) — and the classifier proves every divergence with independent evidence.
+    <div class="legend">Novelty (literature-checked): not the fuzzing, but the
+    static-analysis <b>boundary selection</b> + an evidence-backed divergence taxonomy.</div>
+  </div>
+
+  <h2>Pipeline</h2>
+  <div class="card">
+    <div class="flow">
+      <div class="step"><b>C ↔ Rust pair</b><span>c2rust 0.22 output</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>STU selector</b><span>callgraph · mapping · features · frontier</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Harness gen</b><span>schema-driven, ABI-correct</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Differential fuzz</b><span>LibAFL, C oracle vs Rust</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Classifier</b><span>replay + UBSan + Rust-only → label</span></div>
+    </div>
+  </div>
+
+  <h2>Where we are</h2>
+  <div class="tl">
+    <div class="it done"><b>Recovery + STU spec</b> <span class="pill p-done">done</span><br>
+      <span>Rebuilt after SSD loss; <code>docs/stu_selection.md</code> locked.</span></div>
+    <div class="it done"><b>STU selector (Stages 1–4)</b> <span class="pill p-done">done</span><br>
+      <span>C callgraph→SCC DAG, C↔Rust mapping, feature study, frontier selection — 17/18 fixture conformance.</span></div>
+    <div class="it done"><b>G1 harness generator + classifier</b> <span class="pill p-done">done</span><br>
+      <span>Generic differential harness; conservative evidence-backed labels (C_UB_CONFIRMED, RUST_PANIC, HARNESS_DIVERGENCE, … UNKNOWN).</span></div>
+    <div class="it done"><b>Explicit harness schema (P3)</b> <span class="pill p-done">done</span><br>
+      <span>Roles from a versioned schema, byte-identical migration, strong validation, canonical type parser.</span></div>
+    <div class="it now"><b>Nested-pointer coverage</b> <span class="pill p-now">in progress</span><br>
+      <span>ptr-to-array ✓ · rectangular table <code>int**</code> ✓ · <b>char** next</b> · callback after.</span></div>
+    <div class="it next"><b>G3 → G2 → learned risk model</b> <span class="pill p-next">planned</span><br>
+      <span>Semantics-preserving refactors, injected bugs, then P(valid harness | features) with per-program CV.</span></div>
+  </div>
+
+  <h2>Input-type coverage (the generator)</h2>
+  <div class="card grid g3">
+    <div><span class="pill p-done">done</span> scalars + bounded scalars</div>
+    <div><span class="pill p-done">done</span> input / inout / output buffers (+ capacity)</div>
+    <div><span class="pill p-done">done</span> out-scalar</div>
+    <div><span class="pill p-done">done</span> NUL-terminated input string</div>
+    <div><span class="pill p-done">done</span> ptr-to-array <code>T(*)[N]</code></div>
+    <div><span class="pill p-done">done</span> rectangular table <code>int**</code></div>
+    <div><span class="pill p-now">next</span> string table <code>char**</code></div>
+    <div><span class="pill p-next">after</span> callback <code>fn-ptr</code></div>
+    <div style="color:var(--muted)">each shape: identical bytes across differential / C-only / Rust-only decoders</div>
+  </div>
+
+  <h2>G1 support matrix (18 ENTRYs)</h2>
+  <div class="card">
+    <table>
+      <tr><th>Outcome</th><th>Count</th><th>Meaning</th></tr>
+      <tr><td><span class="pill p-done">NO_DIVERGENCE_OBSERVED</span></td><td class="num">14</td>
+        <td>30 s fuzzing found nothing (≠ proof of equivalence)</td></tr>
+      <tr><td><span class="pill p-now">C_UB_CONFIRMED</span></td><td class="num">2</td>
+        <td>rpn_eval, opcode_dispatch — signed-overflow UB → Rust panic (real, classified)</td></tr>
+      <tr><td><span class="pill p-next">UNSUPPORTED_SIGNATURE</span></td><td class="num">2</td>
+        <td>word_tokens (<code>char**</code>), array_map_reduce (callback) — the next two steps</td></tr>
+    </table>
+    <div class="legend">0 observed harness false positives. Each divergence carries toolchain, artifact
+    sha256, and independent C-UBSan / Rust-only / diff-replay evidence.</div>
+  </div>
+
+  <h2>Next steps</h2>
+  <div class="card grid g2">
+    <div><b>1 · char** string table</b><br><span style="color:var(--muted)">word_tokens — pointer table over
+      independent NUL-terminated backings (distinct from the rectangular table).</span></div>
+    <div><b>2 · callback binding</b><br><span style="color:var(--muted)">array_map_reduce — bind a finite set of
+      functions; semantic choice of which behavior to fuzz.</span></div>
+    <div><b>3 · G3 semantics-preserving refactors</b><br><span style="color:var(--muted)">inline/outline, wrapper,
+      CFG rewrite — reliable "structure-changed, semantics-preserved" labels to test false-positive avoidance.</span></div>
+    <div><b>4 · G2 injected bugs → learned model</b><br><span style="color:var(--muted)">measure bug recall, then learn
+      P(valid harness | x) with per-program grouped cross-validation.</span></div>
+  </div>
+
+  <p class="foot">Toolchain: c2rust 0.22.1 · clang 21 · nightly-2025-09-01 + LibAFL 0.15.4.
+  All STU tooling under <code>tools/stu_selector/</code>; evidence under <code>results/</code>.</p>
+
+</div>
+</body>
+</html>

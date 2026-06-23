@@ -1,0 +1,38 @@
+{
+  "program": "mergesort_search",
+  "entry": "merge_runs",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/mergesort_search__merge_runs/fuzz/artifacts/mergesort_search_ft/crash-54bd4d68ea258be1",
+  "artifact_sha256": "9555b5a1ca59f5b4358db06ba65f0b16b5db7c3a335a5c3369c6b971db34e022",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "crash",
+      "crash"
+    ],
+    "reproducible": true,
+    "outcome": "crash",
+    "stderr": "ez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/mergesort_search_ft+0x2ebbf4) (BuildId: f42d7e8c3b08ddc63911e56bc726f2a8b78e0197)\n    #7 0x5aad84898239  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/mergesort_search_ft+0x2eb239) (BuildId: f42d7e8c3b08ddc63911e56bc726f2a8b78e0197)\n    #8 0x7459d0c2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #9 0x7459d0c2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #10 0x5aad847d50a4  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/mergesort_search_ft+0x2280a4) (BuildId: f42d7e8c3b08ddc63911e56bc726f2a8b78e0197)\n\n==310289==Register values:\nrax = 0x00007059cef00620  rbx = 0x0000000000000013  rcx = 0x00005aad852e7250  rdx = 0x0000000000000013  \nrdi = 0x011e17190a061806  rsi = 0x1703001e111a1d0f  rbp = 0x00007ffd121d0870  rsp = 0x00007ffd121d0810  \n r8 = 0x1703001e111a1d0f   r9 = 0x0000000000000000  r10 = 0xffffffffffffffff  r11 = 0x0000000000000000  \nr12 = 0x0000000000000013  r13 = 0x0000000000000000  r14 = 0x011e17190a061806  r15 = 0x0000000000000013  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/mergesort_search_ft+0x2eafaf) (BuildId: f42d7e8c3b08ddc63911e56bc726f2a8b78e0197) \n==310289==ABORTING\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmpmh3o6853/cdriver.c -o /tmp/tmpmh3o6853/cdriver",
+    "sanitizers": [],
+    "asan_crash": true,
+    "exit": 1,
+    "stderr": "=================\n==310094==ERROR: AddressSanitizer: SEGV on unknown address (pc 0x5fa51461a7cd bp 0x7ffcc46ad610 sp 0x7ffcc46ad440 T0)\n==310094==The signal is caused by a READ memory access.\n==310094==Hint: this fault was caused by a dereference of a high value address (see register values below).  Disassemble the provided pc to learn which register was used.\n    #0 0x5fa51461a7cd in merge_runs /home/yunzez/c2rust_testing/benchmark/pairs/mergesort_search/source/mergesort_search.c:18:21\n    #1 0x5fa51461a39c in main /tmp/tmpmh3o6853/cdriver.c:25:11\n    #2 0x75b8dcc2a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16\n    #3 0x75b8dcc2a717 in __libc_start_main csu/../csu/libc-start.c:360:3\n    #4 0x5fa514530364 in _start (/tmp/tmpmh3o6853/cdriver+0x2d364) (BuildId: 4ffb1b4b2a13b47e1f9a2e29df42d2909e9f4167)\n\n==310094==Register values:\nrax = 0x008f19c3a0590c07  rbx = 0x00007ffcc46ad620  rcx = 0x0000000000000001  rdx = 0x00000000000000ff  \nrdi = 0x04785c6428186001  rsi = 0x000071b8dab00020  rbp = 0x00007ffcc46ad610  rsp = 0x00007ffcc46ad440  \n r8 = 0x1703001e111a1d0f   r9 = 0x00007fffffffff01  r10 = 0x00007fffffffff01  r11 = 0xafffff00000fff01  \nr12 = 0x00007ffcc46ad8d8  r13 = 0x0000000000000002  r14 = 0x000075b8dd16c000  r15 = 0x00005fa5146555b0  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV /home/yunzez/c2rust_testing/benchmark/pairs/mergesort_search/source/mergesort_search.c:18:21 in merge_runs\n==310094==ABORTING\n"
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": false,
+    "message": "",
+    "exit": -11,
+    "stderr": ""
+  },
+  "label": "C_CRASH",
+  "evidence": "C AddressSanitizer reported a memory error on the same input"
+}

@@ -27,20 +27,18 @@ Generated extern: `fn c_count_reachable(n: usize, edges: *const [usize; 2], m: u
   **graph_dfs added as a new-capability golden**. So ptr-to-array did not perturb existing output.
 - graph_dfs **builds** and **runs** end-to-end (harness feeds the ptr-to-array correctly).
 
-## Honest G1 caveat (a real finding, orthogonal to ptr-to-array)
+## Initial G1 caveat — now RESOLVED by bounded scalar
 
-graph_dfs's G1 is dominated by its **unbounded `n`** (vertex count): a raw 8-byte fuzz value makes
-the adjacency-list allocation `malloc(n · …)` explode → AddressSanitizer `allocation-size-too-big`,
-and with `allocator_may_return_null=1` → OOM. The classifier conservatively labels the OOM artifact
-**UNKNOWN** (no UBSan signal, not a clean crash attribution) — correct: it is **not** a translation
-divergence, it is resource exhaustion from an unbounded size input, shared by C and Rust.
-
-This motivates a future schema annotation for **size-like scalars** (e.g. a `max_value` / bounded
-domain for `n`) so the generic harness doesn't feed allocation sizes that trivially exhaust memory.
-That is out of scope for ptr-to-array and tracked for later.
+The first run of graph_dfs was dominated by its **unbounded `n`** (vertex count): a raw 8-byte fuzz
+value made `malloc(n · …)` explode → ASan `allocation-size-too-big` / OOM, classified UNKNOWN. This
+motivated the `bounded_scalar` decode (commit `b4c37e3`): `n` is now bounded to `[0, 64]`. Since
+graph_dfs already skips out-of-range edge endpoints, bounded `n` gives a clean, meaningful run —
+**graph_dfs is now `NO_DIVERGENCE_OBSERVED`** in the refreshed matrix (`results/g1_matrix_v1.md`).
 
 ## Next
 
-Review whether `input_fixed_array_buffer` (flat, inner_extent) is the right reusable abstraction
-before T** (matrix_reduce `int**`, word_tokens `char**`) — which is a different model (pointer
-table + separate backing allocations), then callback binding.
+`input_fixed_array_buffer` (flat, `inner_extent`) is accepted as the right abstraction for contiguous
+`T (*)[N]` and is **not** reused for T**. Next: T** as two distinct roles —
+`input_rectangular_pointer_table` (matrix `int**`) and `input_string_pointer_table` (words `char**`)
+— sharing the canonical descriptor, ABI ordering, bounded scalar, and the 3-way byte-decode spec;
+then callback binding.

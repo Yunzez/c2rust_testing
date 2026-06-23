@@ -52,9 +52,16 @@ def entries_from_raw() -> dict[str, str | None]:
     return {c.stem: fr.parse_entry(c) for c in (ROOT / "benchmark" / "raw").rglob("*.c")}
 
 
+# Messages that mean "this signature shape is not supported yet" (vs a real generation bug).
+_UNSUPPORTED_MARKS = ("unsupported", "deferred", "not yet supported")
+
+
 def gen(pair: Path, entry: str) -> tuple[bool, str]:
+    # --infer-schema so a program WITHOUT a schema still gets parsed and surfaces the real reason
+    # (e.g. char** / callback unsupported) instead of failing on "no schema".
     r = subprocess.run(
-        ["python3", str(TOOLS / "gen_diff_harness.py"), "--pair", str(pair), "--entry", entry],
+        ["python3", str(TOOLS / "gen_diff_harness.py"), "--pair", str(pair), "--entry", entry,
+         "--infer-schema"],
         capture_output=True, text=True)
     if r.returncode == 0:
         return True, ""
@@ -158,7 +165,8 @@ def main() -> int:
 
         ok, msg = gen(pair, entry)
         if not ok:
-            row["label"] = "UNSUPPORTED_SIGNATURE" if "unsupported" in msg.lower() else "GEN_FAIL"
+            unsupported = any(k in msg.lower() for k in _UNSUPPORTED_MARKS)
+            row["label"] = "UNSUPPORTED_SIGNATURE" if unsupported else "GEN_FAIL"
             row["note"] = msg; rows.append(row); print(f"[{prog}] {row['label']}: {msg}"); continue
         row["generator_supported"] = True
 

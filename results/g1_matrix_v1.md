@@ -5,16 +5,18 @@ evidence-backed conservative classification; then produce a structured G1 table 
 generatable ENTRYs.* Driver: `scripts/run_g1_matrix.py` (DUR=30 s/program, shared `CARGO_TARGET_DIR`
 caches LibAFL); each artifact auto-classified by `classify_artifact.py`. Raw table: `g1_matrix.md`.
 
-## Outcome (18 ENTRYs)
+## Outcome (18 ENTRYs) — refreshed after ptr-to-array + bounded scalar
 
 | label | n | programs |
 |---|---|---|
-| NO_DIVERGENCE_OBSERVED (30 s) | 12 | bitutils, dynamic_array, glob_match, hash_table, intmath, kv_config, leb128, linked_list, mergesort_search, rle_codec, state_machine, tiny_vm |
+| NO_DIVERGENCE_OBSERVED (30 s) | 13 | bitutils, dynamic_array, glob_match, **graph_dfs**, hash_table, intmath, kv_config, leb128, linked_list, mergesort_search, rle_codec, state_machine, tiny_vm |
 | C_UB_CONFIRMED | 2 | rpn_eval, opcode_dispatch |
-| UNSUPPORTED_SIGNATURE | 4 | array_map_reduce (fn-ptr), graph_dfs (ptr-to-array `size_t[2]`), matrix_reduce (`int**`), word_tokens (`char**`) |
+| UNSUPPORTED_SIGNATURE | 3 | array_map_reduce (fn-ptr / callback), matrix_reduce (`int**`, T**), word_tokens (`char**`, T**) |
 
-**14 generatable ENTRYs: 12 NO_DIVERGENCE_OBSERVED under 30-second fuzzing + 2 real divergences.
-0 *observed* harness false positives** (no NON_REPRODUCIBLE, no CLASSIFY_ERROR).
+**15 generatable ENTRYs: 13 NO_DIVERGENCE_OBSERVED under 30-second fuzzing + 2 real divergences.
+0 *observed* harness false positives.** `graph_dfs` moved from UNSUPPORTED to a real result once
+ptr-to-array landed and its `n` was bounded (no more OOM). The 3 remaining unsupported are the two
+T** programs and the one callback program — the next P3 steps.
 
 > NOTE: `NO_DIVERGENCE_OBSERVED` is exactly that — 30 s of fuzzing found nothing; it is **not**
 > evidence of semantic equivalence. The matrix also records per-run telemetry (elapsed, exit code,

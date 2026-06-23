@@ -9,7 +9,7 @@ Labels: NO_DIVERGENCE_OBSERVED (full run, no artifact) / FUZZER_EXITED_EARLY / U
 | bitutils | bitutils_eval | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | dynamic_array | da_run | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | glob_match | glob_match | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
-| graph_dfs | count_reachable | False | False | None | None | 0 | 0 | UNSUPPORTED_SIGNATURE |
+| graph_dfs | count_reachable | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | hash_table | ht_run | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | intmath | intmath_eval | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |
 | kv_config | kv_parse | True | True | 30.0 | True | 0 | 0 | NO_DIVERGENCE_OBSERVED |

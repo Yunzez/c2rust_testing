@@ -134,6 +134,10 @@ def _gate_reason(reason: str) -> str:
 
 
 def main() -> int:
+    import argparse
+    ap = argparse.ArgumentParser(description="Stage A boundary constructibility census")
+    ap.add_argument("--out", default=None, help="output jsonl (default dataset/boundaries_static.jsonl)")
+    cli = ap.parse_args()
     pairs = sorted(p for p in (ROOT / "benchmark" / "pairs").iterdir()
                    if p.is_dir() and not p.name.startswith("_"))
     rust_bin = Path(feat.mapmod._DEFAULT_RUST_BIN) if hasattr(feat, "mapmod") else \
@@ -177,7 +181,8 @@ def main() -> int:
     # ---- persist dataset + human summary ----
     ds_dir = ROOT / "dataset"
     ds_dir.mkdir(exist_ok=True)
-    jl = ds_dir / "boundaries_static.jsonl"
+    jl = Path(cli.out) if cli.out else ds_dir / "boundaries_static.jsonl"
+    jl.parent.mkdir(parents=True, exist_ok=True)
     jl.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
 
     by_outcome: dict[str, int] = {}

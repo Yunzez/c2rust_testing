@@ -64,9 +64,12 @@ VALIDITY = {
 }
 
 
-def load_constructible() -> list[dict]:
-    rows = [json.loads(l) for l in (ROOT / "dataset" / "boundaries_static.jsonl")
-            .read_text().splitlines() if l.strip()]
+sys.path.insert(0, str(TOOLS))
+import gen_diff_harness as _gdh  # noqa: E402  (for the generator capability stamp)
+
+
+def load_constructible(static_path: Path) -> list[dict]:
+    rows = [json.loads(l) for l in static_path.read_text().splitlines() if l.strip()]
     return [r for r in rows if r.get("constructible")]
 
 
@@ -155,10 +158,15 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Stage B: validity labels for constructible boundaries")
     ap.add_argument("--limit", type=int, default=None, help="only the first N boundaries")
     ap.add_argument("--only", default=None, help="comma list of pair__fn tags to run")
+    ap.add_argument("--static", default=str(ROOT / "dataset" / "boundaries_static.jsonl"),
+                    help="constructibility census input (Stage A output)")
+    ap.add_argument("--out", default=str(ROOT / "dataset" / "boundaries.jsonl"),
+                    help="labeled dataset output (use a v2 path to avoid clobbering frozen v1)")
     args = ap.parse_args()
 
     HARVEST.mkdir(parents=True, exist_ok=True)
-    boundaries = load_constructible()
+    boundaries = load_constructible(Path(args.static))
+    gen_stamp = {"version": _gdh.GEN_VERSION, "capabilities": list(_gdh.GEN_CAPABILITIES)}
     only = set(args.only.split(",")) if args.only else None
     if only:
         boundaries = [b for b in boundaries if f"{b['pair']}__{b['fn']}" in only]
@@ -174,6 +182,7 @@ def main() -> int:
         out = HARVEST / tag
         row = {k: b[k] for k in b}  # carry every static feature + census field
         row["dur_seconds"] = DUR
+        row["generator"] = gen_stamp  # version + capabilities at harvest time (v1/v2 disambiguation)
         # STU boundaries may legitimately fall on INTERNAL (static) functions, but they must never
         # be reported as public-API equivalence: tag scope so public/internal are reported apart.
         row["boundary_scope"] = "public" if b.get("pub_in_rust") else "internal"
@@ -200,9 +209,9 @@ def main() -> int:
         print(f"[{i}/{len(boundaries)}] {tag}: {label} -> {row['validity']} "
               f"(exec={run['executions']}, arts={run['artifact_count']})")
 
-    (ROOT / "dataset").mkdir(exist_ok=True)
-    (ROOT / "dataset" / "boundaries.jsonl").write_text(
-        "".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
 
     by_validity: dict[str, int] = {}
     by_label: dict[str, int] = {}
@@ -213,9 +222,13 @@ def main() -> int:
         sk = (r.get("boundary_scope", "?"), r["validity"])
         scope_validity[sk] = scope_validity.get(sk, 0) + 1
     n = len(rows)
-    md = [f"# Boundary dataset v1 — Stage B (validity labels)\n",
+    _tag = "v2" if "_v2" in out_path.stem else "v1"
+    md = [f"# Boundary dataset {_tag} — Stage B (RAW harvest labels)\n",
           f"DUR={DUR}s/boundary; shared LibAFL cache; each artifact classified by classify_artifact.py "
-          f"(--ignore-schema, exposed crate). Raw: `dataset/boundaries.jsonl`.\n",
+          f"(--ignore-schema, exposed crate). Raw dataset: `dataset/{out_path.name}` "
+          f"(generator {_gdh.GEN_VERSION}).\n",
+          f"> These are RAW harvest labels. The AUDITED label is `validity_v2` "
+          f"(see `scripts/audit_heuristics.py` + the audit report); do not train on these directly.\n",
           f"## {n} constructible boundaries labeled\n", "| validity | n |", "|---|---|"]
     for k in ("valid", "invalid", "review", "excluded"):
         if k in by_validity:
@@ -233,7 +246,7 @@ def main() -> int:
     md += ["\n> NO_DIVERGENCE_OBSERVED = no divergence in DUR s — a **weak positive**, not proof of equivalence. "
            "The label auditor verifies the fuzzer actually exercised each boundary and that each "
            "`invalid` is a real boundary property (UB/invariant), not a harness-inference artifact.\n"]
-    (ROOT / "results" / "stage_b_v1.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    (ROOT / "results" / f"stage_b_{_tag}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print(f"\nwrote {n} rows to dataset/boundaries.jsonl; validity={by_validity}")
     return 0
 

@@ -444,23 +444,31 @@ def main() -> int:
     g.add_argument("--pair", help="single pair dir")
     ap.add_argument("--entry")
     ap.add_argument("--check", action="store_true",
-                    help="do NOT write; verify each on-disk schema equals derive()+overrides "
-                         "(detects drift / accidental clobber) and exit nonzero on mismatch")
+                    help="do NOT write; verify each EXISTING on-disk schema equals derive()+overrides "
+                         "(detects drift / accidental clobber) and exit nonzero on mismatch. Pairs "
+                         "with no schema are skipped — they are harvested via --ignore-schema, not "
+                         "schema-managed.")
     args = ap.parse_args()
 
     targets = _generatable_pairs() if args.all else [(Path(args.pair), args.entry)]
     bad = 0
     drift = 0
+    checked = skipped = 0
     for pair, entry in targets:
         out = SCHEMA_DIR / f"{pair.name}.json"
+        # --check verifies the schemas we MAINTAIN; a pair with no on-disk schema is not drift,
+        # it is simply inference-harvested (not under schema management).
+        if args.check and not out.exists():
+            skipped += 1
+            continue
         schema = derive_merged(pair / "build", entry, out)  # re-applies human policy annotations
         errs = validate(schema)
         if errs:
             bad += 1
         roles = ", ".join(f"{p['name']}:{p['role']}" for p in schema["params"])
         if args.check:
-            cur = load(out) if out.exists() else None
-            if cur != schema:
+            checked += 1
+            if load(out) != schema:
                 drift += 1
                 print(f"[{pair.name}] DRIFT: on-disk schema != derive()+overrides")
             else:
@@ -470,7 +478,8 @@ def main() -> int:
         status = "OK" if not errs else f"INVALID: {errs}"
         print(f"[{pair.name}] {status}  ({roles})")
     if args.check:
-        print(f"\nchecked {len(targets)} schema(s); {drift} drift, {bad} invalid")
+        print(f"\nchecked {checked} existing schema(s); {drift} drift, {bad} invalid; "
+              f"{skipped} pair(s) skipped (no schema, inference-harvested)")
         return 1 if (drift or bad) else 0
     print(f"\nwrote {len(targets)} schema(s) to {SCHEMA_DIR}/" + (f"; {bad} invalid" if bad else ""))
     return 1 if bad else 0

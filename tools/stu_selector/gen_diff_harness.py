@@ -36,6 +36,16 @@ from clang.cindex import CursorKind, Index, TypeKind  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 
+# Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
+# different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
+GEN_VERSION = "0.4"
+GEN_CAPABILITIES = (
+    "scalar", "bounded_scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
+    "input_string", "input_fixed_array_buffer", "input_rectangular_pointer_table",
+    "input_string_pointer_table", "input_struct", "inout_struct",
+    "input_struct_array", "inout_struct_array",
+)
+
 # c2rust type spelling -> (rust_ffi_type, byte_width). size_t -> usize to match translation.
 SCALAR_MAP = {
     "size_t": ("usize", 8),

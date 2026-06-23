@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "program": "graph_dfs",
+  "entry": "count_reachable",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "i64"
+  },
+  "params": [
+    {
+      "name": "n",
+      "role": "scalar",
+      "decode": "scalar",
+      "rust": "usize",
+      "width": 8
+    },
+    {
+      "name": "edges",
+      "role": "input_fixed_array_buffer",
+      "decode": "fixed_array_vector",
+      "elem": "usize",
+      "elem_width": 8,
+      "inner_extent": 2,
+      "length_param": "m"
+    },
+    {
+      "name": "m",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "edges",
+      "rust": "usize",
+      "width": 8
+    }
+  ]
+}

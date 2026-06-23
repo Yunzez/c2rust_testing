@@ -107,6 +107,17 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
                 if t.kind == TypeKind.POINTER:
                     pointee = t.get_pointee()
                     is_const = pointee.is_const_qualified()
+                    if pointee.kind == TypeKind.CONSTANTARRAY:
+                        # pointer-to-fixed-array, e.g. `const size_t (*)[2]`: contiguous flat storage.
+                        elem_t = pointee.element_type
+                        base = map_scalar(elem_t.spelling)
+                        if base is None:
+                            raise SystemExit(f"unsupported array element type: {elem_t.spelling}")
+                        params.append({"kind": "ptr_array",
+                                       "const": is_const or elem_t.is_const_qualified(),
+                                       "elem": base[0], "elem_w": base[1],
+                                       "inner_extent": pointee.element_count, "name": pname})
+                        continue
                     base = map_scalar(pointee.spelling)
                     if base is None:
                         raise SystemExit(f"unsupported pointer element type: {pointee.spelling}")
@@ -153,6 +164,10 @@ def items_from_schema(schema: dict) -> list[dict]:
         elif role == "input_string":
             items.append({"kind": "ptr", "role": "in_str", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"]})
+        elif role == "input_fixed_array_buffer":
+            items.append({"kind": "ptr_array", "role": "in_arr", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"],
+                          "inner_extent": p["inner_extent"], "len_name": p["length_param"]})
         # length / capacity params are consumed by their owning buffer (not standalone items)
     return items
 
@@ -167,14 +182,20 @@ def _infer_abi(params: list[dict]) -> list[dict]:
             buf_role[it["name"]] = "input_buffer"; len_owner[it["len_name"]] = (it["name"], "length")
         elif it["role"] == "io_buf":
             buf_role[it["name"]] = "inout_buffer"; len_owner[it["len_name"]] = (it["name"], "length")
+        elif it["role"] == "in_arr":
+            buf_role[it["name"]] = "input_fixed_array_buffer"; len_owner[it["len_name"]] = (it["name"], "length")
     out_scalars = {it["name"] for it in its if it["role"] == "out_scalar"}
     abi = []
     for p in params:
         n = p["name"]
         if n in buf_role:
             it = next(i for i in its if i["name"] == n)
-            abi.append({"name": n, "role": buf_role[n], "decode": "vector",
-                        "elem": it["elem"], "elem_width": it["elem_w"], "length_param": it["len_name"]})
+            spec = {"name": n, "role": buf_role[n], "decode": "vector",
+                    "elem": it["elem"], "elem_width": it["elem_w"], "length_param": it["len_name"]}
+            if buf_role[n] == "input_fixed_array_buffer":
+                spec["decode"] = "fixed_array_vector"
+                spec["inner_extent"] = it["inner_extent"]
+            abi.append(spec)
         elif n in len_owner:
             buf, kind = len_owner[n]
             abi.append({"name": n, "role": kind, "decode": "derived_from_buffer",
@@ -222,6 +243,15 @@ def classify(params: list[dict]) -> list[dict]:
     i = 0
     while i < len(params):
         p = params[i]
+        if p["kind"] == "ptr_array":
+            nxt = params[i + 1] if i + 1 < len(params) else None
+            if nxt and nxt["kind"] == "scalar":
+                if not p["const"]:
+                    raise SystemExit(f"unsupported: mutable pointer-to-array param {p['name']}")
+                out.append({**p, "role": "in_arr", "len_name": nxt["name"]})
+                i += 2
+                continue
+            raise SystemExit(f"unsupported: pointer-to-array param {p['name']} without a length")
         if p["kind"] == "ptr":
             nxt = params[i + 1] if i + 1 < len(params) else None
             if nxt and nxt["kind"] == "scalar":
@@ -262,6 +292,13 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
         elif it["role"] == "in_str":
             decode.append(f"    let mut {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    {n}_buf.push(0 as {it['elem']});")
+        elif it["role"] == "in_arr":
+            ext = it["inner_extent"]
+            decode.append(f"    let {n}_cnt = (cur.byte() as usize) % 64;")
+            decode.append(f"    let mut {n}_buf: Vec<[{it['elem']}; {ext}]> = Vec::with_capacity({n}_cnt);")
+            decode.append(f"    for _ in 0..{n}_cnt {{ let mut a = [0 as {it['elem']}; {ext}];"
+                          f" for j in 0..{ext} {{ a[j] = cur.take_{it['elem']}(); }} {n}_buf.push(a); }}")
+            decode.append(f"    let {it['len_name']} = {n}_buf.len();")
     return decode, post
 
 
@@ -288,6 +325,9 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
         elif role == "input_string":
             c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
             decl.append(f"{n}: *const {p['elem']}")
+        elif role == "input_fixed_array_buffer":
+            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            decl.append(f"{n}: *const [{p['elem']}; {p['inner_extent']}]")
     return c_args, r_args, decl
 
 

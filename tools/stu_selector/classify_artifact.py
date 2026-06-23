@@ -103,6 +103,14 @@ def gen_c_driver(items: list[dict], abi: list[dict], entry: str, source_abs: str
             decode.append(f"    {ct}* {n} = ({ct}*)malloc({n}_len + 1);")
             decode.append(f"    for (size_t i = 0; i < {n}_len; i++) {n}[i] = ({ct})cuint({it['elem_w']});")
             decode.append(f"    {n}[{n}_len] = 0;")
+        elif it["role"] == "in_arr":
+            ct = RUST_TO_C[it["elem"]]
+            ext = it["inner_extent"]
+            ln = it["len_name"]
+            decode.append(f"    size_t {ln} = (size_t)(cb() % 64);")
+            decode.append(f"    {ct} (*{n})[{ext}] = ({ct}(*)[{ext}])malloc(({ln} ? {ln} : 1) * {ext} * sizeof({ct}));")
+            decode.append(f"    for (size_t i = 0; i < {ln}; i++) for (size_t j = 0; j < {ext}; j++) "
+                          f"{n}[i][j] = ({ct})cuint({it['elem_w']});")
     call = _c_call_args(abi)
     return f'''#include <stdint.h>
 #include <stddef.h>
@@ -180,6 +188,13 @@ path = "src/main.rs"
         elif it["role"] == "in_str":
             decode.append(f"    let mut {n}: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    {n}.push(0 as {it['elem']});")
+        elif it["role"] == "in_arr":
+            ext = it["inner_extent"]
+            decode.append(f"    let {n}_cnt = (cur.byte() as usize) % 64;")
+            decode.append(f"    let mut {n}: Vec<[{it['elem']}; {ext}]> = Vec::with_capacity({n}_cnt);")
+            decode.append(f"    for _ in 0..{n}_cnt {{ let mut a = [0 as {it['elem']}; {ext}];"
+                          f" for j in 0..{ext} {{ a[j] = cur.take_{it['elem']}(); }} {n}.push(a); }}")
+            decode.append(f"    let {it['len_name']} = {n}.len();")
     call = []  # call arguments in strict ABI order
     for p in abi:
         role, n = p["role"], p["name"]
@@ -187,7 +202,7 @@ path = "src/main.rs"
             call.append(f"{n}.as_mut_ptr()")
         elif role == "out_scalar":
             call.append(f"&mut {n}")
-        elif role == "input_string":
+        elif role in ("input_string", "input_fixed_array_buffer"):
             call.append(f"{n}.as_ptr()")
         else:  # scalar / length / capacity
             call.append(n)

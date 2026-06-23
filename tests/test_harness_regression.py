@@ -19,9 +19,11 @@ FIX = ROOT / "tests" / "fixtures" / "harness"
 GEN = ROOT / "tools" / "stu_selector" / "gen_diff_harness.py"
 
 
-# These two fixtures were intentionally re-baselined when the input_string role landed (their
-# decode changed on purpose). The other 12 are byte-identical to the pre-migration generator.
+# glob_match/kv_config were re-baselined when input_string landed; graph_dfs is a new capability
+# (ptr-to-array) with no pre-migration baseline. The other 12 are byte-identical to the
+# pre-migration generator.
 REVIEWED_CHANGE = {"glob_match", "kv_config"}
+NEW_CAPABILITY = {"graph_dfs"}
 
 
 def main():
@@ -29,7 +31,8 @@ def main():
     if not fixtures:
         print("no fixtures found"); return 1
     failed = 0
-    print("(12 expected migration-identical; 2 reviewed semantic changes: glob_match, kv_config)\n")
+    print("(12 migration-identical; 2 reviewed changes: glob_match, kv_config; "
+          "1 new capability: graph_dfs)\n")
     with tempfile.TemporaryDirectory() as td:
         for fix in fixtures:
             prog = fix.name[:-len("_ft.rs")]
@@ -44,7 +47,9 @@ def main():
                 print(f"  FAIL  {prog}: generation failed ({r.stderr.strip()[-120:]})")
                 failed += 1
                 continue
-            kind = "reviewed-change golden" if prog in REVIEWED_CHANGE else "migration-identical"
+            kind = ("reviewed-change golden" if prog in REVIEWED_CHANGE
+                    else "new-capability golden" if prog in NEW_CAPABILITY
+                    else "migration-identical")
             if gen_file.read_text() == fix.read_text():
                 print(f"  PASS  {prog}: matches {kind}")
             else:

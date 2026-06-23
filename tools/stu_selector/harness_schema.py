@@ -41,8 +41,9 @@ SCHEMA_DIR = ROOT / "schemas"
 SCHEMA_VERSION = 1
 
 ROLES = {"scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
-         "input_string", "length", "capacity"}
-DECODES = {"scalar", "vector", "derived_from_buffer", "out_scalar_zero", "nul_string"}
+         "input_string", "input_fixed_array_buffer", "length", "capacity"}
+DECODES = {"scalar", "vector", "derived_from_buffer", "out_scalar_zero", "nul_string",
+           "fixed_array_vector"}
 
 # name hints used only to DRAFT output- vs inout-buffer; provenance flags this for human review.
 _OUT_HINTS = ("dst", "out", "output", "result", "res")
@@ -66,7 +67,10 @@ def derive(cc_dir: Path, entry: str) -> dict:
     len_owner: dict[str, tuple[str, str]] = {}  # int param -> (buffer name, "length"|"capacity")
     by_name = {p["name"]: p for p in params}
     for it in items:
-        if it["role"] == "in_buf":
+        if it["role"] == "in_arr":
+            buf_role[it["name"]] = "input_fixed_array_buffer"
+            len_owner[it["len_name"]] = (it["name"], "length")
+        elif it["role"] == "in_buf":
             buf_role[it["name"]] = "input_buffer"
             len_owner[it["len_name"]] = (it["name"], "length")
         elif it["role"] == "io_buf":
@@ -86,7 +90,11 @@ def derive(cc_dir: Path, entry: str) -> dict:
             role = buf_role[n]
             spec = {"name": n, "role": role, "decode": "vector",
                     "elem": it["elem"], "elem_width": it["elem_w"]}
-            if role == "output_buffer":
+            if role == "input_fixed_array_buffer":
+                spec["decode"] = "fixed_array_vector"
+                spec["inner_extent"] = it["inner_extent"]
+                spec["length_param"] = it["len_name"]
+            elif role == "output_buffer":
                 spec["capacity_param"] = it["len_name"]
                 # How much of the output buffer is meaningful is NOT inferable from the signature
                 # (the return value might be a status code, not a written length). Default unknown;
@@ -173,6 +181,7 @@ def validate(schema: dict) -> list[str]:
 _ROLE_DECODE = {
     "scalar": "scalar", "input_buffer": "vector", "inout_buffer": "vector",
     "output_buffer": "vector", "out_scalar": "out_scalar_zero", "input_string": "nul_string",
+    "input_fixed_array_buffer": "fixed_array_vector",
     "length": "derived_from_buffer", "capacity": "derived_from_buffer",
 }
 
@@ -198,7 +207,19 @@ def validate_against_signature(schema: dict, params: list[dict], ret: str) -> li
             continue
         if _ROLE_DECODE.get(s.get("role")) != s.get("decode"):
             errs.append(f"{s['name']}: role {s.get('role')} incompatible with decode {s.get('decode')}")
-        if p["kind"] == "ptr":
+        if p["kind"] == "ptr_array":
+            if s["role"] != "input_fixed_array_buffer":
+                errs.append(f"{s['name']}: pointer-to-array param has role {s['role']}")
+                continue
+            if s.get("elem") != p["elem"]:
+                errs.append(f"{s['name']}: elem {s.get('elem')} != signature {p['elem']}")
+            if s.get("elem_width") != p["elem_w"]:
+                errs.append(f"{s['name']}: elem_width {s.get('elem_width')} != signature {p['elem_w']}")
+            if s.get("inner_extent") != p["inner_extent"]:
+                errs.append(f"{s['name']}: inner_extent {s.get('inner_extent')} != signature {p['inner_extent']}")
+            if not p["const"]:
+                errs.append(f"{s['name']}: input_fixed_array_buffer requires a const pointer")
+        elif p["kind"] == "ptr":
             if s["role"] not in const_roles + mut_roles:
                 errs.append(f"{s['name']}: pointer param has non-pointer role {s['role']}")
                 continue

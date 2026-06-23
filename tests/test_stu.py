@@ -99,6 +99,24 @@ check("items_from_schema: count (length consumed)", len(_ITEMS), 2)
 check("items_from_schema: buffer -> in_buf",
       (_ITEMS[0]["role"], _ITEMS[0]["name"], _ITEMS[0]["len_name"]), ("in_buf", "buf", "n"))
 check("items_from_schema: scalar role", (_ITEMS[1]["role"], _ITEMS[1]["name"]), ("scalar", "k"))
+# ptr-to-array (input_fixed_array_buffer)
+_ARR = {"params": [
+    {"name": "edges", "role": "input_fixed_array_buffer", "decode": "fixed_array_vector",
+     "elem": "usize", "elem_width": 8, "inner_extent": 2, "length_param": "m"},
+    {"name": "m", "role": "length", "decode": "derived_from_buffer", "of_buffer": "edges",
+     "rust": "usize", "width": 8}]}
+_AI = gdh.items_from_schema(_ARR)
+check("items_from_schema: ptr-to-array -> in_arr with inner_extent",
+      (_AI[0]["role"], _AI[0]["inner_extent"], _AI[0]["len_name"]), ("in_arr", 2, "m"))
+_ACA, _, _ADECL = gdh._call_and_decl(_ARR["params"])
+check("ptr-to-array decl is *const [elem; extent]", _ADECL[0], "edges: *const [usize; 2]")
+check("ptr-to-array call passes the buffer ptr in ABI order", _ACA, ["edges_buf.as_ptr()", "m"])
+if (ROOT / "schemas" / "graph_dfs.json").exists():
+    _gd = hs.load(ROOT / "schemas" / "graph_dfs.json")
+    _ep = next(p for p in _gd["params"] if p["name"] == "edges")
+    check("graph_dfs edges = input_fixed_array_buffer (extent 2)",
+          (_ep["role"], _ep["inner_extent"]), ("input_fixed_array_buffer", 2))
+
 check("items_from_schema: output_buffer -> io_buf with capacity as len",
       gdh.items_from_schema({"params": [
           {"name": "d", "role": "output_buffer", "decode": "vector", "elem": "u8",

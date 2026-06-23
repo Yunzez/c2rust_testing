@@ -17,19 +17,37 @@ label in `boundaries_v2.jsonl.label` is NOT — it is "no divergence in DUR s", 
 Per row: `validity_v2`, `audit_status` ∈ {auto (72), reviewed (35), n/a (20)}, `review_reason`,
 plus the `generator` capability stamp.
 
-## Final distribution (127 boundaries)
+## Final distribution (127 boundaries) — v2.1 (telemetry-corrected)
 
 | validity_v2 | n |
 |---|---|
 | valid | 66 |
-| invalid_isolation_invariant | 16 |
+| invalid_isolation_invariant | 19 |
 | invalid_intrinsic_ub | 15 |
 | weak_exclude | 7 |
-| excluded_generator | 3 |
-| excluded (build/gen/early-exit) | 20 |
+| excluded_generator | 8 |
+| excluded (build/gen return-type gaps) | 12 |
 
-**Binary training set: 66 valid : 31 invalid** (drop 30: 7 weak + 3 generator-artifact + 20 excluded).
+**Binary training set: 66 valid : 34 invalid** (drop 27: 7 weak + 8 generator-artifact + 12 excluded).
 vs v1's 28:10.
+
+### v2.1 telemetry correction (the 8 FUZZER_EXITED_EARLY)
+
+The v2 raw harvest mislabeled 8 boundaries `FUZZER_EXITED_EARLY` (→ excluded). All 8 were in fact
+real **AddressSanitizer aborts** (heap/stack-overflow, use-after-free): an ASan SIGABRT bypasses
+libFuzzer's artifact writer, so the crash exited early with no saved artifact. Fix: `harvest_stage_b`
+now reads the sanitizer SUMMARY from the run log and labels such cases `C_CRASH_NO_ARTIFACT`
+(→ invalid) instead of dropping them. Re-run + categorized:
+- **3 → invalid_isolation_invariant** (real boundary crashes): `unsafe_decode::char_at` (trusts
+  `pos<len`), `unsafe_decode::sum_declared` (trusts embedded length `data[0]`),
+  `sorted_insert::sorted_insert` (trusts `len<cap`).
+- **5 → excluded_generator** (harness mis-models, each a new generator gap): `graph_bfs`/`count_edges`
+  (an **n×n matrix** modeled as a flat `len=n` buffer), `prefix_sum_excl` (an **output array** modeled
+  as a single out-scalar), `free_matrix` (`int**` mis-read as a string-table + a **destructor** that
+  frees harness memory), `copy_span` (a **pointer-pair span** modeled as two independent strings).
+
+So negatives 31 → 34, and the generator backlog gains: n×n-matrix buffers, output-array sizing,
+pointer-pair spans, destructor boundaries (alongside the known sliced-buffer gap).
 
 ## What the spot-check changed (of 35 reviewed)
 
@@ -62,6 +80,6 @@ and span **15 distinct programs** (v1: ~3, almost all one VM family):
 - **`weak_exclude` is a judgment call** on near-identical functions: part-1 kept `byte_classify::is_space`
   *valid* while part-2 marked `kv_config::is_space` *weak_exclude*. Kept each panelist's independent
   call rather than overriding; a borderline a future pass may normalize.
-- 20 `excluded` (12 BUILD_FAIL return-type gaps + 8 FUZZER_EXITED_EARLY) are **not yet diagnosed** —
-  the 8 early-exits may be under-labeled crashes; a follow-up should inspect them.
+- The 8 FUZZER_EXITED_EARLY were diagnosed and corrected in v2.1 (above); the remaining 12 `excluded`
+  are BUILD_FAIL return-type gaps (enum/struct/pointer returns), a known generator limitation.
 - Negatives still lean on the authored corpus; external c2rust-clean libs (next) add external validity.

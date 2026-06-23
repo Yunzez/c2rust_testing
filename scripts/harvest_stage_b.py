@@ -60,6 +60,7 @@ VALIDITY = {
     "NO_DIVERGENCE_OBSERVED": "valid",
     "C_UB_CONFIRMED": "invalid", "C_CRASH": "invalid", "RUST_PANIC": "invalid",
     "HARNESS_DIVERGENCE": "review", "NON_REPRODUCIBLE": "review", "UNKNOWN": "review",
+    "C_CRASH_NO_ARTIFACT": "invalid",  # ASan abort, no replayable artifact (recovered from log)
     "BUILD_FAIL": "excluded", "GEN_FAIL": "excluded", "FUZZER_EXITED_EARLY": "excluded",
 }
 
@@ -121,9 +122,14 @@ def run_fuzz(out: Path, crate: str, tag: str) -> dict:
     log_txt = log_path.read_text(errors="ignore") if log_path.exists() else ""
     execs = max((int(x) for x in _EXEC_RE.findall(log_txt)), default=None)
     arts = sorted(art_dir.glob("*")) if art_dir.exists() else []
+    # An ASan abort (SIGABRT) bypasses libFuzzer's artifact writer, so a real crash can exit early
+    # with NO saved artifact. Detect it from the log so it is never mislabeled FUZZER_EXITED_EARLY.
+    cm = re.search(r"(?:AddressSanitizer|ERROR: libFuzzer|UndefinedBehaviorSanitizer)[^\n]*", log_txt)
+    crash_summary = cm.group(0).strip() if cm else None
     return {"artifact_count": len(arts), "artifacts": [str(a) for a in arts],
             "elapsed_seconds": elapsed, "exit_code": exit_code,
-            "terminated_by_timeout": terminated_by_timeout, "executions": execs}
+            "terminated_by_timeout": terminated_by_timeout, "executions": execs,
+            "crash_summary": crash_summary}
 
 
 def classify_all(pair: Path, fn: str, out: Path, tag: str, artifacts: list[str]) -> list[dict]:
@@ -151,6 +157,9 @@ def summary_label(run: dict, artifact_labels: list[str]) -> str:
         return uniq[0] if len(uniq) == 1 else "MULTIPLE:" + ",".join(uniq)
     if run.get("terminated_by_timeout"):
         return "NO_DIVERGENCE_OBSERVED"
+    # Early exit WITH a sanitizer signal in the log = a real crash, just no saved artifact to replay.
+    if run.get("crash_summary"):
+        return "C_CRASH_NO_ARTIFACT"
     return "FUZZER_EXITED_EARLY"
 
 
@@ -204,7 +213,8 @@ def main() -> int:
         row.update(label=label, validity=VALIDITY.get(label.split(":")[0], "review"),
                    executions=run["executions"], elapsed_seconds=run["elapsed_seconds"],
                    terminated_by_timeout=run["terminated_by_timeout"],
-                   artifact_count=run["artifact_count"], artifact_labels=classified)
+                   artifact_count=run["artifact_count"], artifact_labels=classified,
+                   crash_summary=run.get("crash_summary"))
         rows.append(row)
         print(f"[{i}/{len(boundaries)}] {tag}: {label} -> {row['validity']} "
               f"(exec={run['executions']}, arts={run['artifact_count']})")
@@ -247,7 +257,7 @@ def main() -> int:
            "The label auditor verifies the fuzzer actually exercised each boundary and that each "
            "`invalid` is a real boundary property (UB/invariant), not a harness-inference artifact.\n"]
     (ROOT / "results" / f"stage_b_{_tag}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
-    print(f"\nwrote {n} rows to dataset/boundaries.jsonl; validity={by_validity}")
+    print(f"\nwrote {n} rows to {out_path}; validity={by_validity}")
     return 0
 
 

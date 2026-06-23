@@ -44,6 +44,12 @@ decode, update those two schemas, and update the generator. That sub-step intent
 the decode for `glob_match`/`kv_config` (to actually fuzz them) and is therefore separate from the
 byte-identical migration of the other 12 entries.
 
+## Update — input_string fix landed (commit 31d6489)
+
+`glob_match`/`kv_config` now use the `input_string` role (NUL-terminated fuzzed input) and were
+re-run under G1 with **real input** (no longer empty): both still `NO_DIVERGENCE_OBSERVED` over
+30 s — i.e. c2rust translated them faithfully and this time the result is meaningful.
+
 ## Next (P3 step 2)
 
 Make `gen_diff_harness.py` (and `classify_artifact.py`) read the schema instead of re-inferring,

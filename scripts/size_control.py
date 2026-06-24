@@ -56,7 +56,7 @@ def size_matched(valid, neg, key="c_stmts"):
 
 
 def main() -> int:
-    rows = [json.loads(l) for l in (ROOT / "dataset" / "boundaries_v2.jsonl")
+    rows = [json.loads(l) for l in (ROOT / "dataset" / "boundaries_v3.jsonl")
             .read_text().splitlines() if l.strip()]
     rows = [r for r in rows if r.get("validity_v2") == "valid" or r.get("validity_v2") in INVALID]
     add_interaction(rows)

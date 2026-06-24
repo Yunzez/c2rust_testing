@@ -1,0 +1,38 @@
+{
+  "program": "tiny_vm",
+  "entry": "vm_step",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/tiny_vm__vm_step/fuzz/artifacts/tiny_vm_ft/crash-ab67cebd6ae53f90",
+  "artifact_sha256": "b66117b0cfb7782b9229f5f133ee06d5fa497367cf4ebac8f9aef1bed67bcf0f",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "crash",
+      "crash"
+    ],
+    "reproducible": true,
+    "outcome": "crash",
+    "stderr": ")\n    #6 0x614b15a6d7e4  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2ed7e4) (BuildId: c8daa48302a574be3d5ffd2182e5c3fc79fbb57a)\n    #7 0x614b15a6ce29  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2ece29) (BuildId: c8daa48302a574be3d5ffd2182e5c3fc79fbb57a)\n    #8 0x76b0f5e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #9 0x76b0f5e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #10 0x614b159a8524  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x228524) (BuildId: c8daa48302a574be3d5ffd2182e5c3fc79fbb57a)\n\n==396566==Register values:\nrax = 0x0000000000000000  rbx = 0x0000000000000000  rcx = 0x0000614b164bc850  rdx = 0x0000000000000000  \nrdi = 0x0000614b15f888e0  rsi = 0x0000000000000001  rbp = 0x00007ffe32306b70  rsp = 0x00007ffe32306b20  \n r8 = 0x0000000000000000   r9 = 0x0000000000000007  r10 = 0x0000000000000004  r11 = 0x0000000000000000  \nr12 = 0x0000000000000001  r13 = 0x0000000000000001  r14 = 0x0000000000000000  r15 = 0x000072b0f4000250  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2ec65d) (BuildId: c8daa48302a574be3d5ffd2182e5c3fc79fbb57a) \n==396566==ABORTING\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmp65h0g2ah/cdriver.c -o /tmp/tmp65h0g2ah/cdriver",
+    "sanitizers": [],
+    "asan_crash": false,
+    "exit": 0,
+    "stderr": ""
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": false,
+    "message": "",
+    "exit": -11,
+    "stderr": ""
+  },
+  "label": "C_CRASH",
+  "evidence": "diff replay crashed (C called first); no UBSan/ASan signal captured -> conservative C_CRASH"
+}

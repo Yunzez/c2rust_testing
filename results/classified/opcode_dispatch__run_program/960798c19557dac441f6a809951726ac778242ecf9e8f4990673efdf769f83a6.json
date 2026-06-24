@@ -1,0 +1,40 @@
+{
+  "program": "opcode_dispatch",
+  "entry": "run_program",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/opcode_dispatch__run_program/fuzz/artifacts/opcode_dispatch_ft/crash-489e1a1fb715bbb6",
+  "artifact_sha256": "960798c19557dac441f6a809951726ac778242ecf9e8f4990673efdf769f83a6",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "rust_panic",
+      "rust_panic"
+    ],
+    "reproducible": true,
+    "outcome": "rust_panic",
+    "stderr": "\nthread '<unnamed>' (386192) panicked at /home/yunzez/c2rust_testing/fuzz_gen/_harvest/opcode_dispatch__run_program/src/lib.rs:49:17:\nattempt to multiply with overflow\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmpqlc9e0oi/cdriver.c -o /tmp/tmpqlc9e0oi/cdriver",
+    "sanitizers": [
+      "signed integer overflow"
+    ],
+    "asan_crash": false,
+    "exit": 0,
+    "stderr": "/home/yunzez/c2rust_testing/benchmark/pairs/opcode_dispatch/source/opcode_dispatch.c:44:19: runtime error: signed integer overflow: 252 * 16003008 cannot be represented in type 'int32_t' (aka 'int')\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior /home/yunzez/c2rust_testing/benchmark/pairs/opcode_dispatch/source/opcode_dispatch.c:44:19 \n"
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": true,
+    "message": "attempt to multiply with overflow",
+    "exit": -6,
+    "stderr": " /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panic.rs:359:14\n  29:     0x5ab9b0c28970 - std::rt::lang_start_internal::{{closure}}::h465cc92964120bd4\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/rt.rs:175:24\n  30:     0x5ab9b0c28970 - std::panicking::catch_unwind::do_call::h0d2ba4e269db4d44\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panicking.rs:590:40\n  31:     0x5ab9b0c28970 - std::panicking::catch_unwind::hd6e345d579498df7\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panicking.rs:553:19\n  32:     0x5ab9b0c28970 - std::panic::catch_unwind::hd32aaa7409b828f2\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panic.rs:359:14\n  33:     0x5ab9b0c28970 - std::rt::lang_start_internal::h161b22de8ce80149\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/rt.rs:171:5\n  34:     0x5ab9b0c19ad7 - std::rt::lang_start::hbcc146deb617f5b3\n                               at /home/yunzez/.rustup/toolchains/nightly-2025-09-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:205:5\n  35:     0x5ab9b0c1a01e - main\n  36:     0x7f0d9aa2a601 - <unknown>\n  37:     0x7f0d9aa2a718 - __libc_start_main\n  38:     0x5ab9b0c17e25 - _start\n  39:                0x0 - <unknown>\nthread caused non-unwinding panic. aborting.\n"
+  },
+  "label": "C_UB_CONFIRMED",
+  "evidence": "C UBSan reported ['signed integer overflow']; rust/diff outcome=rust_panic"
+}

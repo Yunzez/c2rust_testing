@@ -1,0 +1,40 @@
+{
+  "program": "opcode_dispatch",
+  "entry": "op_mul",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/opcode_dispatch__op_mul/fuzz/artifacts/opcode_dispatch_ft/crash-f9f3b8dbfa6d57a5",
+  "artifact_sha256": "e3de2256d681608443e6a17aa1c4890facb3f1c0a2cf2d0889f6ce5b5fd939b4",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "crash",
+      "crash"
+    ],
+    "reproducible": true,
+    "outcome": "crash",
+    "stderr": "yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/opcode_dispatch_ft+0x2e41d4) (BuildId: d7af0c2d98d7ef74f51e9b321f8e87c95355fc1d)\n    #7 0x64563763f819  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/opcode_dispatch_ft+0x2e3819) (BuildId: d7af0c2d98d7ef74f51e9b321f8e87c95355fc1d)\n    #8 0x7d190e62a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #9 0x7d190e62a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #10 0x645637580824  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/opcode_dispatch_ft+0x224824) (BuildId: d7af0c2d98d7ef74f51e9b321f8e87c95355fc1d)\n\n==385413==Register values:\nrax = 0x00000000bf67f70f  rbx = 0x000079190c9005c0  rcx = 0x000064563808c650  rdx = 0x0000000000000100  \nrdi = 0x0000645637b58790  rsi = 0x00000000bf67f70e  rbp = 0x00007fff4f5d8210  rsp = 0x00007fff4f5d81f0  \n r8 = 0x0000000000000000   r9 = 0x0000000000000017  r10 = 0xffffffffffffffff  r11 = 0x0000000000000000  \nr12 = 0x0000000000000000  r13 = 0x000079190c9005c0  r14 = 0xffffffffbf67f70e  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/opcode_dispatch_ft+0x2e37a0) (BuildId: d7af0c2d98d7ef74f51e9b321f8e87c95355fc1d) \n==385413==ABORTING\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmppbj58b7j/cdriver.c -o /tmp/tmppbj58b7j/cdriver",
+    "sanitizers": [
+      "index -1083705586 out of bounds for type"
+    ],
+    "asan_crash": true,
+    "exit": 1,
+    "stderr": "============================================================\n==385221==ERROR: AddressSanitizer: SEGV on unknown address 0x709afe7fdc58 (pc 0x58595b06ad63 bp 0x7ffebff37730 sp 0x7ffebff376b0 T0)\n==385221==The signal is caused by a WRITE memory access.\n    #0 0x58595b06ad63 in vm_push /home/yunzez/c2rust_testing/benchmark/pairs/opcode_dispatch/source/opcode_dispatch.c:17:29\n    #1 0x58595b06a99a in op_mul /home/yunzez/c2rust_testing/benchmark/pairs/opcode_dispatch/source/opcode_dispatch.c:44:5\n    #2 0x58595b06a748 in main /tmp/tmppbj58b7j/cdriver.c:23:11\n    #3 0x749c02c2a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16\n    #4 0x749c02c2a717 in __libc_start_main csu/../csu/libc-start.c:360:3\n    #5 0x58595af80364 in _start (/tmp/tmppbj58b7j/cdriver+0x2d364) (BuildId: 3b1fac30bdf23873a597b49cf22ae7dedb8607eb)\n\n==385221==Register values:\nrax = 0x0000709afe7fdc58  rbx = 0x00007ffebff37780  rcx = 0x0000000000000000  rdx = 0x0000709afe7fdc01  \nrdi = 0xfffffffefd9fdc38  rsi = 0x0000000000000000  rbp = 0x00007ffebff37730  rsp = 0x00007ffebff376b0  \n r8 = 0xffffff0000000000   r9 = 0x000000000000007c  r10 = 0xafffff00000fffff  r11 = 0x0000000000000246  \nr12 = 0x00007ffebff37a08  r13 = 0x0000000000000002  r14 = 0x0000749c0314e000  r15 = 0x000058595b0a55b0  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV /home/yunzez/c2rust_testing/benchmark/pairs/opcode_dispatch/source/opcode_dispatch.c:17:29 in vm_push\n==385221==ABORTING\n"
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": true,
+    "message": "index out of bounds: the len is 64 but the index is 18446744072625846030",
+    "exit": -6,
+    "stderr": " /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panic.rs:359:14\n  29:     0x5b601de0c090 - std::rt::lang_start_internal::{{closure}}::h465cc92964120bd4\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/rt.rs:175:24\n  30:     0x5b601de0c090 - std::panicking::catch_unwind::do_call::h0d2ba4e269db4d44\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panicking.rs:590:40\n  31:     0x5b601de0c090 - std::panicking::catch_unwind::hd6e345d579498df7\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panicking.rs:553:19\n  32:     0x5b601de0c090 - std::panic::catch_unwind::hd32aaa7409b828f2\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panic.rs:359:14\n  33:     0x5b601de0c090 - std::rt::lang_start_internal::h161b22de8ce80149\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/rt.rs:171:5\n  34:     0x5b601ddfe0f7 - std::rt::lang_start::h70187f9632e25a21\n                               at /home/yunzez/.rustup/toolchains/nightly-2025-09-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:205:5\n  35:     0x5b601ddfe89e - main\n  36:     0x72a1d2e2a601 - <unknown>\n  37:     0x72a1d2e2a718 - __libc_start_main\n  38:     0x5b601ddfc475 - _start\n  39:                0x0 - <unknown>\nthread caused non-unwinding panic. aborting.\n"
+  },
+  "label": "C_UB_CONFIRMED",
+  "evidence": "C UBSan reported ['index -1083705586 out of bounds for type']; rust/diff outcome=crash"
+}

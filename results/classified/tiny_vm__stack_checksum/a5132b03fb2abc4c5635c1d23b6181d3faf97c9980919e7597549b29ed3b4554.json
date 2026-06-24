@@ -1,0 +1,38 @@
+{
+  "program": "tiny_vm",
+  "entry": "stack_checksum",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/tiny_vm__stack_checksum/fuzz/artifacts/tiny_vm_ft/crash-7f4c9cf27c5f7637",
+  "artifact_sha256": "a5132b03fb2abc4c5635c1d23b6181d3faf97c9980919e7597549b29ed3b4554",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "crash",
+      "crash"
+    ],
+    "reproducible": true,
+    "outcome": "crash",
+    "stderr": "x594ed20ed2b5  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2e62b5) (BuildId: aae4e74d86dcdead195eaea0117e5f409b7c5dc2)\n    #241 0x594ed20ed2b5  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2e62b5) (BuildId: aae4e74d86dcdead195eaea0117e5f409b7c5dc2)\n    #242 0x594ed20ed2b5  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2e62b5) (BuildId: aae4e74d86dcdead195eaea0117e5f409b7c5dc2)\n    #243 0x594ed20ed2b5  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2e62b5) (BuildId: aae4e74d86dcdead195eaea0117e5f409b7c5dc2)\n    #244 0x594ed20ed2b5  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2e62b5) (BuildId: aae4e74d86dcdead195eaea0117e5f409b7c5dc2)\n    #245 0x594ed20ed2b5  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2e62b5) (BuildId: aae4e74d86dcdead195eaea0117e5f409b7c5dc2)\n    #246 0x594ed20ed2b5  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2e62b5) (BuildId: aae4e74d86dcdead195eaea0117e5f409b7c5dc2)\n\nSUMMARY: AddressSanitizer: stack-overflow (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/tiny_vm_ft+0x2e6274) (BuildId: aae4e74d86dcdead195eaea0117e5f409b7c5dc2) \n==426029==ABORTING\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmpbvtlivkr/cdriver.c -o /tmp/tmpbvtlivkr/cdriver",
+    "sanitizers": [],
+    "asan_crash": true,
+    "exit": 1,
+    "stderr": ")\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /tmp/tmpbvtlivkr/cdriver.c:21:45 in main\nShadow bytes around the buggy address:\n  0x743762ddfd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x743762ddfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x743762ddfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x743762ddff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x743762ddff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x743762de0000: fa fa 00[05]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x743762de0080: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x743762de0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x743762de0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x743762de0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x743762de0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==425836==ABORTING\n"
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": false,
+    "message": "",
+    "exit": -6,
+    "stderr": "\nthread 'main' (426022) has overflowed its stack\nfatal runtime error: stack overflow, aborting\n"
+  },
+  "label": "C_CRASH",
+  "evidence": "C AddressSanitizer reported a memory error on the same input"
+}

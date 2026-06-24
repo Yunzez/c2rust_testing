@@ -1,0 +1,41 @@
+{
+  "program": "bounded_queue",
+  "entry": "bq_back_trusting",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/bounded_queue__bq_back_trusting/fuzz/artifacts/bounded_queue_ft/crash-1c7b7da2489337a8",
+  "artifact_sha256": "258afa4e4ba0cae6476b6adbab0a5c1174b663bc4d87859a0bdb49cfff4ed89a",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "rust_panic",
+      "rust_panic"
+    ],
+    "reproducible": true,
+    "outcome": "rust_panic",
+    "stderr": "\nthread '<unnamed>' (400792) panicked at /home/yunzez/c2rust_testing/fuzz_gen/_harvest/bounded_queue__bq_back_trusting/src/lib.rs:28:12:\nindex out of bounds: the len is 16 but the index is 18446744073709551615\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmpeab67w6_/cdriver.c -o /tmp/tmpeab67w6_/cdriver",
+    "sanitizers": [
+      "addition of unsigned offset to 0x764447d00020 overflowed to 0x764447d0001c",
+      "index 18446744073709551615 out of bounds for type"
+    ],
+    "asan_crash": true,
+    "exit": 1,
+    "stderr": "rust_testing/benchmark/pairs/bounded_queue/source/bounded_queue.c:39:12 in bq_back_trusting\nShadow bytes around the buggy address:\n  0x764447cffd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x764447cffe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x764447cffe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x764447cfff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x764447cfff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x764447d00000: f1 f1 f1[f1]00 00 00 00 00 00 00 00 00 00 f3 f3\n  0x764447d00080: f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3 f3\n  0x764447d00100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x764447d00180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x764447d00200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x764447d00280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==400604==ABORTING\n"
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": true,
+    "message": "index out of bounds: the len is 16 but the index is 18446744073709551615",
+    "exit": -6,
+    "stderr": " /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panic.rs:359:14\n  28:     0x596e12111af0 - std::rt::lang_start_internal::{{closure}}::h465cc92964120bd4\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/rt.rs:175:24\n  29:     0x596e12111af0 - std::panicking::catch_unwind::do_call::h0d2ba4e269db4d44\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panicking.rs:590:40\n  30:     0x596e12111af0 - std::panicking::catch_unwind::hd6e345d579498df7\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panicking.rs:553:19\n  31:     0x596e12111af0 - std::panic::catch_unwind::hd32aaa7409b828f2\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panic.rs:359:14\n  32:     0x596e12111af0 - std::rt::lang_start_internal::h161b22de8ce80149\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/rt.rs:171:5\n  33:     0x596e12102d57 - std::rt::lang_start::h219e15d929ac81d2\n                               at /home/yunzez/.rustup/toolchains/nightly-2025-09-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:205:5\n  34:     0x596e1210414e - main\n  35:     0x715c1ba2a601 - <unknown>\n  36:     0x715c1ba2a718 - __libc_start_main\n  37:     0x596e12102255 - _start\n  38:                0x0 - <unknown>\nthread caused non-unwinding panic. aborting.\n"
+  },
+  "label": "C_UB_CONFIRMED",
+  "evidence": "C UBSan reported ['addition of unsigned offset to 0x764447d00020 overflowed to 0x764447d0001c', 'index 18446744073709551615 out of bounds for type']; rust/diff outcome=rust_panic"
+}

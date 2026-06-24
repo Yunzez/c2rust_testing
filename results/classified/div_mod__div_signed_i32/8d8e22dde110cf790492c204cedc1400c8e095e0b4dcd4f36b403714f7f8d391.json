@@ -1,0 +1,40 @@
+{
+  "program": "div_mod",
+  "entry": "div_signed_i32",
+  "artifact": "/home/yunzez/c2rust_testing/fuzz_gen/_harvest/div_mod__div_signed_i32/fuzz/artifacts/div_mod_ft/crash-ab8b4b750e749208",
+  "artifact_sha256": "8d8e22dde110cf790492c204cedc1400c8e095e0b4dcd4f36b403714f7f8d391",
+  "toolchain": {
+    "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+    "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)",
+    "c2rust": "C2Rust 0.22.1"
+  },
+  "diff_replay": {
+    "available": true,
+    "outcomes": [
+      "crash",
+      "crash"
+    ],
+    "reproducible": true,
+    "outcome": "crash",
+    "stderr": "7)\n    #6 0x65096e02c264  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/div_mod_ft+0x2e3264) (BuildId: 0377e4a9724dd3fd72a0dbcb6fb1408de038a8a7)\n    #7 0x65096e02b8a9  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/div_mod_ft+0x2e28a9) (BuildId: 0377e4a9724dd3fd72a0dbcb6fb1408de038a8a7)\n    #8 0x72a49be2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #9 0x72a49be2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 90ebd03ae9d9f42b23b4eb82fdf70352cf744198)\n    #10 0x65096df6d124  (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/div_mod_ft+0x224124) (BuildId: 0377e4a9724dd3fd72a0dbcb6fb1408de038a8a7)\n\n==404204==Register values:\nrax = 0x00000000007c8daf  rbx = 0x0000000000000000  rcx = 0x000065096ea781d0  rdx = 0x0000000000000000  \nrdi = 0x000065096e544330  rsi = 0x0000000000000000  rbp = 0x00007ffea03e5410  rsp = 0x00007ffea03e5400  \n r8 = 0x0000000000000000   r9 = 0x00007fffffffff01  r10 = 0x00007fffffffff01  r11 = 0x0000000000000001  \nr12 = 0x0000000000000000  r13 = 0x00000000007c8daf  r14 = 0x00000000007c8daf  r15 = 0x00006ea499c00100  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: FPE (/home/yunzez/c2rust_testing/fuzz_gen/_shared_target/x86_64-unknown-linux-gnu/release/div_mod_ft+0x2e283c) (BuildId: 0377e4a9724dd3fd72a0dbcb6fb1408de038a8a7) \n==404204==ABORTING\n"
+  },
+  "c_run": {
+    "compiled": true,
+    "flags": "clang -g -O0 -fsanitize=undefined,address -fno-omit-frame-pointer /tmp/tmpduvcninh/cdriver.c -o /tmp/tmpduvcninh/cdriver",
+    "sanitizers": [
+      "division by zero"
+    ],
+    "asan_crash": true,
+    "exit": 1,
+    "stderr": "runtime error: division by zero\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior /home/yunzez/c2rust_testing/benchmark/pairs/div_mod/source/div_mod.c:26:14 \nAddressSanitizer:DEADLYSIGNAL\n=================================================================\n==404015==ERROR: AddressSanitizer: FPE on unknown address 0x6075f7754b80 (pc 0x6075f7754b80 bp 0x7ffc6f60d730 sp 0x7ffc6f60d720 T0)\n    #0 0x6075f7754b80 in div_signed_i32 /home/yunzez/c2rust_testing/benchmark/pairs/div_mod/source/div_mod.c:26:14\n    #1 0x6075f7754f94 in main /tmp/tmpduvcninh/cdriver.c:21:11\n    #2 0x71f95be2a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16\n    #3 0x71f95be2a717 in __libc_start_main csu/../csu/libc-start.c:360:3\n    #4 0x6075f766b364 in _start (/tmp/tmpduvcninh/cdriver+0x2d364) (BuildId: 3032db8be0b4424b56c0e9ce3deea45382628565)\n\n==404015==Register values:\nrax = 0x00000000007c8daf  rbx = 0x0000000000000000  rcx = 0x0000000000000000  rdx = 0x0000000000000000  \nrdi = 0x00007ffc6f60ca78  rsi = 0x0000000000000000  rbp = 0x00007ffc6f60d730  rsp = 0x00007ffc6f60d720  \n r8 = 0xffffff0000000000   r9 = 0x000000000000007c  r10 = 0xafffff00000fffff  r11 = 0x0000000000000246  \nr12 = 0x00007ffc6f60d908  r13 = 0x0000000000000002  r14 = 0x000071f95c3b0000  r15 = 0x00006075f778f5b0  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: FPE /home/yunzez/c2rust_testing/benchmark/pairs/div_mod/source/div_mod.c:26:14 in div_signed_i32\n==404015==ABORTING\n"
+  },
+  "rust_run": {
+    "built": true,
+    "panicked": true,
+    "message": "attempt to divide by zero",
+    "exit": -6,
+    "stderr": " /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panic.rs:359:14\n  28:     0x55c9b881c5b0 - std::rt::lang_start_internal::{{closure}}::h465cc92964120bd4\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/rt.rs:175:24\n  29:     0x55c9b881c5b0 - std::panicking::catch_unwind::do_call::h0d2ba4e269db4d44\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panicking.rs:590:40\n  30:     0x55c9b881c5b0 - std::panicking::catch_unwind::hd6e345d579498df7\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panicking.rs:553:19\n  31:     0x55c9b881c5b0 - std::panic::catch_unwind::hd32aaa7409b828f2\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/panic.rs:359:14\n  32:     0x55c9b881c5b0 - std::rt::lang_start_internal::h161b22de8ce80149\n                               at /rustc/07d246fc6dc227903da2955b38a59e060539a485/library/std/src/rt.rs:171:5\n  33:     0x55c9b880dbb7 - std::rt::lang_start::hc5e74648a7e8a3d0\n                               at /home/yunzez/.rustup/toolchains/nightly-2025-09-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/rt.rs:205:5\n  34:     0x55c9b880e37e - main\n  35:     0x7549c602a601 - <unknown>\n  36:     0x7549c602a718 - __libc_start_main\n  37:     0x55c9b880d095 - _start\n  38:                0x0 - <unknown>\nthread caused non-unwinding panic. aborting.\n"
+  },
+  "label": "C_UB_CONFIRMED",
+  "evidence": "C UBSan reported ['division by zero']; rust/diff outcome=crash"
+}

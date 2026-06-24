@@ -104,10 +104,10 @@
       <span>per-function boundaries; independent adversarial audit overturned 17% of labels → <code>validity_v2</code>. Frozen baseline (28:10).</span></div>
     <div class="it done"><b>Dataset v2 scale-out + semi-auto audit + v2.1 fix</b> <span class="pill p-done">done</span><br>
       <span>18→40 programs; 127 boundaries; heuristic audit (catches 8/8 v1-overturned) + 3-agent spot-check; recovered 8 mislabeled ASan crashes.</span></div>
-    <div class="it done"><b>Feature-vs-validity analysis</b> <span class="pill p-done">done</span><br>
-      <span>No current static feature strongly separates valid/invalid (best |AUC−0.5|≈0.3) → motivates boundary-specific semantic features.</span></div>
-    <div class="it now"><b>Boundary-specific features → P(valid | x) baseline</b> <span class="pill p-now">next</span><br>
-      <span>engineer semantic features (unguarded arithmetic; trusted-index struct/buffer), then program-grouped CV. No model until features separate.</span></div>
+    <div class="it done"><b>Feature analysis + semantic-risk features + grouped-CV baseline</b> <span class="pill p-done">done</span><br>
+      <span>Engineered boundary-specific features (unguarded UB-op; trusted/unmasked struct-buffer index). Program-grouped CV: boundary-specific win <b>per mechanism</b> — isolation 0.85 vs 0.74; intrinsic-UB combined 0.74 vs generic ≈0.58. <b>Size hypothesis tested &amp; rejected</b> (grouped CV neutralizes size); claim is per-mechanism, not lumped.</span></div>
+    <div class="it now"><b>Close generator gaps → external libs</b> <span class="pill p-now">next</span><br>
+      <span>sliced-buffer (recovers 8 excluded_generator) first — grow labels &amp; cut harness artifacts — then real c2rust-clean libs for external validity, then the P(valid|x) model.</span></div>
   </div>
 
   <h2>Boundary-validity dataset</h2>
@@ -145,14 +145,14 @@
 
   <h2>Next steps</h2>
   <div class="card grid g2">
-    <div><b>1 · boundary-specific features</b><br><span style="color:var(--muted)">unguarded signed arithmetic (→ intrinsic UB),
-      struct/buffer indexed by a trusted field without a bounds check (→ isolation invariant). Re-measure separation.</span></div>
-    <div><b>2 · P(valid | x) baseline</b><br><span style="color:var(--muted)">only after features separate; program-grouped K-fold
-      (36 groups, 17 carry invalids — stratify carefully).</span></div>
-    <div><b>3 · close generator gaps</b><br><span style="color:var(--muted)">sliced-buffer / n×n matrix / output-array /
-      pointer-pair span / destructor / callback — each recovers real boundaries (surfaced by the audit).</span></div>
-    <div><b>4 · external c2rust-clean libs</b><br><span style="color:var(--muted)">add real-world code for external validity beyond the
-      authored corpus.</span></div>
+    <div><b>1 · sliced-buffer</b><br><span style="color:var(--muted)">recovers 8 <code>excluded_generator</code> (the largest
+      mis-model / dropped-label source); grows usable labels and cuts harness artifacts.</span></div>
+    <div><b>2 · external c2rust-clean libs</b><br><span style="color:var(--muted)">real-world code for external validity —
+      after sliced-buffer so the input is cleaner.</span></div>
+    <div><b>3 · P(valid | x) model</b><br><span style="color:var(--muted)">once labels grow: per-mechanism / tree models,
+      program-grouped CV. The grouped-CV baseline already establishes the claim direction.</span></div>
+    <div><b>4 · paper experiment figures</b><br><span style="color:var(--muted)">boundary-validity taxonomy, per-mechanism
+      feature comparison, size-control, scope-stratified tables.</span></div>
   </div>
 
   <p class="foot">Toolchain: c2rust 0.22.1 · clang 21 · nightly-2025-09-01 + LibAFL 0.15.4.

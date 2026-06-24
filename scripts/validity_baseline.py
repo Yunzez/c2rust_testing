@@ -162,10 +162,13 @@ def main() -> int:
            f"({res['valid vs intrinsic_ub']['generic']:.3f}) while combined reaches "
            f"**{res['valid vs intrinsic_ub']['combined']:.3f}** — the signal is the guard×op "
            "INTERACTION (`rf_unguarded_ubop`) a linear model needs that engineered term to see.",
-           "- **Takeaway:** the semantic-risk features encode the real mechanism, but the lumped "
-           "linear baseline is confounded by corpus size-bias and small data. Next: control the size "
-           "confound (size-matched negatives / partial out size), per-mechanism or tree models, and "
-           "external programs — before claiming a generalizing P(valid|x).\n",
+           "- **Takeaway:** the lumped task stays hard to claim because generic NON-size signature "
+           "features (pointer / nested-pointer / alloc counts) act as coarse proxies for the same "
+           "pointer/struct risk — the size hypothesis was tested and REJECTED (grouped CV already "
+           "neutralizes size; see `validity_baseline_size_control_v1.md`). The robust claim is "
+           "per-mechanism: semantic-risk features explain isolation invariants and intrinsic-UB "
+           "better than generic structure, especially when arithmetic guards matter. Next: close "
+           "generator gaps to grow labels, then external programs for generalization.\n",
            "> This is a baseline (no tuning) on the audited `validity_v2`; AUC pooled across grouped "
            "folds; ~17 programs carry invalids, so treat magnitudes as indicative.\n"]
     Path(a.out).write_text("\n".join(md) + "\n", encoding="utf-8")

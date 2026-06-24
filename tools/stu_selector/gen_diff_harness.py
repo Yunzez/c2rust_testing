@@ -264,6 +264,10 @@ def items_from_schema(schema: dict) -> list[dict]:
     vector length) — the richer semantics are deferred to keep byte-identity.
     """
     items = []
+    # A buffer derives its length from `.len()` (usize). When the C length param is NOT size_t
+    # (real libs use `unsigned int` etc.), the call must cast to the param's actual Rust type.
+    # Map every param name -> its declared rust type so buffer items can carry their len's type.
+    param_rust = {p["name"]: p.get("rust") for p in schema["params"]}
     for p in schema["params"]:
         role = p["role"]
         if role == "scalar":
@@ -278,11 +282,13 @@ def items_from_schema(schema: dict) -> list[dict]:
             items.append(it)
         elif role == "input_buffer":
             items.append({"kind": "ptr", "role": "in_buf", "name": p["name"],
-                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": p["length_param"]})
+                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": p["length_param"],
+                          "len_rust": param_rust.get(p["length_param"]) or "usize"})
         elif role in ("inout_buffer", "output_buffer"):
             ln = p.get("length_param") or p.get("capacity_param")
             items.append({"kind": "ptr", "role": "io_buf", "name": p["name"],
-                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": ln})
+                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": ln,
+                          "len_rust": param_rust.get(ln) or "usize"})
         elif role == "out_scalar":
             items.append({"kind": "ptr", "role": "out_scalar", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"]})
@@ -295,7 +301,8 @@ def items_from_schema(schema: dict) -> list[dict]:
         elif role == "input_fixed_array_buffer":
             items.append({"kind": "ptr_array", "role": "in_arr", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"],
-                          "inner_extent": p["inner_extent"], "len_name": p["length_param"]})
+                          "inner_extent": p["inner_extent"], "len_name": p["length_param"],
+                          "len_rust": param_rust.get(p["length_param"]) or "usize"})
         elif role == "input_rectangular_pointer_table":
             items.append({"kind": "ptr_ptr", "role": "in_table", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"],
@@ -589,6 +596,13 @@ def _struct_arr_cmp(name: str, sd: dict) -> str:
             f"{name}_c.iter().zip({name}_r.iter()).any(|(a, b)| {fields})")
 
 
+def _len_cast(it: dict) -> str:
+    """Cast a buffer's `.len()` (usize) to the C length param's Rust type. Empty for size_t/usize
+    lengths so existing entries stay byte-identical; ` as u32` etc. for real libs using `unsigned int`."""
+    lr = it.get("len_rust") or "usize"
+    return "" if lr == "usize" else f" as {lr}"
+
+
 def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
     """Storage + byte-decode + comparison, driven by item ROLE (not order).
 
@@ -608,10 +622,10 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
                 decode.append(f"    let {n} = cur.take_{it['rust']}();")
         elif it["role"] == "in_buf":
             decode.append(f"    let {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
-            decode.append(f"    let {it['len_name']} = {n}_buf.len();")
+            decode.append(f"    let {it['len_name']} = {n}_buf.len(){_len_cast(it)};")
         elif it["role"] == "io_buf":
             decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
-            decode.append(f"    let {it['len_name']} = {n}_c.len();")
+            decode.append(f"    let {it['len_name']} = {n}_c.len(){_len_cast(it)};")
             decode.append(f"    let mut {n}_r = {n}_c.clone();")
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: buffer {n}"); }}')
         elif it["role"] == "out_scalar":
@@ -633,7 +647,7 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             decode.append(f"    let mut {n}_buf: Vec<[{it['elem']}; {ext}]> = Vec::with_capacity({n}_cnt);")
             decode.append(f"    for _ in 0..{n}_cnt {{ let mut a = [0 as {it['elem']}; {ext}];"
                           f" for j in 0..{ext} {{ a[j] = cur.take_{it['elem']}(); }} {n}_buf.push(a); }}")
-            decode.append(f"    let {it['len_name']} = {n}_buf.len();")
+            decode.append(f"    let {it['len_name']} = {n}_buf.len(){_len_cast(it)};")
         elif it["role"] == "in_table":
             el, om, im = it["elem"], it["outer_max"], it["inner_max"]
             o, ix = it["outer_name"], it["inner_name"]
@@ -835,6 +849,10 @@ def main() -> int:
         rs_text, _ = expose_entry(rs_text, args.entry)
         c_text, _ = strip_static_c(c_text, args.entry)
     (out / "c" / c_src.name).write_text(c_text, encoding="utf-8")
+    # Real libs split into .c + sibling .h (authored corpus is self-contained single-TU).
+    # Copy the headers next to the .c so `#include "foo.h"` resolves from the harness c/ dir.
+    for h in (pair / "source").glob("*.h"):
+        (out / "c" / h.name).write_text(h.read_text(), encoding="utf-8")
     (out / "src" / "lib.rs").write_text(rs_text, encoding="utf-8")
 
     (out / "Cargo.toml").write_text(

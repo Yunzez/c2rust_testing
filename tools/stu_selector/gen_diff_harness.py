@@ -270,8 +270,11 @@ def items_from_schema(schema: dict) -> list[dict]:
             it = {"kind": "scalar", "role": "scalar", "name": p["name"],
                   "rust": p["rust"], "w": p["width"], "decode": p.get("decode", "scalar")}
             if p.get("decode") == "bounded_scalar":
-                it["min_value"] = p["min_value"]
                 it["max_value"] = p["max_value"]
+                if "min_var" in p:
+                    it["min_var"] = p["min_var"]
+                else:
+                    it["min_value"] = p["min_value"]
             items.append(it)
         elif role == "input_buffer":
             items.append({"kind": "ptr", "role": "in_buf", "name": p["name"],
@@ -348,6 +351,7 @@ def _infer_abi(params: list[dict]) -> list[dict]:
     struct_items = {it["name"]: it for it in its
                     if it["role"] in ("in_struct", "io_struct", "in_struct_arr", "io_struct_arr")}
     abi = []
+    prev_index = None  # for monotone slice indices (lo <= mid <= hi)
     for p in params:
         n = p["name"]
         if n in struct_items:
@@ -398,9 +402,17 @@ def _infer_abi(params: list[dict]) -> list[dict]:
                 abi.append({"name": n, "role": "out_scalar", "decode": "out_scalar_zero",
                             "elem": it["elem"], "elem_width": it["elem_w"]})
         elif has_io_arr and p.get("rust") == "usize":
-            # bare usize alongside an output array -> a slice index; bound it to the array cap.
-            abi.append({"name": n, "role": "scalar", "decode": "bounded_scalar",
-                        "rust": "usize", "width": 8, "min_value": 0, "max_value": OUT_ARR_CAP})
+            # bare usize alongside an output array -> a slice index; bound it to the array cap AND
+            # chain it to the previous index so lo <= mid <= hi (merge_runs assumes monotone bounds;
+            # independent bounds let lo>mid drive a[lo+t] out of range).
+            spec = {"name": n, "role": "scalar", "decode": "bounded_scalar",
+                    "rust": "usize", "width": 8, "max_value": OUT_ARR_CAP}
+            if prev_index is None:
+                spec["min_value"] = 0
+            else:
+                spec["min_var"] = prev_index
+            prev_index = n
+            abi.append(spec)
         else:
             abi.append({"name": n, "role": "scalar", "decode": "scalar",
                         "rust": p["rust"], "width": p["w"]})
@@ -583,9 +595,10 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
         n = it["name"]
         if it["role"] == "scalar":
             if it.get("decode") == "bounded_scalar":
-                lo, hi, ty = it["min_value"], it["max_value"], it["rust"]
-                decode.append(f"    let {n} = ({lo} as {ty}) + (cur.take_{ty}() "
-                              f"% (({hi} - {lo} + 1) as {ty}));")
+                hi, ty = it["max_value"], it["rust"]
+                mn = it["min_var"] if it.get("min_var") else it["min_value"]
+                decode.append(f"    let {n} = ({mn} as {ty}) + (cur.take_{ty}() "
+                              f"% (({hi} - {mn} + 1) as {ty}));")
             else:
                 decode.append(f"    let {n} = cur.take_{it['rust']}();")
         elif it["role"] == "in_buf":

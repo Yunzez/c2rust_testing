@@ -88,8 +88,9 @@ def gen_c_driver(items: list[dict], abi: list[dict], entry: str, source_abs: str
         if it["role"] == "scalar":
             ct = RUST_TO_C[it["rust"]]
             if it.get("decode") == "bounded_scalar":
-                lo, hi = it["min_value"], it["max_value"]
-                decode.append(f"    {ct} {n} = ({ct})({lo} + (cuint({it['w']}) % ({hi} - {lo} + 1)));")
+                hi = it["max_value"]
+                mn = it["min_var"] if it.get("min_var") else it["min_value"]
+                decode.append(f"    {ct} {n} = ({ct})({mn} + (cuint({it['w']}) % ({hi} - {mn} + 1)));")
             else:
                 decode.append(f"    {ct} {n} = ({ct})cuint({it['w']});")
         elif it["role"] in ("in_buf", "io_buf"):
@@ -228,8 +229,9 @@ path = "src/main.rs"
         n = it["name"]
         if it["role"] == "scalar":
             if it.get("decode") == "bounded_scalar":
-                lo, hi, ty = it["min_value"], it["max_value"], it["rust"]
-                decode.append(f"    let {n} = ({lo} as {ty}) + (cur.take_{ty}() % (({hi} - {lo} + 1) as {ty}));")
+                hi, ty = it["max_value"], it["rust"]
+                mn = it["min_var"] if it.get("min_var") else it["min_value"]
+                decode.append(f"    let {n} = ({mn} as {ty}) + (cur.take_{ty}() % (({hi} - {mn} + 1) as {ty}));")
             else:
                 decode.append(f"    let {n} = cur.take_{it['rust']}();")
         elif it["role"] in ("in_buf", "io_buf"):

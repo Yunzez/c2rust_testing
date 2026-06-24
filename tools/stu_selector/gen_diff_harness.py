@@ -508,9 +508,14 @@ def classify(params: list[dict]) -> list[dict]:
             raise SystemExit(f"unsupported: pointer-to-array param {p['name']} without a length")
         if p["kind"] == "ptr":
             nxt = params[i + 1] if i + 1 < len(params) else None
-            # buffer + length, but only if the following scalar is a LENGTH — not a slice INDEX
-            # (e.g. merge_runs(int* a, int* tmp, size_t lo, ...): `lo` indexes a, it is not tmp's len).
-            if nxt and nxt["kind"] == "scalar" and not nxt.get("used_as_index"):
+            n2 = params[i + 2] if i + 2 < len(params) else None
+            # Don't pair a buffer with a following scalar that is a SLICE index — but only in the
+            # real sliced pattern (the index is followed by ANOTHER usize, e.g. merge_runs lo,mid,hi).
+            # A lone `(T* a, size_t count)` still pairs even when count is used as `a[count-1]`
+            # (count is the LENGTH; it bounds the loop) — not a regression for normal buffers.
+            sliced_idx = (nxt and nxt.get("used_as_index") and n2
+                          and n2["kind"] == "scalar" and n2.get("rust") == "usize")
+            if nxt and nxt["kind"] == "scalar" and not sliced_idx:
                 role = "in_buf" if p["const"] else "io_buf"
                 out.append({**p, "role": role, "len_name": nxt["name"]})
                 i += 2

@@ -101,6 +101,9 @@ def gen_c_driver(items: list[dict], abi: list[dict], entry: str, source_abs: str
         elif it["role"] == "out_scalar":
             ct = RUST_TO_C[it["elem"]]
             decode.append(f"    {ct} {n} = 0;")
+        elif it["role"] == "out_arr":
+            ct = RUST_TO_C[it["elem"]]
+            decode.append(f"    {ct}* {n} = ({ct}*)calloc({it['cap']}, sizeof({ct}));")
         elif it["role"] == "in_str":
             ct = RUST_TO_C[it["elem"]]
             decode.append(f"    size_t {n}_len = (size_t)(cb() % 64);")
@@ -234,6 +237,8 @@ path = "src/main.rs"
             decode.append(f"    let {it['len_name']} = {n}.len();")
         elif it["role"] == "out_scalar":
             decode.append(f"    let mut {n}: {it['elem']} = 0 as {it['elem']};")
+        elif it["role"] == "out_arr":
+            decode.append(f"    let mut {n}: Vec<{it['elem']}> = vec![0 as {it['elem']}; {it['cap']}];")
         elif it["role"] == "in_str":
             decode.append(f"    let mut {n}: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    {n}.push(0 as {it['elem']});")
@@ -271,7 +276,7 @@ path = "src/main.rs"
     call = []  # call arguments in strict ABI order
     for p in abi:
         role, n = p["role"], p["name"]
-        if role in ("input_buffer", "inout_buffer", "output_buffer"):
+        if role in ("input_buffer", "inout_buffer", "output_buffer", "output_array"):
             call.append(f"{n}.as_mut_ptr()")
         elif role == "out_scalar":
             call.append(f"&mut {n}")

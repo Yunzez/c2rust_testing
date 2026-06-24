@@ -246,6 +246,36 @@ if (ROOT / "benchmark" / "pairs" / "dynamic_array" / "build").exists():
     check("non-POD struct (pointer field) gives a precise struct-invariant gate",
           "struct-invariant" in _da_err and "pointer field" in _da_err, True)
 
+# output-array + sliced-buffer (body-usage driven inference: subscripted out ptr -> output_array;
+# bare usize alongside an output array -> bounded slice index)
+_OA = [{"kind": "ptr", "const": True, "elem": "u32", "elem_w": 4, "name": "src", "subscripted": True, "used_as_index": False},
+       {"kind": "scalar", "rust": "usize", "w": 8, "name": "n", "subscripted": False, "used_as_index": False},
+       {"kind": "ptr", "const": False, "elem": "u64", "elem_w": 8, "name": "dst", "subscripted": True, "used_as_index": False}]
+_OA_ABI = {p["name"]: p for p in gdh._infer_abi(_OA)}
+check("infer: subscripted non-const out ptr -> output_array",
+      (_OA_ABI["dst"]["role"], _OA_ABI["dst"]["cap"]), ("output_array", 64))
+check("infer: input buffer src still pairs with its length n", _OA_ABI["src"]["role"], "input_buffer")
+# sliced-buffer: a,tmp (subscripted, no length) + lo,mid,hi (usize) -> two output_arrays + bounded indices
+_SL = [{"kind": "ptr", "const": False, "elem": "i32", "elem_w": 4, "name": "a", "subscripted": True, "used_as_index": False},
+       {"kind": "ptr", "const": False, "elem": "i32", "elem_w": 4, "name": "tmp", "subscripted": True, "used_as_index": False},
+       {"kind": "scalar", "rust": "usize", "w": 8, "name": "lo", "subscripted": False, "used_as_index": True},
+       {"kind": "scalar", "rust": "usize", "w": 8, "name": "mid", "subscripted": False, "used_as_index": False},
+       {"kind": "scalar", "rust": "usize", "w": 8, "name": "hi", "subscripted": False, "used_as_index": False}]
+_SL_ABI = {p["name"]: p for p in gdh._infer_abi(_SL)}
+check("sliced: buffers a,tmp -> output_array (not buffer+index)",
+      (_SL_ABI["a"]["role"], _SL_ABI["tmp"]["role"]), ("output_array", "output_array"))
+check("sliced: usize indices bounded to the array cap [0,64]",
+      (_SL_ABI["lo"]["decode"], _SL_ABI["lo"]["max_value"], _SL_ABI["hi"]["decode"]),
+      ("bounded_scalar", 64, "bounded_scalar"))
+_SL_DEC, _SL_POST = gdh._decode_and_post(gdh.items_from_schema({"params": list(_SL_ABI.values())}))
+check("output_array decode is a cap-sized zeroed Vec + compared",
+      any("vec![0 as i32; 64]" in d for d in _SL_DEC) and any("out array a" in p for p in _SL_POST), True)
+# the used_as_index guard must NOT perturb a real buffer+length (n is a length, not an index)
+_BUF = [{"kind": "ptr", "const": True, "elem": "u8", "elem_w": 1, "name": "buf", "subscripted": True, "used_as_index": False},
+        {"kind": "scalar", "rust": "usize", "w": 8, "name": "n", "subscripted": False, "used_as_index": False}]
+check("buffer+length still pairs when scalar is a length (not used_as_index)",
+      {p["name"]: p["role"] for p in gdh._infer_abi(_BUF)}["buf"], "input_buffer")
+
 # bounded scalar
 _BS = {"params": [{"name": "n", "role": "scalar", "decode": "bounded_scalar",
                    "rust": "usize", "width": 8, "min_value": 0, "max_value": 64}]}

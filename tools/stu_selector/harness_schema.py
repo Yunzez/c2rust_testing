@@ -49,11 +49,11 @@ TYPE_RANGE = {
 }
 
 ROLES = {"scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
-         "input_string", "input_fixed_array_buffer", "input_rectangular_pointer_table",
+         "input_string", "output_array", "input_fixed_array_buffer", "input_rectangular_pointer_table",
          "input_string_pointer_table", "input_struct", "inout_struct",
          "input_struct_array", "inout_struct_array", "length", "capacity"}
 DECODES = {"scalar", "bounded_scalar", "vector", "derived_from_buffer", "out_scalar_zero",
-           "nul_string", "fixed_array_vector", "rectangular_pointer_table",
+           "nul_string", "output_array_vector", "fixed_array_vector", "rectangular_pointer_table",
            "string_pointer_table", "struct_value", "struct_array_vector"}
 
 # name hints used only to DRAFT output- vs inout-buffer; provenance flags this for human review.
@@ -275,7 +275,7 @@ def validate(schema: dict) -> list[str]:
 # role -> the single legal decode kind
 _ROLE_DECODE = {
     "scalar": "scalar", "input_buffer": "vector", "inout_buffer": "vector",
-    "output_buffer": "vector", "out_scalar": "out_scalar_zero", "input_string": "nul_string",
+    "output_buffer": "vector", "out_scalar": "out_scalar_zero", "input_string": "nul_string", "output_array": "output_array_vector",
     "input_fixed_array_buffer": "fixed_array_vector",
     "input_rectangular_pointer_table": "rectangular_pointer_table",
     "input_string_pointer_table": "string_pointer_table",

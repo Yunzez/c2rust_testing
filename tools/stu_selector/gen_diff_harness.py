@@ -38,12 +38,12 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
 # different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
-GEN_VERSION = "0.4"
+GEN_VERSION = "0.5"
 GEN_CAPABILITIES = (
     "scalar", "bounded_scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
     "input_string", "input_fixed_array_buffer", "input_rectangular_pointer_table",
     "input_string_pointer_table", "input_struct", "inout_struct",
-    "input_struct_array", "inout_struct_array",
+    "input_struct_array", "inout_struct_array", "output_array",
 )
 
 # c2rust type spelling -> (rust_ffi_type, byte_width). size_t -> usize to match translation.
@@ -184,8 +184,32 @@ def _param_from_descriptor(desc: dict, name: str) -> dict:
     raise SystemExit(f"unsupported param type for {name}: {desc.get('spelling', desc['kind'])}")
 
 
+def _param_usage(fn, names: set) -> dict:
+    """Lightweight body analysis: for each parameter, is it the BASE of an array subscript
+    (`p[..]`) and/or used in an INDEX position (`a[p]`). Distinguishes an output ARRAY (`dst[i]`,
+    subscripted) from a single out-scalar (`*result`, not subscripted), and finds slice indices."""
+    usage = {n: {"subscripted": False, "used_as_index": False} for n in names}
+
+    def walk(node):
+        if node.kind == CursorKind.ARRAY_SUBSCRIPT_EXPR:
+            ch = list(node.get_children())
+            if len(ch) >= 2:
+                base = {t.spelling for t in ch[0].get_tokens()}
+                idxt = {t.spelling for t in ch[1].get_tokens()}
+                for n in names:
+                    if n in base:
+                        usage[n]["subscripted"] = True
+                    if n in idxt:
+                        usage[n]["used_as_index"] = True
+        for c in node.get_children():
+            walk(c)
+    walk(fn)
+    return usage
+
+
 def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, list[str]]:
-    """Return (params, ret_rust_type, all_function_names) for the entry via libclang."""
+    """Return (params, ret_rust_type, all_function_names) for the entry via libclang.
+    Each param dict also carries body-usage flags (subscripted / used_as_index)."""
     cgmod._configure_libclang()
     from clang.cindex import CompilationDatabase
     cdb = CompilationDatabase.fromDirectory(str(cc_dir))
@@ -213,9 +237,15 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
             all_fns.append(cur.spelling)
             if cur.spelling != entry:
                 continue
-            for idx, a in enumerate(cur.get_arguments()):
+            arg_cursors = list(cur.get_arguments())
+            usage = _param_usage(cur, {a.spelling for a in arg_cursors if a.spelling})
+            for idx, a in enumerate(arg_cursors):
                 pname = safe_name(a.spelling, idx)
-                params.append(_param_from_descriptor(describe_type(a.type), pname))
+                pd = _param_from_descriptor(describe_type(a.type), pname)
+                u = usage.get(a.spelling, {})
+                pd["subscripted"] = u.get("subscripted", False)
+                pd["used_as_index"] = u.get("used_as_index", False)
+                params.append(pd)
             rt = cur.result_type
             if rt.kind == TypeKind.VOID:
                 ret = "void"
@@ -253,6 +283,9 @@ def items_from_schema(schema: dict) -> list[dict]:
         elif role == "out_scalar":
             items.append({"kind": "ptr", "role": "out_scalar", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"]})
+        elif role == "output_array":
+            items.append({"kind": "ptr", "role": "out_arr", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"], "cap": p["cap"]})
         elif role == "input_string":
             items.append({"kind": "ptr", "role": "in_str", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"]})
@@ -305,6 +338,13 @@ def _infer_abi(params: list[dict]) -> list[dict]:
         elif it["role"] in ("in_struct_arr", "io_struct_arr"):
             len_owner[it["len_name"]] = (it["name"], "length")
     out_scalars = {it["name"] for it in its if it["role"] == "out_scalar"}
+    # A non-const out pointer that is SUBSCRIPTED (`dst[i]`) is an OUTPUT ARRAY, not a single
+    # out-scalar (`*result`). If any exists, the function indexes a cap-sized array, so its bare
+    # usize scalars are slice indices -> bound them to the cap (keeps a[lo..hi] in bounds: this is
+    # both the output-array fix and the sliced-buffer fix, with no param grouping).
+    OUT_ARR_CAP = 64
+    out_arrays = {n for n in out_scalars if by[n].get("subscripted") and not by[n].get("const")}
+    has_io_arr = bool(out_arrays)
     struct_items = {it["name"]: it for it in its
                     if it["role"] in ("in_struct", "io_struct", "in_struct_arr", "io_struct_arr")}
     abi = []
@@ -348,10 +388,19 @@ def _infer_abi(params: list[dict]) -> list[dict]:
                         "of_buffer": buf, "rust": p["rust"], "width": p["w"]})
         elif n in out_scalars:
             it = next(i for i in its if i["name"] == n)
-            role = "input_string" if by[n].get("const") else "out_scalar"
-            decode = "nul_string" if by[n].get("const") else "out_scalar_zero"
-            abi.append({"name": n, "role": role, "decode": decode,
-                        "elem": it["elem"], "elem_width": it["elem_w"]})
+            if by[n].get("const"):
+                abi.append({"name": n, "role": "input_string", "decode": "nul_string",
+                            "elem": it["elem"], "elem_width": it["elem_w"]})
+            elif n in out_arrays:
+                abi.append({"name": n, "role": "output_array", "decode": "output_array_vector",
+                            "elem": it["elem"], "elem_width": it["elem_w"], "cap": OUT_ARR_CAP})
+            else:
+                abi.append({"name": n, "role": "out_scalar", "decode": "out_scalar_zero",
+                            "elem": it["elem"], "elem_width": it["elem_w"]})
+        elif has_io_arr and p.get("rust") == "usize":
+            # bare usize alongside an output array -> a slice index; bound it to the array cap.
+            abi.append({"name": n, "role": "scalar", "decode": "bounded_scalar",
+                        "rust": "usize", "width": 8, "min_value": 0, "max_value": OUT_ARR_CAP})
         else:
             abi.append({"name": n, "role": "scalar", "decode": "scalar",
                         "rust": p["rust"], "width": p["w"]})
@@ -447,7 +496,9 @@ def classify(params: list[dict]) -> list[dict]:
             raise SystemExit(f"unsupported: pointer-to-array param {p['name']} without a length")
         if p["kind"] == "ptr":
             nxt = params[i + 1] if i + 1 < len(params) else None
-            if nxt and nxt["kind"] == "scalar":
+            # buffer + length, but only if the following scalar is a LENGTH — not a slice INDEX
+            # (e.g. merge_runs(int* a, int* tmp, size_t lo, ...): `lo` indexes a, it is not tmp's len).
+            if nxt and nxt["kind"] == "scalar" and not nxt.get("used_as_index"):
                 role = "in_buf" if p["const"] else "io_buf"
                 out.append({**p, "role": role, "len_name": nxt["name"]})
                 i += 2
@@ -549,6 +600,12 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             decode.append(f"    let mut {n}_c: {it['elem']} = 0 as {it['elem']};")
             decode.append(f"    let mut {n}_r: {it['elem']} = 0 as {it['elem']};")
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: out param {n}"); }}')
+        elif it["role"] == "out_arr":
+            # output / inout array sized to a fixed cap (>= any bounded index) so dst[i] / a[lo..hi]
+            # stay in bounds; both sides start zeroed, compare the whole buffer after the call.
+            decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = vec![0 as {it['elem']}; {it['cap']}];")
+            decode.append(f"    let mut {n}_r: Vec<{it['elem']}> = vec![0 as {it['elem']}; {it['cap']}];")
+            post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: out array {n}"); }}')
         elif it["role"] == "in_str":
             decode.append(f"    let mut {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
             decode.append(f"    {n}_buf.push(0 as {it['elem']});")
@@ -625,6 +682,9 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
             decl.append(f"{n}: *mut {p['elem']}")
         elif role == "out_scalar":
             c_args.append(f"&mut {n}_c"); r_args.append(f"&mut {n}_r")
+            decl.append(f"{n}: *mut {p['elem']}")
+        elif role == "output_array":
+            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
             decl.append(f"{n}: *mut {p['elem']}")
         elif role == "input_string":
             c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")

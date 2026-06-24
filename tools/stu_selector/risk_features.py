@@ -69,13 +69,32 @@ def _risk(fn) -> dict:
     r_field_index = 0          # array subscript whose index references a struct field (s->buf[s->head])
     r_unmasked_field_index = 0 # ... AND the index is NOT masked/bounded (% or & ) => trusts the field
     r_datadep_index = 0        # array subscript whose index is data-dependent (field or variable)
+    # --- intrinsic-UB-risk (AST; operator spelling, NOT compound-assign forms) ---
+    # External libs surfaced two overflow forms the token-level compound set missed: a signed
+    # multiply-accumulate written as `n = n*10 + d` (atoi) and unary negation of INT_MIN (`-a`, llabs).
+    r_mul = 0                  # binary `*` (signed multiply can overflow)
+    r_negate = 0               # unary `-` (negation of INT_MIN is UB)
+    subscript_bases: set[str] = set()  # param/var names used as a subscript BASE (p[i]) -> written/read buffer
+
+    def _binop_op(node):
+        ch = list(node.get_children())
+        if len(ch) != 2:
+            return None
+        end0 = ch[0].extent.end.offset
+        for t in node.get_tokens():
+            if t.extent.start.offset >= end0:
+                return t.spelling
+        return None
 
     def walk(node):
-        nonlocal r_field_index, r_unmasked_field_index, r_datadep_index
+        nonlocal r_field_index, r_unmasked_field_index, r_datadep_index, r_mul, r_negate
         if node.kind == CursorKind.ARRAY_SUBSCRIPT_EXPR:
             ch = list(node.get_children())
             if len(ch) >= 2:
-                idx = ch[1]
+                base, idx = ch[0], ch[1]
+                btoks = [t.spelling for t in base.get_tokens()]
+                if btoks:
+                    subscript_bases.add(btoks[0])
                 if _has_member_ref(idx):
                     r_field_index += 1
                     itoks = [t.spelling for t in idx.get_tokens()]
@@ -83,9 +102,35 @@ def _risk(fn) -> dict:
                         r_unmasked_field_index += 1
                 if _contains_member_or_param(idx):
                     r_datadep_index += 1
+        elif node.kind == CursorKind.BINARY_OPERATOR:
+            if _binop_op(node) == "*":
+                r_mul += 1
+        elif node.kind == CursorKind.UNARY_OPERATOR:
+            t0 = next(iter(node.get_tokens()), None)
+            if t0 is not None and t0.spelling == "-":  # prefix unary minus (deref `*p`/`++`/`--` excluded)
+                r_negate += 1
         for c in node.get_children():
             walk(c)
     walk(fn)
+
+    # output-size precondition (isolation sub-mechanism): a non-const pointer param that is written
+    # through a subscript but is NOT followed by a size/capacity scalar -> caller must size it
+    # (e.g. base64_encode's `out`; a well-formed `(dst, dst_cap)` does NOT fire).
+    r_unsized_output = 0
+    pargs = list(fn.get_arguments())
+    for i, a in enumerate(pargs):
+        t = a.type
+        if t.kind != TypeKind.POINTER:
+            continue
+        pt = t.get_pointee()
+        if pt.is_const_qualified():
+            continue
+        if a.spelling not in subscript_bases:
+            continue
+        nxt = pargs[i + 1] if i + 1 < len(pargs) else None
+        nxt_is_size = bool(nxt) and any(k in (nxt.spelling or "").lower() for k in _INDEX_FIELDS)
+        if not nxt_is_size:
+            r_unsized_output = 1
 
     # struct-pointer parameter + whether its record has an index-like field
     r_struct_ptr = 0
@@ -107,10 +152,11 @@ def _risk(fn) -> dict:
 
     return {
         "rf_div_mod": r_div_mod, "rf_shift": r_shift, "rf_compound_arith": r_compound_arith,
+        "rf_mul": r_mul, "rf_negate": r_negate,
         "rf_compares": r_compares, "rf_nonzero_guard": r_nonzero_guard,
         "rf_width_guard": r_width_guard, "rf_signed": r_signed,
         "rf_field_index": r_field_index, "rf_unmasked_field_index": r_unmasked_field_index,
-        "rf_datadep_index": r_datadep_index,
+        "rf_datadep_index": r_datadep_index, "rf_unsized_output": r_unsized_output,
         "rf_struct_ptr": r_struct_ptr, "rf_struct_index_field": r_struct_index_field,
         "rf_internal": r_internal,
     }

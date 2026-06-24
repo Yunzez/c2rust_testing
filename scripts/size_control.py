@@ -37,7 +37,8 @@ GENERIC_ABLATED = [f for f in GENERIC if f not in SIZE]
 
 def add_interaction(rows):
     for r in rows:
-        ub = (r.get("rf_div_mod", 0) + r.get("rf_shift", 0) + r.get("rf_compound_arith", 0)) > 0
+        ub = (r.get("rf_div_mod", 0) + r.get("rf_shift", 0) + r.get("rf_compound_arith", 0)
+              + r.get("rf_mul", 0) + r.get("rf_negate", 0)) > 0
         guarded = bool(r.get("rf_nonzero_guard", 0)) or bool(r.get("rf_width_guard", 0))
         r["rf_unguarded_ubop"] = int(ub and r.get("rf_signed", 0) and not guarded)
 
@@ -56,8 +57,8 @@ def size_matched(valid, neg, key="c_stmts"):
 
 
 def main() -> int:
-    rows = [json.loads(l) for l in (ROOT / "dataset" / "boundaries_v3.jsonl")
-            .read_text().splitlines() if l.strip()]
+    src = ROOT / "dataset" / (sys.argv[1] if len(sys.argv) > 1 else "boundaries_v4.jsonl")
+    rows = [json.loads(l) for l in src.read_text().splitlines() if l.strip()]
     rows = [r for r in rows if r.get("validity_v2") == "valid" or r.get("validity_v2") in INVALID]
     add_interaction(rows)
     valid = [r for r in rows if r["validity_v2"] == "valid"]

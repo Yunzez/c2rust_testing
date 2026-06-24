@@ -29,7 +29,8 @@ GENERIC = ["c_cyclomatic", "r_cyclomatic", "c_stmts", "r_stmts", "c_nodes", "r_n
            "c_max_loop_depth", "size_ratio", "c_pointer_access", "r_pointer_intensity", "c_allocs",
            "n_params", "n_pointer_params", "n_nested_pointer_params", "has_fn_pointer_param",
            "returns_pointer", "fuzzability", "norm_burden"]
-RF = ["rf_div_mod", "rf_shift", "rf_compound_arith", "rf_compares", "rf_nonzero_guard",
+RF = ["rf_div_mod", "rf_shift", "rf_compound_arith", "rf_mul", "rf_negate", "rf_unsized_output",
+      "rf_compares", "rf_nonzero_guard",
       "rf_width_guard", "rf_signed", "rf_field_index", "rf_unmasked_field_index", "rf_datadep_index",
       "rf_struct_ptr", "rf_struct_index_field", "rf_internal", "rf_unguarded_ubop"]
 
@@ -122,7 +123,8 @@ def main() -> int:
     rows = [r for r in rows if r.get("validity_v2") == "valid" or r.get("validity_v2") in INVALID]
     # engineered interaction: a UB-prone op present AND not guarded
     for r in rows:
-        ub = (r.get("rf_div_mod", 0) + r.get("rf_shift", 0) + r.get("rf_compound_arith", 0)) > 0
+        ub = (r.get("rf_div_mod", 0) + r.get("rf_shift", 0) + r.get("rf_compound_arith", 0)
+              + r.get("rf_mul", 0) + r.get("rf_negate", 0)) > 0
         guarded = bool(r.get("rf_nonzero_guard", 0)) or bool(r.get("rf_width_guard", 0))
         r["rf_unguarded_ubop"] = int(ub and r.get("rf_signed", 0) and not guarded)
 

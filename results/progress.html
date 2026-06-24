@@ -57,13 +57,13 @@
   <h1>C → Rust Translation: STU-Guided Differential Fuzzing</h1>
   <p class="sub">Measuring C-to-Rust translation correctness by fuzzing the C original against its
   Rust translation — and learning <b>where</b> a differential test is valid (the boundary).
-  <span style="color:#7d88a8">Snapshot 2026-06-24 · generator v0.5</span></p>
+  <span style="color:#7d88a8">Snapshot 2026-06-24 · generator v0.5 · external validity (musl/base64)</span></p>
 
   <div class="kpis">
     <div class="kpi"><div class="n" style="color:var(--done)">101</div><div class="l">unit tests passing</div></div>
     <div class="kpi"><div class="n" style="color:var(--done)">17/17</div><div class="l">harness byte-identity regression</div></div>
-    <div class="kpi"><div class="n" style="color:var(--done)">127</div><div class="l">boundaries harvested (v3)</div></div>
-    <div class="kpi"><div class="n" style="color:var(--now)">69 : 34</div><div class="l">labeled valid : invalid</div></div>
+    <div class="kpi"><div class="n" style="color:var(--done)">134</div><div class="l">boundaries harvested (v4, +8 external libs)</div></div>
+    <div class="kpi"><div class="n" style="color:var(--now)">73 : 37</div><div class="l">labeled valid : invalid</div></div>
   </div>
 
   <h2>The core idea</h2>
@@ -80,9 +80,9 @@
   <h2>Pipeline (built end-to-end)</h2>
   <div class="card">
     <div class="flow">
-      <div class="step"><b>40 C↔Rust pairs</b><span>c2rust 0.22, 40/40 clean</span></div>
+      <div class="step"><b>48 C↔Rust pairs</b><span>40 authored + 8 real libs, clean</span></div>
       <div class="arrow">→</div>
-      <div class="step"><b>Census (Stage A)</b><span>every fn → 153 boundaries</span></div>
+      <div class="step"><b>Census (Stage A)</b><span>every fn → 162 boundaries</span></div>
       <div class="arrow">→</div>
       <div class="step"><b>Harness gen</b><span>schema / inferred, ABI-correct</span></div>
       <div class="arrow">→</div>
@@ -108,28 +108,30 @@
       <span>Engineered boundary-specific features (unguarded UB-op; trusted/unmasked struct-buffer index). Program-grouped CV: boundary-specific win <b>per mechanism</b> — isolation 0.85 vs 0.74; intrinsic-UB combined 0.74 vs generic ≈0.59. <b>Size hypothesis tested &amp; rejected</b> (grouped CV neutralizes size); claim is per-mechanism, not lumped.</span></div>
     <div class="it done"><b>Generator v0.5 (output-array + sliced-buffer) → dataset v3</b> <span class="pill p-done">done</span><br>
       <span>Body-usage analysis recovers <code>prefix_sum</code> (output-array), <code>merge_runs</code>/<code>reverse_range</code> (sliced, monotone indices) from excluded_generator → valid. v3: 69:34; baseline holds (isolation 0.85, intrinsic 0.74).</span></div>
-    <div class="it now"><b>External c2rust-clean libs</b> <span class="pill p-now">next</span><br>
-      <span>real-world code for external validity beyond the authored corpus (sliced-buffer is done) — then the P(valid|x) model on the grown dataset.</span></div>
+    <div class="it done"><b>External validity → dataset v4 (real musl/base64)</b> <span class="pill p-done">done</span><br>
+      <span>8 real upstream programs (base64 public-domain + 7 musl MIT) transpile clean. <b>Both mechanisms reproduce on un-authored code, sanitizer-confirmed</b>: base64_encode output-size → ASan (isolation); mu_atoi/mu_llabs → UBSan (intrinsic-UB). Fixed 3 tooling gaps (sibling headers · non-size_t lengths · libc-symbol rename). Generalized both feature families (<code>rf_mul</code>/<code>rf_negate</code>/<code>rf_unsized_output</code>). Re-run on v4 (external = held-out groups): <b>per-mechanism advantage holds &amp; strengthens</b> — isolation 0.87, intrinsic-UB 0.75 (↑ from 0.68) vs generic ≈0.59.</span></div>
+    <div class="it now"><b>P(valid | x) model on the grown dataset</b> <span class="pill p-now">next</span><br>
+      <span>per-mechanism / tree models, program-grouped CV; the grouped-CV baseline already establishes the claim direction.</span></div>
   </div>
 
   <h2>Boundary-validity dataset</h2>
   <div class="card">
     <div class="bar">
-      <div style="width:54%;background:var(--done)">69 valid</div>
-      <div style="width:27%;background:var(--bad)">34 invalid</div>
-      <div style="width:19%;background:var(--muted)">24 dropped</div>
+      <div style="width:55%;background:var(--done)">73 valid</div>
+      <div style="width:28%;background:var(--bad)">37 invalid</div>
+      <div style="width:18%;background:var(--muted)">24 dropped</div>
     </div>
     <table>
-      <tr><th>validity_v2 (v3)</th><th>n</th><th>meaning</th></tr>
-      <tr><td><span class="pill p-done">valid</span></td><td class="num">69</td><td>real, exercised, no divergence (weak positive)</td></tr>
-      <tr><td><span class="pill p-now">invalid_isolation_invariant</span></td><td class="num">19</td><td>OOB from a trusted struct/buffer index the caller must establish</td></tr>
-      <tr><td><span class="pill p-now">invalid_intrinsic_ub</span></td><td class="num">15</td><td>genuine UB in the function (overflow / div / shift / self-overflow)</td></tr>
+      <tr><th>validity_v2 (v4)</th><th>n</th><th>meaning</th></tr>
+      <tr><td><span class="pill p-done">valid</span></td><td class="num">73</td><td>real, exercised, no divergence (weak positive)</td></tr>
+      <tr><td><span class="pill p-now">invalid_isolation_invariant</span></td><td class="num">20</td><td>OOB / output-size precondition the caller must establish</td></tr>
+      <tr><td><span class="pill p-now">invalid_intrinsic_ub</span></td><td class="num">17</td><td>genuine UB in the function (overflow / div / shift / negation)</td></tr>
       <tr><td style="color:var(--muted)">weak_exclude</td><td class="num">7</td><td>uninformative positive (trivial decoder / cursor early-return)</td></tr>
       <tr><td style="color:var(--muted)">excluded_generator</td><td class="num">5</td><td>harness mis-model (n×n matrix · ptr-pair span · destructor · callee-index)</td></tr>
       <tr><td style="color:var(--muted)">excluded (return-type)</td><td class="num">12</td><td>enum/struct/pointer returns — not yet generatable</td></tr>
     </table>
-    <div class="legend">Negatives span <b>17 programs</b> and <b>both mechanisms</b> (19 invariant + 15 UB) — v1's single-VM-family bias resolved.
-    Labels: 44 reused from the v2.1 independent audit + 10 reviewed. public/internal layered per row. <code>validity_v2</code> is authoritative; the raw fuzz label is not.</div>
+    <div class="legend">Now spans <b>authored + 8 real upstream programs</b> (base64 public-domain · 7 musl MIT), <b>both mechanisms</b> (20 invariant + 17 UB).
+    External boundaries are sanitizer-confirmed (ASan / UBSan) and form held-out program groups in CV. <code>validity_v2</code> is authoritative; the raw fuzz label is not.</div>
   </div>
 
   <h2>Input-type coverage (the generator)</h2>
@@ -144,23 +146,24 @@
     <div><span class="pill p-done">done</span> struct-array <code>T* + size</code></div>
     <div><span class="pill p-done">done</span> output-array <code>dst[i]</code></div>
     <div><span class="pill p-done">done</span> sliced-buffer (monotone indices)</div>
-    <div><span class="pill p-next">backlog</span> n×n matrix · ptr-pair span · destructor · callback · callee-index</div>
+    <div><span class="pill p-done">done</span> real-lib support: sibling <code>.h</code> · non-<code>size_t</code> length</div>
+    <div><span class="pill p-next">backlog</span> n×n matrix · ptr-pair span · destructor · callback · callee-index · void* buffer · multi-TU</div>
   </div>
 
   <h2>Next steps</h2>
   <div class="card grid g2">
-    <div><b>1 · external c2rust-clean libs</b><br><span style="color:var(--muted)">real-world code for external validity
-      beyond the authored corpus (sliced-buffer + output-array done) — the next robustness step.</span></div>
-    <div><b>2 · P(valid | x) model</b><br><span style="color:var(--muted)">once labels grow: per-mechanism / tree models,
+    <div><b>1 · P(valid | x) model</b><br><span style="color:var(--muted)">per-mechanism / tree models on v4,
       program-grouped CV. The grouped-CV baseline already establishes the claim direction.</span></div>
+    <div><b>2 · more external corpora</b><br><span style="color:var(--muted)">grow the external set (and multi-TU libs)
+      to firm up the held-out evidence and the feature generalization beyond a handful of programs.</span></div>
     <div><b>3 · paper experiment figures</b><br><span style="color:var(--muted)">boundary-validity taxonomy, per-mechanism
-      feature comparison, size-control, scope-stratified tables.</span></div>
+      feature comparison, size-control, external-validity tables.</span></div>
     <div><b>4 · remaining generator gaps</b><br><span style="color:var(--muted)">n×n matrix · pointer-pair span ·
-      callee-index slices — only as their pattern frequency in external libs justifies.</span></div>
+      callee-index slices · void* buffers · multi-TU — only as external-lib frequency justifies.</span></div>
   </div>
 
   <p class="foot">Toolchain: c2rust 0.22.1 · clang 21 · nightly-2025-09-01 + LibAFL 0.15.4.
-  Branches: <code>checkpoint/boundary-dataset-v1</code> (frozen) · <code>dataset-v2</code> · <code>dataset-v2.1</code> (+v2.1 fix · feature analysis + size-control · generator v0.5 → dataset v3).
+  Branches: <code>checkpoint/boundary-dataset-v1</code> (frozen) · <code>dataset-v2</code> · <code>dataset-v2.1</code> (+v2.1 fix · feature analysis + size-control · generator v0.5 → v3 · external validity → dataset v4).
   Tooling under <code>tools/stu_selector/</code> &amp; <code>scripts/</code>; data &amp; evidence under <code>dataset/</code>, <code>results/</code>.</p>
 
 </div>

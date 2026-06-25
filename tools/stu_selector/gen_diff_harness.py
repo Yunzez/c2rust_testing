@@ -897,11 +897,6 @@ members = ["."]
 
 [profile.release]
 debug = 1
-# UB-free differential testing (selection rule 4): signed-integer overflow is UB in C and wraps in
-# practice / in release; c2rust emits plain arithmetic. Disable Rust overflow checks so overflow inputs
-# WRAP like the deployed C instead of panicking (a debug-assertions artifact). A surviving C!=Rust
-# divergence is then a UB-free real bug, not an overflow artifact. (Does not cover div-by-zero / OOB.)
-overflow-checks = false
 
 [[bin]]
 name = "{crate}_ft"

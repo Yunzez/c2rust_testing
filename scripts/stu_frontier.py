@@ -151,6 +151,46 @@ def analyze(pair: Path) -> dict:
     for sid in sorted(roots):
         descend(sid)
 
+    # --- selector v2: "guarded rise" ---
+    # A RISKY callee can be tolerated at a HIGHER boundary if the call to it is shielded by an input
+    # clamp (cheap proxy: a direct caller bounds a value against a constant, rf_input_clamp). This lets
+    # the frontier RISE to the boundary that constrains the risky callee's input domain instead of
+    # sinking/collapsing (v1). KNOWN LIMITATION: "direct-caller clamp" is coarse — it does not verify
+    # the clamp actually bounds the specific value reaching the risky op (the precise version is
+    # interprocedural range/precondition analysis, deferred; G3 measures it empirically).
+    fn_clamp = {f["name"]: rfs.get(f["name"], {}).get("rf_input_clamp", 0) > 0 for f in c["functions"]}
+    callers: dict[str, set] = {f["name"]: set() for f in c["functions"]}
+    for e in c["edges"]:
+        if e["to"] in callers:
+            callers[e["to"]].add(e["from"])
+
+    def shielded(r: str) -> bool:
+        return any(fn_clamp.get(cl) for cl in callers.get(r, ()))
+
+    def own_risky(sid: int) -> bool:
+        return any(fn_risk[m] == "RISKY" for m in members[sid])
+
+    def has_unshielded_risky(sid: int) -> bool:
+        return any(fn_risk[m] == "RISKY" and not shielded(m)
+                   for s in reachable(sid, succ) for m in members[s])
+
+    def selectable_v2(sid: int) -> bool:  # rise unless an UNSHIELDED risky is reachable / it is itself risky
+        return constructible_mapped[sid] and not own_risky(sid) and not has_unshielded_risky(sid)
+
+    selected_v2: list[int] = []
+    visited2: set[int] = set()
+    def descend2(sid: int):
+        if sid in visited2:
+            return
+        visited2.add(sid)
+        if selectable_v2(sid):
+            selected_v2.append(sid)
+            return
+        for s in succ[sid]:
+            descend2(s)
+    for sid in sorted(roots):
+        descend2(sid)
+
     def strat(sel_ids: list[int]) -> dict:
         cov: set[str] = set()
         for sid in sel_ids:
@@ -164,10 +204,12 @@ def analyze(pair: Path) -> dict:
         "n_funcs": len(c["functions"]), "matched": len(matched),
         "rust_only": amap["summary"]["rust_only_count"],
         "frontier": strat(selected),
+        "frontier_v2": strat(selected_v2),
         "root": strat(roots),
         "all_constructible": strat(all_constructible),
         "leaf": strat(leaves),
         "frontier_members": [members[s][0] for s in selected],
+        "frontier_v2_members": [members[s][0] for s in selected_v2],
         "sink_reasons": sink_reasons,
     }
 
@@ -190,16 +232,19 @@ def main() -> int:
     def cell(s):  # "harness/covered (exposed)"
         return f"{s['harness']}/{s['covered']} ({s['risk_exposed']})"
 
-    md = ["# STU frontier selector v1 — strategy comparison (Layer 2, Steps 2-3)\n",
+    md = ["# STU frontier selector — strategy comparison (Layer 2, Steps 2-4)\n",
           "Hard-threshold bottom-up antichain; fixed interpretable risk (no model, no training). "
-          "Cells are **#harness / covered-funcs (risk-exposed harnesses)** — all computable without "
-          "fuzzing. A *risk-exposed* harness reaches a RISKY/BLOCKED node (a likely false-divergence "
-          "source). Fewer exposed at comparable coverage = better boundary choice.\n",
-          "| program | funcs | root | all-constructible | leaf-only | **STU frontier** |",
-          "|---|--:|---|---|---|---|"]
+          "Cells are **#harness / covered-funcs (risk-exposed)** — computable without fuzzing. "
+          "**v1** = sink below RISKY (collapses where risk is central). **v2** = *guarded rise*: tolerate "
+          "a RISKY callee when its call is shielded by an input clamp, so the frontier rises to the "
+          "constraining boundary instead of collapsing. (v2 risk-exposed counts reachable RISKY even when "
+          "shielded — a static over-count G3 corrects empirically.)\n",
+          "| program | funcs | root | all-constructible | leaf-only | frontier **v1** | frontier **v2** |",
+          "|---|--:|---|---|---|---|---|"]
     for r in interesting:
         md.append(f"| {r['program']} | {r['n_funcs']} | {cell(r['root'])} | "
-                  f"{cell(r['all_constructible'])} | {cell(r['leaf'])} | **{cell(r['frontier'])}** |")
+                  f"{cell(r['all_constructible'])} | {cell(r['leaf'])} | {cell(r['frontier'])} | "
+                  f"**{cell(r['frontier_v2'])}** |")
     # detail for the deep programs
     md += ["\n## Frontier detail (deep programs)\n"]
     for r in interesting:
@@ -207,7 +252,8 @@ def main() -> int:
             continue
         md.append(f"### {r['program']} ({r['n_funcs']} funcs, {r['matched']} matched, "
                   f"{r['rust_only']} rust-only helpers)")
-        md.append(f"- selected STU roots: `{', '.join(r['frontier_members']) or '(none)'}`")
+        md.append(f"- v1 selected: `{', '.join(r['frontier_members']) or '(none)'}`")
+        md.append(f"- v2 selected (guarded rise): `{', '.join(r['frontier_v2_members']) or '(none)'}`")
         for s in r["sink_reasons"][:8]:
             md.append(f"  - {s}")
     if bad:
@@ -217,10 +263,10 @@ def main() -> int:
     print(f"wrote {out}")
     print(f"\n{len(ok)}/{len(rows)} analyzed; {len(interesting)} with a real strategy difference"
           + (f"; {len(bad)} FAILED" if bad else ""))
-    print(f"\n{'program':14} {'funcs':>5}  root           all            leaf           FRONTIER")
+    print(f"\n{'program':14} {'funcs':>5}  root           all            leaf           v1             v2")
     for r in interesting[:14]:
         print(f"  {r['program']:12} {r['n_funcs']:5}  {cell(r['root']):14} "
-              f"{cell(r['all_constructible']):14} {cell(r['leaf']):14} {cell(r['frontier'])}")
+              f"{cell(r['all_constructible']):14} {cell(r['leaf']):14} {cell(r['frontier']):14} {cell(r['frontier_v2'])}")
     return 0
 
 

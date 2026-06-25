@@ -83,6 +83,11 @@ def collect_signatures(cc_dir: Path) -> dict[str, dict]:
                 out[cur.spelling] = {"params": params, "ret": ret, "param_error": None}
             except SystemExit as e:
                 out[cur.spelling] = {"params": None, "ret": ret, "param_error": str(e)}
+            except RecursionError:
+                # self-referential type (e.g. linked-list `struct Node{ struct Node* next; }`) makes
+                # describe_type recurse forever -> it is simply not constructible, not a crash.
+                out[cur.spelling] = {"params": None, "ret": ret,
+                                     "param_error": "self-referential/recursive type"}
     return out
 
 

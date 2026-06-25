@@ -118,8 +118,18 @@ phenomenon is real and boundary-dependent, established without trusting the tran
   domain**"; detecting that statically (interprocedural range/precondition) is the open research core. G3
   measures it empirically; the selector must learn to predict it.
 
-→ Per the gate, Case A reproduced, so we MAY proceed to Cases B/C + wire into the strategy comparison. Next
-decision is the selector v2 "rise + constraint-aware" rule (separate from continuing G3).
+→ Per the gate, Case A reproduced, so we MAY proceed to Cases B/C + wire into the strategy comparison.
+
+**Selector v2 (guarded rise) — cheap first cut, validated on Case A (2026-06-25).** Added a static
+`rf_input_clamp` signal (a value compared against a constant — a clamp/range check; scale_pct=2, scale=0)
+used ONLY by the selector, not the risk score. v2 rule: a reachable RISKY callee is *shielded* if a direct
+caller clamps, so the frontier RISES to the constraining boundary instead of collapsing. Result on Case A:
+**v1 = [] (0/0 collapse); v2 = [scale_pct] (1 harness, covers 2)** — v2 now selects the boundary we
+empirically confirmed clean. KNOWN LIMITATION: "direct-caller clamp" is a coarse proxy (it does not verify
+the clamp bounds the *specific* value reaching the risky op; the static risk-exposed count still over-counts
+shielded RISKY). The precise version = interprocedural range/precondition analysis, deferred; G3 measures it
+empirically. v2 also lifts coverage on deeper programs (e.g. bignum v1 17/18 → v2 8/26) and correctly leaves
+genuinely-unshielded cases collapsed (regex, hash_table unchanged).
 
 ## 6. Two assumptions — flagged, not hardcoded
 

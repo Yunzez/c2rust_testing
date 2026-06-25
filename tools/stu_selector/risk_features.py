@@ -48,6 +48,12 @@ def _has_member_ref(node) -> bool:
     return any(_has_member_ref(c) for c in node.get_children())
 
 
+def _has_kind(node, kind) -> bool:
+    if node.kind == kind:
+        return True
+    return any(_has_kind(c, kind) for c in node.get_children())
+
+
 def _risk(fn) -> dict:
     # Exclude COMMENT tokens — a comment like "/* b == 0 -> UB */" must not trip the guard checks.
     toks = [t.spelling for t in fn.get_tokens()
@@ -74,6 +80,11 @@ def _risk(fn) -> dict:
     # multiply-accumulate written as `n = n*10 + d` (atoi) and unary negation of INT_MIN (`-a`, llabs).
     r_mul = 0                  # binary `*` (signed multiply can overflow)
     r_negate = 0               # unary `-` (negation of INT_MIN is UB)
+    # input-bounding guard (used by the SELECTOR, not the risk score): a value compared against a
+    # constant (clamp / range check, e.g. `pct < 0`, `pct > 100`). A cheap, interpretable proxy for
+    # "this function constrains a value's domain" -> can shield a risky callee at a higher boundary.
+    r_input_clamp = 0
+    _CMP_OPS = ("<", ">", "<=", ">=")
     subscript_bases: set[str] = set()  # param/var names used as a subscript BASE (p[i]) -> written/read buffer
 
     def _binop_op(node):
@@ -87,7 +98,7 @@ def _risk(fn) -> dict:
         return None
 
     def walk(node):
-        nonlocal r_field_index, r_unmasked_field_index, r_datadep_index, r_mul, r_negate
+        nonlocal r_field_index, r_unmasked_field_index, r_datadep_index, r_mul, r_negate, r_input_clamp
         if node.kind == CursorKind.ARRAY_SUBSCRIPT_EXPR:
             ch = list(node.get_children())
             if len(ch) >= 2:
@@ -103,8 +114,15 @@ def _risk(fn) -> dict:
                 if _contains_member_or_param(idx):
                     r_datadep_index += 1
         elif node.kind == CursorKind.BINARY_OPERATOR:
-            if _binop_op(node) == "*":
+            op = _binop_op(node)
+            if op == "*":
                 r_mul += 1
+            if op in _CMP_OPS:
+                ch = list(node.get_children())
+                if len(ch) == 2 and (
+                    (_has_kind(ch[0], CursorKind.DECL_REF_EXPR) and _has_kind(ch[1], CursorKind.INTEGER_LITERAL))
+                    or (_has_kind(ch[1], CursorKind.DECL_REF_EXPR) and _has_kind(ch[0], CursorKind.INTEGER_LITERAL))):
+                    r_input_clamp += 1
         elif node.kind == CursorKind.UNARY_OPERATOR:
             t0 = next(iter(node.get_tokens()), None)
             if t0 is not None and t0.spelling == "-":  # prefix unary minus (deref `*p`/`++`/`--` excluded)
@@ -157,6 +175,7 @@ def _risk(fn) -> dict:
         "rf_width_guard": r_width_guard, "rf_signed": r_signed,
         "rf_field_index": r_field_index, "rf_unmasked_field_index": r_unmasked_field_index,
         "rf_datadep_index": r_datadep_index, "rf_unsized_output": r_unsized_output,
+        "rf_input_clamp": r_input_clamp,
         "rf_struct_ptr": r_struct_ptr, "rf_struct_index_field": r_struct_index_field,
         "rf_internal": r_internal,
     }

@@ -6,6 +6,20 @@
 > for the entry/exit checkpoint mechanism, which is now demoted to a *localization* tool used
 > **after** a divergence is found, not a selection mechanism.
 
+## 0a. Layer freeze (2026-06-25) — read this first
+
+> **Freeze statement.** We use exhaustive boundary harvesting only to construct labels and to
+> train/evaluate the harness-validity **risk model**. At deployment time the system does **NOT** fuzz
+> all boundaries; it **statically selects an STU frontier on the call graph**. The boundary-validity
+> dataset, taxonomy, generator, classifier/audit, risk features, P(valid|x) baseline, and external
+> validity are **Layer 1 — the risk estimator, frozen**. They are *not* the main algorithm.
+>
+> The main algorithm is **Layer 2**: call-graph **frontier selection**, evaluated by whether selected
+> frontiers reduce **false divergences** while preserving **coverage** (the headline strategy-comparison
+> table; G3 before G2). Active plan and guardrails: [`roadmap_frontier.md`](./roadmap_frontier.md).
+> We are not predicting "which function is fuzzable" — we are solving "at which call-graph layer of the
+> translated program to do differential testing."
+
 ## 0. One-paragraph summary
 
 When C is translated to Rust (by C2Rust or an LLM), the function structure is **not 1:1**:
@@ -115,6 +129,12 @@ subject to   the regions in S do not redundantly cover each other
 
 The hand-weighted score is retained only as an **interpretable baseline** to compare the learned
 model against.
+
+> **Implementation note (Layer 2 v1).** The first Layer-2 selector uses a **hard-threshold,
+> bottom-up antichain rule** (`risk(f) ≤ T`), not the weighted objective. The weighted
+> `coverage − λ·risk − μ·cost` form is **deferred until G3 provides a calibration curve** to tune
+> λ/μ against — introducing tunable weights earlier invites the very "hand-tuned weights" critique
+> this section warns about. See [`roadmap_frontier.md`](./roadmap_frontier.md).
 
 ### Candidate features `x_f` (estimators only)
 

@@ -1,11 +1,14 @@
 # Call-graph plumbing + depth audit (Layer 2, Step 0)
 
-48/48 pairs processed; 0 plumbing failures.
+51/51 pairs processed; 0 plumbing failures.
 
 **Frontier choice** = C call graph has a longest chain >= 3 AND >= 1 internal node (neither pure root nor pure leaf). Only these programs make root/leaf/all/frontier strategies differ — i.e. only these can populate the headline table meaningfully.
 
 | program | C funcs | C depth | C internal | maxfan | recurse | indirect | map cov | rust_only | frontier? |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|:--:|
+| regex | 18 | 8 | 6 | 5 | 1 | 0 | 1.00 | 0 | YES |
+| tinyexpr | 29 | 5 | 4 | 4 | 5 | 16 | 1.00 | 0 | YES |
+| bignum | 27 | 5 | 5 | 10 | 0 | 0 | 1.00 | 0 | YES |
 | hash_table | 8 | 5 | 4 | 4 | 0 | 0 | 1.00 | 0 | YES |
 | dynamic_array | 7 | 3 | 1 | 5 | 0 | 0 | 1.00 | 0 | YES |
 | kv_config | 5 | 3 | 2 | 3 | 0 | 0 | 1.00 | 0 | YES |
@@ -57,7 +60,7 @@
 
 ## Verdict
 
-- **Programs with a real frontier choice: 7/48.** The rest are too shallow (depth<3 or no internal node) for frontier selection to differ from root/leaf/all.
-- C call-graph depth: max 5, median 2.
+- **Programs with a real frontier choice: 10/51.** The rest are too shallow (depth<3 or no internal node) for frontier selection to differ from root/leaf/all.
+- C call-graph depth: max 8, median 2.
 - Mapping health: mean name-match coverage 1.0 (c2rust #[no_mangle] => near-free mapping); total rust_only (absorbed-helper candidates) 0.
-- Plumbing: 48/48 pairs ran clean.
+- Plumbing: 51/51 pairs ran clean.

@@ -62,10 +62,11 @@ programs with genuine internal call hierarchies.** Note the two layers want diff
   real frontier choice (chain ≥3 + an internal node); max depth 5 (hash_table, the only rich one);
   41/48 are flat (depth ≤2; musl externals are depth-1 leaves). **Conclusion: Step 1 (add deep
   programs) is REQUIRED** — confirmed by data, not guess.
-- **Step 1 — Layer-2 corpus (pilot).** Add/curate **3–5 deep** real, c2rust-clean programs with
-  multi-level call graphs **for the pilot**; scale to more **only if** the G3 table shows
-  insufficient variance or a reviewer-risk gap (not by default). *Done when:* plumbing produces
-  correct graphs+mapping on them.
+- **Step 1 — Layer-2 corpus (pilot). ✅ DONE (2026-06-25)** — 3 deep real libs vendored
+  (`benchmark/pairs/{regex,bignum,tinyexpr}`, provenance `DEEP_CORPUS_PROVENANCE.md`): regex
+  (Unlicense, 18 funcs / depth 8 / 6 internal), bignum (Unlicense, 27 / depth 5 / 5), tinyexpr
+  (zlib, 29 / depth 5 / 4) — all transpile clean, mapping coverage 1.00, spanning matcher /
+  arithmetic / parser. Scale beyond these only if the G3 table shows insufficient variance.
 - **Step 2 — selector v1 (simple, hard threshold).** Reuse `frontier.py`; `valid_region(f) =
   mapped ∧ constructible ∧ risk(f) ≤ T ∧ (children valid_region or absorbed Rust-only helpers)`;
   conservative sink for unsupported/cyclic/SCC; v1 scope = 1:1 matches + absorb a Rust-only helper

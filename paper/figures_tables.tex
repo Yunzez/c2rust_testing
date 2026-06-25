@@ -1,0 +1,338 @@
+% =============================================================================
+%  figures_tables.tex  --  Evaluation figures & tables (includable fragment)
+% =============================================================================
+%  This is a SCAFFOLD. Assumes the main document already \usepackage{booktabs},
+%  \usepackage{graphicx}, \usepackage{tikz}, and provides \section.
+%  Every number below is sourced from a result file in this repo; provenance is
+%  listed per table. No number is invented. Figures are honest placeholders.
+%
+%  SOURCE-FILE MAP (table/figure -> file the numbers came from):
+%    Table 1 (dataset v4 distribution) ........ results/dataset_v4.md
+%    Table 2 (per-mechanism P(valid|x) AUC) ... results/validity_baseline_v1.md
+%                                               (+ results/validity_baseline_size_control_v1.md
+%                                                  for the size-confound rejection)
+%    Table 3 (headline strategy comparison) ... results/g3_eval_v1.md
+%                                               (+ docs/g3_pilot_design.md §6b for framing)
+%    Table 4 (G2 real-bug recall) ............. results/g2_eval_v1.md
+%    Table 5 (external validity) .............. results/external_validity_v1.md
+%    Fig.  1 (3-layer architecture) ........... docs/stu_selection.md §0b
+%    Fig.  2 (call-graph frontier, Case D) .... results/g3_eval_v1.md (g3_three_level)
+%    Fig.  3 (static pipeline) ................ docs/stu_selection.md §10, roadmap_frontier.md
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+%  EVALUATION SECTION OUTLINE (commented; map of tables/figures to the narrative)
+% -----------------------------------------------------------------------------
+% \section{Evaluation}
+%
+%   Narrative beats:
+%
+%   (i)   The boundary-validity problem & dataset.
+%           -> Fig. 3 (pipeline), Table 1 (boundary dataset v4 distribution).
+%           Differential testing at the wrong call-graph level conflates real bugs
+%           with false divergences; we first need labeled boundaries.
+%
+%   (ii)  Per-mechanism harness-validity risk model (Layer 1 estimator).
+%           -> Table 2 (per-mechanism P(valid|x) held-out AUC).
+%           Honest: on the LUMPED task generic ~ boundary-specific; the win is
+%           PER-MECHANISM (isolation, intrinsic-UB). Size-confound rejected.
+%
+%   (iii) Frontier vs baselines = the abstraction-level result (HEADLINE).
+%           -> Table 3 (G3 strategy comparison, Cases A/C/D).
+%           The decisive 3-level Case D: frontier-v2 is the ONLY clean+covering
+%           strategy; it selects the MIDDLE layer; root is too coarse.
+%
+%   (iv)  Recall is preserved (not bought by testing less).
+%           -> Table 4 (G2 real-bug recall).
+%           v2 keeps precision AND recall; v1's collapse misses the bug.
+%
+%   (v)   External validity (un-authored code).
+%           -> Table 5 (musl/base64 boundaries + sanitizer evidence).
+%           Both negative mechanisms reproduce on real upstream C.
+%
+%   (vi)  Honest limitations.
+%           -> isolation-shield limitation (v2 collapses on Case C);
+%              small data (~17-19 invalid-bearing programs);
+%              2-level vs 3-level caveat (root looks ideal only in shallow programs);
+%              two deployment flags (name_preserving_mapping, translation_trusted):
+%              when translation is untrusted the selector is a triage tool, not an oracle.
+% -----------------------------------------------------------------------------
+
+
+% =============================================================================
+%  TABLE 1 -- Boundary dataset v4 distribution
+%  Source: results/dataset_v4.md
+% =============================================================================
+\begin{table}[t]
+  \centering
+  \caption{Boundary dataset~v4: \texttt{validity\_v2} class distribution
+    (134 boundaries = 127 authored + 7 external upstream). The binary
+    harness-validity split is \textbf{73 valid : 37 invalid}; the remaining
+    24 are census-excluded (weakly excludable, generator-limited, or
+    build/return-type excluded) and are not part of the valid:invalid label set.}
+  \label{tab:dataset-v4}
+  \begin{tabular}{lr}
+    \toprule
+    \texttt{validity\_v2} class            & count \\
+    \midrule
+    valid                                  & 73 \\
+    \texttt{invalid\_isolation\_invariant} & 20 \\
+    \texttt{invalid\_intrinsic\_ub}        & 17 \\
+    \midrule
+    \multicolumn{2}{l}{\emph{(census-excluded, not in valid:invalid set)}} \\
+    weak\_exclude                          & 7 \\
+    excluded\_generator                    & 5 \\
+    excluded (build / gen return-type)     & 12 \\
+    \midrule
+    \textbf{binary valid : invalid}        & \textbf{73 : 37} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+% =============================================================================
+%  TABLE 2 -- Per-mechanism P(valid|x) held-out AUC (program-grouped CV)
+%  Source: results/validity_baseline_v1.md
+%          (size-confound rejection: results/validity_baseline_size_control_v1.md)
+% =============================================================================
+\begin{table}[t]
+  \centering
+  \caption{Per-mechanism harness-validity risk: held-out pooled AUC for
+    $P(\mathrm{invalid}\mid x)$ under \emph{program-grouped} 5-fold CV
+    (train/test never share a program; label \texttt{validity\_v2}).
+    \textbf{Honest reading:} on the \emph{lumped} task generic structure is
+    competitive with boundary-specific features ($0.690$ vs $0.702$) --- the
+    win is \emph{per-mechanism}, not lumped. Boundary-specific features are
+    decisive for isolation invariants ($0.865$ vs generic $0.767$), and for
+    intrinsic-UB generic is near-random ($0.591$) while the engineered
+    guard$\times$op interaction lifts the combined model to $0.777$. The
+    size-confound hypothesis was tested and \textbf{rejected}
+    (\texttt{size\_only}~$\approx0.36\le$~chance under grouped CV; see
+    Table-source \texttt{validity\_baseline\_size\_control\_v1}); generic's
+    residual lumped signal is its non-size pointer/alloc signature, a coarse
+    proxy for the same struct/pointer risk. Magnitudes are indicative
+    (small data; $\sim$17 invalid-bearing programs).}
+  \label{tab:validity-auc}
+  \begin{tabular}{lccc}
+    \toprule
+    task & generic & boundary-specific & combined \\
+    \midrule
+    lumped (all invalid)              & 0.690 & 0.702          & 0.735 \\
+    valid vs.\ isolation invariant    & 0.767 & \textbf{0.865} & 0.795 \\
+    valid vs.\ intrinsic UB           & 0.591 & 0.749          & \textbf{0.777} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+% =============================================================================
+%  TABLE 3 -- HEADLINE: G3 strategy comparison (false divergences)
+%  Source: results/g3_eval_v1.md  (framing: docs/g3_pilot_design.md §6b)
+%  Cells: #harness / covered / false-div  (all divergences FALSE by construction)
+% =============================================================================
+\begin{table*}[t]
+  \centering
+  \caption{\textbf{Headline result --- boundary-selection strategy comparison (G3).}
+    Each cell is \#harness~/~covered~/~\textbf{false-div}, where every divergence
+    is FALSE by construction (semantics-preserving programs; dynamic fuzzing is the
+    \emph{oracle}, never the selector). Lower false-div is better; the frontier
+    should reach 0 at good coverage. Cases: A (arithmetic, 2-level),
+    C (isolation, 2-level), D (arithmetic, 3-level, decisive).
+    \textbf{The decisive point is Case~D}: in a 3-level program
+    (\texttt{report}$\to$\texttt{safe\_ratio}$\to$\texttt{scale}) where the root
+    itself has an unguarded \texttt{y*y*y}, \emph{frontier-v2 is the only strategy
+    that is both clean (0 false-div) and covering --- it selects the MIDDLE layer
+    \texttt{safe\_ratio}}, while root is too coarse (false-div~1) and leaf/all light
+    up the unguarded helper. \textbf{Honest limitations:} (1) the 2-level Cases A/C
+    are not decisive --- root looks ideal there only because the API \emph{is} the
+    root in a shallow program; the 3-level Case~D is what separates the strategies.
+    (2) \emph{frontier-v2 collapses on the isolation Case~C} (0/0): its
+    \texttt{rf\_input\_clamp} shield recognizes arithmetic clamps but does not
+    discharge a \texttt{\% CAP} structural invariant --- a measured limitation
+    reported, not patched, motivating future generalized guarded-sink analysis.}
+  \label{tab:g3-headline}
+  \begin{tabular}{l ccc ccc ccc}
+    \toprule
+    & \multicolumn{3}{c}{\textbf{A} (arith., 2-level)}
+    & \multicolumn{3}{c}{\textbf{C} (isolation, 2-level)}
+    & \multicolumn{3}{c}{\textbf{D} (arith., 3-level, \emph{decisive})} \\
+    \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+    strategy & \#h & cov & f-div & \#h & cov & f-div & \#h & cov & f-div \\
+    \midrule
+    leaf-only          & 1 & 1 & \textbf{1} & 1 & 1 & \textbf{1} & 1 & 1 & \textbf{1} \\
+    all-constructible  & 2 & 2 & \textbf{1} & 2 & 2 & \textbf{1} & 3 & 3 & \textbf{2} \\
+    root               & 1 & 2 & 0          & 1 & 2 & 0          & 1 & 3 & \textbf{1} \\
+    frontier-v1        & 0 & 0 & 0          & 0 & 0 & 0          & 0 & 0 & 0 \\
+    \textbf{frontier-v2} & \textbf{1} & \textbf{2} & \textbf{0}
+                         & 0 & 0 & 0
+                         & \textbf{1} & \textbf{2} & \textbf{0} \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+
+% =============================================================================
+%  TABLE 4 -- G2 real-bug recall
+%  Source: results/g2_eval_v1.md
+% =============================================================================
+\begin{table}[t]
+  \centering
+  \caption{Real-bug recall (G2). A genuine mistranslation is injected into the
+    Rust \texttt{scale} (\texttt{x*10} vs.\ C \texttt{x*100}) --- it differs on
+    \emph{legal} inputs (pct~$\in[1,100]$, reachable via the middle
+    \texttt{safe\_ratio}), not UB. ``detected'' = a divergence at $\ge 1$ selected
+    boundary. \textbf{frontier-v2 keeps precision AND recall}: it detects the bug
+    at \texttt{safe\_ratio}, and on the clean Case~D it had 0 false divergences ---
+    cutting false positives did not cost a real bug. \textbf{frontier-v1's collapse
+    is not free}: it selects no boundary and therefore MISSES the bug
+    (recall~=~no). leaf/all/root detect it too, but only alongside false
+    divergences (Table~\ref{tab:g3-headline}, Case~D).}
+  \label{tab:g2-recall}
+  \begin{tabular}{lccc}
+    \toprule
+    strategy & \#harness & covered & bug detected \\
+    \midrule
+    leaf-only            & 1 & 1 & yes \\
+    all-constructible    & 3 & 3 & yes \\
+    root                 & 1 & 3 & yes \\
+    frontier-v1          & 0 & 0 & \textbf{no} \\
+    \textbf{frontier-v2} & 1 & 2 & \textbf{yes} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+% =============================================================================
+%  TABLE 5 -- External validity (musl / base64)
+%  Source: results/external_validity_v1.md
+% =============================================================================
+\begin{table*}[t]
+  \centering
+  \caption{External validity: harvested boundaries from real, permissively
+    licensed upstream C we did not write (base64 public-domain; musl libc, MIT;
+    transpiled clean under c2rust~0.22.1). \textbf{Both negative mechanisms
+    reproduce on un-authored code and are confirmed by an independent sanitizer},
+    not by us: an isolation output-size precondition (ASan heap-overflow) and two
+    intrinsic-UB overflows (UBSan). These are documented preconditions of the
+    libraries, not bugs --- the boundary is an invalid \emph{differential harness}
+    because of them. \emph{Caveats:} \texttt{base64\_decode}'s ``valid'' is a
+    realized-outcome label (its decoded size fits our cap), and the
+    \texttt{mu\_memcmp}/\texttt{mu\_memchr} boundaries are census-excluded
+    (\texttt{const void*} not constructible).}
+  \label{tab:external-validity}
+  \begin{tabular}{llll}
+    \toprule
+    boundary & \texttt{validity\_v2} & mechanism & independent sanitizer evidence \\
+    \midrule
+    \texttt{base64\_decode}                 & valid & ---
+      & 1.16M execs, no divergence \\
+    \texttt{mu\_strlen}                      & valid & ---
+      & 0.58--0.86M execs (NUL satisfied by construction) \\
+    \texttt{mu\_strncmp}                     & valid & ---
+      & 0.58--0.86M execs (NUL satisfied by construction) \\
+    \texttt{mu\_strspn}                      & valid & ---
+      & 0.58--0.86M execs (NUL satisfied by construction) \\
+    \texttt{base64\_encode} & \texttt{invalid\_isolation\_invariant} & output-size precondition
+      & ASan heap-overflow (needs 85\,B, cap 64) \\
+    \texttt{mu\_atoi}       & \texttt{invalid\_intrinsic\_ub} & signed multiply-accumulate overflow
+      & UBSan: \texttt{10 * n} not representable in \texttt{int} \\
+    \texttt{mu\_llabs}      & \texttt{invalid\_intrinsic\_ub} & negation of \texttt{LLONG\_MIN}
+      & UBSan: negation of $-9223372036854775808$ \\
+    \texttt{mu\_memcmp}     & excluded (census) & \texttt{const void*} not constructible
+      & gate \texttt{UNSUPPORTED\_PARAM (struct\_ptr)} \\
+    \texttt{mu\_memchr}     & excluded (census) & \texttt{const void*} not constructible
+      & gate \texttt{UNSUPPORTED\_PARAM (struct\_ptr)} \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+
+% =============================================================================
+%  FIGURE 1 -- 3-layer architecture  (PLACEHOLDER)
+%  Source for content: docs/stu_selection.md §0b
+% =============================================================================
+\begin{figure}[t]
+  \centering
+  % TODO(figure): replace the placeholder boxes with the final 3-layer diagram.
+  %   L1 static risk model (frozen) -> L2 static frontier selector (the method)
+  %   -> L3 dynamic evaluation/optional smoke (oracle, NEVER the selector).
+  \begin{tikzpicture}[node distance=6mm, every node/.style={font=\small}]
+    \node[draw, rounded corners, minimum width=68mm, minimum height=9mm] (l1)
+      {\textbf{Layer 1} --- static per-function harness-validity risk (frozen)};
+    \node[draw, rounded corners, minimum width=68mm, minimum height=9mm, below=of l1] (l2)
+      {\textbf{Layer 2} --- static call-graph \emph{frontier selector} (the method)};
+    \node[draw, rounded corners, minimum width=68mm, minimum height=9mm, below=of l2] (l3)
+      {\textbf{Layer 3} --- dynamic G3/G2 evaluation \& optional smoke (oracle only)};
+    \draw[-{Latex}] (l1) -- (l2);
+    \draw[-{Latex}] (l2) -- (l3) node[midway, right, xshift=2mm]{evaluates, never selects};
+  \end{tikzpicture}
+  \caption{Three-layer architecture. The static risk estimator (L1, frozen)
+    feeds the static call-graph frontier selector (L2, the contribution); dynamic
+    differential fuzzing (L3) is used \emph{only} to evaluate the static frontier
+    (G3 false-divergence, G2 recall) and optionally smoke-test selected harnesses
+    --- it never participates in selection.}
+  \label{fig:architecture}
+\end{figure}
+
+
+% =============================================================================
+%  FIGURE 2 -- Call-graph frontier on the 3-level Case D  (PLACEHOLDER)
+%  Source for content: results/g3_eval_v1.md (g3_three_level)
+% =============================================================================
+\begin{figure}[t]
+  \centering
+  % TODO(figure): replace with the final call-graph illustration. The frontier
+  %   should rise to the MIDDLE node safe_ratio: report (root, own unguarded
+  %   y*y*y) -> safe_ratio (establishes the precondition) -> scale (unguarded *100).
+  \begin{tikzpicture}[node distance=10mm, every node/.style={font=\small, draw, rounded corners, minimum width=26mm, minimum height=8mm}]
+    \node (report) {\texttt{report} (root)};
+    \node[below=of report] (safe) {\texttt{safe\_ratio}};
+    \node[below=of safe]   (scale) {\texttt{scale} (leaf)};
+    \draw[-{Latex}] (report) -- (safe);
+    \draw[-{Latex}] (safe)   -- (scale);
+    % frontier marker on the middle node
+    \node[draw=none, right=4mm of safe, font=\small\bfseries] {$\leftarrow$ frontier picks the MIDDLE};
+  \end{tikzpicture}
+  \caption{Call-graph frontier on the decisive 3-level Case~D. Root
+    \texttt{report} carries its own unguarded \texttt{y*y*y} (too coarse $\Rightarrow$
+    false-div~1); leaf \texttt{scale} has the unguarded \texttt{*100} reachable only
+    under a precondition (false-div~1). The frontier rises to the middle boundary
+    \texttt{safe\_ratio}, which establishes the precondition --- the only boundary
+    that is both clean and covering.}
+  \label{fig:frontier-cased}
+\end{figure}
+
+
+% =============================================================================
+%  FIGURE 3 -- Static selection pipeline  (PLACEHOLDER)
+%  Source for content: docs/stu_selection.md §10, docs/roadmap_frontier.md
+% =============================================================================
+\begin{figure*}[t]
+  \centering
+  % TODO(figure): replace with the final pipeline figure.
+  %   C/Rust sources -> call graph + cross-language mapping -> static features /
+  %   risk -> bottom-up frontier (antichain) -> selected STU harnesses.
+  \fbox{\parbox{0.92\textwidth}{\centering\vspace{4mm}
+    \texttt{C source} + \texttt{Rust (c2rust)}
+    $\;\longrightarrow\;$ call graph + cross-language mapping
+    $\;\longrightarrow\;$ static features / per-function risk (L1)
+    $\;\longrightarrow\;$ bottom-up frontier (risk-bounded antichain, L2)
+    $\;\longrightarrow\;$ \textbf{selected STU harnesses}
+    \vspace{4mm}}}
+  \caption{Static selection pipeline. From the C source and its c2rust
+    translation we build both call graphs and a cross-language mapping, compute
+    static per-function harness-validity risk (Layer~1), then select a
+    risk-bounded, coverage-maximal antichain bottom-up over the SCC DAG
+    (Layer~2), emitting the STU harnesses. \textbf{Deployment flags
+    (flagged, not hardcoded):} \texttt{name\_preserving\_mapping} (true for
+    c2rust \texttt{\#[no\_mangle]}; coverage~1.00 on our corpus) and
+    \texttt{translation\_trusted} (default false). When translation is
+    \emph{untrusted}, the selector is a \emph{triage/prioritizer}, not an oracle:
+    a divergence at a predicted-valid boundary is a candidate real bug for human
+    review, one at a predicted-invalid boundary is likely false.}
+  \label{fig:pipeline}
+\end{figure*}
+
+% =============================================================================
+%  END figures_tables.tex
+% =============================================================================

@@ -126,8 +126,12 @@ programs with genuine internal call hierarchies.** Note the two layers want diff
 - **Step 5 — (defer) region-weighted risk.** `risk(region)`, `coverage(region)`,
   `score = coverage − λ·risk − μ·cost`, greedy bottom-up antichain. Introduce weights only once G3
   gives a curve to tune/validate against.
-- **Step 6 — (later) G2 bug injection.** Inject real translation bugs; show the frontier still
-  detects them (recall column) — guards against "you only cut false positives but miss bugs."
+- **Step 6 — G2 bug injection. ✅ DONE (2026-06-25)** — `scripts/g2_eval.py`, `benchmark/pairs/g3_g2_bug`
+  (Rust `scale` mistranslated `x*10` vs C `x*100`; real bug on legal inputs, reachable via middle
+  `safe_ratio`). Recall (`results/g2_eval_v1.md`): leaf/all/root YES (but noisy), **frontier v1 NO (collapse
+  misses the bug), frontier v2 YES (detects at safe_ratio, exec 4)**. With Case D's 0 false-div, **v2 is the
+  only strategy that keeps BOTH precision AND recall** — cutting false positives did not cost a bug; v1's
+  over-conservatism does. Reviewer attack ("you miss bugs") closed.
 
 ## Guardrails — DO NOT, unless Step 4's table demonstrably needs it
 

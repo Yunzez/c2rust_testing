@@ -158,6 +158,23 @@ Readings (honest):
   *v2 recognizes simple arithmetic guards but does not yet discharge structural isolation invariants such
   as modulo-capacity relationships; this motivates future generalized guarded-sink analysis.*
 
+## 6c. G2 — real-bug recall (Layer 3, `scripts/g2_eval.py`, 2026-06-25)
+
+Guards the reviewer attack *"you cut false divergences by testing LESS, so you miss bugs."* Reuses the
+3-level structure but injects a REAL mistranslation into the Rust `scale` (`x*10` vs C `x*100`) — differs
+on legal inputs (pct∈[1,100]), reachable via the middle `safe_ratio`, NOT UB. `results/g2_eval_v1.md`.
+
+| strategy | detected bug (recall) | note |
+|---|:--:|---|
+| leaf-only / all-constructible / root | YES | but with false divergences (Case D) |
+| **frontier v1 (sink)** | **NO** | collapses to no boundary → over-conservatism MISSES the bug |
+| **frontier v2 (guarded rise)** | **YES** | detects at `safe_ratio` (exec 4), and 0 false-div on clean D |
+
+**The decisive pairing**: frontier v2 is the only strategy that keeps BOTH precision (0 false divergence,
+Case D) AND recall (detects the injected bug). Cutting false positives did not cost a real bug — and v1's
+collapse shows over-conservatism is not free. (A divergence on the buggy pair surfaces as
+HARNESS_DIVERGENCE→`review`, i.e. exactly the C≠Rust signal a deployment routes to human triage.)
+
 ## 6. Two assumptions — flagged, not hardcoded
 
 We currently lean on two translator properties that hold for c2rust but break for an LLM transpiler. Keep

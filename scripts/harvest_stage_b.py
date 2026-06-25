@@ -49,9 +49,16 @@ TOOLCHAIN = "nightly-2025-09-01"
 DUR = int(os.environ.get("DUR", "20"))
 SHARED_TARGET = ROOT / "fuzz_gen" / "_shared_target"
 HARVEST = ROOT / "fuzz_gen" / "_harvest"
+# UB-free differential testing (boundary-validity rule 4): disable Rust integer-overflow checks so
+# signed-overflow inputs WRAP like deployed C instead of panicking. cargo-fuzz forces -Cdebug-assertions
+# (which would re-enable overflow checks), and the fuzz manifest [profile.release] is NOT honored for this,
+# so we force it via RUSTFLAGS (cargo-fuzz appends user RUSTFLAGS last -> wins). A surviving C!=Rust
+# divergence is then a UB-free real bug, not an overflow artifact. (Does NOT cover div-by-zero / OOB.)
+_UBFREE = os.environ.get("UBFREE", "1") != "0"  # UBFREE=0 to disable; default on
 ENV = dict(os.environ,
            PATH=os.path.expanduser("~/.cargo/bin") + ":" + os.environ.get("PATH", ""),
-           CARGO_TARGET_DIR=str(SHARED_TARGET))
+           CARGO_TARGET_DIR=str(SHARED_TARGET),
+           RUSTFLAGS=(os.environ.get("RUSTFLAGS", "") + (" -Coverflow-checks=off" if _UBFREE else "")).strip())
 _EXEC_RE = re.compile(r"executions?\s*[:=]?\s*(\d+)")
 
 # summary label -> (validity bucket for the model). NOTE: NO_DIVERGENCE_OBSERVED is a WEAK positive

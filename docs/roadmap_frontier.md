@@ -56,11 +56,12 @@ programs with genuine internal call hierarchies.** Note the two layers want diff
 
 ## Sequenced steps (with "done when")
 
-- **Step 0 — plumbing + depth audit.** Verify `callgraph.py` / `rust_callgraph` / `mapping.py`
-  produce reliable C & Rust call graphs + C↔Rust mapping on the deepest current programs
-  (hash_table, opcode_dispatch, tiny_vm). Measure real depth/branching.
-  *Done when:* we have a yes/no on plumbing and a factual read on whether current programs have
-  enough depth, i.e. whether Step 1 must add deep programs.
+- **Step 0 — plumbing + depth audit. ✅ DONE (2026-06-25)** — `scripts/callgraph_depth_audit.py`,
+  report `results/callgraph_depth_audit_v1.md`. Findings: **plumbing healthy** (48/48 pairs run clean,
+  name-match mapping coverage 1.00). **Depth is the binding constraint**: only **7/48** programs have a
+  real frontier choice (chain ≥3 + an internal node); max depth 5 (hash_table, the only rich one);
+  41/48 are flat (depth ≤2; musl externals are depth-1 leaves). **Conclusion: Step 1 (add deep
+  programs) is REQUIRED** — confirmed by data, not guess.
 - **Step 1 — Layer-2 corpus (pilot).** Add/curate **3–5 deep** real, c2rust-clean programs with
   multi-level call graphs **for the pilot**; scale to more **only if** the G3 table shows
   insufficient variance or a reviewer-risk gap (not by default). *Done when:* plumbing produces

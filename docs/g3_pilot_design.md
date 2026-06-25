@@ -8,8 +8,20 @@
 
 ## 1. The false-divergence oracle (operational, fixed before any run)
 
-Ground truth is established by CONSTRUCTION: in G3 the C and its Rust are a faithful c2rust translation
-(or a semantics-preserving perturbation of one). There is **no real translation bug**. Therefore:
+Ground truth must **not** rest on "trust the translator" (we are trying to *find* mistranslations, and
+LLM transpilers are not faithful — c2rust itself can mistranslate, design §7). G3 instead establishes
+ground truth in two **translator-independent** ways:
+
+- **Path 1 — constructed equivalence.** Take one program and apply a change we *know* preserves semantics
+  (e.g. extract a chunk into a helper — pure refactoring). The two versions are equivalent because *we*
+  made the change, not because we trust a translator → any divergence between them is FALSE by construction.
+- **Path 2 — reachability.** A divergence on an input the boundary's *real callers never produce* is not
+  program-relevant: it is dead behavior. `scale` overflows only for large `x`, but `scale` is only ever
+  called via `scale_pct` (which clamps to [0,100]), so large `x` is unreachable in the real program.
+  Whether or not `scale`'s translation is faithful on large `x` is irrelevant — the program never goes there.
+
+Neither path requires trusting the C↔Rust translation. Given that, a reported mismatch is a
+**FALSE divergence** iff ALL hold:
 
 > A reported C-vs-Rust mismatch is a **FALSE divergence** iff ALL hold:
 > 1. the harness reports a behavioral mismatch (different return / different crash / one-sided panic), AND
@@ -82,3 +94,50 @@ Case A is a success iff, with the faithful c2rust translation:
 If both hold, the false-divergence phenomenon is real and boundary-dependent → proceed to wire it into the
 strategy comparison and (separately) decide whether selector v2 needs the "rise" rule. **If Case A does not
 reproduce, STOP and rethink the oracle/setup — do not implement Cases B/C or scale.**
+
+## 6a. Pilot result — Case A ✅ REPRODUCED (2026-06-25)
+
+`benchmark/pairs/g3_case_a` (authored `scale`/`scale_pct`, transpiled with c2rust). Differential fuzz:
+
+| boundary | outcome | reading |
+|---|---|---|
+| `scale` (helper) | **C_UB_CONFIRMED → invalid** (overflow hit at exec 1) | FALSE divergence — overflow is on an input unreachable in the real program |
+| `scale_pct` (api) | **NO_DIVERGENCE → valid** (1.09M execs clean) | the clamp neutralizes the risk; same code, higher boundary, divergence vanishes |
+
+The gate is met: *same code, different boundary, divergence appears then vanishes* — the false-divergence
+phenomenon is real and boundary-dependent, established without trusting the translation (Path 2 reachability).
+
+**Selector finding (the directionality + static-coarseness gaps, now empirical):**
+- Selector **v1 collapses to 0/0** on Case A (sinks below RISKY `scale`, cannot pick RISKY `scale`, never
+  rises to `scale_pct`). The correct boundary is `scale_pct`; only `root` picks it, and only because
+  api==root in a 2-level program. In a deep program the right boundary is a mid-level api that neither
+  `root` (too coarse) nor v1-`frontier` (sinks) selects → this is what selector **v2's "rise" rule must earn**.
+- The static **`reaches RISKY` exposure metric flags `scale_pct` as exposed (1)** even though it is
+  empirically clean — because static reachability cannot see that `scale_pct` *constrains* `scale`'s input
+  domain. So v2 needs not just "rise" but "rise to the boundary that **constrains the risky callee's input
+  domain**"; detecting that statically (interprocedural range/precondition) is the open research core. G3
+  measures it empirically; the selector must learn to predict it.
+
+→ Per the gate, Case A reproduced, so we MAY proceed to Cases B/C + wire into the strategy comparison. Next
+decision is the selector v2 "rise + constraint-aware" rule (separate from continuing G3).
+
+## 6. Two assumptions — flagged, not hardcoded
+
+We currently lean on two translator properties that hold for c2rust but break for an LLM transpiler. Keep
+them as explicit config, defaulting to the c2rust values, never baked into the algorithm:
+
+- **`name_preserving_mapping`** (default true) — whether `align()` may match C↔Rust functions by name
+  (c2rust `#[no_mangle]` makes it free; coverage 1.00 on our corpus). The matching is already isolated to
+  `mapping.align()`; consumers use only its OUTPUT (a `matched` set / a `mapped(node)` predicate), never
+  re-deriving by name. false → swap `align()`'s internals for a semantic/structural mapping provider
+  (design §3 region alignment; N:M possible), same interface. **A boundary is usable only if it is mappable
+  on both sides** (condition 1), so when this is false the mappable-boundary set shrinks and becomes the
+  bottleneck. Differential testing only needs the ENTRY to correspond (black-box I/O compare), not internal
+  alignment — so the task is "find the Rust entry with the same observable contract," not full alignment.
+- **`translation_trusted`** (default false — do NOT rely on the shortcut even for c2rust) — whether a
+  divergence may be auto-labeled false because "the translation is faithful." We deliberately avoid this
+  shortcut; G3 uses Path 1 + Path 2 instead. When trust is absent (the real LLM case), a divergence may be
+  real or false and cannot be auto-labeled. The selector then becomes a **triage / prioritizer**, NOT an
+  oracle: a divergence at a predicted-VALID boundary is a *candidate real bug* (send to human review); one
+  at a predicted-INVALID boundary is *likely false* (suppress/deprioritize). This — telling you *which
+  divergences are worth investigating* — is the deployment value proposition when translation is untrusted.

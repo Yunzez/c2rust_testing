@@ -82,7 +82,15 @@ programs with genuine internal call hierarchies.** Note the two layers want diff
   **Caveat: 0-exposure is definitional, not empirical** — whether avoiding RISKY nodes actually avoids
   false divergences (and testing them produces them) is what **G3 must measure**. This table is a
   sanity check + G3 setup, NOT the headline proof.
-- **Step 4 — G3 (the headline).** Apply 2–3 semantics-preserving perturbations
+- **Step 4 — G3 (the headline). 🔄 IN PROGRESS — Case A ✅ (2026-06-25).** Design + oracle:
+  `docs/g3_pilot_design.md` (translator-independent: Path 1 constructed-equivalence + Path 2 reachability;
+  two flags `name_preserving_mapping`/`translation_trusted`; selector-as-triage when translation untrusted).
+  Case A (`benchmark/pairs/g3_case_a`): helper `scale` → false divergence (C_UB_CONFIRMED), api `scale_pct`
+  → clean (1.09M execs) — same code, higher boundary, divergence vanishes. Empirically confirms the
+  phenomenon AND that selector v1 (sink) collapses where it should RISE to the constraining boundary.
+  Next within Step 4: Cases B/C + wire into the strategy table.
+
+  Apply 2–3 semantics-preserving perturbations
   (helper extraction · inline/outline · wrapper insertion) to ~5 programs first; measure whether
   naive function-level fuzzing misreports structural misalignment as divergence while the frontier
   sinks to the correct region. *Done when:* the false-divergence column of the headline table is

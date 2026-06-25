@@ -20,6 +20,28 @@
 > We are not predicting "which function is fuzzable" — we are solving "at which call-graph layer of the
 > translated program to do differential testing."
 
+## 0b. Architecture decision (2026-06-25) — static is the method, dynamic only validates
+
+> **Three layers. Dynamic does NOT participate in selection (the main line stays static).**
+>
+> - **Layer 1 — static risk model** (frozen): per-function harness-validity risk estimator.
+> - **Layer 2 — static call-graph frontier selector** (the method): call graph + mapping + static
+>   risk → bottom-up frontier selection → selected STU harnesses. **This is the paper's contribution.**
+> - **Layer 3 — dynamic evaluation / OPTIONAL smoke**: (a) G3/G2 experiments measure false-divergence /
+>   recall to *prove the static frontier works*; (b) an optional short smoke phase may validate selected
+>   harnesses before long fuzzing. Dynamic is the **oracle/safety-net, never the selector**.
+>
+> Why not fold dynamic into the method: it would dissolve the novelty into "just try a few harnesses and
+> see which don't crash." We keep static frontier selection as the claim, and do not pretend static can
+> *prove* every precondition — Layer 3 measures the gap and optionally catches residual false positives.
+>
+> **Corollary — no per-case feature hacking.** Because Layer 3 measures static quality and catches
+> residual false positives, the static selector is ALLOWED to be imperfect. Where a static shield cannot
+> cover a mechanism (e.g. isolation's "caller establishes the struct invariant" is not a constant clamp),
+> that is a *measured limitation to report*, NOT a cue to bolt on another `rf_` per mechanism. The shield
+> is one general question — "is the value reaching the risky op constrained along the path from this
+> boundary?" — approximated, not enumerated. `rf_input_clamp` is a first cheap proxy, capped here.
+
 ## 0. One-paragraph summary
 
 When C is translated to Rust (by C2Rust or an LLM), the function structure is **not 1:1**:

@@ -26,6 +26,16 @@ Its paper role, stated verbatim (the **freeze statement**, also in `stu_selectio
 
 **Layer 2 — ACTIVE.** call-graph frontier selection + the strategy-comparison experiment (G3).
 
+**Layer 3 — dynamic evaluation / OPTIONAL smoke (architecture decision 2026-06-25).** Dynamic
+fuzzing is the **oracle and safety-net, never the selector**: (a) G3/G2 measure false-divergence /
+recall to prove the *static* frontier works; (b) an optional short smoke may validate selected
+harnesses before long fuzzing. The main method stays **static** (folding dynamic into selection would
+dissolve the novelty into "try harnesses, see which don't crash"). **Corollary: no per-case `rf_`
+hacking** — because Layer 3 measures static quality and catches residual false positives, the static
+selector is allowed to be imperfect; an uncovered mechanism is a *measured limitation to report*, not a
+cue to add another feature. `rf_input_clamp` is the one cheap shield proxy, capped. See
+`stu_selection.md` §0b.
+
 ## The headline result (the paper hinges on this one table)
 
 | strategy | #harness | covered funcs | invalid rate | false-divergence rate | true-bug recall |

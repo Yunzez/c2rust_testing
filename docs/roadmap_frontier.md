@@ -67,15 +67,21 @@ programs with genuine internal call hierarchies.** Note the two layers want diff
   (Unlicense, 18 funcs / depth 8 / 6 internal), bignum (Unlicense, 27 / depth 5 / 5), tinyexpr
   (zlib, 29 / depth 5 / 4) — all transpile clean, mapping coverage 1.00, spanning matcher /
   arithmetic / parser. Scale beyond these only if the G3 table shows insufficient variance.
-- **Step 2 — selector v1 (simple, hard threshold).** Reuse `frontier.py`; `valid_region(f) =
-  mapped ∧ constructible ∧ risk(f) ≤ T ∧ (children valid_region or absorbed Rust-only helpers)`;
-  conservative sink for unsupported/cyclic/SCC; v1 scope = 1:1 matches + absorb a Rust-only helper
-  only if called inside one mapped parent. Frontier = maximal valid_region antichain.
-  *Done when:* it emits a frontier + per-STU subtree coverage + a sink reason for each unselected
-  high node. **No tunable weighted sum yet** (avoids the hand-tuned-weights critique).
-- **Step 3 — partial table now.** Compute the 3 ground-truth-free columns
-  (#harness / covered funcs / invalid rate) across all four strategies. *Done when:* the half-table
-  exists as a sanity check that frontier differs from root/leaf/all.
+- **Step 2 — selector v1. ✅ DONE (2026-06-25)** — `scripts/stu_frontier.py`. Fixed interpretable
+  static risk (no model/training): BLOCKED = not constructible/mapped; RISKY = unguarded signed UB
+  (intrinsic) or unmasked struct-field index (isolation); T admits only OK. **Key correctness fix vs
+  the naive rule:** constructibility is a STANDALONE-node property (a non-constructible helper does
+  NOT poison a constructible parent that builds it) — only RISKY PROPAGATES up. `selectable(node) =
+  constructible∧mapped ∧ no reachable RISKY`; frontier = maximal selectable antichain (top-down from
+  roots); emits selected STUs + subtree coverage + sink reasons.
+- **Step 3 — partial table. ✅ DONE (2026-06-25)** — `results/stu_frontier_v1.md`. Cells =
+  #harness / covered-funcs / RISKY-exposed, across root / all-constructible / leaf / frontier.
+  Frontier guarantees 0 RISKY-exposure **by construction** while keeping good coverage where the risk
+  is localizable (bignum 17/18, regex 8/9) vs baselines that carry exposure (bignum all 27/27 with 9
+  exposed); it honestly collapses to 0 where the UB is pervasive/unavoidable (hash_table, reduce_overflow).
+  **Caveat: 0-exposure is definitional, not empirical** — whether avoiding RISKY nodes actually avoids
+  false divergences (and testing them produces them) is what **G3 must measure**. This table is a
+  sanity check + G3 setup, NOT the headline proof.
 - **Step 4 — G3 (the headline).** Apply 2–3 semantics-preserving perturbations
   (helper extraction · inline/outline · wrapper insertion) to ~5 programs first; measure whether
   naive function-level fuzzing misreports structural misalignment as divergence while the frontier

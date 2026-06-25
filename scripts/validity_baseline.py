@@ -116,7 +116,7 @@ def grouped_cv_auc(rows, names, k=5):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="inp", default=str(ROOT / "dataset" / "boundaries_v2.jsonl"))
+    ap.add_argument("--in", dest="inp", default=str(ROOT / "dataset" / "boundaries_v4.jsonl"))
     ap.add_argument("--out", default=str(ROOT / "results" / "validity_baseline_v1.md"))
     a = ap.parse_args()
     rows = [json.loads(l) for l in Path(a.inp).read_text().splitlines() if l.strip()]

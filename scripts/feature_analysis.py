@@ -58,7 +58,7 @@ def numeric_features(rows: list[dict]) -> list[str]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="inp", default=str(ROOT / "dataset" / "boundaries_v2.jsonl"))
+    ap.add_argument("--in", dest="inp", default=str(ROOT / "dataset" / "boundaries_v4.jsonl"))
     ap.add_argument("--out", default=str(ROOT / "results" / "feature_analysis_v1.md"))
     args = ap.parse_args()
 

@@ -23,7 +23,7 @@ import risk_features as rf  # noqa: E402
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--in", dest="inp", default=str(ROOT / "dataset" / "boundaries_v2.jsonl"))
+    ap.add_argument("--in", dest="inp", default=str(ROOT / "dataset" / "boundaries_v4.jsonl"))
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     out = a.out or a.inp

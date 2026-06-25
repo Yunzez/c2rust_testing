@@ -96,9 +96,13 @@ programs with genuine internal call hierarchies.** Note the two layers want diff
   `docs/g3_pilot_design.md` (translator-independent: Path 1 constructed-equivalence + Path 2 reachability;
   two flags `name_preserving_mapping`/`translation_trusted`; selector-as-triage when translation untrusted).
   Case A (`benchmark/pairs/g3_case_a`): helper `scale` → false divergence (C_UB_CONFIRMED), api `scale_pct`
-  → clean (1.09M execs) — same code, higher boundary, divergence vanishes. Empirically confirms the
-  phenomenon AND that selector v1 (sink) collapses where it should RISE to the constraining boundary.
-  Next within Step 4: Cases B/C + wire into the strategy table.
+  → clean (1.09M execs) — same code, higher boundary, divergence vanishes. Case C
+  (`benchmark/pairs/g3_case_c`, struct-cursor isolation): helper `ring_at` → false divergence (OOB), api
+  `ring_get` (`head %= CAP`) → clean (700k execs). **Empirical strategy table** via `scripts/g3_eval.py`
+  (`results/g3_eval_v1.md`): leaf/all light up false divergences on both; **frontier v2 wins on arithmetic
+  (0 false-div, full coverage) but COLLAPSES on isolation (clamp shield ≠ `%`-mask invariant)** — a
+  measured limitation, reported not patched (no per-case rf). Caveat: 2-level cases make `root`==ideal api;
+  a 3+-level case is needed to show frontier > root.
 
   Apply 2–3 semantics-preserving perturbations
   (helper extraction · inline/outline · wrapper insertion) to ~5 programs first; measure whether

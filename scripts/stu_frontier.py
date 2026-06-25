@@ -210,6 +210,9 @@ def analyze(pair: Path) -> dict:
         "leaf": strat(leaves),
         "frontier_members": [members[s][0] for s in selected],
         "frontier_v2_members": [members[s][0] for s in selected_v2],
+        "root_members": [members[s][0] for s in roots],
+        "all_members": [members[s][0] for s in all_constructible],
+        "leaf_members": [members[s][0] for s in leaves],
         "sink_reasons": sink_reasons,
     }
 

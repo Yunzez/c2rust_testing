@@ -131,6 +131,27 @@ shielded RISKY). The precise version = interprocedural range/precondition analys
 empirically. v2 also lifts coverage on deeper programs (e.g. bignum v1 17/18 → v2 8/26) and correctly leaves
 genuinely-unshielded cases collapsed (regex, hash_table unchanged).
 
+## 6b. Empirical strategy table — Case A + Case C (Layer 3, `scripts/g3_eval.py`, 2026-06-25)
+
+`results/g3_eval_v1.md`. Each strategy's selected boundaries are differentially fuzzed; cells are
+**#harness / covered / false-divergences** (all divergences are false by construction).
+
+| case | leaf-only | all-constructible | root | frontier v1 | frontier v2 |
+|---|---|---|---|---|---|
+| A (arithmetic) | 1/1/**1** | 2/2/**1** | 1/2/0 | 0/0/0 | **1/2/0** |
+| C (isolation)  | 1/1/**1** | 2/2/**1** | 1/2/0 | 0/0/0 | **0/0/0** |
+
+Readings (honest):
+- **The phenomenon is real and boundary-dependent**: leaf / all-constructible fuzz the unguarded helper
+  and light up a false divergence; testing the api boundary is clean. Confirmed on BOTH mechanisms.
+- **frontier v2 wins on arithmetic** (Case A): 0 false-div at full coverage (2), beating leaf/all and
+  rescuing v1's collapse — the guarded-rise (rf_input_clamp shield) earns it.
+- **frontier v2 fails on isolation** (Case C): collapses to 0/0 like v1 — the clamp shield does not cover
+  a `% CAP` invariant-establishment. **Measured limitation, reported not patched** (per §0b: no per-case rf).
+- **Caveat — these are 2-level cases, so `root` == the ideal api and looks as good as the frontier.**
+  The frontier's advantage over `root` only appears in DEEPER programs where root is too coarse (covers
+  other risky regions). A 3+-level controlled case is the next thing needed to show frontier > root.
+
 ## 6. Two assumptions — flagged, not hardcoded
 
 We currently lean on two translator properties that hold for c2rust but break for an LLM transpiler. Keep

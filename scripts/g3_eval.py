@@ -40,7 +40,7 @@ STRATEGIES = [
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="G3 false-divergence evaluation")
-    ap.add_argument("--cases", default="g3_case_a,g3_case_c")
+    ap.add_argument("--cases", default="g3_case_a,g3_case_c,g3_three_level")
     a = ap.parse_args()
     cases = a.cases.split(",")
     dur = os.environ.get("DUR", "20")

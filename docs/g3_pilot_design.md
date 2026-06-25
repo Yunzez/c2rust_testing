@@ -131,26 +131,32 @@ shielded RISKY). The precise version = interprocedural range/precondition analys
 empirically. v2 also lifts coverage on deeper programs (e.g. bignum v1 17/18 → v2 8/26) and correctly leaves
 genuinely-unshielded cases collapsed (regex, hash_table unchanged).
 
-## 6b. Empirical strategy table — Case A + Case C (Layer 3, `scripts/g3_eval.py`, 2026-06-25)
+## 6b. Empirical strategy table (Layer 3, `scripts/g3_eval.py`, 2026-06-25)
 
 `results/g3_eval_v1.md`. Each strategy's selected boundaries are differentially fuzzed; cells are
 **#harness / covered / false-divergences** (all divergences are false by construction).
 
 | case | leaf-only | all-constructible | root | frontier v1 | frontier v2 |
 |---|---|---|---|---|---|
-| A (arithmetic) | 1/1/**1** | 2/2/**1** | 1/2/0 | 0/0/0 | **1/2/0** |
-| C (isolation)  | 1/1/**1** | 2/2/**1** | 1/2/0 | 0/0/0 | **0/0/0** |
+| A — arithmetic (2-level) | 1/1/**1** | 2/2/**1** | 1/2/0 | 0/0/0 | **1/2/0** |
+| C — isolation (2-level)  | 1/1/**1** | 2/2/**1** | 1/2/0 | 0/0/0 | **0/0/0** |
+| **D — arithmetic (3-level, decisive)** | 1/1/**1** | 3/3/**2** | **1/3/1** | 0/0/0 | **1/2/0** |
 
 Readings (honest):
 - **The phenomenon is real and boundary-dependent**: leaf / all-constructible fuzz the unguarded helper
-  and light up a false divergence; testing the api boundary is clean. Confirmed on BOTH mechanisms.
-- **frontier v2 wins on arithmetic** (Case A): 0 false-div at full coverage (2), beating leaf/all and
-  rescuing v1's collapse — the guarded-rise (rf_input_clamp shield) earns it.
-- **frontier v2 fails on isolation** (Case C): collapses to 0/0 like v1 — the clamp shield does not cover
-  a `% CAP` invariant-establishment. **Measured limitation, reported not patched** (per §0b: no per-case rf).
-- **Caveat — these are 2-level cases, so `root` == the ideal api and looks as good as the frontier.**
-  The frontier's advantage over `root` only appears in DEEPER programs where root is too coarse (covers
-  other risky regions). A 3+-level controlled case is the next thing needed to show frontier > root.
+  and light up a false divergence; testing the right boundary is clean. Confirmed on BOTH mechanisms.
+- **frontier v2 wins on arithmetic** (A): 0 false-div at full coverage, beating leaf/all and rescuing
+  v1's collapse — the guarded-rise (rf_input_clamp shield) earns it.
+- **D is the decisive case**: a 3-level program (`report` → `safe_ratio` → `scale`) where the root
+  `report` has its OWN unguarded `y*y*y`. Now **root is NOT ideal** (false-div 1), leaf/all light up,
+  v1 collapses — and **frontier v2 is the ONLY strategy that is both clean (0 false-div) and covering
+  (2): it selects the MIDDLE layer `safe_ratio`.** This is the abstraction-level result: the right STU is
+  neither root (too coarse) nor leaf (precondition violated) but the middle boundary that establishes the
+  invariant. (Resolves the earlier 2-level caveat where root==ideal api.)
+- **frontier v2 fails on isolation** (C): collapses to 0/0 like v1 — the clamp shield does not cover a
+  `% CAP` invariant. **Measured limitation, reported not patched** (per §0b: no per-case rf). Write-up:
+  *v2 recognizes simple arithmetic guards but does not yet discharge structural isolation invariants such
+  as modulo-capacity relationships; this motivates future generalized guarded-sink analysis.*
 
 ## 6. Two assumptions — flagged, not hardcoded
 

@@ -4,7 +4,7 @@ Hard-threshold bottom-up antichain; fixed interpretable risk (no model, no train
 
 | program | funcs | root | all-constructible | leaf-only | frontier **v1** | frontier **v2** |
 |---|--:|---|---|---|---|---|
-| g3_case_c | 2 | 1/2 (1) | 2/2 (2) | 1/1 (1) | 0/0 (0) | **0/0 (0)** |
+| g3_three_level | 3 | 1/3 (1) | 3/3 (3) | 1/1 (1) | 0/0 (0) | **1/2 (1)** |
 
 ## Frontier detail (deep programs)
 

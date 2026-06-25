@@ -22,7 +22,18 @@ Controlled semantics-preserving cases (any divergence is FALSE by construction).
 | frontier v1 | 0 | 0 | **0** | — |
 | frontier v2 | 0 | 0 | **0** | — |
 
+## g3_three_level  (3 funcs)
+
+| strategy | #harness | covered | **false-div** | boundaries |
+|---|--:|--:|--:|---|
+| root | 1 | 3 | **1** | `report`⚠ |
+| all-constructible | 3 | 3 | **2** | `scale`⚠, `safe_ratio`, `report`⚠ |
+| leaf-only | 1 | 1 | **1** | `scale`⚠ |
+| frontier v1 | 0 | 0 | **0** | — |
+| frontier v2 | 1 | 2 | **0** | `safe_ratio` |
+
 ## Reading
 
 - **g3_case_a**: leaf false-div 1, all-constructible 1; frontier v1 0 (covers 0), v2 0 (covers 2).
 - **g3_case_c**: leaf false-div 1, all-constructible 1; frontier v1 0 (covers 0), v2 0 (covers 0).
+- **g3_three_level**: leaf false-div 1, all-constructible 2; frontier v1 0 (covers 0), v2 0 (covers 2).

@@ -101,8 +101,14 @@ programs with genuine internal call hierarchies.** Note the two layers want diff
   `ring_get` (`head %= CAP`) → clean (700k execs). **Empirical strategy table** via `scripts/g3_eval.py`
   (`results/g3_eval_v1.md`): leaf/all light up false divergences on both; **frontier v2 wins on arithmetic
   (0 false-div, full coverage) but COLLAPSES on isolation (clamp shield ≠ `%`-mask invariant)** — a
-  measured limitation, reported not patched (no per-case rf). Caveat: 2-level cases make `root`==ideal api;
-  a 3+-level case is needed to show frontier > root.
+  measured limitation, reported not patched (no per-case rf).
+
+  **Decisive 3-level case D (`benchmark/pairs/g3_three_level`): `report`→`safe_ratio`→`scale`, where root
+  `report` has its OWN unguarded `y*y*y`.** Empirical: leaf 1/1/1, all 3/3/2, **root 1/3/1 (no longer
+  ideal)**, v1 0/0/0, **frontier v2 1/2/0 — the ONLY clean+covering strategy, selecting the MIDDLE
+  `safe_ratio`.** This closes the headline story: leaf/all mis-test the helper; root works only in shallow
+  cases; in depth root is too coarse; the frontier picks the right abstraction level. The Layer-2 claim is
+  now empirically demonstrated (with the isolation-shield limitation honestly scoped as future work).
 
   Apply 2–3 semantics-preserving perturbations
   (helper extraction · inline/outline · wrapper insertion) to ~5 programs first; measure whether

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C → Rust Translation Testing — Overview</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --ink:#1c2230; --muted:#5b6577; --line:#e3e7ef;
+    --blue:#2f6df0; --green:#16a34a; --amber:#d97706; --red:#dc2626; --violet:#7c3aed;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 -apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:40px 24px 72px}
+  h1{font-size:30px;margin:0 0 6px;letter-spacing:-.3px}
+  h2{font-size:21px;margin:38px 0 10px;color:var(--ink)}
+  .lead{font-size:18px;color:var(--muted);margin:0 0 8px}
+  .tag{display:inline-block;background:#eef3ff;color:var(--blue);font-size:12.5px;font-weight:700;
+    padding:3px 10px;border-radius:999px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:14px 0;
+    box-shadow:0 1px 2px rgba(20,30,60,.04)}
+  .muted{color:var(--muted)}
+  .big{font-size:18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .trap{border-left:4px solid var(--amber);background:#fffaf0;border-radius:10px;padding:14px 16px}
+  .trap b{color:var(--amber)}
+  .dilemma{border:2px solid var(--violet);background:#faf7ff;border-radius:14px;padding:20px 22px}
+  .dilemma .q{font-size:19px;font-weight:700;color:var(--violet);line-height:1.5}
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin-top:6px}
+  .step{flex:1;min-width:120px;background:#f4f7ff;border:1px solid #d8e2fb;border-radius:10px;padding:11px 12px}
+  .step b{display:block;font-size:14px}.step span{color:var(--muted);font-size:12.5px}
+  .arrow{align-self:center;color:#9fb0cf;font-size:20px;font-weight:700}
+  .tree{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.9;background:#0f1626;
+    color:#e8ecf5;border-radius:12px;padding:16px 18px}
+  .tree .lab{color:#9aa6c4}
+  .pill{display:inline-block;padding:1px 8px;border-radius:6px;font-size:12px;font-weight:700}
+  .ok{background:rgba(22,163,74,.15);color:#16a34a}
+  .bad{background:rgba(220,38,38,.15);color:#dc2626}
+  .mid{background:rgba(124,58,237,.16);color:#a855f7}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;font-size:13px}
+  .chk{color:var(--green);font-weight:700}
+  .foot{color:var(--muted);font-size:13px;margin-top:30px;text-align:center}
+  .em{background:#fff7d6;padding:0 3px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="tag">Research overview · for a general audience</span>
+  <h1>Testing C → Rust translations</h1>
+  <p class="lead">Old C code is being auto-translated to Rust (a safer language) by tools like
+  <b>c2rust</b>. Our question: <b>did the translation keep the same behavior?</b> If not, that's a bug
+  hiding in supposedly-safe code.</p>
+
+  <h2>1. The basic idea: give both versions the same test</h2>
+  <div class="card big">
+    Run the <b>original C</b> and its <b>Rust translation</b> on the <b>same inputs</b>, and compare the
+    answers. If they ever disagree, the translation may be wrong. We do this automatically at massive
+    scale with <b>fuzzing</b> (throwing millions of random inputs).
+    <div class="muted" style="margin-top:8px">Like giving the same exam to the original and the copy, and
+    checking every answer that differs.</div>
+  </div>
+
+  <h2>2. Why it's not that simple — two traps</h2>
+  <div class="grid2">
+    <div class="trap"><b>Trap A — we can't assume c2rust is correct.</b><br>
+      It's the very thing we're testing. If we treat its output as "the right answer," we can never find
+      <i>its</i> mistakes. So we have no trusted reference to compare against.</div>
+    <div class="trap"><b>Trap B — not every difference is a bug.</b><br>
+      Most disagreements are <i>false alarms</i>: the input was meaningless (see below), or we tested the
+      code in the wrong place. Drowning in false alarms makes real bugs invisible.</div>
+  </div>
+  <div class="card">
+    <b>The biggest source of false alarms: "undefined behavior" (UB).</b> The C language leaves some
+    operations <em>undefined</em> — e.g. a number overflowing, or reading past the end of an array. On
+    those inputs there is <b>no correct answer</b>, so if C and Rust differ, it proves <b>nothing</b>
+    about the translation. <span class="muted">These are trick questions with no right answer — a
+    disagreement there is not the translator's fault.</span>
+  </div>
+
+  <h2>3. The core dilemma</h2>
+  <div class="dilemma">
+    <div class="q">We must catch real translation bugs — without trusting c2rust to be correct (Trap A),
+    and without mistaking undefined-behavior noise for bugs (Trap B).</div>
+    <p class="muted" style="margin:12px 0 0">These pull in opposite directions: be strict and you flag
+    everything (false alarms); be lax and you trust the tool you're supposed to check. The resolution is
+    <b>not</b> a smarter bug filter — it's choosing <b>where</b> to test.</p>
+  </div>
+
+  <h2>4. Our idea: test at the <em>right place</em>, not everywhere</h2>
+  <div class="card">
+    A program is a tree of functions calling each other. The trick is to pick the <b>right altitude</b> to
+    test — where inputs are constructible, no UB is triggered, and a difference would be a <b>real</b> bug.
+    We call this the <b>STU frontier</b>. Goldilocks-style:
+    <div class="tree" style="margin-top:14px">
+      <span class="lab">top API</span>   report(...)        <span class="pill bad">too high</span> <span class="lab">— also runs unrelated risky code → false alarms</span><br>
+      &nbsp;&nbsp;└─ <span class="lab">middle</span> safe_ratio(...)  <span class="pill mid">just right ✓</span> <span class="lab">— sets up valid inputs for what it calls</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="lab">helper</span> scale(...)    <span class="pill bad">too low</span> <span class="lab">— alone, its assumptions break → false alarms</span>
+    </div>
+    <p style="margin:14px 0 0">A static analysis (no running needed) scores each function on these rules
+    and picks the middle layer. Then we fuzz <b>only there</b>, and only count differences on
+    <b>UB-free</b> inputs — so a surviving difference is a <b>genuine</b> translation bug.</p>
+  </div>
+
+  <h2>5. The pipeline</h2>
+  <div class="card">
+    <div class="flow">
+      <div class="step"><b>C + Rust</b><span>original & translation</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Map them</b><span>match functions across the two</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Score boundaries</b><span>where is testing valid?</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Pick frontier</b><span>the right altitude</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Differential fuzz</b><span>UB-free inputs only</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><b>Real bug?</b><span>a true C≠Rust difference</span></div>
+    </div>
+  </div>
+
+  <h2>6. What we've shown</h2>
+  <div class="card">
+    <table>
+      <tr><th>Result</th><th></th></tr>
+      <tr><td>Full pipeline built and running end-to-end</td><td class="chk">✓</td></tr>
+      <tr><td>A labeled, independently-audited dataset of ~130 boundaries (testable vs not)</td><td class="chk">✓</td></tr>
+      <tr><td><b>Picking the right boundary beats the naive strategies</b> — in a controlled test it is the
+        <i>only</i> strategy that is both clean (no false alarms) and still catches a deliberately-planted real bug</td><td class="chk">✓</td></tr>
+      <tr><td>Works on real-world libraries (musl C library, base64, a regex engine, big-number arithmetic)</td><td class="chk">✓</td></tr>
+      <tr><td>Rigorous: we report <b>zero</b> "bugs" that are really UB noise — matching the strict standard from compiler testing</td><td class="chk">✓</td></tr>
+    </table>
+    <p class="muted" style="margin:14px 0 0">Honest note: c2rust turns out to be <b>faithful</b> on our
+    programs (it's built to copy behavior exactly, including flaws), so it yields no real bugs — which is
+    the expected, correct outcome and confirms our method doesn't cry wolf. We are now extending the same
+    method to a <b>second, riskier tool</b> (a "safety lifter" that rewrites the Rust to be safer, where
+    behavior <i>can</i> actually change) — to show the approach generalizes and to find bugs that matter.</p>
+  </div>
+
+  <h2>7. In one sentence</h2>
+  <div class="card big">
+    We're not predicting "which function has a bug." We're solving <b>where it's even valid to test a
+    translation</b> — so that a difference between C and Rust is trustworthy evidence, not noise.
+  </div>
+
+  <p class="foot">C→Rust differential testing via boundary (STU-frontier) selection · research overview ·
+  2026-06</p>
+
+</div>
+</body>
+</html>

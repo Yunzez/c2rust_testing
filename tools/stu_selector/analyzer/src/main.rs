@@ -17,9 +17,11 @@ fn main() {
         }
     };
 
+    let enable_metrics = args.iter().any(|a| a == "--enable-metrics");
+
     match analyzer::load_crate(&dir) {
         Ok(ac) => {
-            let out = ac.analyze();
+            let out = ac.analyze(enable_metrics);
             println!("{}", serde_json::to_string_pretty(&out).unwrap());
         }
         Err(e) => {

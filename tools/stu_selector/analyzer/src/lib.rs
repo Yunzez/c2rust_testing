@@ -8,6 +8,8 @@
 //! Phase 1: functions (name + line), resolved call edges, and unresolved/indirect
 //! calls. Signature and structural I/O fingerprints come in later phases.
 
+mod io;
+mod metrics;
 mod signature;
 
 use std::collections::HashSet;
@@ -28,6 +30,9 @@ pub struct FnRec {
     pub name: String,
     pub line: usize,
     pub signature: signature::Signature,
+    pub io: io::Io,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<metrics::Metrics>,
 }
 
 #[derive(Serialize)]
@@ -80,14 +85,14 @@ pub fn load_crate(dir: &Path) -> anyhow::Result<AnalyzedCrate> {
 }
 
 impl AnalyzedCrate {
-    pub fn analyze(&self) -> Output {
+    pub fn analyze(&self, enable_metrics: bool) -> Output {
         let db = self.host.raw_database();
         // The next-gen trait solver (used by `type_of_expr`/`as_callable`) requires
         // the salsa db to be attached to the current thread.
-        hir::attach_db(db, || self.analyze_inner(db))
+        hir::attach_db(db, || self.analyze_inner(db, enable_metrics))
     }
 
-    fn analyze_inner(&self, db: &RootDatabase) -> Output {
+    fn analyze_inner(&self, db: &RootDatabase, enable_metrics: bool) -> Output {
         let sema = Semantics::new(db);
 
         let mut out =
@@ -131,6 +136,12 @@ impl AnalyzedCrate {
                         name: name.clone(),
                         line,
                         signature: signature::signature_of(&fnode),
+                        io: io::io_of(db, func),
+                        metrics: if enable_metrics {
+                            Some(metrics::metrics_of(&fnode))
+                        } else {
+                            None
+                        },
                     });
                 }
                 for n in body.syntax().descendants() {

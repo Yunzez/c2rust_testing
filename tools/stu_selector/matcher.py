@@ -5,8 +5,12 @@ Inputs: the C-side (c_analyzer.py) and Rust-side (analyzer) per-function JSON.
 Pairs functions using STRUCTURAL signals only — names are NEVER used for matching:
   - io shape (input shapes + output shape): exact match + soft token Jaccard
   - comparable metrics (cyclomatic, stmts, nodes, loops, max_loop_depth, derefs, allocs)
-  - call-graph topology (in/out degree)  [neighbor-consistency refinement = TODO]
-Assignment: greedy 1-1 on the score matrix.
+  - operator histogram (cosine) — separates structurally-identical, different-op twins
+  - call-graph TOPOLOGY: IsoRank-style propagation where neighbor agreement uses a
+    neighbor-set best-match (mean-of-max, symmetrized), NOT a cartesian average.
+Per-function signals are the restart prior N; topology propagates them so a pair is
+rewarded when its callees/callers correspond. Assignment: greedy 1-1 on the converged
+matrix (`--no-topo` falls back to the per-function baseline for ablation).
 
 Validation: names ARE present in faithful c2rust output, so the name-equal pairing is the
 ground truth. We match WITHOUT names, then score against it -> precision/recall/accuracy.
@@ -91,13 +95,90 @@ def score(fc, fr, dc, dr) -> float:
     return 0.30 * soft + 0.15 * exact + 0.15 * met + 0.20 * ops + 0.10 * deg + 0.10 * arity
 
 
-def match(c_data, r_data) -> list:
-    dc, dr = degrees(c_data), degrees(r_data)
-    cf, rf = c_data["functions"], r_data["functions"]
-    pairs = []
-    for fc in cf:
-        for fr in rf:
-            pairs.append((score(fc, fr, dc, dr), fc["name"], fr["name"]))
+def node_sim(fc, fr) -> float:
+    """Per-function similarity (NO topology) — the restart prior for propagation."""
+    exact = 1.0 if shape_sig(fc) == shape_sig(fr) else 0.0
+    soft = jaccard(shape_tokens(fc), shape_tokens(fr))
+    met = metric_sim(fc, fr)
+    ops = op_sim(fc, fr)
+    arity = 1.0 if len(fc["io"]["inputs"]) == len(fr["io"]["inputs"]) else 0.0
+    return 0.35 * soft + 0.15 * exact + 0.15 * met + 0.25 * ops + 0.10 * arity
+
+
+def adjacency(data) -> tuple:
+    """name -> (set of local callees, set of local callers), from raw_edges."""
+    names = {f["name"] for f in data["functions"]}
+    callees = {n: set() for n in names}
+    callers = {n: set() for n in names}
+    for e in data["raw_edges"]:
+        a, b = e["from"], e["to"]
+        if a in names and b in names:
+            callees[a].add(b)
+            callers[b].add(a)
+    return callees, callers
+
+
+def _dir(A, B, S, c_first) -> float:
+    """mean over a in A of (max over b in B of S[a,b]) — neighbor-set best-match."""
+    tot = 0.0
+    for a in A:
+        best = 0.0
+        for b in B:
+            v = S[(a, b)] if c_first else S[(b, a)]
+            if v > best:
+                best = v
+        tot += best
+    return tot / len(A)
+
+
+def _setsim(ac, br, S) -> float:
+    """Symmetrized neighbor-set similarity (each side's neighbors find their best
+    correspondent). 1.0 if both empty (agree on no neighbors), 0.0 if exactly one
+    empty (connectivity mismatch). NOT a cartesian average."""
+    if not ac and not br:
+        return 1.0
+    if not ac or not br:
+        return 0.0
+    return 0.5 * _dir(ac, br, S, True) + 0.5 * _dir(br, ac, S, False)
+
+
+def propagate(c_data, r_data, alpha=0.7, iters=15) -> dict:
+    """IsoRank-style propagation with neighbor-set best-match topology. Returns the
+    converged similarity {(c,r): score}."""
+    cn = [f["name"] for f in c_data["functions"]]
+    rn = [f["name"] for f in r_data["functions"]]
+    cf = {f["name"]: f for f in c_data["functions"]}
+    rf = {f["name"]: f for f in r_data["functions"]}
+    c_callees, c_callers = adjacency(c_data)
+    r_callees, r_callers = adjacency(r_data)
+    N = {(c, r): node_sim(cf[c], rf[r]) for c in cn for r in rn}
+    S = dict(N)
+    for _ in range(iters):
+        new = {}
+        for c in cn:
+            for r in rn:
+                terms = []
+                if c_callees[c] or r_callees[r]:
+                    terms.append(_setsim(c_callees[c], r_callees[r], S))
+                if c_callers[c] or r_callers[r]:
+                    terms.append(_setsim(c_callers[c], r_callers[r], S))
+                if not terms:  # isolated on both sides -> no topology signal
+                    new[(c, r)] = N[(c, r)]
+                else:
+                    topo = sum(terms) / len(terms)
+                    new[(c, r)] = (1 - alpha) * N[(c, r)] + alpha * topo
+        S = new
+    return S
+
+
+def match(c_data, r_data, topo=True, alpha=0.7, iters=15) -> list:
+    if topo:
+        S = propagate(c_data, r_data, alpha, iters)
+        pairs = [(s, c, r) for (c, r), s in S.items()]
+    else:
+        dc, dr = degrees(c_data), degrees(r_data)
+        pairs = [(score(fc, fr, dc, dr), fc["name"], fr["name"])
+                 for fc in c_data["functions"] for fr in r_data["functions"]]
     pairs.sort(reverse=True)
     used_c, used_r, mapping = set(), set(), []
     for s, c, r in pairs:
@@ -113,12 +194,16 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Name-independent C<->Rust function matcher")
     ap.add_argument("--c", required=True)
     ap.add_argument("--rust", required=True)
+    ap.add_argument("--no-topo", action="store_true",
+                    help="disable call-graph topology propagation (per-function baseline)")
+    ap.add_argument("--alpha", type=float, default=0.7, help="topology weight (0..1)")
+    ap.add_argument("--iters", type=int, default=15, help="propagation iterations")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
     c_data = json.loads(Path(args.c).read_text())
     r_data = json.loads(Path(args.rust).read_text())
 
-    mapping = match(c_data, r_data)
+    mapping = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters)
     # ground truth = name equality (valid for faithful, name-preserving c2rust)
     r_names = {f["name"] for f in r_data["functions"]}
     gt_pairs = [(c, r, s) for (c, r, s) in mapping if c in r_names]

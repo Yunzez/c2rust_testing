@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""Name-independent C<->Rust function matcher (the project's core novelty).
+
+Inputs: the C-side (c_analyzer.py) and Rust-side (analyzer) per-function JSON.
+Pairs functions using STRUCTURAL signals only — names are NEVER used for matching:
+  - io shape (input shapes + output shape): exact match + soft token Jaccard
+  - comparable metrics (cyclomatic, stmts, nodes, loops, max_loop_depth, derefs, allocs)
+  - call-graph topology (in/out degree)  [neighbor-consistency refinement = TODO]
+Assignment: greedy 1-1 on the score matrix.
+
+Validation: names ARE present in faithful c2rust output, so the name-equal pairing is the
+ground truth. We match WITHOUT names, then score against it -> precision/recall/accuracy.
+
+Usage: matcher.py --c c.json --rust rust.json
+"""
+import argparse
+import json
+import re
+from collections import Counter
+from pathlib import Path
+
+COMPARABLE = ["cyclomatic", "stmts", "nodes", "loops", "max_loop_depth", "derefs", "allocs"]
+_TOK = re.compile(r"[A-Za-z0-9_]+|\*|&|\{|\}|\[|\]|<|>|;")
+
+
+def shape_sig(f) -> tuple:
+    return tuple(i["shape"] for i in f["io"]["inputs"]) + ("->", f["io"]["output"]["shape"])
+
+
+def shape_tokens(f) -> list:
+    return _TOK.findall("|".join(shape_sig(f)))
+
+
+def jaccard(a, b) -> float:
+    ca, cb = Counter(a), Counter(b)
+    inter = sum((ca & cb).values())
+    union = sum((ca | cb).values())
+    return inter / union if union else 1.0
+
+
+def degrees(data) -> tuple:
+    names = {f["name"] for f in data["functions"]}
+    out, inn = Counter(), Counter()
+    for e in data["raw_edges"]:
+        if e["from"] in names:
+            out[e["from"]] += 1
+        if e["to"] in names:
+            inn[e["to"]] += 1
+    return out, inn
+
+
+def metric_sim(fc, fr) -> float:
+    mc, mr = fc.get("metrics"), fr.get("metrics")
+    if not mc or not mr:
+        return 0.0
+    acc = 0.0
+    for k in COMPARABLE:
+        a, b = mc.get(k, 0), mr.get(k, 0)
+        acc += abs(a - b) / (1 + max(a, b))
+    return 1 - acc / len(COMPARABLE)
+
+
+def deg_sim(nc, nr, dc, dr) -> float:
+    oc, ic = dc[0][nc], dc[1][nc]
+    orr, ir = dr[0][nr], dr[1][nr]
+    denom = 1 + oc + orr + ic + ir
+    return 1 - (abs(oc - orr) + abs(ic - ir)) / denom
+
+
+def score(fc, fr, dc, dr) -> float:
+    exact = 1.0 if shape_sig(fc) == shape_sig(fr) else 0.0
+    soft = jaccard(shape_tokens(fc), shape_tokens(fr))
+    met = metric_sim(fc, fr)
+    deg = deg_sim(fc["name"], fr["name"], dc, dr)
+    # arity mismatch is a hard-ish penalty
+    arity = 1.0 if len(fc["io"]["inputs"]) == len(fr["io"]["inputs"]) else 0.0
+    return 0.40 * soft + 0.20 * exact + 0.20 * met + 0.10 * deg + 0.10 * arity
+
+
+def match(c_data, r_data) -> list:
+    dc, dr = degrees(c_data), degrees(r_data)
+    cf, rf = c_data["functions"], r_data["functions"]
+    pairs = []
+    for fc in cf:
+        for fr in rf:
+            pairs.append((score(fc, fr, dc, dr), fc["name"], fr["name"]))
+    pairs.sort(reverse=True)
+    used_c, used_r, mapping = set(), set(), []
+    for s, c, r in pairs:
+        if c in used_c or r in used_r:
+            continue
+        used_c.add(c)
+        used_r.add(r)
+        mapping.append((c, r, s))
+    return mapping
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Name-independent C<->Rust function matcher")
+    ap.add_argument("--c", required=True)
+    ap.add_argument("--rust", required=True)
+    ap.add_argument("-v", "--verbose", action="store_true")
+    args = ap.parse_args()
+    c_data = json.loads(Path(args.c).read_text())
+    r_data = json.loads(Path(args.rust).read_text())
+
+    mapping = match(c_data, r_data)
+    # ground truth = name equality (valid for faithful, name-preserving c2rust)
+    r_names = {f["name"] for f in r_data["functions"]}
+    gt_pairs = [(c, r, s) for (c, r, s) in mapping if c in r_names]
+    correct = sum(1 for (c, r, s) in mapping if c == r)
+    n_c = len(c_data["functions"])
+    n_pred = len(mapping)
+
+    print(f"C functions: {n_c} | Rust functions: {len(r_data['functions'])}")
+    print(f"predicted pairs: {n_pred} | CORRECT (name-equal): {correct}")
+    print(f"accuracy: {correct}/{n_c} = {100 * correct // max(n_c, 1)}%")
+    if args.verbose:
+        for c, r, s in sorted(mapping, key=lambda x: -x[2]):
+            mark = "OK " if c == r else "XX "
+            print(f"  [{mark}] {c:24s} -> {r:24s}  score={s:.3f}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

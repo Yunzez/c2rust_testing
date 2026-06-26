@@ -10,6 +10,7 @@
 
 mod io;
 mod metrics;
+mod ops;
 mod signature;
 
 use std::collections::HashSet;
@@ -31,6 +32,7 @@ pub struct FnRec {
     pub line: usize,
     pub signature: signature::Signature,
     pub io: io::Io,
+    pub ops: ops::OpHist,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metrics: Option<metrics::Metrics>,
 }
@@ -137,6 +139,7 @@ impl AnalyzedCrate {
                         line,
                         signature: signature::signature_of(&fnode),
                         io: io::io_of(db, func),
+                        ops: ops::ops_of(&fnode),
                         metrics: if enable_metrics {
                             Some(metrics::metrics_of(&fnode))
                         } else {

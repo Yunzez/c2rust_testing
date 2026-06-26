@@ -15,6 +15,7 @@ Usage: matcher.py --c c.json --rust rust.json
 """
 import argparse
 import json
+import math
 import re
 from collections import Counter
 from pathlib import Path
@@ -60,6 +61,18 @@ def metric_sim(fc, fr) -> float:
     return 1 - acc / len(COMPARABLE)
 
 
+def op_sim(fc, fr) -> float:
+    """Cosine similarity of the operator histograms (the / vs % discriminator)."""
+    a, b = fc.get("ops", {}), fr.get("ops", {})
+    if not a and not b:
+        return 1.0
+    keys = set(a) | set(b)
+    dot = sum(a.get(k, 0) * b.get(k, 0) for k in keys)
+    na = math.sqrt(sum(v * v for v in a.values()))
+    nb = math.sqrt(sum(v * v for v in b.values()))
+    return dot / (na * nb) if na and nb else 0.0
+
+
 def deg_sim(nc, nr, dc, dr) -> float:
     oc, ic = dc[0][nc], dc[1][nc]
     orr, ir = dr[0][nr], dr[1][nr]
@@ -71,10 +84,11 @@ def score(fc, fr, dc, dr) -> float:
     exact = 1.0 if shape_sig(fc) == shape_sig(fr) else 0.0
     soft = jaccard(shape_tokens(fc), shape_tokens(fr))
     met = metric_sim(fc, fr)
+    ops = op_sim(fc, fr)
     deg = deg_sim(fc["name"], fr["name"], dc, dr)
     # arity mismatch is a hard-ish penalty
     arity = 1.0 if len(fc["io"]["inputs"]) == len(fr["io"]["inputs"]) else 0.0
-    return 0.40 * soft + 0.20 * exact + 0.20 * met + 0.10 * deg + 0.10 * arity
+    return 0.30 * soft + 0.15 * exact + 0.15 * met + 0.20 * ops + 0.10 * deg + 0.10 * arity
 
 
 def match(c_data, r_data) -> list:

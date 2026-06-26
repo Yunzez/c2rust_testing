@@ -93,6 +93,48 @@ def clang_shape(t, depth: int = 0, seen: frozenset = frozenset()) -> str:
     return t.spelling
 
 
+_BINOPS = {"+", "-", "*", "/", "%", "<<", ">>", "^", "|", "&",
+           "==", "!=", "<", ">", "<=", ">=", "&&", "||"}
+
+
+def _c_binop(cur) -> str | None:
+    """The operator of a binary/compound-assign cursor: the token between the two
+    operand subtrees. Compound assignment `OP=` is normalized to `OP`."""
+    kids = list(cur.get_children())
+    if len(kids) != 2:
+        return None
+    lo = kids[0].extent.end.offset
+    ro = kids[1].extent.start.offset
+    for t in cur.get_tokens():
+        o = t.extent.start.offset
+        if lo <= o < ro:
+            s = t.spelling
+            if s in _BINOPS:
+                return s
+            if len(s) > 1 and s.endswith("=") and s not in ("==", "<=", ">=", "!="):
+                u = s[:-1]
+                if u in _BINOPS:
+                    return u
+    return None
+
+
+def ops_of(fn_cur) -> dict:
+    """Operator histogram (mirror analyzer/src/ops.rs): binary/compound-assign ops +
+    unary `!`/`~` (both -> `!`, matching Rust). deref/neg/addr skipped."""
+    h: dict = {}
+    for cur in fn_cur.walk_preorder():
+        kn = cur.kind.name
+        if kn in ("BINARY_OPERATOR", "COMPOUND_ASSIGNMENT_OPERATOR"):
+            s = _c_binop(cur)
+            if s:
+                h[s] = h.get(s, 0) + 1
+        elif kn == "UNARY_OPERATOR":
+            toks = [t.spelling for t in cur.get_tokens()]
+            if toks and toks[0] in ("!", "~"):
+                h["!"] = h.get("!", 0) + 1
+    return h
+
+
 def clang_ptr_kind(t) -> str:
     s = _peel(t)
     if s.kind == TypeKind.POINTER:
@@ -118,6 +160,7 @@ def _fn_record(cur, metrics_by_name: dict, enable_metrics: bool) -> dict:
         "line": cur.location.line if cur.location else 0,
         "signature": {"params": params, "ret": ret.spelling},
         "io": {"inputs": inputs, "output": {"ty": ret.spelling, "shape": clang_shape(ret)}},
+        "ops": ops_of(cur),
     }
     if enable_metrics:
         m = dict(metrics_by_name.get(name, {}))
@@ -159,7 +202,8 @@ def analyze(cc_dir: Path, enable_metrics: bool = False) -> dict:
                 functions.append({"name": cur.spelling,
                                   "line": cur.location.line if cur.location else 0,
                                   "signature": {"params": [], "ret": "<rec>"},
-                                  "io": {"inputs": [], "output": {"ty": "<rec>", "shape": "<rec>"}}})
+                                  "io": {"inputs": [], "output": {"ty": "<rec>", "shape": "<rec>"}},
+                                  "ops": {}})
 
     return {
         "functions": functions,

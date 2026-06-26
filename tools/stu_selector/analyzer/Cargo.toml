@@ -1,0 +1,30 @@
+[package]
+name = "analyzer"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "analyzer"
+path = "src/main.rs"
+
+[lib]
+name = "analyzer"
+path = "src/lib.rs"
+
+# rust-analyzer libraries, pinned to the 2026-06-22 upstream release.
+# Renamed to their short crate names so we can mirror rust-analyzer's own source.
+[dependencies]
+hir = { package = "ra_ap_hir", version = "0.0.338" }
+ide = { package = "ra_ap_ide", version = "0.0.338" }
+ide-db = { package = "ra_ap_ide_db", version = "0.0.338" }
+load-cargo = { package = "ra_ap_load-cargo", version = "0.0.338" }
+project-model = { package = "ra_ap_project_model", version = "0.0.338" }
+vfs = { package = "ra_ap_vfs", version = "0.0.338" }
+syntax = { package = "ra_ap_syntax", version = "0.0.338" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+
+# Standalone; do not get absorbed into any parent workspace.
+[workspace]

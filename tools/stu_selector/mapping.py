@@ -36,6 +36,11 @@ import callgraph as cgmod  # noqa: E402
 _DEFAULT_RUST_BIN = (
     Path(__file__).resolve().parent / "rust_callgraph" / "target" / "release" / "rust_callgraph"
 )
+# rust-analyzer-based whole-crate analyzer (multi-module, name/type resolved).
+# Used for Cargo-crate inputs; the syn tool above is the legacy single-.rs fallback.
+_ANALYZER_BIN = (
+    Path(__file__).resolve().parent / "analyzer" / "target" / "release" / "analyzer"
+)
 
 
 def build_c_graph(cc_dir: Path) -> dict:
@@ -45,11 +50,31 @@ def build_c_graph(cc_dir: Path) -> dict:
     return cgmod.condense(cg)
 
 
-def build_rust_graph(rust_file: Path, rust_bin: Path) -> dict:
-    raw = subprocess.run(
-        [str(rust_bin), str(rust_file)], check=True, capture_output=True, text=True
-    ).stdout
-    data = json.loads(raw)
+def build_rust_graph(rust_file: Path, rust_bin: Path | None = None) -> dict:
+    rust_file = Path(rust_file)
+    # Route by input: a Cargo crate dir -> rust-analyzer analyzer (whole-crate,
+    # multi-module, name/type resolved); a bare .rs file -> legacy syn tool.
+    if rust_file.is_dir() and (rust_file / "Cargo.toml").exists():
+        bin_path = _ANALYZER_BIN
+    else:
+        bin_path = Path(rust_bin) if rust_bin else _DEFAULT_RUST_BIN
+    if not Path(bin_path).exists():
+        raise FileNotFoundError(
+            f"rust call-graph binary not found at {bin_path}; build it: "
+            f"(cd {Path(bin_path).parents[2]} && cargo build --release)"
+        )
+
+    proc = subprocess.run([str(bin_path), str(rust_file)], capture_output=True, text=True)
+    if proc.returncode == 2:
+        # analyzer load_failed: the translator produced a crate that does not even
+        # load. Per design that is a finding about the translator, not a tool crash.
+        raise RuntimeError(f"rust crate failed to load (translator defect): {proc.stdout.strip()}")
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"rust call-graph extraction failed ({bin_path}): "
+            f"{proc.stderr.strip() or proc.stdout.strip()}"
+        )
+    data = json.loads(proc.stdout)
 
     cg = cgmod.CallGraph()
     for f in data["functions"]:
@@ -118,21 +143,15 @@ def align(c: dict, r: dict, rust_file: Path) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser(description="C<->Rust function/region mapping")
     ap.add_argument("--compile-commands", required=True, help="Dir with compile_commands.json")
-    ap.add_argument("--rust", required=True, help="Translated Rust .rs file")
+    ap.add_argument("--rust", required=True,
+                    help="Translated Rust .rs file (legacy syn) OR Cargo crate dir (rust-analyzer)")
     ap.add_argument("--rust-bin", default=str(_DEFAULT_RUST_BIN),
-                    help="Path to the rust_callgraph binary")
+                    help="Path to the legacy syn rust_callgraph binary (used for .rs inputs)")
     ap.add_argument("-o", "--out", help="Write JSON here (default: stdout)")
     args = ap.parse_args()
 
-    rust_bin = Path(args.rust_bin)
-    if not rust_bin.exists():
-        print(f"[error] rust_callgraph binary not found at {rust_bin}\n"
-              f"        build it: (cd tools/stu_selector/rust_callgraph && cargo build --release)",
-              file=sys.stderr)
-        return 1
-
     c = build_c_graph(Path(args.compile_commands))
-    r = build_rust_graph(Path(args.rust), rust_bin)
+    r = build_rust_graph(Path(args.rust), Path(args.rust_bin))
     result = align(c, r, Path(args.rust))
 
     text = json.dumps(result, indent=2)

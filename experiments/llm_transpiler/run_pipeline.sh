@@ -20,5 +20,10 @@ python3 "$ROOT/tools/stu_selector/c_analyzer.py" \
     > "$HERE/out/$PAIR.c.json"
 
 echo "== matcher (names hidden) =="
+# Use the hand-labeled rename truth if present (LLM renames -> name-equality is invalid);
+# otherwise fall back to name-equality (faithful c2rust dry-run).
+TRUTH="$HERE/truth/$PAIR.json"
+TRUTH_ARG=()
+[ -f "$TRUTH" ] && TRUTH_ARG=(--truth "$TRUTH") && echo "(scoring against hand-labeled truth: truth/$PAIR.json)"
 python3 "$ROOT/tools/stu_selector/matcher.py" \
-    --c "$HERE/out/$PAIR.c.json" --rust "$HERE/out/$PAIR.rust.json" -v
+    --c "$HERE/out/$PAIR.c.json" --rust "$HERE/out/$PAIR.rust.json" "${TRUTH_ARG[@]}" -v

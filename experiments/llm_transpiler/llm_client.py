@@ -8,8 +8,9 @@ markdown fences.
 
 API notes (confirm live model id + price at platform.openai.com/docs/models before a
 real run — names/prices shift month to month):
-  - default model gpt-5.4-mini (cheap coding workhorse); gpt-4.1 if you need
-    temperature=0 reproducibility (GPT-5.x / o-series REJECT `temperature`).
+  - default model gpt-5-mini (cheap reasoning coding workhorse, verified live on this
+    key 2026-06); gpt-4.1 if you need temperature=0 reproducibility (GPT-5.x / o-series
+    REJECT `temperature`).
   - 429 backoff is handled by the SDK's built-in retries (max_retries).
 Pattern borrowed from SbomFuzz analyzer/.../fuzzing_harness_gen/llm_client.py (dry-run +
 rate-limit handling).
@@ -19,7 +20,7 @@ import os
 import sys
 
 # Confirm the live id before a real call; override with $OPENAI_MODEL.
-DEFAULT_MODEL = os.environ.get("OPENAI_MODEL", "gpt-5.4-mini")
+DEFAULT_MODEL = os.environ.get("OPENAI_MODEL", "gpt-5-mini")
 
 # Structured Output schema -> guaranteed {cargo_toml, rust_src}, no code fences.
 _SCHEMA = {

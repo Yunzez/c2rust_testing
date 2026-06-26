@@ -260,6 +260,8 @@ def main() -> int:
     ap.add_argument("--iters", type=int, default=15, help="propagation iterations")
     ap.add_argument("--greedy", action="store_true",
                     help="greedy assignment instead of optimal Hungarian (ablation)")
+    ap.add_argument("--truth", help="hand-labeled ground-truth JSON {c_name: rust_name} "
+                    "for renamed translations (LLM track); default = name equality")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
     c_data = json.loads(Path(args.c).read_text())
@@ -267,19 +269,28 @@ def main() -> int:
 
     mapping = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters,
                     assign="greedy" if args.greedy else "hungarian")
-    # ground truth = name equality (valid for faithful, name-preserving c2rust)
-    r_names = {f["name"] for f in r_data["functions"]}
-    gt_pairs = [(c, r, s) for (c, r, s) in mapping if c in r_names]
-    correct = sum(1 for (c, r, s) in mapping if c == r)
+    # ground truth: name equality (faithful, name-preserving c2rust) OR a hand-labeled
+    # map (LLM track, where the translator renames so name-equality no longer holds).
+    if args.truth:
+        truth = json.loads(Path(args.truth).read_text())
+        is_correct = lambda c, r: truth.get(c) == r
+        label = "labeled"
+    else:
+        is_correct = lambda c, r: c == r
+        label = "name-equal"
+    correct = sum(1 for (c, r, s) in mapping if is_correct(c, r))
+    # only count C functions that HAVE a ground-truth correspondent as scorable
+    scorable = sum(1 for f in c_data["functions"]
+                   if (args.truth is None) or (f["name"] in truth))
     n_c = len(c_data["functions"])
     n_pred = len(mapping)
 
     print(f"C functions: {n_c} | Rust functions: {len(r_data['functions'])}")
-    print(f"predicted pairs: {n_pred} | CORRECT (name-equal): {correct}")
-    print(f"accuracy: {correct}/{n_c} = {100 * correct // max(n_c, 1)}%")
+    print(f"predicted pairs: {n_pred} | CORRECT ({label}): {correct}")
+    print(f"accuracy: {correct}/{scorable} = {100 * correct // max(scorable, 1)}%")
     if args.verbose:
         for c, r, s in sorted(mapping, key=lambda x: -x[2]):
-            mark = "OK " if c == r else "XX "
+            mark = "OK " if is_correct(c, r) else "XX "
             print(f"  [{mark}] {c:24s} -> {r:24s}  score={s:.3f}")
     return 0
 

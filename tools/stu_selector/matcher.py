@@ -9,8 +9,8 @@ Pairs functions using STRUCTURAL signals only — names are NEVER used for match
   - call-graph TOPOLOGY: IsoRank-style propagation where neighbor agreement uses a
     neighbor-set best-match (mean-of-max, symmetrized), NOT a cartesian average.
 Per-function signals are the restart prior N; topology propagates them so a pair is
-rewarded when its callees/callers correspond. Assignment: greedy 1-1 on the converged
-matrix (`--no-topo` falls back to the per-function baseline for ablation).
+rewarded when its callees/callers correspond. Assignment: optimal 1-1 (Hungarian) on the
+converged matrix. Ablation flags: `--no-topo` (per-function baseline), `--greedy`.
 
 Validation: names ARE present in faithful c2rust output, so the name-equal pairing is the
 ground truth. We match WITHOUT names, then score against it -> precision/recall/accuracy.
@@ -171,15 +171,75 @@ def propagate(c_data, r_data, alpha=0.7, iters=15) -> dict:
     return S
 
 
-def match(c_data, r_data, topo=True, alpha=0.7, iters=15) -> list:
+def _hungarian(cost) -> list:
+    """Min-cost assignment, O(n^2 m), n<=m (e-maxx). Returns row->col."""
+    INF = float("inf")
+    n, m = len(cost), len(cost[0])
+    u, v = [0.0] * (n + 1), [0.0] * (m + 1)
+    p, way = [0] * (m + 1), [0] * (m + 1)
+    for i in range(1, n + 1):
+        p[0] = i
+        j0 = 0
+        minv = [INF] * (m + 1)
+        used = [False] * (m + 1)
+        while True:
+            used[j0] = True
+            i0, delta, j1 = p[j0], INF, -1
+            for j in range(1, m + 1):
+                if not used[j]:
+                    cur = cost[i0 - 1][j - 1] - u[i0] - v[j]
+                    if cur < minv[j]:
+                        minv[j], way[j] = cur, j0
+                    if minv[j] < delta:
+                        delta, j1 = minv[j], j
+            for j in range(m + 1):
+                if used[j]:
+                    u[p[j]] += delta
+                    v[j] -= delta
+                else:
+                    minv[j] -= delta
+            j0 = j1
+            if p[j0] == 0:
+                break
+        while j0:
+            j1 = way[j0]
+            p[j0] = p[j1]
+            j0 = j1
+    res = [-1] * n
+    for j in range(1, m + 1):
+        if p[j] > 0:
+            res[p[j] - 1] = j - 1
+    return res
+
+
+def _assign_hungarian(cn, rn, sim) -> list:
+    """Optimal 1-1 assignment maximizing total similarity (vs greedy)."""
+    swap = len(cn) > len(rn)
+    rows, cols = (rn, cn) if swap else (cn, rn)
+    cost = [[-sim[(c, r)] if not swap else -sim[(r, c)] for r in cols] for c in rows]
+    assign = _hungarian(cost)
+    mapping = []
+    for i, j in enumerate(assign):
+        if j < 0:
+            continue
+        c, r = (cols[j], rows[i]) if swap else (rows[i], cols[j])
+        mapping.append((c, r, sim[(c, r)]))
+    return mapping
+
+
+def match(c_data, r_data, topo=True, alpha=0.7, iters=15, assign="hungarian") -> list:
+    cn = [f["name"] for f in c_data["functions"]]
+    rn = [f["name"] for f in r_data["functions"]]
     if topo:
-        S = propagate(c_data, r_data, alpha, iters)
-        pairs = [(s, c, r) for (c, r), s in S.items()]
+        sim = propagate(c_data, r_data, alpha, iters)
     else:
         dc, dr = degrees(c_data), degrees(r_data)
-        pairs = [(score(fc, fr, dc, dr), fc["name"], fr["name"])
-                 for fc in c_data["functions"] for fr in r_data["functions"]]
-    pairs.sort(reverse=True)
+        cf = {f["name"]: f for f in c_data["functions"]}
+        rf = {f["name"]: f for f in r_data["functions"]}
+        sim = {(c, r): score(cf[c], rf[r], dc, dr) for c in cn for r in rn}
+    if assign == "hungarian":
+        return _assign_hungarian(cn, rn, sim)
+    pairs = sorted(((s, c, r) for (c, r), s in sim.items()), reverse=True)
     used_c, used_r, mapping = set(), set(), []
     for s, c, r in pairs:
         if c in used_c or r in used_r:
@@ -198,12 +258,15 @@ def main() -> int:
                     help="disable call-graph topology propagation (per-function baseline)")
     ap.add_argument("--alpha", type=float, default=0.7, help="topology weight (0..1)")
     ap.add_argument("--iters", type=int, default=15, help="propagation iterations")
+    ap.add_argument("--greedy", action="store_true",
+                    help="greedy assignment instead of optimal Hungarian (ablation)")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
     c_data = json.loads(Path(args.c).read_text())
     r_data = json.loads(Path(args.rust).read_text())
 
-    mapping = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters)
+    mapping = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters,
+                    assign="greedy" if args.greedy else "hungarian")
     # ground truth = name equality (valid for faithful, name-preserving c2rust)
     r_names = {f["name"] for f in r_data["functions"]}
     gt_pairs = [(c, r, s) for (c, r, s) in mapping if c in r_names]

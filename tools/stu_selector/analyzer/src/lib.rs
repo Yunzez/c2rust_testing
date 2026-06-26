@@ -8,6 +8,8 @@
 //! Phase 1: functions (name + line), resolved call edges, and unresolved/indirect
 //! calls. Signature and structural I/O fingerprints come in later phases.
 
+mod signature;
+
 use std::collections::HashSet;
 use std::path::Path;
 
@@ -25,6 +27,7 @@ use syntax::{ast, AstNode};
 pub struct FnRec {
     pub name: String,
     pub line: usize,
+    pub signature: signature::Signature,
 }
 
 #[derive(Serialize)]
@@ -124,7 +127,11 @@ impl AnalyzedCrate {
                     .unwrap_or_else(|| fnode.syntax().text_range().start());
                 let line = li.line_col(name_offset).line as usize + 1;
                 if seen.insert(name.clone()) {
-                    out.functions.push(FnRec { name: name.clone(), line });
+                    out.functions.push(FnRec {
+                        name: name.clone(),
+                        line,
+                        signature: signature::signature_of(&fnode),
+                    });
                 }
                 for n in body.syntax().descendants() {
                     if let Some(call) = ast::CallExpr::cast(n.clone()) {

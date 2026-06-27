@@ -51,15 +51,23 @@ pub struct Indirect {
 }
 
 #[derive(Serialize)]
+pub struct Excluded {
+    pub name: String,
+    /// Why it was dropped: `"test"` or `"trait_boilerplate:<Trait>"`.
+    pub reason: String,
+}
+
+#[derive(Serialize)]
 pub struct Output {
     pub functions: Vec<FnRec>,
     pub raw_edges: Vec<Edge>,
     pub indirect_calls: Vec<Indirect>,
-    /// Test scaffolding (`#[test]` / `#[cfg(test)]` / `#[bench]`) excluded from the
-    /// candidate set AND the topology graph: these Rust-only nodes have no C
-    /// counterpart and empirically POISON similarity propagation (bignum: topology
-    /// gives 0 gain with them in, +11pts once removed). Reported, not silently dropped.
-    pub excluded_scaffolding: Vec<String>,
+    /// Rust-only nodes excluded from the candidate set AND the topology graph because
+    /// they are not a C-function translation target: test scaffolding (`#[test]` /
+    /// `#[cfg(test)]`) and boilerplate trait impls (`impl Default/Clone/Debug/...`).
+    /// Empirically these have no C counterpart and POISON similarity propagation
+    /// (bignum: topology gives 0 gain with test nodes in). Reported, not silently dropped.
+    pub excluded_scaffolding: Vec<Excluded>,
 }
 
 /// True if this fn is test/bench scaffolding: a `#[test]`/`#[bench]` attribute on the
@@ -84,6 +92,29 @@ fn is_test_scaffolding(fnode: &ast::Fn) -> bool {
         .ancestors()
         .filter_map(ast::Module::cast)
         .any(|m| marks_test(m.attrs()))
+}
+
+/// Std/derive boilerplate traits whose impl methods are Rust idiom, never the
+/// translation of a C function. Deliberately EXCLUDES arithmetic/operator traits
+/// (Add/Sub/Mul/Index/Iterator/...) and Display-of-real-logic stays a judgment call —
+/// these listed traits are the safe, unambiguous boilerplate set.
+const BOILERPLATE_TRAITS: &[&str] = &[
+    "Default", "Clone", "Copy", "Debug", "Display", "Hash", "PartialEq", "Eq", "PartialOrd",
+    "Ord", "From", "Into", "TryFrom", "TryInto", "Serialize", "Deserialize", "Drop",
+];
+
+/// If this fn is a method of a boilerplate trait impl (`impl Default for T { fn default }`,
+/// `impl Debug for T { fn fmt }`, ...), return the trait's name. Inherent `impl T` methods
+/// and non-boilerplate trait impls (e.g. `impl Add`) return None — they may be real targets.
+fn boilerplate_trait(fnode: &ast::Fn) -> Option<String> {
+    // A fn's nearest ancestor `impl` is the one it belongs to (impls don't nest).
+    let imp = fnode.syntax().ancestors().find_map(ast::Impl::cast)?;
+    let trait_ty = imp.trait_()?; // Some only for `impl Trait for Type`
+    let name = match trait_ty {
+        ast::Type::PathType(p) => p.path()?.segment()?.name_ref()?.text().to_string(),
+        _ => return None,
+    };
+    BOILERPLATE_TRAITS.contains(&name.as_str()).then_some(name)
 }
 
 /// A loaded crate, ready to analyze. Owns the rust-analyzer database.
@@ -162,11 +193,17 @@ impl AnalyzedCrate {
                     None => continue,
                 };
 
-                // Test scaffolding: keep it out of BOTH the candidate set and the
-                // topology graph (skip the body walk -> no edges), report separately.
-                if is_test_scaffolding(&fnode) {
+                // Rust-only non-targets (test scaffolding, boilerplate trait impls):
+                // keep out of BOTH the candidate set and the topology graph (skip the
+                // body walk -> no edges), report with a reason instead of dropping.
+                let exclude_reason = if is_test_scaffolding(&fnode) {
+                    Some("test".to_owned())
+                } else {
+                    boilerplate_trait(&fnode).map(|t| format!("trait_boilerplate:{t}"))
+                };
+                if let Some(reason) = exclude_reason {
                     if excluded_seen.insert(name.clone()) {
-                        out.excluded_scaffolding.push(name);
+                        out.excluded_scaffolding.push(Excluded { name, reason });
                     }
                     continue;
                 }

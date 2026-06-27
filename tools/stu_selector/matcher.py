@@ -363,7 +363,8 @@ def main() -> int:
     print(f"C functions: {len(c_data['functions'])} | Rust functions: {len(r_data['functions'])}")
     scaf = r_data.get("excluded_scaffolding")
     if scaf:
-        print(f"excluded_scaffolding (Rust, {len(scaf)}): {scaf}")
+        items = [f"{e['name']}[{e['reason']}]" if isinstance(e, dict) else str(e) for e in scaf]
+        print(f"excluded_scaffolding (Rust, {len(scaf)}): {items}")
     print(f"matched: {len(matched)} | c_only_unmatched: {len(c_only)} | "
           f"rust_only_unmatched: {len(rust_only)}")
     print(f"CORRECT ({label}): {correct} | accuracy: {correct}/{scorable} = "

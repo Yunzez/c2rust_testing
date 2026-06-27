@@ -41,6 +41,8 @@ import frontier as fr  # noqa: E402
 
 TOOLCHAIN = "nightly-2025-09-01"
 DUR = int(os.environ.get("DUR", "30"))
+# In-loop UB-free gate is the campaign default (UB_FREE=0 to get the old post-hoc behavior).
+UB_FREE = os.environ.get("UB_FREE", "1") != "0"
 SHARED_TARGET = ROOT / "fuzz_gen" / "_shared_target"
 ENV = dict(os.environ,
            PATH=os.path.expanduser("~/.cargo/bin") + ":" + os.environ.get("PATH", ""),
@@ -59,10 +61,11 @@ _UNSUPPORTED_MARKS = ("unsupported", "deferred", "not yet supported")
 def gen(pair: Path, entry: str) -> tuple[bool, str]:
     # --infer-schema so a program WITHOUT a schema still gets parsed and surfaces the real reason
     # (e.g. char** / callback unsupported) instead of failing on "no schema".
-    r = subprocess.run(
-        ["python3", str(TOOLS / "gen_diff_harness.py"), "--pair", str(pair), "--entry", entry,
-         "--infer-schema"],
-        capture_output=True, text=True)
+    cmd = ["python3", str(TOOLS / "gen_diff_harness.py"), "--pair", str(pair), "--entry", entry,
+           "--infer-schema"]
+    if UB_FREE:
+        cmd.append("--ub-free")
+    r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode == 0:
         return True, ""
     out = (r.stderr or r.stdout).strip()
@@ -123,17 +126,25 @@ def run_fuzz(prog: str) -> dict:
 def classify_all(pair: Path, prog: str, entry: str, artifacts: list[str]) -> list[dict]:
     out_dir = ROOT / "results" / "classified" / prog
     out_dir.mkdir(parents=True, exist_ok=True)
+    # Match the harness's decode: gen() uses --infer-schema (schema if present, else infer);
+    # the classifier requires --ignore-schema to infer. So pass it ONLY when no schema exists,
+    # else both sides use the schema. (Without this, every schema-less program CLASSIFY_ERRORs.)
+    no_schema = not (ROOT / "schemas" / f"{prog}.json").exists()
     results = []
     for art in artifacts:
         sha = hashlib.sha256(Path(art).read_bytes()).hexdigest()
         out = out_dir / f"{sha}.json"
-        subprocess.run(["python3", str(TOOLS / "classify_artifact.py"),
-                        "--pair", str(pair), "--entry", entry, "--artifact", art, "--out", str(out)],
-                       capture_output=True, text=True, env=ENV)
+        cmd = ["python3", str(TOOLS / "classify_artifact.py"),
+               "--pair", str(pair), "--entry", entry, "--artifact", art, "--out", str(out)]
+        if no_schema:
+            cmd.append("--ignore-schema")
+        r = subprocess.run(cmd, capture_output=True, text=True, env=ENV)
         try:
             label = json.loads(out.read_text())["label"]
         except Exception:
             label = "CLASSIFY_ERROR"
+            (out_dir / f"{sha}.err.txt").write_text(
+                (r.stderr or "") + "\n---stdout---\n" + (r.stdout or ""), encoding="utf-8")
         results.append({"sha256": sha, "label": label, "result": str(out)})
     return results
 
@@ -150,8 +161,12 @@ def run_label(run: dict, artifact_labels: list[str]) -> str:
 
 def main() -> int:
     entries = entries_from_raw()
+    only = set(sys.argv[1:])  # optional: run only these programs (default = all)
     pairs = sorted(p for p in (ROOT / "benchmark" / "pairs").iterdir()
-                   if p.is_dir() and not p.name.startswith("_"))
+                   if p.is_dir() and not p.name.startswith("_")
+                   and (not only or p.name in only))
+    print(f"UB_FREE gate: {'ON' if UB_FREE else 'OFF'} | DUR={DUR}s | "
+          f"{len(pairs)} program(s){' (filtered)' if only else ''}")
     rows = []
     for pair in pairs:
         prog = pair.name
@@ -190,18 +205,19 @@ def main() -> int:
               f"elapsed={run['elapsed_seconds']}s timeout={run['terminated_by_timeout']} "
               f"-> {row['label']}")
 
-    (ROOT / "results" / "g1_matrix.json").write_text(json.dumps(rows, indent=2), encoding="utf-8")
+    suffix = "_ubfree" if UB_FREE else ""
+    (ROOT / "results" / f"g1_matrix{suffix}.json").write_text(json.dumps(rows, indent=2), encoding="utf-8")
     cols = ["program", "entry", "generator_supported", "built", "elapsed_seconds",
             "terminated_by_timeout", "artifact_count", "root_cause_count", "label"]
-    md = ["# G1 support matrix\n",
+    md = [f"# G1 support matrix{' (in-loop UB-free gate ON)' if UB_FREE else ''}\n",
           f"DUR={DUR}s/program; shared LibAFL build; each artifact classified by classify_artifact.py.",
           "Labels: NO_DIVERGENCE_OBSERVED (full run, no artifact) / FUZZER_EXITED_EARLY / "
           "UNSUPPORTED_SIGNATURE / BUILD_FAIL / per-artifact classifier labels.\n",
           "| " + " | ".join(cols) + " |", "|" + "|".join("---" for _ in cols) + "|"]
     for r in rows:
         md.append("| " + " | ".join(str(r[c]) for c in cols) + " |")
-    (ROOT / "results" / "g1_matrix.md").write_text("\n".join(md) + "\n", encoding="utf-8")
-    print("\nwrote results/g1_matrix.json and results/g1_matrix.md")
+    (ROOT / "results" / f"g1_matrix{suffix}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    print(f"\nwrote results/g1_matrix{suffix}.json and results/g1_matrix{suffix}.md")
     return 0
 
 

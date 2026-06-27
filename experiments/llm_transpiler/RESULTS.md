@@ -6,16 +6,37 @@ test where the translator **renames / restructures**: a real `gpt-5-mini` C→Ru
 translation, names hidden, scored against a **hand-labeled** correspondence
 (`truth/<pair>.json`), since name-equality no longer holds.
 
-## Results (gpt-5-mini, 2026-06; matcher v1 = test+trait-boilerplate exclusion, partial matching)
+## Baseline (gpt-5-mini, 2026-06-27; matcher = test+trait-boilerplate exclusion, partial matching, df-cap 0.5)
 
-| pair | C fns | Rust fns (after exclusion) | what the LLM did | accuracy (labeled) |
-|------|-------|----------|------------------|--------------------|
-| hex_encode | 2 | 2 (3 tests excluded) | renamed `hex_encode`→`encode_hex_lowercase`; **folded** `(src,len,dst,dst_cap)→size_t` into `(&[u8],&mut[u8])→usize` | **2/2 = 100%** |
-| base64 | 2 | 5 (5 tests excluded) | **decomposed** 2 C fns into 5 Rust fns | **2/2 = 100%** (picked the 2 real ones out of 5) |
-| bignum | 27 | 28 (`Default`+2 tests excluded) | systematic `bignum_*`→`bn_*`; 2 semantic renames (`from_int`→`from_u64`, `to_int`→`to_u32`) | **25/27 = 92%** (ceiling; last 2 are signal-C) |
+10 real LLM C→Rust translations, names hidden, scored against hand-labeled `truth/<p>.json`.
+**This table is the frozen baseline — diff future matcher/analyzer changes against it.**
 
-The matcher survives **rename**, **signature folding**, and **decomposition** — none of
+| pair | C fns | accuracy (labeled) | what the LLM did |
+|------|------:|--------------------|------------------|
+| hex_encode | 2 | **2/2 = 100%** | rename + **folded** `(src,len,dst,cap)→size_t` to `(&[u8],&mut[u8])→usize` |
+| rle_codec | 2 | **2/2 = 100%** | rename |
+| base64 | 2 | **2/2 = 100%** | **decomposed** 2 C fns into 5 Rust fns (picked the 2 real ones) |
+| leb128 | 3 | **3/3 = 100%** | rename (`leb128_*`→`*_uleb128`) |
+| rpn_eval | 4 | **4/4 = 100%** | rename (1 Rust-only helper left unmatched) |
+| linked_list | 5 | **5/5 = 100%** | rename (`ll_*`→idiomatic) |
+| hash_table | 8 | **8/8 = 100%** | rename (`ht_*`→idiomatic; `ht_init`→`new`) |
+| opcode_dispatch | 8 | **8/8 = 100%** | rename of a homogeneous `op_*` handler cluster → `handle_*` (+ dispatch table) |
+| bignum | 27 | **25/27 = 92%** | `bignum_*`→`bn_*` + semantic renames; residual = `require` (fixed by df-cap) + `to_int`/`to_string` signal-C swap |
+| tinyexpr | 28 | **20/28 = 71%** | exploded the math builtin table into ~40 `builtin_*` one-liners (see below) |
+
+**Aggregate: 79/89 = 88.8%; 8 of 10 programs at 100%.** The matcher survives **rename**,
+**signature folding**, **decomposition**, and **homogeneous-handler renaming** — none of
 which a name-preserving tool (c2rust/CROWN) ever produces.
+
+### tinyexpr — the signal-C frontier at scale
+tinyexpr's 8 misses are almost all one homogeneous cluster: the LLM turned C's function-
+pointer builtin table into ~40 `builtin_*` functions, every one a trivial `()→f64` /
+`(f64)→f64` / `(f64,f64)→f64` one-liner. `negate`→`builtin_acos`, `pi`→`peek_char`,
+`e`→`builtin_abs`, `npr`→`builtin_ncr`: structurally indistinguishable, so structure
+saturates (worse than lil's `fnc_*` because the bodies are trivial too). The parsing/eval
+infrastructure (`parse_*`, `eval`, `compile`, `interp`, `find_*`, `next_token`) all matched.
+This is the **same signal-C (literals/constants) residual** — `pi` returns 3.14159, `e`
+returns 2.718, `fac` loops — now demonstrated at scale on real LLM output.
 
 ## The bignum story (an adversarial case) — what the diagnostics revealed
 

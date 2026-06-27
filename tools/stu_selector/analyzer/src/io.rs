@@ -61,6 +61,9 @@ fn shape(
     if let Some((inner, _)) = ty.as_reference() {
         return format!("&{}", shape(db, target, &inner, depth + 1, seen));
     }
+    if let Some((elem, len)) = ty.as_array(db) {
+        return format!("[{};{}]", shape(db, target, &elem, depth + 1, seen), len);
+    }
     if let Some(adt) = ty.as_adt() {
         let key = ty.display(db, target).to_string();
         if !seen.insert(key.clone()) {
@@ -89,7 +92,17 @@ fn shape(
             args.iter().map(|a| shape(db, target, a, depth + 1, seen)).collect();
         return format!("<{}>", inner.join(","));
     }
-    ty.display(db, target).to_string()
+    canon_leaf(&ty.display(db, target).to_string())
+}
+
+/// Shared canonical leaf vocabulary (mirror c_analyzer.canon_leaf): collapse
+/// pointer-width aliases so C `size_t` (usize) and the Rust-resolved `u64` match.
+fn canon_leaf(s: &str) -> String {
+    match s {
+        "usize" => "u64".to_string(),
+        "isize" => "i64".to_string(),
+        _ => s.to_string(),
+    }
 }
 
 fn decompose(

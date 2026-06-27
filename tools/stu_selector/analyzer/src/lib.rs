@@ -10,6 +10,7 @@
 
 mod io;
 mod metrics;
+mod ops;
 mod signature;
 
 use std::collections::HashSet;
@@ -22,7 +23,7 @@ use ide_db::EditionedFileId;
 use load_cargo::{load_workspace_at, LoadCargoConfig, ProcMacroServerChoice};
 use project_model::{CargoConfig, RustLibSource};
 use serde::Serialize;
-use syntax::ast::HasName;
+use syntax::ast::{HasAttrs, HasName};
 use syntax::{ast, AstNode};
 
 #[derive(Serialize)]
@@ -31,6 +32,7 @@ pub struct FnRec {
     pub line: usize,
     pub signature: signature::Signature,
     pub io: io::Io,
+    pub ops: ops::OpHist,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metrics: Option<metrics::Metrics>,
 }
@@ -49,10 +51,70 @@ pub struct Indirect {
 }
 
 #[derive(Serialize)]
+pub struct Excluded {
+    pub name: String,
+    /// Why it was dropped: `"test"` or `"trait_boilerplate:<Trait>"`.
+    pub reason: String,
+}
+
+#[derive(Serialize)]
 pub struct Output {
     pub functions: Vec<FnRec>,
     pub raw_edges: Vec<Edge>,
     pub indirect_calls: Vec<Indirect>,
+    /// Rust-only nodes excluded from the candidate set AND the topology graph because
+    /// they are not a C-function translation target: test scaffolding (`#[test]` /
+    /// `#[cfg(test)]`) and boilerplate trait impls (`impl Default/Clone/Debug/...`).
+    /// Empirically these have no C counterpart and POISON similarity propagation
+    /// (bignum: topology gives 0 gain with test nodes in). Reported, not silently dropped.
+    pub excluded_scaffolding: Vec<Excluded>,
+}
+
+/// True if this fn is test/bench scaffolding: a `#[test]`/`#[bench]` attribute on the
+/// fn itself, or membership in any `#[cfg(test)]` module ancestor. Such code is never
+/// part of the translation surface.
+fn is_test_scaffolding(fnode: &ast::Fn) -> bool {
+    fn marks_test(attrs: impl Iterator<Item = ast::Attr>) -> bool {
+        for a in attrs {
+            let t: String =
+                a.syntax().text().to_string().chars().filter(|c| !c.is_whitespace()).collect();
+            if t == "#[test]" || t == "#[bench]" || t.contains("cfg(test)") {
+                return true;
+            }
+        }
+        false
+    }
+    if marks_test(fnode.attrs()) {
+        return true;
+    }
+    fnode
+        .syntax()
+        .ancestors()
+        .filter_map(ast::Module::cast)
+        .any(|m| marks_test(m.attrs()))
+}
+
+/// Std/derive boilerplate traits whose impl methods are Rust idiom, never the
+/// translation of a C function. Deliberately EXCLUDES arithmetic/operator traits
+/// (Add/Sub/Mul/Index/Iterator/...) and Display-of-real-logic stays a judgment call —
+/// these listed traits are the safe, unambiguous boilerplate set.
+const BOILERPLATE_TRAITS: &[&str] = &[
+    "Default", "Clone", "Copy", "Debug", "Display", "Hash", "PartialEq", "Eq", "PartialOrd",
+    "Ord", "From", "Into", "TryFrom", "TryInto", "Serialize", "Deserialize", "Drop",
+];
+
+/// If this fn is a method of a boilerplate trait impl (`impl Default for T { fn default }`,
+/// `impl Debug for T { fn fmt }`, ...), return the trait's name. Inherent `impl T` methods
+/// and non-boilerplate trait impls (e.g. `impl Add`) return None — they may be real targets.
+fn boilerplate_trait(fnode: &ast::Fn) -> Option<String> {
+    // A fn's nearest ancestor `impl` is the one it belongs to (impls don't nest).
+    let imp = fnode.syntax().ancestors().find_map(ast::Impl::cast)?;
+    let trait_ty = imp.trait_()?; // Some only for `impl Trait for Type`
+    let name = match trait_ty {
+        ast::Type::PathType(p) => p.path()?.segment()?.name_ref()?.text().to_string(),
+        _ => return None,
+    };
+    BOILERPLATE_TRAITS.contains(&name.as_str()).then_some(name)
 }
 
 /// A loaded crate, ready to analyze. Owns the rust-analyzer database.
@@ -95,9 +157,14 @@ impl AnalyzedCrate {
     fn analyze_inner(&self, db: &RootDatabase, enable_metrics: bool) -> Output {
         let sema = Semantics::new(db);
 
-        let mut out =
-            Output { functions: Vec::new(), raw_edges: Vec::new(), indirect_calls: Vec::new() };
+        let mut out = Output {
+            functions: Vec::new(),
+            raw_edges: Vec::new(),
+            indirect_calls: Vec::new(),
+            excluded_scaffolding: Vec::new(),
+        };
         let mut seen: HashSet<String> = HashSet::new();
+        let mut excluded_seen: HashSet<String> = HashSet::new();
 
         for efile in local_files(db) {
             // Parse THROUGH Semantics so call expressions can be type-resolved
@@ -126,6 +193,21 @@ impl AnalyzedCrate {
                     None => continue,
                 };
 
+                // Rust-only non-targets (test scaffolding, boilerplate trait impls):
+                // keep out of BOTH the candidate set and the topology graph (skip the
+                // body walk -> no edges), report with a reason instead of dropping.
+                let exclude_reason = if is_test_scaffolding(&fnode) {
+                    Some("test".to_owned())
+                } else {
+                    boilerplate_trait(&fnode).map(|t| format!("trait_boilerplate:{t}"))
+                };
+                if let Some(reason) = exclude_reason {
+                    if excluded_seen.insert(name.clone()) {
+                        out.excluded_scaffolding.push(Excluded { name, reason });
+                    }
+                    continue;
+                }
+
                 let name_offset = fnode
                     .name()
                     .map(|n| n.syntax().text_range().start())
@@ -137,6 +219,7 @@ impl AnalyzedCrate {
                         line,
                         signature: signature::signature_of(&fnode),
                         io: io::io_of(db, func),
+                        ops: ops::ops_of(&fnode),
                         metrics: if enable_metrics {
                             Some(metrics::metrics_of(&fnode))
                         } else {

@@ -742,8 +742,38 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
     return c_args, r_args, decl
 
 
-def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str) -> str:
-    """Generate the fuzz_target source: decode from items, call/signature in ABI order."""
+# In-loop UB-free fuzzing (--ub-free): UBSan flags for the C oracle (recover + minimal
+# runtime so each check calls a no-arg `__ubsan_handle_*_minimal` that we override below to
+# just set a flag and continue -- no print, no abort). Checks restricted to the UB classes
+# the risk model cares about; the handler set in UBSHIM_C is a superset so linking is robust.
+UB_SANITIZE_FLAGS = [
+    "-fsanitize=signed-integer-overflow,shift,integer-divide-by-zero,bounds,null,unreachable",
+    "-fsanitize-recover=all",
+    "-fsanitize-minimal-runtime",
+]
+
+UBSHIM_C = '''/* in-loop UB-free gate: record (don't print/abort) UBSan minimal-runtime reports. */
+volatile int c2r_ub_flag = 0;
+void c2r_ub_reset(void) { c2r_ub_flag = 0; }
+int  c2r_ub_get(void)   { return c2r_ub_flag; }
+#define H(name) void __ubsan_handle_##name##_minimal(void) { c2r_ub_flag = 1; }
+H(add_overflow) H(sub_overflow) H(mul_overflow) H(negate_overflow)
+H(divrem_overflow) H(shift_out_of_bounds) H(out_of_bounds)
+H(type_mismatch) H(builtin_unreachable) H(pointer_overflow)
+H(load_invalid_value)
+#undef H
+'''
+
+
+def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
+               ub_free: bool = False) -> str:
+    """Generate the fuzz_target source: decode from items, call/signature in ABI order.
+
+    When ub_free, the C oracle is UBSan-instrumented (recover + minimal runtime, flag-based
+    -- see UBSHIM_C). The harness resets the flag, runs C, and REJECTS the input (returns
+    without comparing) if C hit UB. So a divergence is reported only on UB-free input -- the
+    fuzzer's gradient points at real translation bugs, not UB artifacts (in-loop, vs the
+    post-hoc per-artifact exclusion in classify_artifact.py)."""
     decode, post = _decode_and_post(items)
     c_args, r_args, decl = _call_and_decl(abi)
     extern_args = ", ".join(decl)
@@ -751,12 +781,16 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
 
     call_c = f"c_{entry}({', '.join(c_args)})"
     call_r = f"translated::{entry}({', '.join(r_args)})"
+    # UB-free gate: reset before C, reject (return) if C tripped UB, then call Rust.
+    pre = "        c2r_ub_reset();\n" if ub_free else ""
+    gate = "        if c2r_ub_get() != 0 { return; }  // C hit UB -> reject input\n" if ub_free else ""
     if ret == "void":
-        body_call = f"        {call_c};\n        {call_r};"
+        body_call = f"{pre}        {call_c};\n{gate}        {call_r};"
         ret_cmp = ""
     else:
-        body_call = f"        let c_ret = {call_c};\n        let r_ret = {call_r};"
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
         ret_cmp = '        if c_ret != r_ret { panic!("divergence: return value"); }'
+    ub_externs = ["    fn c2r_ub_reset();", "    fn c2r_ub_get() -> i32;"] if ub_free else []
 
     return "\n".join([
         "#![no_main]",
@@ -777,6 +811,7 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         f"use {crate} as translated;",
         "extern \"C\" {",
         f"    fn c_{entry}({extern_args}) {extern_ret};",
+        *ub_externs,
         "}",
         "",
         "fuzz_target!(|data: &[u8]| {",
@@ -825,6 +860,10 @@ def main() -> int:
                     help="force inference even if schemas/<name>.json exists (harvesting non-entry boundaries)")
     ap.add_argument("--expose-entry", action="store_true",
                     help="make a private (static) entry callable by prepending #[no_mangle] pub")
+    ap.add_argument("--ub-free", action="store_true",
+                    help="in-loop UB-free gate: UBSan-instrument the C oracle and reject "
+                    "(skip comparison on) inputs where C hits UB, so divergences are reported "
+                    "only on UB-free input (vs post-hoc per-artifact exclusion)")
     args = ap.parse_args()
 
     pair = Path(args.pair)
@@ -860,13 +899,18 @@ def main() -> int:
         f'[build-dependencies]\ncc = "1"\n\n[dependencies]\n', encoding="utf-8")
 
     defines = "\n".join(f'        .define("{fn}", "c_{fn}")' for fn in all_fns)
+    # --ub-free: instrument the oracle with UBSan (recover) and compile the flag shim in.
+    if args.ub_free:
+        (out / "c" / "ubshim.c").write_text(UBSHIM_C, encoding="utf-8")
+    ub_flags = "".join(f'\n        .flag("{f}")' for f in UB_SANITIZE_FLAGS) if args.ub_free else ""
+    ub_file = f'\n    build.file("c/ubshim.c");' if args.ub_free else ""
     (out / "build.rs").write_text(f'''fn main() {{
     let mut build = cc::Build::new();
     build.compiler("clang").flag("-O1").flag("-g")
-        .flag("-fsanitize-coverage=trace-pc-guard,trace-cmp").warnings(false);
+        .flag("-fsanitize-coverage=trace-pc-guard,trace-cmp"){ub_flags}.warnings(false);
     build
 {defines};
-    build.file("c/{c_src.name}");
+    build.file("c/{c_src.name}");{ub_file}
     build.compile("c_oracle");
     let rd = std::process::Command::new("clang").arg("--print-resource-dir").output().unwrap();
     let rd = String::from_utf8(rd.stdout).unwrap().trim().to_string();
@@ -906,11 +950,13 @@ doc = false
 ''', encoding="utf-8")
 
     (out / "fuzz" / "fuzz_targets" / f"{crate}_ft.rs").write_text(
-        gen_target(args.entry, items, abi, ret, crate), encoding="utf-8")
+        gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free), encoding="utf-8")
 
     print(f"generated harness at {out}")
     print(f"  entry: {args.entry} -> {ret}")
     print(f"  abi roles: {[(p['name'], p['role']) for p in abi]}")
+    if args.ub_free:
+        print("  in-loop UB-free gate: ON (C UBSan-instrumented; UB inputs rejected)")
     return 0
 
 

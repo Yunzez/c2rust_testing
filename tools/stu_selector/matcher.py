@@ -142,15 +142,36 @@ def _setsim(ac, br, S) -> float:
     return 0.5 * _dir(ac, br, S, True) + 0.5 * _dir(br, ac, S, False)
 
 
-def propagate(c_data, r_data, alpha=0.7, iters=15) -> dict:
+def _dfcap_clean(callees, callers, n_funcs, cap) -> tuple:
+    """Drop 'stopword' neighbors from the neighbor-sets: a node called by >cap fraction
+    of the program (high in-degree, e.g. an assert helper `require` called by 89% of
+    fns) carries no discriminative topology signal -- like 'the' in IR. Removed from
+    callee-sets by in-degree, from caller-sets by out-degree. cap None/>=1 disables.
+    Threshold 0.5 separates fake Rust-only hubs (require ~0.89) from real shared
+    primitives (lil_to_string ~0.33) with a wide margin; validated by the lil gate."""
+    if cap is None or cap >= 1.0 or n_funcs == 0:
+        return callees, callers, []
+    indeg = {n: len(callers[n]) for n in callers}
+    outdeg = {n: len(callees[n]) for n in callees}
+    drop_callee = {n for n, d in indeg.items() if d / n_funcs > cap}
+    drop_caller = {n for n, d in outdeg.items() if d / n_funcs > cap}
+    callees = {k: v - drop_callee for k, v in callees.items()}
+    callers = {k: v - drop_caller for k, v in callers.items()}
+    return callees, callers, sorted(drop_callee | drop_caller)
+
+
+def propagate(c_data, r_data, alpha=0.7, iters=15, df_cap=0.5) -> dict:
     """IsoRank-style propagation with neighbor-set best-match topology. Returns the
-    converged similarity {(c,r): score}."""
+    converged similarity {(c,r): score}. df_cap removes hub 'stopword' neighbors that
+    otherwise poison propagation (see _dfcap_clean)."""
     cn = [f["name"] for f in c_data["functions"]]
     rn = [f["name"] for f in r_data["functions"]]
     cf = {f["name"]: f for f in c_data["functions"]}
     rf = {f["name"]: f for f in r_data["functions"]}
     c_callees, c_callers = adjacency(c_data)
     r_callees, r_callers = adjacency(r_data)
+    c_callees, c_callers, _ = _dfcap_clean(c_callees, c_callers, len(cn), df_cap)
+    r_callees, r_callers, _ = _dfcap_clean(r_callees, r_callers, len(rn), df_cap)
     N = {(c, r): node_sim(cf[c], rf[r]) for c in cn for r in rn}
     S = dict(N)
     for _ in range(iters):
@@ -260,11 +281,11 @@ def _assign_partial(cn, rn, sim, tau) -> tuple:
 
 
 def match(c_data, r_data, topo=True, alpha=0.7, iters=15, assign="hungarian",
-          partial=True, tau=0.05) -> dict:
+          partial=True, tau=0.05, df_cap=0.5) -> dict:
     """Return {matched, c_only, rust_only, sim}. matched = [(c, r, score)]."""
     cn = [f["name"] for f in c_data["functions"]]
     rn = [f["name"] for f in r_data["functions"]]
-    sim = propagate(c_data, r_data, alpha, iters) if topo else node_matrix(c_data, r_data)
+    sim = propagate(c_data, r_data, alpha, iters, df_cap) if topo else node_matrix(c_data, r_data)
     if partial:
         matched, c_only, rust_only = _assign_partial(cn, rn, sim, tau)
     elif assign == "hungarian":
@@ -333,6 +354,9 @@ def main() -> int:
                     help="force full assignment (no dummy outside-option) -- ablation")
     ap.add_argument("--tau", type=float, default=0.05,
                     help="partial-matching outside-option floor (LOW; not a quality gate)")
+    ap.add_argument("--df-cap", type=float, default=0.5,
+                    help="topology hub-stopword cap: drop neighbors called by >cap "
+                    "fraction of the program (1.0 disables)")
     ap.add_argument("--truth", help="hand-labeled ground-truth JSON {c_name: rust_name} "
                     "for renamed translations (LLM track); default = name equality")
     ap.add_argument("--diag", action="store_true",
@@ -344,7 +368,7 @@ def main() -> int:
 
     res = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters,
                 assign="greedy" if args.greedy else "hungarian",
-                partial=not args.no_partial, tau=args.tau)
+                partial=not args.no_partial, tau=args.tau, df_cap=args.df_cap)
     matched, c_only, rust_only = res["matched"], res["c_only"], res["rust_only"]
 
     # ground truth: name equality (faithful, name-preserving c2rust) OR a hand-labeled

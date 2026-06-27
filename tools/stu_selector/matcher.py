@@ -280,29 +280,57 @@ def _assign_partial(cn, rn, sim, tau) -> tuple:
     return matched, c_only, rust_only
 
 
+def _two_sided_conf(sim, cn, rn) -> callable:
+    """A confidence function for a pair (c,r): min of the C-side and R-side margins,
+    i.e. how clearly r wins for c AND c wins for r. A many-way tie (tinyexpr builtins,
+    where one Rust fn is near-equal best for many C fns) yields ~0 from the R-side -> low
+    confidence -> ambiguous. A pair that is the clear mutual best (even a homogeneous
+    cluster once topology has separated it, e.g. lil fnc_*) keeps a real margin. NOTE:
+    this catches AMBIGUITY (many equal candidates), NOT confident-wrong (a clean 2-cycle
+    swap like bignum to_int<->to_string has high two-sided margin) -- that needs signal-C."""
+    c_top = {c: sorted(((sim[(c, r)], r) for r in rn), reverse=True)[:2] for c in cn}
+    r_top = {r: sorted(((sim[(c, r)], c) for c in cn), reverse=True)[:2] for r in rn}
+
+    def conf(c, r):
+        v = sim[(c, r)]
+        alt_c = c_top[c][0][0] if c_top[c][0][1] != r else (c_top[c][1][0] if len(c_top[c]) > 1 else 0.0)
+        alt_r = r_top[r][0][0] if r_top[r][0][1] != c else (r_top[r][1][0] if len(r_top[r]) > 1 else 0.0)
+        return min(v - alt_c, v - alt_r)
+    return conf
+
+
 def match(c_data, r_data, topo=True, alpha=0.7, iters=15, assign="hungarian",
-          partial=True, tau=0.05, df_cap=0.5) -> dict:
-    """Return {matched, c_only, rust_only, sim}. matched = [(c, r, score)]."""
+          partial=True, tau=0.05, df_cap=0.5, abstain_eps=None) -> dict:
+    """Return {matched, ambiguous, c_only, rust_only, sim}. matched/ambiguous entries are
+    (c, r, score, confidence). When abstain_eps is set, pairs with two-sided confidence
+    below it are moved from `matched` to `ambiguous` (isolated, not guessed). Default None
+    = accept all (no abstention) so baseline numbers are unchanged."""
     cn = [f["name"] for f in c_data["functions"]]
     rn = [f["name"] for f in r_data["functions"]]
     sim = propagate(c_data, r_data, alpha, iters, df_cap) if topo else node_matrix(c_data, r_data)
     if partial:
-        matched, c_only, rust_only = _assign_partial(cn, rn, sim, tau)
+        pairs, c_only, rust_only = _assign_partial(cn, rn, sim, tau)
     elif assign == "hungarian":
-        matched = _assign_hungarian(cn, rn, sim)
-        mc, mr = {c for c, _, _ in matched}, {r for _, r, _ in matched}
+        pairs = _assign_hungarian(cn, rn, sim)
+        mc, mr = {c for c, _, _ in pairs}, {r for _, r, _ in pairs}
         c_only = [c for c in cn if c not in mc]
         rust_only = [r for r in rn if r not in mr]
     else:  # greedy ablation
-        used_c, used_r, matched = set(), set(), []
+        used_c, used_r, pairs = set(), set(), []
         for s, c, r in sorted(((s, c, r) for (c, r), s in sim.items()), reverse=True):
             if c in used_c or r in used_r:
                 continue
             used_c.add(c); used_r.add(r)
-            matched.append((c, r, s))
+            pairs.append((c, r, s))
         c_only = [c for c in cn if c not in used_c]
         rust_only = [r for r in rn if r not in used_r]
-    return {"matched": matched, "c_only": c_only, "rust_only": rust_only, "sim": sim}
+    conf = _two_sided_conf(sim, cn, rn)
+    scored = [(c, r, s, conf(c, r)) for (c, r, s) in pairs]
+    eps = float("-inf") if abstain_eps is None else abstain_eps
+    matched = [t for t in scored if t[3] >= eps]
+    ambiguous = [t for t in scored if t[3] < eps]
+    return {"matched": matched, "ambiguous": ambiguous, "c_only": c_only,
+            "rust_only": rust_only, "sim": sim}
 
 
 def diagnose(c_data, r_data, sim, node, truth) -> None:
@@ -361,6 +389,9 @@ def main() -> int:
                     "for renamed translations (LLM track); default = name equality")
     ap.add_argument("--diag", action="store_true",
                     help="print per-C rank diagnostics (best/2nd/margin, true rank, topo_delta, hubs)")
+    ap.add_argument("--abstain-eps", type=float, default=None,
+                    help="abstention: move pairs with two-sided confidence < eps from "
+                    "matched to ambiguous (isolate, don't guess). Default off (accept all).")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
     c_data = json.loads(Path(args.c).read_text())
@@ -368,8 +399,10 @@ def main() -> int:
 
     res = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters,
                 assign="greedy" if args.greedy else "hungarian",
-                partial=not args.no_partial, tau=args.tau, df_cap=args.df_cap)
-    matched, c_only, rust_only = res["matched"], res["c_only"], res["rust_only"]
+                partial=not args.no_partial, tau=args.tau, df_cap=args.df_cap,
+                abstain_eps=args.abstain_eps)
+    matched, ambiguous = res["matched"], res["ambiguous"]
+    c_only, rust_only = res["c_only"], res["rust_only"]
 
     # ground truth: name equality (faithful, name-preserving c2rust) OR a hand-labeled
     # map (LLM track, where the translator renames so name-equality no longer holds).
@@ -382,20 +415,30 @@ def main() -> int:
         is_correct = lambda c, r: c == r
         label = "name-equal"
         scorable = len(c_data["functions"])
-    correct = sum(1 for (c, r, s) in matched if is_correct(c, r))
+    correct = sum(1 for (c, r, s, k) in matched if is_correct(c, r))
 
     print(f"C functions: {len(c_data['functions'])} | Rust functions: {len(r_data['functions'])}")
     scaf = r_data.get("excluded_scaffolding")
     if scaf:
         items = [f"{e['name']}[{e['reason']}]" if isinstance(e, dict) else str(e) for e in scaf]
         print(f"excluded_scaffolding (Rust, {len(scaf)}): {items}")
-    print(f"matched: {len(matched)} | c_only_unmatched: {len(c_only)} | "
-          f"rust_only_unmatched: {len(rust_only)}")
+    print(f"matched: {len(matched)} | ambiguous: {len(ambiguous)} | "
+          f"c_only_unmatched: {len(c_only)} | rust_only_unmatched: {len(rust_only)}")
+    # CORRECT line kept stable for the regression gate (counts accepted/matched only).
     print(f"CORRECT ({label}): {correct} | accuracy: {correct}/{scorable} = "
           f"{100 * correct // max(scorable, 1)}%")
+    if args.abstain_eps is not None:
+        amb_wrong = sum(1 for (c, r, s, k) in ambiguous if not is_correct(c, r))
+        prec = 100 * correct // max(len(matched), 1)
+        cov = 100 * len(matched) // max(scorable, 1)
+        print(f"abstain eps={args.abstain_eps}: accepted-precision {correct}/{len(matched)} "
+              f"= {prec}% | coverage {len(matched)}/{scorable} = {cov}% | "
+              f"ambiguous {len(ambiguous)} ({amb_wrong} would-be-wrong isolated)")
     if args.verbose:
-        for c, r, s in sorted(matched, key=lambda x: -x[2]):
-            print(f"  [{'OK ' if is_correct(c, r) else 'XX '}] {c:24s} -> {r:24s}  score={s:.3f}")
+        for c, r, s, k in sorted(matched, key=lambda x: -x[2]):
+            print(f"  [{'OK ' if is_correct(c, r) else 'XX '}] {c:24s} -> {r:24s}  score={s:.3f} conf={k:+.3f}")
+        for c, r, s, k in sorted(ambiguous, key=lambda x: -x[2]):
+            print(f"  [AMB] {c:24s} -> {r:24s}  score={s:.3f} conf={k:+.3f}")
         if c_only:
             print(f"  c_only:    {c_only}")
         if rust_only:

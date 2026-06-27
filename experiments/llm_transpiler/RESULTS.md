@@ -28,6 +28,34 @@ translation, names hidden, scored against a **hand-labeled** correspondence
 **signature folding**, **decomposition**, and **homogeneous-handler renaming** — none of
 which a name-preserving tool (c2rust/CROWN) ever produces.
 
+## Abstention (the STU-aligned goal: don't guess — isolate)
+
+The matcher's value for the STU frontier is **precision, not coverage**: a high-confidence-
+but-wrong alignment makes that spot's differential test meaningless. So the matcher emits a
+per-pair **two-sided confidence** = min(C-side margin, R-side margin) — how clearly r wins
+for c AND c wins for r. `--abstain-eps E` moves pairs below E from `matched` to `ambiguous`
+(isolated, flagged for human/dynamic confirmation), rather than guessing. Output categories:
+**matched / ambiguous / c_only / rust_only**. Default off (accept all) so baselines/gate are
+unchanged.
+
+| seed | forced | accepted-precision @ eps=0.01 | coverage | ambiguous (wrong isolated) |
+|------|-------:|------------------------------:|---------:|----------------------------|
+| 6 perfect seeds | 100% | 100% | 100% | 0 |
+| linked_list | 100% | 100% | 80% | 1 (0) |
+| hash_table | 100% | 100% | 87% | 1 (0) |
+| bignum | 92% | **100%** | 77% | 6 (2 — incl. the to_int/to_string swap) |
+| tinyexpr | 71% | **85%** | 50% | 15 (7 builtin-cluster errors) |
+| base64 | 100% | 0% ⚠️ | 0% | 2 (0 — over-abstained, see note) |
+| **AGGREGATE** | **79/89 = 88%** | **63/65 = 96%** | **73%** | **25 (9 genuinely-wrong isolated)** |
+
+**Two-sided confidence catches AMBIGUITY (many near-equal candidates: tinyexpr builtins) AND
+the non-mutual swaps (bignum to_int/to_string is not each other's clear best → isolated).**
+It is a tunable precision/coverage frontier, not a fixed constant — the consumer picks E for
+its precision need. Wart: `base64`'s correct matches have very low *absolute* score (0.10,
+from decomposition), so a global E over-abstains them — confidence may need per-program
+normalization (future). Forced accuracy stays the comparable baseline; abstention is the lens
+that makes the matcher honest about what it cannot resolve.
+
 ### tinyexpr — the signal-C frontier at scale
 tinyexpr's 8 misses are almost all one homogeneous cluster: the LLM turned C's function-
 pointer builtin table into ~40 `builtin_*` functions, every one a trivial `()→f64` /
@@ -85,15 +113,18 @@ assignment/topology trick recovers it; needs **signal C (literals)**: `to_string
 
 ## Roadmap
 - **done:** matcher v1 (test exclusion, partial/dummy matching, rank+hub diagnostics),
-  trait-boilerplate exclusion, and df-cap hub-stopword removal — all gated by the lil
-  regression fixture (`scripts/matcher_regression.sh`, 126/128). Zero risk to faithful
-  c2rust (no tests / `impl Default` / pathological hubs there).
-- **later:** signal C (literals) for the `to_int`/`to_string` and `streq`/`strcmp` symmetries
-  — the only residual on both bignum (rank-25 true match) and lil (1 pair). These are genuine
-  structural symmetries no assignment/topology lever can break.
-- **deferred idea (only if df-cap proves too blunt elsewhere):** call-graph-aware hub
-  classification — distinguish a Rust-only extracted helper with no good C match from a real
-  shared primitive, instead of relying on degree alone. Not needed so far.
+  trait-boilerplate exclusion, df-cap hub-stopword removal, and **abstention** (two-sided
+  confidence → matched/ambiguous) — all gated by the lil regression fixture
+  (`scripts/matcher_regression.sh`, 126/128). Zero risk to faithful c2rust.
+- **the goal is precision + isolation, not 100% accuracy.** The matcher identifies
+  high-confidence cross-language alignments (96% accepted-precision) and isolates
+  structurally-indistinguishable regions, instead of guessing.
+- **optional refinement (NOT mainline, NOT for chasing 100%):** signal C (literals/constants)
+  — would *shrink* the ambiguous clusters (tinyexpr builtins, `streq`/`strcmp`, `to_int`/
+  `to_string`) by adding the distinguishing constant. Enable only when higher coverage is
+  needed; otherwise these stay correctly isolated as ambiguous.
+- **possible refinement:** per-program confidence normalization (base64 over-abstention wart).
+- **separate latent fix:** hir FunctionId as node identity (name-collision dedup bug).
 
 ## How to reproduce
 ```

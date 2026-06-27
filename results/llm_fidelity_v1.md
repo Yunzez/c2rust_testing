@@ -65,10 +65,13 @@ Re-translated the same 10 with **gpt-5-nano** (`out_nano/`):
   including `rle_codec`, which gpt-5-mini failed to compile but gpt-5-nano translated
   *correctly*. Even the cheaper model is semantically faithful on these small functions.
 
-## Honest conclusion (so far)
+## Honest conclusion
 - **On small, self-contained functions, both models translate C→Rust semantically faithfully.**
-  No silent behavioral divergence found in 5 bridged differential tests across 2 models. The
-  defects that occur are **compile failures** (caught by rustc), not silent semantic bugs.
+  **0 silent behavioral divergences in 6 bridged differential tests** across 2 models
+  (hex_encode mini+nano, leb128 mini+nano, rle_codec nano, rpn_eval mini) — including the
+  harder `rpn_eval` bridge with error codes faithfully aligned (Rust `RpnError` discriminants
+  match C's `RPN_ERR_*` 1:1, so the comparison is fair on both result value and error code).
+  The only defects are **compile failures** (caught by rustc), not silent semantic bugs.
 - This is an honest negative for "differential testing catches silent LLM bugs" *on this
   corpus*: the functions are too small/simple to mistranslate semantically. The likely place
   for a real semantic divergence is **larger/stateful/complex functions** and the **harder

@@ -55,10 +55,30 @@ richer bridges — deferred.
 Recipe: `experiments/llm_transpiler/diff/<name>/` = {source/ (orig C), translated/ (LLM
 lib.rs + shim), build/compile_commands.json}; gitignored (derived from out/).
 
-## Next
-- **Model gradient (recommended):** re-translate the corpus with a cheaper model
-  (gpt-5-nano / gpt-4o-mini) → expect a higher non-compile rate AND real semantic
-  divergences. A "cheaper model → more translation bugs" table is stronger motivation than a
-  single strong model, and exercises the pipeline on genuinely buggy translations.
-- Bridge the harder compiling cases (base64, rpn_eval) for more semantic coverage.
+## Finding 3 — model gradient (gpt-5-nano): NOT monotone; small functions stay faithful
+
+Re-translated the same 10 with **gpt-5-nano** (`out_nano/`):
+- **Compile: 9/10** (only `bignum` fails — borrow checker E0502). NOTE this is *better* than
+  gpt-5-mini's 8/10, and the failing program differs → **compile-failure is per-program noise,
+  NOT monotone with model strength.** "Cheaper model → more compile failures" does not hold.
+- **Differential (bridged): hex_encode, rle_codec, leb128 all CLEAN** under the UB-free gate —
+  including `rle_codec`, which gpt-5-mini failed to compile but gpt-5-nano translated
+  *correctly*. Even the cheaper model is semantically faithful on these small functions.
+
+## Honest conclusion (so far)
+- **On small, self-contained functions, both models translate C→Rust semantically faithfully.**
+  No silent behavioral divergence found in 5 bridged differential tests across 2 models. The
+  defects that occur are **compile failures** (caught by rustc), not silent semantic bugs.
+- This is an honest negative for "differential testing catches silent LLM bugs" *on this
+  corpus*: the functions are too small/simple to mistranslate semantically. The likely place
+  for a real semantic divergence is **larger/stateful/complex functions** and the **harder
+  bridges not yet tested** (rpn_eval `Result`/error-code, base64 edge cases, bignum structs) —
+  exactly where error conventions and edge cases differ.
+
+## Next (decision pending)
+- **Bigger / stateful functions** (lil interpreter, real libraries) — most likely to surface a
+  genuine semantic divergence; the small-function corpus is a poor hunting ground.
+- **Harder bridges** (rpn_eval Result→status+out, base64) — semantic-mismatch-prone by design.
+- Compile-failure rate (mini 2/10, nano 1/10) is a real but weaker motivation (compiler
+  already catches it); the differential value needs a *silent* divergence, still to be found.
 - Auto-generate the bridge shim from the matcher's io-shape correspondence.

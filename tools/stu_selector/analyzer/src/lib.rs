@@ -23,7 +23,7 @@ use ide_db::EditionedFileId;
 use load_cargo::{load_workspace_at, LoadCargoConfig, ProcMacroServerChoice};
 use project_model::{CargoConfig, RustLibSource};
 use serde::Serialize;
-use syntax::ast::HasName;
+use syntax::ast::{HasAttrs, HasName};
 use syntax::{ast, AstNode};
 
 #[derive(Serialize)]
@@ -55,6 +55,35 @@ pub struct Output {
     pub functions: Vec<FnRec>,
     pub raw_edges: Vec<Edge>,
     pub indirect_calls: Vec<Indirect>,
+    /// Test scaffolding (`#[test]` / `#[cfg(test)]` / `#[bench]`) excluded from the
+    /// candidate set AND the topology graph: these Rust-only nodes have no C
+    /// counterpart and empirically POISON similarity propagation (bignum: topology
+    /// gives 0 gain with them in, +11pts once removed). Reported, not silently dropped.
+    pub excluded_scaffolding: Vec<String>,
+}
+
+/// True if this fn is test/bench scaffolding: a `#[test]`/`#[bench]` attribute on the
+/// fn itself, or membership in any `#[cfg(test)]` module ancestor. Such code is never
+/// part of the translation surface.
+fn is_test_scaffolding(fnode: &ast::Fn) -> bool {
+    fn marks_test(attrs: impl Iterator<Item = ast::Attr>) -> bool {
+        for a in attrs {
+            let t: String =
+                a.syntax().text().to_string().chars().filter(|c| !c.is_whitespace()).collect();
+            if t == "#[test]" || t == "#[bench]" || t.contains("cfg(test)") {
+                return true;
+            }
+        }
+        false
+    }
+    if marks_test(fnode.attrs()) {
+        return true;
+    }
+    fnode
+        .syntax()
+        .ancestors()
+        .filter_map(ast::Module::cast)
+        .any(|m| marks_test(m.attrs()))
 }
 
 /// A loaded crate, ready to analyze. Owns the rust-analyzer database.
@@ -97,9 +126,14 @@ impl AnalyzedCrate {
     fn analyze_inner(&self, db: &RootDatabase, enable_metrics: bool) -> Output {
         let sema = Semantics::new(db);
 
-        let mut out =
-            Output { functions: Vec::new(), raw_edges: Vec::new(), indirect_calls: Vec::new() };
+        let mut out = Output {
+            functions: Vec::new(),
+            raw_edges: Vec::new(),
+            indirect_calls: Vec::new(),
+            excluded_scaffolding: Vec::new(),
+        };
         let mut seen: HashSet<String> = HashSet::new();
+        let mut excluded_seen: HashSet<String> = HashSet::new();
 
         for efile in local_files(db) {
             // Parse THROUGH Semantics so call expressions can be type-resolved
@@ -127,6 +161,15 @@ impl AnalyzedCrate {
                     Some(b) => b,
                     None => continue,
                 };
+
+                // Test scaffolding: keep it out of BOTH the candidate set and the
+                // topology graph (skip the body walk -> no edges), report separately.
+                if is_test_scaffolding(&fnode) {
+                    if excluded_seen.insert(name.clone()) {
+                        out.excluded_scaffolding.push(name);
+                    }
+                    continue;
+                }
 
                 let name_offset = fnode
                     .name()

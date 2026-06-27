@@ -212,8 +212,17 @@ def _hungarian(cost) -> list:
     return res
 
 
+def node_matrix(c_data, r_data) -> dict:
+    """The per-function (no-topology) similarity prior, as {(c,r): node_sim}. Reused as
+    the propagation restart vector and as the baseline for topo_delta diagnostics."""
+    cf = {f["name"]: f for f in c_data["functions"]}
+    rf = {f["name"]: f for f in r_data["functions"]}
+    return {(c, r): node_sim(cf[c], rf[r]) for c in cf for r in rf}
+
+
 def _assign_hungarian(cn, rn, sim) -> list:
-    """Optimal 1-1 assignment maximizing total similarity (vs greedy)."""
+    """Forced optimal 1-1 assignment (every smaller-side node matched). Ablation control
+    for --no-partial; the default path is _assign_partial."""
     swap = len(cn) > len(rn)
     rows, cols = (rn, cn) if swap else (cn, rn)
     cost = [[-sim[(c, r)] if not swap else -sim[(r, c)] for r in cols] for c in rows]
@@ -227,27 +236,87 @@ def _assign_hungarian(cn, rn, sim) -> list:
     return mapping
 
 
-def match(c_data, r_data, topo=True, alpha=0.7, iters=15, assign="hungarian") -> list:
+def _assign_partial(cn, rn, sim, tau) -> tuple:
+    """Partial bipartite matching with a per-node dummy outside-option: a C function is
+    matched to a Rust function only when that beats NOT matching (worth -tau). Both
+    C-only and Rust-only nodes may stay unmatched, so no surplus Rust node (LLM-added
+    scaffolding/helpers) is force-consumed. tau is a LOW floor / outside option, NOT a
+    quality gate: real matches can score ~0.10 while a mid-similarity pollutant scores
+    ~0.43, so absolute score cannot separate them -- what fixes the bad assignment is
+    relaxing the forced bijection, not the threshold value."""
+    n, m = len(cn), len(rn)
+    # cols = m real Rust + n dummy (one per C, so each can independently opt out)
+    cost = [[-sim[(c, r)] for r in rn] + [-tau] * n for c in cn]
+    assign = _hungarian(cost)  # n rows <= m+n cols
+    matched, c_only, used_r = [], [], set()
+    for i, j in enumerate(assign):
+        if 0 <= j < m:
+            matched.append((cn[i], rn[j], sim[(cn[i], rn[j])]))
+            used_r.add(rn[j])
+        else:  # routed to a dummy column -> deliberately unmatched
+            c_only.append(cn[i])
+    rust_only = [r for r in rn if r not in used_r]
+    return matched, c_only, rust_only
+
+
+def match(c_data, r_data, topo=True, alpha=0.7, iters=15, assign="hungarian",
+          partial=True, tau=0.05) -> dict:
+    """Return {matched, c_only, rust_only, sim}. matched = [(c, r, score)]."""
     cn = [f["name"] for f in c_data["functions"]]
     rn = [f["name"] for f in r_data["functions"]]
-    if topo:
-        sim = propagate(c_data, r_data, alpha, iters)
-    else:
-        dc, dr = degrees(c_data), degrees(r_data)
-        cf = {f["name"]: f for f in c_data["functions"]}
-        rf = {f["name"]: f for f in r_data["functions"]}
-        sim = {(c, r): score(cf[c], rf[r], dc, dr) for c in cn for r in rn}
-    if assign == "hungarian":
-        return _assign_hungarian(cn, rn, sim)
-    pairs = sorted(((s, c, r) for (c, r), s in sim.items()), reverse=True)
-    used_c, used_r, mapping = set(), set(), []
-    for s, c, r in pairs:
-        if c in used_c or r in used_r:
-            continue
-        used_c.add(c)
-        used_r.add(r)
-        mapping.append((c, r, s))
-    return mapping
+    sim = propagate(c_data, r_data, alpha, iters) if topo else node_matrix(c_data, r_data)
+    if partial:
+        matched, c_only, rust_only = _assign_partial(cn, rn, sim, tau)
+    elif assign == "hungarian":
+        matched = _assign_hungarian(cn, rn, sim)
+        mc, mr = {c for c, _, _ in matched}, {r for _, r, _ in matched}
+        c_only = [c for c in cn if c not in mc]
+        rust_only = [r for r in rn if r not in mr]
+    else:  # greedy ablation
+        used_c, used_r, matched = set(), set(), []
+        for s, c, r in sorted(((s, c, r) for (c, r), s in sim.items()), reverse=True):
+            if c in used_c or r in used_r:
+                continue
+            used_c.add(c); used_r.add(r)
+            matched.append((c, r, s))
+        c_only = [c for c in cn if c not in used_c]
+        rust_only = [r for r in rn if r not in used_r]
+    return {"matched": matched, "c_only": c_only, "rust_only": rust_only, "sim": sim}
+
+
+def diagnose(c_data, r_data, sim, node, truth) -> None:
+    """Per-C rank diagnostics (the user's point 3): best/second/margin, and (with truth)
+    the true match's rank + topo_delta = sim_topo - sim_node (how far propagation moved
+    THIS pair -- negative on the true pair = topology poisoning). Plus per-side hubs
+    (point 5): high in-degree (df) nodes that propagation tends to over-attract."""
+    cn = [f["name"] for f in c_data["functions"]]
+    rn = [f["name"] for f in r_data["functions"]]
+    has_t = bool(truth)
+    hdr = f"{'C func':22s} {'best_rust':20s} {'best':>6} {'2nd':>6} {'margin':>6}"
+    if has_t:
+        hdr += f" | {'true_rust':20s} {'true':>6} {'rank':>4} {'dTtrue':>7} {'dTbest':>7}"
+    print(hdr)
+    print("-" * len(hdr))
+    for c in cn:
+        scored = sorted(((sim[(c, r)], r) for r in rn), reverse=True)
+        best_s, best_r = scored[0] if scored else (0.0, "-")
+        second_s = scored[1][0] if len(scored) > 1 else 0.0
+        line = f"{c:22s} {best_r:20s} {best_s:6.3f} {second_s:6.3f} {best_s - second_s:6.3f}"
+        if has_t:
+            tr = truth.get(c)
+            if tr in rn:
+                trank = next(i for i, (s, r) in enumerate(scored) if r == tr)
+                d_true = sim[(c, tr)] - node[(c, tr)]
+                d_best = best_s - node[(c, best_r)]
+                line += (f" | {tr:20s} {sim[(c, tr)]:6.3f} {trank:4d} "
+                         f"{d_true:+7.3f} {d_best:+7.3f}")
+            else:
+                line += f" | {str(tr):20s} {'--':>6} {'--':>4} {'--':>7} {'--':>7}"
+        print(line)
+    _, c_in = adjacency(c_data)
+    _, r_in = adjacency(r_data)
+    top = lambda inn: sorted(((len(v), k) for k, v in inn.items()), reverse=True)[:3]
+    print(f"\nhubs (in-degree df)  C: {top(c_in)}   Rust: {top(r_in)}")
 
 
 def main() -> int:
@@ -259,39 +328,56 @@ def main() -> int:
     ap.add_argument("--alpha", type=float, default=0.7, help="topology weight (0..1)")
     ap.add_argument("--iters", type=int, default=15, help="propagation iterations")
     ap.add_argument("--greedy", action="store_true",
-                    help="greedy assignment instead of optimal Hungarian (ablation)")
+                    help="greedy assignment instead of Hungarian (ablation; with --no-partial)")
+    ap.add_argument("--no-partial", action="store_true",
+                    help="force full assignment (no dummy outside-option) -- ablation")
+    ap.add_argument("--tau", type=float, default=0.05,
+                    help="partial-matching outside-option floor (LOW; not a quality gate)")
     ap.add_argument("--truth", help="hand-labeled ground-truth JSON {c_name: rust_name} "
                     "for renamed translations (LLM track); default = name equality")
+    ap.add_argument("--diag", action="store_true",
+                    help="print per-C rank diagnostics (best/2nd/margin, true rank, topo_delta, hubs)")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
     c_data = json.loads(Path(args.c).read_text())
     r_data = json.loads(Path(args.rust).read_text())
 
-    mapping = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters,
-                    assign="greedy" if args.greedy else "hungarian")
+    res = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters,
+                assign="greedy" if args.greedy else "hungarian",
+                partial=not args.no_partial, tau=args.tau)
+    matched, c_only, rust_only = res["matched"], res["c_only"], res["rust_only"]
+
     # ground truth: name equality (faithful, name-preserving c2rust) OR a hand-labeled
     # map (LLM track, where the translator renames so name-equality no longer holds).
-    if args.truth:
-        truth = json.loads(Path(args.truth).read_text())
+    truth = json.loads(Path(args.truth).read_text()) if args.truth else None
+    if truth is not None:
         is_correct = lambda c, r: truth.get(c) == r
         label = "labeled"
+        scorable = sum(1 for f in c_data["functions"] if f["name"] in truth)
     else:
         is_correct = lambda c, r: c == r
         label = "name-equal"
-    correct = sum(1 for (c, r, s) in mapping if is_correct(c, r))
-    # only count C functions that HAVE a ground-truth correspondent as scorable
-    scorable = sum(1 for f in c_data["functions"]
-                   if (args.truth is None) or (f["name"] in truth))
-    n_c = len(c_data["functions"])
-    n_pred = len(mapping)
+        scorable = len(c_data["functions"])
+    correct = sum(1 for (c, r, s) in matched if is_correct(c, r))
 
-    print(f"C functions: {n_c} | Rust functions: {len(r_data['functions'])}")
-    print(f"predicted pairs: {n_pred} | CORRECT ({label}): {correct}")
-    print(f"accuracy: {correct}/{scorable} = {100 * correct // max(scorable, 1)}%")
+    print(f"C functions: {len(c_data['functions'])} | Rust functions: {len(r_data['functions'])}")
+    scaf = r_data.get("excluded_scaffolding")
+    if scaf:
+        print(f"excluded_scaffolding (Rust, {len(scaf)}): {scaf}")
+    print(f"matched: {len(matched)} | c_only_unmatched: {len(c_only)} | "
+          f"rust_only_unmatched: {len(rust_only)}")
+    print(f"CORRECT ({label}): {correct} | accuracy: {correct}/{scorable} = "
+          f"{100 * correct // max(scorable, 1)}%")
     if args.verbose:
-        for c, r, s in sorted(mapping, key=lambda x: -x[2]):
-            mark = "OK " if is_correct(c, r) else "XX "
-            print(f"  [{mark}] {c:24s} -> {r:24s}  score={s:.3f}")
+        for c, r, s in sorted(matched, key=lambda x: -x[2]):
+            print(f"  [{'OK ' if is_correct(c, r) else 'XX '}] {c:24s} -> {r:24s}  score={s:.3f}")
+        if c_only:
+            print(f"  c_only:    {c_only}")
+        if rust_only:
+            print(f"  rust_only: {rust_only}")
+    if args.diag:
+        print()
+        diagnose(c_data, r_data, res["sim"], node_matrix(c_data, r_data), truth)
     return 0
 
 

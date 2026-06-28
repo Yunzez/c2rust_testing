@@ -193,11 +193,21 @@ impl AnalyzedCrate {
                     None => continue,
                 };
 
-                // Rust-only non-targets (test scaffolding, boilerplate trait impls):
-                // keep out of BOTH the candidate set and the topology graph (skip the
-                // body walk -> no edges), report with a reason instead of dropping.
+                // Rust-only non-targets (test scaffolding, boilerplate trait impls,
+                // locally-nested helper fns): keep out of BOTH the candidate set and the
+                // topology graph (skip the body walk -> no edges), report with a reason.
+                //
+                // A fn whose ancestors include another `ast::Fn` is defined inside that
+                // fn's body. C has no nested functions, so such locals have no C
+                // counterpart and only act as distractors during matching (and can collide
+                // by name with a top-level fn). Their call edges are NOT lost: the
+                // enclosing fn's recursive body walk already attributes them to the parent.
+                let is_nested_local =
+                    fnode.syntax().ancestors().skip(1).any(|a| ast::Fn::cast(a).is_some());
                 let exclude_reason = if is_test_scaffolding(&fnode) {
                     Some("test".to_owned())
+                } else if is_nested_local {
+                    Some("nested_local".to_owned())
                 } else {
                     boilerplate_trait(&fnode).map(|t| format!("trait_boilerplate:{t}"))
                 };

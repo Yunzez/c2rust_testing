@@ -5,6 +5,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 TI="/home/yunzez/c2rust_testing/tools/frameworks/tulipindicators"               # upstream C (0.9.2)
 C2R="/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators/target/release/libc2rust_out.a"
 SAFER="/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_WIP/target/release/libc2rust_out.a"
+CROWN="/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_crown/target/release/libc2rust_out.a"
 
 cd "$HERE"
 cp -f "$TI/indicators.h" .
@@ -41,4 +42,5 @@ build_one(){
 }
 build_one c2r   "$C2R"
 build_one safer "$SAFER"
+build_one crown "$CROWN"
 echo "DONE."

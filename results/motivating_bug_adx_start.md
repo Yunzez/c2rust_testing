@@ -79,6 +79,14 @@ The defect is therefore introduced by the LLM rewrite step.
 (Aside: under *strict bitwise* comparison, C-vs-c2rust shows ~1-ULP differences on `adx/adxr/dx`
 from floating-point op-order/fma — benign, not bugs. This calibrates the float tolerance.)
 
+**Control — a second, rule-based safety-lifter (CROWN) over the same c2rust input is correct.**
+CROWN (arXiv:2303.10515) lifts the identical c2rust output to safer Rust using ownership analysis and
+**no LLM**. On `ti_adx_start` it conservatively keeps the function `unsafe` and **preserves the
+dereference** `*options.offset(0)` — so it is correct where C2SaferRust is wrong. Differential-fuzzing
+C-vs-CROWN over all 104 indicators shows **0** divergences (seed 1 and 777; bitwise-identical to
+c2rust). This rules out "safety-lifting is inherently risky" and pins the defect to the **LLM rewrite
+step** specifically. See `results/crown_lane_4way.md` for the full 4-way table.
+
 ## Impact
 
 `ti_adx_start` is part of the **public API**: callers use it to size the output buffer

@@ -58,11 +58,11 @@ def unsupported_reason(rs_text: str, fn: str) -> str | None:
         return None  # let generation try (can't read signature)
     ptys, ret = sig
     rc = ret.replace(" ", "")
+    # Option<&[T]>/Option<&mut[T]> slice params ARE bridged now (Some(&buf[..]) / Some(&mut buf[..])).
+    # A semantic Option/tuple/Result RETURN is not yet bridged (C returns a ret-code + writes an
+    # out-param; Rust folds both into the return value) -> still flagged.
     if rc.startswith("Option<") or rc.startswith("Result<") or (rc.startswith("(") and "," in rc):
         return "c_retcode_outparam_to_rust_option_or_tuple_return"
-    for t in ptys:
-        if t.replace(" ", "").startswith("Option<&"):
-            return "option_slice_input"
     return None
 
 

@@ -729,6 +729,8 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
             decl.append(f"{n}: *const {p['elem']}")
             if "Box<[" in rty:
                 r_pairs.append((n, f"&{n}_buf.clone().into_boxed_slice()"))
+            elif rty.startswith("Option<&["):           # Option<&[T]>
+                r_pairs.append((n, f"Some(&{n}_buf[..])"))
             elif rty.startswith("&[") or rty.startswith("&mut["):
                 r_pairs.append((n, f"&{n}_buf[..]"))
             elif rty.startswith("Vec<"):
@@ -808,7 +810,8 @@ H(load_invalid_value)
 
 
 def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
-               ub_free: bool = False, rust_entry: str | None = None) -> str:
+               ub_free: bool = False, rust_entry: str | None = None,
+               rust_ret: str | None = None) -> str:
     """Generate the fuzz_target source: decode from items, call/signature in ABI order.
 
     When ub_free, the C oracle is UBSan-instrumented (recover + minimal runtime, flag-based
@@ -831,7 +834,13 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         ret_cmp = ""
     else:
         body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
-        ret_cmp = '        if c_ret != r_ret { panic!("divergence: return value"); }'
+        # idiomatic translations may return a different-but-compatible integer width/signedness
+        # (e.g. C `int`/i32 vs Rust `isize`); compare via i128 so the widths line up.
+        if rust_ret and rust_ret != ret and ret in _INT_TYPES and rust_ret in _INT_TYPES:
+            cmp = "(c_ret as i128) != (r_ret as i128)"
+        else:
+            cmp = "c_ret != r_ret"
+        ret_cmp = f'        if {cmp} {{ panic!("divergence: return value"); }}'
     ub_externs = ["    fn c2r_ub_reset();", "    fn c2r_ub_get() -> i32;"] if ub_free else []
 
     return "\n".join([
@@ -896,6 +905,17 @@ def strip_static_c(c_text: str, entry: str) -> tuple[str, bool]:
     pat = rf'(?m)^(\s*)static(\s+[^\n;{{]*\b{re.escape(entry)}\s*\()'
     new = re.sub(pat, r'\1\2', c_text, count=1)
     return new, (new != c_text)
+
+
+_INT_TYPES = {"i8", "i16", "i32", "i64", "i128", "isize",
+              "u8", "u16", "u32", "u64", "u128", "usize"}
+
+
+def parse_rust_ret_type(rs_text: str, entry: str) -> str | None:
+    """Return type spelling of `entry` in the translation (None if no `-> T`, i.e. unit)."""
+    import re
+    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\s*\([^;{{]*?\)\s*->\s*([^{{]+?)\s*\{{', rs_text, re.S)
+    return m.group(1).strip() if m else None
 
 
 def parse_rust_param_types(rs_text: str, entry: str) -> list[str]:
@@ -978,6 +998,7 @@ def main() -> int:
     # params because length/capacity scalars were FOLDED into slices -> align to the non-len/cap
     # "core" params (e.g. C `(const u8*, size_t, u8*, size_t)` -> Rust `(&[u8], &mut [u8])`).
     rust_ptys = parse_rust_param_types(rs_text, rust_entry)
+    rust_ret = parse_rust_ret_type(rs_text, rust_entry)
     core = [p for p in abi if p["role"] not in ("length", "capacity")]
     if rust_ptys and len(rust_ptys) == len(abi):
         for p, t in zip(abi, rust_ptys):
@@ -1051,7 +1072,8 @@ doc = false
 ''', encoding="utf-8")
 
     (out / "fuzz" / "fuzz_targets" / f"{crate}_ft.rs").write_text(
-        gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free, rust_entry=rust_entry), encoding="utf-8")
+        gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free, rust_entry=rust_entry,
+                   rust_ret=rust_ret), encoding="utf-8")
 
     print(f"generated harness at {out}")
     print(f"  entry: {args.entry} -> {ret}")

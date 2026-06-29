@@ -728,8 +728,15 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
             c_args.append(f"&mut {n}_c"); r_args.append(f"&mut {n}_r")
             decl.append(f"{n}: *mut {p['elem']}")
         elif role == "output_array":
-            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
+            c_args.append(f"{n}_c.as_mut_ptr()")
             decl.append(f"{n}: *mut {p['elem']}")
+            rty = (p.get("rust_pty") or "").replace(" ", "")
+            if rty.startswith("Option<&mut["):     # Option<&mut [T]>
+                r_args.append(f"Some(&mut {n}_r[..])")
+            elif rty.startswith("&mut["):           # &mut [T]
+                r_args.append(f"&mut {n}_r[..]")
+            else:                                    # raw pointer / default
+                r_args.append(f"{n}_r.as_mut_ptr()")
         elif role == "input_string":
             c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
             decl.append(f"{n}: *const {p['elem']}")

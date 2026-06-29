@@ -393,6 +393,9 @@ def main() -> int:
                     help="abstention: move pairs with two-sided confidence < eps from "
                     "matched to ambiguous (isolate, don't guess). Default off (accept all).")
     ap.add_argument("-v", "--verbose", action="store_true")
+    ap.add_argument("--emit-pairs", default=None,
+                    help="write the matched C->Rust correspondence as JSON {c_name: rust_name} "
+                    "(for the end-to-end driver to drive gen_diff_harness --rust-entry)")
     args = ap.parse_args()
     c_data = json.loads(Path(args.c).read_text())
     r_data = json.loads(Path(args.rust).read_text())
@@ -443,6 +446,10 @@ def main() -> int:
             print(f"  c_only:    {c_only}")
         if rust_only:
             print(f"  rust_only: {rust_only}")
+    if args.emit_pairs:
+        Path(args.emit_pairs).write_text(
+            json.dumps({c: r for (c, r, s, k) in matched}, indent=1), encoding="utf-8")
+        print(f"wrote {len(matched)} pairs -> {args.emit_pairs}")
     if args.diag:
         print()
         diagnose(c_data, r_data, res["sim"], node_matrix(c_data, r_data), truth)

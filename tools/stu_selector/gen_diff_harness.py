@@ -701,63 +701,86 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
     Iterating the schema params in declaration order is what makes a length param that PRECEDES
     its buffer (e.g. f(size_t n, T* buf, ...)) come out in the right ABI position.
     """
-    c_args, r_args, decl = [], [], []
+    def _is_slice(rty: str) -> bool:
+        rty = (rty or "").replace(" ", "")
+        return (rty.startswith("&[") or rty.startswith("&mut[") or "Box<[" in rty
+                or rty.startswith("Vec<") or rty.startswith("&Vec<")
+                or rty.startswith("Option<&mut[") or rty.startswith("Option<&["))
+
+    # pass 1: a buffer rendered as a Rust slice FOLDS its length/capacity param (the slice
+    # carries its own len), so that scalar must be DROPPED from the Rust call (idiomatic
+    # translations like `f(&[u8], &mut [u8])` from C `f(const u8*, size_t, u8*, size_t)`).
+    folded: set[str] = set()
+    for p in abi:
+        if p["role"] in ("input_buffer", "inout_buffer", "output_buffer") and _is_slice(p.get("rust_pty")):
+            ln = p.get("length_param") or p.get("capacity_param")
+            if ln:
+                folded.add(ln)
+
+    c_args, decl = [], []
+    r_pairs: list[tuple[str, str]] = []  # (param_name, rust_call_expr); filtered for folding below
     for p in abi:
         role, n = p["role"], p["name"]
+        rty = (p.get("rust_pty") or "").replace(" ", "")
         if role in ("scalar", "length", "capacity"):
-            c_args.append(n); r_args.append(n); decl.append(f"{n}: {p['rust']}")
+            c_args.append(n); r_pairs.append((n, n)); decl.append(f"{n}: {p['rust']}")
         elif role == "input_buffer":
             c_args.append(f"{n}_buf.as_ptr()")
             decl.append(f"{n}: *const {p['elem']}")
-            # idiomatic bridge: pass the Rust translation's expected container shape
-            rty = (p.get("rust_pty") or "").replace(" ", "")
             if "Box<[" in rty:
-                r_args.append(f"&{n}_buf.clone().into_boxed_slice()")
+                r_pairs.append((n, f"&{n}_buf.clone().into_boxed_slice()"))
             elif rty.startswith("&[") or rty.startswith("&mut["):
-                r_args.append(f"&{n}_buf[..]")
+                r_pairs.append((n, f"&{n}_buf[..]"))
             elif rty.startswith("Vec<"):
-                r_args.append(f"{n}_buf.clone()")
+                r_pairs.append((n, f"{n}_buf.clone()"))
             elif rty.startswith("&Vec<"):
-                r_args.append(f"&{n}_buf.clone()")
+                r_pairs.append((n, f"&{n}_buf.clone()"))
             else:  # raw pointer / C-ABI (c2rust, gpt4o raw-ptr style) or unknown -> default
-                r_args.append(f"{n}_buf.as_ptr()")
+                r_pairs.append((n, f"{n}_buf.as_ptr()"))
         elif role in ("inout_buffer", "output_buffer"):
-            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
+            c_args.append(f"{n}_c.as_mut_ptr()")
             decl.append(f"{n}: *mut {p['elem']}")
+            if rty.startswith("Option<&mut["):
+                r_pairs.append((n, f"Some(&mut {n}_r[..])"))
+            elif rty.startswith("&mut[") or rty.startswith("&["):
+                r_pairs.append((n, f"&mut {n}_r[..]"))
+            else:
+                r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
         elif role == "out_scalar":
-            c_args.append(f"&mut {n}_c"); r_args.append(f"&mut {n}_r")
+            c_args.append(f"&mut {n}_c"); r_pairs.append((n, f"&mut {n}_r"))
             decl.append(f"{n}: *mut {p['elem']}")
         elif role == "output_array":
             c_args.append(f"{n}_c.as_mut_ptr()")
             decl.append(f"{n}: *mut {p['elem']}")
-            rty = (p.get("rust_pty") or "").replace(" ", "")
             if rty.startswith("Option<&mut["):     # Option<&mut [T]>
-                r_args.append(f"Some(&mut {n}_r[..])")
+                r_pairs.append((n, f"Some(&mut {n}_r[..])"))
             elif rty.startswith("&mut["):           # &mut [T]
-                r_args.append(f"&mut {n}_r[..]")
+                r_pairs.append((n, f"&mut {n}_r[..]"))
             else:                                    # raw pointer / default
-                r_args.append(f"{n}_r.as_mut_ptr()")
+                r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
         elif role == "input_string":
-            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            c_args.append(f"{n}_buf.as_ptr()"); r_pairs.append((n, f"{n}_buf.as_ptr()"))
             decl.append(f"{n}: *const {p['elem']}")
         elif role == "input_fixed_array_buffer":
-            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            c_args.append(f"{n}_buf.as_ptr()"); r_pairs.append((n, f"{n}_buf.as_ptr()"))
             decl.append(f"{n}: *const [{p['elem']}; {p['inner_extent']}]")
         elif role in ("input_rectangular_pointer_table", "input_string_pointer_table"):
-            c_args.append(f"{n}_tab_c.as_mut_ptr()"); r_args.append(f"{n}_tab_r.as_mut_ptr()")
+            c_args.append(f"{n}_tab_c.as_mut_ptr()"); r_pairs.append((n, f"{n}_tab_r.as_mut_ptr()"))
             decl.append(f"{n}: *mut *mut {p['elem']}")
         elif role == "input_struct":
-            c_args.append(f"&{n}_val"); r_args.append(f"&{n}_val")
+            c_args.append(f"&{n}_val"); r_pairs.append((n, f"&{n}_val"))
             decl.append(f"{n}: *const translated::{p['struct_name']}")
         elif role == "inout_struct":
-            c_args.append(f"&mut {n}_c"); r_args.append(f"&mut {n}_r")
+            c_args.append(f"&mut {n}_c"); r_pairs.append((n, f"&mut {n}_r"))
             decl.append(f"{n}: *mut translated::{p['struct_name']}")
         elif role == "input_struct_array":
-            c_args.append(f"{n}_data.as_ptr()"); r_args.append(f"{n}_data.as_ptr()")
+            c_args.append(f"{n}_data.as_ptr()"); r_pairs.append((n, f"{n}_data.as_ptr()"))
             decl.append(f"{n}: *const translated::{p['struct_name']}")
         elif role == "inout_struct_array":
-            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
+            c_args.append(f"{n}_c.as_mut_ptr()"); r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
             decl.append(f"{n}: *mut translated::{p['struct_name']}")
+    # drop folded length/capacity params from the Rust call (they live inside the slice now)
+    r_args = [expr for (nm, expr) in r_pairs if nm not in folded]
     return c_args, r_args, decl
 
 
@@ -785,7 +808,7 @@ H(load_invalid_value)
 
 
 def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
-               ub_free: bool = False) -> str:
+               ub_free: bool = False, rust_entry: str | None = None) -> str:
     """Generate the fuzz_target source: decode from items, call/signature in ABI order.
 
     When ub_free, the C oracle is UBSan-instrumented (recover + minimal runtime, flag-based
@@ -799,7 +822,7 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
     extern_ret = "" if ret == "void" else f"-> {ret}"
 
     call_c = f"c_{entry}({', '.join(c_args)})"
-    call_r = f"translated::{entry}({', '.join(r_args)})"
+    call_r = f"translated::{rust_entry or entry}({', '.join(r_args)})"
     # UB-free gate: reset before C, reject (return) if C tripped UB, then call Rust.
     pre = "        c2r_ub_reset();\n" if ub_free else ""
     gate = "        if c2r_ub_get() != 0 { return; }  // C hit UB -> reject input\n" if ub_free else ""
@@ -921,6 +944,10 @@ def main() -> int:
                     help="force inference even if schemas/<name>.json exists (harvesting non-entry boundaries)")
     ap.add_argument("--expose-entry", action="store_true",
                     help="make a private (static) entry callable by prepending #[no_mangle] pub")
+    ap.add_argument("--rust-entry", default=None,
+                    help="name of the matched function in the Rust translation when it differs from "
+                    "the C entry (renamed translations); the harness calls translated::<rust-entry> "
+                    "while the C oracle keeps c_<entry>. Defaults to <entry>.")
     ap.add_argument("--ub-free", action="store_true",
                     help="in-loop UB-free gate: UBSan-instrument the C oracle and reject "
                     "(skip comparison on) inputs where C hits UB, so divergences are reported "
@@ -943,16 +970,23 @@ def main() -> int:
     (out / "c").mkdir(exist_ok=True)
     (out / "fuzz" / "fuzz_targets").mkdir(parents=True, exist_ok=True)
 
+    rust_entry = args.rust_entry or args.entry
     c_text = c_src.read_text()
     rs_text = rs.read_text()
-    # idiomatic bridge: if the Rust translation's params line up 1:1 with the C ABI, record each
-    # Rust param type so _call_and_decl can marshal C-ABI data into the idiomatic shape.
-    rust_ptys = parse_rust_param_types(rs_text, args.entry)
+    # idiomatic bridge: record each Rust param type so _call_and_decl can marshal C-ABI data into
+    # the idiomatic shape. Two alignments: (a) 1:1 with the C ABI (no folding); (b) Rust has FEWER
+    # params because length/capacity scalars were FOLDED into slices -> align to the non-len/cap
+    # "core" params (e.g. C `(const u8*, size_t, u8*, size_t)` -> Rust `(&[u8], &mut [u8])`).
+    rust_ptys = parse_rust_param_types(rs_text, rust_entry)
+    core = [p for p in abi if p["role"] not in ("length", "capacity")]
     if rust_ptys and len(rust_ptys) == len(abi):
         for p, t in zip(abi, rust_ptys):
             p["rust_pty"] = t
+    elif rust_ptys and len(rust_ptys) == len(core):
+        for p, t in zip(core, rust_ptys):
+            p["rust_pty"] = t
     if args.expose_entry:
-        rs_text, _ = expose_entry(rs_text, args.entry)
+        rs_text, _ = expose_entry(rs_text, rust_entry)
         c_text, _ = strip_static_c(c_text, args.entry)
     (out / "c" / c_src.name).write_text(c_text, encoding="utf-8")
     # Real libs split into .c + sibling .h (authored corpus is self-contained single-TU).
@@ -1017,7 +1051,7 @@ doc = false
 ''', encoding="utf-8")
 
     (out / "fuzz" / "fuzz_targets" / f"{crate}_ft.rs").write_text(
-        gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free), encoding="utf-8")
+        gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free, rust_entry=rust_entry), encoding="utf-8")
 
     print(f"generated harness at {out}")
     print(f"  entry: {args.entry} -> {ret}")

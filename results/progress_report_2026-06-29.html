@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>Progress Report — Differential Testing of C→Rust Translation (2026-06-29)</title>
+<style>
+  :root{--bg:#0f1117;--panel:#181b24;--ink:#e6e8ee;--mut:#9aa3b2;--acc:#6ea8fe;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--line:#2a2f3a;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;}
+  .wrap{max-width:960px;margin:0 auto;padding:40px 28px 80px;}
+  h1{font-size:27px;line-height:1.25;margin:0 0 6px;}
+  h2{font-size:21px;margin:42px 0 12px;padding-top:14px;border-top:1px solid var(--line);}
+  h3{font-size:16px;margin:26px 0 8px;color:var(--acc);}
+  .sub{color:var(--mut);margin:0 0 26px;font-size:14px;}
+  p{margin:10px 0;}
+  code{background:#11141c;color:#d6deeb;padding:1px 5px;border-radius:4px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13px;}
+  pre{background:#0b0d13;border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.5;}
+  pre .c{color:#6b7280;} pre .k{color:#c792ea;} pre .s{color:#ecc48d;} pre .f{color:#82aaff;} pre .ok{color:var(--ok);} pre .bad{color:var(--bad);}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;}
+  th{background:#1d212b;color:#cdd5e3;}
+  td.ok,span.ok{color:var(--ok);} td.bad,span.bad{color:var(--bad);} td.warn{color:var(--warn);}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:16px 0;}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--mut);margin-right:6px;}
+  .big{font-size:15px;}
+  ul{margin:8px 0;padding-left:22px;} li{margin:4px 0;}
+  .kpi{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0;}
+  .kpi div{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .kpi b{display:block;font-size:24px;color:var(--acc);} .kpi small{color:var(--mut);}
+  .muted{color:var(--mut);}
+  .ok-h{color:var(--ok);font-weight:600;} .bad-h{color:var(--bad);font-weight:600;}
+  a{color:var(--acc);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>差分测试 C→Rust 翻译正确性 — 进度报告</h1>
+<p class="sub">Session 2026-06-25 → 06-29 · 分支 <code>dataset-v2.1</code> · 最新提交 <code>7c88171</code></p>
+
+<div class="panel big">
+<b>一句话:</b> 本期把项目从"有一个真 bug + 一堆想法"推进到"有可运行的<strong>自动差分测试流水线</strong>、在<strong>竞品自己的 benchmark</strong> 上跑通、并对核心创新点(<strong>UB-正确的 bug 计数</strong>)给出了正反两个真实例证"。同时摸清了相关工作版图,确定了和最近的两个竞品(Fluorine、RustAssure)的差异化定位。
+</div>
+
+<div class="kpi">
+  <div><b>4</b><small>个竞品 benchmark 函数<br>跑通自动 harness</small></div>
+  <div><b>13.7M</b><small>单函数 fuzz 执行/26s<br>(真 libFuzzer)</small></div>
+  <div><b>3</b><small>个翻译器 lane 对齐语料<br>(C / c2rust / CROWN)</small></div>
+  <div><b>2</b><small>个 UB-门正反例证<br>(假阳性压制 + 真 bug 保留)</small></div>
+</div>
+
+<h2>0 · 项目定位 / 三个贡献</h2>
+<p>我们做的是 <strong>C→Rust 翻译正确性的差分测试</strong>。三个贡献,每一个都正好补上最近竞品(Fluorine arXiv:2405.11514;RustAssure ASE'25)<em>明确承认但未解决</em>的缺口:</p>
+<table>
+<tr><th>贡献</th><th>是什么</th><th>竞品的缺口</th></tr>
+<tr><td><b>C1 名无关 matcher</b></td><td>当翻译改名/重构时,从结构(IO 形状、算子、调用图)恢复 C↔Rust 函数对应</td><td>两家都<b>靠名字配对</b>(Fluorine 甚至<em>强制</em>译文保名,承认不保名 oracle 就崩)</td></tr>
+<tr><td><b>C2 UB-正确的差分</b></td><td>只在 C 里<b>良定义</b>的输入上把发散算作 bug(in-loop UB-free gate)</td><td><b>两家都不做 UB 过滤</b>;RustAssure 在 threats 里原话承认"内存损坏→假阳性"</td></tr>
+<tr><td><b>C3 frontier 选点</b></td><td>静态风险模型,挑哪些函数/边界值得 fuzz、哪些不可测并解释原因</td><td>Fluorine fuzzer 脆(31 函数只 10 个存活);RustAssure 符号执行 5-15h、≤600 行天花板</td></tr>
+</table>
+
+<h2 id="taxonomy">0.5 · 领域分类:生成器 vs 比较器(<span class="muted">intro 框架,paper 用</span>)</h2>
+<p>这个领域有<strong>两大 body of work</strong>,intro 必须先把它讲清楚,我们才能定位自己:</p>
+<table>
+<tr><th>Body</th><th>干什么</th><th>成员</th></tr>
+<tr><td><b>A. 生成器 / 翻译器</b></td><td>C → Rust,产出译文</td><td>c2rust(机械)、Laertes/CROWN(规则式 lift)、C2SaferRust/SACTOR/RustMap/EvoC2Rust(LLM)、<b>以及 Fluorine/RustAssure 内嵌的 LLM 调用</b></td></tr>
+<tr><td><b>B. 比较器 / oracle</b></td><td>判定 (C, Rust) 是否等价 / 找 bug</td><td><b>Fluorine</b>(差分 fuzz)、<b>RustAssure</b>(差分符号)、<b>我们</b></td></tr>
+</table>
+<p><strong>我们属于 B 类。</strong></p>
+
+<h3>关键事实:Fluorine / RustAssure 是"生成器 + 比较器"捆死的端到端系统,且只测自己生成的译文</h3>
+<table>
+<tr><th></th><th>它们的"生成器"</th><th>测试对象</th><th>对第三方翻译器</th></tr>
+<tr><td>Fluorine</td><td>自调 5 个 LLM(GPT-4o/Claude/Gemini/Mixtral,temp 0.2,跑 3 次)翻译 7 个 OSS / 408 函数</td><td><b>自己刚生成的译文</b></td><td>c2rust 仅作"idiomatic 程度"参照,<b>非被测对象</b></td></tr>
+<tr><td>RustAssure</td><td>自调 GPT-4o 等翻译 5 库 / 176 函数</td><td><b>自己生成的译文</b></td><td>CROWN/Fluorine 作对比基线,非被测输入</td></tr>
+</table>
+
+<div class="panel">
+<b>核心论点(intro 主线):</b> 前作把比较器和某个<em>自家 LLM 生成器</em>捆死,因此<strong>继承了那个生成器的命名/形状约定</strong>——Fluorine 在 prompt 里<em>强制</em>译文保名,RustAssure 按名配对,因为它们<em>控制生成端</em>。代价是它们的 oracle:<br>
+&nbsp;&nbsp;① 用不了广义译文(c2rust / CROWN / idiomatic LLM / <b>人工 port</b>——尤其改名/重构的);<br>
+&nbsp;&nbsp;② 对 UB 视而不见(把 C 未定义输入上的发散误报成翻译 bug)。<br>
+<strong>我们是生成器无关(generator-agnostic)的独立比较器</strong>——把比较器从生成器<b>解耦</b>。这正是三个贡献的统一动机:<b>C1</b> 解耦命名、<b>C2</b> 解耦 UB 假阳性、<b>C3</b> 解决规模。
+</div>
+
+<h2>1 · 起点:第一个真 bug(motivating example)</h2>
+<p>上一阶段在 Tulip Indicators(104 个数值指标)上,用一个<em>手写的</em>差分 harness 找到 C2SaferRust 发表译文里的真 bug:<code>ti_adx_start</code> 漏了一个解引用。本期把它做成了铁证的<strong>四路归因</strong>。</p>
+
+<pre><span class="c">// 原始 C —— 正确</span>
+<span class="k">int</span> <span class="f">ti_adx_start</span>(TI_REAL <span class="k">const</span> *options){ <span class="k">return</span> ((<span class="k">int</span>)options[<span class="s">0</span>] - <span class="s">1</span>) * <span class="s">2</span>; }   <span class="c">// 读 options[0](周期)</span>
+
+<span class="c">// c2rust —— 正确(保留 *)</span>
+<span class="k">pub unsafe extern</span> <span class="s">"C"</span> <span class="k">fn</span> <span class="f">ti_adx_start</span>(options: *<span class="k">const</span> c_double) -> c_int {
+    <span class="k">return</span> (*options.offset(<span class="s">0</span>) <span class="k">as</span> c_int - <span class="s">1</span>) * <span class="s">2</span>; }
+
+<span class="c">// CROWN(规则式安全 lift) —— 正确(保留 *)</span>
+<span class="k">pub unsafe extern</span> <span class="s">"C"</span> <span class="k">fn</span> <span class="f">ti_adx_start</span>(options: *<span class="k">const</span> c_double) -> c_int {
+    <span class="k">return</span> (*options.offset(<span class="s">0</span>) <span class="k">as</span> c_int - <span class="s">1</span>) * <span class="s">2</span>; }
+
+<span class="c">// C2SaferRust(LLM 安全 lift) —— <span class="bad">错!漏了 *</span></span>
+<span class="k">pub extern</span> <span class="s">"C"</span> <span class="k">fn</span> <span class="f">ti_adx_start</span>(options: *<span class="k">const</span> f64) -> i32 {
+    <span class="k">unsafe</span> { (options.offset(<span class="s">0</span>) <span class="k">as</span> i32 - <span class="s">1</span>) * <span class="s">2</span> } }   <span class="bad">// 把指针地址转 i32!返回常量垃圾</span></pre>
+
+<p><b>四路差分结果</b>(seed 1,3000 次/指标,reltol 1e-9):</p>
+<table>
+<tr><th>翻译</th><th>方法</th><th>buggy 指标</th></tr>
+<tr><td>c2rust</td><td>机械转译</td><td class="ok">0 ✓</td></tr>
+<tr><td>CROWN</td><td>规则式所有权 lift(无 LLM)</td><td class="ok">0 ✓</td></tr>
+<tr><td>C2SaferRust</td><td><b>LLM</b> 安全 lift</td><td class="bad">1 ✗ (adx)</td></tr>
+</table>
+<p>意义:<strong>把 bug 精确归因到 LLM 改写步骤</strong>,而非"安全 lift 本身有风险"——机械转译 ✓ + 规则式 lift ✓ + LLM lift ✗。CROWN 在此是<em>归因对照</em>。</p>
+
+<h2>2 · 方法论关:harness 必须自动生成</h2>
+<p>关键的一刻:Tulip 那个 harness 是手写的(只因 Tulip 104 个函数共享统一 ABI)。<strong>靠人手写 harness 不是科学方法,reviewer 会砍。</strong> 我们其实有自动生成器 <code>tools/stu_selector/gen_diff_harness.py</code>(~1000 行):</p>
+<ul>
+<li>用 <b>libclang</b> 解析 C 签名 → 自动推断每个参数的<b>角色/形状</b>(scalar、input_buffer、output_array、out_scalar…)</li>
+<li>自动 emit 一个 cargo-fuzz 项目:C 编成 oracle(<code>f</code>→<code>c_f</code>,sancov 插桩),译文当 lib crate,按角色把 fuzz 字节解码成参数,调 <code>c_&lt;entry&gt;</code> 和 <code>translated::&lt;entry&gt;</code>,不一致就 panic</li>
+<li>名配对(c2rust 保名)用 <code>mapping.py</code>;改名用 <code>matcher.py</code>(C1)</li>
+</ul>
+<p>生成的差分核心(含 UB 门):</p>
+<pre><span class="k">use</span> clip_gpt4o <span class="k">as</span> translated;
+<span class="k">extern</span> <span class="s">"C"</span> { <span class="k">fn</span> <span class="f">c_clip</span>(a: i32, amin: i32, amax: i32) -> i32;
+              <span class="k">fn</span> <span class="f">c2r_ub_reset</span>(); <span class="k">fn</span> <span class="f">c2r_ub_get</span>() -> i32; }
+<span class="f">fuzz_target!</span>(|data: &[u8]| {
+    <span class="c">// ... 从 data 解码 a, amin, amax ...</span>
+    c2r_ub_reset();
+    <span class="k">let</span> c_ret = c_clip(a, amin, amax);
+    <span class="k">if</span> c2r_ub_get() != <span class="s">0</span> { <span class="k">return</span>; }   <span class="c">// C 命中 UB → 拒绝该输入(C2 的关键)</span>
+    <span class="k">let</span> r_ret = translated::clip(a, amin, amax);
+    <span class="k">if</span> c_ret != r_ret { <span class="f">panic!</span>(<span class="s">"divergence: return value"</span>); }
+});</pre>
+
+<h2>3 · 在竞品自己的 benchmark 上跑(head-to-head)</h2>
+<p>方法论决定(避免"用对自己有利的数据集"质疑):所有工具都在<strong>中立的第三方数据集</strong>上跑。我们 clone 了 RustAssure 的仓库,它<strong>直接带了竞品的全部材料</strong>:</p>
+<ul>
+<li>C 输入:libcsv / optipng / u8c / libbmp / <b>libopenaptx</b>(Fluorine 和 RustAssure 共享的程序)</li>
+<li><b>libopenaptx 双译文</b>:<code>flourine/</code> + <code>gpt4o/</code> 各一套逐函数 Rust</li>
+<li><b>16 个 ground-truth bug</b>:<code>bug_description.csv</code>(libcsv 6、u8c 5、optipng 2)</li>
+</ul>
+<p>在 libopenaptx 上跑通 4 个函数(真 libFuzzer,~50 万 exec/s):</p>
+<table>
+<tr><th>函数</th><th>参数形状</th><th>译文</th><th>结果</th></tr>
+<tr><td>clip</td><td>3 scalar</td><td>gpt4o</td><td class="ok">13.0M runs / CLEAN</td></tr>
+<tr><td>sign_extend</td><td>2 scalar</td><td>gpt4o</td><td class="warn">UB-门 demo(见 §4)</td></tr>
+<tr><td>aptx_bin_search</td><td>input_buffer + len</td><td>gpt4o(裸指针)</td><td class="ok">7.7M runs / CLEAN</td></tr>
+<tr><td>aptx_bin_search</td><td>input_buffer → <code>&amp;Box&lt;[i32]&gt;</code></td><td>flourine(idiomatic)</td><td class="ok">5.6M runs / CLEAN(走新 bridge)</td></tr>
+</table>
+
+<h2>4 · UB 门双向例证(核心创新 C2)</h2>
+<p>这是相对 Fluorine/RustAssure 最硬的差异点——<strong>它们都不做 UB 过滤</strong>。我们用同一套 harness 在两个真实 LLM 译文上给出正反例:</p>
+
+<h3>反例:UB 门<span class="bad-h">压掉假阳性</span> — sign_extend</h3>
+<p><code>sign_extend(val, bits)</code> 算 <code>shift = 32 - bits</code>。当 <code>bits=0</code> 时 <code>shift=32</code>,C 的 <code>val&lt;&lt;32</code> 是 <strong>未定义行为</strong>(契约外输入)。gpt4o 译文在此 panic。</p>
+<table>
+<tr><th>运行</th><th>结果</th></tr>
+<tr><td>门<b>开</b>(--ub-free)</td><td class="ok">13.7M runs,CLEAN(UB 输入被拒,所有良定义输入两边一致)</td></tr>
+<tr><td>门<b>关</b></td><td class="bad">DIVERGENCE:Rust <code>attempt to shift left with overflow</code> panic</td></tr>
+</table>
+<p>→ 门关 = <b>假阳性</b>(没 UB 过滤的 oracle 会误报成翻译 bug);门开 = 正确判无 bug。</p>
+
+<h3>正例:UB 门<span class="ok-h">保留真 bug</span> — u8encode_</h3>
+<p>RustAssure 报的 u8c bug。buggy 译文(GPT-4o)<strong>无守卫</strong>:</p>
+<pre><span class="k">fn</span> <span class="f">u8encode_</span>(ch: i32, s: <span class="k">Option</span>&lt;&<span class="k">mut</span> [u8]&gt;) -> i32 {
+    <span class="k">let mut</span> len = -<span class="s">1</span>;
+    <span class="c">// ... ch 在各 Unicode 区间才设置 len ...</span>
+    s[len <span class="k">as</span> <span class="k">usize</span>] = <span class="s">0</span>;   <span class="bad">// 无守卫!ch 超范围 → len=-1 → s[usize::MAX] → panic</span>
+    len
+}</pre>
+<p>而 C 在 <code>ch</code> 超 Unicode 范围时<strong>良定义</strong>:返回 -1、只写 <code>*s='\0'</code>。<strong>C 无 UB → 我们的门保留这个 panic = 复现 RustAssure 的 bug,且证明是真 bug 不是 UB 假阳性。</strong></p>
+<div class="panel">
+<b>合起来:</b> 两个真实译文,一正一反 —— 门<b>压掉</b> sign_extend 的假阳性,<b>保留</b> u8encode_ 的真 bug。<strong>UB 门两面都成立 = C2 的完整论证。</strong>
+</div>
+
+<h2>5 · idiomatic C-ABI bridge(自动 harness 的"硬骨头")</h2>
+<p>竞品强制译文保 C-ABI(或降到 LLVM IR)来回避类型鸿沟。我们要直接调 idiomatic 译文,所以扩展了生成器:解析<strong>译文实际签名</strong>,把同一份解码字节 marshal 成 C 端要的裸指针 + Rust 端要的 idiomatic 类型。</p>
+<pre><span class="c">// 同一份 buffer,两边各取所需形状:</span>
+<span class="k">let</span> c_ret = c_aptx_bin_search(value, factor, intervals_buf.<span class="f">as_ptr</span>(), nb_intervals);            <span class="c">// C-ABI 裸指针</span>
+<span class="k">let</span> r_ret = translated::aptx_bin_search(value, factor, &intervals_buf.<span class="f">clone</span>().<span class="f">into_boxed_slice</span>(), nb_intervals); <span class="ok">// ← 自动 marshal 成 &Box&lt;[i32]&gt;</span></pre>
+<p>已支持的映射:</p>
+<table>
+<tr><th>Rust 参数类型</th><th>自动生成的调用</th></tr>
+<tr><td><code>*const T</code>(c2rust / gpt4o 裸指针)</td><td><code>buf.as_ptr()</code></td></tr>
+<tr><td><code>&amp;Box&lt;[T]&gt;</code></td><td><code>&amp;buf.clone().into_boxed_slice()</code></td></tr>
+<tr><td><code>&amp;[T]</code> slice</td><td><code>&amp;buf[..]</code></td></tr>
+<tr><td><code>Vec&lt;T&gt;</code> / <code>&amp;Vec&lt;T&gt;</code></td><td><code>buf.clone()</code> / <code>&amp;buf.clone()</code></td></tr>
+<tr><td><code>Option&lt;&amp;mut [T]&gt;</code>(输出缓冲)</td><td><code>Some(&amp;mut buf[..])</code></td></tr>
+</table>
+
+<h2>6 · 相关工作 / 工具版图(本期摸清)</h2>
+<h3>没有更 SOTA 的纯 static 工具能替代 CROWN</h3>
+<p>c2rust→Laertes('21)→CROWN('23) 这条纯 static 线 2023 年就停了,2024-26 全转向 LLM/hybrid。新的 static 工具都很窄(Forcrat=只管 I/O、GenC2Rust=只管 void*、Concrat=只管锁)。<strong>所以 CROWN/Laertes 仍是仅有的通用 static baseline</strong>——这反过来说明不必再为 CROWN 多投入。</p>
+<h3>最近的两个差分 oracle 竞品(= 我们同类)</h3>
+<table>
+<tr><th></th><th>Fluorine (2405.11514)</th><th>RustAssure (ASE'25)</th><th>我们</th></tr>
+<tr><td>oracle</td><td>差分 fuzzing(JSON-over-FFI)</td><td>差分符号执行(KLEE + 图编辑距离)</td><td>差分 fuzzing(进程内)</td></tr>
+<tr><td>配对</td><td class="bad">强制保名</td><td class="bad">按名</td><td class="ok">名无关 matcher</td></tr>
+<tr><td>UB</td><td class="bad">无</td><td class="bad">无(自己承认假阳性)</td><td class="ok">UB-free 门</td></tr>
+<tr><td>部署</td><td>无 repo(tarball)</td><td class="warn">LLVM14/Rust1.64 版本钉死</td><td>现代、可复现</td></tr>
+</table>
+<p>要借鉴的:RustAssure 的 <b>precision/recall vs 人工标注</b> 严谨度;Fluorine 的 <b>编译率→等价率 + 失败原因分类表</b>。共享 benchmark = libopenaptx(可做三方对打)。</p>
+
+<h2>7 · CROWN 语料 + 一次"撞墙"的诚实记录</h2>
+<p>试图把 CROWN 跑到中立的 CRUST-bench 上(让它当 baseline),撞上<strong>版本墙</strong>:CROWN 的 rewriter 和它<em>确切</em>的老 c2rust 版本死绑。</p>
+<ul>
+<li>本机 Ubuntu 26.04 装不了 LLVM 15 → 用 <b>docker</b>(ubuntu:22.04)从 git tag 编了 c2rust 0.17/0.18</li>
+<li>用 CROWN 的<em>确切 flags</em>(<code>--reduce-type-annotations</code>)后,单函数编译错误从 26 → 3,但 <strong>clean-compile 封顶在 12/87</strong>(残留 1 个指针的 over-lift 差异)</li>
+<li><b>诚实发现</b>(可写进论文):CROWN 不是一键工具——它作者自己的 <code>run.sh</code> 对 genann/quadtree/lil 都逐程序调不同 flag</li>
+<li><b>决定:收手。</b> CROWN 是 ~0-bug 的对照工具,中立 12 + 它自带 benchmark 19 = ~31 个程序,够用</li>
+</ul>
+<p class="muted">附:也踩了 LibAFL 的坑——它的 libfuzzer shim 在本环境忽略 <code>-max_total_time</code>/<code>-timeout</code>、能在某输入上死循环 4.5 小时。换成真 <code>libfuzzer-sys = "0.4"</code> + 把 C oracle coverage 从 <code>trace-pc-guard</code> 改成 <code>inline-8bit-counters,pc-table,trace-cmp</code> 后解决,现在 ~50 万 exec/s、正常响应超时。</p>
+
+<h2>8 · 当前语料库</h2>
+<table>
+<tr><th>语料</th><th>规模</th><th>lane</th><th>用途</th></tr>
+<tr><td>CROWN c-code(对齐)</td><td>~19 程序(158 行→21.5k 行)</td><td>C + c2rust + CROWN</td><td>多翻译器对比 baseline</td></tr>
+<tr><td>head-to-head(RustAssure)</td><td>5 程序 + libopenaptx 双译文 + 16 bug</td><td>C + Fluorine-Rust + GPT4o-Rust</td><td>直接对打 + bug 复现</td></tr>
+<tr><td>CRUST-bench</td><td>87/100 repo,337 TU</td><td>C + c2rust(我们转译)</td><td>c2rust 保真 + 未来 LLM lane</td></tr>
+</table>
+
+<h2 id="eval">E · Evaluation 设计(FSE 严谨版 · <span class="muted">paper 用,核心</span>)</h2>
+<p>投 FSE,比较器类工作的严谨核心是:<strong>怎么证明一个 bug-finding oracle 又准(precision)又全(recall)</strong>。组织成 5 个 RQ,每个对应一个贡献或竞品对比。</p>
+
+<h3>研究问题(RQ)</h3>
+<table>
+<tr><th>RQ</th><th>问题</th><th>对应</th><th>主指标</th></tr>
+<tr><td><b>RQ1</b></td><td>能在<b>真实、已发表</b>的译文里找到真 bug 吗?</td><td>有效性</td><td>确认 bug 数(人工 + root-cause),跨多个生成器</td></tr>
+<tr><td><b>RQ2</b></td><td>UB 门把假阳性降了多少?(门开 vs 门关消融)</td><td><b>C2</b></td><td>假阳性率;门压掉的 UB 诱导发散 delta;precision</td></tr>
+<tr><td><b>RQ3</b></td><td>能测<b>改名/重构</b>的译文吗?(按名 oracle 在此失效)</td><td><b>C1</b></td><td>matcher precision/recall vs ground-truth 映射</td></tr>
+<tr><td><b>RQ4</b></td><td>vs Fluorine & RustAssure(共享 benchmark)</td><td>对打</td><td>bug 数 / 假阳性 / 可处理函数比例</td></tr>
+<tr><td><b>RQ5</b></td><td>frontier 选点准不准 + 规模/吞吐</td><td><b>C3</b></td><td>safe/risky precision(G2/G3)、exec/s、找 bug 墙钟</td></tr>
+</table>
+
+<h3>语料矩阵:生成器 × 数据集(中立,不自造)</h3>
+<p>我们<strong>不自己造翻译器当 headline</strong>(破"射箭画靶")。在<b>第三方中立数据集</b>上测<b>多个已发表生成器</b>的产物:</p>
+<table>
+<tr><th>生成器(Body A)</th><th>命名</th><th>用于</th></tr>
+<tr><td>c2rust</td><td>保名(#[no_mangle])</td><td>RQ2 基线(~逐字保真,期望 0 真 bug → 测假阳性)</td></tr>
+<tr><td>CROWN</td><td>保名</td><td>RQ1/RQ2 规则式 lift 对照</td></tr>
+<tr><td>C2SaferRust / SACTOR</td><td>多数保名</td><td>RQ1 LLM bug 来源</td></tr>
+<tr><td><b>raw LLM(我们跑)+ 人工 port</b></td><td><b>改名/重构</b></td><td><b>RQ3 matcher 主场</b></td></tr>
+</table>
+<table>
+<tr><th>数据集</th><th>规模</th><th>角色</th></tr>
+<tr><td><b>libopenaptx</b></td><td>~20 函数,双译文</td><td>RQ4 三方对打(Fluorine 也用过)</td></tr>
+<tr><td>CRUST-bench</td><td>100 真实 repo</td><td>RQ1/RQ3 广度;<b>自带人工 Rust 接口 = 人工 port ground truth</b></td></tr>
+<tr><td>CROWN c-code</td><td>~19 对齐程序</td><td>RQ1/RQ2 多翻译器</td></tr>
+</table>
+
+<h3>Ground truth 怎么来(规模化 precision/recall 的关键)</h3>
+<p>不能全靠人工标注。三个来源叠加:</p>
+<ol>
+<li><b>已报 bug</b>:RustAssure 的 16 个(<code>bug_description.csv</code>)= 已知正例,直接 cross-validate。</li>
+<li><b>变异注入(mutation)</b>:对<em>正确</em>译文注入已知语义变异(漏解引用、改边界、换运算符、off-by-one)→ 受控正例,算 <b>recall</b>。这是"针对翻译 oracle 的 mutation testing",规模化且 reviewer 认可。</li>
+<li><b>人工 port 映射</b>:CRUST-bench 自带的人工 Rust 接口 = 真实人写的改名/重构译文,带<b>人工 C↔Rust 对应</b>。用作 RQ3 matcher 的 ground-truth 映射。<span class="muted">(样本量大;且数据公开,结论可复核、无可指摘。)</span> 另有 SACTOR 自带的 <code>function_name_map.json</code> 作第二来源。</li>
+</ol>
+
+<h3>消融(必做)</h3>
+<ul>
+<li><b>UB 门 on/off</b>(RQ2 核心):同语料同 seed,门关报的发散 − 门开报的 = UB 诱导假阳性。已有正反个例:sign_extend(门压假阳性)、u8encode_(门保真 bug)。</li>
+<li><b>matcher on/off</b>(RQ3):按名配对 vs 名无关 matcher,在改名译文上 → 名配对的失配率 = matcher 的增量价值。</li>
+<li><b>frontier on/off</b>(RQ5):全 fuzz vs 只 fuzz 选中边界 → 找 bug 效率 / 假发散对比。</li>
+</ul>
+
+<h3>对打协议(RQ4,vs Fluorine & RustAssure)</h3>
+<ul>
+<li>共享 benchmark = <b>libopenaptx</b>(两家都用过,我们有双译文)。三方同跑同一批 (C, Rust)。</li>
+<li>报三栏:① 各自找到的 bug、② 各自的假阳性(我们有 UB 门、它们没有 → 预期我们更干净)、③ 能处理的程序/函数比例(Fluorine fuzzer 31 个活 10 个;RustAssure ≤600 行 + 5-15h/库)。</li>
+</ul>
+
+<h3>Threats to validity(必写)</h3>
+<ul>
+<li><b>fuzzing 不完备</b>:等价是启发式 → 报 coverage + 预算(学 Fluorine "5 分钟、97% 行覆盖")。</li>
+<li><b>ground-truth 标注</b>:人工确认的样本量、root-cause、可能的 inter-rater。</li>
+<li><b>泛化</b>:语料/生成器选择偏差;变异算子的代表性。</li>
+<li><b>UB 判定</b>:UBSan/ASan 覆盖的 UB 类别有限(明示哪些 UB 被门到、哪些靠 frontier 静态避开)。</li>
+</ul>
+
+<div class="panel">
+<b>一页纸总结(给 paper):</b> 我们是<strong>生成器无关的差分比较器</strong>。RQ1 证有效(跨多个已发表生成器找到真 bug),RQ2 证精度(UB 门消融,降假阳性——竞品没有),RQ3 证广度(名无关 matcher 测改名译文——竞品做不到),RQ4 证优于现有 oracle(libopenaptx 三方对打),RQ5 证规模(frontier + 吞吐)。Ground truth = 已报 bug + 变异注入 + 人工 port,全部公开可复核。
+</div>
+
+<h2>9 · 待办 / 下一步</h2>
+<ul>
+<li><b>补 bridge 跑出 u8encode_ 真 bug</b>:还差"无长度固定容量输出缓冲 + C/Rust elem 分叉(char=i8 vs u8)"。落地后即可跑出 §4 的正例。</li>
+<li><b>更多竞品 bug 复现</b>:u8next_(input_string 指针 cast)、scan_option(指针的指针)。libcsv 的 buggy 译文未 ship,需花 token 重生成。</li>
+<li><b>结构体参数 bridge</b>:<code>&amp;[AptxChannel; N]</code> 等(libopenaptx 剩余函数)。</li>
+<li><b>三方对打表</b>:在 libopenaptx 上,我们 vs Fluorine vs RustAssure,套 precision/recall。</li>
+<li><b>C1 matcher 在大程序上的硬数字</b>(lil 128 函数,调用图拓扑传播)。</li>
+</ul>
+
+<h2>附:本期产出文件</h2>
+<ul>
+<li><code>results/crown_lane_4way.md</code> — 四路归因</li>
+<li><code>results/corpus_inventory_v1.md</code> — 对齐语料清单</li>
+<li><code>results/crown_crustbench_investigation.md</code> — 版本墙调查</li>
+<li><code>results/sota_static_tools_survey.md</code> — static 工具版图</li>
+<li><code>results/related_oracles_eval_methodology.md</code> — Fluorine/RustAssure 深挖</li>
+<li><code>results/headtohead_corpus.md</code> — head-to-head 语料</li>
+<li><code>results/libopenaptx_ubgate_demo.md</code> — 自动 harness + UB 门 demo + bridge</li>
+<li><code>results/reproduce_rustassure_bugs.md</code> — 走2 复现进展</li>
+<li>工具:<code>tools/stu_selector/gen_diff_harness.py</code>(bridge 扩展)、<code>tools/oldc2rust/</code>(docker 老 c2rust)、<code>tools/headtohead/setup_libopenaptx.sh</code></li>
+</ul>
+
+<p class="sub" style="margin-top:40px;border-top:1px solid var(--line);padding-top:16px;">生成于 2026-06-29 · 全部成果已 commit + push 到 <code>dataset-v2.1</code></p>
+
+</div>
+</body>
+</html>

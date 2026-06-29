@@ -24,6 +24,8 @@ ROOT = HERE.parents[1]
 ANALYZER = HERE / "analyzer" / "target" / "release" / "analyzer"
 PY = sys.executable
 
+sys.path.insert(0, str(HERE))  # frontier/features/mapping are siblings
+
 
 def sh(cmd, **kw):
     return subprocess.run(cmd, text=True, capture_output=True, **kw)
@@ -108,6 +110,9 @@ def main() -> int:
     ap.add_argument("--no-ub-free", action="store_true", help="disable the in-loop UB-free gate (ablation)")
     ap.add_argument("--toolchain", default="nightly-2025-09-01")
     ap.add_argument("--json", default=None, help="write a machine-readable summary to this path")
+    ap.add_argument("--all", action="store_true",
+                    help="test ALL matched functions, bypassing the frontier selector (ablation; "
+                    "default only fuzzes the frontier-selected boundaries)")
     args = ap.parse_args()
 
     pair = Path(args.pair).resolve()
@@ -158,7 +163,24 @@ def main() -> int:
     only = set(args.only.split(",")) if args.only else None
     if only:
         pairs = {c: r for c, r in pairs.items() if c in only}
-    print(f"   pairs to test: {pairs}")
+    print(f"   pairs matched: {pairs}")
+
+    # 2b) frontier (C3): pick the fuzzable boundaries; others are recorded SKIPPED_FRONTIER + reason.
+    front_names, front_reason = None, {}
+    if not args.all:
+        try:
+            import frontier as fr, features as feat, mapping as mapmod
+            # C-only feature rows (generator-agnostic): features_for_pair aligns by name and yields
+            # nothing on RENAMED translations; the frontier only needs C-side features.
+            rows = feat.c_feature_rows(cpair / "build")
+            edges = mapmod.build_c_graph(cpair / "build")["edges"]
+            sel = fr.select_frontier(rows, edges)
+            front_names = {s["fn"] for s in sel["frontier"]}
+            front_reason = {s["fn"]: (s.get("reasons") or []) for s in sel["scored"]}
+            print(f"   frontier-selected: {sorted(front_names)}")
+        except Exception as e:  # frontier is an optimization; never break the pipeline
+            print(f"   (frontier skipped: {e}) — testing all matched")
+            front_names = None
 
     # 3+4) per pair: generate harness (rename + fold bridge) -> fuzz
     env = dict(os.environ, PATH=f"{Path.home()}/.cargo/bin:" + os.environ.get("PATH", ""))
@@ -166,6 +188,10 @@ def main() -> int:
     for c_fn, r_fn in pairs.items():
         print(f"\n== {c_fn} -> {r_fn} ==")
         rec = {"rust": r_fn, "verdict": None, "runs": None, "reason": None}
+        # frontier gate (C3): only fuzz selected boundaries unless --all
+        if front_names is not None and c_fn not in front_names:
+            rec["verdict"] = "SKIPPED_FRONTIER"; rec["reason"] = front_reason.get(c_fn) or ["not on frontier"]
+            print(f"   SKIPPED_FRONTIER ({rec['reason']})"); results[c_fn] = rec; continue
         # STATIC pre-check: known-unsupported bridge shapes -> labelled, not attempted (Codex review)
         reason = unsupported_reason(rs_clean, r_fn)
         if reason:

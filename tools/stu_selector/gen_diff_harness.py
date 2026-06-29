@@ -833,10 +833,17 @@ def expose_entry(rs_text: str, entry: str) -> tuple[str, bool]:
     `extern "C" fn`, prepend `#[no_mangle] pub`. No-op if it is already `pub`. Returns
     (text, changed). This is what lets the harvester test an internal boundary."""
     import re
-    if re.search(rf'(?m)^\s*pub\s+(?:unsafe\s+)?extern\s+"C"\s+fn\s+{re.escape(entry)}\b', rs_text):
+    # already pub (c2rust extern "C" or plain idiomatic fn) -> no-op
+    if re.search(rf'(?m)^\s*pub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\b', rs_text):
         return rs_text, False
+    # c2rust `extern "C" fn` -> prepend `#[no_mangle] pub`
     pat = rf'(?m)^(\s*)((?:unsafe\s+)?extern\s+"C"\s+fn\s+{re.escape(entry)}\b)'
     new = re.sub(pat, r'\1#[no_mangle]\n\1pub \2', rs_text, count=1)
+    if new != rs_text:
+        return new, True
+    # plain idiomatic `fn` (LLM-translated, not C-ABI) -> prepend `pub`
+    pat2 = rf'(?m)^(\s*)((?:unsafe\s+)?fn\s+{re.escape(entry)}\b)'
+    new = re.sub(pat2, r'\1pub \2', rs_text, count=1)
     return new, (new != rs_text)
 
 
@@ -907,7 +914,7 @@ def main() -> int:
     (out / "build.rs").write_text(f'''fn main() {{
     let mut build = cc::Build::new();
     build.compiler("clang").flag("-O1").flag("-g")
-        .flag("-fsanitize-coverage=trace-pc-guard,trace-cmp"){ub_flags}.warnings(false);
+        .flag("-fsanitize-coverage=inline-8bit-counters,pc-table,trace-cmp"){ub_flags}.warnings(false);
     build
 {defines};
     build.file("c/{c_src.name}");{ub_file}
@@ -931,7 +938,7 @@ edition = "2021"
 cargo-fuzz = true
 
 [dependencies]
-libfuzzer-sys = {{ version = "0.15.4", package = "libafl_libfuzzer" }}
+libfuzzer-sys = "0.4"
 
 [dependencies.{crate}]
 path = ".."

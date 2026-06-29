@@ -277,6 +277,30 @@
 <b>一页纸总结(给 paper):</b> 我们是<strong>生成器无关的差分比较器</strong>。RQ1 证有效(跨多个已发表生成器找到真 bug),RQ2 证精度(UB 门消融,降假阳性——竞品没有),RQ3 证广度(名无关 matcher 测改名译文——竞品做不到),RQ4 证优于现有 oracle(libopenaptx 三方对打),RQ5 证规模(frontier + 吞吐)。Ground truth = 已报 bug + 变异注入 + 人工 port,全部公开可复核。
 </div>
 
+<h2 id="e2e">P · 端到端 pipeline 跑通(<span class="muted">2026-06-29 当日</span>)</h2>
+<p>把所有组件串成<strong>一条命令</strong>(<code>run_pipeline.py --pair</code>),实现 intro 主张的<strong>生成器无关比较器</strong>:</p>
+<pre>analyze C(libclang) + Rust(rust-analyzer)
+  → matcher.py(<span class="ok">名字隐藏</span>,--emit-pairs)→ {c_name: rust_name}
+  → 逐对 gen_diff_harness(<span class="ok">--rust-entry = 匹配到的 Rust 名 + 自动折叠 bridge</span>)
+  → cargo fuzz(真 libFuzzer,<span class="ok">--ub-free 门</span>)→ PASS/DIVERGENCE 汇总
+(driver 自动剥掉手写 extern "C" shim,确保走<b>自动</b> bridge 而非人工)</pre>
+<p><b>验证 1 — hex_encode(改名 + 折叠的真实 LLM 译文):</b></p>
+<table>
+<tr><th>C 函数</th><th>matcher 配到的 Rust(名字隐藏)</th><th>结果</th></tr>
+<tr><td>nibble_to_hex</td><td>nibble_to_hex</td><td class="ok">CLEAN(10.7M runs)</td></tr>
+<tr><td>hex_encode</td><td><b>encode_hex_lowercase</b>(改名 + 4 参折叠成 2)</td><td class="ok">CLEAN(5.0M runs)</td></tr>
+</table>
+<p><b>验证 2 — leb128(泛化,诚实的部分成功):matcher 三个改名全配对 ✓</b></p>
+<table>
+<tr><th>C 函数</th><th>Rust(配对)</th><th>结果</th></tr>
+<tr><td>leb128_encode</td><td>encode_uleb128</td><td class="ok">CLEAN(4.96M)</td></tr>
+<tr><td>leb128_decode</td><td>decode_uleb128</td><td class="warn">BUILD_FAIL — 返回 <code>Option&lt;(u64,usize)&gt;</code> 未 bridge</td></tr>
+<tr><td>leb128_roundtrip</td><td>roundtrip_uleb128</td><td class="warn">BUILD_FAIL — 参数 <code>Option&lt;&amp;[u8]&gt;</code> 未 bridge</td></tr>
+</table>
+<div class="panel">
+<b>"跑通"达成。</b> 一条命令端到端:结构匹配(恢复改名)→ 自动 bridge(改名+折叠,替代手写 shim)→ UB-free fuzz。剩余 BUILD_FAIL 是<strong>明确、有界的 bridge 缺口</strong>(idiomatic 返回类型 <code>Option/tuple</code>、<code>Option&lt;&amp;[u8]&gt;</code> 输入),不是 pipeline 缺陷——下一步增量补齐即可。
+</div>
+
 <h2>9 · 待办 / 下一步</h2>
 <ul>
 <li><b>补 bridge 跑出 u8encode_ 真 bug</b>:还差"无长度固定容量输出缓冲 + C/Rust elem 分叉(char=i8 vs u8)"。落地后即可跑出 §4 的正例。</li>

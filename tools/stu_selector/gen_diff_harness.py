@@ -707,8 +707,20 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
         if role in ("scalar", "length", "capacity"):
             c_args.append(n); r_args.append(n); decl.append(f"{n}: {p['rust']}")
         elif role == "input_buffer":
-            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            c_args.append(f"{n}_buf.as_ptr()")
             decl.append(f"{n}: *const {p['elem']}")
+            # idiomatic bridge: pass the Rust translation's expected container shape
+            rty = (p.get("rust_pty") or "").replace(" ", "")
+            if "Box<[" in rty:
+                r_args.append(f"&{n}_buf.clone().into_boxed_slice()")
+            elif rty.startswith("&[") or rty.startswith("&mut["):
+                r_args.append(f"&{n}_buf[..]")
+            elif rty.startswith("Vec<"):
+                r_args.append(f"{n}_buf.clone()")
+            elif rty.startswith("&Vec<"):
+                r_args.append(f"&{n}_buf.clone()")
+            else:  # raw pointer / C-ABI (c2rust, gpt4o raw-ptr style) or unknown -> default
+                r_args.append(f"{n}_buf.as_ptr()")
         elif role in ("inout_buffer", "output_buffer"):
             c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
             decl.append(f"{n}: *mut {p['elem']}")
@@ -856,6 +868,41 @@ def strip_static_c(c_text: str, entry: str) -> tuple[str, bool]:
     return new, (new != c_text)
 
 
+def parse_rust_param_types(rs_text: str, entry: str) -> list[str]:
+    """Extract the Rust translation's per-parameter TYPE strings for `entry`, in declaration order.
+
+    For name-preserving idiomatic translations the params line up 1:1 with the C signature, so this
+    lets the harness marshal each C-ABI value into the idiomatic Rust type the translation expects
+    (e.g. C `const i32*` + len  ->  Rust `&Box<[i32]>` / `&[i32]` / `Vec<i32>`). Returns [] if the
+    signature can't be found (caller falls back to the C-ABI form)."""
+    import re
+    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\s*\(([^;{{]*?)\)\s*(?:->|\{{)', rs_text, re.S)
+    if not m:
+        return []
+    inner = m.group(1).strip()
+    if not inner:
+        return []
+    # split on top-level commas (respect <> and [] nesting)
+    parts, depth, cur = [], 0, ""
+    for ch in inner:
+        if ch in "<[(": depth += 1
+        elif ch in ">])": depth -= 1
+        if ch == "," and depth == 0:
+            parts.append(cur); cur = ""
+        else:
+            cur += ch
+    if cur.strip():
+        parts.append(cur)
+    types = []
+    for part in parts:
+        # `name: type`  (ignore `mut`, `self`)
+        if ":" in part:
+            types.append(part.split(":", 1)[1].strip())
+        else:
+            types.append(part.strip())
+    return types
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Generate a differential fuzz harness for an STU")
     ap.add_argument("--pair", required=True, help="benchmark/pairs/<name>")
@@ -891,6 +938,12 @@ def main() -> int:
 
     c_text = c_src.read_text()
     rs_text = rs.read_text()
+    # idiomatic bridge: if the Rust translation's params line up 1:1 with the C ABI, record each
+    # Rust param type so _call_and_decl can marshal C-ABI data into the idiomatic shape.
+    rust_ptys = parse_rust_param_types(rs_text, args.entry)
+    if rust_ptys and len(rust_ptys) == len(abi):
+        for p, t in zip(abi, rust_ptys):
+            p["rust_pty"] = t
     if args.expose_entry:
         rs_text, _ = expose_entry(rs_text, args.entry)
         c_text, _ = strip_static_c(c_text, args.entry)

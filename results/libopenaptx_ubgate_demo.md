@@ -49,10 +49,30 @@ cd fuzz_gen/sign_extend_gpt4o && cargo +nightly-2025-09-01 fuzz run sign_extend_
 # gate OFF: regenerate without --ub-free --out fuzz_gen/sign_extend_gpt4o_nogate -> panics on bits=0
 ```
 
+## Idiomatic C-ABI bridge (task B, 2026-06-29)
+
+Extended `gen_diff_harness.py` to handle LLM translations whose params are **idiomatic Rust types**, not
+C-ABI. New `parse_rust_param_types()` reads the translation's entry signature; for name-preserving 1:1
+params, `_call_and_decl` marshals the decoded C-ABI data into the Rust shape the translation expects, while
+the C oracle still gets the raw C-ABI form. Same decoded bytes feed both sides. input_buffer mappings:
+
+| Rust param type | generated Rust call arg |
+|---|---|
+| `*const T` (c2rust / gpt4o raw-ptr) | `buf.as_ptr()` |
+| `&Box<[T]>` | `&buf.clone().into_boxed_slice()` |
+| `&[T]` (slice) | `&buf[..]` |
+| `Vec<T>` / `&Vec<T>` | `buf.clone()` / `&buf.clone()` |
+
+Validated on **aptx_bin_search** (`int32_t f(i32 value, i32 factor, const int32_t* intervals, int
+nb_intervals)`), both translations, all CLEAN (C ≡ Rust):
+- gpt4o (raw-ptr `*const Int32`): 7.7M runs/26s.
+- flourine (idiomatic `&Box<[i32]>`, via the new bridge): 5.6M runs/23s — auto-marshalled `Vec<i32>` →
+  `&intervals_buf.clone().into_boxed_slice()`.
+
 ## Next
 
-- Scalar functions done (clip clean, sign_extend = UB-gate demo). Remaining libopenaptx functions with
-  pointer/struct params (aptx_bin_search `&Box<[i32]>`, aptx_check_parity `&[AptxChannel; N]`) need the
-  C-ABI bridge extension to the generator (task B) — drive marshalling from matched io-shapes.
+- 4 libopenaptx fns through the generator (clip, sign_extend, aptx_bin_search×2). Remaining: struct-ref
+  params (`&[AptxChannel; N]`, `&AptxChannel`) need struct construction in the bridge (the generator has
+  c2rust `input_struct` support; idiomatic struct refs are the next increment).
 - Then cross-reference divergences against RustAssure's `bug_description.csv` (reproduce their 16) + apply
   the gate to re-examine which are UB-driven.

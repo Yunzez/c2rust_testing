@@ -29,6 +29,43 @@ def sh(cmd, **kw):
     return subprocess.run(cmd, text=True, capture_output=True, **kw)
 
 
+def rust_sig(rs_text: str, fn: str) -> tuple[list[str], str] | None:
+    """(param types, return type) of `fn` in the translation. Used to STATICALLY detect bridge
+    shapes we don't yet support, so they're labelled UNSUPPORTED_BRIDGE (with a reason) up front
+    rather than surfacing as an opaque BUILD_FAIL."""
+    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(fn)}\s*\(([^;{{]*?)\)\s*(->\s*([^{{]+?))?\s*\{{', rs_text, re.S)
+    if not m:
+        return None
+    inner, ret = m.group(1).strip(), (m.group(3) or "()").strip()
+    parts, depth, cur = [], 0, ""
+    for ch in inner:
+        depth += ch in "<[(" ; depth -= ch in ">])"
+        if ch == "," and depth == 0:
+            parts.append(cur); cur = ""
+        else:
+            cur += ch
+    if cur.strip():
+        parts.append(cur)
+    ptys = [p.split(":", 1)[1].strip() if ":" in p else p.strip() for p in parts]
+    return ptys, ret
+
+
+def unsupported_reason(rs_text: str, fn: str) -> str | None:
+    """Return a stable reason string if the matched Rust fn needs a bridge shape we don't yet
+    generate (so the driver can report UNSUPPORTED_BRIDGE instead of attempting + BUILD_FAIL)."""
+    sig = rust_sig(rs_text, fn)
+    if not sig:
+        return None  # let generation try (can't read signature)
+    ptys, ret = sig
+    rc = ret.replace(" ", "")
+    if rc.startswith("Option<") or rc.startswith("Result<") or (rc.startswith("(") and "," in rc):
+        return "c_retcode_outparam_to_rust_option_or_tuple_return"
+    for t in ptys:
+        if t.replace(" ", "").startswith("Option<&"):
+            return "option_slice_input"
+    return None
+
+
 def strip_extern_shims(rs_text: str) -> str:
     """Remove hand-written `extern "C"` C-ABI bridge shims from an idiomatic translation, so the
     matcher sees the real renamed idiomatic fn (and our generator AUTO-bridges it) rather than a
@@ -66,6 +103,7 @@ def main() -> int:
     ap.add_argument("--only", default=None, help="comma-separated C entry names to test (default: all matched)")
     ap.add_argument("--no-ub-free", action="store_true", help="disable the in-loop UB-free gate (ablation)")
     ap.add_argument("--toolchain", default="nightly-2025-09-01")
+    ap.add_argument("--json", default=None, help="write a machine-readable summary to this path")
     args = ap.parse_args()
 
     pair = Path(args.pair).resolve()
@@ -120,9 +158,16 @@ def main() -> int:
 
     # 3+4) per pair: generate harness (rename + fold bridge) -> fuzz
     env = dict(os.environ, PATH=f"{Path.home()}/.cargo/bin:" + os.environ.get("PATH", ""))
-    results = []
+    results = {}
     for c_fn, r_fn in pairs.items():
         print(f"\n== {c_fn} -> {r_fn} ==")
+        rec = {"rust": r_fn, "verdict": None, "runs": None, "reason": None}
+        # STATIC pre-check: known-unsupported bridge shapes -> labelled, not attempted (Codex review)
+        reason = unsupported_reason(rs_clean, r_fn)
+        if reason:
+            rec["verdict"] = "UNSUPPORTED_BRIDGE"; rec["reason"] = reason
+            print(f"   UNSUPPORTED_BRIDGE ({reason})")
+            results[c_fn] = rec; continue
         gen = [PY, str(HERE / "gen_diff_harness.py"), "--pair", str(cpair),
                "--entry", c_fn, "--rust-entry", r_fn, "--expose-entry", "--infer-schema",
                "--out", str(work / c_fn)]
@@ -130,8 +175,8 @@ def main() -> int:
             gen.append("--ub-free")
         g = sh(gen, env=env)
         if g.returncode != 0 or "generated harness" not in g.stdout:
-            print(f"   GEN FAILED: {(g.stdout + g.stderr).strip().splitlines()[-1:]}")
-            results.append((c_fn, r_fn, "GEN_FAIL")); continue
+            rec["verdict"] = "GEN_FAIL"; rec["reason"] = (g.stdout + g.stderr).strip().splitlines()[-1:]
+            print(f"   GEN_FAIL: {rec['reason']}"); results[c_fn] = rec; continue
         ft = f"{cpair.name.replace('-', '_')}_ft"   # gen_diff_harness names the target after the pair dir
         run = ["timeout", "-k", "5", "-s", "KILL", str(args.secs + 90),
                "cargo", f"+{args.toolchain}", "fuzz", "run", ft, "--",
@@ -139,20 +184,27 @@ def main() -> int:
         fr = sh(run, cwd=str(work / c_fn), env=env)   # cargo-fuzz runs from the project root
         out = fr.stdout + fr.stderr
         if "panicked" in out or "ERROR: libFuzzer" in out or "deadly signal" in out:
-            verdict = "DIVERGENCE"
+            rec["verdict"] = "DIVERGENCE"
         elif re.search(r"Done \d+ runs", out):
-            verdict = "CLEAN"
-        elif "error[" in out or "could not compile" in out:
-            verdict = "BUILD_FAIL"
+            rec["verdict"] = "CLEAN"
+        elif "error[" in out or "could not compile" in out or "failed to build" in out:
+            rec["verdict"] = "BUILD_FAIL"
         else:
-            verdict = "UNKNOWN"
-        runs = (re.search(r"Done (\d+) runs", out) or [None, "?"])[1]
-        print(f"   {verdict}  ({runs} runs)")
-        results.append((c_fn, r_fn, verdict))
+            rec["verdict"] = "UNKNOWN"
+        mr = re.search(r"Done (\d+) runs", out)
+        rec["runs"] = int(mr.group(1)) if mr else None
+        print(f"   {rec['verdict']}  ({rec['runs']} runs)")
+        results[c_fn] = rec
 
     print("\n=== SUMMARY ===")
-    for c_fn, r_fn, v in results:
-        print(f"  {c_fn:22s} -> {r_fn:24s}  {v}")
+    for c_fn, rec in results.items():
+        extra = f"  [{rec['reason']}]" if rec["reason"] and rec["verdict"] == "UNSUPPORTED_BRIDGE" else ""
+        print(f"  {c_fn:22s} -> {rec['rust']:24s}  {rec['verdict']}{extra}")
+    summary = {"pair": name, "pairs": results}
+    if args.json:
+        Path(args.json).write_text(json.dumps(summary, indent=1)); print(f"\nwrote {args.json}")
+    else:
+        print("\n" + json.dumps(summary))
     return 0
 
 

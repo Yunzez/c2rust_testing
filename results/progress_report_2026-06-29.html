@@ -294,12 +294,17 @@
 <table>
 <tr><th>C 函数</th><th>Rust(配对)</th><th>结果</th></tr>
 <tr><td>leb128_encode</td><td>encode_uleb128</td><td class="ok">CLEAN(4.96M)</td></tr>
-<tr><td>leb128_decode</td><td>decode_uleb128</td><td class="warn">BUILD_FAIL — 返回 <code>Option&lt;(u64,usize)&gt;</code> 未 bridge</td></tr>
-<tr><td>leb128_roundtrip</td><td>roundtrip_uleb128</td><td class="warn">BUILD_FAIL — 参数 <code>Option&lt;&amp;[u8]&gt;</code> 未 bridge</td></tr>
+<tr><td>leb128_decode</td><td>decode_uleb128</td><td class="warn">UNSUPPORTED_BRIDGE — C <code>(in, len, out-param) + ret-code</code> ↔ Rust <code>(&amp;[u8]) -&gt; Option&lt;(u64,usize)&gt;</code>:整段 ABI 形状对齐缺失(非仅返回类型)</td></tr>
+<tr><td>leb128_roundtrip</td><td>roundtrip_uleb128</td><td class="warn">UNSUPPORTED_BRIDGE — <code>Option&lt;&amp;[u8]&gt;</code> / <code>Option&lt;&amp;mut[u8]&gt;</code> 输入未 bridge</td></tr>
 </table>
 <div class="panel">
-<b>"跑通"达成。</b> 一条命令端到端:结构匹配(恢复改名)→ 自动 bridge(改名+折叠,替代手写 shim)→ UB-free fuzz。剩余 BUILD_FAIL 是<strong>明确、有界的 bridge 缺口</strong>(idiomatic 返回类型 <code>Option/tuple</code>、<code>Option&lt;&amp;[u8]&gt;</code> 输入),不是 pipeline 缺陷——下一步增量补齐即可。
+<b>端到端 vertical slice 跑通(不是"全部完成")。</b> 一条命令:结构匹配(恢复改名)→ 自动 bridge(改名+折叠,替代手写 shim)→ UB-free fuzz,在 hex_encode 上真实端到端 CLEAN。leb128 证实 matcher 泛化(3 改名全配对),并<strong>暴露两个明确、有界的 bridge 缺口</strong>:<br>
+&nbsp;&nbsp;✅ 已支持的 shape:C <code>ptr+len+out+cap</code> → Rust <code>&amp;[u8]+&amp;mut[u8]</code><br>
+&nbsp;&nbsp;⬜ 未支持:C <code>ret+out-param</code> → Rust <code>Option&lt;(value,consumed)&gt;</code>(语义返回对齐)<br>
+&nbsp;&nbsp;⬜ 未支持:<code>Option&lt;&amp;[u8]&gt;</code> 输入<br>
+&nbsp;&nbsp;⬜ 未接入:frontier selector(driver 现测所有 matched 函数,非 STU frontier)
 </div>
+<p class="muted">论文措辞建议:写成 "We implemented and validated the first end-to-end generator-agnostic <b>vertical slice</b>: name-independent matching + automatic C-ABI-to-idiomatic-Rust bridge generation, demonstrated on an LLM translation with renamed functions and folded slice parameters." —— <b>不要</b>写 "generator-agnostic comparator is complete"。</p>
 
 <h2>9 · 待办 / 下一步</h2>
 <ul>

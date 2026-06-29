@@ -58,12 +58,16 @@ def unsupported_reason(rs_text: str, fn: str) -> str | None:
         return None  # let generation try (can't read signature)
     ptys, ret = sig
     rc = ret.replace(" ", "")
-    # Option<&[T]>/Option<&mut[T]> slice params ARE bridged now (Some(&buf[..]) / Some(&mut buf[..])).
-    # A semantic Option/tuple/Result RETURN is not yet bridged (C returns a ret-code + writes an
-    # out-param; Rust folds both into the return value) -> still flagged.
-    if rc.startswith("Option<") or rc.startswith("Result<") or (rc.startswith("(") and "," in rc):
-        return "c_retcode_outparam_to_rust_option_or_tuple_return"
-    return None
+    # Bridged now: Option<&[T]>/Option<&mut[T]> slice params; cross-width int returns; and the
+    # decode shape `Option<(value, count)>` (C out-param + count return, 0 = None). Still NOT
+    # bridged: Result returns, single Option<T> returns, bare multi-tuple returns.
+    if rc.startswith("Result<"):
+        return "c_retcode_to_rust_result_return"
+    if rc.startswith("Option<") and not rc.startswith("Option<("):
+        return "c_outparam_to_rust_option_scalar_return"
+    if rc.startswith("(") and "," in rc:
+        return "c_multi_out_to_rust_tuple_return"
+    return None   # Option<(...)> falls through: gen_diff_harness handles the decode shape
 
 
 def strip_extern_shims(rs_text: str) -> str:

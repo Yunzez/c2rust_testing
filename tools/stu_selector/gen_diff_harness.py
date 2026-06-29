@@ -824,6 +824,19 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
     extern_args = ", ".join(decl)
     extern_ret = "" if ret == "void" else f"-> {ret}"
 
+    # decode-shape bridge: C `(.., T* out) -> count` (0 = failure sentinel) is folded by idiomatic
+    # Rust into `(..) -> Option<(value, count)>`. The single out-param moves INTO the return tuple,
+    # so drop it from the Rust call + its standalone post-compare; the return comparison (below)
+    # normalises BOTH sides to (ok, value, consumed). Assumption (documented): tuple = (out-value,
+    # return-count), None <=> C return 0. A wrong assumption would surface as spurious DIVERGENCE.
+    out_scalars = [p["name"] for p in abi if p["role"] == "out_scalar"]
+    decode_shape = bool(rust_ret and rust_ret.replace(" ", "").startswith("Option<(")
+                        and len(out_scalars) == 1 and ret in _INT_TYPES)
+    if decode_shape:
+        osc = out_scalars[0]
+        r_args = [a for a in r_args if a != f"&mut {osc}_r"]
+        post = [l for l in post if f"{osc}_c != {osc}_r" not in l]
+
     call_c = f"c_{entry}({', '.join(c_args)})"
     call_r = f"translated::{rust_entry or entry}({', '.join(r_args)})"
     # UB-free gate: reset before C, reject (return) if C tripped UB, then call Rust.
@@ -832,6 +845,15 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
     if ret == "void":
         body_call = f"{pre}        {call_c};\n{gate}        {call_r};"
         ret_cmp = ""
+    elif decode_shape:
+        osc = out_scalars[0]
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
+        ret_cmp = (
+            f"        let (c_ok, c_val, c_cons) = (c_ret != 0, {osc}_c, c_ret);\n"
+            f"        let (r_ok, r_val, r_cons) = match r_ret {{ Some((v, c)) => (true, v, c), None => (false, 0, 0) }};\n"
+            f'        if c_ok != r_ok {{ panic!("divergence: success/None mismatch"); }}\n'
+            f'        if c_ok && (c_val != r_val || (c_cons as i128) != (r_cons as i128)) {{ panic!("divergence: decoded value/consumed"); }}'
+        )
     else:
         body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
         # idiomatic translations may return a different-but-compatible integer width/signedness
@@ -999,13 +1021,17 @@ def main() -> int:
     # "core" params (e.g. C `(const u8*, size_t, u8*, size_t)` -> Rust `(&[u8], &mut [u8])`).
     rust_ptys = parse_rust_param_types(rs_text, rust_entry)
     rust_ret = parse_rust_ret_type(rs_text, rust_entry)
-    core = [p for p in abi if p["role"] not in ("length", "capacity")]
-    if rust_ptys and len(rust_ptys) == len(abi):
-        for p, t in zip(abi, rust_ptys):
-            p["rust_pty"] = t
-    elif rust_ptys and len(rust_ptys) == len(core):
-        for p, t in zip(core, rust_ptys):
-            p["rust_pty"] = t
+    # Align the Rust param types to the C ABI params. Idiomatic translations fold scalars away:
+    # length/capacity fold into slices, and (decode shape) an out-param folds into the return tuple.
+    # Try progressively-reduced ABI subsets and use the first whose arity matches the Rust signature.
+    if rust_ptys:
+        for cand in (abi,
+                     [p for p in abi if p["role"] not in ("length", "capacity")],
+                     [p for p in abi if p["role"] not in ("length", "capacity", "out_scalar")]):
+            if len(rust_ptys) == len(cand):
+                for p, t in zip(cand, rust_ptys):
+                    p["rust_pty"] = t
+                break
     if args.expose_entry:
         rs_text, _ = expose_entry(rs_text, rust_entry)
         c_text, _ = strip_static_c(c_text, args.entry)

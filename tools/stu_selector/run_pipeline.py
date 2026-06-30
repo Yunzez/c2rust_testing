@@ -110,9 +110,11 @@ def main() -> int:
     ap.add_argument("--no-ub-free", action="store_true", help="disable the in-loop UB-free gate (ablation)")
     ap.add_argument("--toolchain", default="nightly-2025-09-01")
     ap.add_argument("--json", default=None, help="write a machine-readable summary to this path")
+    ap.add_argument("--strategy", choices=["all", "leaf", "root", "frontier"], default="frontier",
+                    help="boundary selection: all (every matched fn) | leaf (call-graph sinks) | "
+                    "root (call-graph sources) | frontier (risk-bounded antichain, our method, default)")
     ap.add_argument("--all", action="store_true",
-                    help="test ALL matched functions, bypassing the frontier selector (ablation; "
-                    "default only fuzzes the frontier-selected boundaries)")
+                    help="deprecated alias for --strategy all (ablation: test every matched fn)")
     args = ap.parse_args()
 
     pair = Path(args.pair).resolve()
@@ -165,22 +167,36 @@ def main() -> int:
         pairs = {c: r for c, r in pairs.items() if c in only}
     print(f"   pairs matched: {pairs}")
 
-    # 2b) frontier (C3): pick the fuzzable boundaries; others are recorded SKIPPED_FRONTIER + reason.
-    front_names, front_reason = None, {}
-    if not args.all:
+    # 2b) boundary SELECTION strategy (C3 + ablations). all = every matched fn; leaf = call-graph
+    # sinks (deepest helpers); root = call-graph sources (no local caller); frontier = our risk-
+    # bounded antichain. leaf/root/frontier are computed from the C call graph over the matched set.
+    strategy = "all" if args.all else args.strategy
+    selected = set(pairs)            # default (all): test everything
+    sel_reason, skip_label = {}, None
+    if strategy != "all":
         try:
             import frontier as fr, features as feat, mapping as mapmod
-            # C-only feature rows (generator-agnostic): features_for_pair aligns by name and yields
-            # nothing on RENAMED translations; the frontier only needs C-side features.
-            rows = feat.c_feature_rows(cpair / "build")
             edges = mapmod.build_c_graph(cpair / "build")["edges"]
-            sel = fr.select_frontier(rows, edges)
-            front_names = {s["fn"] for s in sel["frontier"]}
-            front_reason = {s["fn"]: (s.get("reasons") or []) for s in sel["scored"]}
-            print(f"   frontier-selected: {sorted(front_names)}")
-        except Exception as e:  # frontier is an optimization; never break the pipeline
-            print(f"   (frontier skipped: {e}) — testing all matched")
-            front_names = None
+            cset = set(pairs)        # universe = matched C functions
+            callees = {c: set() for c in cset}
+            callers = {c: set() for c in cset}
+            for e in edges:
+                if e["from"] in cset and e["to"] in cset:
+                    callees[e["from"]].add(e["to"]); callers[e["to"]].add(e["from"])
+            if strategy == "leaf":
+                selected = {c for c in cset if not callees[c]}; skip_label = "SKIPPED_NOT_LEAF"
+            elif strategy == "root":
+                selected = {c for c in cset if not callers[c]}; skip_label = "SKIPPED_NOT_ROOT"
+            elif strategy == "frontier":
+                rows = feat.c_feature_rows(cpair / "build")  # C-only, generator-agnostic
+                sel = fr.select_frontier(rows, edges)
+                selected = {s["fn"] for s in sel["frontier"]} & cset
+                sel_reason = {s["fn"]: (s.get("reasons") or []) for s in sel["scored"]}
+                skip_label = "SKIPPED_FRONTIER"
+            print(f"   strategy={strategy} selected: {sorted(selected)}")
+        except Exception as e:       # selection is an optimization; never break the pipeline
+            print(f"   (selection {strategy} failed: {e}) — testing all matched")
+            selected, skip_label = set(pairs), None
 
     # 3+4) per pair: generate harness (rename + fold bridge) -> fuzz
     env = dict(os.environ, PATH=f"{Path.home()}/.cargo/bin:" + os.environ.get("PATH", ""))
@@ -188,10 +204,11 @@ def main() -> int:
     for c_fn, r_fn in pairs.items():
         print(f"\n== {c_fn} -> {r_fn} ==")
         rec = {"rust": r_fn, "verdict": None, "runs": None, "reason": None}
-        # frontier gate (C3): only fuzz selected boundaries unless --all
-        if front_names is not None and c_fn not in front_names:
-            rec["verdict"] = "SKIPPED_FRONTIER"; rec["reason"] = front_reason.get(c_fn) or ["not on frontier"]
-            print(f"   SKIPPED_FRONTIER ({rec['reason']})"); results[c_fn] = rec; continue
+        # selection gate (C3 + ablations): only fuzz boundaries the strategy picked
+        if c_fn not in selected:
+            rec["verdict"] = skip_label or "SKIPPED"
+            rec["reason"] = sel_reason.get(c_fn) or [f"not selected by {strategy}"]
+            print(f"   {rec['verdict']} ({rec['reason']})"); results[c_fn] = rec; continue
         # STATIC pre-check: known-unsupported bridge shapes -> labelled, not attempted (Codex review)
         reason = unsupported_reason(rs_clean, r_fn)
         if reason:
@@ -230,7 +247,8 @@ def main() -> int:
     for c_fn, rec in results.items():
         extra = f"  [{rec['reason']}]" if rec["reason"] and rec["verdict"] == "UNSUPPORTED_BRIDGE" else ""
         print(f"  {c_fn:22s} -> {rec['rust']:24s}  {rec['verdict']}{extra}")
-    summary = {"pair": name, "pairs": results}
+    summary = {"pair": name, "strategy": strategy,
+               "n_selected": len(selected), "n_matched": len(pairs), "pairs": results}
     if args.json:
         Path(args.json).write_text(json.dumps(summary, indent=1)); print(f"\nwrote {args.json}")
     else:

@@ -59,11 +59,26 @@ The two real raw-LLM residuals are bignum (25/27; the to_int/to_string swap) and
 builtin cluster). Both are correctly the HARDEST cases; abstain isolates the tinyexpr cluster, the bignum
 swap is the known signal-C case (optional, not chased).
 
+## Hard artifact — name-scramble self-check (matcher uses NO names)
+`scripts/name_scramble_check.py` (JSON-level): rewrite every C name → `c_0000…` and Rust name →
+`r_0000…` over the analyzer outputs (`functions[].name`, `raw_edges.from/to`, truth map), preserving
+topology (names = opaque node IDs), then re-run the matcher and compare matched pairs.
+
+| | result |
+|---|---|
+| matched-pair delta (normal vs scrambled), 10 programs / 90 pairs | **0** (byte-identical matching) |
+| per-program correctness normal == scrambled | yes, all 10 |
+| **negative control**: name-equality recall | normal .124 → **scrambled .000** |
+
+delta=0 (stronger than the ≤1 tolerance) proves the matcher's output is invariant to function names; the
+negative control (name-eq → 0) proves the scramble actually destroyed the name channel. This is the hard
+rebuttal to "you used names". (`results/rq3_rows/name_scramble_check.json`.)
+
 ## Status vs plan
 DONE: runner with matched/extra/ambiguous + micro/macro; 5-method ablation incl. **shape-only** (new
-`matcher --shape-only`); raw-LLM + SACTOR rows; failure taxonomy. lil regression gate still PASS (126/128).
-NEXT (plan exec order): **name-scramble self-check** (JSON-level) + negative control → then
-**mechanically-renamed SACTOR** (independent-truth rename regime).
+`matcher --shape-only`); raw-LLM + SACTOR rows; failure taxonomy; **name-scramble self-check (delta=0)**.
+lil regression gate still PASS (126/128).
+NEXT (plan exec order): **mechanically-renamed SACTOR** (independent-truth rename regime) → manual ports.
 
 Reproduce: `python3 scripts/eval_rq3_matcher.py --source "raw-LLM (gpt-5-mini)" --regime renamed
 --truth-dir experiments/llm_transpiler/truth --c-pairs benchmark/pairs --rust-out

@@ -95,13 +95,19 @@ def score(fc, fr, dc, dr) -> float:
     return 0.30 * soft + 0.15 * exact + 0.15 * met + 0.20 * ops + 0.10 * deg + 0.10 * arity
 
 
-def node_sim(fc, fr) -> float:
-    """Per-function similarity (NO topology) — the restart prior for propagation."""
+def node_sim(fc, fr, feat="full") -> float:
+    """Per-function similarity (NO topology) — the restart prior for propagation.
+    feat="shape" = io-SHAPE-ONLY ablation baseline: uses ONLY the normalized parameter/
+    return shape CATEGORIES (+ arity), EXCLUDING operators, metrics, topology, AND degree
+    — the clean answer to "isn't the type signature already enough?". feat="full" = all
+    per-function signals (shape + exact + metrics + operator histogram + arity)."""
     exact = 1.0 if shape_sig(fc) == shape_sig(fr) else 0.0
     soft = jaccard(shape_tokens(fc), shape_tokens(fr))
+    arity = 1.0 if len(fc["io"]["inputs"]) == len(fr["io"]["inputs"]) else 0.0
+    if feat == "shape":
+        return 0.70 * soft + 0.20 * exact + 0.10 * arity
     met = metric_sim(fc, fr)
     ops = op_sim(fc, fr)
-    arity = 1.0 if len(fc["io"]["inputs"]) == len(fr["io"]["inputs"]) else 0.0
     return 0.35 * soft + 0.15 * exact + 0.15 * met + 0.25 * ops + 0.10 * arity
 
 
@@ -160,7 +166,7 @@ def _dfcap_clean(callees, callers, n_funcs, cap) -> tuple:
     return callees, callers, sorted(drop_callee | drop_caller)
 
 
-def propagate(c_data, r_data, alpha=0.7, iters=15, df_cap=0.5) -> dict:
+def propagate(c_data, r_data, alpha=0.7, iters=15, df_cap=0.5, feat="full") -> dict:
     """IsoRank-style propagation with neighbor-set best-match topology. Returns the
     converged similarity {(c,r): score}. df_cap removes hub 'stopword' neighbors that
     otherwise poison propagation (see _dfcap_clean)."""
@@ -172,7 +178,7 @@ def propagate(c_data, r_data, alpha=0.7, iters=15, df_cap=0.5) -> dict:
     r_callees, r_callers = adjacency(r_data)
     c_callees, c_callers, _ = _dfcap_clean(c_callees, c_callers, len(cn), df_cap)
     r_callees, r_callers, _ = _dfcap_clean(r_callees, r_callers, len(rn), df_cap)
-    N = {(c, r): node_sim(cf[c], rf[r]) for c in cn for r in rn}
+    N = {(c, r): node_sim(cf[c], rf[r], feat) for c in cn for r in rn}
     S = dict(N)
     for _ in range(iters):
         new = {}
@@ -233,12 +239,12 @@ def _hungarian(cost) -> list:
     return res
 
 
-def node_matrix(c_data, r_data) -> dict:
+def node_matrix(c_data, r_data, feat="full") -> dict:
     """The per-function (no-topology) similarity prior, as {(c,r): node_sim}. Reused as
     the propagation restart vector and as the baseline for topo_delta diagnostics."""
     cf = {f["name"]: f for f in c_data["functions"]}
     rf = {f["name"]: f for f in r_data["functions"]}
-    return {(c, r): node_sim(cf[c], rf[r]) for c in cf for r in rf}
+    return {(c, r): node_sim(cf[c], rf[r], feat) for c in cf for r in rf}
 
 
 def _assign_hungarian(cn, rn, sim) -> list:
@@ -300,14 +306,15 @@ def _two_sided_conf(sim, cn, rn) -> callable:
 
 
 def match(c_data, r_data, topo=True, alpha=0.7, iters=15, assign="hungarian",
-          partial=True, tau=0.05, df_cap=0.5, abstain_eps=None) -> dict:
+          partial=True, tau=0.05, df_cap=0.5, abstain_eps=None, feat="full") -> dict:
     """Return {matched, ambiguous, c_only, rust_only, sim}. matched/ambiguous entries are
     (c, r, score, confidence). When abstain_eps is set, pairs with two-sided confidence
     below it are moved from `matched` to `ambiguous` (isolated, not guessed). Default None
-    = accept all (no abstention) so baseline numbers are unchanged."""
+    = accept all (no abstention) so baseline numbers are unchanged. feat="shape" =
+    io-shape-only ablation (forces topo off at the call site)."""
     cn = [f["name"] for f in c_data["functions"]]
     rn = [f["name"] for f in r_data["functions"]]
-    sim = propagate(c_data, r_data, alpha, iters, df_cap) if topo else node_matrix(c_data, r_data)
+    sim = propagate(c_data, r_data, alpha, iters, df_cap, feat) if topo else node_matrix(c_data, r_data, feat)
     if partial:
         pairs, c_only, rust_only = _assign_partial(cn, rn, sim, tau)
     elif assign == "hungarian":
@@ -374,6 +381,9 @@ def main() -> int:
     ap.add_argument("--rust", required=True)
     ap.add_argument("--no-topo", action="store_true",
                     help="disable call-graph topology propagation (per-function baseline)")
+    ap.add_argument("--shape-only", action="store_true",
+                    help="ablation: io-SHAPE-ONLY node similarity (normalized param/return "
+                    "categories + arity; NO operators/metrics/topology/degree). Forces topo off.")
     ap.add_argument("--alpha", type=float, default=0.7, help="topology weight (0..1)")
     ap.add_argument("--iters", type=int, default=15, help="propagation iterations")
     ap.add_argument("--greedy", action="store_true",
@@ -400,10 +410,12 @@ def main() -> int:
     c_data = json.loads(Path(args.c).read_text())
     r_data = json.loads(Path(args.rust).read_text())
 
-    res = match(c_data, r_data, topo=not args.no_topo, alpha=args.alpha, iters=args.iters,
+    feat = "shape" if args.shape_only else "full"
+    topo = (not args.no_topo) and not args.shape_only  # shape-only excludes topology
+    res = match(c_data, r_data, topo=topo, alpha=args.alpha, iters=args.iters,
                 assign="greedy" if args.greedy else "hungarian",
                 partial=not args.no_partial, tau=args.tau, df_cap=args.df_cap,
-                abstain_eps=args.abstain_eps)
+                abstain_eps=args.abstain_eps, feat=feat)
     matched, ambiguous = res["matched"], res["ambiguous"]
     c_only, rust_only = res["c_only"], res["rust_only"]
 

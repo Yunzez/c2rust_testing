@@ -1,5 +1,10 @@
 # RQ3 — name-independent matcher precision/recall under renaming (v1)
 
+> **SUPERSEDED by `results/rq3_matcher_v1.md`** (full ablation ladder: name-eq / shape-only / node-only /
+> full / full+abstain, micro+macro, matched/extra/ambiguous breakout). This v1 doc is the earlier
+> 2-column (recall + name-eq) cut; kept for history.
+
+
 **Question:** can the matcher recover the C↔Rust function correspondence when the translation renames/
 restructures — where name-based pairing (Fluorine, RustAssure) fails? **Metric:** precision/recall vs a
 hand-labeled ground-truth map, with the name-equality baseline (= what name-based oracles rely on) and a

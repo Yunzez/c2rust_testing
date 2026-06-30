@@ -13,18 +13,24 @@ and **macro** (unweighted mean over programs) reported.
 ## Table 1 — main results (full matcher, deployment; rows = regime)
 | regime | progs | scorable | matched | extra | ambig | correct | precision μ/M | recall μ/M | name-eq recall μ/M |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| raw-LLM (gpt-5-mini) — **renamed** | 10 | 89 | 90 | 1 | 0 | 78 | .867 / .958 | **.876 / .961** | **.124 / .086** |
-| SACTOR idiomatic — **names kept, io-shape transformed** | 2 | 12 | 14 | 2 | 0 | 12 | .857 / .854 | **1.000 / 1.000** | 1.000 / 1.000 |
+| raw-LLM (gpt-5-mini) — **renamed** (hand-labeled truth) | 10 | 89 | 90 | 1 | 0 | 78 | .867 / .958 | **.876 / .961** | **.124 / .086** |
+| SACTOR idiomatic — **names kept, io-shape transformed** (independent truth) | 2 | 12 | 14 | 2 | 0 | 12 | .857 / .854 | **1.000 / 1.000** | 1.000 / 1.000 |
+| **SACTOR mechanically-renamed** — **renamed, INDEPENDENT truth** | 2 | 12 | 14 | 2 | 0 | 12 | .857 / .854 | **1.000 / 1.000** | **0.000 / 0.000** |
 
 - **Renamed regime is the real test.** name-equality recovers only **12.4% (micro) / 8.6% (macro)** — the
   LLM renamed nearly everything; this is what Fluorine/RustAssure's name pairing gets. The structural
   matcher recovers **87.6% / 96.1%** → **~7–11×**. (micro < macro because the two big hard programs
   bignum/tinyexpr dominate the pooled function count; per-program the matcher is near-perfect on 8/10.)
-- **SACTOR is a robustness check, NOT a renaming challenge** (state this in the caption): SACTOR preserves
-  names (name-eq trivially 1.0) but rewrites signatures to idiomatic Rust (`ptr+len→&[u8]`,
-  `T* out → Option<usize>`); the matcher recovers 100% — it does NOT break under io-shape transformation.
-  `extra=2` = it also pairs 2 top-level helpers absent from SACTOR's map (precision .857 accounts for them).
-- The mechanically-renamed SACTOR row (independent truth + real renaming) is still TODO — see plan §Data.
+- **SACTOR names-kept is a robustness check, NOT a renaming challenge** (state this in the caption):
+  SACTOR preserves names (name-eq trivially 1.0) but rewrites signatures to idiomatic Rust
+  (`ptr+len→&[u8]`, `T* out → Option<usize>`); the matcher recovers 100% — it does NOT break under
+  io-shape transformation. `extra=2` = it also pairs 2 top-level helpers absent from SACTOR's map.
+- **SACTOR mechanically-renamed is the independent-truth renaming challenge** (the strongest single row):
+  the Rust functions are mechanically renamed to `r_####` (so name-eq → **0.0**) while SACTOR's own
+  `function_name_map.json` stays the ground truth — **zero hand-labeling**. The matcher still recovers
+  **100%** by structure (identical to the names-kept run; only name-eq changed). This rebuts the "raw-LLM
+  truth is self-labeled" objection: on a corpus we did NOT label, under genuine renaming, name-equality
+  gets 0 and the matcher gets everything.
 
 ## Table 2 — ablation (THE key table; kills "signatures are enough"), raw-LLM micro
 | method | uses | recall | precision | coverage | ambig | lil (homog. cluster) |
@@ -77,8 +83,9 @@ rebuttal to "you used names". (`results/rq3_rows/name_scramble_check.json`.)
 ## Status vs plan
 DONE: runner with matched/extra/ambiguous + micro/macro; 5-method ablation incl. **shape-only** (new
 `matcher --shape-only`); raw-LLM + SACTOR rows; failure taxonomy; **name-scramble self-check (delta=0)**.
+**mechanically-renamed SACTOR** (independent-truth rename row, name-eq 0.0 / matcher 1.0).
 lil regression gate still PASS (126/128).
-NEXT (plan exec order): **mechanically-renamed SACTOR** (independent-truth rename regime) → manual ports.
+NEXT (plan exec order): manual ports (tinyexpr/heatshrink/QOI) — and optionally a 2nd LLM model row.
 
 Reproduce: `python3 scripts/eval_rq3_matcher.py --source "raw-LLM (gpt-5-mini)" --regime renamed
 --truth-dir experiments/llm_transpiler/truth --c-pairs benchmark/pairs --rust-out

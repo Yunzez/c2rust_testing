@@ -78,6 +78,23 @@ def run_methods(c_data, r_data, truth):
     return out
 
 
+def scramble_rust(r_data, truth):
+    """Mechanically rename every Rust function -> r_0000.. over the analyzer output
+    (functions[].name + raw_edges), and remap the (independent) truth values to match.
+    Turns a names-kept corpus (e.g. SACTOR, truth = its function_name_map) into a REAL
+    renaming regime with INDEPENDENT truth — name-equality collapses to ~0, the matcher
+    must recover by structure. Names are opaque node IDs so topology is preserved."""
+    rmap = {f["name"]: f"r_{i:04d}" for i, f in enumerate(r_data["functions"])}
+    nd = json.loads(json.dumps(r_data))
+    for f in nd["functions"]:
+        f["name"] = rmap.get(f["name"], f["name"])
+    for e in nd.get("raw_edges", []):
+        e["from"] = rmap.get(e["from"], e["from"])
+        e["to"] = rmap.get(e["to"], e["to"])
+    ts = {c: rmap.get(r, r) for c, r in truth.items()}
+    return nd, ts
+
+
 def run(cmd):
     return subprocess.run(cmd, text=True, capture_output=True)
 
@@ -131,6 +148,9 @@ def main() -> int:
     ap.add_argument("--c-pairs", required=True, help="dir with <pair>/build compile_commands")
     ap.add_argument("--rust-out", required=True, help="dir with <pair> rust crates")
     ap.add_argument("--json", default=None)
+    ap.add_argument("--scramble-rust", action="store_true",
+                    help="mechanically rename Rust fns -> r_#### and remap truth (independent-"
+                    "truth REAL rename regime, e.g. for SACTOR whose map = ground truth)")
     args = ap.parse_args()
 
     truth_dir, c_pairs, rust_out = Path(args.truth_dir), Path(args.c_pairs), Path(args.rust_out)
@@ -146,6 +166,8 @@ def main() -> int:
             print(f"{p:16} [{err}]"); continue
         c_data, r_data = data
         truth = json.loads(tf.read_text())
+        if args.scramble_rust:
+            r_data, truth = scramble_rust(r_data, truth)
         methods = run_methods(c_data, r_data, truth)
         programs.append({"program": p, "regime": args.regime or args.source,
                          "scorable": len(truth), "methods": methods})

@@ -10,15 +10,23 @@ are NOT part of RQ3). Table ROWS = data sources (renaming regimes), micro-averag
 
 | source (renaming regime) | #prog | #truth pairs | precision | recall | recall −topo | **recall name-eq** |
 |---|--:|--:|--:|--:|--:|--:|
-| raw-LLM (gpt-5-mini) | 10 | 89 | 0.867 | **0.876** | 0.820 | **0.124** |
+| raw-LLM (gpt-5-mini) — **renamed** | 10 | 89 | 0.867 | **0.876** | 0.820 | **0.124** |
+| SACTOR idiomatic — **names kept, io-shape transformed** | 2 | 12 | 0.857 | **1.000** | 1.000 | **1.000** |
 | raw-LLM (2nd model) | — | — | (TODO) | | | |
-| SACTOR idiomatic | — | — | (TODO, tool-emitted map) | | | |
 | human port (tinyexpr/heatshrink/QOI) | — | — | (TODO, hand-labeled) | | | |
 
-**Headline (row 1):** the structural matcher recovers **87.6%** of renamed correspondences; the
-name-equality baseline recovers **12.4%** → **~7× better**. This is the quantified C1 value: name-based
-oracles are blind to the renamed/restructured translations our matcher handles. Removing call-graph
-topology propagation drops recall to 82.0% (topology contributes +5.6pp).
+**The two rows together = the full C1 story.**
+- **Renamed regime (raw-LLM):** name-equality recovers only **12.4%**; the structural matcher recovers
+  **87.6%** → **~7×**. Removing call-graph topology drops it to 82.0% (topology +5.6pp). This is where
+  name-based oracles (Fluorine, RustAssure) are blind.
+- **Names-kept-but-io-shape-transformed regime (SACTOR):** SACTOR preserves function names but rewrites
+  signatures to idiomatic Rust (`ptr+len → &[u8]`, `T* out → Option<usize>` return). name-equality is
+  trivially 100% here; the matcher ALSO recovers 100% — i.e. it does NOT break under idiomatic shape
+  transformation. (SACTOR's `function_name_map.json` = tool-emitted ground truth, no hand-labeling.)
+
+So: name-equality works ONLY when names are preserved and collapses under renaming; the matcher works in
+BOTH regimes. (SACTOR coverage > 1 = the matcher also pairs a couple of extra top-level helpers not in
+SACTOR's map; precision 0.857 accounts for them.)
 
 ## Per-program (raw-LLM gpt-5-mini)
 
@@ -41,11 +49,15 @@ matched 29 vs 28 truth, correct 19); it also has the most name-preserved (10) si
 names. Coverage can slightly exceed 1 when the translation exposes extra functions the matcher pairs;
 precision (correct/matched) accounts for any wrong extra pairs.
 
+## SACTOR row reproduce
+Staged from `tools/frameworks/sactor/tests/c_examples/{hamming,fft}_crust/`: truth = the idiomatic
+`function_name_map.json` (minus `main`); C = `c_for_analyzer/` (has compile_commands.json); Rust = the
+idiomatic `combined.rs` wrapped in a minimal crate. Then `scripts/rq3_eval.py --source "SACTOR idiomatic"`.
+
 ## Next rows (to make it a table, per the data plan)
 1. **raw-LLM 2nd/3rd model** (gpt-4o / claude) — re-translate same programs → new renamings, mostly reuse
-   truth. Cheapest way to add rows.
-2. **SACTOR idiomatic** (hamming/fft + more) — SACTOR emits `function_name_map.json` = ground truth, no
-   hand-labeling.
+   truth. Cheapest way to add rows. (DONE: gpt-5-mini.)
+2. **SACTOR idiomatic** — DONE (hamming/fft); add more SACTOR successes if available.
 3. **human port** — tinyexpr→tinyexpr-rs, heatshrink→embedded-heatshrink, QOI→qoi-rust (hand-label map;
    see `results/rq3_human_port_candidates.md`).
 

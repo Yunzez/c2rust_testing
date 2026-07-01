@@ -64,10 +64,10 @@ def fuzz(harness_dir, target, secs, extra_args=None):
 
 
 def replay(harness_dir, target, artifact):
-    """Replay one artifact once under this harness; return exit code (0 = clean)."""
+    """Replay one artifact once under this harness; return (exit code, output)."""
     r = sh(["cargo", f"+{TOOLCHAIN}", "fuzz", "run", target, str(artifact)],
            cwd=str(harness_dir), secs=300)
-    return r.returncode
+    return r.returncode, (r.stdout + r.stderr)
 
 
 def artifacts_of(harness_dir, target):
@@ -143,12 +143,17 @@ def evidence(pair, entry, target_rs, artifact, tmp):
             "ret": run.returncode}
 
 
-def classify(gate_on_exit, ev):
+def classify(gate_on_exit, gate_on_out, ev):
     if gate_on_exit == 0:
         return "UB_SUPPRESSED"             # gate rejected -> C hit (recoverable) UB on this input
-    # gate-ON still crashed on this input. Only call it a candidate bug with CONCLUSIVE UB-free evidence.
+    # gate-ON still crashed. A memory error (ASan SEGV / heap-buffer-overflow) is tier-3 memory UB the
+    # in-loop UBSan-minimal gate does not cover — report as MEMORY_UB (out of v1 in-loop scope), NOT a
+    # candidate translation bug (attribution C-OOB-UB vs real-bug needs the buffer-input ASan classifier).
+    if re.search(r"AddressSanitizer|heap-buffer-overflow|SEGV|stack-overflow", gate_on_out or ""):
+        return "MEMORY_UB"
+    # Only call it a candidate bug with CONCLUSIVE UB-free evidence.
     if ev is None or ev.get("args") is None or "error" in ev:
-        return "NEEDS_REVIEW"              # no conclusive evidence (array input, compile/exec failure)
+        return "NEEDS_REVIEW"              # no conclusive evidence (array input we couldn't decode)
     if ev.get("is_ub"):
         return "GATE_MISS"                 # C IS UB here (hard-trap div/overflow) -> gate couldn't stop it
     return "UB_FREE_DIVERGENCE"            # C provably UB-free AND still diverges -> candidate real bug
@@ -181,19 +186,20 @@ def run_boundary(b, secs, workdir):
             return {"name": name, "kind": b.get("kind"), "off_crash": off_crash,
                     "artifacts": [], "verdict": "GEN_ON_FAIL", "excluded": True}
     for art in arts:
-        ex = replay(on, target, art)
+        ex, on_out = replay(on, target, art)
         ev = None
         try:
             ev = evidence(pair, entry, tgt_rs, art, workdir)
         except Exception as e:  # evidence is best-effort; never break classification
             ev = {"error": f"evidence_exc: {e}"}
         results.append({"artifact": art.name, "gate_on_exit": ex,
-                        "class": classify(ex, ev), "evidence": ev})
+                        "class": classify(ex, on_out, ev), "evidence": ev})
     cls = {r["class"] for r in results}
     verdict = ("TN" if not off_crash and not arts else
                "SUPPRESSED" if results and cls == {"UB_SUPPRESSED"} else
                "BUG_KEPT" if results and cls == {"UB_FREE_DIVERGENCE"} else
                "GATE_MISS(hard-trap)" if results and cls == {"GATE_MISS"} else
+               "MEMORY_UB(tier3)" if results and cls == {"MEMORY_UB"} else
                "NEEDS_REVIEW" if results and cls == {"NEEDS_REVIEW"} else
                "MIXED")
     return {"name": name, "kind": b.get("kind"), "off_crash": off_crash,

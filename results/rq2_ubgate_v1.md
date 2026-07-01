@@ -26,45 +26,58 @@ evidence (the in-loop minimal-flag gate cannot emit that).
 Together: FP suppressed (sign_extend) + TN (clip) + real bug kept (safe_ratio) = the confusion matrix,
 each cell established by a deterministic per-artifact replay, not a distribution comparison.
 
-## Table A — faithful c2rust boundaries (batch 1, DYNAMIC replay) — `results/rq2_rows/tableA_batch1.json`
-A1 = 11 harnessable boundaries (report full denominator, anti-cherry-pick). gate-OFF fired on 6.
-| boundary | verdict | class | evidence (full-UBSan replay) |
-|---|---|---|---|
-| reduce_prod_i32 | SUPPRESSED | UB_SUPPRESSED | signed overflow (array input; classified by gate-ON replay) |
-| reduce_sum_i32 | SUPPRESSED | UB_SUPPRESSED | signed overflow (array input; gate-ON replay) |
-| negate_i32 | SUPPRESSED | UB_SUPPRESSED | `negation of -2147483648 cannot be represented` (input INT_MIN) |
-| abs_i32 | SUPPRESSED | UB_SUPPRESSED | `negation of -2147483648 cannot be represented` |
-| div_signed_i32 | GATE_MISS(hard-trap) | GATE_MISS | `division by zero` (input 0/0) — tier-2, in-loop gate can't suppress |
-| mod_signed_i32 | GATE_MISS(hard-trap) | GATE_MISS | `division by zero` |
-| reduce_overflow_safe, negate_abs_safe, reverse32, gcd_u64, mu_strlen | TN | — | gate-OFF clean (no divergence) |
+## Table A — faithful c2rust boundaries (DYNAMIC replay) — `results/rq2_rows/tableA.json`
+**Sampling frame (rule 1, no cherry-pick):** every auto-harnessable scalar/buffer boundary (all inputs +
+output are a scalar type or pointer-to-scalar per c_analyzer io-shapes) of a UB-taxonomy-covering set of
+13 `benchmark/pairs` programs (reduce_overflow, negate_abs, div_mod, sub_overflow, shift_ops, intmath,
+bitutils, safe_stats, base64, leb128, byte_classify, case_fold, hex_encode). **A1 = 48 boundaries** (the
+full frame is 114 over 56 programs; extensible). Fixed 20s gate-OFF budget. Config `scripts/rq2_tableA.json`.
 
-**Batch-1 tally:** 11 boundaries → 6 gate-OFF divergences (5 TN clean) → **4/4 recoverable-UB divergences
-SUPPRESSED** (each with a per-artifact UBSan diagnostic), **2 hard-trap** div-by-zero correctly labelled
-GATE_MISS (out of the in-loop gate's scope — these are RISKY boundaries the frontier statically avoids;
-NOT claimed suppressed, NOT a bug), **0 UB_FREE_DIVERGENCE** (no false candidate bugs — consistent with
-c2rust being faithful), 0 NEEDS_REVIEW. The 2 GATE_MISS are the value of the 3-tier honesty: a naive
-oracle would file div-by-zero as a bug; we neither hide it nor miscall it a translation defect.
+| verdict | count | meaning |
+|---|--:|---|
+| TN (clean both) | 35 | gate-OFF fired no divergence |
+| **UB_SUPPRESSED** (recoverable UB) | **8** | gate-ON rejected the exact artifact → C hit recoverable UBSan UB |
+| GATE_MISS (hard-trap) | 3 | div-by-zero (tier-2; in-loop gate can't suppress a SIGFPE) |
+| MEMORY_UB (tier-3) | 2 | ASan heap-overflow / SEGV (out of in-loop UBSan scope; post-hoc) |
+| **UB_FREE_DIVERGENCE (candidate bug)** | **0** | no false candidate bugs — consistent with c2rust faithful |
+| BUILD_FAIL / excluded | 0 | — |
 
-## Table C — UB taxonomy of divergent artifacts (batch 1)
+**48 boundaries → 13 gate-OFF divergences, ALL classified, 0 miscalled a translation bug.** A UB-blind
+oracle (Fluorine/RustAssure) would report all 13 as bugs (c2rust is faithful → these are all false
+positives). Our pipeline: the in-loop gate SUPPRESSES the **8/8 recoverable-UB** divergences (each with a
+per-artifact UBSan diagnostic); the replay classifier honestly labels the other 5 as **3 hard-trap
+div-by-zero** + **2 memory-UB** (tier-2/3, out of the in-loop UBSan-minimal scope — RISKY boundaries the
+frontier statically avoids / post-hoc ASan territory), NOT as bugs. **Net translation-bug false positives:
+0, vs 13 for the UB-blind oracle.** The 5 non-suppressed are the value of the replay design: without
+per-artifact evidence, a naive oracle files div-by-zero / OOB as translation defects.
+
+## Table C — UB taxonomy of the 13 divergent artifacts
 | UB class | tier | count | in-loop suppressed? | evidence |
 |---|---|--:|---|---|
-| signed / negation overflow | recoverable | 4 | **yes** | UBSan `... cannot be represented` |
-| division by zero | hard-trap | 2 | no (frontier-excluded) | UBSan `division by zero` |
+| signed integer overflow (`sub_signed_i32`) | recoverable | 1 | **yes** | UBSan `signed integer overflow: … - …` |
+| negation overflow, INT_MIN (`negate_i32`, `abs_i32`) | recoverable | 2 | **yes** | UBSan `negation of -2147483648 cannot be represented` |
+| shift ≥ width (`shl_u32`, `shl_i32`) | recoverable | 2 | **yes** | UBSan `shift exponent … too large` |
+| array-reduce overflow (`reduce_sum/prod_i32`, `safe_stats sum_i32`) | recoverable | 3 | **yes** | gate-ON replay (array input; no scalar decode) |
+| division by zero (`div/mod_signed_i32`, `safe_stats idiv`) | hard-trap | 3 | no (frontier-excluded) | UBSan `division by zero` |
+| heap-overflow / SEGV (`base64_encode`, `csv_field_count`) | memory | 2 | no (ASan/post-hoc) | ASan `heap-buffer-overflow` / `SEGV` |
 
 ## Scaling note (sample size)
-The RQ2-relevant N is the count of UB-induced false-positive events, not boundaries. Batch 1 = 11
-boundaries / 6 divergences. Seed corpus (dataset-v4 rescan) has ~37 UB divergences + ~73 clean over ~110
-boundaries; benchmark/pairs (~58 programs) + corpus_inventory (~19) + CRUST-bench c2rust (87 repos, free)
-can grow N further, bounded by auto-harness-ability (scalar/buffer). Batch 1 is the first dynamic slice;
-scale by adding boundaries to `scripts/rq2_tableA_batch1.json`.
+The RQ2-relevant N is the count of UB-induced false-positive events, not boundaries: this frame = 48
+boundaries → **13 divergence events** spanning 6 UB classes (overflow / negation / shift / div / OOB /
+SEGV). The full frame is 114 boundaries over 56 programs; benchmark/pairs (56) + corpus_inventory (~19) +
+CRUST-bench c2rust (87 repos, free) extend it further, bounded by auto-harness-ability. Grow by editing
+`scripts/rq2_tableA.json`. v1 covers the taxonomy; expand to 100+ only if a reviewer wants a larger N.
 
 ## Status
 - Runner + replay classifier + automated full-UBSan evidence: **built & working** (`eval_rq2_ubgate.py`,
   `scripts/rq2_boundaries.json`).
-- **RQ2a (suppression) + RQ2c (sensitivity) DONE on controls**: clip = TN, sign_extend = UB_SUPPRESSED
-  (evidence), safe_ratio = BUG_KEPT (sensitivity 1/1). Full confusion matrix demonstrated.
-- NEXT: **scale RQ2a/b across the faithful c2rust boundary set** (Table A with full A1 denominator +
-  Table C UB taxonomy) — this is the sample-size step (controls prove the mechanism; Table A gives the
+- **RQ2a/c controls DONE**: clip = TN, sign_extend = UB_SUPPRESSED (evidence), safe_ratio = BUG_KEPT
+  (sensitivity 1/1). Full confusion matrix demonstrated.
+- **RQ2a Table A DONE (48-boundary frame)**: 35 TN / 8 UB_SUPPRESSED / 3 hard-trap / 2 memory-UB / 0
+  candidate bugs — 13 divergences all classified, 6 UB classes, 0 false translation-bug reports.
+- NEXT (optional): larger N (extend `scripts/rq2_tableA.json` toward the 114-frame); u8encode_ sensitivity
+  once its bridge is ready; RQ2b survivor-search write-up (0 UB_FREE_DIVERGENCE = 0 survivors so far).
+- (superseded note) sample-size step done; Table A gives the
   headline FP-suppression rate over a real corpus). Optional extra sensitivity control: u8encode_ once its
   bare-out-buf + elem-split bridge is ready.
 

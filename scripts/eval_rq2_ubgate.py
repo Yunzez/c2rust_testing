@@ -160,15 +160,26 @@ def run_boundary(b, secs, workdir):
     rust_entry = b.get("rust_entry")
     target = f"{pair.name}_ft"
     off, on = workdir / f"{name}_off", workdir / f"{name}_on"
-    for d, ub in ((off, False), (on, True)):
-        if not (d / "fuzz").exists():
-            g = gen_harness(pair, entry, d, ub, rust_entry)
-            if g.returncode != 0:
-                return {"name": name, "error": "gen_failed", "detail": g.stderr[-300:]}
-    off_crash, _log = fuzz(off, target, secs)
+    if not (off / "fuzz").exists():
+        g = gen_harness(pair, entry, off, False, rust_entry)
+        if g.returncode != 0:
+            return {"name": name, "error": "gen_failed", "detail": g.stderr[-300:]}
+    off_crash, off_log = fuzz(off, target, secs)
     tgt_rs = off / "fuzz" / "fuzz_targets" / f"{target}.rs"
     arts = artifacts_of(off, target)
+    # non-zero exit with NO artifact = the harness did not run a clean campaign: a compile error
+    # (exclude from the Table A denominator) or a timeout. Report honestly, don't count as a crash.
+    if off_crash and not arts:
+        excl = ("BUILD_FAIL" if re.search(r"error\[E\d+\]|error:", off_log) and "Compiling" in off_log
+                else "TIMEOUT" if "[timeout]" in off_log else "OFF_NONZERO_NO_ARTIFACT")
+        return {"name": name, "kind": b.get("kind"), "off_crash": off_crash,
+                "artifacts": [], "verdict": excl, "excluded": True}
     results = []
+    if arts and not (on / "fuzz").exists():  # only build the gate-ON harness when there is an artifact
+        g = gen_harness(pair, entry, on, True, rust_entry)
+        if g.returncode != 0:
+            return {"name": name, "kind": b.get("kind"), "off_crash": off_crash,
+                    "artifacts": [], "verdict": "GEN_ON_FAIL", "excluded": True}
     for art in arts:
         ex = replay(on, target, art)
         ev = None

@@ -1,117 +1,133 @@
-# RQ2 evaluation plan (UB-free gate — precision of the differential oracle)
+# RQ2 evaluation plan v2 (UB-free gate — precision of the differential oracle)
 
-Authoritative plan for RQ2. Mirrors `results/rq3_eval_plan.md`. Survives compact.
+Authoritative plan for RQ2. Mirrors `results/rq3_eval_plan.md`. v2 folds in the artifact-replay redesign
+(the one substantive rigor fix) + claim-precision wording. Survives compact.
 
 ## RQ2 (tightened)
-> Does the in-loop **UB-free gate** suppress the UB-induced false-positive divergences that a naive
-> differential oracle (Fluorine / RustAssure — neither filters UB) would report as translation bugs,
-> **without** suppressing any real bug (no false negatives)?
+> Does the in-loop **UB-free gate** suppress UB-induced false-positive divergences that a UB-blind
+> differential oracle would report as translation bugs, **while preserving detection of known UB-free bug
+> controls** (observed sensitivity)?
 
-Not "we find bugs" (that's RQ1). RQ2 is PRECISION: a divergence counts as a bug **only on a UB-free
-input** (the differential-oracle principle; Csmith/EMI/Alive2 normative line). The gate reclassifies
-"divergence caused by C-side UB" from bug → non-bug. Measured on **faithful c2rust** (semantics-preserving
-by construction → ~0 real bugs, so every naive divergence there is a UB false positive) plus known-bug
-controls to prove specificity.
+Not "we find bugs" (RQ1). Not a global "no false negatives" claim — finite fuzzing cannot prove that. RQ2
+is PRECISION: a divergence counts as a bug **only on a UB-free input** (the differential-oracle principle;
+Csmith/EMI/Alive2 normative line). We prove suppression **per artifact** (deterministic replay), and prove
+sensitivity is retained on K known UB-free bug controls.
 
-## Mechanism (already built — `gen_diff_harness.py --ub-free`, commit 9593a1a)
-- C oracle compiled with UBSan minimal-runtime: `signed-integer-overflow,shift,integer-divide-by-zero,
-  bounds,null,unreachable` + `-fsanitize-recover=all` + `-fsanitize-minimal-runtime`; each
-  `__ubsan_handle_*_minimal` sets a flag instead of aborting.
-- Harness loop: reset flag → run C → **if C tripped UB, `return` (reject input, no comparison)** → else
-  run Rust and compare. So a divergence is reported ONLY on a UB-free input.
-- **gate-OFF** = the same harness without `--ub-free` = count EVERY divergence = the naive oracle =
-  the competitors' stance (baseline).
-- **gate-ON** = `--ub-free` = count only UB-free divergences = ours.
-- Real libfuzzer-sys 0.4 (honors `-max_total_time`); coverage `inline-8bit-counters,pc-table,trace-cmp`.
+## Mechanism (built) — two roles, do NOT conflate
+- **In-loop gate (fast reject)** = `gen_diff_harness.py --ub-free` (commit 9593a1a): C oracle UBSan
+  minimal-runtime; each `__ubsan_handle_*_minimal` sets a flag (no print, no location). Harness resets
+  flag → runs C → if flag set, `return` (reject input) → else run Rust + compare. Fast, but carries NO UB
+  kind / source location.
+- **Post-hoc replay (evidence)** = a FULL-UBSan (`-fsanitize=…` WITHOUT minimal-runtime, with source
+  location) build of the C oracle, run on a single artifact input to emit the UB kind + `file:line`.
+  This is where the diagnostic evidence comes from — the in-loop flag alone cannot.
+- **gate-OFF** = harness without `--ub-free` = a **UB-blind differential oracle**, matching the assumption
+  of tools that do not filter C UB (unlike Fluorine/RustAssure, which do not define bug counting over
+  UB-free inputs — put the named comparison in positioning, NOT "gate-OFF = Fluorine").
+- Real libfuzzer-sys 0.4; coverage `inline-8bit-counters,pc-table,trace-cmp`.
 
 ## Definitions
 - **boundary** = a matched (C fn, Rust fn) differentially-fuzzed unit (harness auto-generated).
-- **divergence** = fuzzing finds an input where C vs Rust observably differ (return / panic-crash / out buffer).
-- **UB-free input** = the C reference run trips no sanitizer.
-- **real bug** = a divergence on a UB-free input (the normative definition; = boundary-validity).
-- Confusion matrix per boundary: TP (real bug, flagged), TN (correct, clean), FP (UB divergence — gate's
-  job to remove), FN (real bug the gate wrongly hid — MUST be 0).
+- **artifact** = a concrete input libFuzzer saved when a divergence/crash fired.
+- **divergence** = C vs Rust observably differ (return / panic-crash / out buffer).
+- **UB-free input** = the C reference run trips no sanitizer (checked by replay).
+- **real bug** = a divergence on a UB-free input (normative; = boundary-validity).
 
-## Metrics
-- Per boundary: `diverge_off` (naive), `diverge_on` (gated), and if suppressed the **UBSan class**.
-- **FP suppression rate** on faithful c2rust = (Σ diverge_off − Σ diverge_on) / Σ diverge_off. Target: gate
-  drives naive FPs → ~0; any gate-ON survivor is EITHER a genuine c2rust bug (a finding) or a gate miss.
-- **Sensitivity retention** on known-bug controls = fraction of real bugs still flagged gate-ON (must be
-  100% → FN=0).
-- Headline: "the naive oracle reports N divergences on faithful c2rust; M/N (X%) are UB-induced false
-  positives our gate suppresses; all K real bugs survive → 0 false negatives."
+## UB classes (three-tier — be honest about what the in-loop gate can and cannot do)
+1. **Recoverable UBSan UB** — signed overflow, shift-out-of-range, most bounds/null/unreachable. The
+   in-loop flag gate SUPPRESSES these (main claim).
+2. **Hard-trap UB** — integer divide-by-zero / INT_MIN÷-1 (may SIGFPE even with `-recover`), segfault-like
+   faults. NOT guaranteed suppressed in-loop (no signal/longjmp gate in v1). Classified post-hoc as
+   `GATE_MISS (hard-trap)`; we do NOT build signal gating for v1 — we report them honestly.
+3. **Memory UB (ASan territory)** — OOB/heap. Out of the v1 mainline (in-loop ASan is state-unstable in a
+   same-process fuzzer). Handled only post-hoc IF a memory-UB false positive actually appears; not built
+   speculatively.
+Main RQ2 claim scopes to class 1. Classes 2–3 are classified, not claimed-suppressed.
 
-## Table A — FP suppression on faithful c2rust (the main result)
-| boundary | fuzz budget | diverge OFF | diverge ON | suppressed | UB class |
-|---|--|--:|--:|--:|---|
-| … per harnessed c2rust function … | 25s | … | … | … | signed-overflow / shift / … |
-| **TOTAL** | | N | ~0 | M (X%) | |
-Prior static re-label (`ub_free_rescan_v1.md`): on this corpus ALL recorded divergences were UB-backed →
-gate-ON should be ~0. RQ2 = the DYNAMIC (in-loop UB-free fuzzing) version of that, not a static relabel.
+## Metrics — artifact-level (deterministic, not a two-fuzz-distribution comparison)
+For every gate-OFF artifact `x`, replay `x` under (full-UBSan C) and (gate-ON harness) → classify:
+- `UB_SUPPRESSED` — C trips UBSan on x AND gate-ON rejects x (the suppression case; attach UB kind+loc)
+- `UB_FREE_DIVERGENCE` — C is UB-free on x AND divergence persists (a candidate REAL bug → investigate)
+- `GATE_MISS` — C UB but gate-ON still diverges/crashes (hard-trap, or a gate bug — report honestly)
+- `REPRO_FAIL` — x does not re-trigger (fuzzer nondeterminism / env) — reported, not hidden
+Suppression is defined **per artifact by replay**, never by "gate-ON fuzz found nothing".
 
-## Table B — specificity controls (worked confusion matrix; the "gate doesn't hide bugs" proof)
-| boundary | source | OFF | ON | class | outcome |
-|---|---|--:|--:|---|---|
-| clip | libopenaptx GPT-4o | clean | clean | — | **TN** (correct translation) |
-| sign_extend | libopenaptx GPT-4o | DIVERGE (bits=0) | clean | shift ≥ width (C UB) | **FP suppressed** ✓ |
-| u8encode_ | libopenaptx GPT-4o | DIVERGE | **DIVERGE** | input UB-free in C (returns −1) | **real bug KEPT** ✓ (FN=0) |
-| aptx_bin_search | libopenaptx (2 variants) | … | … | … | (to run) |
-| injected bug (g3_g2_bug / safe_ratio) | controlled | DIVERGE | **DIVERGE** | UB-free | **TP** ✓ |
-The invariant that makes FN=0 structural: the gate ONLY rejects inputs where UBSan flagged the **C** run;
-it CANNOT hide a UB-free divergence. u8encode_ + the injected bug are the live proof.
+Aggregate:
+- **FP suppression** = UB_SUPPRESSED / (all OFF artifacts that reproduce). 
+- **Observed sensitivity** = on K known UB-free bug controls, fraction still flagged gate-ON (target K/K).
+- Headline: "Across A1 harnessable c2rust boundaries, the UB-blind oracle produced N artifacts on M
+  boundaries; replay classifies X% as UB_SUPPRESSED, Y% as UB_FREE_DIVERGENCE (candidate bugs), Z% hard-
+  trap/repro-fail; on K UB-free controls the gate retained detection K/K."
 
-## Table C — taxonomy of suppressed divergences (what the naive oracle gets wrong)
-| UB class (UBSan) | example | why the naive oracle mis-reports it |
-|---|---|---|
-| shift ≥ width | sign_extend bits=0 → `val<<32` | Rust panics / wraps differently; input is out-of-contract |
-| signed overflow | … | C UB; Rust debug-assert panics |
-| integer divide-by-zero | … | … |
-| OOB / bounds | … | needs ASan (see ablation) |
-Each row = a false-positive class a UB-blind oracle (Fluorine/RustAssure) would file as a bug.
+## Structure
+- **RQ2a — artifact-level suppression (precision core):** replay-classify every gate-OFF artifact.
+- **RQ2b — gate-ON survivor search:** run gate-ON fuzz same budget; any survivor is UB-free by construction
+  (unless hard-trap/gate-miss) → classify. Finds candidate real bugs on the "faithful" corpus.
+- **RQ2c — sensitivity controls:** known UB-free bugs (injected `g3_g2_bug`; `u8encode_` if bridge ready);
+  gate-ON MUST still find them.
 
-## Baseline & ablations
-- **Baseline = gate-OFF** (the naive oracle = competitors ignore UB). This IS the comparison.
-- **Sanitizer scope**: UBSan-only (default) vs **UBSan+ASan** column — ASan catches OOB/heap UB that
-  UBSan misses; report whether it suppresses additional FPs (some memory-corruption divergences).
-- **Rust build mode**: debug (overflow asserts ON — matches c2rust intent, surfaces overflow) is the
-  default; an overflow panic on a UB (C-overflowing) input is correctly gated, on a UB-free input is a
-  real finding. Document; optionally a release column.
+## Table A — all harnessable faithful c2rust boundaries (denominator reported; anti-cherry-pick)
+| boundaries (A1) | OFF artifacts | reproduced | UB_SUPPRESSED | UB_FREE_DIVERGENCE | GATE_MISS | REPRO_FAIL |
+|--:|--:|--:|--:|--:|--:|--:|
+| N_all | … | … | … | … | … | … |
+Report A1 = ALL harnessable boundaries (the denominator), and A2 = the subset with OFF artifacts. The
+suppression rate is over A2 artifacts, but A1 must be shown so it is not cherry-picked. Seed corpus =
+`ub_free_rescan_v1` (134 boundaries, statically all UB-backed) run DYNAMICALLY now.
+
+## Table B — controls (confusion matrix; mark STATUS honestly)
+| case | bug kind | status | OFF | ON | class | outcome |
+|---|---|---|--:|--:|---|---|
+| clip | — | ready ✓ | clean | clean | — | TN |
+| sign_extend | shift≥width (C UB) | ready ✓ | DIVERGE(bits=0) | clean | UB_SUPPRESSED | FP suppressed ✓ |
+| u8encode_ | UB-free (C returns −1) | **pending-bridge** | DIVERGE | DIVERGE(expected) | UB_FREE_DIVERGENCE | sensitivity (if runnable) |
+| aptx_bin_search | ? | ready ✓ | … | … | … | (to run) |
+| g3_g2_bug | injected, UB-free | controlled-injected | DIVERGE | DIVERGE | UB_FREE_DIVERGENCE | sensitivity ✓ |
+`ready` = staged + runs; `pending-bridge` = needs a harness bridge (u8encode_: bare out-buf + elem-split)
+before it counts as evidence; `controlled-injected` = we inserted a known UB-free bug.
+
+## Table C — UB taxonomy of suppressed artifacts
+| UB class | tier | count | example | in-loop suppressed? | evidence source |
+|---|---|--:|---|---|---|
+| shift ≥ width | 1 recoverable | … | sign_extend bits=0 | yes | full-UBSan replay |
+| signed overflow | 1 recoverable | … | … | yes | full-UBSan replay |
+| divide-by-zero | 2 hard-trap | … | … | not guaranteed | replay (SIGFPE) |
+| OOB/bounds | 3 memory | … | … | post-hoc only | ASan replay (if needed) |
 
 ## Hard artifacts / rebuttals
-1. "The gate just hides bugs." → Table B (u8encode_ + injected survive) + the structural invariant (gate
-   rejects only UBSan-flagged **C** inputs). **Log the UBSan diagnostic (UB kind + C file:line) for every
-   suppressed case** as evidence the suppressed input was genuinely UB. (hard artifact)
-2. "How do you know suppressed = genuinely UB?" → the attached UBSan report is the proof.
-3. "c2rust faithful isn't truly bug-free." → any gate-ON survivor on faithful c2rust is a REAL c2rust bug
-   (report it — bonus finding) or a gate miss (investigate). `ub_free_rescan_v1` found 0 survivors — consistent.
-4. Definition of "real bug" = UB-free divergence — [[ub-differential-oracle-principle]], normative
-   (Csmith/EMI/Alive2), not our invention.
+1. "The gate just hides real bugs." → structural invariant (gate rejects only inputs where UBSan flagged
+   the **C** run → cannot hide a UB-free divergence) + RQ2c controls flagged K/K + per-suppressed UB kind.
+2. "ON just didn't search to that input." → we do NOT infer suppression from ON finding nothing; every OFF
+   artifact is REPLAYED under gate-ON and full-UBSan (deterministic per-artifact classification).
+3. "How do you know suppressed = genuinely UB?" → the full-UBSan replay diagnostic (UB kind + C file:line).
+4. "faithful c2rust isn't truly bug-free." → we do NOT assume it; any UB_FREE_DIVERGENCE survivor is a
+   CANDIDATE real bug and investigated/reported (RQ2b). Prior static rescan found 0 survivors — consistent.
+5. Definition of "real bug" = UB-free divergence — [[ub-differential-oracle-principle]] (normative).
 
 ## Data
-1. **Faithful c2rust corpus** (Table A): scalar/buffer function boundaries the auto-bridge harnesses,
-   drawn from the CROWN c2rust corpus (`results/corpus_inventory_v1.md`, ~19 aligned programs) — pick the
-   functions that (a) harness cleanly and (b) exhibit UB divergences. Prior `ub_free_rescan` corpus is the
-   seed (134 boundaries relabeled; all UB-backed).
-2. **Controls** (Table B): libopenaptx head-to-head pairs already staged under
-   `tools/headtohead/libopenaptx/` (clip, sign_extend, aptx_bin_search; u8encode_ via
-   `setup_libopenaptx.sh`) + the injected bug (g3_g2_bug / safe_ratio).
+1. **Faithful c2rust corpus** (Table A / RQ2a-b): scalar/buffer boundaries the auto-bridge harnesses, from
+   the CROWN c2rust corpus (`corpus_inventory_v1.md`); seed = `ub_free_rescan_v1` 134-boundary set.
+2. **Controls** (Table B / RQ2c): `tools/headtohead/libopenaptx/` (clip, sign_extend, aptx_bin_search;
+   u8encode_ via `setup_libopenaptx.sh`, pending its bridge) + injected `g3_g2_bug`.
 
 ## DoD
-1. Runner `scripts/eval_rq2_ubgate.py`: per boundary, generate gate-OFF + gate-ON harnesses, fuzz both for
-   a fixed budget, record {diverge_off, diverge_on, ub_class, ubsan_report}, emit
-   `{boundaries:[…], suppression_rate, sensitivity, by_class}` JSON + `results/rq2_ubgate_v1.md` (Tables A/B/C).
-2. Every suppressed divergence carries its UBSan diagnostic.
-3. Sensitivity control passes: all known real bugs flagged gate-ON (FN=0).
+1. Runner `scripts/eval_rq2_ubgate.py`: per boundary — fuzz gate-OFF (collect artifacts), **replay each
+   artifact under gate-ON and full-UBSan**, classify (UB_SUPPRESSED / UB_FREE_DIVERGENCE / GATE_MISS /
+   REPRO_FAIL) with UB kind+loc; also run gate-ON fuzz (RQ2b survivor search). Emit
+   `{boundaries, artifacts:[{class, ub_kind, loc}], suppression_rate, sensitivity, by_class}` JSON +
+   `results/rq2_ubgate_v1.md` (Tables A/B/C).
+2. Every UB_SUPPRESSED artifact carries its full-UBSan diagnostic.
+3. RQ2c: all known UB-free controls flagged gate-ON (observed sensitivity K/K).
 
 ## Execution order
-1. Wire the runner around the two ready controls (sign_extend, u8encode_) → Table B skeleton + FN=0 check.
-2. Add clip + aptx_bin_search → fill Table B.
-3. Harness a batch of faithful c2rust scalar/buffer functions → Table A (FP suppression) + Table C taxonomy.
-4. ASan-scope ablation column.
+1. Build the **replay classifier** around the 2 ready controls (sign_extend → UB_SUPPRESSED; clip → TN):
+   fuzz OFF → replay artifact under full-UBSan + gate-ON → class. This is the RQ2a skeleton + evidence path.
+2. RQ2c sensitivity: injected `g3_g2_bug` (+ u8encode_ if its bridge is ready) → gate-ON still flags.
+3. Scale RQ2a/b across the faithful c2rust boundary set → Table A + C.
+4. (only if a memory-UB FP appears) post-hoc ASan classification.
 
-## Open decisions (defaults chosen; flag if you disagree)
-- Corpus size for Table A: start with the `ub_free_rescan` boundary set (already known UB-backed) run
-  DYNAMICALLY; expand if a bigger N is wanted. (rework-safe: mechanism/metric frozen, only N grows.)
-- Sanitizer: UBSan default + ASan ablation column.
-- Fuzz budget: 25s/boundary (demo-proven throughput ~500k exec/s); bump for the headline run.
-- Build mode: debug asserts on (document the overflow-panic-on-UB-input = gated).
+## Open decisions (defaults; flag to change)
+- Table A denominator = the `ub_free_rescan` 134-boundary set, run dynamically; grow if bigger N wanted.
+- Sanitizer: UBSan only in v1 mainline; ASan post-hoc, on demand.
+- Fuzz budget: 25s/boundary (≈500k exec/s proven); longer for the headline.
+- Rust build: debug asserts ON (overflow-panic on a C-UB input = correctly gated; on a UB-free input = a
+  candidate bug).

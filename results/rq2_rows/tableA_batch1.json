@@ -1,0 +1,163 @@
+[
+ {
+  "name": "reduce_prod_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-d6d909ea78899dc43f6efe8aab3575c7b61c1757",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": null
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "reduce_sum_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-a8e75f0b1b63712b7f4ff736bfef7ab7002d6a70",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": null
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "reduce_overflow_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "negate_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-00317cd83582d4dccd5d824c40880f8873efe467",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": {
+     "args": [
+      -2147483648
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/negate_abs/source/negate_abs.c:19:12: runtime error: negation of -2147483648 cannot be represented in type 'int32_t' (aka 'int'); cast to an unsigned type to negate this value to itself"
+     ],
+     "is_ub": true,
+     "tier": "recoverable",
+     "ret": 0
+    }
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "abs_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-8afb7bdf2b5bc89a7424318f693e337018b081b1",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": {
+     "args": [
+      -2147483648
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/negate_abs/source/negate_abs.c:27:16: runtime error: negation of -2147483648 cannot be represented in type 'int32_t' (aka 'int'); cast to an unsigned type to negate this value to itself"
+     ],
+     "is_ub": true,
+     "tier": "recoverable",
+     "ret": 0
+    }
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "negate_abs_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "div_signed_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "gate_on_exit": 1,
+    "class": "GATE_MISS",
+    "evidence": {
+     "args": [
+      0,
+      0
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/div_mod/source/div_mod.c:26:14: runtime error: division by zero"
+     ],
+     "is_ub": true,
+     "tier": "hard-trap",
+     "ret": 124
+    }
+   }
+  ],
+  "verdict": "GATE_MISS(hard-trap)"
+ },
+ {
+  "name": "mod_signed_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "gate_on_exit": 1,
+    "class": "GATE_MISS",
+    "evidence": {
+     "args": [
+      0,
+      0
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/div_mod/source/div_mod.c:19:14: runtime error: division by zero"
+     ],
+     "is_ub": true,
+     "tier": "hard-trap",
+     "ret": 124
+    }
+   }
+  ],
+  "verdict": "GATE_MISS(hard-trap)"
+ },
+ {
+  "name": "reverse32",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "gcd_u64",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "mu_strlen",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ }
+]

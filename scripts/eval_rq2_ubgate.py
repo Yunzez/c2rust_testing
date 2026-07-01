@@ -143,13 +143,27 @@ def evidence(pair, entry, target_rs, artifact, tmp):
             "ret": run.returncode}
 
 
+# Genuine memory-error ASan classes. Deliberately NOT bare "AddressSanitizer": that word also appears
+# in (a) "AddressSanitizer: FPE ..." — an arithmetic HARD-TRAP (div-by-zero / INT_MIN/-1), which is
+# GATE_MISS, resolved below via the evidence UB check, not memory UB — and (b) the libFuzzer advisory
+# NOTE "Combine libFuzzer with AddressSanitizer or similar ...", printed on EVERY non-memory crash
+# including a real divergence panic. Matching either of those mislabels real bugs / hard-traps as memory UB.
+_MEM_UB_RE = re.compile(
+    r"AddressSanitizer:\s*"
+    r"(heap-buffer-overflow|stack-buffer-overflow|global-buffer-overflow"
+    r"|heap-use-after-free|stack-use-after-scope|stack-use-after-return"
+    r"|use-after-poison|dynamic-stack-buffer-overflow|SEGV|stack-overflow"
+    r"|attempting free|allocation-size-too-big)"
+    r"|LeakSanitizer")
+
+
 def classify(gate_on_exit, gate_on_out, ev):
     if gate_on_exit == 0:
         return "UB_SUPPRESSED"             # gate rejected -> C hit (recoverable) UB on this input
     # gate-ON still crashed. A memory error (ASan SEGV / heap-buffer-overflow) is tier-3 memory UB the
     # in-loop UBSan-minimal gate does not cover — report as MEMORY_UB (out of v1 in-loop scope), NOT a
     # candidate translation bug (attribution C-OOB-UB vs real-bug needs the buffer-input ASan classifier).
-    if re.search(r"AddressSanitizer|heap-buffer-overflow|SEGV|stack-overflow", gate_on_out or ""):
+    if _MEM_UB_RE.search(gate_on_out or ""):
         return "MEMORY_UB"
     # Only call it a candidate bug with CONCLUSIVE UB-free evidence.
     if ev is None or ev.get("args") is None or "error" in ev:
@@ -212,6 +226,9 @@ def main() -> int:
     ap.add_argument("--secs", type=int, default=25)
     ap.add_argument("--workdir", default=None)
     ap.add_argument("--json", default=None)
+    ap.add_argument("--cleanup", action="store_true",
+                    help="delete each boundary's off/on cargo builds after classifying it "
+                         "(keeps disk footprint to ~1 boundary; needed for large frames)")
     args = ap.parse_args()
     workdir = Path(args.workdir) if args.workdir else Path(
         "/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/rq2run")
@@ -223,6 +240,9 @@ def main() -> int:
     for b in boundaries:
         r = run_boundary(b, args.secs, workdir)
         rows.append(r)
+        if args.cleanup:
+            for suf in ("_off", "_on"):
+                shutil.rmtree(workdir / f"{b['name']}{suf}", ignore_errors=True)
         if "error" in r:
             print(f"{r['name']:20} [ERROR {r['error']}] {r.get('detail','')[:40]}"); continue
         classes = ",".join(sorted({a["class"] for a in r["artifacts"]})) or "-"

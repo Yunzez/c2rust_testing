@@ -1,0 +1,101 @@
+[
+ {
+  "id": "div_safe_xor",
+  "program": "div_mod",
+  "operator": "operator-replacement",
+  "entry": "div_mod_safe",
+  "site": "div_mod_safe: + -> ^",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    2054846986,
+    10
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "negate_sub",
+  "program": "negate_abs",
+  "operator": "operator-replacement",
+  "entry": "negate_abs_safe",
+  "site": "negate_abs_safe: wrapping_add -> wrapping_sub",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    10
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "shl_mask15",
+  "program": "shift_ops",
+  "operator": "constant-perturbation",
+  "entry": "shift_ops_safe",
+  "site": "shl_u32_masked: mask 31 -> 15",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    488447261,
+    15645
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "shl_mask7",
+  "program": "shift_ops",
+  "operator": "constant-perturbation",
+  "entry": "shift_ops_safe",
+  "site": "shl_i32_safe: mask 31 -> 7",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    606575981,
+    186
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "div_noguard",
+  "program": "div_mod",
+  "operator": "guard-weakening",
+  "entry": "div_mod_safe",
+  "site": "div_signed_guarded: drop the b==0 guard",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    0,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ }
+]

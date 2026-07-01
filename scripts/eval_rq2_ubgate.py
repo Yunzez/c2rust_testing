@@ -38,12 +38,16 @@ def sh(cmd, cwd=None, secs=400):
     try:
         return subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, timeout=secs)
     except subprocess.TimeoutExpired as e:
-        return subprocess.CompletedProcess(cmd, 124, e.stdout or "", (e.stderr or "") + "\n[timeout]")
+        dec = lambda x: x.decode(errors="replace") if isinstance(x, bytes) else (x or "")
+        return subprocess.CompletedProcess(cmd, 124, dec(e.stdout), dec(e.stderr) + "\n[timeout]")
 
 
 def gen_harness(pair, entry, out, ub_free, rust_entry):
+    # --ignore-schema = always infer the schema from the C signature; RQ2 harvests arbitrary
+    # non-entry boundaries, so a program-level schemas/<prog>.json (keyed to its designated entry)
+    # would spuriously mismatch. Inference handles scalar/buffer sigs (Table A scope).
     cmd = [sys.executable, str(GEN), "--pair", str(pair), "--entry", entry,
-           "--expose-entry", "--infer-schema", "--out", str(out)]
+           "--expose-entry", "--ignore-schema", "--out", str(out)]
     if rust_entry:
         cmd += ["--rust-entry", rust_entry]
     if ub_free:
@@ -129,18 +133,25 @@ def evidence(pair, entry, target_rs, artifact, tmp):
              *[str(c) for c in csrcs], str(drv), "-o", str(binp)], secs=120)
     if cc.returncode != 0:
         return {"args": vals, "error": "compile_failed", "detail": cc.stderr[-300:]}
-    run = sh([str(binp)], secs=30)
+    run = sh([str(binp)], secs=8)
     ub = [l for l in (run.stdout + run.stderr).splitlines() if "runtime error:" in l]
-    return {"args": vals, "ub_reports": ub, "is_ub": bool(ub)}
+    # returncode != 0 = the C reference did NOT cleanly return on this input: a SIGFPE/SIGSEGV
+    # signal (hard-trap UB, e.g. div-by-zero / INT_MIN/-1) or a timeout. Either way C is UB here.
+    trapped = run.returncode != 0
+    return {"args": vals, "ub_reports": ub, "is_ub": bool(ub) or trapped,
+            "tier": "hard-trap" if trapped else ("recoverable" if ub else None),
+            "ret": run.returncode}
 
 
 def classify(gate_on_exit, ev):
     if gate_on_exit == 0:
-        return "UB_SUPPRESSED"
-    # gate-ON still crashed on this input
-    if ev and not ev.get("is_ub", False):
-        return "UB_FREE_DIVERGENCE"        # C is UB-free here -> candidate real bug
-    return "GATE_MISS"                     # C UB but survived gate (hard-trap) or gate bug
+        return "UB_SUPPRESSED"             # gate rejected -> C hit (recoverable) UB on this input
+    # gate-ON still crashed on this input. Only call it a candidate bug with CONCLUSIVE UB-free evidence.
+    if ev is None or ev.get("args") is None or "error" in ev:
+        return "NEEDS_REVIEW"              # no conclusive evidence (array input, compile/exec failure)
+    if ev.get("is_ub"):
+        return "GATE_MISS"                 # C IS UB here (hard-trap div/overflow) -> gate couldn't stop it
+    return "UB_FREE_DIVERGENCE"            # C provably UB-free AND still diverges -> candidate real bug
 
 
 def run_boundary(b, secs, workdir):
@@ -171,7 +182,9 @@ def run_boundary(b, secs, workdir):
     verdict = ("TN" if not off_crash and not arts else
                "SUPPRESSED" if results and cls == {"UB_SUPPRESSED"} else
                "BUG_KEPT" if results and cls == {"UB_FREE_DIVERGENCE"} else
-               "MIXED/DIVERGENCE")
+               "GATE_MISS(hard-trap)" if results and cls == {"GATE_MISS"} else
+               "NEEDS_REVIEW" if results and cls == {"NEEDS_REVIEW"} else
+               "MIXED")
     return {"name": name, "kind": b.get("kind"), "off_crash": off_crash,
             "artifacts": results, "verdict": verdict}
 

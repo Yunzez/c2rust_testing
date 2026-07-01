@@ -167,8 +167,10 @@ def run_boundary(b, secs, workdir):
             ev = {"error": f"evidence_exc: {e}"}
         results.append({"artifact": art.name, "gate_on_exit": ex,
                         "class": classify(ex, ev), "evidence": ev})
+    cls = {r["class"] for r in results}
     verdict = ("TN" if not off_crash and not arts else
-               "SUPPRESSED" if all(r["class"] == "UB_SUPPRESSED" for r in results) and results else
+               "SUPPRESSED" if results and cls == {"UB_SUPPRESSED"} else
+               "BUG_KEPT" if results and cls == {"UB_FREE_DIVERGENCE"} else
                "MIXED/DIVERGENCE")
     return {"name": name, "kind": b.get("kind"), "off_crash": off_crash,
             "artifacts": results, "verdict": verdict}

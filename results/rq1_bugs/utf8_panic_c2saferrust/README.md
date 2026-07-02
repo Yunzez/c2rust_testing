@@ -34,8 +34,8 @@ C2SaferRust `_WIP`, same source. A divergence where base is UB-free and WIP pani
 
 | program | to_str/from_utf8 `.unwrap()` sites |
 |---|---:|
-| optipng | 12 |
-| tulipindicators | 7 |
+| optipng | 12 | **confirmed (bug #4)** |
+| tulipindicators | 7 | no |
 | genann | 4 |
 | bzip2 | 2 |
 | lil | 1 |

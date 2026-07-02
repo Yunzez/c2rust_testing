@@ -166,6 +166,8 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <sanitizer/asan_interface.h>
 {incl}
 static unsigned char _buf[1<<16]; static size_t _got, _pos;
@@ -175,7 +177,14 @@ static long long take_uint(int w){{ unsigned long long v=0; for(int b=0;b<w;b++)
 int main(void){{
     _got = fread(_buf,1,sizeof _buf,stdin); _pos=0;
 {chr(10).join(decode)}
+    /* Isolate the callee's stdout: a function that printf()s (e.g. a debug printer) would
+     * otherwise mix its output into our serialization channel -> a deterministic FALSE
+     * divergence (the determinism gate can't catch it). Redirect stdout to /dev/null across
+     * the call, then restore and write ONLY our ret/param serialization. */
+    fflush(stdout); int _so = dup(1); int _dn = open("/dev/null", O_WRONLY);
+    if (_dn >= 0) dup2(_dn, 1);
 {callline}
+    fflush(stdout); if (_dn >= 0) {{ dup2(_so, 1); close(_dn); }} if (_so >= 0) close(_so);
 {retser}
 {chr(10).join(ser)}
     printf("\\n");

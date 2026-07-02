@@ -20,8 +20,11 @@ the C, so NO version-mismatch risk.
 |---|---|---|---|---|
 | hamming_crust | pass | trivial (names kept) | fuzzed (13,245) | **CLEAN** |
 | qsort | pass (needed recursion patch) | trivial | fuzzed (10,770) | **CLEAN** |
-| utf8_crust | idiomatic retrying | — | — | pending |
+| utf8_crust | **idiomatic FAIL** (`MAX_ATTEMPTS_EXCEEDED`, ~$1.53 in retries) | — | — | **build-fail** (SACTOR couldn't produce idiomatic UTF-8 code) |
 | ~~bitset_crust~~ | — | — | — | dropped (pointer-graph `bitset_t*` handle, out of value scope) |
+
+**Gate:** 2/3 end-to-end CLEAN, 1 idiomatic-translation failure. Cross-tool sanity ACHIEVED (below the
+≥3 threshold for auto-triggering phase 2; and 0 SACTOR bugs found, so no attribution work needed).
 
 ## Key cross-tool findings
 
@@ -35,14 +38,17 @@ the C, so NO version-mismatch risk.
 2. **SACTOR's idiomatic reshape is clean and semantics-preserving** (hamming): `(ptr,len)` → `&[u8]`,
    `(bool ret, *outsize)` → `Option<usize>`; round-trips correctly vs C.
 
-3. **UTF-8 handling differs by DESIGN** (from atoi + utf8 unidiomatic): SACTOR changes `char*` → `&str`
-   at the API (e.g. `atoi(s: &str)`), so non-UTF-8 is excluded at the TYPE level — a domain narrowing,
-   not C2SaferRust's runtime `to_str().unwrap()` panic. (utf8_crust idiomatic pending to confirm the
-   reshape; unidiomatic keeps `*const c_char`.) Both diverge from C's "accepts arbitrary bytes", but
-   differently — a clean tool-comparison point.
+3. **Three tools, three UTF-8 behaviors** — a clean cross-tool comparison on the SAME byte-string issue:
+   - **c2rust** (faithful): keeps `*const c_char`, byte-accepting, correct.
+   - **C2SaferRust**: keeps `char*`, inserts `to_str().unwrap()` → **runtime PANIC** on non-UTF-8 (bugs #2–#5).
+   - **SACTOR**: changes `char*` → **`&str`** (type-level domain narrowing, e.g. `atoi(s: &str)`) on simple
+     cases; on UTF-8-heavy code (utf8_crust) it **fails to translate idiomatically at all**
+     (`MAX_ATTEMPTS_EXCEEDED` after ~$1.53 of retries). So SACTOR's UTF-8 failure mode is *domain
+     narrowing or a translation failure*, NOT a runtime panic. Different tools, different failure modes.
 
 ## Cost
-Cumulative ~**$0.30** (gpt-5.1). Cap $10 phase-1 / $30 overall — far under.
+Cumulative ~**$1.75** (gpt-5.1): hamming ~$0.16, qsort ~$0.06, utf8 ~$1.53 (idiomatic retries), atoi
+smoke ~$0.05. Cap $10 phase-1 / $30 overall — far under.
 
 ## Reading
 The pipeline generalizes to a 2nd tool. The two C2SaferRust bug classes do NOT blindly reproduce in

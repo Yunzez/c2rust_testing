@@ -24,8 +24,13 @@ identity, aliasing, recursive-structure normalization — a separate research pr
 
 ## Measured facts (established today)
 
-- CRUST-bench c2rust baseline: 41/100 programs transpile single-TU (795 extern-C fns; report
-  `results/rq1_crustbench/c2rust_baseline_report.json`). Recipe: `scripts/transpile_crustbench.py`.
+- CRUST-bench c2rust baseline: 41/100 programs transpile single-TU. **654 real translated
+  function boundaries** (`extern "C" fn NAME(...)` definitions) — this is the correct denominator.
+  NOTE: `c2rust_baseline_report.json`'s `extern_c_fns` field says 795, but that is an OVER-COUNT:
+  it used `text.count('extern "C" fn')`, which also matches ~141 function-POINTER TYPE annotations
+  (e.g. `type f = unsafe extern "C" fn(f32)->f32;` and callback fields) that are NOT callable
+  functions. 795 = 654 real fns + 141 fn-ptr types. All coverage numbers below use 654.
+  Recipe: `scripts/transpile_crustbench.py`.
 - **In-process** (mature emitter) constructibility on the 654 boundaries: **211/654 = 32%**.
 - **OOP v1** (scalar/buffer/out_scalar only): **123/654 = 18%** (`results/rq1_crustbench/oop_coverage.json`).
 - Unsupported (SHARED root limits, both harnesses): nonPOD_struct 194 + recursive struct ~162 +

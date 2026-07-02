@@ -1,0 +1,71 @@
+[
+ {
+  "id": "bu_pack_mask",
+  "program": "bitutils",
+  "operator": "constant-perturbation",
+  "entry": "bitutils_eval",
+  "site": "pack4: b-lane mask 0xff -> 0x7f",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "detect_wall_s": 0.22,
+  "seed": 1,
+  "evidence": {
+   "args": [
+    2,
+    9056768,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "bu_xor3_or",
+  "program": "bitutils",
+  "operator": "operator-replacement",
+  "entry": "bitutils_eval",
+  "site": "bitutils_eval arm 3: popcount32(x ^ y) -> popcount32(x | y)",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "detect_wall_s": 0.22,
+  "seed": 1,
+  "evidence": {
+   "args": [
+    3,
+    3,
+    3
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "bu_popcount_off1",
+  "program": "bitutils",
+  "operator": "off-by-one",
+  "entry": "bitutils_eval",
+  "site": "popcount32: return count -> count + 1",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "detect_wall_s": 0.21,
+  "seed": 1,
+  "evidence": {
+   "args": [
+    0,
+    0,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ }
+]

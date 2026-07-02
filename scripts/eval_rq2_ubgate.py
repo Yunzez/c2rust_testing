@@ -19,7 +19,7 @@ Usage:
       --json results/rq2_rows/controls.json
 """
 from __future__ import annotations
-import argparse, json, re, subprocess, sys, shutil
+import argparse, json, re, subprocess, sys, shutil, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -55,10 +55,15 @@ def gen_harness(pair, entry, out, ub_free, rust_entry):
     return sh(cmd, secs=120)
 
 
-def fuzz(harness_dir, target, secs, extra_args=None):
-    """Run the fuzz target; return (crashed: bool, stdout+stderr)."""
-    cmd = ["cargo", f"+{TOOLCHAIN}", "fuzz", "run", target, "--"] + \
-          (extra_args or [f"-max_total_time={secs}"])
+def build_target(harness_dir, target):
+    """Compile the fuzz target ahead of the timed campaign so time-to-detect excludes build time."""
+    return sh(["cargo", f"+{TOOLCHAIN}", "fuzz", "build", target], cwd=str(harness_dir), secs=600)
+
+
+def fuzz(harness_dir, target, secs, extra_args=None, seed=None):
+    """Run the fuzz target; return (crashed: bool, stdout+stderr). seed makes the campaign reproducible."""
+    base = [f"-max_total_time={secs}"] + ([f"-seed={seed}"] if seed is not None else [])
+    cmd = ["cargo", f"+{TOOLCHAIN}", "fuzz", "run", target, "--"] + (extra_args or base)
     r = sh(cmd, cwd=str(harness_dir), secs=secs + 300)
     return (r.returncode != 0), (r.stdout + r.stderr)
 
@@ -173,7 +178,7 @@ def classify(gate_on_exit, gate_on_out, ev):
     return "UB_FREE_DIVERGENCE"            # C provably UB-free AND still diverges -> candidate real bug
 
 
-def run_boundary(b, secs, workdir):
+def run_boundary(b, secs, workdir, seed=None):
     name, entry = b["name"], b["entry"]
     pair = ROOT / b["pair"]
     rust_entry = b.get("rust_entry")
@@ -183,7 +188,10 @@ def run_boundary(b, secs, workdir):
         g = gen_harness(pair, entry, off, False, rust_entry)
         if g.returncode != 0:
             return {"name": name, "error": "gen_failed", "detail": g.stderr[-300:]}
-    off_crash, off_log = fuzz(off, target, secs)
+    build_target(off, target)  # untimed: keep the timed window ~pure fuzzing (time-to-detect)
+    t0 = time.monotonic()
+    off_crash, off_log = fuzz(off, target, secs, seed=seed)
+    detect_wall_s = round(time.monotonic() - t0, 2)
     tgt_rs = off / "fuzz" / "fuzz_targets" / f"{target}.rs"
     arts = artifacts_of(off, target)
     # non-zero exit with NO artifact = the harness did not run a clean campaign: a compile error
@@ -217,7 +225,7 @@ def run_boundary(b, secs, workdir):
                "NEEDS_REVIEW" if results and cls == {"NEEDS_REVIEW"} else
                "MIXED")
     return {"name": name, "kind": b.get("kind"), "off_crash": off_crash,
-            "artifacts": results, "verdict": verdict}
+            "artifacts": results, "verdict": verdict, "detect_wall_s": detect_wall_s, "seed": seed}
 
 
 def main() -> int:

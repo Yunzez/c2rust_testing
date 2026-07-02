@@ -1,0 +1,13 @@
+[
+ {"id":"bu_pack_mask","program":"bitutils","pair":"benchmark/pairs/bitutils","entry":"bitutils_eval","operator":"constant-perturbation","reach":"op-gated","site":"pack4: b-lane mask 0xff -> 0x7f",
+  "find":"| (b & 0xff as uint32_t) << 16 as ::core::ffi::c_int",
+  "replace":"| (b & 0x7f as uint32_t) << 16 as ::core::ffi::c_int"},
+
+ {"id":"bu_xor3_or","program":"bitutils","pair":"benchmark/pairs/bitutils","entry":"bitutils_eval","operator":"operator-replacement","reach":"op-gated","site":"bitutils_eval arm 3: popcount32(x ^ y) -> popcount32(x | y)",
+  "find":"3 => return popcount32(x ^ y),",
+  "replace":"3 => return popcount32(x | y),"},
+
+ {"id":"bu_popcount_off1","program":"bitutils","pair":"benchmark/pairs/bitutils","entry":"bitutils_eval","operator":"off-by-one","reach":"op-gated","site":"popcount32: return count -> count + 1",
+  "find":"    return count;",
+  "replace":"    return count.wrapping_add(1);"}
+]

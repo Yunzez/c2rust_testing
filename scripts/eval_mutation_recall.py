@@ -66,7 +66,32 @@ def apply_patch(pair_dir: Path, find: str, replace: str):
     return True, f.name
 
 
-def run_mutation(m, secs, workdir, cleanup=True):
+def dry_check(m, workdir):
+    """Patch + standalone rustc metadata compile check (no fuzz). Validates find-uniqueness and
+    that the mutant still compiles, cheaply, before committing to a fuzz campaign."""
+    mid = m["id"]
+    src_pair = ROOT / m["pair"]
+    tmp_root = workdir / f"dry_{mid}"
+    tmp_pair = tmp_root / src_pair.name
+    if tmp_root.exists():
+        shutil.rmtree(tmp_root)
+    shutil.copytree(src_pair, tmp_pair)
+    ok, detail = apply_patch(tmp_pair, m["find"], m["replace"])
+    if not ok:
+        shutil.rmtree(tmp_root, ignore_errors=True)
+        return {"id": mid, "outcome": "PATCH_FAIL", "detail": detail}
+    rs = sorted((tmp_pair / "translated").glob("*.rs"))[0]
+    import subprocess
+    r = subprocess.run(["rustc", f"+{rq2.TOOLCHAIN}", "--edition", "2021", "--crate-type", "lib",
+                        "--emit=metadata", "-A", "warnings", "-o", str(tmp_root / "m.rmeta"), str(rs)],
+                       text=True, capture_output=True)
+    shutil.rmtree(tmp_root, ignore_errors=True)
+    if r.returncode != 0:
+        return {"id": mid, "outcome": "COMPILE_FAIL", "detail": r.stderr.strip().splitlines()[-1][:120]}
+    return {"id": mid, "outcome": "OK", "detail": detail}
+
+
+def run_mutation(m, secs, workdir, cleanup=True, seed=None):
     mid = m["id"]
     src_pair = ROOT / m["pair"]
     tmp_root = workdir / f"mut_{mid}"
@@ -82,7 +107,7 @@ def run_mutation(m, secs, workdir, cleanup=True):
 
     b = {"name": mid, "pair": str(tmp_pair.resolve()), "entry": m["entry"],
          "rust_entry": m.get("rust_entry"), "kind": m["operator"]}
-    r = rq2.run_boundary(b, secs, tmp_root)
+    r = rq2.run_boundary(b, secs, tmp_root, seed=seed)
     if "error" in r:
         return {"id": mid, "program": m["program"], "operator": m["operator"],
                 "outcome": "GEN_FAIL", "detail": r.get("detail", r["error"]), "rq2": r}
@@ -98,6 +123,7 @@ def run_mutation(m, secs, workdir, cleanup=True):
     row = {"id": mid, "program": m["program"], "operator": m["operator"],
            "entry": m["entry"], "site": m.get("site"), "outcome": outcome,
            "rq2_verdict": verdict, "n_artifacts": len(r.get("artifacts", [])),
+           "detect_wall_s": r.get("detect_wall_s"), "seed": seed,
            "evidence": ev}
     if cleanup:  # drop the cargo builds; the row + evidence is all we keep (disk quota)
         shutil.rmtree(tmp_root, ignore_errors=True)
@@ -112,22 +138,39 @@ def main() -> int:
     ap.add_argument("--json", default=None)
     ap.add_argument("--keep-builds", action="store_true",
                     help="keep each mutant's cargo build dir (default: delete after classifying)")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="only patch + rustc-metadata compile check each mutant (no fuzz); validates specs")
+    ap.add_argument("--seed", type=int, default=None,
+                    help="libFuzzer -seed for the gate-OFF campaign (reproducible runs / flakiness checks)")
     args = ap.parse_args()
     workdir = Path(args.workdir) if args.workdir else Path(
         "/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/mutrun")
     workdir.mkdir(parents=True, exist_ok=True)
     muts = json.loads(Path(args.muts).read_text())
+    if args.dry_run:
+        print(f"{'mutation':22} {'outcome':14} detail")
+        print("-" * 70)
+        bad = 0
+        for m in muts:
+            r = dry_check(m, workdir)
+            if r["outcome"] != "OK":
+                bad += 1
+            print(f"{r['id']:22} {r['outcome']:14} {r.get('detail','')}")
+        print("-" * 70)
+        print(f"{len(muts)-bad}/{len(muts)} specs OK" + (f"  ({bad} need fixing)" if bad else ""))
+        return 1 if bad else 0
     rows = []
-    print(f"{'mutation':16} {'program':14} {'operator':22} {'outcome':18} {'rq2':18} ev")
-    print("-" * 96)
+    print(f"{'mutation':16} {'program':14} {'operator':22} {'outcome':18} {'rq2':18} {'wall_s':>7} ev")
+    print("-" * 104)
     for m in muts:
-        r = run_mutation(m, args.secs, workdir, cleanup=not args.keep_builds)
+        r = run_mutation(m, args.secs, workdir, cleanup=not args.keep_builds, seed=args.seed)
         rows.append(r)
         ev = r.get("evidence") or {}
         evs = (f"args={ev.get('args')} ub-free" if ev.get("is_ub") is False
                else "-" if not ev else f"is_ub={ev.get('is_ub')}")
+        t = r.get("detect_wall_s")
         print(f"{r['id']:16} {r['program']:14} {r['operator']:22} "
-              f"{r['outcome']:18} {str(r.get('rq2_verdict','-')):18} {evs}")
+              f"{r['outcome']:18} {str(r.get('rq2_verdict','-')):18} {t if t is not None else '-':>7} {evs}")
     n_det = sum(1 for r in rows if r["outcome"] == "DETECTED_UB_FREE")
     n_valid = sum(1 for r in rows if r["outcome"] in ("DETECTED_UB_FREE", "NOT_DETECTED"))
     print("-" * 96)

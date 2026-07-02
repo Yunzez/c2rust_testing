@@ -1,0 +1,101 @@
+[
+ {"id":"dm_final_or","program":"div_mod","pair":"benchmark/pairs/div_mod","entry":"div_mod_safe","operator":"operator-replacement","reach":"high","site":"div_mod_safe: + -> |",
+  "find":"return div_signed_guarded(a, b) + mod_signed_guarded(a, b);",
+  "replace":"return div_signed_guarded(a, b) | mod_signed_guarded(a, b);"},
+
+ {"id":"dm_mod_zero_ret","program":"div_mod","pair":"benchmark/pairs/div_mod","entry":"div_mod_safe","operator":"guard-weakening","reach":"high","site":"mod_signed_guarded: b==0 returns a -> 0",
+  "find":"    if b == 0 as int32_t {\n        return a;\n    }",
+  "replace":"    if b == 0 as int32_t {\n        return 0 as int32_t;\n    }"},
+
+ {"id":"dm_div_zero_ret","program":"div_mod","pair":"benchmark/pairs/div_mod","entry":"div_mod_safe","operator":"constant-perturbation","reach":"high","site":"div_signed_guarded: b==0 returns 0 -> 1",
+  "find":"    if b == 0 as int32_t {\n        return 0 as int32_t;\n    }",
+  "replace":"    if b == 0 as int32_t {\n        return 1 as int32_t;\n    }"},
+
+ {"id":"dm_mod_op","program":"div_mod","pair":"benchmark/pairs/div_mod","entry":"div_mod_safe","operator":"operator-replacement","reach":"high","site":"mod_signed_guarded tail: % -> /",
+  "find":"        return 0 as int32_t;\n    }\n    return a % b;",
+  "replace":"        return 0 as int32_t;\n    }\n    return a / b;"},
+
+ {"id":"dm_div_op","program":"div_mod","pair":"benchmark/pairs/div_mod","entry":"div_mod_safe","operator":"operator-replacement","reach":"high","site":"div_signed_guarded tail: / -> %",
+  "find":"        return INT32_MIN as int32_t;\n    }\n    return a / b;",
+  "replace":"        return INT32_MIN as int32_t;\n    }\n    return a % b;"},
+
+ {"id":"dm_div_intmin_drop","program":"div_mod","pair":"benchmark/pairs/div_mod","entry":"div_mod_safe","operator":"guard-weakening","reach":"boundary","site":"div_signed_guarded: drop INT_MIN/-1 guard",
+  "find":"    if a == INT32_MIN as int32_t && b == -(1 as int32_t) {\n        return INT32_MIN as int32_t;\n    }\n",
+  "replace":""},
+
+ {"id":"na_final_sub","program":"negate_abs","pair":"benchmark/pairs/negate_abs","entry":"negate_abs_safe","operator":"operator-replacement","reach":"high","site":"negate_abs_safe: wrapping_add -> wrapping_sub",
+  "find":"return (negate_u_safe(x) as uint32_t).wrapping_add(abs_magnitude_u32(x));",
+  "replace":"return (negate_u_safe(x) as uint32_t).wrapping_sub(abs_magnitude_u32(x));"},
+
+ {"id":"na_negu_const","program":"negate_abs","pair":"benchmark/pairs/negate_abs","entry":"negate_abs_safe","operator":"constant-perturbation","reach":"high","site":"negate_u_safe: +1 -> +2",
+  "find":"let mut neg: uint32_t = (!u).wrapping_add(1 as uint32_t);",
+  "replace":"let mut neg: uint32_t = (!u).wrapping_add(2 as uint32_t);"},
+
+ {"id":"na_negu_op","program":"negate_abs","pair":"benchmark/pairs/negate_abs","entry":"negate_abs_safe","operator":"operator-replacement","reach":"high","site":"negate_u_safe: drop bitwise-not !u -> u",
+  "find":"let mut neg: uint32_t = (!u).wrapping_add(1 as uint32_t);",
+  "replace":"let mut neg: uint32_t = (u).wrapping_add(1 as uint32_t);"},
+
+ {"id":"na_abs_guard","program":"negate_abs","pair":"benchmark/pairs/negate_abs","entry":"negate_abs_safe","operator":"operator-replacement","reach":"high","site":"abs_magnitude_u32: if x<0 -> if x>0",
+  "find":"    if x < 0 as int32_t {\n        return (0 as ::core::ffi::c_int as uint32_t).wrapping_sub(x as uint32_t);\n    }",
+  "replace":"    if x > 0 as int32_t {\n        return (0 as ::core::ffi::c_int as uint32_t).wrapping_sub(x as uint32_t);\n    }"},
+
+ {"id":"so_mask15","program":"shift_ops","pair":"benchmark/pairs/shift_ops","entry":"shift_ops_safe","operator":"constant-perturbation","reach":"high","site":"shl_u32_masked: mask 31 -> 15",
+  "find":"return v << (count & 31 as uint32_t);",
+  "replace":"return v << (count & 15 as uint32_t);"},
+
+ {"id":"so_i32_mask30","program":"shift_ops","pair":"benchmark/pairs/shift_ops","entry":"shift_ops_safe","operator":"off-by-one","reach":"high","site":"shl_i32_safe: mask 31 -> 30",
+  "find":"return (u << (count & 31 as uint32_t)) as int32_t;",
+  "replace":"return (u << (count & 30 as uint32_t)) as int32_t;"},
+
+ {"id":"so_xor_and","program":"shift_ops","pair":"benchmark/pairs/shift_ops","entry":"shift_ops_safe","operator":"operator-replacement","reach":"high","site":"shift_ops_safe: ^ -> &",
+  "find":"return shl_u32_masked(v, count) ^ shl_i32_safe(v as int32_t, count) as uint32_t;",
+  "replace":"return shl_u32_masked(v, count) & shl_i32_safe(v as int32_t, count) as uint32_t;"},
+
+ {"id":"so_u32_shift","program":"shift_ops","pair":"benchmark/pairs/shift_ops","entry":"shift_ops_safe","operator":"operator-replacement","reach":"high","site":"shl_u32_masked: << -> >>",
+  "find":"return v << (count & 31 as uint32_t);",
+  "replace":"return v >> (count & 31 as uint32_t);"},
+
+ {"id":"so_i32_shift","program":"shift_ops","pair":"benchmark/pairs/shift_ops","entry":"shift_ops_safe","operator":"operator-replacement","reach":"high","site":"shl_i32_safe: << -> >>",
+  "find":"return (u << (count & 31 as uint32_t)) as int32_t;",
+  "replace":"return (u >> (count & 31 as uint32_t)) as int32_t;"},
+
+ {"id":"su_wrap_add","program":"sub_overflow","pair":"benchmark/pairs/sub_overflow","entry":"sub_overflow_safe","operator":"operator-replacement","reach":"high","site":"sub_wrap_u32: wrapping_sub -> wrapping_add",
+  "find":"return a.wrapping_sub(b);",
+  "replace":"return a.wrapping_add(b);"},
+
+ {"id":"su_xor_or","program":"sub_overflow","pair":"benchmark/pairs/sub_overflow","entry":"sub_overflow_safe","operator":"operator-replacement","reach":"high","site":"sub_overflow_safe: ^ -> |",
+  "find":"return sub_signed_sat(a, b) ^ w as int32_t;",
+  "replace":"return sub_signed_sat(a, b) | w as int32_t;"},
+
+ {"id":"su_sat_max_const","program":"sub_overflow","pair":"benchmark/pairs/sub_overflow","entry":"sub_overflow_safe","operator":"constant-perturbation","reach":"moderate","site":"sub_signed_sat: high-sat returns INT32_MAX -> INT32_MIN",
+  "find":"    if b < 0 as int32_t && a > INT32_MAX as int32_t + b {\n        return INT32_MAX as int32_t;\n    }",
+  "replace":"    if b < 0 as int32_t && a > INT32_MAX as int32_t + b {\n        return INT32_MIN as int32_t;\n    }"},
+
+ {"id":"su_sat_off1","program":"sub_overflow","pair":"benchmark/pairs/sub_overflow","entry":"sub_overflow_safe","operator":"off-by-one","reach":"boundary","site":"sub_signed_sat: a > .. -> a >= ..",
+  "find":"if b < 0 as int32_t && a > INT32_MAX as int32_t + b {",
+  "replace":"if b < 0 as int32_t && a >= INT32_MAX as int32_t + b {"},
+
+ {"id":"su_sat_min_const","program":"sub_overflow","pair":"benchmark/pairs/sub_overflow","entry":"sub_overflow_safe","operator":"constant-perturbation","reach":"moderate","site":"sub_signed_sat: low-sat returns INT32_MIN -> INT32_MAX",
+  "find":"    if b > 0 as int32_t && a < INT32_MIN as int32_t + b {\n        return INT32_MIN as int32_t;\n    }",
+  "replace":"    if b > 0 as int32_t && a < INT32_MIN as int32_t + b {\n        return INT32_MAX as int32_t;\n    }"},
+
+ {"id":"su_sat_final_xor","program":"sub_overflow","pair":"benchmark/pairs/sub_overflow","entry":"sub_overflow_safe","operator":"operator-replacement","reach":"high","site":"sub_signed_sat tail: a - b -> a ^ b",
+  "find":"        return INT32_MIN as int32_t;\n    }\n    return a - b;",
+  "replace":"        return INT32_MIN as int32_t;\n    }\n    return a ^ b;"},
+
+ {"id":"im_gcd_base","program":"intmath","pair":"benchmark/pairs/intmath","entry":"intmath_eval","operator":"guard-weakening","reach":"op-gated","site":"gcd_u64: base returns a -> b(=0)",
+  "find":"    if b == 0 as uint64_t {\n        return a;\n    }",
+  "replace":"    if b == 0 as uint64_t {\n        return b;\n    }"},
+
+ {"id":"im_ipow_op","program":"intmath","pair":"benchmark/pairs/intmath","entry":"intmath_eval","operator":"operator-replacement","reach":"op-gated","site":"ipow_mod: modmul rem -> add",
+  "find":"result = result.wrapping_mul(base).wrapping_rem(mod_0);",
+  "replace":"result = result.wrapping_mul(base).wrapping_add(mod_0);"},
+
+ {"id":"im_isqrt_loop","program":"intmath","pair":"benchmark/pairs/intmath","entry":"intmath_eval","operator":"off-by-one","reach":"op-gated","site":"isqrt_u64: while lo <= hi -> lo < hi",
+  "find":"    while lo <= hi {",
+  "replace":"    while lo < hi {"},
+
+ {"id":"im_isqrt_const","program":"intmath","pair":"benchmark/pairs/intmath","entry":"intmath_eval","operator":"constant-perturbation","reach":"op-gated","site":"isqrt_u64: n<2 -> n<3",
+  "find":"    if n < 2 as uint64_t {\n        return n;\n    }",
+  "replace":"    if n < 3 as uint64_t {\n        return n;\n    }"}
+]

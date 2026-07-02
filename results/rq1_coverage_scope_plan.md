@@ -134,15 +134,21 @@ seconds → `symbolize=0` fast-abort env + oracle subprocess timeout (drain-on-t
 returns, ~8 opaque types (EVP_PKEY/BIGNUM), rest target-feature/linker — ALL pointer-graph/opaque,
 out of scope; none are recoverable value-boundary emitter bugs.
 
-**Step 2 RUNNING — fuzz-soundness census** (`scripts/oop_coverage_census.py --fuzz --secs 12` on the
-47-pair baseline → `results/rq1_crustbench/oop_soundness_census.json`). THE KEYSTONE: produces the
-"0 false divergences / N harnessable c2rust boundaries" number + the validated coverage-decomposition
-table. Started 2026-07-02, ~1.5-2h (rebuilds a crate per boundary). WATCH FOR: any DIVERGENCE =
-either a residual harness FP to fix, or (unlikely on faithful c2rust) a real bug.
+**Step 2 DONE — fuzz-soundness census (commits 1715a60, f31219f). KEYSTONE: 0 false divergences /
+126 value-oriented boundaries fuzzed on faithful c2rust (126 TN, 0 DIV).** Writeup +
+artifacts A/B in `results/rq1_oop_soundness.md`; data in `results/rq1_crustbench/oop_soundness_census.json`.
+Getting to 0 required fixing 4 FP classes the census surfaced: (1) buffer alloc asymmetry, (2) ASan
+symbolization stall, (3) side-effect/nondeterminism (fs_mkdir) → DETERMINISM GATE, (4) stdout
+pollution (print_add_bit) → callee-stdout isolation. Coverage ~150/654=23% (value ceiling; ±2 parse
+variance); 24 more value boundaries blocked by c2rust transpile-completeness (long-double→f128,
+static-inline) — orthogonal to soundness. Decomposition: 361 non-POD/pointer-graph struct + 44
+pointer-return + 37 void* + 21 T** + ... all GATED OUT (coverage limit, not FP source).
 
-**Next after Step 2:** if census = 0 divergences → write the decomposition tables (paper artifacts A/B)
-and proceed to Step 3 (RQ1 SACTOR bug hunt on the value-oriented subset, needs LLM $ auth). If any
-divergence → triage (C-alone ASan replay: C clean + Rust diverges ⇒ candidate bug; else harness FP).
+**Step 3 NEXT — RQ1 bug hunt on NON-faithful translations (needs LLM $ auth).** The 0-FP-on-faithful
+result licenses treating a divergence on SACTOR/CROWN/C2SaferRust output as a real-bug candidate.
+Target the value-oriented high-coverage subset (approxidate, libwecan, Math-Library[if f64],
+morton, murmurhash, gorilla-encode, skp, codec/hash/string). Triage: C-alone ASan+UBSan replay (C
+clean + Rust diverges ⇒ candidate bug = qsort protocol). Bug #1 (qsort/C2SaferRust) already banked.
 
 ## One-line judgment
 

@@ -113,6 +113,37 @@ Define by a PROPERTY, then show coverage is high on it — do NOT define it as "
   is an in-process-FFI requirement, not a cargo-fuzz one. See memory rq1-realbug-hunt-state.
 - Branch dataset-v2.1. Commits pushed by user.
 
+## PROGRESS LOG (2026-07-02, execution)
+
+**Step 1 DONE — OOP emitter ported to value-boundary parity (commits 1b232c6, b3d87ac, ee9a752).**
+Added roles: NUL-string (`in_str`), POD struct by pointer (`in_struct`/`io_struct`) + recursion
+depth-guard + opaque/incomplete-struct → clean non-POD. Coverage: **152/654 = 23%** OOP value
+support on the c2rust baseline (was 18% v1 → 19% +strings → 23% +structs). Measured that adding
+struct-array + string-table roles would recover only **7 more boundaries**, so 23% is the
+value-oriented CEILING on this pointer-graph-heavy corpus → STOPPED porting, per plan.
+
+**Two REAL false-positive bugs in the OOP generator caught + fixed (the census earned its keep):**
+(1) buffer alloc asymmetry — C oracle used fixed `[cap]` stack arrays vs Rust's tight `Vec`, so a
+read-past-len was silent in C but SEGV'd in Rust → false Rust divergence. Fix: oracle `malloc`s
+EXACTLY len (ASan-symmetric) + **poisons zero-len allocs** (ASan does NOT flag `malloc(0)` reads,
+verified, but Rust's dangling empty-Vec faults). (2) ASan symbolization stalled every UB input for
+seconds → `symbolize=0` fast-abort env + oracle subprocess timeout (drain-on-thread). Validated TN
+(no divergence): leftpad 10142, murmurhash 7963, tm_to_time_t 8223, date_time 7676 execs.
+
+**Honest build-fail decomposition (67 fails):** 44 pointer/handle returns, ~7 struct-by-value
+returns, ~8 opaque types (EVP_PKEY/BIGNUM), rest target-feature/linker — ALL pointer-graph/opaque,
+out of scope; none are recoverable value-boundary emitter bugs.
+
+**Step 2 RUNNING — fuzz-soundness census** (`scripts/oop_coverage_census.py --fuzz --secs 12` on the
+47-pair baseline → `results/rq1_crustbench/oop_soundness_census.json`). THE KEYSTONE: produces the
+"0 false divergences / N harnessable c2rust boundaries" number + the validated coverage-decomposition
+table. Started 2026-07-02, ~1.5-2h (rebuilds a crate per boundary). WATCH FOR: any DIVERGENCE =
+either a residual harness FP to fix, or (unlikely on faithful c2rust) a real bug.
+
+**Next after Step 2:** if census = 0 divergences → write the decomposition tables (paper artifacts A/B)
+and proceed to Step 3 (RQ1 SACTOR bug hunt on the value-oriented subset, needs LLM $ auth). If any
+divergence → triage (C-alone ASan replay: C clean + Rust diverges ⇒ candidate bug; else harness FP).
+
 ## One-line judgment
 
 The problem is not "the tool is weak" — it's "the claim must not exceed scope." Bring the OOP

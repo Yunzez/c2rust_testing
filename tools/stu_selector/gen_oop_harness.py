@@ -34,7 +34,9 @@ import gen_diff_harness as gdh  # reuse parse_entry_signature / classify / map_s
 # Rust scalar -> C type (for the oracle's extern-free direct call) and byte width
 RUST2C = {"i8": "int8_t", "u8": "uint8_t", "i16": "int16_t", "u16": "uint16_t",
           "i32": "int32_t", "u32": "uint32_t", "i64": "int64_t", "u64": "uint64_t",
-          "usize": "size_t", "isize": "ssize_t", "void": "void"}
+          "usize": "size_t", "isize": "ssize_t", "void": "void",
+          "f32": "float", "f64": "double"}
+FLOAT_BITS = {"f32": ("uint32_t", "u32", 4), "f64": ("uint64_t", "u64", 8)}  # rust -> (C uint, rust uint, w)
 CAP = 64  # max buffer elements decoded from the fuzz input
 
 
@@ -62,9 +64,16 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
         nm = it["name"]
         if r == "scalar":
             cty = RUST2C.get(it["rust"], "long"); w = it["w"]
-            decode.append(f"    {cty} {nm} = ({cty})take_uint({w});")
+            if it["rust"] in FLOAT_BITS:  # bit-reinterpret raw bytes into the float (not int->float cast)
+                ubits, _, fw = FLOAT_BITS[it["rust"]]
+                decode.append(f"    {ubits} {nm}_b = ({ubits})take_uint({fw}); {cty} {nm}; "
+                              f"__builtin_memcpy(&{nm}, &{nm}_b, {fw});")
+            else:
+                decode.append(f"    {cty} {nm} = ({cty})take_uint({w});")
             call_args.append(nm)
         elif r in ("in_buf", "io_buf"):
+            if it["elem"] in FLOAT_BITS:  # float buffers deferred (need per-elem bit handling)
+                raise SystemExit(f"oop-unsupported: float buffer {nm} (scalar floats supported; buffers deferred)")
             ety = RUST2C.get(it["elem"], "long"); ew = it["elem_w"]; ln = it["len_name"]
             decode.append(f"    size_t {ln} = (size_t)(next_byte() % ({cap}+1));")
             decode.append(f"    {ety} {nm}[{cap}]; for (size_t i=0;i<{ln};i++) {nm}[i]=({ety})take_uint({ew});")
@@ -73,6 +82,8 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
                 ser.append(f'    printf(" buf:{nm}:%zu", {ln}); '
                            f'for (size_t i=0;i<{ln};i++) printf(":%lld",(long long){nm}[i]);')
         elif r == "out_scalar":
+            if it["rust"] in FLOAT_BITS:  # float out-scalar deferred
+                raise SystemExit(f"oop-unsupported: float out-scalar {nm} (deferred)")
             ety = RUST2C.get(it["rust"], "long")
             decode.append(f"    {ety} {nm}_cell = 0; {ety}* {nm} = &{nm}_cell;")
             call_args.append(nm)
@@ -83,6 +94,12 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
     if ret == "void":
         callline = f"    {entry}({', '.join(call_args)});"
         retser = ""
+    elif ret in FLOAT_BITS:  # canonical-NaN + bit compare (finite/inf are bit-exact with -ffp-contract=off)
+        ubits, _, fw = FLOAT_BITS[ret]
+        callline = f"    {ret_c} _ret = {entry}({', '.join(call_args)});"
+        retser = (f'    if (__builtin_isnan(_ret)) {{ printf("ret:nan"); }} else {{ '
+                  f'{ubits} _rb; __builtin_memcpy(&_rb, &_ret, {fw}); '
+                  f'printf("ret:%llu",(unsigned long long)_rb); }}')
     else:
         callline = f"    {ret_c} _ret = {entry}({', '.join(call_args)});"
         retser = '    printf("ret:%lld",(long long)_ret);'
@@ -115,9 +132,15 @@ def emit_fuzz_rs(entry, rust_entry, items, ret, call_kind, oracle_rel, crate_nam
     for it in items:
         r = it["role"]; nm = it["name"]
         if r == "scalar":
-            dec.append(f"    let {nm} = cur.take_{_takef(it['rust'], it['w'])}() as {it['rust']};")
+            if it["rust"] in FLOAT_BITS:  # bit-reinterpret (not int->float cast)
+                _, uty, fw = FLOAT_BITS[it["rust"]]
+                dec.append(f"    let {nm} = {it['rust']}::from_bits(cur.take_{uty}() as {uty});")
+            else:
+                dec.append(f"    let {nm} = cur.take_{_takef(it['rust'], it['w'])}() as {it['rust']};")
             call_args.append(nm)
         elif r in ("in_buf", "io_buf"):
+            if it["elem"] in FLOAT_BITS:
+                raise SystemExit(f"oop-unsupported: float buffer {nm} (deferred)")
             ety = it["elem"]; ln = it["len_name"]
             dec.append(f"    let {ln} = (cur.byte() as usize) % ({CAP}+1);")
             dec.append(f"    let mut {nm}: Vec<{ety}> = (0..{ln}).map(|_| cur.take_{_takef(ety, it['elem_w'])}() as {ety}).collect();")
@@ -130,6 +153,8 @@ def emit_fuzz_rs(entry, rust_entry, items, ret, call_kind, oracle_rel, crate_nam
                 cmp_ser.append(f'    r_out.push_str(&format!(" buf:{nm}:{{}}", {ln}));'
                                f' for &x in &{nm}[..{ln}] {{ r_out.push_str(&format!(":{{}}", x as i64)); }}')
         elif r == "out_scalar":
+            if it["rust"] in FLOAT_BITS:
+                raise SystemExit(f"oop-unsupported: float out-scalar {nm} (deferred)")
             ety = it["rust"]
             dec.append(f"    let mut {nm}_cell: {ety} = 0;")
             call_args.append(f"&mut {nm}_cell" if call_kind == "slice" else f"&mut {nm}_cell as *mut {ety}")
@@ -146,6 +171,9 @@ def emit_fuzz_rs(entry, rust_entry, items, ret, call_kind, oracle_rel, crate_nam
         callexpr = f"unsafe {{ {callexpr} }}"
     if ret == "void":
         callblock = f"    {callexpr};\n    let mut r_out = String::new();"
+    elif ret in FLOAT_BITS:  # canonical-NaN + bit compare (matches the C oracle)
+        callblock = (f"    let _ret = {callexpr};\n    let mut r_out = if _ret.is_nan() "
+                     f"{{ \"ret:nan\".to_string() }} else {{ format!(\"ret:{{}}\", _ret.to_bits()) }};")
     else:
         callblock = f"    let _ret = {callexpr};\n    let mut r_out = format!(\"ret:{{}}\", _ret as i64);"
     return f"""#![no_main]
@@ -263,6 +291,7 @@ def main() -> int:
     import subprocess
     obin = out / "oracle" / f"{args.entry}_oracle"
     cc = subprocess.run(["clang", "-fsanitize=undefined,address", "-fno-sanitize-recover=all",
+                         "-ffp-contract=off",  # match Rust: no FMA fusion, so finite floats are bit-exact
                          "-g", "-O1", "-I", str(out / "oracle"),
                          str(out / "oracle" / f"{args.entry}_oracle.c"), "-o", str(obin)],
                         text=True, capture_output=True)

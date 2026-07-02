@@ -58,6 +58,7 @@ SCALAR_MAP = {
     "long long": ("i64", 8), "unsigned long long": ("u64", 8),
     "char": ("i8", 1), "signed char": ("i8", 1), "unsigned char": ("u8", 1),
     "_Bool": ("bool", 1),
+    "float": ("f32", 4), "double": ("f64", 8),
 }
 
 

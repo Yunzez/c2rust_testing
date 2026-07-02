@@ -83,13 +83,23 @@ def safe_name(name: str, idx: int) -> str:
     return f"{name}_" if name in RUST_KEYWORDS else name
 
 
-def describe_type(t) -> dict:
+MAX_TYPE_DEPTH = 12  # depth guard: recursive structs (struct Node { Node* next; }) would recurse
+                     # forever -> a crash (RecursionError) is NOT a clean exclusion, so cap the
+                     # descent and return a clean `unsupported` (recursive/too-deep) instead.
+
+
+def describe_type(t, _depth: int = 0) -> dict:
     """Recursive, canonical-aware type descriptor (shared by ptr-to-array and future T**).
 
     Typedef/elaborated wrappers are peeled to reveal the structural kind, so `typedef size_t
     Edge[2]; const Edge *` is recognized as pointer->array. The scalar leaf prefers the ORIGINAL
     spelling (keeps size_t->usize) and falls back to the canonical one.
+
+    `_depth` bounds the structural descent so recursive/self-referential records (a struct whose
+    field points back at the struct) yield a clean UNSUPPORTED rather than a RecursionError crash.
     """
+    if _depth > MAX_TYPE_DEPTH:
+        return {"kind": "unsupported", "spelling": t.spelling, "reason": "recursive/too-deep type"}
     s = t
     seen = 0
     while s.kind in (TypeKind.TYPEDEF, TypeKind.ELABORATED) and seen < 8:
@@ -98,18 +108,18 @@ def describe_type(t) -> dict:
     if s.kind == TypeKind.POINTER:
         pointee = s.get_pointee()
         return {"kind": "pointer", "const": pointee.is_const_qualified(),
-                "inner": describe_type(pointee)}
+                "inner": describe_type(pointee, _depth + 1)}
     if s.kind == TypeKind.CONSTANTARRAY:
         et = s.element_type
         return {"kind": "array", "extent": s.element_count,
-                "const": et.is_const_qualified(), "elem": describe_type(et)}
+                "const": et.is_const_qualified(), "elem": describe_type(et, _depth + 1)}
     if s.kind in (TypeKind.FUNCTIONPROTO, TypeKind.FUNCTIONNOPROTO):
         return {"kind": "function", "spelling": t.spelling}
     sc = map_scalar(t.spelling) or map_scalar(s.spelling)
     if sc:
         return {"kind": "scalar", "rust": sc[0], "width": sc[1]}
     if s.kind == TypeKind.RECORD:
-        return _describe_record(t, s)
+        return _describe_record(t, s, _depth)
     return {"kind": "unsupported", "spelling": t.spelling}
 
 
@@ -121,7 +131,7 @@ def _rust_record_name(t) -> str:
     return name.strip()
 
 
-def _describe_record(t, s) -> dict:
+def _describe_record(t, s, _depth: int = 0) -> dict:
     """Struct/union descriptor: fields in declaration order + a POD verdict.
 
     POD (this increment) = every field is a scalar or a fixed array of scalars. Pointer / nested
@@ -135,7 +145,7 @@ def _describe_record(t, s) -> dict:
     for f in decl.get_children():
         if f.kind != CursorKind.FIELD_DECL:
             continue
-        fd = describe_type(f.type)
+        fd = describe_type(f.type, _depth + 1)
         fields.append({"name": f.spelling, "desc": fd})
         if pod:
             if fd["kind"] == "scalar":

@@ -58,7 +58,7 @@ def rust_entry_sig(rs_text: str, entry: str):
 def emit_oracle_c(entry, items, ret, csrcs, cap):
     """Standalone C: stdin bytes -> decode -> call entry -> serialize (ret + inout/out params)."""
     incl = "".join(f'#include "{c.name}"\n' for c in csrcs)
-    decode, call_args, ser = [], [], []
+    decode, call_args, ser, frees = [], [], [], []
     for it in items:
         r = it["role"]
         nm = it["name"]
@@ -75,8 +75,19 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
             if it["elem"] in FLOAT_BITS:  # float buffers deferred (need per-elem bit handling)
                 raise SystemExit(f"oop-unsupported: float buffer {nm} (scalar floats supported; buffers deferred)")
             ety = RUST2C.get(it["elem"], "long"); ew = it["elem_w"]; ln = it["len_name"]
+            # EXACT-size heap alloc (not a fixed [cap] stack array): Rust passes a tight Vec, so the C
+            # oracle must have the SAME bounds. Built with ASan, an OOB read past `ln` then traps on
+            # the C side too -> the input is gated out BEFORE Rust runs, instead of C reading valid
+            # stack garbage while Rust wild-reads (which would be a false Rust-side divergence).
+            # len==0: Rust passes a dangling (unreadable) Vec pointer, so any [0] access wild-reads.
+            # C's malloc(0) is a REAL readable address (ASan does NOT flag malloc(0) reads), so a
+            # function that reads [0] would return cleanly in C but SEGV in Rust -> false divergence.
+            # Poison the 1-byte stand-in so C ALSO traps -> the input is gated symmetrically.
             decode.append(f"    size_t {ln} = (size_t)(next_byte() % ({cap}+1));")
-            decode.append(f"    {ety} {nm}[{cap}]; for (size_t i=0;i<{ln};i++) {nm}[i]=({ety})take_uint({ew});")
+            decode.append(f"    {ety}* {nm} = ({ety}*)malloc({ln} ? {ln}*sizeof({ety}) : 1); "
+                          f"if (!{ln}) __asan_poison_memory_region({nm}, 1); "
+                          f"for (size_t i=0;i<{ln};i++) {nm}[i]=({ety})take_uint({ew});")
+            frees.append(nm)
             call_args.append(nm)
             call_args.append(ln)   # the C signature has (ptr, len) adjacent -> pass BOTH
             if r == "io_buf":
@@ -90,6 +101,17 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
             decode.append(f"    {ety} {nm}_cell = 0; {ety}* {nm} = &{nm}_cell;")
             call_args.append(nm)
             ser.append(f'    printf(" out:{nm}:%lld",(long long){nm}_cell);')
+        elif r == "in_str":
+            # NUL-terminated input string: 1 length byte, then `len` chars, then a '\0'. Use `char`
+            # so the pointer type matches the C `const char*` signature exactly (input only, no ser).
+            ln = f"{nm}_len"
+            # EXACT-size alloc (len+1 for the NUL), mirroring the Rust `Vec<i8>` of len+1 -> symmetric
+            # bounds so a read past the terminator traps on both sides (see the buffer note above).
+            decode.append(f"    size_t {ln} = (size_t)(next_byte() % ({cap}+1));")
+            decode.append(f"    char* {nm} = (char*)malloc({ln}+1); "
+                          f"for (size_t i=0;i<{ln};i++) {nm}[i]=(char)next_byte(); {nm}[{ln}]=0;")
+            frees.append(nm)
+            call_args.append(nm)
         else:
             raise SystemExit(f"oop-unsupported role {r} for {nm}")
     ret_c = RUST2C.get(ret, "void")
@@ -111,6 +133,8 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdlib.h>
+#include <sanitizer/asan_interface.h>
 {incl}
 static unsigned char _buf[1<<16]; static size_t _got, _pos;
 static unsigned char next_byte(void){{ return _pos < _got ? _buf[_pos++] : (_pos++, 0); }}
@@ -123,6 +147,7 @@ int main(void){{
 {retser}
 {chr(10).join(ser)}
     printf("\\n");
+{chr(10).join(f'    free({nm});' for nm in frees)}
     return 0;
 }}
 """
@@ -163,6 +188,14 @@ def emit_fuzz_rs(entry, rust_entry, items, ret, call_kind, oracle_rel, crate_nam
             dec.append(f"    let mut {nm}_cell: {elem} = {'false' if elem == 'bool' else '0'};")
             call_args.append(f"&mut {nm}_cell" if call_kind == "slice" else f"&mut {nm}_cell as *mut {elem}")
             cmp_ser.append(f'    r_out.push_str(&format!(" out:{nm}:{{}}", {nm}_cell as i64));')
+        elif r == "in_str":
+            # NUL-terminated input string, same byte layout as the C oracle (len byte + chars + \0).
+            ety = it["elem"]; ln = f"{nm}_len"
+            dec.append(f"    let {ln} = (cur.byte() as usize) % (CAP+1);")
+            dec.append(f"    let mut {nm}_buf: Vec<{ety}> = (0..{ln}).map(|_| cur.byte() as {ety}).collect();")
+            dec.append(f"    {nm}_buf.push(0 as {ety});")
+            # idiomatic &str call form deferred; c2rust/CROWN shape is a raw `*const c_char`.
+            call_args.append(f"{nm}_buf.as_ptr()")
         else:
             raise SystemExit(f"oop-unsupported role {r}")
     # length params for raw-ptr calls: c2rust sig has (ptr, len) so pass len positionally after ptr.
@@ -184,11 +217,13 @@ def emit_fuzz_rs(entry, rust_entry, items, ret, call_kind, oracle_rel, crate_nam
 //! AUTO-GENERATED out-of-process differential harness for `{entry}`.
 //! Rust entry called NATIVELY ({call_kind}); C runs as a subprocess oracle (UB gate = its exit code).
 use libfuzzer_sys::fuzz_target;
-use std::io::Write;
+use std::io::{{Read, Write}};
 use std::process::{{Command, Stdio}};
+use std::time::{{Duration, Instant}};
 
 const CAP: usize = {CAP};
 const ORACLE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/{oracle_rel}");
+const ORACLE_TIMEOUT_MS: u64 = 2000;
 
 struct Cur<'a> {{ d: &'a [u8], p: usize }}
 impl<'a> Cur<'a> {{
@@ -200,12 +235,30 @@ impl<'a> Cur<'a> {{
 }}
 
 fn run_oracle(data: &[u8]) -> Option<String> {{
-    let mut ch = Command::new(ORACLE).stdin(Stdio::piped()).stdout(Stdio::piped())
-        .stderr(Stdio::null()).spawn().ok()?;
-    ch.stdin.take()?.write_all(data).ok();
-    let out = ch.wait_with_output().ok()?;
-    if !out.status.success() {{ return None; }}   // C UB / crash -> gate: discard this input
-    Some(String::from_utf8_lossy(&out.stdout).trim().to_string())
+    // ASan/UBSan symbolization (llvm-symbolizer per frame) is SLOW and would stall on every UB
+    // input; we only need the oracle's EXIT CODE as the gate, so turn it off for a fast abort.
+    let mut ch = Command::new(ORACLE)
+        .env("ASAN_OPTIONS", "symbolize=0:detect_leaks=0:abort_on_error=0:exitcode=1")
+        .env("UBSAN_OPTIONS", "symbolize=0:abort_on_error=0")
+        .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::null()).spawn().ok()?;
+    ch.stdin.take()?.write_all(data).ok();   // stdin dropped here -> EOF to the oracle
+    // Drain stdout on a thread (avoids a full-pipe deadlock) while we bound the wait: a
+    // non-terminating oracle input can't be compared, so kill it and gate (return None).
+    let mut so = ch.stdout.take()?;
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {{ let mut s = String::new(); let _ = so.read_to_string(&mut s); let _ = tx.send(s); }});
+    let deadline = Instant::now() + Duration::from_millis(ORACLE_TIMEOUT_MS);
+    let status = loop {{
+        match ch.try_wait() {{
+            Ok(Some(st)) => break st,
+            Ok(None) => {{ if Instant::now() >= deadline {{ let _ = ch.kill(); let _ = ch.wait(); return None; }}
+                          std::thread::sleep(Duration::from_millis(1)); }}
+            Err(_) => return None,
+        }}
+    }};
+    if !status.success() {{ return None; }}   // C UB / crash -> gate: discard this input
+    let s = rx.recv_timeout(Duration::from_millis(500)).ok()?;
+    Some(s.trim().to_string())
 }}
 
 fuzz_target!(|data: &[u8]| {{
@@ -238,6 +291,8 @@ def _raw_ptr_call_args(items):
             args.append(f"{it['len_name']} as {it['len_rust']}")
         elif r == "out_scalar":
             args.append(f"&mut {nm}_cell as *mut {it['elem']}")
+        elif r == "in_str":
+            args.append(f"{nm}_buf.as_ptr()")
     # dedup a len that also appears as its own scalar item (buffer owns it)
     return args
 
@@ -272,6 +327,12 @@ def main() -> int:
     cc_dir = pair / "build"
     params, ret, _ = gdh.parse_entry_signature(cc_dir, args.entry)
     items = gdh.classify(params)
+    # A bare `const T*` (no following length) is NOT an out-scalar — a const pointer can't be an
+    # output. Mirror the in-process infer path (_infer_abi): treat it as a NUL-terminated input
+    # string. This is the most common value-oriented boundary shape (utf8/leftpad/scanners).
+    for it in items:
+        if it.get("role") == "out_scalar" and it.get("const"):
+            it["role"] = "in_str"
     param_rust = {p["name"]: p.get("rust") for p in params if p.get("kind") == "scalar"}
     # attach rust element types / len rust types for buffers (classify uses C-side)
     for it in items:

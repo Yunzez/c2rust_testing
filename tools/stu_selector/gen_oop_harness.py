@@ -35,7 +35,7 @@ import gen_diff_harness as gdh  # reuse parse_entry_signature / classify / map_s
 RUST2C = {"i8": "int8_t", "u8": "uint8_t", "i16": "int16_t", "u16": "uint16_t",
           "i32": "int32_t", "u32": "uint32_t", "i64": "int64_t", "u64": "uint64_t",
           "usize": "size_t", "isize": "ssize_t", "void": "void",
-          "f32": "float", "f64": "double"}
+          "f32": "float", "f64": "double", "bool": "int"}
 FLOAT_BITS = {"f32": ("uint32_t", "u32", 4), "f64": ("uint64_t", "u64", 8)}  # rust -> (C uint, rust uint, w)
 CAP = 64  # max buffer elements decoded from the fuzz input
 
@@ -82,9 +82,10 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
                 ser.append(f'    printf(" buf:{nm}:%zu", {ln}); '
                            f'for (size_t i=0;i<{ln};i++) printf(":%lld",(long long){nm}[i]);')
         elif r == "out_scalar":
-            if it["rust"] in FLOAT_BITS:  # float out-scalar deferred
+            elem = it["elem"]  # ptr-to-scalar: the pointee type is in "elem", not "rust"
+            if elem in FLOAT_BITS:  # float out-scalar deferred
                 raise SystemExit(f"oop-unsupported: float out-scalar {nm} (deferred)")
-            ety = RUST2C.get(it["rust"], "long")
+            ety = "_Bool" if elem == "bool" else RUST2C.get(elem, "long")  # bool* needs _Bool*, not int*
             decode.append(f"    {ety} {nm}_cell = 0; {ety}* {nm} = &{nm}_cell;")
             call_args.append(nm)
             ser.append(f'    printf(" out:{nm}:%lld",(long long){nm}_cell);')
@@ -135,6 +136,8 @@ def emit_fuzz_rs(entry, rust_entry, items, ret, call_kind, oracle_rel, crate_nam
             if it["rust"] in FLOAT_BITS:  # bit-reinterpret (not int->float cast)
                 _, uty, fw = FLOAT_BITS[it["rust"]]
                 dec.append(f"    let {nm} = {it['rust']}::from_bits(cur.take_{uty}() as {uty});")
+            elif it["rust"] == "bool":  # `x as bool` is invalid Rust
+                dec.append(f"    let {nm} = cur.byte() != 0;")
             else:
                 dec.append(f"    let {nm} = cur.take_{_takef(it['rust'], it['w'])}() as {it['rust']};")
             call_args.append(nm)
@@ -153,11 +156,11 @@ def emit_fuzz_rs(entry, rust_entry, items, ret, call_kind, oracle_rel, crate_nam
                 cmp_ser.append(f'    r_out.push_str(&format!(" buf:{nm}:{{}}", {ln}));'
                                f' for &x in &{nm}[..{ln}] {{ r_out.push_str(&format!(":{{}}", x as i64)); }}')
         elif r == "out_scalar":
-            if it["rust"] in FLOAT_BITS:
+            elem = it["elem"]
+            if elem in FLOAT_BITS:
                 raise SystemExit(f"oop-unsupported: float out-scalar {nm} (deferred)")
-            ety = it["rust"]
-            dec.append(f"    let mut {nm}_cell: {ety} = 0;")
-            call_args.append(f"&mut {nm}_cell" if call_kind == "slice" else f"&mut {nm}_cell as *mut {ety}")
+            dec.append(f"    let mut {nm}_cell: {elem} = {'false' if elem == 'bool' else '0'};")
+            call_args.append(f"&mut {nm}_cell" if call_kind == "slice" else f"&mut {nm}_cell as *mut {elem}")
             cmp_ser.append(f'    r_out.push_str(&format!(" out:{nm}:{{}}", {nm}_cell as i64));')
         else:
             raise SystemExit(f"oop-unsupported role {r}")
@@ -233,7 +236,7 @@ def _raw_ptr_call_args(items):
             args.append(f"{nm}.as_mut_ptr()")
             args.append(f"{it['len_name']} as {it['len_rust']}")
         elif r == "out_scalar":
-            args.append(f"&mut {nm}_cell as *mut {it['rust']}")
+            args.append(f"&mut {nm}_cell as *mut {it['elem']}")
     # dedup a len that also appears as its own scalar item (buffer owns it)
     return args
 
@@ -303,7 +306,12 @@ def main() -> int:
     (out / "src").mkdir(exist_ok=True)
     lib_lines = rs.read_text().splitlines()
     lib_lines = apply_bitfields(lib_lines)
-    (out / "src" / "lib.rs").write_text("\n".join(lib_lines) + "\n")
+    lib_text = "\n".join(lib_lines)
+    # Expose the entry: static C fns become private Rust fns (`extern "C" fn NAME`), uncallable as
+    # translated::NAME. Add `pub` so the harness can call the boundary natively (the needs_expose case).
+    lib_text = re.sub(rf'(?m)^(\s*)((?:unsafe )?extern "C" fn {re.escape(rust_entry)}\b)',
+                      r'\1pub \2', lib_text)
+    (out / "src" / "lib.rs").write_text(lib_text + "\n")
     needs_bf = any("BitfieldStruct" in l for l in lib_lines)
     (out / "Cargo.toml").write_text(
         f'[package]\nname = "{crate}"\nversion = "0.1.0"\nedition = "2021"\n'

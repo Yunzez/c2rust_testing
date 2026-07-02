@@ -112,6 +112,38 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
                           f"for (size_t i=0;i<{ln};i++) {nm}[i]=(char)next_byte(); {nm}[{ln}]=0;")
             frees.append(nm)
             call_args.append(nm)
+        elif r in ("in_struct", "io_struct"):
+            sd = it["struct"]
+            if not sd.get("pod", True):
+                raise SystemExit(f"oop-unsupported: non-POD struct {nm}")
+            cname = sd.get("c_name") or sd["name"]
+            decode.append(f"    {cname} {nm}; __builtin_memset(&{nm}, 0, sizeof({nm}));")
+            for f in sd["fields"]:
+                fd = f["desc"]; fn = f["name"]
+                if fd["kind"] == "scalar":
+                    if fd["rust"] in FLOAT_BITS:
+                        raise SystemExit(f"oop-unsupported: float struct field {nm}.{fn}")
+                    cty = RUST2C.get(fd["rust"], "long")
+                    decode.append(f"    {nm}.{fn} = ({cty})take_uint({fd['width']});")
+                elif fd["kind"] == "array" and fd["elem"]["kind"] == "scalar":
+                    el = fd["elem"]
+                    if el["rust"] in FLOAT_BITS:
+                        raise SystemExit(f"oop-unsupported: float struct array field {nm}.{fn}")
+                    cty = RUST2C.get(el["rust"], "long")
+                    decode.append(f"    for (size_t i=0;i<{fd['extent']};i++) "
+                                  f"{nm}.{fn}[i]=({cty})take_uint({el['width']});")
+                else:
+                    raise SystemExit(f"oop-unsupported: struct field {nm}.{fn} kind {fd['kind']}")
+            call_args.append(f"&{nm}")
+            if r == "io_struct":
+                ser.append(f'    printf(" st:{nm}");')
+                for f in sd["fields"]:
+                    fd = f["desc"]; fn = f["name"]
+                    if fd["kind"] == "scalar":
+                        ser.append(f'    printf(":%lld",(long long){nm}.{fn});')
+                    else:
+                        ser.append(f'    for (size_t i=0;i<{fd["extent"]};i++) '
+                                   f'printf(":%lld",(long long){nm}.{fn}[i]);')
         else:
             raise SystemExit(f"oop-unsupported role {r} for {nm}")
     ret_c = RUST2C.get(ret, "void")
@@ -196,6 +228,36 @@ def emit_fuzz_rs(entry, rust_entry, items, ret, call_kind, oracle_rel, crate_nam
             dec.append(f"    {nm}_buf.push(0 as {ety});")
             # idiomatic &str call form deferred; c2rust/CROWN shape is a raw `*const c_char`.
             call_args.append(f"{nm}_buf.as_ptr()")
+        elif r in ("in_struct", "io_struct"):
+            sd = it["struct"]; sname = sd["name"]
+            if not sd.get("pod", True):
+                raise SystemExit(f"oop-unsupported: non-POD struct {nm}")
+            parts = []
+            for f in sd["fields"]:
+                fd = f["desc"]; fn = f["name"]
+                if fd["kind"] == "scalar":
+                    if fd["rust"] in FLOAT_BITS:
+                        raise SystemExit(f"oop-unsupported: float struct field {nm}.{fn}")
+                    parts.append(f"{fn}: cur.take_{_takef(fd['rust'], fd['width'])}() as {fd['rust']}")
+                elif fd["kind"] == "array" and fd["elem"]["kind"] == "scalar":
+                    el = fd["elem"]
+                    if el["rust"] in FLOAT_BITS:
+                        raise SystemExit(f"oop-unsupported: float struct array field {nm}.{fn}")
+                    parts.append(f"{fn}: {{ let mut a=[0 as {el['rust']}; {fd['extent']}]; "
+                                 f"for j in 0..{fd['extent']} {{ a[j]=cur.take_{_takef(el['rust'], el['width'])}() as {el['rust']}; }} a }}")
+                else:
+                    raise SystemExit(f"oop-unsupported: struct field {nm}.{fn} kind {fd['kind']}")
+            dec.append(f"    let mut {nm}_val = translated::{sname} {{ {', '.join(parts)} }};")
+            call_args.append(f"&mut {nm}_val")   # overridden for raw_ptr below
+            if r == "io_struct":
+                cmp_ser.append(f'    r_out.push_str(" st:{nm}");')
+                for f in sd["fields"]:
+                    fd = f["desc"]; fn = f["name"]
+                    if fd["kind"] == "scalar":
+                        cmp_ser.append(f'    r_out.push_str(&format!(":{{}}", {nm}_val.{fn} as i64));')
+                    else:
+                        cmp_ser.append(f'    for x in {nm}_val.{fn}.iter() '
+                                       f'{{ r_out.push_str(&format!(":{{}}", *x as i64)); }}')
         else:
             raise SystemExit(f"oop-unsupported role {r}")
     # length params for raw-ptr calls: c2rust sig has (ptr, len) so pass len positionally after ptr.
@@ -293,6 +355,10 @@ def _raw_ptr_call_args(items):
             args.append(f"&mut {nm}_cell as *mut {it['elem']}")
         elif r == "in_str":
             args.append(f"{nm}_buf.as_ptr()")
+        elif r in ("in_struct", "io_struct"):
+            # `*mut _` for both: matches a c2rust `*mut Foo` param, and *mut->*const coerces if the
+            # param is `*const Foo` (the reverse would not), so this is robust to const being dropped.
+            args.append(f"&mut {nm}_val as *mut _")
     # dedup a len that also appears as its own scalar item (buffer owns it)
     return args
 

@@ -160,8 +160,14 @@ def _describe_record(t, s, _depth: int = 0) -> dict:
                 pod, reason = False, f"has function-pointer field '{f.spelling}'"
             else:
                 pod, reason = False, f"has unsupported field '{f.spelling}' ({fd.get('kind')})"
-    return {"kind": "struct", "name": _rust_record_name(t), "fields": fields,
-            "pod": pod, "reason": reason}
+    # c_name = the spelling usable in a C declaration (keeps the `struct`/`union` keyword for
+    # non-typedef'd tags, drops only cv-qualifiers). Used by the out-of-process C oracle to declare
+    # the struct; the Rust `name` (keyword stripped) is what c2rust calls the type.
+    c_name = t.spelling
+    for q in ("const ", "volatile "):
+        c_name = c_name.replace(q, "")
+    return {"kind": "struct", "name": _rust_record_name(t), "c_name": c_name.strip(),
+            "fields": fields, "pod": pod, "reason": reason}
 
 
 def _param_from_descriptor(desc: dict, name: str) -> dict:

@@ -69,10 +69,12 @@ def reason_of(stderr: str) -> str:
 
 
 def run_fuzz(out: Path, crate: str, secs: int):
+    # NOT text=True: libFuzzer/ASan output (crash artifact dumps, "Base64:" blobs) can contain
+    # non-UTF-8 bytes; capture raw and decode leniently so one bad byte can't abort the census.
     r = subprocess.run(["cargo", f"+{TOOLCHAIN}", "fuzz", "run", f"{crate}_ft",
-                        "--", f"-max_total_time={secs}"], cwd=str(out), text=True,
+                        "--", f"-max_total_time={secs}"], cwd=str(out),
                        capture_output=True, timeout=secs + 300)
-    txt = r.stdout + r.stderr
+    txt = r.stdout.decode("utf-8", "replace") + r.stderr.decode("utf-8", "replace")
     if r.returncode == 0:
         return "TN"
     if "divergence" in txt:

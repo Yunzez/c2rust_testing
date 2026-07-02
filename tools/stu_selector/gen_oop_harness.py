@@ -330,7 +330,17 @@ fuzz_target!(|data: &[u8]| {{
 {callblock}
 {chr(10).join(cmp_ser)}
     let r_out = r_out.trim().to_string();
-    assert_eq!(c_out, r_out, "divergence: C={{:?}} Rust={{:?}}", c_out, r_out);
+    if c_out != r_out {{
+        // DETERMINISM GATE: a value boundary must be a PURE function of its input. Re-run the C
+        // oracle; if it now disagrees with its own first run, this boundary has external side
+        // effects / nondeterminism (filesystem, time, rng, global state) and is NOT value-
+        // comparable -- skip it (do not report). Only a self-consistent C oracle can convict Rust.
+        match run_oracle(data) {{
+            Some(c_out2) if c_out2 == c_out =>
+                panic!("divergence: C={{:?}} Rust={{:?}}", c_out, r_out),
+            _ => return,
+        }}
+    }}
 }});
 
 use {crate_name} as translated;

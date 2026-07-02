@@ -66,3 +66,21 @@ Two options for more value bugs: (a) one cheap free attempt on **urlparser** (re
 SACTOR lifts value code idiomatically and fully (unlike C2SaferRust's partial/skewed lift), so it is
 the richer value-bug source. If both still yield only 1–2, write RQ1 honestly as a bug-finding case
 study, not a large-scale RQ.
+
+## UPDATE — urlparser round (2026-07-02): 2 more confirmed bugs (a systematic class)
+
+Ran the value round on urlparser (rewritten, +12 delta). Method: base c2rust ASan oracle (dispatch
+over 12 url_* functions) vs C2SaferRust WIP fuzz target, same source.
+
+- Most `url_get_*` are UB-gated: the ORIGINAL C `malloc(1)`+`sscanf` overflows (base ASan aborts) ->
+  correctly excluded (can't blame the translation for the original's UB).
+- **BUG #2 CONFIRMED — url_is_ssh**: C2SaferRust rewrote it to `to_str().unwrap()`, panicking on
+  non-UTF-8 where C (`strcmp`) returns false. Differential fuzz trigger `31 72 8e`.
+- Static + standalone-differential extended this to a **systematic bug class** (see
+  `results/rq1_bugs/utf8_panic_c2saferrust/`): **BUG #3 CONFIRMED — bzip2 endsInBz2** (same class,
+  non-UTF-8 filename crashes bzip2recover; base returns 1). ~27 `to_str/from_utf8().unwrap()` sites
+  across 6 programs (optipng 12, tulipindicators 7, genann 4, bzip2 2, lil 1, urlparser 1).
+
+**RQ1 tally: 3 confirmed bugs across 3 programs (qsort, urlparser, bzip2), 2 mechanisms** — one
+memory/logic (qsort int->usize), one systematic UTF-8-panic class (2 confirmed instances). This turns
+RQ1 from a single anecdote into a systematic finding on a published LLM-based safety-lifter.

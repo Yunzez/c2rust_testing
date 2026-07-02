@@ -14,6 +14,7 @@ artifact (see the version-match lesson in `rq1_c2saferrust_round.md`).
 | 2 | C2SaferRust | urlparser | `url_is_ssh` | `CStr::from_ptr(s).to_str().unwrap()` **panics on non-UTF-8**; C (`strcmp`) returns `false` | UTF-8-panic | differential fuzz | harness bytes `31 72 8e`; `results/rq1_bugs/utf8_panic_c2saferrust/` |
 | 3 | C2SaferRust | bzip2 | `endsInBz2` | same `to_str().unwrap()` on a **char\* filename** → a valid `.bz2` file with a non-ASCII byte **crashes `bzip2recover`** (C returns 1) | UTF-8-panic | standalone differential repro | `bzip2_endsInBz2_diff.rs` |
 | 4 | C2SaferRust | optipng | `opng_process_file` (`-dir`) | same `to_str().unwrap()` on the **char\* directory name** → a non-UTF-8 `--dir` **crashes optipng**; C passes raw bytes to `mkdir` | UTF-8-panic | standalone differential repro | `optipng_dirname_diff.rs` |
+| 5 | C2SaferRust | lil | `do_system` (`system` builtin) | same `to_str().unwrap()` on **argv**; a lil script passing a non-UTF-8 arg to `system` **crashes the interpreter**; C concatenates raw bytes | UTF-8-panic | standalone differential repro | `lil_do_system_diff.rs` |
 
 ## The UTF-8-panic class (bugs #2, #3 are instances)
 
@@ -27,21 +28,23 @@ correctness/robustness regression (the translation is not semantics-preserving).
 | program | `to_str/from_utf8().unwrap()` sites | confirmed instance? |
 |---|---:|---|
 | optipng | 12 | **YES — `-dir` path (bug #4)** |
-| tulipindicators | 7 | no (all in `sample.rs` CLI driver) |
-| genann | 4 | no (all in `example3/4`) |
+| tulipindicators | 7 | candidate (all in `sample.rs` CLI driver; untriaged) |
+| genann | 4 | **NO — all on constant strings** (`CString::new("example/xor.ann")`) → never panic |
 | bzip2 | 2 | **YES — `endsInBz2` (bug #3)** |
-| lil | 1 | no (CLI arg) |
+| lil | 1 | **YES — `do_system` (bug #5)** |
 | urlparser | 1 | **YES — `url_is_ssh` (bug #2)** |
 
-Per-site reachability with attacker-controlled non-UTF-8 is future work; the census bounds the class,
-and **3 confirmed library-instances across 3 programs** (protocol string, filename, directory name)
-establish it is real and systematic.
+The census is an **upper bound**: per-site reachability varies. genann's 4 sites are on *constant*
+paths (never panic — not bugs), illustrating that not every site is a bug. **4 confirmed
+library-reachable instances across 4 programs** (protocol string, filename, directory name, interpreter
+`system` arg) establish the class is real and systematic; tulipindicators' 7 (CLI-driver) are untriaged.
+snudown is NOT in the class (it uses safe string forms — no `to_str/from_utf8().unwrap()`).
 
 ## Summary
 
-**4 confirmed bugs / 4 programs / 2 mechanisms**, all in C2SaferRust's published output:
-one memory/logic bug (qsort), and a **systematic UTF-8-panic class** confirmed in **3 programs**
-(urlparser, bzip2, optipng).
+**5 confirmed bugs / 5 programs / 2 mechanisms**, all in C2SaferRust's published output:
+one memory/logic bug (qsort `int→usize`), and a **systematic UTF-8-panic class** confirmed in
+**4 programs** (urlparser, bzip2, optipng, lil).
 Differential testing (faithful-c2rust `base` vs C2SaferRust `_WIP`, same source) is the method;
 the UB gate correctly excludes functions that are already UB in the original C (e.g. urlparser's
 `malloc(1)`+`sscanf` `url_get_*`), so no false positives are attributed to the translation.

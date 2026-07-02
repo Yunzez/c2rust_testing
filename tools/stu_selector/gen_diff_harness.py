@@ -160,6 +160,11 @@ def _describe_record(t, s, _depth: int = 0) -> dict:
                 pod, reason = False, f"has function-pointer field '{f.spelling}'"
             else:
                 pod, reason = False, f"has unsupported field '{f.spelling}' ({fd.get('kind')})"
+    # An opaque / incomplete (forward-declared) struct has NO visible fields -> the POD check above
+    # passes vacuously, which is wrong: it can't be constructed or field-compared (e.g. OpenSSL's
+    # EVP_PKEY/BIGNUM, or any handle behind a `struct foo;`). Treat a zero-field record as non-POD.
+    if pod and not fields:
+        pod, reason = False, "opaque/incomplete (no visible fields)"
     # c_name = the spelling usable in a C declaration (keeps the `struct`/`union` keyword for
     # non-typedef'd tags, drops only cv-qualifiers). Used by the out-of-process C oracle to declare
     # the struct; the Rust `name` (keyword stripped) is what c2rust calls the type.

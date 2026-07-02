@@ -54,6 +54,12 @@ def reason_of(stderr: str) -> str:
         (r"pointer-to-array", "ptr_array"),
         (r"unsupported pointer target", "ptr_target"),
         (r"unsupported param type", "param_type"),
+        # --- ORACLE_BUILD_FAIL sub-reasons (honest decomposition; all currently out of scope) ---
+        (r"incomplete type", "opaque_type"),                    # forward-declared handle (EVP_PKEY,...)
+        (r"requires target feature", "target_feature"),        # needs -mpopcnt etc. (roaring)
+        (r"linker command failed", "link_fail"),
+        (r"pointer to integer conversion initializing 'int", "ptr_return"),   # returns a pointer/handle
+        (r"initializing 'int\w*' .*incompatible type", "struct_return"),      # returns a struct by value
         (r"ORACLE_BUILD_FAIL", "oracle_build_fail"),
         (r"no schema|IndexError|list index", "parse_issue"),
     ]:

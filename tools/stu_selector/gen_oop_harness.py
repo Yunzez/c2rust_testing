@@ -78,6 +78,7 @@ def emit_oracle_c(entry, items, ret, csrcs, cap):
             decode.append(f"    size_t {ln} = (size_t)(next_byte() % ({cap}+1));")
             decode.append(f"    {ety} {nm}[{cap}]; for (size_t i=0;i<{ln};i++) {nm}[i]=({ety})take_uint({ew});")
             call_args.append(nm)
+            call_args.append(ln)   # the C signature has (ptr, len) adjacent -> pass BOTH
             if r == "io_buf":
                 ser.append(f'    printf(" buf:{nm}:%zu", {ln}); '
                            f'for (size_t i=0;i<{ln};i++) printf(":%lld",(long long){nm}[i]);')
@@ -271,12 +272,14 @@ def main() -> int:
     cc_dir = pair / "build"
     params, ret, _ = gdh.parse_entry_signature(cc_dir, args.entry)
     items = gdh.classify(params)
+    param_rust = {p["name"]: p.get("rust") for p in params if p.get("kind") == "scalar"}
     # attach rust element types / len rust types for buffers (classify uses C-side)
     for it in items:
         if it.get("role") in ("in_buf", "io_buf"):
             it.setdefault("elem", it.get("elem", "u8"))
             it.setdefault("elem_w", it.get("elem_w", 1))
-            it.setdefault("len_rust", "usize")
+            # the length param's real Rust type (e.g. u32), NOT a hardcoded usize
+            it["len_rust"] = param_rust.get(it.get("len_name")) or "usize"
     rs = sorted((pair / "translated").glob("*.rs"))[0]
     call_kind, _sig = rust_entry_sig(rs.read_text(), rust_entry)
     call_kind = "raw_ptr" if call_kind in ("raw_ptr", "scalar_only") else "slice"

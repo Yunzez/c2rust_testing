@@ -1,3 +1,10 @@
+> **INTERNAL scouting tool — NOT a paper method or claim.** This base-c2rust-vs-WIP differential uses
+> c2rust as the reference, which is an *unverified, evolving* translator; a divergence here does not on
+> its own attribute fault. It is used only to *scout* candidates cheaply. **Every finding reported in the
+> paper is C-backed** (original C as the ground-truth oracle, UB-gated; c2rust/CROWN appear only as
+> controls verified clean against C, never as the oracle). Do not fold this tool or its counts into the
+> paper narrative.
+
 # RQ1 auto-sweep — corpus-scale base-vs-C2SaferRust differential (#1 + #2)
 
 Tooling: `tools/stu_selector/rust_diff.py` (per-function generator) + `crate_sweep.py` (links a base

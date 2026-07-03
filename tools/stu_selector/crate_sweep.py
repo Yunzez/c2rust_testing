@@ -68,8 +68,9 @@ def emit_test(idx, entry, mp, plan, balias, walias, base_name, wip_name, iters):
                 wa.append("&mut vbuf[..]" if wtr.startswith("&mut") else "&vbuf[..]")
             else: wa.append(f"vbuf.{'as_ptr' if wtr.startswith('*const') else 'as_mut_ptr'}() as {wtr}")
     body="\n".join(dec)
-    bcall=f"{base_name}::{mp}::{entry}({', '.join(ba)})"
-    wcall=f"{wip_name}::{mp}::{entry}({', '.join(wa)})"
+    pfx = f"{mp}::" if mp else ""
+    bcall=f"{base_name}::{pfx}{entry}({', '.join(ba)})"
+    wcall=f"{wip_name}::{pfx}{entry}({', '.join(wa)})"
     return f'''
 fn test_{idx}(rng:&mut R)->&'static str{{
     for _ in 0..{iters} {{
@@ -95,15 +96,41 @@ def main():
     a=ap.parse_args()
     bcr=Path(a.base_crate); wcr=Path(a.wip_crate)
     out=Path(a.outdir); (out/"src").mkdir(parents=True,exist_ok=True)
+    # figure out the lib entry file + which top-level modules are declared pub in it
+    libpath=None
+    m=re.search(r'\[lib\][^\[]*?path\s*=\s*"([^"]+)"', wcr.joinpath("Cargo.toml").read_text(), re.S)
+    libpath=m.group(1) if m else "c2rust-lib.rs"
+    libfile=wcr/libpath
+    libtxt=libfile.read_text() if libfile.exists() else ""
+    decl_mods=set(re.findall(r'pub\s+mod\s+([A-Za-z_][A-Za-z0-9_]*)', libtxt))
+    single_file = bool(re.search(r'\bpub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+', libtxt))  # lib file has fns
+    SKIP={"build.rs","main.rs"}
+    # choose the file set: src/ crates walk src recursively; root-module crates walk ONLY the crate
+    # root (c2rust emits nested duplicate sub-crate dirs like bzip2/bzip2/ that we must NOT descend).
+    if (wcr/"src").is_dir():
+        files=[f for f in sorted((wcr/"src").rglob("*.rs")) if "target" not in f.parts]
+    elif single_file:
+        files=[libfile]
+    else:
+        files=[f for f in sorted(wcr.glob("*.rs"))]   # crate root only, non-recursive
     cands=[]
-    for wf in sorted((wcr/a.src_subdir).rglob("*.rs")):
-        rel=wf.relative_to(wcr); bf=bcr/rel
+    for wf in files:
+        rel=wf.relative_to(wcr)
+        if wf==libfile:
+            if not single_file: continue      # c2rust-lib.rs = declarations only
+            mp=""                               # single-file crate: fns at crate root
+        else:
+            if rel.name in SKIP: continue
+            top=rel.parts[0].replace(".rs","")
+            if top not in decl_mods and (wcr/"src").is_dir()==False: continue
+            mp=modpath(rel)
+        bf=bcr/rel
         if not bf.exists(): continue
-        wsrc=wf.read_text(); bsrc=bf.read_text(); mp=modpath(rel)
+        wsrc=wf.read_text(); bsrc=bf.read_text()
         for fn in re.findall(r'\bpub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+([A-Za-z_][A-Za-z0-9_]*)', wsrc):
             if fn in ("main",): continue
             if re.search(rf'\bfn\s+{re.escape(fn)}\b', bsrc): cands.append((fn,mp,bsrc,wsrc))
-    print(f"discovered {len(cands)} candidate fns")
+    print(f"discovered {len(cands)} candidate fns (single_file={single_file}, mods={len(decl_mods)})")
     tests=[]; meta=[]; nun=0
     seen=set()
     for fn,mp,bsrc,wsrc in cands:

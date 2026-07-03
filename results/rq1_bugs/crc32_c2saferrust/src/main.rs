@@ -1,6 +1,7 @@
 #![allow(non_upper_case_globals,non_camel_case_types,non_snake_case,dead_code,unused_mut,unused_assignments,unused_unsafe,unused_parens,unused_imports)]
 mod base;
 mod wip;
+mod laertes;
 
 fn main() {
     // 1) The len==0 (empty buffer, NONZERO crc) case — the suspected NULL-vs-empty bug.
@@ -28,6 +29,7 @@ fn main() {
     }
     println!("sweep: total={} diffs={} (of which len==0: {})", total, diffs, empty_diffs);
     idat_demo();
+    three_way();
 }
 
 // ---- appended: end-to-end demo — optipng IDAT CRC accumulation (optim.rs:1581/1612) ----
@@ -60,4 +62,17 @@ fn idat_demo() {
     println!("segmented [5,5]      : base=0x{:08x} wip=0x{:08x}  {}", b1, w1, if b1==w1 {"ok"} else {"DIFF"});
     println!("segmented [5,0,5]    : base=0x{:08x} wip=0x{:08x}  {}", b2, w2, if b2==w2 {"ok"} else {"*** WRONG CRC WRITTEN TO PNG ***"});
     println!("(base is stable regardless of segmentation; WIP's CRC changes when a 0-byte segment appears -> corrupt IDAT)");
+}
+
+fn three_way() {
+    println!("\n== 3-WAY TOOL CONTRAST: crc32_z(crc, valid buf, len=0) — same source function ==");
+    println!("{:<12} {:<12} {:<14} {:<14} {}", "input crc", "SOURCE(base)", "C2SaferRust", "Laertes", "verdict");
+    for &c in &[0x12345678u64, 0xdeadbeefu64, 0xabcdef01u64] {
+        let src = unsafe { base::crc32_z(c, b"".as_ptr(), 0) };
+        let c2s = wip::crc32_z(c, &[], 0);
+        let lae = unsafe { laertes::crc32_z(c, b"".as_ptr(), 0) };
+        println!("0x{:08x}   0x{:08x}    0x{:08x} {}  0x{:08x} {}",
+            c, src, c2s, if c2s==src {"[ok] "} else {"[BUG]"}, lae, if lae==src {"[ok]"} else {"[BUG]"});
+    }
+    println!("=> differential testing tells you WHICH tool's output to trust: C2SaferRust silently wrong, Laertes faithful.");
 }

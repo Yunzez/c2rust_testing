@@ -44,6 +44,27 @@ and compares them:
 cd results/rq1_bugs/crc32_c2saferrust && cargo +nightly-2025-09-01 run --release
 ```
 
+## Multi-tool contrast — same function, three tools, only one is wrong
+
+The `laertes_benchmarks/` corpus ships outputs from **multiple published translators on the same C
+source**: `optipng` (base c2rust) / `optipng_WIP` (**C2SaferRust**, LLM-based) / `optipng_laertes`
+(**Laertes**, Emre et al. OOPSLA'21, rule-based pointer-lifting). Running the same `crc32_z(crc, buf, 0)`
+through all three (`three_way()` in `src/main.rs`):
+
+```
+input crc    SOURCE(base)  C2SaferRust      Laertes
+0x12345678   0x12345678    0x00000000 [BUG] 0x12345678 [ok]
+0xdeadbeef   0xdeadbeef    0x00000000 [BUG] 0xdeadbeef [ok]
+```
+
+**Same source function, three tools: C2SaferRust is silently wrong, Laertes is faithful.** Laertes (a
+principled, conservative lifter) left `crc32_z` as raw-pointer c2rust code with the original `is_null`
+guard — byte-identical to base; C2SaferRust (aggressive LLM rewrite) lifted it to a slice and broke the
+NULL/empty distinction. This is the multi-tool payoff of differential testing: **it tells you which
+tool's output you can trust on which function** — a spectrum from aggressive-LLM (bugs) to
+principled-lifter (faithful), placed with evidence rather than assumed. Single-program fuzzing of any one
+output cannot produce this comparison (no oracle).
+
 ## Attribution — C2SaferRust marked this translation SUCCESS
 
 C2SaferRust's own `optipng_WIP/log.txt` records the outcome of each rewrite chunk:

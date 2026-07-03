@@ -104,6 +104,13 @@ def main():
     if not wp: sys.exit(f"entry {a.entry} not found in wip")
     bparams, bret = bp; wparams, wret = wp
     balias = parse_aliases(base_src); walias = parse_aliases(wip_src)
+    # return must be VALUE-comparable: reject pointer / bare-reference returns (addresses, not values).
+    for who, rt, al in (("base", bret, balias), ("wip", wret, walias)):
+        if rt is None: continue
+        rr = resolve(rt, al)
+        if rr.startswith("*const") or rr.startswith("*mut") or re.match(r'^&(mut )?(?!\[)', rr):
+            sys.exit(f"UNSUPPORTED: {who} returns non-value type {rt} "
+                     f"(pointer/reference is an address, not value-comparable)")
     if len(bparams) != len(wparams):
         sys.exit(f"UNSUPPORTED: arg count differs base={len(bparams)} wip={len(wparams)} "
                  f"(needs matcher-level alignment)")

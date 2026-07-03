@@ -127,6 +127,25 @@ full-binary demonstration — building optipng_WIP and finding an input where li
 IDAT write — is future work. The defect in the primitive is certain; this shows it reaches the file's
 CRC through the actual code path.)
 
+## The real pipeline finds it (end-to-end validation)
+
+Beyond the hand-written module comparison, the actual DUET pipeline finds this silent bug automatically.
+`tools/stu_selector/gen_oop_harness.py --pair <crc pair> --entry crc32_z` builds a UBSan/ASan C oracle
+(faithful zlib `crc32_z`, NULL-guarded) + a cargo-fuzz crate calling the C2SaferRust `crc32_z` natively,
+and compares **return values**. Running `cargo fuzz run`:
+
+```
+divergence: C="ret:10" Rust="ret:0"
+```
+
+The fuzzer hits it near-instantly; the minimized trigger is a **single byte `0x0a`** → crc=10, empty
+buffer. It is caught by value comparison, not a crash (the Rust returns a clean, well-typed `0`) — the
+defining property of a silent semantic diff. Scratch: `scratchpad/h_crc_pipeline/`.
+
+Harness gap noted: C2SaferRust's `crc32_z` keeps BOTH a slice `&[u8]` AND a redundant explicit
+`len: usize`; the generator assumed the slice absorbed the length and emitted a 2-arg call, patched to
+pass `len` (a "slice + redundant length parameter" shape to handle in the generator).
+
 ## Why single-program fuzzing cannot find this
 
 Fuzzing the WIP alone: `crc32_z(X, "", 0)` returns `0` and does not crash — it looks like a perfectly

@@ -1,0 +1,56 @@
+```rust
+pub fn leb128_roundtrip(input: &[u8], out: &mut [u8]) -> Option<usize> {
+    let mut value = 0u64;
+    let consumed = leb128_decode(input, value)?;
+
+    let written = leb128_encode(value, out)?;
+    Some(written)
+}
+
+fn leb128_encode(value: u64, out: &mut [u8]) -> Option<usize> {
+    let mut n = 0;
+    let mut value = value;
+
+    while value != 0 {
+        let mut byte = (value & 0x7F) as u8;
+        value >>= 7;
+        if value != 0 {
+            byte |= 0x80; // continuation bit
+        }
+        if n >= out.len() {
+            return None; // would overflow buffer
+        }
+        out[n] = byte;
+        n += 1;
+    }
+    Some(n)
+}
+
+fn leb128_decode(input: &[u8], mut value_out: u64) -> Option<usize> {
+    let mut result = 0u64;
+    let mut shift = 0;
+    let mut i = 0;
+
+    while i < input.len() {
+        let byte = input[i];
+        let low7 = (byte & 0x7F) as u64;
+
+        if shift >= 64 {
+            return None; // too many bytes -> overflow
+        }
+        if shift == 63 && low7 > 1 {
+            return None; // would set bits above bit 63
+        }
+
+        result |= low7 << shift;
+        i += 1;
+
+        if (byte & 0x80) == 0 {
+            value_out = result;
+            return Some(i);
+        }
+        shift += 7;
+    }
+    None // ran off the end with continuation bit set
+}
+```

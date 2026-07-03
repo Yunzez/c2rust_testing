@@ -77,6 +77,35 @@ miscompiled on non-empty input — wrong sums + an out-of-bounds panic — so it
 - Attribution: same-source base c2rust = faithful C behavior (returns crc); divergence localizes to
   C2SaferRust's `is_null → is_empty` rewrite. Not class #2 (no UB) and not class #3 (no crash).
 
+## End-to-end reachability — the bug corrupts real PNG output
+
+`crc32_z` is not an unused API corner: optipng accumulates the **IDAT chunk CRC incrementally** through
+it. In `optipng_WIP/src/optipng/optim.rs`:
+
+```
+1581:  crt_idat_crc = crc32(0, sig_IDAT.as_ptr(), 4) ...   // seed CRC with the "IDAT" tag
+1612:  crt_idat_crc = crc32(crt_idat_crc, data, length) ... // fold in each output write segment
+       ... png_save_uint_32(buf, crt_idat_crc) ...          // then this CRC is written into the file
+```
+
+Incremental CRC is **segmentation-invariant by design** — splitting the same bytes across more/fewer
+write callbacks must not change the result. The WIP bug breaks exactly that: **any write segment with
+`length == 0`** (a zero-byte flush from libpng, or a spec-legal empty IDAT split) **resets the running
+CRC to 0**, so the CRC written into the PNG is wrong and the file fails CRC validation.
+
+`idat_demo()` in `src/main.rs` reproduces the accumulation with the shipped base and WIP `crc32_z`:
+
+```
+segmented [5,5]   : base=0xe221bc33 wip=0xe221bc33  ok
+segmented [5,0,5] : base=0xe221bc33 wip=0xb2a113e5  *** WRONG CRC WRITTEN TO PNG ***
+```
+
+Same payload, one extra zero-length segment: the correct (base) CRC is unchanged; the WIP CRC changes →
+a corrupt IDAT. (Caveat: this drives the real accumulation *loop* with the shipped primitives; a
+full-binary demonstration — building optipng_WIP and finding an input where libpng emits a zero-length
+IDAT write — is future work. The defect in the primitive is certain; this shows it reaches the file's
+CRC through the actual code path.)
+
 ## Why single-program fuzzing cannot find this
 
 Fuzzing the WIP alone: `crc32_z(X, "", 0)` returns `0` and does not crash — it looks like a perfectly

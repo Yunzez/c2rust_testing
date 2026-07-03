@@ -40,3 +40,13 @@ method sidesteps. (We do not claim RustAssure's check passed it — no per-funct
 the artifact; we claim its produced translation is semantically wrong and our method proves it.)
 
 Provenance: tools/frameworks/rustassure/src/python/inputs-complex/u8c/ (u8c.c + per-model archives).
+
+## Bug #7 (same artifact, gpt-3.5-turbo) — u8next_ never decodes continuation bytes
+
+`int u8next_(const char *txt, int *ch)` fully decodes one UTF-8 codepoint (lead byte masked, then
+continuation bytes shifted in). gpt-3.5-turbo's translation identifies the byte `len` correctly but
+`break`s after the first byte in every match arm — it **never reads the continuation bytes**, so `*ch`
+is just the masked lead byte. "©"→2 (not 169), "€"→2 (not 8364), "😀"→0 (not 128512). Exhaustive over
+single codepoints U+0020..U+10FFFF (against the shipped preprocessed C `.i` as oracle): **1,111,936 /
+1,112,032 diverge** — every multi-byte codepoint. gpt-4o's translation carries the full state machine.
+Repro: `u8next_/` (`cargo run --release`).

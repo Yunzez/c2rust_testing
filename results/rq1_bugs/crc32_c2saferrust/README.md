@@ -44,6 +44,32 @@ and compares them:
 cd results/rq1_bugs/crc32_c2saferrust && cargo +nightly-2025-09-01 run --release
 ```
 
+## Attribution — C2SaferRust marked this translation SUCCESS
+
+C2SaferRust's own `optipng_WIP/log.txt` records the outcome of each rewrite chunk:
+
+```
+...::src::zlib::crc32::crc32_z)  Chunk root, Success, 3     <-- the buggy function, marked SUCCESS
+...::src::zlib::crc32::crc32)    Chunk root, Failure, 5
+```
+
+So the tool **believed `crc32_z` was correctly translated and shipped it as a success** — its own
+verification never exercised the `(nonzero crc, empty buffer)` case. This is the strongest form of
+attribution: the defect is a **silent failure the tool did not detect**, not a known-bad output. (It
+mirrors the SACTOR / C2SaferRust theme that sample-based verification misses the untested edge space.)
+
+## Corroboration — the SAME empty-input bug in the sibling checksum `adler32_z`
+
+zlib's other checksum, `adler32_z`, is broken the same way in the same crate
+(`optipng_WIP/src/zlib/adler32.rs:48`): the base's `if buf.is_null() { return 1 }` became
+`if len == 0 { return 1 }`, so a running Adler-32 hitting a zero-length chunk is **reset to the seed
+`1`** instead of preserved (base returns `adler`; WIP returns `1`; confirmed empirically, e.g.
+`adler32_z(0x12345678, buf, 0)` → base `0x12345678`, WIP `0x00000001`). This makes the empty-input
+checksum-reset a **systematic C2SaferRust pattern across both zlib checksum lifts**, not a one-off.
+(Caveat: unlike `crc32_z`, `adler32_z` was marked `Failure` in the log and is *additionally* grossly
+miscompiled on non-empty input — wrong sums + an out-of-bounds panic — so it is a messier example;
+`crc32_z` remains the clean, otherwise-faithful headline.)
+
 ## Classification (3-class taxonomy)
 
 - **Class #1 — semantic difference.** ✅ C UB-free (no deref on empty; base's `is_null` is false for a

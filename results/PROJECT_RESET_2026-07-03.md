@@ -40,10 +40,17 @@ divergence into one of three buckets:
 2. **Inherent UB (not the transpiler's fault, but still reported)** — the input triggers UB in C
    (UBSan/ASan fires); Rust may crash/differ. We *report and label* these (a real divergence) but
    attribute them to C's UB, not the translation.
-3. **Crash (transpiler bug #2)** — C is UB-free and returns normally; Rust panics/crashes. (Our UTF-8
-   class lives here.) A real transpiler bug, but *also* findable by fuzzing Rust alone.
+3. **Crash (transpiler bug #2)** — C is UB-free and returns normally; Rust panics/crashes **or hangs**
+   (Rust non-termination on a C-terminating input goes here too, detected by timeout — that's the qsort
+   bug). (Our UTF-8 class lives here.) A real transpiler bug, but *also* findable by fuzzing Rust alone.
 
 Report all three; the value story rests on #1.
+
+**Nuance — don't over-demote the crashes:** fuzzing Rust alone finds the *panic*, but it cannot
+*confirm a transpiler bug* — it doesn't know whether the input is C-UB-free and whether C returns
+normally on it (the panic could be a precondition violation the C caller never makes). The C oracle +
+UB gate is what turned our 5 panics into **confirmed, attributed** transpiler bugs. So: **discovery**
+of class #3 doesn't need us; **attribution** does. The gap is that class #1 needs us for both.
 
 ---
 
@@ -64,6 +71,14 @@ differential testing simply cannot be applied to LLM translations at all.
 
 The matcher is not merely an eval axis; it is the *enabler*. This is more honest and stronger than
 frontier selection ever was.
+
+**Anticipated attack + answer:** *"the translator itself knows the C↔Rust mapping — why a matcher?"*
+Three answers: (a) **published artifacts ship code, not mappings** — C2SaferRust's translated repos
+give you final Rust, no per-function correspondence log; (b) **idiomatic tools merge/split/inline
+functions**, so even a tool-emitted 1-1 log wouldn't survive its own restructuring; (c) the real use
+case is **third-party auditing** — validating a translation you didn't produce (a team that translated
+with ChatGPT last year has no logs at all). Differential testing as an *independent check* cannot
+depend on the translator's cooperation.
 
 ---
 
@@ -163,6 +178,9 @@ credible tool axis. Two-pronged fix:
 4. E2 matcher: assemble the multi-tool CRUST-bench union; c2rust baseline.
 
 ## 10. Still-open questions (decide as we go)
+- **E2 ground truth:** matcher accuracy on real LLM outputs needs a labeled C↔Rust correspondence —
+  who labels it? (Manual on the CRUST-bench union? Semi-auto via our own harness agreement?) Rename
+  experiments have free ground truth; real SACTOR/C2SaferRust outputs don't. Decide the protocol.
 - Name: **DUET** (proposed, not locked) vs PARITY / TANDEM.
 - Exact published-tool set for E2/E3 (which 1–2 to add).
 - How to present raw-LLM findings honestly alongside published-tool findings.

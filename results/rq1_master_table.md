@@ -28,17 +28,18 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 |---|---|---:|---:|---|---|---|---|---|---|
 | **qsort** | sorting | 30 | 3 | ✓ base | **✓E/F(50k)** ¹⁷ | **c:1** ¹ | — | ✓F | ∅ᵖ |
 | **urlparser** | URL parsing | ~1.3k | ~15 | ✓ base | ∅ | **c:1** ² | ⊘(C-side UB)¹² | ∅ | ∅ᵖ |
-| **quadtree** | spatial tree | 439 | ~25 | ✓ base | — | — | ∅ | ∅ | **✓F** ³ |
+| **quadtree** | spatial tree | 439 | ~25 | ✓ base | — | — | **✓F*** ¹⁸ | ∅ | **✓F** ³ |
 | **genann** | neural net (f64) | 895 | ~20 | ✓F(300k) | **✓F(200k)** ¹⁶ | ✓F(50M) ⁴ | **✓F(300k)** | ∅ | ∅ᵖ |
 | **cJSON** | JSON parser (recursive) | 3206 | 118 | ✓F(100k) | — | ⊘(nightly slicer) | ✗(rewrite crash) | ✗(circular deps) | **▲94/118, s:3** ★⁵ |
 | **lil** | script interpreter | 3723 | ~128 | ✓ base | **✓F(111k)** ¹⁵ | **c:1** ⁶ | **✓F(111k)** ¹¹ | ∅ | ∅ᵖ |
-| **lodepng** | PNG codec | 6658 | ~200 | ∅ | — | — | ∅ | ∅ | ∅ᵖ |
+| **lodepng** | PNG codec | 6658 | ~200 | **✓F(3036)** ¹⁹ | — | — | **✓F(3036)** ★¹⁹ | ∅ | ∅ᵖ |
 | **bzip2** | compressor | 7344 | ~110 | ✓ base | **s:1** ★¹⁴ | **c:1 s:1** ⁷ | **c:1 s:2** ★¹⁰ | ∅ | ∅ᵖ |
 | **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | ∅ | ∅ (7 utf8 sites untriaged) | ▽(minimal surface)¹³ | — | — |
 | **optipng** (incl. zlib) | PNG optimizer | ~30k | ~400 | ✓ base | ✓p ⁸ | **c:1 s:2** ★⁹ | — | — | — |
 
 ᵃ CROWN artifact **already shipped** in laertes_benchmarks (`*_crown/`) — zero-cost to test.
 ᵖ C source in PtrTrans crown_dataset — our reproduced pipeline can translate (LLM cost per lib).
+`✓F*` = certificate on all non-crashing inputs; a shared crash (base c2rust crashes identically) is not tool-attributable.
 
 ## Evidence footnotes
 
@@ -59,6 +60,8 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 15. Laertes lil: **certificate** — same 111,043-record corpus, **111,042 identical**. The 1 "diff" (`expr ((1+2)*(3+4))`) is **excluded as oracle-nondeterminism, NOT a Laertes bug**: the original C `expr` is *order-dependent* (returns `[25]` when the record runs first, `[]` when any shorter record precedes it — a global-state/buffer leak in lil's own `expr`, ASan/UBSan-clean). When the C reference is self-inconsistent on an input, no divergence can be attributed. A new exclusion category alongside UB: **stateful-nondeterminism of the reference**. (The harness incidentally surfaced a latent lil-C bug — candidate for a separate finding.) Note Laertes's lil `laertes_init_*` targets are only `running`/`exit_code` scalars (harmless, already 0).
 16. Laertes genann: **certificate** — 200k records, 0 diffs, **default cached-sigmoid path** (exercises the `lookup` table). genann's `laertes_init_lookup` is *also* uncalled (same pattern as the bzip2 CRC bug!), but here it is **harmless** because `genann_act_sigmoid_cached` retains its runtime lazy-rebuild (`if !initialized { build }`) — the table repopulates on first use. The precise distinction from #14: the uncalled-init bug is fatal only when the zeroed static is the *sole* source of the value (bzip2 CRC: no rebuild) and harmless when a runtime rebuild exists (genann lookup). Demonstrates the finding is mechanism-specific, not a blanket "Laertes zeroes tables" claim.
 17. Laertes qsort: **certificate** — exhaustive small arrays (len 0–3 over [-4,4]) + the `[5,0]` C2SaferRust-bug trigger + 50k fuzz = 50,827 records, 0 diffs. **Laertes did NOT reproduce the C2SaferRust qsort bug**: it kept `low/high/i` as signed `i32` (`i = low - 1`), where C2SaferRust's `int→usize` rewrite broke the sentinel. Same function, opposite outcomes across tools — the cross-tool contrast qsort was chosen for.
+18. CROWN quadtree: ran CROWN's own pipeline (preprocess→analyse→rewrite `--force-box`, 444 lines rewritten, builds). base-c2rust-vs-CROWN differential over insert/search op-sequences: **0 diffs on every non-crashing input**. Clustered/deep inputs cause a **shared crash** (base c2rust segfaults identically — a pre-existing c2rust/quadtree deep-recursion artifact, NOT CROWN-introduced). Corroborates the earlier PtrTrans quadtree certificate (#3). Scratch `cq_ws/`, `cq_base/`.
+19. ★ CROWN lodepng: ran CROWN's pipeline (preprocess→analyse→rewrite `--no-attempt bpmnode_create|uivector_resize`, **5689 lines rewritten**, builds — did NOT crash like cJSON). **C-backed certificate**: original lodepng.c ≡ base c2rust ≡ CROWN, **3036 diverse images (solid/gradient/random/patterns, 1×1–64×64), encode32+decode32 roundtrip, 0 diffs**. C oracle from crown_dataset lodepng.c (commit 997936f). CROWN CAN faithfully lift a 6.6k-LOC PNG codec — sharpens the per-library story: CROWN faithful on lodepng (big codec) yet broken on bzip2 (also a codec). Scratch `cl_ws/`, `cl_base/`, `cl_oracle.c`.
 
 ## Current totals (filled cells only)
 
@@ -66,8 +69,10 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
   CROWN, Laertes), classes: **checksum-corruption (now 2 independent instances: C2SaferRust crc32 +
   Laertes bzip2)**; NULL/empty conflation; UTF-8-panic; call-site contract loss; CROWN
   ownership-lift breaking a codec (corrupt output + memory-unsafety)
-- **Certificates: 12 cells** (genann now a full 4-lifter clean row; Laertes column: qsort/lil/genann all
-  faithful — rule-based lifter is conservative & mostly correct, *except* the systematic bzip2 CRC bug)
+- **Certificates: 15 cells** (genann full 4-lifter clean row; Laertes qsort/lil/genann faithful;
+  **CROWN lodepng C-backed cert — faithfully lifts a 6.6k-LOC PNG codec**; CROWN quadtree faithful)
+- **CROWN column now complete**: broken on bzip2 (headline #3) + cJSON (rewrite crash); faithful on
+  lodepng/genann/lil/quadtree; urlparser UB-excluded; tulip minimal-surface. **Per-library, not per-tool.**
 - **Tool failures: 3** (CROWN/SACTOR on cJSON; C2SaferRust env-blocked); **1 UB-gate exclusion**
   (urlparser); **1 oracle-nondeterminism exclusion** (Laertes lil nested-paren — surfaced a latent lil-C bug)
 - **Cross-tool contrasts locked**: qsort (C2SaferRust crashes / Laertes faithful — int→usize vs kept-i32);

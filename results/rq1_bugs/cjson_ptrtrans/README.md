@@ -74,3 +74,36 @@ cc -O1 -I <cJSON-src> oracle.c -o oracle_c -lm
 cd translated_crate && cargo build --release --bin diffdrv
 <gen corpus per README method>; ./oracle_c < corpus.bin > c.txt; diffdrv < corpus.bin > r.txt; diff c.txt r.txt
 ```
+
+## Concrete examples (decoded from the differential outputs)
+
+Class 1 — `\u` escapes (C succeeds, Rust rejects):
+
+| input | C | PtrTrans Rust |
+|---|---|---|
+| `"A"` | ret=1, `A`, offset=8 | ret=0, offset=1 |
+| `"hiéthere"` | ret=1, `hiéthere` (`c3 a9`) | ret=0 |
+| `"𝄞"` (𝄞 surrogate pair) | ret=1, `f0 9d 84 9e` | ret=0 |
+
+Any legal JSON with unicode escapes (i18n names, emoji) parses in C and errors in the translation.
+Note the **offset divergence** (8 vs 1): in the full parser this position drives all subsequent
+parsing, so the document-level parse paths split entirely.
+
+Class 2 — success-but-value-lost (both ret=1):
+
+| input | C valuestring | Rust valuestring |
+|---|---|---|
+| `"plain"` | `plain` | **None** |
+| `"tab\tnl\n"` | `tab<TAB>nl<LF>` (escapes expanded) | **None** |
+| `"esc\\quote\""` | `esc\quote"` | **None** |
+
+Class 3 — non-UTF-8 (C byte-transparent, Rust validates):
+
+| input | C | Rust |
+|---|---|---|
+| `"\xff\xfe raw high bytes"` | ret=1, 17 raw bytes stored | ret=0 (`from_utf8` gate) |
+
+Bonus — the differential even surfaces a C-side quirk: `"\uZZZZ"` → C ret=1 with **U+0000**
+(cJSON's `parse_hex4` has no error channel for invalid hex; silently yields NUL), Rust ret=0. Under
+the C-as-ground-truth convention this counts as a divergence; it doubles as a footnote that
+differential testing exposes reference-implementation quirks too.

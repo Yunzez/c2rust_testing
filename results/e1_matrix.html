@@ -164,7 +164,7 @@
     <div class="tile bug">
       <div class="n">16</div>
       <div class="k">Confirmed bugs</div>
-      <div class="sub">7 crash · 9 semantic · 0 hang</div>
+      <div class="sub">6 crash · 10 semantic · 0 hang</div>
     </div>
     <div class="tile cert">
       <div class="n">16</div>
@@ -174,7 +174,7 @@
     <div class="tile star">
       <div class="n">4</div>
       <div class="k">Headline findings</div>
-      <div class="sub">checksum ×2 · codec · call-site</div>
+      <div class="sub">checksum ×3 · codec · call-site</div>
     </div>
     <div class="tile">
       <div class="n">4<small> / 6</small></div>
@@ -242,7 +242,7 @@
           <tr>
             <th>urlparser<span class="scale">URL parsing · ~1.3k / ~15</span></th>
             <td class="c base">✓ base</td>
-            <td class="c todo">·</td>
+            <td class="c excl" title="Same UB-gate exclusion as CROWN: original C url_parse overflows a fixed buffer on every valid URL. Reference is UB, nothing to attribute.">⊘ C-UB</td>
             <td class="c bug" title="url_is_ssh to_str().unwrap() panics on non-UTF-8. UTF-8-panic class.">1c</td>
             <td class="c excl" title="Original C url_parse overflows a fixed buffer on every valid URL — reference is UB, nothing to attribute or certify. UB-gate exclusion.">⊘ C-UB</td>
             <td class="c todo">·</td>
@@ -305,7 +305,7 @@
           <tr>
             <th>tulipindicators<span class="scale">indicators · ~5k / ~100</span></th>
             <td class="c base">✓ base</td>
-            <td class="c todo">·</td>
+            <td class="c cert" title="11 arithmetic indicators (sma/ema/wma/rsi/mom/roc/dema/tema/trima/wilders/zlema), 150k random price-series records, 0 diffs vs base c2rust. Base-referenced (tulip C source not in repo). The 2 grep-flagged 'zeroed tables' are test-file scratch buffers, not lookup tables.">✓ 150k</td>
             <td class="c todo" title="7 to_str/from_utf8 sites untriaged (CLI driver).">· <span style="color:var(--fail)">7?</span></td>
             <td class="c excl" title="CROWN rewrote only ti_buffer alloc/free + a test helper; ~100 indicators left mechanical. No value-semantics surface.">▽ min</td>
             <td class="c na">—</td>
@@ -315,7 +315,8 @@
             <th>optipng<span class="scale">PNG optimizer · ~30k / ~400</span></th>
             <td class="c base">✓ base</td>
             <td class="c cert" title="crc32_z 3-way tested faithful (partial).">✓ᵖ</td>
-            <td class="c bug" title="HEADLINE #1. crc32_z + adler32_z empty-chunk reset (is_null→is_empty) + -dir UTF-8 panic.">1c 2s <span class="star">★</span></td>
+            <td class="c bug" title="Laertes uncalled-init zeroes zlib's crc_table (no DYNAMIC_CRC_TABLE, no runtime rebuild). C ≡ base c2rust: 0 diffs; C vs Laertes: 196,985/200,006 wrong CRC (98.49%). adler32 (no table) untouched — isolates the bug to the table path. THIRD checksum-corruption instance — same crc32_z C2SaferRust broke differently.">1s <span class="star">★</span></td>
+            <td class="c bug" title="HEADLINE #1. crc32_z + adler32_z empty-chunk reset (is_null→is_empty) + -dir UTF-8 panic. The SAME crc32_z Laertes also breaks — differently.">1c 2s <span class="star">★</span></td>
             <td class="c fail" title="Fed to CROWN via C→c2rust→CROWN. CRASHES in the analyse phase: ownership inference solves 1087 functions then aborts — assertion failed at infer.rs:658 on png_create_png_struct (precision-3 pass). Empty analysis_results → rewrite can't run. Earlier crash than cJSON. No --no-attempt escape (solver, not per-fn).">✗ analyse</td>
             <td class="c na">—</td>
             <td class="c na">—</td>
@@ -344,10 +345,11 @@
           different mechanisms. Only mechanical <code>c2rust</code> is faithful.</p>
       </div>
       <div class="ins">
-        <h4><span class="dot" style="background:var(--star)"></span>Checksum corruption recurs</h4>
-        <p><span class="lead">Two independent tools, same class.</span> C2SaferRust crc32 and Laertes bzip2
-          both silently break a checksum during translation — evidence it's a <b>recurring failure mode</b>,
-          not one tool's fluke.</p>
+        <h4><span class="dot" style="background:var(--star)"></span>Checksum corruption is the dominant class</h4>
+        <p><span class="lead">Three independent instances across two tools.</span> Laertes zeroes any
+          no-rebuild lookup table (<code>bzip2</code> + <code>optipng</code> CRC); C2SaferRust conflates
+          empty/NULL (<code>crc32</code>). <code>optipng crc32_z</code> is broken by <b>both</b> tools,
+          differently — one function, two silent bugs.</p>
       </div>
       <div class="ins">
         <h4><span class="dot" style="background:var(--cert)"></span>Per-library, not per-tool</h4>

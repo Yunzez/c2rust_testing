@@ -316,7 +316,7 @@
             <td class="c base">✓ base</td>
             <td class="c cert" title="crc32_z 3-way tested faithful (partial).">✓ᵖ</td>
             <td class="c bug" title="HEADLINE #1. crc32_z + adler32_z empty-chunk reset (is_null→is_empty) + -dir UTF-8 panic.">1c 2s <span class="star">★</span></td>
-            <td class="c na">—</td>
+            <td class="c fail" title="Fed to CROWN via C→c2rust→CROWN. CRASHES in the analyse phase: ownership inference solves 1087 functions then aborts — assertion failed at infer.rs:658 on png_create_png_struct (precision-3 pass). Empty analysis_results → rewrite can't run. Earlier crash than cJSON. No --no-attempt escape (solver, not per-fn).">✗ analyse</td>
             <td class="c na">—</td>
             <td class="c na">—</td>
           </tr>
@@ -354,6 +354,13 @@
         <p>CROWN faithfully lifts a 6.6k-LOC PNG codec (<code>lodepng</code>) yet breaks <code>bzip2</code>
           — also a codec. qsort: C2SaferRust crashes, Laertes stays correct. <span class="lead">The same
           tool is both reliable and not.</span></p>
+      </div>
+      <div class="ins">
+        <h4><span class="dot" style="background:var(--fail)"></span>Scale defeats CROWN's pipeline</h4>
+        <p>The two largest, most realistic libraries both crash CROWN outright — <code>cJSON</code> (3.2k
+          recursive parser) in <b>rewrite</b>, <code>optipng</code> (~95k codec bundle) in <b>analysis</b>.
+          Its certificates are all on smaller, regular crates. <span class="lead">Real-world code at scale
+          defeats the safety lifter.</span></p>
       </div>
       <div class="ins">
         <h4><span class="dot" style="background:var(--excl)"></span>Discipline shows its work</h4>

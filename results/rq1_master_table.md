@@ -35,7 +35,7 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 | **lodepng** | PNG codec | 6658 | ~200 | **✓F(3036)** ¹⁹ | — | — | **✓F(3036)** ★¹⁹ | ∅ | ∅ᵖ |
 | **bzip2** | compressor | 7344 | ~110 | ✓ base | **s:1** ★¹⁴ | **c:1 s:1** ⁷ | **c:1 s:2** ★¹⁰ | ∅ | ∅ᵖ |
 | **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | ∅ | ∅ (7 utf8 sites untriaged) | ▽(minimal surface)¹³ | — | — |
-| **optipng** (incl. zlib) | PNG optimizer | ~30k | ~400 | ✓ base | ✓p ⁸ | **c:1 s:2** ★⁹ | — | — | — |
+| **optipng** (incl. zlib) | PNG optimizer | ~30k | ~400 | ✓ base | ✓p ⁸ | **c:1 s:2** ★⁹ | **✗(analyse panic)** ²¹ | — | — |
 
 ᵃ CROWN artifact **already shipped** in laertes_benchmarks (`*_crown/`) — zero-cost to test.
 ᵖ C source in PtrTrans crown_dataset — our reproduced pipeline can translate (LLM cost per lib).
@@ -62,6 +62,7 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 17. Laertes qsort: **certificate** — exhaustive small arrays (len 0–3 over [-4,4]) + the `[5,0]` C2SaferRust-bug trigger + 50k fuzz = 50,827 records, 0 diffs. **Laertes did NOT reproduce the C2SaferRust qsort bug**: it kept `low/high/i` as signed `i32` (`i = low - 1`), where C2SaferRust's `int→usize` rewrite broke the sentinel. Same function, opposite outcomes across tools — the cross-tool contrast qsort was chosen for.
 18. CROWN quadtree: ran CROWN's own pipeline (preprocess→analyse→rewrite `--force-box`, 444 lines rewritten, builds). base-c2rust-vs-CROWN differential over insert/search op-sequences: **0 diffs on every non-crashing input**. Clustered/deep inputs cause a **shared crash** (base c2rust segfaults identically — a pre-existing c2rust/quadtree deep-recursion artifact, NOT CROWN-introduced). Corroborates the earlier PtrTrans quadtree certificate (#3). Scratch `cq_ws/`, `cq_base/`.
 20. CROWN qsort: **certificate** — qsort is NOT in CROWN's benchmark set, so we **fed it to CROWN ourselves**: repackaged the existing base c2rust qsort into CROWN's crate format (lib.rs entry + `src/` + `strict_provenance`/`raw_ref_op` feature flags), ran preprocess→analyse→rewrite (16 lines rewritten: `(*a)` parens + `offset` call rewrites; kept raw-ptr sigs + i32). 50,827 records vs C, 0 diffs. **Confirms the recipe: any C lib can be fed to CROWN via `C → c2rust → CROWN`** (CROWN is a Rust→Rust safety lifter, not a C→Rust translator). Did NOT reproduce the C2SaferRust int→usize bug. Scratch `crown_qsort_ws/`.
+21. CROWN optipng: fed via the same recipe (base c2rust builds under nightly-2023-01-26 with the crown feature flags; preprocess OK). **CROWN CRASHES in the `analyse` phase** — ownership inference solves 1087 functions then hard-aborts: `assertion failed: fitter.next().is_none()` at `crates/analysis/src/ownership/infer.rs:658` on `png_create_png_struct` (signature solves at precision 1–2, trips the precision-3 pass). `analysis_results/` empty → rewrite can never run; **no `--no-attempt` escape** (panic is in the solver, not per-function rewrite). Parallel to cJSON's rewrite crash but **one phase earlier**. → **the two largest/most realistic libraries both defeat CROWN's pipeline** — cJSON (3.2k recursive parser) in *rewrite*, optipng (~95k codec bundle) in *analysis*; CROWN's certificates are all on smaller, regular crates. Evidence: `rq1_bugs/optipng_crown/` (commit 47882c3).
 19. ★ CROWN lodepng: ran CROWN's pipeline (preprocess→analyse→rewrite `--no-attempt bpmnode_create|uivector_resize`, **5689 lines rewritten**, builds — did NOT crash like cJSON). **C-backed certificate**: original lodepng.c ≡ base c2rust ≡ CROWN, **3036 diverse images (solid/gradient/random/patterns, 1×1–64×64), encode32+decode32 roundtrip, 0 diffs**. C oracle from crown_dataset lodepng.c (commit 997936f). CROWN CAN faithfully lift a 6.6k-LOC PNG codec — sharpens the per-library story: CROWN faithful on lodepng (big codec) yet broken on bzip2 (also a codec). Scratch `cl_ws/`, `cl_base/`, `cl_oracle.c`.
 
 ## Current totals (filled cells only)
@@ -74,8 +75,11 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
   **CROWN lodepng C-backed cert — faithfully lifts a 6.6k-LOC PNG codec**; CROWN quadtree faithful)
 - **CROWN column now complete**: broken on bzip2 (headline #3) + cJSON (rewrite crash); faithful on
   lodepng/genann/lil/quadtree; urlparser UB-excluded; tulip minimal-surface. **Per-library, not per-tool.**
-- **Tool failures: 3** (CROWN/SACTOR on cJSON; C2SaferRust env-blocked); **1 UB-gate exclusion**
-  (urlparser); **1 oracle-nondeterminism exclusion** (Laertes lil nested-paren — surfaced a latent lil-C bug)
+- **Tool failures: 4** (CROWN on cJSON *rewrite* + optipng *analyse*; SACTOR on cJSON; C2SaferRust
+  env-blocked); **1 UB-gate exclusion** (urlparser); **1 oracle-nondeterminism exclusion** (Laertes lil)
+- **Scale defeats CROWN's pipeline**: the two largest/most realistic libs both crash it — cJSON (3.2k
+  recursive parser, rewrite) + optipng (~95k codec bundle, analysis). Its certificates are all smaller,
+  regular crates (lodepng/lil/genann/quadtree/qsort). "Real-world code at scale defeats the safety lifter."
 - **Cross-tool contrasts locked**: qsort (C2SaferRust crashes / Laertes faithful — int→usize vs kept-i32);
   bzip2 (all 3 non-mechanical lifters broken, 3 different mechanisms); genann (all 4 faithful)
 - **Two headlines from bzip2 alone**: all THREE lifters that touched it are broken (Laertes CRC-zeroing,

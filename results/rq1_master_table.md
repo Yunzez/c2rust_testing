@@ -14,7 +14,8 @@ a blank; tool-can't-run is a finding, not a blank.**
 | `✓p` | partial certificate (subset of functions; noted) |
 | `▲x/y` | tool produced **partial translation** (x of y units; rest = visible stubs — counted separately from silent bugs) |
 | `✗(reason)` | tool fails on this library (crash / unsupported) — a finding |
-| `⊘(reason)` | tool blocked by environment (not the tool's fault semantically) |
+| `⊘(reason)` | tool blocked by environment, or **C-side UB** makes the reference untestable (UB gate excludes) |
+| `▽(reason)` | tool's rewrite surface on this library is minimal (nothing semantically interesting to test) |
 | `∅` | artifact exists or pipeline ready — **not yet tested (TODO)** |
 | `—` | not applicable (no artifact, tool can't target this) |
 
@@ -26,14 +27,14 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 | library | domain | LOC | ~#fn | c2rust (mech.) | Laertes | C2SaferRust | CROWN | SACTOR | PtrTrans |
 |---|---|---:|---:|---|---|---|---|---|---|
 | **qsort** | sorting | 30 | 3 | ✓ base | ∅ | **c:1** ¹ | — | ✓F | ∅ᵖ |
-| **urlparser** | URL parsing | ~1.3k | ~15 | ✓ base | ∅ | **c:1** ² | ∅ᵃ | ∅ | ∅ᵖ |
+| **urlparser** | URL parsing | ~1.3k | ~15 | ✓ base | ∅ | **c:1** ² | ⊘(C-side UB)¹² | ∅ | ∅ᵖ |
 | **quadtree** | spatial tree | 439 | ~25 | ✓ base | — | — | ∅ | ∅ | **✓F** ³ |
 | **genann** | neural net (f64) | 895 | ~20 | ✓F(300k) | ✓ ⁴ | ✓F(50M) ⁴ | **✓F(300k)** | ∅ | ∅ᵖ |
 | **cJSON** | JSON parser (recursive) | 3206 | 118 | ✓F(100k) | — | ⊘(nightly slicer) | ✗(rewrite crash) | ✗(circular deps) | **▲94/118, s:3** ★⁵ |
 | **lil** | script interpreter | 3723 | ~128 | ✓ base | ∅ | **c:1** ⁶ | **✓F(111k)** ¹¹ | ∅ | ∅ᵖ |
 | **lodepng** | PNG codec | 6658 | ~200 | ∅ | — | — | ∅ | ∅ | ∅ᵖ |
 | **bzip2** | compressor | 7344 | ~110 | ✓ base | ∅ | **c:1 s:1** ⁷ | **c:1 s:2** ★¹⁰ | ∅ | ∅ᵖ |
-| **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | ∅ | ∅ (7 utf8 sites untriaged) | ∅ᵃ | — | — |
+| **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | ∅ | ∅ (7 utf8 sites untriaged) | ▽(minimal surface)¹³ | — | — |
 | **optipng** (incl. zlib) | PNG optimizer | ~30k | ~400 | ✓ base | ✓p ⁸ | **c:1 s:2** ★⁹ | — | — | — |
 
 ᵃ CROWN artifact **already shipped** in laertes_benchmarks (`*_crown/`) — zero-cost to test.
@@ -52,6 +53,8 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 9. ★ **headline #1**: crc32_z + adler32_z empty-chunk reset (`is_null`→`is_empty`, NULL/empty conflation class) + `-dir` UTF-8 panic (`rq1_bugs/crc32_c2saferrust/`)
 10. ★ **headline #3**: CROWN (a *safety* lifter) breaks bzip2 — compress 29% correct / 46% silently-corrupt output (bunzip2-rejected, BZ_OK returned) / 25% heap-corruption crash; decompress default path (small=0) BZ_DATA_ERROR on valid data. base c2rust byte-exact faithful → CROWN's ownership-lift introduced it. ASan/UBSan-gated (`rq1_bugs/bzip2_crown/`)
 11. CROWN lil: **certificate** — `expr` evaluator (CROWN rewrote all `ee_*`) + variable/list/string scripts, **111,043 records, 0 diffs**, UB-gated (12 inputs trigger C-side UB in lil's own expr — shift-out-of-range / INT_MIN-negate / signed-overflow — excluded; CROWN matches C even on those). Same tool as #10: CROWN faithful on lil, broken on bzip2 — the divergence is per-library, sharpening that lifter correctness is not uniform (scratch `lil_crown_diff/`)
+12. urlparser CROWN: **UB-gate exclusion**. Original C `url_parse` (url.h header-lib) overflows a fixed buffer on *every* valid URL (`_FORTIFY_SOURCE`/ASan abort) — the reference is UB, so no Rust divergence can be attributed and there is nothing UB-free to certify. A clean illustration of the gate preventing false positives (matches the C2SaferRust note: `url_get_*` malloc(1)+sscanf is pre-existing C UB). CROWN's rewrite surface here is also minimal (only `url_free`). The C2SaferRust bug #2 lives in `url_is_ssh`, a *different*, UB-free function.
+13. tulipindicators CROWN: **minimal rewrite surface** — CROWN rewrote only `ti_buffer_new/free` (memory mgmt) + a test-file helper; the ~100 indicator value functions were left mechanical (= the c2rust column). No value-semantics surface to differentially test; deferred as low-information.
 
 ## Current totals (filled cells only)
 

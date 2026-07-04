@@ -26,12 +26,12 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 
 | library | domain | LOC | ~#fn | c2rust (mech.) | Laertes | C2SaferRust | CROWN | SACTOR | PtrTrans |
 |---|---|---:|---:|---|---|---|---|---|---|
-| **qsort** | sorting | 30 | 3 | ✓ base | ∅ | **c:1** ¹ | — | ✓F | ∅ᵖ |
+| **qsort** | sorting | 30 | 3 | ✓ base | **✓E/F(50k)** ¹⁷ | **c:1** ¹ | — | ✓F | ∅ᵖ |
 | **urlparser** | URL parsing | ~1.3k | ~15 | ✓ base | ∅ | **c:1** ² | ⊘(C-side UB)¹² | ∅ | ∅ᵖ |
 | **quadtree** | spatial tree | 439 | ~25 | ✓ base | — | — | ∅ | ∅ | **✓F** ³ |
-| **genann** | neural net (f64) | 895 | ~20 | ✓F(300k) | ✓ ⁴ | ✓F(50M) ⁴ | **✓F(300k)** | ∅ | ∅ᵖ |
+| **genann** | neural net (f64) | 895 | ~20 | ✓F(300k) | **✓F(200k)** ¹⁶ | ✓F(50M) ⁴ | **✓F(300k)** | ∅ | ∅ᵖ |
 | **cJSON** | JSON parser (recursive) | 3206 | 118 | ✓F(100k) | — | ⊘(nightly slicer) | ✗(rewrite crash) | ✗(circular deps) | **▲94/118, s:3** ★⁵ |
-| **lil** | script interpreter | 3723 | ~128 | ✓ base | ∅ | **c:1** ⁶ | **✓F(111k)** ¹¹ | ∅ | ∅ᵖ |
+| **lil** | script interpreter | 3723 | ~128 | ✓ base | **✓F(111k)** ¹⁵ | **c:1** ⁶ | **✓F(111k)** ¹¹ | ∅ | ∅ᵖ |
 | **lodepng** | PNG codec | 6658 | ~200 | ∅ | — | — | ∅ | ∅ | ∅ᵖ |
 | **bzip2** | compressor | 7344 | ~110 | ✓ base | **s:1** ★¹⁴ | **c:1 s:1** ⁷ | **c:1 s:2** ★¹⁰ | ∅ | ∅ᵖ |
 | **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | ∅ | ∅ (7 utf8 sites untriaged) | ▽(minimal surface)¹³ | — | — |
@@ -56,6 +56,9 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 12. urlparser CROWN: **UB-gate exclusion**. Original C `url_parse` (url.h header-lib) overflows a fixed buffer on *every* valid URL (`_FORTIFY_SOURCE`/ASan abort) — the reference is UB, so no Rust divergence can be attributed and there is nothing UB-free to certify. A clean illustration of the gate preventing false positives (matches the C2SaferRust note: `url_get_*` malloc(1)+sscanf is pre-existing C UB). CROWN's rewrite surface here is also minimal (only `url_free`). The C2SaferRust bug #2 lives in `url_is_ssh`, a *different*, UB-free function.
 13. tulipindicators CROWN: **minimal rewrite surface** — CROWN rewrote only `ti_buffer_new/free` (memory mgmt) + a test-file helper; the ~100 indicator value functions were left mechanical (= the c2rust column). No value-semantics surface to differentially test; deferred as low-information.
 14. ★ **headline #4**: Laertes bzip2 — **uncalled static-table init** zeroes `BZ2_crc32Table` (and 37 other globals) → compress returns BZ_OK but writes wrong CRC → 91% of inputs produce integrity-invalid streams (canonical `bunzip2 -t` rejects). **Second independent instance of the checksum-corruption class** (after C2SaferRust crc32), cleaner mechanism: const-initializer → runtime init fn with 0 call sites. base c2rust byte-exact faithful → Laertes-introduced (`rq1_bugs/bzip2_laertes/`)
+15. Laertes lil: **certificate** — same 111,043-record corpus, **111,042 identical**. The 1 "diff" (`expr ((1+2)*(3+4))`) is **excluded as oracle-nondeterminism, NOT a Laertes bug**: the original C `expr` is *order-dependent* (returns `[25]` when the record runs first, `[]` when any shorter record precedes it — a global-state/buffer leak in lil's own `expr`, ASan/UBSan-clean). When the C reference is self-inconsistent on an input, no divergence can be attributed. A new exclusion category alongside UB: **stateful-nondeterminism of the reference**. (The harness incidentally surfaced a latent lil-C bug — candidate for a separate finding.) Note Laertes's lil `laertes_init_*` targets are only `running`/`exit_code` scalars (harmless, already 0).
+16. Laertes genann: **certificate** — 200k records, 0 diffs, **default cached-sigmoid path** (exercises the `lookup` table). genann's `laertes_init_lookup` is *also* uncalled (same pattern as the bzip2 CRC bug!), but here it is **harmless** because `genann_act_sigmoid_cached` retains its runtime lazy-rebuild (`if !initialized { build }`) — the table repopulates on first use. The precise distinction from #14: the uncalled-init bug is fatal only when the zeroed static is the *sole* source of the value (bzip2 CRC: no rebuild) and harmless when a runtime rebuild exists (genann lookup). Demonstrates the finding is mechanism-specific, not a blanket "Laertes zeroes tables" claim.
+17. Laertes qsort: **certificate** — exhaustive small arrays (len 0–3 over [-4,4]) + the `[5,0]` C2SaferRust-bug trigger + 50k fuzz = 50,827 records, 0 diffs. **Laertes did NOT reproduce the C2SaferRust qsort bug**: it kept `low/high/i` as signed `i32` (`i = low - 1`), where C2SaferRust's `int→usize` rewrite broke the sentinel. Same function, opposite outcomes across tools — the cross-tool contrast qsort was chosen for.
 
 ## Current totals (filled cells only)
 
@@ -63,8 +66,12 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
   CROWN, Laertes), classes: **checksum-corruption (now 2 independent instances: C2SaferRust crc32 +
   Laertes bzip2)**; NULL/empty conflation; UTF-8-panic; call-site contract loss; CROWN
   ownership-lift breaking a codec (corrupt output + memory-unsafety)
-- **Certificates: 8 cells** (incl. one full 4-lifter row: genann; CROWN lil 111k UB-gated)
-- **Tool failures: 3** (CROWN/SACTOR on cJSON; C2SaferRust env-blocked); **1 UB-gate exclusion** (urlparser)
+- **Certificates: 12 cells** (genann now a full 4-lifter clean row; Laertes column: qsort/lil/genann all
+  faithful — rule-based lifter is conservative & mostly correct, *except* the systematic bzip2 CRC bug)
+- **Tool failures: 3** (CROWN/SACTOR on cJSON; C2SaferRust env-blocked); **1 UB-gate exclusion**
+  (urlparser); **1 oracle-nondeterminism exclusion** (Laertes lil nested-paren — surfaced a latent lil-C bug)
+- **Cross-tool contrasts locked**: qsort (C2SaferRust crashes / Laertes faithful — int→usize vs kept-i32);
+  bzip2 (all 3 non-mechanical lifters broken, 3 different mechanisms); genann (all 4 faithful)
 - **Two headlines from bzip2 alone**: all THREE lifters that touched it are broken (Laertes CRC-zeroing,
   C2SaferRust NULL/empty, CROWN corrupt+unsafe) — only mechanical c2rust is faithful. A checksum/codec is
   a lifter minefield.

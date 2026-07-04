@@ -1,0 +1,371 @@
+<title>E1 Differential Matrix — C→Rust translation testing</title>
+<style>
+  :root{
+    --bg:#eef1f5; --surface:#ffffff; --surface-2:#e7ebf1; --inset:#f5f7fa;
+    --ink:#16202e; --ink-2:#54637a; --ink-3:#8c99ab; --line:#d6dde5;
+    --accent:#4b57c4;
+    --bug:#b23b3b; --bug-bg:#f6e6e5;
+    --cert:#2c8a67; --cert-bg:#e4f1eb;
+    --fail:#a9721a; --fail-bg:#f5ecdb;
+    --excl:#5f6f83; --excl-bg:#e9edf2;
+    --todo:#a3adba;
+    --star:#c2410c;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0d1117; --surface:#151c26; --surface-2:#1b2430; --inset:#111823;
+      --ink:#e6ecf3; --ink-2:#93a1b4; --ink-3:#657486; --line:#28323f;
+      --accent:#8892ec;
+      --bug:#e0736b; --bug-bg:#2e1a1b;
+      --cert:#4dc093; --cert-bg:#13251f;
+      --fail:#e0a63e; --fail-bg:#2b2416;
+      --excl:#93a3b6; --excl-bg:#1a222d;
+      --todo:#4b5768;
+      --star:#f0813f;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1f5; --surface:#ffffff; --surface-2:#e7ebf1; --inset:#f5f7fa;
+    --ink:#16202e; --ink-2:#54637a; --ink-3:#8c99ab; --line:#d6dde5;
+    --accent:#4b57c4;
+    --bug:#b23b3b; --bug-bg:#f6e6e5; --cert:#2c8a67; --cert-bg:#e4f1eb;
+    --fail:#a9721a; --fail-bg:#f5ecdb; --excl:#5f6f83; --excl-bg:#e9edf2;
+    --todo:#a3adba; --star:#c2410c;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d1117; --surface:#151c26; --surface-2:#1b2430; --inset:#111823;
+    --ink:#e6ecf3; --ink-2:#93a1b4; --ink-3:#657486; --line:#28323f;
+    --accent:#8892ec;
+    --bug:#e0736b; --bug-bg:#2e1a1b; --cert:#4dc093; --cert-bg:#13251f;
+    --fail:#e0a63e; --fail-bg:#2b2416; --excl:#93a3b6; --excl-bg:#1a222d;
+    --todo:#4b5768; --star:#f0813f;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;margin:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:clamp(24px,5vw,64px) clamp(16px,4vw,40px) 80px}
+
+  /* masthead */
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 14px;font-weight:600}
+  h1{font-family:var(--mono);font-weight:700;font-size:clamp(30px,5.2vw,52px);line-height:1.02;
+    letter-spacing:-.01em;margin:0 0 18px;text-wrap:balance}
+  h1 .dim{color:var(--ink-3)}
+  .thesis{font-size:clamp(15px,2vw,18px);color:var(--ink-2);max-width:62ch;margin:0}
+  .thesis b{color:var(--ink);font-weight:600}
+  .meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-top:18px;
+    display:flex;flex-wrap:wrap;gap:8px 20px;letter-spacing:.02em}
+  .rule{height:1px;background:var(--line);border:0;margin:40px 0}
+
+  /* summary tiles */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:0}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px}
+  .tile .n{font-family:var(--mono);font-size:34px;font-weight:700;line-height:1;letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums}
+  .tile .n small{font-size:15px;color:var(--ink-3);font-weight:600}
+  .tile .k{font-size:12.5px;color:var(--ink-2);margin-top:9px}
+  .tile .sub{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:3px}
+  .tile.bug .n{color:var(--bug)} .tile.cert .n{color:var(--cert)} .tile.star .n{color:var(--star)}
+
+  h2{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-2);font-weight:600;margin:0 0 16px;display:flex;align-items:center;gap:10px}
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .section{margin-top:46px}
+
+  /* headline cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--bug);
+    border-radius:10px;padding:16px 17px}
+  .card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--star);
+    font-weight:600;display:flex;justify-content:space-between}
+  .card .tag .cls{color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em}
+  .card h3{font-size:15px;margin:9px 0 7px;font-weight:650;line-height:1.25}
+  .card p{font-size:13px;color:var(--ink-2);margin:0}
+  .card p .mono{font-family:var(--mono);font-size:12px;color:var(--ink)}
+
+  /* matrix */
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:760px}
+  thead th{position:sticky;top:0;background:var(--surface-2);z-index:2;
+    font-family:var(--mono);font-size:11px;letter-spacing:.03em;font-weight:600;color:var(--ink-2);
+    text-align:center;padding:12px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+  thead th.lib{text-align:left;z-index:3;left:0}
+  thead th .role{display:block;font-size:9.5px;color:var(--ink-3);font-weight:400;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+  tbody th{position:sticky;left:0;background:var(--surface);z-index:1;text-align:left;
+    padding:11px 14px 11px 16px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);
+    font-weight:600;font-size:13.5px;white-space:nowrap}
+  tbody th .scale{display:block;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+    font-weight:400;margin-top:2px;font-variant-numeric:tabular-nums}
+  td{text-align:center;padding:9px 8px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:12px;white-space:nowrap;vertical-align:middle}
+  tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover th,tbody tr:hover td{background:var(--inset)}
+  .c{border-radius:0}
+  .c.bug{color:var(--bug);background:var(--bug-bg);font-weight:600}
+  .c.cert{color:var(--cert);background:var(--cert-bg)}
+  .c.base{color:var(--cert)}
+  .c.fail{color:var(--fail);background:var(--fail-bg);font-weight:600}
+  .c.excl{color:var(--excl);background:var(--excl-bg)}
+  .c.todo{color:var(--todo)}
+  .c.na{color:var(--line)}
+  .c .star{color:var(--star);font-weight:700}
+  .c[title]{cursor:help}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:12px;color:var(--ink-2)}
+  .legend span{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11.5px}
+  .sw{width:22px;height:14px;border-radius:3px;display:inline-block;flex:none}
+  .sw.bug{background:var(--bug-bg);border:1px solid var(--bug)}
+  .sw.cert{background:var(--cert-bg);border:1px solid var(--cert)}
+  .sw.fail{background:var(--fail-bg);border:1px solid var(--fail)}
+  .sw.excl{background:var(--excl-bg);border:1px solid var(--excl)}
+  .sw.todo{background:transparent;border:1px dashed var(--todo)}
+
+  /* insights */
+  .insights{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .ins{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .ins h4{font-size:13.5px;margin:0 0 8px;font-weight:650;display:flex;align-items:center;gap:8px}
+  .ins h4 .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .ins p{font-size:13px;color:var(--ink-2);margin:0}
+  .ins p code{font-family:var(--mono);font-size:12px;color:var(--ink);
+    background:var(--inset);padding:1px 5px;border-radius:4px}
+  .ins .lead{color:var(--ink);font-weight:600}
+
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;
+    gap:6px 20px;justify-content:space-between}
+  @media (max-width:560px){
+    .tile .n{font-size:28px}
+    thead th,tbody th{font-size:12px}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">DUET · differential testing of C→Rust translation</p>
+    <h1>E1 Differential Matrix <span class="dim">— libraries × lifters</span></h1>
+    <p class="thesis">Ten C libraries, six translators, one method: run the translation against the
+      original C on the same inputs, gate on ASan/UBSan, and attribute every divergence. <b>A 0-diff
+      is a certificate, a crash is a finding — never a blank.</b> The recurring result: translator
+      correctness is <b>per-library, not per-tool</b>.</p>
+    <div class="meta">
+      <span>16 confirmed bugs · 4 tools</span>
+      <span>16 equivalence certificates</span>
+      <span>C-backed · UB-gated</span>
+      <span>updated 2026-07-04</span>
+    </div>
+  </header>
+
+  <hr class="rule">
+
+  <div class="tiles">
+    <div class="tile bug">
+      <div class="n">16</div>
+      <div class="k">Confirmed bugs</div>
+      <div class="sub">7 crash · 9 semantic · 0 hang</div>
+    </div>
+    <div class="tile cert">
+      <div class="n">16</div>
+      <div class="k">Equivalence certificates</div>
+      <div class="sub">exhaustive + fuzzed, UB-gated</div>
+    </div>
+    <div class="tile star">
+      <div class="n">4</div>
+      <div class="k">Headline findings</div>
+      <div class="sub">checksum ×2 · codec · call-site</div>
+    </div>
+    <div class="tile">
+      <div class="n">4<small> / 6</small></div>
+      <div class="k">Tools with confirmed bugs</div>
+      <div class="sub">C2SaferRust · CROWN · Laertes · PtrTrans</div>
+    </div>
+  </div>
+
+  <section class="section">
+    <h2>Headline findings</h2>
+    <div class="cards">
+      <article class="card">
+        <div class="tag"><span>#1 · crc32 / adler32</span><span class="cls">semantic</span></div>
+        <h3>Checksum reset on an empty chunk</h3>
+        <p>C2SaferRust's ptr→slice lift rewrote <span class="mono">is_null → is_empty</span>; an empty
+          buffer silently resets the running CRC. 1M-trial differential, end-to-end PNG corruption.</p>
+      </article>
+      <article class="card">
+        <div class="tag"><span>#2 · cJSON parse_string</span><span class="cls">semantic</span></div>
+        <h3>Call-site contract lost</h3>
+        <p>PtrTrans (gpt-5.1): <span class="mono">\u</span> escapes always rejected — an empty-slice bound
+          passed at the <b>call site</b>. Callee is faithful alone → only a through-caller differential finds it.
+          40,133 / 120,050 divergences.</p>
+      </article>
+      <article class="card">
+        <div class="tag"><span>#3 · bzip2</span><span class="cls">crash + semantic</span></div>
+        <h3>A safety lifter breaks a codec</h3>
+        <p>CROWN's ownership rewrite: 46% silently-corrupt compressed output (BZ_OK returned), 25%
+          heap-corruption crash, default decompress dead. base c2rust byte-exact faithful.</p>
+      </article>
+      <article class="card">
+        <div class="tag"><span>#4 · bzip2</span><span class="cls">semantic</span></div>
+        <h3>Uncalled init zeroes the CRC table</h3>
+        <p>Laertes lowered <span class="mono">BZ2_crc32Table</span> to a runtime init with <b>0 call sites</b>
+          → all-zero at runtime → 91% wrong-CRC streams. Second independent checksum-corruption instance.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>The matrix</h2>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="lib">Library<span class="role">domain · LOC / fn</span></th>
+            <th>c2rust<span class="role">mechanical</span></th>
+            <th>Laertes<span class="role">rule-based</span></th>
+            <th>C2SaferRust<span class="role">LLM slice-lift</span></th>
+            <th>CROWN<span class="role">safety lift</span></th>
+            <th>SACTOR<span class="role">LLM framework</span></th>
+            <th>PtrTrans<span class="role">FSE'26 · gpt-5.1</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>qsort<span class="scale">sorting · 30 / 3</span></th>
+            <td class="c base">✓ base</td>
+            <td class="c cert" title="Exhaustive small arrays + [5,0] trigger + 50k fuzz, 0 diffs. Kept i32 — did NOT reproduce the C2SaferRust int→usize bug.">✓ᴱ 50k</td>
+            <td class="c bug" title="int→usize sentinel break → infinite recursion + OOB read. Trigger [5,0].">1c</td>
+            <td class="c cert" title="qsort isn't in CROWN's benchmark — we fed it in via C→c2rust→CROWN (repackaged base c2rust into CROWN's crate format). 16 lines rewritten, 50,827 records, 0 diffs. Did NOT reproduce the C2SaferRust int→usize bug.">✓ᴱ 50k</td>
+            <td class="c cert" title="Faithful.">✓</td>
+            <td class="c todo">·</td>
+          </tr>
+          <tr>
+            <th>urlparser<span class="scale">URL parsing · ~1.3k / ~15</span></th>
+            <td class="c base">✓ base</td>
+            <td class="c todo">·</td>
+            <td class="c bug" title="url_is_ssh to_str().unwrap() panics on non-UTF-8. UTF-8-panic class.">1c</td>
+            <td class="c excl" title="Original C url_parse overflows a fixed buffer on every valid URL — reference is UB, nothing to attribute or certify. UB-gate exclusion.">⊘ C-UB</td>
+            <td class="c todo">·</td>
+            <td class="c todo">·</td>
+          </tr>
+          <tr>
+            <th>quadtree<span class="scale">spatial tree · 439 / ~25</span></th>
+            <td class="c base">✓ base</td>
+            <td class="c na">—</td>
+            <td class="c na">—</td>
+            <td class="c cert" title="CROWN --force-box rewrite (444 lines). 0 diffs on every non-crashing input; a shared crash (base c2rust segfaults identically) is a pre-existing recursion artifact, not CROWN.">✓* box</td>
+            <td class="c todo">·</td>
+            <td class="c cert" title="PtrTrans shipped translation, differential clean.">✓</td>
+          </tr>
+          <tr>
+            <th>genann<span class="scale">neural net f64 · 895 / ~20</span></th>
+            <td class="c cert" title="C ≡ c2rust ≡ CROWN bit-exact, 300k.">✓ 300k</td>
+            <td class="c cert" title="Default cached-sigmoid path, 200k, 0 diffs. laertes_init_lookup uncalled but harmless — lazy rebuild survives.">✓ 200k</td>
+            <td class="c cert" title="Rewrote only sigmoid; 50M samples, 0 bit-diffs.">✓ 50M</td>
+            <td class="c cert" title="genann_run ownership rewrite, 300k bit-exact.">✓ 300k</td>
+            <td class="c todo">·</td>
+            <td class="c todo">·</td>
+          </tr>
+          <tr>
+            <th>cJSON<span class="scale">JSON parser · 3206 / 118</span></th>
+            <td class="c cert" title="Round-trip 100k/0 — mechanical baseline faithful, validates harness.">✓ 100k</td>
+            <td class="c na">—</td>
+            <td class="c excl" title="Pipeline needs an old nightly slicer — environment-blocked.">⊘ env</td>
+            <td class="c fail" title="rewrite crashes: internal error at rewrite_fn.rs:217 on print's [printbuffer;1].">✗ crash</td>
+            <td class="c fail" title="Circular dependencies not supported — mutually-recursive descent parser.">✗ deps</td>
+            <td class="c bug" title="HEADLINE #2. 94/118 units translated (24 = visible stubs incl. parse/print cores). parse_string cluster: \u escapes dead, valuestring=None, non-UTF-8 reject. 40,133/120,050 divergences.">▲94/118 · 3s <span class="star">★</span></td>
+          </tr>
+          <tr>
+            <th>lil<span class="scale">interpreter · 3723 / ~128</span></th>
+            <td class="c base">✓ base</td>
+            <td class="c cert" title="111,042/111,043 identical. 1 excluded as oracle-nondeterminism (C expr order-dependent, ASan-clean) — surfaced a latent lil-C bug.">✓ 111k</td>
+            <td class="c bug" title="do_system argv to_str().unwrap() panic. UTF-8-panic class.">1c</td>
+            <td class="c cert" title="expr evaluator (all ee_*) + scripts, 111,043 records, 0 diffs. UB-gated (12 C-side UB inputs excluded; CROWN matches C even there).">✓ 111k</td>
+            <td class="c todo">·</td>
+            <td class="c todo">·</td>
+          </tr>
+          <tr>
+            <th>lodepng<span class="scale">PNG codec · 6658 / ~200</span></th>
+            <td class="c cert" title="Original lodepng.c ≡ base c2rust, 3036 images roundtrip.">✓ 3036</td>
+            <td class="c na">—</td>
+            <td class="c na">—</td>
+            <td class="c cert" title="HEADLINE (positive). Ran CROWN pipeline: 5689 lines rewritten, did NOT crash. C-backed: lodepng.c ≡ base ≡ CROWN, 3036 diverse images, encode+decode roundtrip, 0 diffs. CROWN CAN faithfully lift a 6.6k-LOC codec.">✓ 3036 <span class="star">★</span></td>
+            <td class="c todo">·</td>
+            <td class="c todo">·</td>
+          </tr>
+          <tr>
+            <th>bzip2<span class="scale">compressor · 7344 / ~110</span></th>
+            <td class="c base">✓ base</td>
+            <td class="c bug" title="HEADLINE #4. Uncalled static-table init zeroes BZ2_crc32Table (+37 globals). 91% wrong-CRC streams; bunzip2 -t rejects.">1s <span class="star">★</span></td>
+            <td class="c bug" title="endsInBz2 panic (crash) + BZ2_bzBuffToBuffCompress empty-buffer reject (NULL/empty conflation).">1c 1s</td>
+            <td class="c bug" title="HEADLINE #3. 46% corrupt output + 25% heap-corruption crash + broken default decompress.">1c 2s <span class="star">★</span></td>
+            <td class="c todo">·</td>
+            <td class="c todo">·</td>
+          </tr>
+          <tr>
+            <th>tulipindicators<span class="scale">indicators · ~5k / ~100</span></th>
+            <td class="c base">✓ base</td>
+            <td class="c todo">·</td>
+            <td class="c todo" title="7 to_str/from_utf8 sites untriaged (CLI driver).">· <span style="color:var(--fail)">7?</span></td>
+            <td class="c excl" title="CROWN rewrote only ti_buffer alloc/free + a test helper; ~100 indicators left mechanical. No value-semantics surface.">▽ min</td>
+            <td class="c na">—</td>
+            <td class="c na">—</td>
+          </tr>
+          <tr>
+            <th>optipng<span class="scale">PNG optimizer · ~30k / ~400</span></th>
+            <td class="c base">✓ base</td>
+            <td class="c cert" title="crc32_z 3-way tested faithful (partial).">✓ᵖ</td>
+            <td class="c bug" title="HEADLINE #1. crc32_z + adler32_z empty-chunk reset (is_null→is_empty) + -dir UTF-8 panic.">1c 2s <span class="star">★</span></td>
+            <td class="c na">—</td>
+            <td class="c na">—</td>
+            <td class="c na">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><i class="sw bug"></i>bug — <b style="color:var(--bug)">c</b>rash / <b style="color:var(--bug)">s</b>emantic</span>
+      <span><i class="sw cert"></i>✓ certificate (ᴱ exhaustive · N fuzzed)</span>
+      <span><i class="sw fail"></i>✗ tool fails on this library</span>
+      <span><i class="sw excl"></i>⊘ excluded · ▽ minimal surface</span>
+      <span><i class="sw todo"></i>· not yet run</span>
+      <span style="color:var(--ink-3)">— tool doesn't ship this library <span style="color:var(--ink-3)">(≠ crash)</span></span>
+      <span><b class="star" style="color:var(--star)">★</b> headline</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>What the matrix says</h2>
+    <div class="insights">
+      <div class="ins">
+        <h4><span class="dot" style="background:var(--bug)"></span>bzip2 is a lifter minefield</h4>
+        <p><span class="lead">All three non-mechanical lifters that touched it are broken</span> — Laertes
+          zeroes the CRC table, C2SaferRust conflates NULL/empty, CROWN corrupts + crashes — by three
+          different mechanisms. Only mechanical <code>c2rust</code> is faithful.</p>
+      </div>
+      <div class="ins">
+        <h4><span class="dot" style="background:var(--star)"></span>Checksum corruption recurs</h4>
+        <p><span class="lead">Two independent tools, same class.</span> C2SaferRust crc32 and Laertes bzip2
+          both silently break a checksum during translation — evidence it's a <b>recurring failure mode</b>,
+          not one tool's fluke.</p>
+      </div>
+      <div class="ins">
+        <h4><span class="dot" style="background:var(--cert)"></span>Per-library, not per-tool</h4>
+        <p>CROWN faithfully lifts a 6.6k-LOC PNG codec (<code>lodepng</code>) yet breaks <code>bzip2</code>
+          — also a codec. qsort: C2SaferRust crashes, Laertes stays correct. <span class="lead">The same
+          tool is both reliable and not.</span></p>
+      </div>
+      <div class="ins">
+        <h4><span class="dot" style="background:var(--excl)"></span>Discipline shows its work</h4>
+        <p>Two exclusions kept false positives out: <code>urlparser</code>'s C is itself UB on every URL;
+          <code>lil</code>'s C <code>expr</code> is order-dependent. Neither divergence is attributable —
+          and the harness surfaced a latent lil-C bug along the way.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>results/rq1_master_table.md · rq1_bugs/*</span>
+    <span>method: concrete differential vs C · ASan/UBSan gate · same-source attribution</span>
+  </footer>
+</div>

@@ -1,0 +1,14 @@
+// optipng_laertes/src/zlib/crc32.rs — zeroed static + uncalled init (NO runtime rebuild):
+static mut crc_table: [[std::os::raw::c_uint; 256]; 8] =
+    [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  ... [all 8x256 entries = 0] ...
+
+// get_crc_table: returns the (zeroed) static directly — DYNAMIC_CRC_TABLE is a comment only, no make_crc_table:
+pub unsafe extern "C" fn get_crc_table() -> * const std::os::raw::c_uint {
+    /* DYNAMIC_CRC_TABLE */
+    return crc_table.as_ptr() as *const z_crc_t;
+}
+/* ========================================================================= */
+
+// laertes_init_crc_table defined, 0 call sites in the crate:
+/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/optipng_laertes/src/zlib/crc32.rs:1

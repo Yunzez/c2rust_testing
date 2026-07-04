@@ -32,7 +32,7 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 | **cJSON** | JSON parser (recursive) | 3206 | 118 | ✓F(100k) | — | ⊘(nightly slicer) | ✗(rewrite crash) | ✗(circular deps) | **▲94/118, s:3** ★⁵ |
 | **lil** | script interpreter | 3723 | ~128 | ✓ base | ∅ | **c:1** ⁶ | ∅ᵃ | ∅ | ∅ᵖ |
 | **lodepng** | PNG codec | 6658 | ~200 | ∅ | — | — | ∅ | ∅ | ∅ᵖ |
-| **bzip2** | compressor | 7344 | ~110 | ✓ base | ∅ | **c:1 s:1** ⁷ | ∅ᵃ | ∅ | ∅ᵖ |
+| **bzip2** | compressor | 7344 | ~110 | ✓ base | ∅ | **c:1 s:1** ⁷ | **c:1 s:2** ★¹⁰ | ∅ | ∅ᵖ |
 | **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | ∅ | ∅ (7 utf8 sites untriaged) | ∅ᵃ | — | — |
 | **optipng** (incl. zlib) | PNG optimizer | ~30k | ~400 | ✓ base | ✓p ⁸ | **c:1 s:2** ★⁹ | — | — | — |
 
@@ -50,13 +50,17 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 7. `endsInBz2` panic (c) + `BZ2_bzBuffToBuffCompress` empty-buffer reject (s, NULL/empty conflation)
 8. Laertes crc32_z 3-way tested faithful (crc32 only — partial)
 9. ★ **headline #1**: crc32_z + adler32_z empty-chunk reset (`is_null`→`is_empty`, NULL/empty conflation class) + `-dir` UTF-8 panic (`rq1_bugs/crc32_c2saferrust/`)
+10. ★ **headline #3**: CROWN (a *safety* lifter) breaks bzip2 — compress 29% correct / 46% silently-corrupt output (bunzip2-rejected, BZ_OK returned) / 25% heap-corruption crash; decompress default path (small=0) BZ_DATA_ERROR on valid data. base c2rust byte-exact faithful → CROWN's ownership-lift introduced it. ASan/UBSan-gated (`rq1_bugs/bzip2_crown/`)
 
 ## Current totals (filled cells only)
 
-- **Bugs: 6 crash + 6 semantic-diff + 0 hang**, across **2 published tools** (C2SaferRust, PtrTrans),
-  two systematic classes (NULL/empty conflation; UTF-8-panic) + call-site contract loss
+- **Bugs: 7 crash + 8 semantic-diff + 0 hang**, across **3 published tools** (C2SaferRust, PtrTrans,
+  CROWN), classes: NULL/empty conflation; UTF-8-panic; call-site contract loss; **CROWN
+  ownership-lift breaking a codec (corrupt output + memory-unsafety)**
 - **Certificates: 7 cells** (incl. one full 4-lifter row: genann)
 - **Tool failures: 3** (CROWN/SACTOR on cJSON; C2SaferRust env-blocked)
+- **Irony headline**: CROWN, a *safety* lifter, is the one that introduced memory corruption (bzip2) —
+  a mechanical c2rust baseline was safe; the "safety" rewrite was not
 
 ## TODO queue (the ∅ cells, by cost-effectiveness)
 

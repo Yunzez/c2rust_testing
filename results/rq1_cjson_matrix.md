@@ -18,7 +18,7 @@ records) for speed. Scratch: `scratchpad/cjson_diff/`.
 | **SACTOR** (framework, gpt-5.1) | ❌ FAIL | `Circular dependencies for functions is not supported yet` — cJSON's mutually-recursive descent parser (parse_value ↔ parse_array ↔ parse_object) breaks SACTOR's dependency ordering. |
 | raw gpt-5.1 (naive single-prompt) | ⏸ dropped | NOT a real framework (no repair/dep-ordering) — reviewer would reject as a transpiler; produced a from-scratch 660-line rewrite (a new JSON lib, not a translation). Excluded from the narrative. |
 | C2SaferRust | blocked | pipeline needs nightly-2022-08-08 slicer |
-| **PtrTrans** (FSE'26) | ❌ blocked | pipeline runs SVF static analysis on the C first (LLVM-based, must build SVF); cJSON is not among its 16 precomputed projects. |
+| **PtrTrans** (FSE'26, gpt-5.1) | ✅ **RAN — and yielded the 2nd headline bug cluster** | Full pipeline reproduced (SVF-2.9 built from source; PA_func/PA_struct compiled vs it; KG + Trans_PA with gpt-5.1). Result: crate **compiles**, but (a) **24/118 groups exhausted 5 repair attempts → EMPTY-BODY stubs**, incl. the recursive parse AND print cores → round-trip impossible (visible failure); (b) in tool-declared-SUCCESS code, differential found **40,133 divergences / 120,050 UB-free records** in `parse_string`: `\u` escapes always rejected (empty-slice `input_end` at call site — ptr-distance lost in ptr→slice lift), parsed string silently discarded (`valuestring = None`), non-UTF-8 rejected. ASan/UBSan-gated; `parse_hex4`/`parse_number`/`utf16` standalone = 0 diffs. **Archive: results/rq1_bugs/cjson_ptrtrans/** |
 
 ## Notes
 
@@ -31,13 +31,18 @@ records) for speed. Scratch: `scratchpad/cjson_diff/`.
   productive lifter hunt is CROWN + C2SaferRust on the libraries CROWN *can* lift, compared C-backed on
   the same source. cJSON stays a "contemporary-LLM certify" case (c2rust already proven faithful here).
 
-## Conclusion: cJSON is a framework tool-breaker
+## Conclusion (updated after PtrTrans run): cJSON breaks 3 tools and exposes the 4th
 
-On this real-world recursive-descent parser + dynamic-buffer library, **every published translation
-framework/lifter fails or needs heavy setup** — SACTOR (circular deps), CROWN (rewrite crash),
-C2SaferRust (old-nightly slicer), PtrTrans (must build+run SVF). **Only c2rust (mechanical) translates
-it, and it is faithful (100k/0).** Two takeaways: (1) these tools are fragile on real recursive code — a
-finding in itself; (2) cJSON cannot yield a silent bug for us, because the tools that could introduce one
-cannot run on it. The productive lifter-bug hunt (crc32-class) is therefore on the libraries these tools
-DO handle — their benchmark/Crown-dataset sets (optipng/bzip2/lil/genann/lodepng/quadtree/buffer/rgba),
-where C2SaferRust/CROWN/Laertes/PtrTrans ship (or CROWN now runs) — which is exactly where crc32 was found.
+On this real-world recursive-descent parser + dynamic-buffer library: SACTOR fails (circular deps),
+CROWN crashes (rewrite), C2SaferRust blocked (old-nightly slicer). **PtrTrans is the only published
+framework that completes** — and it does so by (a) stubbing out the recursive parse/print cores after
+exhausting repairs (visible failure), and (b) shipping **silent semantic differences in the code it
+declared successfully translated** (`parse_string` cluster: 40k divergences, UB-gated, C-backed —
+results/rq1_bugs/cjson_ptrtrans/). c2rust (mechanical) remains the only faithful translator (100k/0).
+
+Three takeaways: (1) real recursive code defeats every current framework, by crash or by stub; (2) the
+silent-bug surface is exactly the LLM-reshaped code that *passes* compile-verification — the crc32
+family (ptr→slice boundary semantics) reappears in a second, independent tool; (3) the call-site nature
+of the `\u` bug (callee faithful in isolation; caller passes an empty-slice bound) means unit tests of
+translated functions cannot find it — matcher-enabled differential through the caller can. This is the
+project thesis made concrete on a second tool.

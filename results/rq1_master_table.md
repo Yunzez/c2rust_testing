@@ -33,7 +33,7 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 | **cJSON** | JSON parser (recursive) | 3206 | 118 | ✓F(100k) | — | ⊘(nightly slicer) | ✗(rewrite crash) | ✗(circular deps) | **▲94/118, s:3** ★⁵ |
 | **lil** | script interpreter | 3723 | ~128 | ✓ base | ∅ | **c:1** ⁶ | **✓F(111k)** ¹¹ | ∅ | ∅ᵖ |
 | **lodepng** | PNG codec | 6658 | ~200 | ∅ | — | — | ∅ | ∅ | ∅ᵖ |
-| **bzip2** | compressor | 7344 | ~110 | ✓ base | ∅ | **c:1 s:1** ⁷ | **c:1 s:2** ★¹⁰ | ∅ | ∅ᵖ |
+| **bzip2** | compressor | 7344 | ~110 | ✓ base | **s:1** ★¹⁴ | **c:1 s:1** ⁷ | **c:1 s:2** ★¹⁰ | ∅ | ∅ᵖ |
 | **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | ∅ | ∅ (7 utf8 sites untriaged) | ▽(minimal surface)¹³ | — | — |
 | **optipng** (incl. zlib) | PNG optimizer | ~30k | ~400 | ✓ base | ✓p ⁸ | **c:1 s:2** ★⁹ | — | — | — |
 
@@ -55,14 +55,19 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 11. CROWN lil: **certificate** — `expr` evaluator (CROWN rewrote all `ee_*`) + variable/list/string scripts, **111,043 records, 0 diffs**, UB-gated (12 inputs trigger C-side UB in lil's own expr — shift-out-of-range / INT_MIN-negate / signed-overflow — excluded; CROWN matches C even on those). Same tool as #10: CROWN faithful on lil, broken on bzip2 — the divergence is per-library, sharpening that lifter correctness is not uniform (scratch `lil_crown_diff/`)
 12. urlparser CROWN: **UB-gate exclusion**. Original C `url_parse` (url.h header-lib) overflows a fixed buffer on *every* valid URL (`_FORTIFY_SOURCE`/ASan abort) — the reference is UB, so no Rust divergence can be attributed and there is nothing UB-free to certify. A clean illustration of the gate preventing false positives (matches the C2SaferRust note: `url_get_*` malloc(1)+sscanf is pre-existing C UB). CROWN's rewrite surface here is also minimal (only `url_free`). The C2SaferRust bug #2 lives in `url_is_ssh`, a *different*, UB-free function.
 13. tulipindicators CROWN: **minimal rewrite surface** — CROWN rewrote only `ti_buffer_new/free` (memory mgmt) + a test-file helper; the ~100 indicator value functions were left mechanical (= the c2rust column). No value-semantics surface to differentially test; deferred as low-information.
+14. ★ **headline #4**: Laertes bzip2 — **uncalled static-table init** zeroes `BZ2_crc32Table` (and 37 other globals) → compress returns BZ_OK but writes wrong CRC → 91% of inputs produce integrity-invalid streams (canonical `bunzip2 -t` rejects). **Second independent instance of the checksum-corruption class** (after C2SaferRust crc32), cleaner mechanism: const-initializer → runtime init fn with 0 call sites. base c2rust byte-exact faithful → Laertes-introduced (`rq1_bugs/bzip2_laertes/`)
 
 ## Current totals (filled cells only)
 
-- **Bugs: 7 crash + 8 semantic-diff + 0 hang**, across **3 published tools** (C2SaferRust, PtrTrans,
-  CROWN), classes: NULL/empty conflation; UTF-8-panic; call-site contract loss; **CROWN
-  ownership-lift breaking a codec (corrupt output + memory-unsafety)**
+- **Bugs: 7 crash + 9 semantic-diff + 0 hang**, across **4 published tools** (C2SaferRust, PtrTrans,
+  CROWN, Laertes), classes: **checksum-corruption (now 2 independent instances: C2SaferRust crc32 +
+  Laertes bzip2)**; NULL/empty conflation; UTF-8-panic; call-site contract loss; CROWN
+  ownership-lift breaking a codec (corrupt output + memory-unsafety)
 - **Certificates: 8 cells** (incl. one full 4-lifter row: genann; CROWN lil 111k UB-gated)
-- **Tool failures: 3** (CROWN/SACTOR on cJSON; C2SaferRust env-blocked)
+- **Tool failures: 3** (CROWN/SACTOR on cJSON; C2SaferRust env-blocked); **1 UB-gate exclusion** (urlparser)
+- **Two headlines from bzip2 alone**: all THREE lifters that touched it are broken (Laertes CRC-zeroing,
+  C2SaferRust NULL/empty, CROWN corrupt+unsafe) — only mechanical c2rust is faithful. A checksum/codec is
+  a lifter minefield.
 - **Irony headline**: CROWN, a *safety* lifter, is the one that introduced memory corruption (bzip2) —
   a mechanical c2rust baseline was safe; the "safety" rewrite was not
 

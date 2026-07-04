@@ -18,7 +18,7 @@ let end_slice = &content[input_end_index..input_end_index]; // empty slice, used
 sequence_length = utf16_literal_to_utf8(Some(input_slice), Some(end_slice), Some(&mut output));
 ```
 and the callee gates on `if input_end.len() < 6 { return 0; }` → **every `\uXXXX` escape fails**.
-`"A"`: C → `"A"`; Rust → parse error. `"𝄞"` (surrogate pair 𝄞): C → correct UTF-8
+`"\u0041"`: C → `"A"`; Rust → parse error. `"\ud834\udd1e"` (surrogate pair 𝄞): C → correct UTF-8
 `f09d849e`; Rust → parse error.
 **Key insight: `utf16_literal_to_utf8` alone is FAITHFUL** (our op-3 standalone differential: 0 diffs
 when given consistent slices). The bug is the **call-site contract** — unit-testing the function in
@@ -81,9 +81,9 @@ Class 1 — `\u` escapes (C succeeds, Rust rejects):
 
 | input | C | PtrTrans Rust |
 |---|---|---|
-| `"A"` | ret=1, `A`, offset=8 | ret=0, offset=1 |
-| `"hiéthere"` | ret=1, `hiéthere` (`c3 a9`) | ret=0 |
-| `"𝄞"` (𝄞 surrogate pair) | ret=1, `f0 9d 84 9e` | ret=0 |
+| `"\u0041"` | ret=1, `A`, offset=8 | ret=0, offset=1 |
+| `"hi\u00e9there"` | ret=1, `hiéthere` (`c3 a9`) | ret=0 |
+| `"\ud834\udd1e"` (𝄞 surrogate pair) | ret=1, `f0 9d 84 9e` | ret=0 |
 
 Any legal JSON with unicode escapes (i18n names, emoji) parses in C and errors in the translation.
 Note the **offset divergence** (8 vs 1): in the full parser this position drives all subsequent

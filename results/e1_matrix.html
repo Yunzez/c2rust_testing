@@ -264,7 +264,7 @@
             <td class="c cert" title="Rewrote only sigmoid; 50M samples, 0 bit-diffs.">✓ 50M</td>
             <td class="c cert" title="genann_run ownership rewrite, 300k bit-exact.">✓ 300k</td>
             <td class="c todo">·</td>
-            <td class="c todo">·</td>
+            <td class="c fail" title="Pipeline completed (0 stub-reverts, crate builds) BUT the core fns (genann_run/init/train/copy/read) are all unimplemented!() — PtrTrans's slicer fed the LLM only header declarations, never the .c bodies. Forward pass never translated. Leaves: exact sigmoid faithful (200k/0); cached sigmoid drifts ≤9.2e-4 on 79% of inputs (30/4095 vs 30/4096 stride) — approximation drift, below bug threshold.">▲ decl-only</td>
           </tr>
           <tr>
             <th>cJSON<span class="scale">JSON parser · 3206 / 118</span></th>

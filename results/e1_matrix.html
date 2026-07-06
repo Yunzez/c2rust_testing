@@ -162,9 +162,9 @@
 
   <div class="tiles">
     <div class="tile bug">
-      <div class="n">17</div>
+      <div class="n">19</div>
       <div class="k">Confirmed bugs</div>
-      <div class="sub">6 crash · 11 semantic · 0 hang</div>
+      <div class="sub">7 crash · 12 semantic · 0 hang</div>
     </div>
     <div class="tile cert">
       <div class="n">16</div>
@@ -314,7 +314,7 @@
             <th>tulipindicators<span class="scale">indicators · ~5k / ~100</span></th>
             <td class="c base">✓ base</td>
             <td class="c cert" title="11 arithmetic indicators (sma/ema/wma/rsi/mom/roc/dema/tema/trima/wilders/zlema), 150k random price-series records, 0 diffs vs base c2rust. Base-referenced (tulip C source not in repo). The 2 grep-flagged 'zeroed tables' are test-file scratch buffers, not lookup tables.">✓ 150k</td>
-            <td class="c todo" title="7 to_str/from_utf8 sites untriaged (CLI driver).">· <span style="color:var(--fail)">7?</span></td>
+            <td class="c bug" title="Triage of the '7 utf8 sites' flipped: the utf8 suspicion = NON-bug (6/7 static ASCII; the argv one masked — both crates' env::args() wrappers panic identically first → shared artifact, excluded). Found instead: (1) CRASH — guard hoisting: argv[1] read moved above the argc<2 check → ./sample with no args segfaults (base prints usage). (2) SEMANTIC — argc off-by-one in the rewritten main() wrapper → valid 'sample sma 5' rejected with ERROR NOT ENOUGH OPTIONS (base prints the SMA table). Both driver-level. Indicator values faithful: 150k records × 11 indicators byte-identical vs base.">1c 1s</td>
             <td class="c excl" title="CROWN rewrote only ti_buffer alloc/free + a test helper; ~100 indicators left mechanical. No value-semantics surface.">▽ min</td>
             <td class="c na">—</td>
             <td class="c na">—</td>
@@ -385,8 +385,9 @@
         <h4><span class="dot" style="background:var(--excl)"></span>Discipline shows its work</h4>
         <p>Exclusions kept false positives out: <code>urlparser</code>'s C is itself UB on every URL
           (library-level — excludes it under Laertes, CROWN <b>and</b> PtrTrans alike);
-          <code>lil</code>'s C <code>expr</code> is order-dependent. Neither divergence is attributable —
-          and the harness surfaced a latent lil-C bug along the way.</p>
+          <code>lil</code>'s C <code>expr</code> is order-dependent; tulip's 7 suspected utf8 sites =
+          shared wrapper artifact, excluded — <span class="lead">but the triage itself uncovered 2 real
+          bugs</span> (guard hoisting segfault + argc off-by-one).</p>
       </div>
     </div>
   </section>

@@ -1,0 +1,26 @@
+2026-07-06 21:08:48 | INFO     | sactor.sactor:222 | Extra compile command: None
+2026-07-06 21:08:48 | INFO     | sactor.sactor:223 | Compile commands file: compile_commands.json
+2026-07-06 21:08:48 | INFO     | sactor.sactor:224 | Link args: []
+2026-07-06 21:08:48 | INFO     | sactor.sactor:225 | Idiomatic only: False
+2026-07-06 21:08:48 | INFO     | sactor.sactor:226 | Continue run when incomplete: False
+2026-07-06 21:08:48 | INFO     | sactor.sactor:227 | -------------End of Configuration-------------
+2026-07-06 21:08:48 | INFO     | sactor.c_parser.c_parser:135 | Backfill non-function refs complete: structs=0, enums=0, globals=0, unresolved=0
+2026-07-06 21:08:49 | INFO     | sactor.sactor:264 | Project link closure size: 5
+2026-07-06 21:08:49 | ERROR    | sactor.translator.batch_runner:183 | Unidiomatic translation failed for /tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/sactor_quadtree/quadtree.c: Circular dependencies for functions is not supported yet
+Traceback (most recent call last):
+  File "/home/yunzez/c2rust_testing/tools/frameworks/sactor/sactor/translator/batch_runner.py", line 176, in run_translate_batch
+    runner = _make_runner(tu_path, unit_build_dir, unit_llm_stat, uni=True, ido=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yunzez/c2rust_testing/tools/frameworks/sactor/sactor/translator/batch_runner.py", line 98, in _make_runner
+    return runner_cls(
+           ^^^^^^^^^^^
+  File "/home/yunzez/c2rust_testing/tools/frameworks/sactor/sactor/sactor.py", line 278, in __init__
+    raise ValueError(
+ValueError: Circular dependencies for functions is not supported yet
+2026-07-06 21:08:49 | INFO     | sactor.translator.batch_runner:174 | Translating (unidiomatic) /tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/sactor_quadtree/driver.c (result dir: /tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/sactor_quadtree/result/driver.c__585b2fa3)
+2026-07-06 21:08:50 | INFO     | sactor.sactor:210 | -------------SACTOR Configuration-------------
+2026-07-06 21:08:50 | INFO     | sactor.sactor:211 | Input file: /tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/sactor_quadtree/driver.c
+2026-07-06 21:08:50 | INFO     | sactor.sactor:212 | Test command: test_task.json
+2026-07-06 21:08:50 | INFO     | sactor.sactor:213 | Is executable: True
+2026-07-06 21:08:50 | INFO     | sactor.sactor:216 | Build directory: /tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/sactor_quadtree/build/driver.c__585b2fa3
+2026-07-06 21:08:50 | INFO     | sactor.sactor:217 | Result directory: /tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/sactor_quadtree/result/driver.c__585b2fa3

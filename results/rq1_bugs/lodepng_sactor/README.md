@@ -1,7 +1,23 @@
-# lodepng × SACTOR (gpt-5.1): translate-fail — same FILE-typedef scaffold break as genann (probe-evidenced)
+# lodepng × SACTOR (gpt-5.1): translate-fail — repair loop cannot converge on a struct-heavy API
 
-**Verdict: `✗(translate-fail)`** — same systematic scaffold failure as genann (`rq1_bugs/genann_sactor/`),
-evidenced by a watchdogged probe and terminated before burning the budget on a doomed run.
+**Verdict: `✗(translate-fail)`** — confirmed TWICE, with the second run isolating the true cause.
+
+## Run 2 (post scaffold-patch): the definitive evidence
+After our typedef-closure patch fixed SACTOR's scaffold (validated on genann: 0/15 → 15/15), we reran
+lodepng on the healthy pipeline. Result: **16 of the first 66 functions (24%) exhausted the 5-attempt
+repair budget** before our cost circuit-breaker stopped the run (~$10 spent, projecting ~50 failures
+across all 200 fns → no assemblable whole either way).
+
+**Failure signature** (`postpatch_error_signature.txt`): E0599 no-method ×1039, E0117 orphan-impl
+×492, format-nanny rejections ×82. All 16 exhausted functions
+(`postpatch_exhausted_16fns.txt`) are struct-manipulating helpers (`lodepng_color_mode_init`,
+`LodePNGText_init`, `readChunk_bKGD/pHYs/tIME/tRNS`, pixel converters): **gpt-5.1 persistently emits
+idiomatic method/impl-block Rust for lodepng's 35+-struct API, which SACTOR's free-function scaffold
+contract rejects; the repair loop feeds errors back and the model regenerates the same shape.** Not
+a pipeline bug — a method-capacity limit at struct-heavy-API scale. Clean contrast: the SAME patched
+pipeline took 15-fn genann to 15/15 (and exposed headline #6 there).
+
+## Run 1 (pre-patch): the scaffold wall (historical)
 
 ## Probe evidence (`probe_attempt_pattern.txt`)
 - 7 leaf functions with **no struct dependencies** (lodepng_malloc/free/memcpy/memset/addofl/mulofl/

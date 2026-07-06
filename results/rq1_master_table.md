@@ -29,7 +29,7 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 | **qsort** | sorting | 30 | 3 | ✓ base | **✓E/F(50k)** ¹⁷ | **c:1** ¹ | **✓E/F(50k)** ²⁰ | ✓F | **s:1** ★²⁹ |
 | **urlparser** | URL parsing | ~1.3k | ~15 | ✓ base | ⊘(C-side UB)²² | **c:1** ² | ⊘(C-side UB)¹² | ⊘(C-side UB)³¹ | ⊘(C-side UB)²⁷ |
 | **quadtree** | spatial tree | 439 | ~25 | ✓ base | — | — | **✓F*** ¹⁸ | **✗(circular)** ³³ | **✓F** ³ |
-| **genann** | neural net (f64) | 895 | ~20 | ✓F(300k) | **✓F(200k)** ¹⁶ | ✓F(50M) ⁴ | **✓F(300k)** | **✗(translate)** ³² | **▲decl-only** ²⁴ |
+| **genann** | neural net (f64) | 895 | ~20 | ✓F(300k) | **✓F(200k)** ¹⁶ | ✓F(50M) ⁴ | **✓F(300k)** | **s:1** ★³² | **▲decl-only** ²⁴ |
 | **cJSON** | JSON parser (recursive) | 3206 | 118 | ✓F(100k) | — | ⊘(nightly slicer) | ✗(rewrite crash) | ✗(circular deps) | **▲94/118, s:3** ★⁵ |
 | **lil** | script interpreter | 3723 | ~128 | ✓ base | **✓F(111k)** ¹⁵ | **c:1** ⁶ | **✓F(111k)** ¹¹ | **✗(circular)** ³⁴ | **✗(compile)** ²⁵ |
 | **lodepng** | PNG codec | 6658 | ~200 | **✓F(3036)** ¹⁹ | — | — | **✓F(3036)** ★¹⁹ | **✗(translate)** ³⁵ | **✗(compile)** ²⁸ |
@@ -70,7 +70,7 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 35. SACTOR lodepng (gpt-5.1): **translate-fail — same FILE-typedef scaffold break as genann (#32), probe-evidenced**. Watchdogged probe: 7 struct-free leaf fns (malloc/free/memcpy/…) passed first-attempt (env+LLM proven healthy), then the FIRST struct-touching function (`uivector_init`) entered the retry loop on the identical input-independent scaffold error (`E0425: cannot find type _IO_FILE`, from `lodepng_load_file(FILE*)` in the typedef closure). ~180/200 fns are struct-dependent → all inherit it; genann ran the identical bug to exhaustion (0/15). Probe terminated rather than burn ~1200 doomed LLM calls (~$40) re-confirming a sealed outcome. Evidence: `rq1_bugs/lodepng_sactor/`.
 36. SACTOR bzip2: **parse-fail — cannot ingest stock bzlib.c**. Resolver dies pre-translation, each local rewrite revealing the next wall: (1) `BZALLOC`'s member-fn-pointer call `(strm->bzalloc)(…)` → USR=None; rewritten (output-verified) → (2) `fdopen` unresolved (the `BZ2_bzopen` FILE API; fclose/ferror queue behind). Behind the parser: `bz_stream`'s fn-pointer members = the genann/lodepng scaffold break. Stripping the FILE API + allocator hooks to squeeze past would no longer be bzip2. **bzip2 now defeats ALL FIVE non-mechanical tools, five ways, at progressively earlier stages**: Laertes semantic (CRC-zero) → C2SaferRust crash+semantic → CROWN memory corruption → PtrTrans compile-fail → SACTOR parse-fail. Only mechanical c2rust survives. Evidence: `rq1_bugs/bzip2_sactor/`.
 33. SACTOR quadtree (gpt-5.1): **circular-deps refusal** — same class as SACTOR × cJSON. The core `quadtree.c` is refused at dependency-analysis time (pre-LLM): `Circular dependencies for functions is not supported yet` — the insert path is textbook mutual recursion (`split_node_`→`insert_` at :76, `insert_`→`split_node_` at :109). The 07-02 self-recursion patch doesn't apply (A↔B is a different unsupported path in its topological translation order). 3/5 leaf TUs (point/bounds/node, 15 fns) translated clean, but no linkable whole → no artifact. Sharp contrast: quadtree is PtrTrans's OWN benchmark (✓F #3) and CROWN lifts it (✓F* #18) — **SACTOR's translation-order prerequisite structurally excludes recursive cores** (cJSON = recursive parser, quadtree = recursive tree). Parser-level local adaptations (md5-verified output-identical): `(*fp)(x)`→`fp(x)`, `INFINITY`→`1e308`. Evidence: `rq1_bugs/quadtree_sactor/`.
-32. SACTOR genann (gpt-5.1): **translate-fail — 0/15 functions, every one exhausting all 6 attempts** (`MAX_ATTEMPTS_EXCEEDED`), driver TU then blocked on untranslated `genann_init`. Systematic, not per-function: every build_attempt dies on the SAME two E0425s **regardless of LLM output** — SACTOR's verification scaffold emits `pub type FILE = _IO_FILE;` (never defines `_IO_FILE`) and a `genann` struct referencing `genann_actfun` (a **function-pointer typedef** its type-alias extraction drops). Even `genann_act_linear` (`return a;`) fails 6/6 → the scaffold, not the translation, is broken. Environment verified healthy (SACTOR's own `add` example runs both stages clean end-to-end on the same setup). Completes the genann row's story: all four 2021-era-style lifters faithful; both FSE'26-era LLM pipelines fail on the callback-driven API **before semantics can even be tested** (PtrTrans ▲decl-only #24, SACTOR ✗ scaffold). Evidence: `rq1_bugs/genann_sactor/`.
+32. ★ **headline #6**: SACTOR genann (gpt-5.1) — **the immutable lookup table: 100.00% divergence (5,000/5,000), zero panics**. SACTOR translated C's mutable `double lookup[4096]` as an **immutable** `static lookup: [f64; 4096]`, and its (correctly-called) init writes it through a const-cast pointer — **Rust UB**: release folds every read to 0.0 (silent all-zero network output on every input); debug SIGSEGVs (.rodata write) — proving the UB. **4th zeroed-table instance, with a perfect intra-row contrast**: same library, same table — Laertes' uncalled-init is HARMLESS (lazy rebuild repopulates), SACTOR's rebuild RUNS but its writes vanish (fatal). Deeper finding: SACTOR's per-function verification embeds each fn into the C program via FFI (where lookup is C's mutable array) → all 15 fns PASSED its own tests; the bug exists only in the all-Rust whole, which its combiner never produced — **test-driven per-function verification ≢ whole-program correctness**. Getting here required fixing/bypassing 4 SACTOR pipeline bugs (typedef-closure scaffold patch → 0/15 became 15/15; TU-name/struct-name collision; `crate::`-path-breaking module combiner → flat assembly of its own per-TU output; extern-"C" ABI + `interval` extern-vs-definition) — all disclosed in the archive; the buggy content is SACTOR's verbatim output. Evidence: `rq1_bugs/genann_sactor/`.
 31. SACTOR urlparser: **UB-gate exclusion, library-level** — same gate as #12/#22/#27 (ASan-reconfirmed at #27: `url_parse→get_part` heap-overflow on the first normal URL). The exclusion argument is translator-independent (the C reference oracle cannot execute UB-free), so it holds for SACTOR without an LLM run. Additionally SACTOR-specific: its verification loop *requires passing end-to-end tests against the C original* — a C original that ASan-aborts on every URL cannot anchor that loop. Not run; no cost.
 30. C2SaferRust tulipindicators: **c:1 + s:1 (driver-level) · indicator values ✓F(150k)** — the "7 utf8 sites" triage resolved the cell three ways. (a) The utf8 suspicion itself = NON-bug: 6/7 sites read static-ASCII tables; the argv-derived one is masked by both crates' `env::args()` wrappers panicking identically before main_0 → shared artifact, excluded. (b) Triaging exposed **crash bug: guard hoisting** — the idiomatic rewrite moved the `argv[1]` read ABOVE the `argc<2` check → `./sample` with zero args segfaults (`CStr::from_ptr(NULL)`), base prints usage. (c) **Semantic bug: argc off-by-one** — C2SaferRust's rewritten `main()` wrapper computes `argc = env::args().len()−1` (real argc−1, it dropped c2rust's NULL-terminator accounting) → **valid `sample sma 5` rejected with `*ERROR NOT ENOUGH OPTIONS*`** while base prints the SMA table; every invocation acts one-argument-poorer. No crash, both terminate — invisible to fuzz-Rust-alone. (d) Value layer faithful: rundiff (the Laertes-cert harness) on the WIP crate — 150k records × 11 indicators, 687 MB/side, **byte-identical**. Both bugs live in the translated sample driver / wrapper, not indicator code (footnote-level honesty; same *file-scope* as lil's do_system precedent). Evidence: `rq1_bugs/tulip_c2saferrust/`.
 29. ★ PtrTrans qsort (gpt-5.1, Trans_PA): **the sort that doesn't sort** — headline-class semantic bug. Corpus extension (qsort NOT in PtrTrans's shipped dataset; same our-extension caveat as bzip2). All 3 units translated, crate **compiles cleanly and passes PtrTrans's own cargo-check gate** — but **34,012/50,000 = 68% of UB-free random arrays come back UNSORTED** (whole batch ASan+UBSan-clean on the C side; every diverging output fails the sortedness check; minimal repro `[3,1,2,5,4]` → `2 5 3 1 4`). Mechanism: the ptr→slice reshaping rewrites `swap(&arr[i],&arr[j])` via `split_at_mut(j)` but computes the second index as `right.get_mut(j-i)` — that's element `2j−i`, not `j` (correct is `right[0]`); repeated in the post-loop swap. The defensively-designed `swap(Option,Option)` **no-ops on None**, so out-of-range wrong indices are silently swallowed — no panic ever. Fuzz-Rust-alone finds nothing; one differential run exposes it on 2/3 of inputs. Same reshaping-contract class as cJSON parse_string (#5), distilled to 30 LOC. Evidence: `rq1_bugs/qsort_ptrtrans/`.
@@ -82,30 +82,35 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 
 ## Current totals (filled cells only)
 
-- **Bugs: 7 crash + 12 semantic-diff + 0 hang**, across **4 published tools** (C2SaferRust, PtrTrans,
-  CROWN, Laertes), classes: **checksum-corruption — now 3 independent instances** (C2SaferRust crc32,
+- **Bugs: 7 crash + 13 semantic-diff + 0 hang**, across **5 published tools** (C2SaferRust, PtrTrans,
+  CROWN, Laertes, SACTOR), classes: **checksum-corruption — now 3 independent instances** (C2SaferRust crc32,
   Laertes bzip2, Laertes optipng); NULL/empty conflation; UTF-8-panic; call-site contract loss; CROWN
   ownership-lift breaking a codec (corrupt output + memory-unsafety); **PtrTrans qsort wrong-index
   reshaping — the sort that doesn't sort (68% of inputs unsorted, zero panics)** (#29); **guard
-  hoisting + argc off-by-one** (C2SaferRust tulip driver, #30)
-- **Checksum corruption is the dominant class**: 3 instances across 2 tools. Laertes's uncalled-init
-  mechanism zeroes any no-rebuild lookup table (bzip2 CRC, optipng zlib CRC); C2SaferRust's slice-lift
-  conflates empty/NULL (crc32/adler32). **optipng `crc32_z` is broken by BOTH tools, differently** —
-  one function, two independent silent bugs.
+  hoisting + argc off-by-one** (C2SaferRust tulip driver, #30); **SACTOR immutable-lookup UB — 100%
+  all-zero network output** (#32, the 4th zeroed-table instance)
+- **Zeroed-table corruption is the dominant class — now 4 instances across 3 tools**: Laertes's
+  uncalled-init zeroes any no-rebuild lookup table (bzip2 CRC #14, optipng zlib CRC #8); C2SaferRust's
+  slice-lift conflates empty/NULL (crc32 #9); **SACTOR's mutability-loss makes the table immutable so
+  the (called!) init's writes are UB'd away (genann sigmoid #32)**. Three distinct mechanisms, one
+  symptom: a lookup table that stays zero, silently. **optipng `crc32_z` is broken by BOTH tools,
+  differently**; **genann's sigmoid table is attacked by BOTH Laertes (harmless — lazy rebuild) and
+  SACTOR (fatal — rebuild's writes vanish)** — same table, opposite outcomes.
 - **Certificates: 16 cells** (genann full 4-lifter clean row; Laertes qsort/lil/genann/tulip faithful;
   **CROWN lodepng C-backed cert — faithfully lifts a 6.6k-LOC PNG codec**; CROWN quadtree faithful)
 - **CROWN column now complete**: broken on bzip2 (headline #3) + cJSON (rewrite crash); faithful on
   lodepng/genann/lil/quadtree; urlparser UB-excluded; tulip minimal-surface. **Per-library, not per-tool.**
 - **Tool failures: 12** (CROWN on cJSON *rewrite* + optipng *analyse*; C2SaferRust env-blocked;
   **PtrTrans compile-fail ×3: lil, bzip2, lodepng** — scale cliff: its three biggest tightly-coupled
-  targets all fail assembly; **SACTOR ×6: cJSON/quadtree/lil circular-deps refusals (recursive cores
-  are structurally outside its topological order), genann/lodepng fn-ptr-typedef scaffold break,
-  bzip2 parse-fail**); **4 UB-gate exclusions** (urlparser × CROWN, × Laertes, × PtrTrans, × SACTOR —
+  targets all fail assembly; **SACTOR ×5: cJSON/quadtree/lil circular-deps refusals (recursive cores
+  are structurally outside its topological order), lodepng fn-ptr-typedef scaffold break, bzip2
+  parse-fail** — genann upgraded from failure to a headline BUG after our pipeline patches, #32); **4 UB-gate exclusions** (urlparser × CROWN, × Laertes, × PtrTrans, × SACTOR —
   same UB C, library-level gate); **1 oracle-nondeterminism exclusion** (Laertes lil)
-- **SACTOR column now complete (8/8 attempted cells)**: qsort ✓F / urlparser ⊘ / quadtree ✗ / genann ✗
-  / cJSON ✗ / lil ✗ / lodepng ✗ / bzip2 ✗. Its ONLY clean artifact is 30-LOC qsort — every real
-  library fails at parse, dependency-order, or scaffold stage, **before semantics can be tested**.
-  Faithful-or-fail lands almost entirely on "fail".
+- **SACTOR column complete (8/8 attempted cells)**: qsort ✓F / urlparser ⊘ / **genann s:1 ★#6 (the
+  immutable lookup — recovered from its broken pipeline via 4 disclosed patches, then 100% divergent)**
+  / quadtree ✗ / cJSON ✗ / lil ✗ / lodepng ✗ / bzip2 ✗. Its only untouched-clean artifact is 30-LOC
+  qsort; recursive cores are refused structurally; and the one real library we could push through its
+  pipeline came out silently broken. Its per-function FFI verification cannot see whole-program bugs.
 - **PtrTrans column now complete (8/8 C-backed cells)**: quadtree ✓F / cJSON ▲+s:3 (headline #2) /
   genann ▲decl-only / qsort **s:1 — the sort that doesn't sort** (#29) / lil ✗ / bzip2 ✗ / lodepng ✗ /
   urlparser ⊘. Its only two runnable nontrivial artifacts (cJSON, qsort) BOTH carry silent semantic

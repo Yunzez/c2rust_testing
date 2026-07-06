@@ -162,9 +162,9 @@
 
   <div class="tiles">
     <div class="tile bug">
-      <div class="n">19</div>
+      <div class="n">20</div>
       <div class="k">Confirmed bugs</div>
-      <div class="sub">7 crash · 12 semantic · 0 hang</div>
+      <div class="sub">7 crash · 13 semantic · 0 hang</div>
     </div>
     <div class="tile cert">
       <div class="n">16</div>
@@ -172,14 +172,14 @@
       <div class="sub">exhaustive + fuzzed, UB-gated</div>
     </div>
     <div class="tile star">
-      <div class="n">5</div>
+      <div class="n">6</div>
       <div class="k">Headline findings</div>
-      <div class="sub">checksum ×3 · codec · call-site · unsorted sort</div>
+      <div class="sub">zeroed-table ×4 · codec · call-site · unsorted sort</div>
     </div>
     <div class="tile">
-      <div class="n">4<small> / 6</small></div>
+      <div class="n">5<small> / 6</small></div>
       <div class="k">Tools with confirmed bugs</div>
-      <div class="sub">C2SaferRust · CROWN · Laertes · PtrTrans</div>
+      <div class="sub">C2SaferRust · CROWN · Laertes · PtrTrans · SACTOR</div>
     </div>
   </div>
 
@@ -210,6 +210,15 @@
         <h3>Uncalled init zeroes the CRC table</h3>
         <p>Laertes lowered <span class="mono">BZ2_crc32Table</span> to a runtime init with <b>0 call sites</b>
           → all-zero at runtime → 91% wrong-CRC streams. Second independent checksum-corruption instance.</p>
+      </article>
+      <article class="card">
+        <div class="tag"><span>#6 · genann</span><span class="cls">semantic</span></div>
+        <h3>The immutable lookup table</h3>
+        <p>SACTOR (gpt-5.1) lifts C's mutable <span class="mono">lookup[4096]</span> to an
+          <b>immutable</b> static; the init that fills it writes through a const-cast —
+          <span class="mono">Rust UB</span>. Release: every read folds to 0.0 →
+          <b>100% of inputs return an all-zero network, silently</b>. Its own per-function FFI
+          verification passed all 15 functions.</p>
       </article>
       <article class="card">
         <div class="tag"><span>#5 · qsort</span><span class="cls">semantic</span></div>
@@ -271,7 +280,7 @@
             <td class="c cert" title="Default cached-sigmoid path, 200k, 0 diffs. laertes_init_lookup uncalled but harmless — lazy rebuild survives.">✓ 200k</td>
             <td class="c cert" title="Rewrote only sigmoid; 50M samples, 0 bit-diffs.">✓ 50M</td>
             <td class="c cert" title="genann_run ownership rewrite, 300k bit-exact.">✓ 300k</td>
-            <td class="c fail" title="Translate-fail: 0/15 functions, every one exhausting all 6 attempts. Systematic scaffold bug, not LLM inability: every build_attempt dies on the same E0425s regardless of output — pub type FILE = _IO_FILE (never defined) + genann_actfun (a function-pointer typedef its type-alias extraction drops). Even return-a fails 6/6. The callback-driven API defeats SACTOR's plumbing before semantics can be tested.">✗ translate</td>
+            <td class="c bug" title="HEADLINE #6: the immutable lookup table. After 4 disclosed pipeline patches (typedef-closure scaffold, TU-name collision, flat assembly, ABI/link fixes) SACTOR's verified translation runs — and diverges on 100.00% of inputs (5,000/5,000): all-zero network output, zero panics. Mechanism: C's mutable lookup[4096] translated as an IMMUTABLE static; the (called!) init writes through a const-cast pointer = Rust UB → release folds every read to 0.0, debug SIGSEGVs. 4th zeroed-table instance — same table Laertes attacks harmlessly (lazy rebuild survives); SACTOR's rebuild runs but its writes vanish. Its per-function FFI-into-C verification structurally cannot see it.">1s <span class="star">★</span></td>
             <td class="c fail" title="Pipeline completed (0 stub-reverts, crate builds) BUT the core fns (genann_run/init/train/copy/read) are all unimplemented!() — PtrTrans's slicer fed the LLM only header declarations, never the .c bodies. Forward pass never translated. Leaves: exact sigmoid faithful (200k/0); cached sigmoid drifts ≤9.2e-4 on 79% of inputs (30/4095 vs 30/4096 stride) — approximation drift, below bug threshold.">▲ decl-only</td>
           </tr>
           <tr>
@@ -369,10 +378,11 @@
       </div>
       <div class="ins">
         <h4><span class="dot" style="background:var(--fail)"></span>SACTOR: one clean artifact in ten libraries</h4>
-        <p>Its only success is 30-LOC <code>qsort</code>. Recursive cores (cJSON, quadtree, lil) are
-          <span class="lead">structurally refused</span> by its topological translation order; fn-pointer
-          APIs (genann, lodepng, bzip2) break its typedef scaffold or parser —
-          <span class="lead">all before semantics can even be tested</span>.</p>
+        <p>Its only untouched success is 30-LOC <code>qsort</code>. Recursive cores (cJSON, quadtree,
+          lil) are <span class="lead">structurally refused</span>; fn-pointer APIs break its scaffold or
+          parser. And the one real library we pushed through its pipeline (genann, 4 disclosed patches)
+          came out <span class="lead">100% silently wrong</span> — its per-function FFI verification
+          cannot see whole-program bugs.</p>
       </div>
       <div class="ins">
         <h4><span class="dot" style="background:var(--fail)"></span>PtrTrans column complete: a scale cliff</h4>

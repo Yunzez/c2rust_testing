@@ -300,7 +300,7 @@
             <td class="c bug" title="endsInBz2 panic (crash) + BZ2_bzBuffToBuffCompress empty-buffer reject (NULL/empty conflation).">1c 1s</td>
             <td class="c bug" title="HEADLINE #3. 46% corrupt output + 25% heap-corruption crash + broken default decompress.">1c 2s <span class="star">★</span></td>
             <td class="c todo">·</td>
-            <td class="c todo">·</td>
+            <td class="c fail" title="Trans_PA, gpt-5.1 (pipeline rebuilt post-reboot). 55/78 stub-reverts (71%); assembled crate fails to compile — 73 module-assembly errors (dup type defs Bool/UChar/Int32 across modules, unresolved imports). BZ2_bzBuffToBuffCompress WAS translated with Option<&mut [u8]> reshaping (same call-site-risk shape as cJSON) but can't run. bzip2 now breaks ALL FOUR non-mechanical tools, 4 different ways.">✗ compile</td>
           </tr>
           <tr>
             <th>tulipindicators<span class="scale">indicators · ~5k / ~100</span></th>
@@ -339,10 +339,10 @@
     <h2>What the matrix says</h2>
     <div class="insights">
       <div class="ins">
-        <h4><span class="dot" style="background:var(--bug)"></span>bzip2 is a lifter minefield</h4>
-        <p><span class="lead">All three non-mechanical lifters that touched it are broken</span> — Laertes
-          zeroes the CRC table, C2SaferRust conflates NULL/empty, CROWN corrupts + crashes — by three
-          different mechanisms. Only mechanical <code>c2rust</code> is faithful.</p>
+        <h4><span class="dot" style="background:var(--bug)"></span>bzip2 breaks all four tools</h4>
+        <p><span class="lead">Every non-mechanical tool that touched it fails — four different ways.</span>
+          Laertes zeroes the CRC table, C2SaferRust conflates NULL/empty, CROWN corrupts + crashes,
+          PtrTrans won't compile (55/78 stubs). Only mechanical <code>c2rust</code> is faithful.</p>
       </div>
       <div class="ins">
         <h4><span class="dot" style="background:var(--star)"></span>Checksum corruption is the dominant class</h4>

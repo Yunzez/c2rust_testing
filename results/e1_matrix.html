@@ -154,7 +154,7 @@
       <span>16 confirmed bugs · 4 tools</span>
       <span>16 equivalence certificates</span>
       <span>C-backed · UB-gated</span>
-      <span>updated 2026-07-04</span>
+      <span>updated 2026-07-06</span>
     </div>
   </header>
 
@@ -162,9 +162,9 @@
 
   <div class="tiles">
     <div class="tile bug">
-      <div class="n">16</div>
+      <div class="n">17</div>
       <div class="k">Confirmed bugs</div>
-      <div class="sub">6 crash · 10 semantic · 0 hang</div>
+      <div class="sub">6 crash · 11 semantic · 0 hang</div>
     </div>
     <div class="tile cert">
       <div class="n">16</div>
@@ -172,9 +172,9 @@
       <div class="sub">exhaustive + fuzzed, UB-gated</div>
     </div>
     <div class="tile star">
-      <div class="n">4</div>
+      <div class="n">5</div>
       <div class="k">Headline findings</div>
-      <div class="sub">checksum ×3 · codec · call-site</div>
+      <div class="sub">checksum ×3 · codec · call-site · unsorted sort</div>
     </div>
     <div class="tile">
       <div class="n">4<small> / 6</small></div>
@@ -211,6 +211,14 @@
         <p>Laertes lowered <span class="mono">BZ2_crc32Table</span> to a runtime init with <b>0 call sites</b>
           → all-zero at runtime → 91% wrong-CRC streams. Second independent checksum-corruption instance.</p>
       </article>
+      <article class="card">
+        <div class="tag"><span>#5 · qsort</span><span class="cls">semantic</span></div>
+        <h3>The sort that doesn't sort</h3>
+        <p>PtrTrans (gpt-5.1) on 30-LOC quicksort: <span class="mono">split_at_mut</span> reshaping swaps
+          element <span class="mono">2j−i</span> instead of <span class="mono">j</span>; the defensive
+          <span class="mono">swap(Option,Option)</span> no-ops on None. Compiles clean, never panics —
+          <b>68% of arrays come back unsorted</b>.</p>
+      </article>
     </div>
   </section>
 
@@ -237,7 +245,7 @@
             <td class="c bug" title="int→usize sentinel break → infinite recursion + OOB read. Trigger [5,0].">1c</td>
             <td class="c cert" title="qsort isn't in CROWN's benchmark — we fed it in via C→c2rust→CROWN (repackaged base c2rust into CROWN's crate format). 16 lines rewritten, 50,827 records, 0 diffs. Did NOT reproduce the C2SaferRust int→usize bug.">✓ᴱ 50k</td>
             <td class="c cert" title="Faithful.">✓</td>
-            <td class="c todo">·</td>
+            <td class="c bug" title="HEADLINE. The sort that doesn't sort: compiles clean, passes PtrTrans's own cargo gate, never panics — but 34,012/50,000 (68%) UB-free arrays come back UNSORTED. Root cause: split_at_mut reshaping computes the 2nd swap index as right[j−i] = element 2j−i (correct: right[0]); the defensive swap(Option,Option) no-ops on None, silencing every miss. Same reshaping-contract class as cJSON parse_string, in 30 LOC. Our corpus extension (qsort not in PtrTrans's dataset).">1s <span class="star">★</span></td>
           </tr>
           <tr>
             <th>urlparser<span class="scale">URL parsing · ~1.3k / ~15</span></th>
@@ -246,7 +254,7 @@
             <td class="c bug" title="url_is_ssh to_str().unwrap() panics on non-UTF-8. UTF-8-panic class.">1c</td>
             <td class="c excl" title="Original C url_parse overflows a fixed buffer on every valid URL — reference is UB, nothing to attribute or certify. UB-gate exclusion.">⊘ C-UB</td>
             <td class="c todo">·</td>
-            <td class="c todo">·</td>
+            <td class="c excl" title="Library-level UB-gate exclusion, same as Laertes/CROWN. ASan-reconfirmed: url_parse → get_part sscanf (url.h:208) heap-overflows on the FIRST normal URL. Reference oracle can't execute → holds for any translator; not run through the LLM (no cost).">⊘ C-UB</td>
           </tr>
           <tr>
             <th>quadtree<span class="scale">spatial tree · 439 / ~25</span></th>
@@ -291,7 +299,7 @@
             <td class="c na">—</td>
             <td class="c cert" title="HEADLINE (positive). Ran CROWN pipeline: 5689 lines rewritten, did NOT crash. C-backed: lodepng.c ≡ base ≡ CROWN, 3036 diverse images, encode+decode roundtrip, 0 diffs. CROWN CAN faithfully lift a 6.6k-LOC codec.">✓ 3036 <span class="star">★</span></td>
             <td class="c todo">·</td>
-            <td class="c todo">·</td>
+            <td class="c fail" title="Compile-fail #3 (after lil, bzip2). 271 units translated, 95% ended Compile_Failed (176 exhausted all 5 repairs); final crate: 363 module-assembly errors (E0252×177 dup-imports, E0255×65, E0428×51, E0432×46 unresolved forward refs). NOT translation refusal — only 5 unimplemented!(). Sharpest contrast: c2rust AND CROWN both hold 3036-image certificates on this codec; PtrTrans can't assemble it.">✗ compile</td>
           </tr>
           <tr>
             <th>bzip2<span class="scale">compressor · 7344 / ~110</span></th>
@@ -354,8 +362,17 @@
       <div class="ins">
         <h4><span class="dot" style="background:var(--cert)"></span>Per-library, not per-tool</h4>
         <p>CROWN faithfully lifts a 6.6k-LOC PNG codec (<code>lodepng</code>) yet breaks <code>bzip2</code>
-          — also a codec. qsort: C2SaferRust crashes, Laertes stays correct. <span class="lead">The same
+          — also a codec. qsort, 30 LOC: C2SaferRust crashes, Laertes+CROWN stay correct, PtrTrans
+          doesn't sort — <b>3 tools, 3 outcomes</b>. <span class="lead">The same
           tool is both reliable and not.</span></p>
+      </div>
+      <div class="ins">
+        <h4><span class="dot" style="background:var(--fail)"></span>PtrTrans column complete: a scale cliff</h4>
+        <p>Its three biggest tightly-coupled targets (<code>lil</code> 3.7k, <code>bzip2</code> 7.3k,
+          <code>lodepng</code> 6.6k) ALL fail module assembly — on <code>lodepng</code> where c2rust and
+          CROWN both hold 3036-image certificates. <span class="lead">And its only two runnable nontrivial
+          artifacts (cJSON, qsort) both carry silent semantic bugs of the same reshaping-contract
+          class.</span></p>
       </div>
       <div class="ins">
         <h4><span class="dot" style="background:var(--fail)"></span>Scale defeats CROWN's pipeline</h4>
@@ -366,7 +383,8 @@
       </div>
       <div class="ins">
         <h4><span class="dot" style="background:var(--excl)"></span>Discipline shows its work</h4>
-        <p>Two exclusions kept false positives out: <code>urlparser</code>'s C is itself UB on every URL;
+        <p>Exclusions kept false positives out: <code>urlparser</code>'s C is itself UB on every URL
+          (library-level — excludes it under Laertes, CROWN <b>and</b> PtrTrans alike);
           <code>lil</code>'s C <code>expr</code> is order-dependent. Neither divergence is attributable —
           and the harness surfaced a latent lil-C bug along the way.</p>
       </div>

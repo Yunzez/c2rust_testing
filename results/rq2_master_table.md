@@ -22,6 +22,8 @@ recovers.**
 | `↑topo` | topology propagation is **load-bearing** here (homogeneous io-shape cluster; per-function signals alone fail) |
 | `—` | **no analyzable artifact** — the tool produced no parseable Rust for this library (inherits the E1 tool-failure ✗/×); nothing to match |
 | `∅ᴺ / ∅ᴴ` | **not yet run (TODO)**, superscript flags the truth-source cost (ᴺ ≈ free, ᴴ = needs labeling) |
+| `≡ / ≠` | **column naming behavior**: `≡` = tool keeps C names (name-equality works) · `≠` = tool **renames** (name-equality breaks → matcher needed). PtrTrans renames a subset (camelCase→snake_case, e.g. `quickSort→quick_sort`); raw-LLM renames everything. c2rust/Laertes/C2SaferRust/CROWN/SACTOR keep names. |
+| `★` (PtrTrans qsort) | real-tool rename proof: PtrTrans renamed `quickSort→quick_sort`, so **name-eq = 0.67 (fails on it), matcher = 1.00 (recovers by structure)** — the matcher is needed on a SHIPPED tool, not only the synthetic raw-LLM set. |
 | `⊘` | excluded. NOTE: E1's UB-gate does **not** apply to E2 — matching is static, it never executes the C — so E1's `⊘(C-side UB)` cells (urlparser) ARE matchable here. `⊘` in E2 means a *matching-specific* block only. |
 
 Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust via `analyzer/`), feed
@@ -31,9 +33,9 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 
 ## The table
 
-| library | domain | ~#fn | homog.¹ | c2rust (mech.) | Laertes | C2SaferRust | CROWN | SACTOR | PtrTrans | **raw-LLM**² |
+| library | domain | ~#fn | homog.¹ | c2rust ≡ | Laertes ≡ | C2SaferRust ≡ | CROWN ≡ | SACTOR ≡ | PtrTrans ≠ | **raw-LLM** ≠² |
 |---|---|---:|---:|---|---|---|---|---|---|---|
-| **qsort** | sorting | 3 | low | 1.00/1.0 | 0.67/1.0 | 1.00/1.0 | ∅ᴺ | ∅ᴴ | ∅ᴴ | **0.67/0.0**ᴴ |
+| **qsort** | sorting | 3 | low | 1.00/1.0 | 0.67/1.0 | 1.00/1.0 | ∅ᴺ | ∅ᴴ | **1.00/0.67** ★ | **0.67/0.0**ᴴ |
 | **urlparser** | URL parsing | 21 | low | 0.95/1.0 | 0.91/1.0 | 0.95/1.0 | 1.00/1.0 | — | — | **0.88/0.0**ᴴ |
 | **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.67/1.0 | — | ∅ᴴ | **0.64/0.0**ᴴ |
 | **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | **1.00/0.0**ᴴ |
@@ -59,15 +61,15 @@ across **8 libraries** (qsort / urlparser / quadtree / genann / cJSON / lil / lo
 **matcher-recall / name-eq-recall**; name-eq = 1.0 for these tools (names kept), so the cell is a
 **validation** (the matcher recovers the correspondence BLIND, not a "beat the baseline").
 
-**Ground-truth finding (2026-07-07): ALL SIX shipped tools give the mapping for free** — c2rust /
-Laertes / C2SaferRust / CROWN keep C names exactly (name-equality = truth); **PtrTrans keeps names too**
-(KG-based; its `_trans_metadata.jsonl` `rust_definition_name` field is misaligned/unreliable, but the
-actual `.rs` keeps the C names — modulo minor `camelCase→snake_case`); **SACTOR ships
-`function_name_map.json`** (+ unidiomatic keeps names). **Only raw-LLM has NO mapping and renames by
-design** → it is the sole column that requires hand-labeled truth, and the only genuine test of the
-matcher's name-independence on unmapped output. This reinforces the collaborator's framing: the shipped
-tools don't rename, so raw-LLM (and mechanical scramble) is the synthetic renamed test set for the
-matcher. beat-the-baseline win = raw-LLM column, pending.
+**Naming-behavior finding (2026-07-07) — not all shipped tools keep names.** c2rust / Laertes /
+C2SaferRust / CROWN / SACTOR keep C names (name-equality = free truth; SACTOR's shipped
+`function_name_map.json` is identity in our examples). **PtrTrans RENAMES a subset** (camelCase→snake_case
+and stubs) — verified on qsort (`quickSort→quick_sort`) and lodepng. So there IS a real, shipped tool
+where name-equality fails, and the matcher is needed on it — not only on the synthetic raw-LLM set.
+**Real-tool proof (qsort × PtrTrans, cell ★): name-eq = 0.67 (fails on the renamed `quickSort`),
+matcher = 1.00 (recovers it by structure).** raw-LLM (renames everything) remains the only column with
+no free mapping → hand-labeled. Column naming behavior is marked in the header: `≡` keeps names,
+`≠` renames.
 
 - **Scale holds up**: 235-fn `lodepng` (0.99 c2rust / 0.97 CROWN) and 145-fn `lil` (0.97/0.95/0.99/0.92)
   — the matcher recovers ~95%+ BLIND on the two largest, highest-homogeneity libraries, across every

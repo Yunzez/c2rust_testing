@@ -241,13 +241,13 @@ Rules:
         <thead>
           <tr>
             <th class="lib" style="text-align:left">library<span class="role">homogeneity</span></th>
-            <th>c2rust<span class="role">mechanical</span></th>
-            <th>Laertes<span class="role">names kept</span></th>
-            <th>C2SaferRust<span class="role">names kept</span></th>
-            <th>CROWN<span class="role">names kept</span></th>
-            <th>SACTOR<span class="role">idiomatic</span></th>
-            <th>PtrTrans<span class="role">reshaped</span></th>
-            <th class="rawllm">raw-LLM<span class="role">full rename</span></th>
+            <th>c2rust <span style="color:var(--free)">≡</span><span class="role">keeps names</span></th>
+            <th>Laertes <span style="color:var(--free)">≡</span><span class="role">keeps names</span></th>
+            <th>C2SaferRust <span style="color:var(--free)">≡</span><span class="role">keeps names</span></th>
+            <th>CROWN <span style="color:var(--free)">≡</span><span class="role">keeps names</span></th>
+            <th>SACTOR <span style="color:var(--free)">≡</span><span class="role">keeps names</span></th>
+            <th>PtrTrans <span style="color:var(--star)">≠</span><span class="role">renames some</span></th>
+            <th class="rawllm">raw-LLM <span style="color:var(--star)">≠</span><span class="role">renames all</span></th>
           </tr>
         </thead>
         <tbody>
@@ -258,7 +258,7 @@ Rules:
             <td class="c done" title="C2SaferRust 3/3 blind."><span class="r">1.00</span>/<span class="s">1.0</span></td>
             <td class="c todoN" title="CROWN qsort artifact is elsewhere (fed via C→c2rust→CROWN recipe, not in laertes_benchmarks). TODO.">∅<sup>ᴺ</sup></td>
             <td class="c todoH" title="SACTOR idiomatic rename → hand-labeled truth needed. Artifact exists (E1 s:1).">∅<sup>ᴴ</sup></td>
-            <td class="c todoH" title="PtrTrans reshapes/renames → hand truth. Artifact exists (E1 s:1).">∅<sup>ᴴ</sup></td>
+            <td class="c done" title="REAL-TOOL RENAME PROOF. PtrTrans renamed quickSort→quick_sort (a shipped tool that renames!). name-eq = 0.67 (fails on the renamed fn), matcher = 1.00 (recovers it by structure). The matcher is needed on a real tool, not only synthetic raw-LLM."><span class="r">1.00</span>/<span class="s">0.67</span> <span class="tp">★</span></td>
             <td class="c done" title="raw-LLM (gpt-5.1): name-eq 0.0 (renamed all). matcher 2/3 — LLM added idiomatic wrapper quick_sort; matcher picked it over the recursive core quick_sort_range. Tiny programs are adversarial."><span class="r">0.67</span>/<span class="s">0.0</span></td>
           </tr>
           <tr>
@@ -360,12 +360,21 @@ Rules:
       <span><i class="sw todoH"></i>∅ᴴ TODO · hand-labeled truth</span>
       <span><i class="sw na"></i>— no artifact (inherits E1 fail)</span>
       <span><b class="tp" style="color:var(--star)">↑topo</b> topology load-bearing</span>
+      <span><span style="color:var(--free)">≡</span> keeps names · <span style="color:var(--star)">≠</span> renames (name-eq breaks)</span>
     </div>
   </section>
 
   <section class="section">
     <h2>What the matrix will say</h2>
     <div class="insights">
+      <div class="ins">
+        <h4><span class="dot" style="background:var(--star)"></span>A shipped tool renames — and the matcher is needed there</h4>
+        <p>Not all tools keep names: <span class="lead">PtrTrans renames</span> (e.g.
+          <code>quickSort→quick_sort</code>). On qsort × PtrTrans, name-equality drops to
+          <b>0.67</b> (it fails on the renamed function) while the matcher recovers <b>1.00</b> by
+          structure. So the matcher earns its keep on a <span class="lead">real, shipped
+          translator</span> — not only on the synthetic raw-LLM set.</p>
+      </div>
       <div class="ins">
         <h4><span class="dot" style="background:var(--win)"></span>v1 result: the matcher holds blind on real artifacts</h4>
         <p>On the <code>lil</code> topology stress library (145 fns, 55 sharing one shape) the matcher

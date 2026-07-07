@@ -254,7 +254,7 @@ Rules:
           <tr>
             <th>qsort<span class="scale">3 fn · low</span></th>
             <td class="c done" title="c2rust 3/3 blind."><span class="r">1.00</span>/<span class="s">1.0</span></td>
-            <td class="c done" title="Laertes 2/3 — small programs are HARD for structural matching: 3 near-identical int-pointer fns (swap/partition), no topology to disambiguate. Honest low point."><span class="r">0.67</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="Laertes 2/3 — small programs are HARD for structural matching: 3 near-identical int-pointer fns (swap/partition), no topology to disambiguate. Honest low point."><span class="r">0.63</span>/<span class="s">1.0</span></td>
             <td class="c done" title="C2SaferRust 3/3 blind."><span class="r">1.00</span>/<span class="s">1.0</span></td>
             <td class="c todoN" title="CROWN qsort artifact is elsewhere (fed via C→c2rust→CROWN recipe, not in laertes_benchmarks). TODO.">∅<sup>ᴺ</sup></td>
             <td class="c todoH" title="SACTOR idiomatic rename → hand-labeled truth needed. Artifact exists (E1 s:1).">∅<sup>ᴴ</sup></td>
@@ -279,7 +279,7 @@ Rules:
             <td class="c done" title="CROWN 16/24 — the honest low point: --force-box reshapes the pointer-heavy node signatures (nw/ne/sw/se) enough to break structural matching, where c2rust on the same setup = 1.0. Motivates signal-C (constants) beyond shape+topology."><span class="r">0.67</span>/<span class="s">1.0</span></td>  
             <td class="c na" title="SACTOR ✗(circular) — no whole artifact (3/5 leaf TUs only).">—</td>
             <td class="c todoH" title="PtrTrans shipped quadtree (E1 ✓F) — reshaped/renamed → hand truth.">∅<sup>ᴴ</sup></td>
-            <td class="c done" title="raw-LLM: name-eq 0.0. matcher 9/14 — is_empty↔is_pointer swap (near-identical &self→bool predicates), walk (fn-ptr→closure) missed. 3 *_new constructors excluded (analyzer collapses 4 'new' to 1)."><span class="r">0.64</span>/<span class="s">0.0</span></td>
+            <td class="c done" title="raw-LLM: name-eq 0.0. matcher 12/17 (after hir-id fix — analyzer now distinguishes the 4 new methods). All 3 constructors recovered by topology. Misses: is_empty↔is_pointer swap, bounds_new vs from_corners, walk. Was 0.64 (9/14, 3 excluded) before the fix."><span class="r">0.71</span>/<span class="s">0.0</span></td>
           </tr>
           <tr>
             <th>genann<span class="scale">12 fn · med</span></th>
@@ -304,7 +304,7 @@ Rules:
           <tr>
             <th>lil<span class="scale">145 fn · <span class="tp">high ↑topo</span></span></th>
             <td class="c done" title="141/145 blind on the topology stress library (55 fns share one shape). Call-graph topology carries the homogeneous cluster."><span class="r">0.97</span>/<span class="s">1.0</span></td>
-            <td class="c done" title="Laertes 138/145 blind."><span class="r">0.95</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="Laertes 139/145 blind (re-measured post hir-id fix)."><span class="r">0.96</span>/<span class="s">1.0</span></td>
             <td class="c done" title="C2SaferRust 143/145 blind — best of the four on lil."><span class="r">0.99</span>/<span class="s">1.0</span></td>
             <td class="c done" title="CROWN 118/128 blind. The matcher holds ~95%+ across all four tools on a 145-fn high-homogeneity interpreter — the batch headline."><span class="r">0.92</span>/<span class="s">1.0</span></td>
             <td class="c na" title="SACTOR lil circular (E1 ✗) — no artifact.">—</td>

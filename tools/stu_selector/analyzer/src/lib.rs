@@ -16,7 +16,28 @@ mod signature;
 use std::collections::HashSet;
 use std::path::Path;
 
-use hir::{CallableKind, Crate, Module, Semantics};
+use hir::{AsAssocItem, CallableKind, Crate, Module, Semantics};
+
+/// Stable node identity for a function, used for dedup + call-graph edges + truth keying.
+///
+/// FIX (hir-id backlog): the analyzer previously keyed functions by their bare name, so two
+/// functions with the same name (e.g. `QuadPoint::new`, `QuadNode::new`, `QuadTree::new` — every
+/// struct's constructor) collided in the `seen: HashSet<String>` and all but the first were
+/// SILENTLY DROPPED. That caps recall on any idiomatic-Rust output (LLM transpilers) with multiple
+/// same-named methods. We disambiguate an associated method as `Self::method` (the receiver type
+/// comes from hir resolution); free functions keep their bare name so name-equality against the C
+/// side (whose functions are all free) is preserved for name-preserving translators.
+fn fn_id(db: &RootDatabase, func: hir::Function) -> String {
+    let name = func.name(db).as_str().to_owned();
+    if let Some(assoc) = func.as_assoc_item(db) {
+        if let hir::AssocItemContainer::Impl(imp) = assoc.container(db) {
+            if let Some(adt) = imp.self_ty(db).as_adt() {
+                return format!("{}::{}", adt.name(db).as_str(), name);
+            }
+        }
+    }
+    name
+}
 use ide::{AnalysisHost, RootDatabase};
 use ide_db::base_db::SourceDatabase;
 use ide_db::EditionedFileId;
@@ -223,9 +244,11 @@ impl AnalyzedCrate {
                     .map(|n| n.syntax().text_range().start())
                     .unwrap_or_else(|| fnode.syntax().text_range().start());
                 let line = li.line_col(name_offset).line as usize + 1;
-                if seen.insert(name.clone()) {
+                // Node identity: `Self::method` for impl methods, bare name for free fns.
+                let id = fn_id(db, func);
+                if seen.insert(id.clone()) {
                     out.functions.push(FnRec {
-                        name: name.clone(),
+                        name: id.clone(),
                         line,
                         signature: signature::signature_of(&fnode),
                         io: io::io_of(db, func),
@@ -247,11 +270,11 @@ impl AnalyzedCrate {
                             .map(|c| c.kind());
                         match resolved {
                             Some(CallableKind::Function(callee)) => out.raw_edges.push(Edge {
-                                from: name.clone(),
-                                to: callee.name(db).as_str().to_owned(),
+                                from: id.clone(),
+                                to: fn_id(db, callee),
                             }),
                             _ => out.indirect_calls.push(Indirect {
-                                from: name.clone(),
+                                from: id.clone(),
                                 line: li.line_col(n.text_range().start()).line as usize + 1,
                                 kind: "call_unresolved".to_owned(),
                             }),
@@ -259,11 +282,11 @@ impl AnalyzedCrate {
                     } else if let Some(mc) = ast::MethodCallExpr::cast(n.clone()) {
                         match sema.resolve_method_call(&mc) {
                             Some(callee) => out.raw_edges.push(Edge {
-                                from: name.clone(),
-                                to: callee.name(db).as_str().to_owned(),
+                                from: id.clone(),
+                                to: fn_id(db, callee),
                             }),
                             None => out.indirect_calls.push(Indirect {
-                                from: name.clone(),
+                                from: id.clone(),
                                 line: li.line_col(n.text_range().start()).line as usize + 1,
                                 kind: "method_unresolved".to_owned(),
                             }),

@@ -37,10 +37,10 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 |---|---|---:|---:|---|---|---|---|---|---|---|
 | **qsort** | sorting | 3 | low | 1.00/1.0 | 0.67/1.0 | 1.00/1.0 | ∅ᴺ | ∅ᴴ | **1.00/0.67** ★ | **0.67/0.0**ᴴ |
 | **urlparser** | URL parsing | 21 | low | 0.95/1.0 | 0.91/1.0 | 0.95/1.0 | 1.00/1.0 | — | — | **0.88/0.0**ᴴ |
-| **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.67/1.0 | — | ∅ᴴ | **0.64/0.0**ᴴ |
+| **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.63/1.0 | — | ∅ᴴ | **0.71/0.0**ᴴ |
 | **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | **1.00/0.0**ᴴ |
 | **cJSON** | JSON parser | 58 | high | 1.00/1.0 | — | — | — | — | ∅ᴴ(partial) | ∅ |
-| **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.95/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | ∅ |
+| **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.96/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | ∅ |
 | **lodepng** | PNG codec | 235 | high | 0.99/1.0 | — | — | 0.97/1.0 | — | — | ∅ |
 | **bzip2** | compressor | 64 | high | 1.00/1.0 | 1.00/1.0 | 0.98/1.0 | 1.00/1.0 | — | — | ∅ |
 | **tulipindicators** | indicators | ~100 | **very high** | ∅ᴺ | ∅ᴺ | ∅ᴺ | ▽ᴺ | — | — | ∅ |
@@ -71,13 +71,13 @@ matcher = 1.00 (recovers it by structure).** raw-LLM (renames everything) remain
 no free mapping → hand-labeled. Column naming behavior is marked in the header: `≡` keeps names,
 `≠` renames.
 
-- **Scale holds up**: 235-fn `lodepng` (0.99 c2rust / 0.97 CROWN) and 145-fn `lil` (0.97/0.95/0.99/0.92)
+- **Scale holds up**: 235-fn `lodepng` (0.99 c2rust / 0.97 CROWN) and 145-fn `lil` (0.97/0.96/0.99/0.92)
   — the matcher recovers ~95%+ BLIND on the two largest, highest-homogeneity libraries, across every
   name-preserving tool. genann perfect 12/12 ×4.
 - **The honest low points, both informative**:
   - `qsort` × Laertes **0.67 (2/3)** — 3 near-identical int-pointer functions; nothing for structure to
     grip. Small = hard.
-  - `quadtree` × CROWN **0.67 (16/24)** while c2rust = 1.0 on the same setup — CROWN's `--force-box`
+  - `quadtree` × CROWN **0.63 (15/24)** while c2rust = 1.0 on the same setup — CROWN's `--force-box`
     rewrite reshapes the pointer-heavy node signatures (nw/ne/sw/se) enough to break structural
     matching. A clean "aggressive reshaping degrades matchability" data point — and a motivation for
     signal-C (constants/literals) beyond shape+topology.
@@ -115,6 +115,13 @@ homogeneous predicate clusters; the medium ones (genann, urlparser) are strong. 
 llm-transpiler corpus (.88 micro over 10 programs). **Hand-labeling honesty**: `scorable` = C functions
 with a genuine Rust counterpart; LLM-dissolved functions (FILE-IO, free/copy → Drop/Clone) are excluded
 (can't match what wasn't translated), and dissolution counts are reported per cell, not hidden in recall.
+
+**hir-id fix applied (2026-07-07)**: the analyzer now keys functions by `Type::method` (impl methods)
+/ bare name (free fns) instead of bare-name-with-silent-dedup — see [[matcher-hir-id-todo]], DONE. This
+recovered quadtree's 3 dropped constructors: **quadtree raw-LLM 0.64 (9/14, 3 excluded) → 0.71 (12/17,
+no exclusions)**, all three `*_new` now distinguished by topology. Re-validated: name-preserving cells
+stable (±1 fn from edge re-keying), qsort/genann/urlparser raw-LLM unchanged. The fix caps nothing and
+only makes multi-constructor libraries scorable — accuracy preserved.
 
 **Open**: raw-LLM on the larger libs (cJSON/lil/lodepng/bzip2 — more structure, expect higher recall) +
 resolve the analyzer name-collision (hir-id) which currently caps quadtree-like multi-constructor cases.

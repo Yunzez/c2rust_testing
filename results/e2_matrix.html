@@ -156,7 +156,7 @@
       <span>rows = E1 libraries (locked)</span>
       <span>cols = 6 tools + raw-LLM, by rename-aggressiveness</span>
       <span>cell = matcher-recall / name-eq-recall</span>
-      <span>v1 — 11 name-preserving cells filled (genann/qsort/lil), blind-check passed</span>
+      <span>v1 — 19 name-preserving cells (6 libraries, 3→235 fn), blind-check passed</span>
     </div>
   </header>
 
@@ -179,9 +179,9 @@
       <div class="sub">matcher holds, name-eq floors</div>
     </div>
     <div class="tile">
-      <div class="n">11<small> / ~29</small></div>
+      <div class="n">19<small> / ~21</small></div>
       <div class="k">Name-preserving cells done / to go</div>
-      <div class="sub">genann·qsort·lil filled · blind-check ✓</div>
+      <div class="sub">6 libraries · 3→235 fn · blind-check ✓</div>
     </div>
   </div>
 
@@ -262,21 +262,21 @@ Rules:
             <td class="c todo" title="Generate gpt-5.1 translation with the disclosed prompt, hand-label, run.">∅</td>
           </tr>
           <tr>
-            <th>urlparser<span class="scale">~15 fn · low</span></th>
-            <td class="c todoN">∅<sup>ᴺ</sup></td>
-            <td class="c todoN" title="E1 UB-gate ⊘ does NOT apply to E2 — matching is static, never executes the C. The Rust artifact exists and is matchable. Truth = name-equality.">∅<sup>ᴺ</sup></td>
-            <td class="c todoN">∅<sup>ᴺ</sup></td>
-            <td class="c todoN" title="E1 ⊘(UB) does not block matching; artifact exists. Truth free.">∅<sup>ᴺ</sup></td>
+            <th>urlparser<span class="scale">21 fn · low</span></th>
+            <td class="c done" title="20/21 blind. E1 EXCLUDED urlparser entirely (C-side UB) — but matching never runs the C, so a dead E1 row becomes 4 live E2 cells."><span class="r">0.95</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="Laertes 19/21 blind."><span class="r">0.91</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="C2SaferRust 20/21 blind."><span class="r">0.95</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="CROWN 20/20 blind (url_free surface)."><span class="r">1.00</span>/<span class="s">1.0</span></td>  
             <td class="c na" title="No SACTOR artifact (E1 ⊘ library-level; SACTOR's test loop can't anchor on a UB-aborting reference).">—</td>
             <td class="c na" title="No PtrTrans artifact (E1 ⊘).">—</td>
             <td class="c todo">∅</td>
           </tr>
           <tr>
-            <th>quadtree<span class="scale">~25 fn · med</span></th>
-            <td class="c todoN">∅<sup>ᴺ</sup></td>
+            <th>quadtree<span class="scale">24 fn · med</span></th>
+            <td class="c done" title="c2rust 24/24 blind."><span class="r">1.00</span>/<span class="s">1.0</span></td>
             <td class="c na" title="Laertes does not ship quadtree (E1 —).">—</td>
             <td class="c na" title="C2SaferRust does not ship quadtree (E1 —).">—</td>
-            <td class="c todoN" title="CROWN --force-box artifact exists (E1 ✓F*). Truth free.">∅<sup>ᴺ</sup></td>
+            <td class="c done" title="CROWN 16/24 — the honest low point: --force-box reshapes the pointer-heavy node signatures (nw/ne/sw/se) enough to break structural matching, where c2rust on the same setup = 1.0. Motivates signal-C (constants) beyond shape+topology."><span class="r">0.67</span>/<span class="s">1.0</span></td>  
             <td class="c na" title="SACTOR ✗(circular) — no whole artifact (3/5 leaf TUs only).">—</td>
             <td class="c todoH" title="PtrTrans shipped quadtree (E1 ✓F) — reshaped/renamed → hand truth.">∅<sup>ᴴ</sup></td>
             <td class="c todo">∅</td>
@@ -312,11 +312,11 @@ Rules:
             <td class="c todo">∅</td>
           </tr>
           <tr>
-            <th>lodepng<span class="scale">~200 fn · high</span></th>
-            <td class="c todoN">∅<sup>ᴺ</sup></td>
+            <th>lodepng<span class="scale">235 fn · high</span></th>
+            <td class="c done" title="233/235 blind on a 235-fn PNG codec — the largest library, near-perfect blind recovery."><span class="r">0.99</span>/<span class="s">1.0</span></td>
             <td class="c na">—</td>
             <td class="c na">—</td>
-            <td class="c todoN" title="CROWN lodepng cert artifact exists (E1 ✓F 3036). Truth free.">∅<sup>ᴺ</sup></td>
+            <td class="c done" title="CROWN 229/235 blind despite ownership lift on a large codec."><span class="r">0.97</span>/<span class="s">1.0</span></td>  
             <td class="c na" title="SACTOR lodepng translate-fail (E1 ✗).">—</td>
             <td class="c na" title="PtrTrans lodepng compile-fail (E1 ✗).">—</td>
             <td class="c todo">∅</td>

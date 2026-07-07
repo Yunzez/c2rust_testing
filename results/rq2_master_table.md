@@ -34,12 +34,12 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 | library | domain | ~#fn | homog.¹ | c2rust (mech.) | Laertes | C2SaferRust | CROWN | SACTOR | PtrTrans | **raw-LLM**² |
 |---|---|---:|---:|---|---|---|---|---|---|---|
 | **qsort** | sorting | 3 | low | 1.00/1.0 | 0.67/1.0 | 1.00/1.0 | ∅ᴺ | ∅ᴴ | ∅ᴴ | ∅ |
-| **urlparser** | URL parsing | ~15 | low | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | ∅ |
-| **quadtree** | spatial tree | ~25 | med | ∅ᴺ | — | — | ∅ᴺ | — | ∅ᴴ | ∅ |
+| **urlparser** | URL parsing | 21 | low | 0.95/1.0 | 0.91/1.0 | 0.95/1.0 | 1.00/1.0 | — | — | ∅ |
+| **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.67/1.0 | — | ∅ᴴ | ∅ |
 | **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | ∅ |
 | **cJSON** | JSON parser | 118 | high | ∅ᴺ | — | — | — | — | ∅ᴴ(partial) | ∅ |
 | **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.95/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | ∅ |
-| **lodepng** | PNG codec | ~200 | high | ∅ᴺ | — | — | ∅ᴺ | — | — | ∅ |
+| **lodepng** | PNG codec | 235 | high | 0.99/1.0 | — | — | 0.97/1.0 | — | — | ∅ |
 | **bzip2** | compressor | ~110 | high | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | ∅ |
 | **tulipindicators** | indicators | ~100 | **very high** | ∅ᴺ | ∅ᴺ | ∅ᴺ | ▽ᴺ | — | — | ∅ |
 | **optipng** (incl. zlib) | PNG optimizer | ~400 | high | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | — | ∅ |
@@ -54,19 +54,24 @@ clearest demonstration of the matcher's value. All ∅ pending generation on the
 
 ## Filled so far — name-preserving batch v1 (2026-07-07)
 
-11 cells filled with real matcher runs on the E1 artifacts (`results/rq2_cells/name_preserving_v1.json`).
-Cell = **matcher-recall / name-eq-recall**; name-eq = 1.0 for these tools (names kept), so the cell is
-a **validation** (the matcher recovers the correspondence BLIND, not a "beat the baseline"). The
+**19 cells** filled with real matcher runs on the E1 artifacts (`results/rq2_cells/name_preserving_v1.json`),
+across 6 libraries (qsort / urlparser / quadtree / genann / lil / lodepng). Cell =
+**matcher-recall / name-eq-recall**; name-eq = 1.0 for these tools (names kept), so the cell is a
+**validation** (the matcher recovers the correspondence BLIND, not a "beat the baseline"). The
 beat-the-baseline win is the renaming columns (SACTOR/PtrTrans/raw-LLM), still pending.
 
-- **genann** (12 fn): 1.00 across c2rust / Laertes / C2SaferRust / CROWN — perfect blind recovery even
-  through C2SaferRust's ptr→slice and CROWN's ownership reshaping.
-- **lil** (145 fn, the ↑topo homogeneity stress case): **.97 / .95 / .99 / .92** — the matcher holds
-  ~95%+ blind on a 145-function high-homogeneity interpreter across all four tools. This is the
-  headline of the name-preserving batch: the hardest library for structural matching, still recovered.
-- **qsort** (3 fn): c2rust 1.0, C2SaferRust 1.0, **Laertes 0.67 (2/3)** — small programs are HARD for
-  structural matching (3 near-identical int-pointer functions, no topology to disambiguate). An honest
-  low point that shows the method's real dependency on having structure to exploit.
+- **Scale holds up**: 235-fn `lodepng` (0.99 c2rust / 0.97 CROWN) and 145-fn `lil` (0.97/0.95/0.99/0.92)
+  — the matcher recovers ~95%+ BLIND on the two largest, highest-homogeneity libraries, across every
+  name-preserving tool. genann perfect 12/12 ×4.
+- **The honest low points, both informative**:
+  - `qsort` × Laertes **0.67 (2/3)** — 3 near-identical int-pointer functions; nothing for structure to
+    grip. Small = hard.
+  - `quadtree` × CROWN **0.67 (16/24)** while c2rust = 1.0 on the same setup — CROWN's `--force-box`
+    rewrite reshapes the pointer-heavy node signatures (nw/ne/sw/se) enough to break structural
+    matching. A clean "aggressive reshaping degrades matchability" data point — and a motivation for
+    signal-C (constants/literals) beyond shape+topology.
+- **UB-gate cell recovered**: `urlparser` — E1 had to exclude all its cells (C-side UB); E2 matches it
+  fine (0.95/0.91/0.95/1.0), because matching never executes the C. A dead E1 row becomes 4 live E2 cells.
 
 **Blind-check passed on every filled cell**: scrambling the Rust function names to opaque `r_####` IDs
 leaves the matcher recall **identical** while name-equality drops to 0.0 — proof the matcher never uses

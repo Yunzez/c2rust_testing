@@ -62,3 +62,32 @@ C2SaferRust (a lifter, mostly faithful except crc32) and SACTOR (frontier, faith
 raw / weaker LLM translation output** — exactly what RustAssure tested and what PtrTrans
 (FudanSELab/PtrTrans-C2Rust) releases (C source + idiomatic Rust + C↔Rust mapping + degraded ablation
 variants). Next target: C-backed differential of PtrTrans's output → the right place to grow to ~10 bugs.
+
+---
+
+## Excluded from citation — C2VR (decision 2026-07-07)
+
+**Paper:** Xia, Ou, Su, Guo, Y. Li, L. Chen (Nanjing University), *"From C to Verifiable Rust: Towards
+Practical Migration of Code and Specifications,"* Science of Computer Programming, accepted 2026-06-29,
+DOI 10.1016/j.scico.2026.103535.
+
+**What it is:** C2VR migrates ACSL-annotated C to Verus-verifiable Rust — an LLM translates the code and a
+rule-based engine migrates ACSL contracts into Verus specs; Verus then deductively (SMT) proves the Rust.
+175 annotated programs → 92 auto-verified / 139 with manual fixes. Contribution taxonomy = 3 categories /
+15 symptoms / 10 root causes / 9 repair strategies of **migration failure**.
+
+**Why we do NOT cite it:**
+1. **Venue tier.** Science of Computer Programming is a CCF-C / low-tier journal (legitimate Elsevier, but
+   not a bar-setting venue for a top-SE submission). SE colleagues consulted; consensus = not required RW.
+2. **Different verification paradigm.** Their "verification" is deductive formal proof (Verus/SMT) of
+   *pre-annotated* programs; ours is UB-gated differential *testing* of *arbitrary, unannotated* translator
+   output. Non-overlapping.
+3. **Orthogonal taxonomy.** Their 10 root causes categorize why *their pipeline fails to verify*
+   (compile / verify / spec-migration failures) — not runtime behavioral bugs. Our 3 classes
+   (crash / semantic-diff / hang) are observable-outcome classes tied to a differential oracle. Different axis.
+4. **Input-regime mismatch.** C2VR requires ACSL contracts on the C; our niche is exactly the arbitrary
+   translator output where no specification exists. So C2VR is **not added as a translator column in E1/E2.**
+
+**Optional (not pursued):** differentially test C2VR's Verus-verified Rust to demonstrate "formally
+verified ≠ behaviorally equivalent" when the migrated spec is incomplete — a strong but ambitious point
+needing their artifact.

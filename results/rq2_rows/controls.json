@@ -1,0 +1,33 @@
+[
+ {
+  "name": "clip",
+  "kind": "control-TN",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "sign_extend",
+  "kind": "control-UBFP",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": {
+     "args": [
+      0,
+      0
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/tools/headtohead/libopenaptx/sign_extend_gpt4o/source/sign_extend.c:6:25: runtime error: shift exponent 32 is too large for 32-bit type 'uint32_t' (aka 'unsigned int')",
+      "/home/yunzez/c2rust_testing/tools/headtohead/libopenaptx/sign_extend_gpt4o/source/sign_extend.c:7:16: runtime error: shift exponent 32 is too large for 32-bit type 'int32_t' (aka 'int')"
+     ],
+     "is_ub": true
+    }
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ }
+]

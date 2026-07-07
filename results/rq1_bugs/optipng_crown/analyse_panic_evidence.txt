@@ -1,0 +1,14 @@
+# CROWN analyse panic on optipng — evidence excerpt
+## The two precision passes that succeeded, then the precision-3 panic:
+95:Solving src::libpng::png::png_create_png_struct with precision 1... ✅
+1247:Solving src::libpng::png::png_create_png_struct with precision 2... ✅
+2399:thread 'rustc' panicked at 'assertion failed: fitter.next().is_none()', crates/analysis/src/ownership/infer.rs:658:5
+2401:error: aborting due to 6 previous errors
+2405:Solving src::libpng::png::png_create_png_struct with precision 3... 
+
+## The explicit-addr codegen errors (non-fatal to analysis, but present):
+      3 error[E0277]: `*mut std::env::Args` is not an iterator
+      3 error[E0745]: cannot take address of a temporary
+
+## Functions solved before crash: 1087
+## analyse.sh exit code: 101 (rustc panic)

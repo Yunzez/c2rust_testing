@@ -32,3 +32,34 @@ results/boundary_census_v1.md
 results/stage_b_v1.md
 
 *.env
+
+# LLM-translation differential pairs (derived from out/; regenerate via the shim recipe)
+experiments/llm_transpiler/diff/
+
+# --- 2026-06-28: external checkouts + generated corpora/artifacts ---
+# huge vendored framework checkouts (sactor/crown/CRUST-bench/c2saferrust/tulipindicators) — not ours
+tools/frameworks/
+# free c2rust translation corpus (regenerate via tools/c2rust_crustbench/run_all.sh)
+tools/c2rust_crustbench/out/
+# tulip differential-fuzz build artifacts (regenerate via build.sh; keep only sources)
+tools/tulip_difffuzz/obj/
+tools/tulip_difffuzz/fuzz_c2r
+tools/tulip_difffuzz/fuzz_safer
+tools/tulip_difffuzz/verify
+tools/tulip_difffuzz/indicators.h
+tools/tulip_difffuzz/shim.c
+tools/tulip_difffuzz/redef_*.txt
+# local Claude settings / session data
+.claude/
+# generated LLM translations
+experiments/llm_transpiler/out_nano/
+tools/tulip_difffuzz/fuzz_crown
+tools/c2rust_crustbench/run.log
+tools/headtohead/*/
+c2rust_paper/
+
+# SVF analysis dumps (regenerable)
+callgraph.dot
+icfg.dot
+pag.dot
+*_analysis_report.json

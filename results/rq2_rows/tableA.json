@@ -1,0 +1,521 @@
+[
+ {
+  "name": "reduce_overflow__reduce_sum_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-e49deffa25690f76cf7e4a9e827015fecdf1654a",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": null
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "reduce_overflow__reduce_prod_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-769d646141462ac735049a05b394435b8a7d41f0",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": null
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "reduce_overflow__reduce_sum_wrap",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "reduce_overflow__reduce_prod_wrap",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "reduce_overflow__reduce_overflow_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "negate_abs__negate_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-8afb7bdf2b5bc89a7424318f693e337018b081b1",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": {
+     "args": [
+      -2147483648
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/negate_abs/source/negate_abs.c:19:12: runtime error: negation of -2147483648 cannot be represented in type 'int32_t' (aka 'int'); cast to an unsigned type to negate this value to itself"
+     ],
+     "is_ub": true,
+     "tier": "recoverable",
+     "ret": 0
+    }
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "negate_abs__abs_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-3d9d94da6a743700dd62c209312ab28b4c85fd20",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": {
+     "args": [
+      -2147483648
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/negate_abs/source/negate_abs.c:27:16: runtime error: negation of -2147483648 cannot be represented in type 'int32_t' (aka 'int'); cast to an unsigned type to negate this value to itself"
+     ],
+     "is_ub": true,
+     "tier": "recoverable",
+     "ret": 0
+    }
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "negate_abs__negate_u_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "negate_abs__abs_magnitude_u32",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "negate_abs__negate_abs_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "div_mod__mod_signed_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "gate_on_exit": 1,
+    "class": "GATE_MISS",
+    "evidence": {
+     "args": [
+      0,
+      0
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/div_mod/source/div_mod.c:19:14: runtime error: division by zero"
+     ],
+     "is_ub": true,
+     "tier": "hard-trap",
+     "ret": 124
+    }
+   }
+  ],
+  "verdict": "GATE_MISS(hard-trap)"
+ },
+ {
+  "name": "div_mod__div_signed_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "gate_on_exit": 1,
+    "class": "GATE_MISS",
+    "evidence": {
+     "args": [
+      0,
+      0
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/div_mod/source/div_mod.c:26:14: runtime error: division by zero"
+     ],
+     "is_ub": true,
+     "tier": "hard-trap",
+     "ret": 124
+    }
+   }
+  ],
+  "verdict": "GATE_MISS(hard-trap)"
+ },
+ {
+  "name": "div_mod__mod_signed_guarded",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "div_mod__div_signed_guarded",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "div_mod__div_mod_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "sub_overflow__sub_wrap_u32",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "sub_overflow__sub_signed_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-a2a85b10ee046277d6649059f06f3e178279747a",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": {
+     "args": [
+      2047490975,
+      -1554314742
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/sub_overflow/source/sub_overflow.c:27:14: runtime error: signed integer overflow: 2047490975 - -1554314742 cannot be represented in type 'int32_t' (aka 'int')"
+     ],
+     "is_ub": true,
+     "tier": "recoverable",
+     "ret": 0
+    }
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "sub_overflow__sub_signed_sat",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "sub_overflow__sub_overflow_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "shift_ops__shl_u32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-4ff88eeb0bde101abe69244b37f69c75de6b3209",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": {
+     "args": [
+      168443658,
+      2570
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/shift_ops/source/shift_ops.c:19:14: runtime error: shift exponent 2570 is too large for 32-bit type 'uint32_t' (aka 'unsigned int')"
+     ],
+     "is_ub": true,
+     "tier": "recoverable",
+     "ret": 0
+    }
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "shift_ops__shl_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-bc38d510dbe5ea70b83d314d4c0579f9d85d64e9",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": {
+     "args": [
+      -1,
+      2815
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/shift_ops/source/shift_ops.c:26:14: runtime error: shift exponent 2815 is too large for 32-bit type 'int32_t' (aka 'int')"
+     ],
+     "is_ub": true,
+     "tier": "recoverable",
+     "ret": 0
+    }
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "shift_ops__shl_u32_masked",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "shift_ops__shl_i32_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "shift_ops__shift_ops_safe",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "intmath__gcd_u64",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "intmath__ipow_mod",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "intmath__isqrt_u64",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "intmath__intmath_eval",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "bitutils__popcount32",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "bitutils__reverse32",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "bitutils__pack4",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "bitutils__bitutils_eval",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "safe_stats__sum_i32",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-f0a7e060d6575167c841d4874941ab986245e929",
+    "gate_on_exit": 0,
+    "class": "UB_SUPPRESSED",
+    "evidence": null
+   }
+  ],
+  "verdict": "SUPPRESSED"
+ },
+ {
+  "name": "safe_stats__idiv",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "gate_on_exit": 1,
+    "class": "GATE_MISS",
+    "evidence": {
+     "args": [
+      0,
+      0
+     ],
+     "ub_reports": [
+      "/home/yunzez/c2rust_testing/benchmark/pairs/safe_stats/source/safe_stats.c:29:14: runtime error: division by zero"
+     ],
+     "is_ub": true,
+     "tier": "hard-trap",
+     "ret": 124
+    }
+   }
+  ],
+  "verdict": "GATE_MISS(hard-trap)"
+ },
+ {
+  "name": "safe_stats__xorshift_fold",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "safe_stats__count_above",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "base64__base64_encode",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-d10596793286c8d90691683a2a6d89c5e716631b",
+    "gate_on_exit": 1,
+    "class": "MEMORY_UB",
+    "evidence": null
+   },
+   {
+    "artifact": "crash-d45c3e58ea20c7d118dad4c1dc03811cce8dc39b",
+    "gate_on_exit": 1,
+    "class": "MEMORY_UB",
+    "evidence": null
+   }
+  ],
+  "verdict": "MEMORY_UB(tier3)"
+ },
+ {
+  "name": "base64__base64_decode",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "leb128__leb128_encode",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "leb128__leb128_decode",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "leb128__leb128_roundtrip",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "byte_classify__is_digit",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "byte_classify__is_space",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "byte_classify__count_class",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "case_fold__to_upper_inplace",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "case_fold__csv_field_count",
+  "kind": "c2rust-faithful",
+  "off_crash": true,
+  "artifacts": [
+   {
+    "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "gate_on_exit": 1,
+    "class": "MEMORY_UB",
+    "evidence": null
+   }
+  ],
+  "verdict": "MEMORY_UB(tier3)"
+ },
+ {
+  "name": "hex_encode__nibble_to_hex",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ },
+ {
+  "name": "hex_encode__hex_encode",
+  "kind": "c2rust-faithful",
+  "off_crash": false,
+  "artifacts": [],
+  "verdict": "TN"
+ }
+]

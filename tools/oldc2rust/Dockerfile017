@@ -1,0 +1,28 @@
+# Old c2rust (v0.17.0, nightly-2022-08-08, libc::-form output that CROWN accepts).
+# Host is Ubuntu 26.04 (no apt llvm-15); jammy carries llvm-15 directly.
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential cmake pkg-config git curl ca-certificates \
+        clang-15 llvm-15-dev libclang-15-dev \
+        libssl-dev zlib1g-dev python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV LLVM_CONFIG_PATH=/usr/bin/llvm-config-15
+ENV LIBCLANG_PATH=/usr/lib/llvm-15/lib
+ENV PATH=/root/.cargo/bin:$PATH
+
+# rust toolchain pinned by c2rust v0.17.0 (rust-toolchain.toml = nightly-2022-08-08)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+      | sh -s -- -y --default-toolchain nightly-2022-08-08 --profile minimal
+
+# build c2rust from the tag (uses its own Cargo.lock + rust-toolchain.toml = reproducible)
+RUN git clone --depth 1 --branch v0.17.0 https://github.com/immunant/c2rust.git /opt/c2rust
+WORKDIR /opt/c2rust
+RUN cargo build --release --bin c2rust-transpile --bin c2rust
+
+# sanity
+RUN /opt/c2rust/target/release/c2rust-transpile --version
+
+WORKDIR /work

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SACTOR 集成报告 · C→Rust 差分测试</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#171a21; --panel2:#1d212b; --ink:#e7e9ee; --muted:#9aa3b2;
+    --line:#2a2f3a; --accent:#6ea8fe; --good:#4ade80; --bad:#f87171; --warn:#fbbf24;
+    --code:#0b0d12; --kw:#c792ea; --str:#c3e88d; --com:#5c6370; --fn:#82aaff; --num:#f78c6c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;}
+  .wrap{max-width:920px;margin:0 auto;padding:48px 24px 96px;}
+  header{border-bottom:1px solid var(--line);padding-bottom:24px;margin-bottom:36px;}
+  h1{font-size:30px;margin:0 0 8px;letter-spacing:.3px;}
+  h2{font-size:22px;margin:46px 0 14px;padding-top:10px;border-top:1px solid var(--line);}
+  h3{font-size:17px;margin:28px 0 10px;color:var(--accent);}
+  .sub{color:var(--muted);font-size:14px;}
+  p{margin:12px 0;}
+  code{background:var(--panel2);padding:1.5px 6px;border-radius:5px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;color:#e6c07b;}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px 18px;overflow:auto;
+    font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;line-height:1.55;}
+  pre .c{color:var(--com)} pre .k{color:var(--kw)} pre .s{color:var(--str)} pre .f{color:var(--fn)} pre .n{color:var(--num)} pre .e{color:var(--bad)} pre .g{color:var(--good)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:18px 0;}
+  .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:8px;}
+  .t-bad{background:rgba(248,113,113,.15);color:var(--bad);border:1px solid rgba(248,113,113,.3)}
+  .t-good{background:rgba(74,222,128,.15);color:var(--good);border:1px solid rgba(74,222,128,.3)}
+  .t-warn{background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.3)}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
+  tr:last-child td{border-bottom:none;}
+  .pill{font-weight:700}
+  .ok{color:var(--good)} .no{color:var(--bad)} .mid{color:var(--warn)}
+  .timeline{list-style:none;padding:0;margin:8px 0;counter-reset:step;}
+  .timeline li{position:relative;padding:14px 0 14px 46px;border-left:2px solid var(--line);margin-left:14px;}
+  .timeline li::before{counter-increment:step;content:counter(step);position:absolute;left:-15px;top:12px;
+    width:28px;height:28px;border-radius:50%;background:var(--panel2);border:2px solid var(--accent);
+    color:var(--accent);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  .timeline li.fix::before{border-color:var(--good);color:var(--good)}
+  .timeline b{color:var(--ink)}
+  .kpi{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0;}
+  .kpi div{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;}
+  .kpi .big{font-size:28px;font-weight:800;}
+  .kpi .lab{color:var(--muted);font-size:12.5px;margin-top:2px;}
+  .arrow{color:var(--muted);padding:0 6px}
+  .callout{border-left:3px solid var(--accent);background:var(--panel2);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;}
+  .callout.bad{border-color:var(--bad)} .callout.good{border-color:var(--good)} .callout.warn{border-color:var(--warn)}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>SACTOR 集成报告</h1>
+  <div class="sub">把真实 C→Rust 翻译框架 (SACTOR) 接入我们的差分测试流水线 · 2026-06-28</div>
+</header>
+
+<div class="callout">
+  <b>一句话总结：</b>我们让 SACTOR 在 CRUST-bench 真实语料上产出了 idiomatic Rust，并第一次把
+  <b>name-independent matcher</b> 跑在真实 transpiler 输出上 —— 在签名被剧烈重构（C ABI → Rust slice/Option）的情况下，
+  matcher 仍然 <b>6/6 = 100%</b> 靠结构把 C↔Rust 函数配回去。过程中踩了一连串 SACTOR 的坑，本报告逐一记录问题、根因、解法与原始代码。
+</div>
+
+<div class="kpi">
+  <div><div class="big ok">✅ 6/6</div><div class="lab">matcher 在真 SACTOR 输出上的准确率（过滤嵌套后）</div></div>
+  <div><div class="big">13/13</div><div class="lab">gpt-5.1 的 unidiomatic 翻译成功率（gpt-4o 仅 7/13）</div></div>
+  <div><div class="big mid">7</div><div class="lab">解决的 SACTOR 集成障碍</div></div>
+</div>
+
+<h2>0 · 背景：SACTOR 是什么，我们为什么用它</h2>
+<p>
+SACTOR (<i>Structure-Aware C To Rust translator</i>, arXiv 2503.12511) 是一个真实发表的 C→Rust 翻译<b>框架</b>，
+不是单次 prompt。它分两阶段：先 <code>unidiomatic</code>（c2rust 风格、repr(C)、裸指针），再 <code>idiomatic</code>（slice/Vec/Option，符合 Rust 习惯）。
+我们用它替换掉之前那个「自己编的单次 prompt 翻译器」，作为产出 <b>重命名/重构译文</b> 的可信来源 —— 这正是我们 name-independent matcher 要对付的对象。
+</p>
+
+<div class="callout warn">
+  <b>关键认知 —— SACTOR 没有 fuzzing。</b> 它的「等价性验证」是<b>函数替换 + 重跑你给的几个样例测试</b>：
+  把某个函数的 Rust 译文用 FFI 暴露成 C 符号、挖掉原 C 函数、链接进去、重跑 test samples。
+  这是 <b>example-based</b>，不是覆盖率引导，也不感知 UB。
+  <br>→ <b>这恰好是我们差分 fuzzing 的补位空间</b>：SACTOR 的「已验证」只在它那几个样例上成立，函数可以通过 SACTOR 却在样例之外跟 C 分叉。我们 = 在它验证不到的地方做强验证。
+</div>
+
+<h2>1 · 我们踩的坑与解法 <span class="tag t-good">全部已解决或绕过</span></h2>
+
+<p>从「在真实语料上跑 SACTOR 出 idiomatic Rust」到成功，依次遇到的问题：</p>
+
+<ul class="timeline">
+  <li><b>缺 valgrind</b> <span class="tag t-bad">阻断</span><br>
+    SACTOR 启动即报 <code>OSError: Missing requirements: valgrind</code>。
+    <br><b>解法：</b> <code>apt-get install valgrind</code>。
+  </li>
+  <li class="fix"><b>lib 模式是死路</b> <span class="tag t-warn">绕过</span><br>
+    纯库（如 bitset）走 <code>--type lib</code> 连环受阻：① 要 <code>--executable-object</code>；
+    ② 带 <code>compile_commands.json</code> 时严格 link-closure 把编译器内建 <code>__builtin_popcount</code> 当成「未解析的 C 函数」报错；
+    ③ <code>generate-tests --type lib</code> 直接 <code>NotImplementedError("Library test runner not implemented yet")</code>；
+    ④ 逐函数 FFI 验证 harness 需要一个来自样例的 <code>main</code>，空样例 → <code>undefined reference to `main`</code>。
+    <br><b>解法：</b> 放弃 lib，改走<b>成熟的 bin 模式</b> —— 给库加一个确定性的 <code>main</code> 驱动，当成程序翻译。
+  </li>
+  <li class="fix"><b>编译器内建 &amp; static 链接</b> <span class="tag t-good">已解决</span><br>
+    <code>__builtin_popcount</code>/<code>__builtin_parity</code>/<code>__builtin_clz</code> 被 SACTOR 依赖追踪当成「应先翻译的函数」→ <code>RuntimeError</code>；
+    而 <code>static inline</code> 辅助函数不在符号表里 → 逐函数 FFI 验证链接失败。
+    <br><b>解法：</b> 用纯表达式替掉内建（见下方 PARITY8）、把辅助函数去掉 <code>static</code>。
+  </li>
+  <li class="fix"><b>FILE* → <code>_IO_FILE</code> 编不过</b> <span class="tag t-good">已解决</span><br>
+    bitset 的 <code>fopen/fread</code> 经 c2rust 译出 glibc 内部类型 <code>_IO_FILE</code>，Rust 侧编译失败。
+    <br><b>解法：</b> 选择/裁剪出不含文件 I/O 的纯逻辑函数。
+  </li>
+  <li class="fix"><b>gpt-4o 太弱</b> <span class="tag t-good">换模型</span><br>
+    SACTOR 默认 gpt-4o，unidiomatic 只成功 <b>7/13</b>（连 new/count/test 都译不出）；gpt-5.1 则 <b>13/13</b>。
+    <br><b>解法：</b> 配置文件锁定 <code>gpt-5.1</code>。
+  </li>
+  <li class="fix"><b>SPEC 解析 bug（我们修了 SACTOR）</b> <span class="tag t-good">已修复</span><br>
+    idiomatic struct 翻译要求 LLM 同时输出 <code>----SPEC----</code> JSON 块。SACTOR 的正则<b>强制要求结尾有横线</b>，
+    而 gpt-5.1 输出 <code>----END SPEC</code>（无尾横线）→ 报「SPEC block not found」。这是模型格式跟从习惯与 SACTOR（按 gpt-4o 调）的错配。
+    <br><b>解法：</b> 放宽正则容忍尾横线缺失（最小、可上游的鲁棒性补丁，见下方 diff）。
+  </li>
+  <li><b>位压缩 struct 撞上 SACTOR 建模局限</b> <span class="tag t-bad">SACTOR 局限，换目标</span><br>
+    bitset 是<b>位压缩</b>结构：数组字节数 = <code>(size+7)/8 ≠ size</code>。
+    SACTOR 的 struct 验证假设「长度来源字段会被 <code>Vec::len()</code> 取代而消失」，于是把 <code>size</code> 当派生字段，
+    和必须保留的 <code>size</code> 撞车 → <code class="no">error[E0062]: field `size` specified more than once</code>。
+    <br><b>判断：</b> 这是 SACTOR 对位压缩 struct 的真实建模缺陷，不是我们的 bug；再钻就是「补窟窿」。
+    <br><b>解法：</b> 换一个标量/无 struct 的目标（FastHamming）。
+  </li>
+</ul>
+
+<h3>原始代码 · 我们对 SACTOR 的最小补丁</h3>
+<p class="sub">文件：<code>sactor/verifier/spec/spec_types.py · extract_spec_block()</code></p>
+<pre><span class="c"># —— 修改前（要求 "END SPEC" 后必须有横线 -+，gpt-5.1 不带 → 匹配失败）——</span>
+pattern = re.compile(
+    r<span class="s">"-+SPEC-+\n```(?:json)?\n(.*?)\n```\n-+END SPEC-+"</span>, re.S)
+...
+alt = re.compile(r<span class="s">"-+SPEC-+\n(.*?)\n-+END SPEC-+"</span>, re.S)
+
+<span class="c"># —— 修改后（容忍尾横线缺失 + 周围空白；两种格式都能解析）——</span>
+pattern = re.compile(
+    r<span class="s">"-+\s*SPEC\s*-+\s*\n```(?:json)?\n(.*?)\n```\s*\n-+\s*END SPEC\s*-*"</span>, re.S)
+...
+alt = re.compile(r<span class="s">"-+\s*SPEC\s*-+\s*\n(.*?)\n-+\s*END SPEC\s*-*"</span>, re.S)</pre>
+<p class="sub">注：STRUCT / FUNCTION / ENUM 块用的是 <code>utils.parse_llm_result</code>，它会把标签里的横线/空格/反引号全规范化掉再比对，本来就鲁棒 —— 所以只有用裸正则的 SPEC 块脆弱。</p>
+
+<h3>原始代码 · 内建替换 &amp; 去 static（让 C 能进 SACTOR 的 bin/FFI 流程）</h3>
+<pre><span class="c">/* byte parity 作为纯表达式（0x6996 = 4-bit parity 查找表），替掉 __builtin_parity */</span>
+<span class="k">#define</span> <span class="f">PARITY8</span>(x) ((<span class="n">0x6996u</span> &gt;&gt; ((((x) ^ ((x) &gt;&gt; <span class="n">4</span>)) &amp; <span class="n">0xFu</span>))) &amp; <span class="n">1u</span>)
+
+<span class="c">/* static inline → 顶层可链接函数（否则逐函数 FFI 验证找不到符号）*/</span>
+<span class="c">// 前: static inline void hecc_encode_impl(...)</span>
+<span class="k">void</span> <span class="f">hecc_encode_impl</span>(<span class="k">const uint8_t</span> *inbuf, <span class="k">uint8_t</span> *outbuf, <span class="k">size_t</span> insize) { ... }</pre>
+
+<h2>2 · 成功跑通：FastHamming（Hamming 纠错码）</h2>
+<p>
+换到 CRUST-bench 的 <b>FastHamming</b>（5 个函数，纯 <code>uint8</code> 整数，无 struct）后，
+配方完整跑通：<b>自包含 C + 确定性 main 驱动 → <code>generate-tests</code>（LLM 合成并验证 6 个样例）→ <code>translate --type bin</code></b>。
+SACTOR 输出 <span class="ok">EXIT=0</span>，idiomatic 全译出，clippy <b>0 warning / 0 error</b>，所有测试通过。
+</p>
+
+<h3>翻译前后对比 · 这是货真价实的 idiomatic 重构</h3>
+<table>
+  <tr><th>函数</th><th>原始 C 签名</th><th>SACTOR idiomatic Rust 签名</th></tr>
+  <tr>
+    <td><code>hecc_encode</code></td>
+    <td><code>bool (const uint8_t*, size_t, uint8_t*, size_t*)</code></td>
+    <td><code class="ok">fn (&amp;[u8], &amp;mut [u8]) -&gt; Option&lt;usize&gt;</code></td>
+  </tr>
+  <tr>
+    <td><code>hecc_decode_impl</code></td>
+    <td><code>bool (const uint8_t*, uint8_t*, size_t)</code></td>
+    <td><code class="ok">fn (&amp;[u8]) -&gt; Option&lt;Vec&lt;u8&gt;&gt;</code></td>
+  </tr>
+</table>
+<p class="sub">4 个 C 指针/长度参数 → 2 个 slice；<code>bool</code> + 出参 → <code>Option</code>。函数名 SACTOR 保留了（故 ground truth = 恒等名映射），但 <b>io-shape 天差地别</b> —— matcher 必须靠结构而非名字配对。</p>
+
+<h3>原始代码 · idiomatic 译文片段（<code>hecc_encode</code>）</h3>
+<pre><span class="k">pub fn</span> <span class="f">hecc_encode</span>(inbuf: <span class="k">&amp;[u8]</span>, outbuf: <span class="k">&amp;mut [u8]</span>) -&gt; <span class="k">Option</span>&lt;<span class="k">usize</span>&gt; {
+    <span class="k">fn</span> <span class="f">checked_mul</span>(a: <span class="k">usize</span>, b: <span class="k">usize</span>) -&gt; <span class="k">Option</span>&lt;<span class="k">usize</span>&gt; { a.checked_mul(b) }   <span class="c">// ← 嵌套 helper</span>
+    <span class="k">let</span> insize = inbuf.len();
+    <span class="k">let</span> max_insize = checked_mul(<span class="k">usize</span>::MAX &gt;&gt; <span class="n">4</span>, <span class="n">15</span>)?;
+    <span class="k">if</span> insize &gt; max_insize { <span class="k">return</span> <span class="k">None</span>; }
+    <span class="k">let</span> blocks = (insize + <span class="n">14</span>) / <span class="n">15</span>;
+    <span class="k">let</span> reqsize = checked_add(blocks, insize)?;
+    <span class="k">if</span> outbuf.len() &lt; reqsize { <span class="k">return</span> <span class="k">None</span>; }
+    <span class="k">let mut</span> in_pos = <span class="n">0</span>; <span class="k">let mut</span> out_pos = <span class="n">0</span>;
+    <span class="k">while</span> insize - in_pos &gt;= <span class="n">15</span> {
+        <span class="k">let</span> in_chunk = &amp;inbuf[in_pos..in_pos + <span class="n">15</span>];
+        <span class="k">let</span> out_chunk = &amp;<span class="k">mut</span> outbuf[out_pos..out_pos + <span class="n">16</span>];
+        hecc_encode_impl(in_chunk, out_chunk);
+        in_pos += <span class="n">15</span>; out_pos += <span class="n">16</span>;
+    }
+    ...
+    <span class="k">Some</span>(out_pos)
+}</pre>
+
+<h2>3 · 核心结果：matcher 在真实 transpiler 输出上的表现</h2>
+<p>把 C 源与 SACTOR idiomatic 译文分别过 analyzer，再跑 matcher，用 SACTOR 的 name map 当 ground truth。</p>
+
+<table>
+  <tr><th>输入</th><th>规模</th><th>准确率</th><th>说明</th></tr>
+  <tr><td>原始</td><td>6 C <span class="arrow">vs</span> 12 Rust</td><td class="pill no">3/6 = 50%</td><td>Rust 侧混入 6 个嵌套 helper</td></tr>
+  <tr><td>过滤嵌套后</td><td>6 C <span class="arrow">vs</span> 6 Rust</td><td class="pill ok">6/6 = 100%</td><td>全部正 confidence</td></tr>
+</table>
+
+<h3>matcher 原始输出 · 100% 那次</h3>
+<pre>C functions: 6 | Rust functions: 6
+matched: 6 | ambiguous: 0 | c_only_unmatched: 0 | rust_only_unmatched: 0
+CORRECT (labeled): 6 | accuracy: <span class="g">6/6 = 100%</span>
+  [OK ] log2uint8         -&gt; log2uint8         score=0.645 conf=+0.381
+  [OK ] hecc_decode_impl  -&gt; hecc_decode_impl  score=0.500 conf=+0.256
+  [OK ] hecc_decode       -&gt; hecc_decode       score=0.438 conf=+0.088
+  [OK ] hecc_encode       -&gt; hecc_encode       score=0.423 conf=+0.073
+  [OK ] hecc_encode_impl  -&gt; hecc_encode_impl  score=0.419 conf=+0.156
+  [OK ] main              -&gt; main              score=0.419 conf=+0.247</pre>
+
+<h3>matcher 原始输出 · 50% 那次（暴露问题）</h3>
+<pre>C functions: 6 | Rust functions: 12
+CORRECT (labeled): 3 | accuracy: <span class="e">3/6 = 50%</span>
+  [<span class="e">XX</span> ] log2uint8         -&gt; <span class="e">parity8</span>            score=0.577   <span class="c"># 被嵌套 helper 偷走</span>
+  [<span class="e">XX</span> ] hecc_decode_impl  -&gt; <span class="e">hecc_encode_impl</span>   score=0.450   <span class="c"># 同形簇混淆</span>
+  [OK ] hecc_decode       -&gt; hecc_decode
+  [OK ] main              -&gt; main
+  [OK ] hecc_encode       -&gt; hecc_encode
+  [<span class="e">XX</span> ] hecc_encode_impl  -&gt; <span class="e">required_size</span>      score=0.290   <span class="c"># 被嵌套 helper 偷走</span>
+  rust_only: [checked_add, checked_mul, <span class="e">log2uint8</span>, floor_log2, <span class="e">hecc_decode_impl</span>, parse_n]</pre>
+
+<div class="callout good">
+  <b>结论：</b>
+  ① <b>matcher 在真实 transpiler 输出上是有效的</b> —— 签名从 C ABI 被重构成 idiomatic slice/Option，它仍 100% 靠结构配对成功。这是「不只在合成 c2rust 上过拟合」的真外部验证。
+  <br>② 那 50% <b>不是 matcher 的锅</b>，而是 <b>Rust analyzer 把嵌套局部函数拍平进了候选集</b>：SACTOR 把 <code>parity8 / checked_add / log2uint8(嵌套)</code> 等 helper 内联进 idiomatic 函数体，analyzer 当顶层节点发出来 → 干扰项偷走真匹配，还触发了顶层/嵌套 <code>log2uint8</code> 重名（即我们一直记着的 hir-id 隐患，<b>这次实地观测到了</b>）。
+</div>
+
+<h2>4 · 扩面：5 个 CRUST-bench 程序的批量结果</h2>
+<p>
+为看 matcher 在真实 transpiler 输出上面上的表现，挑了一批不同规模的 CRUST-bench 程序（故意偏指针密集），
+按已验证的 bin 配方各跑 SACTOR idiomatic → matcher（用 SACTOR 自带的 name map 当 ground truth）。
+</p>
+
+<table>
+  <tr><th>程序</th><th>函数数</th><th>SACTOR idiomatic</th><th>matcher 准确率</th><th>说明</th></tr>
+  <tr><td><code>FastHamming</code></td><td>5</td><td class="ok">✅ 成功</td><td class="pill ok">6/6 (100%)</td><td>纯值函数</td></tr>
+  <tr><td><code>fft</code></td><td>7</td><td class="ok">✅ 成功</td><td class="pill ok">8/8 (100%)</td><td>SACTOR 把 C 宏展开成 11 个嵌套 helper，被新过滤器全部正确剔除</td></tr>
+  <tr><td><code>amp</code></td><td>5</td><td class="no">❌ 失败</td><td>—</td><td><code>char* buf</code> 游标：返回借用 slice + <code>buf+=len</code>，借用检查不可表示</td></tr>
+  <tr><td><code>gfc</code></td><td>7</td><td class="no">❌ 失败</td><td>—</td><td>函数 <code>F</code> 依赖的 GFC 指针数组结构（长度派生自字段 <code>r</code>）未注册</td></tr>
+  <tr><td><code>utf8</code></td><td>13</td><td class="no">❌ 失败</td><td>—</td><td>idiomatic 又慢又栽在 <code>make_utf8_char_iter</code>；含 main 的合成驱动也撞 <code>uint32_t</code> 导入</td></tr>
+</table>
+
+<div class="callout good">
+  <b>三个核心发现：</b>
+  <br>① <b>两个成功例 matcher 都 100%</b> —— 既验证 matcher 在真 transpiler 输出上有效，也验证了上一节那个嵌套排除修复（fft 的 11 个宏展开 helper 全被正确过滤，否则会像最初 hamming 那样掉到 50%）。
+  <br>② <b>两个成功例的 name map 都是恒等 —— SACTOR 不改函数名。</b> 所以这些验证的是 <b>io-shape/结构鲁棒性，不是抗重命名</b>。matcher 抗重命名的主场必须是裸 LLM / 人写移植（无 map、真改名）。
+  <br>③ <b>SACTOR 的 idiomatic 阶段对真实指针密集 C 很脆弱</b> —— 只有"纯值函数、无指针游标、无指针数组结构"的程序能过（本批 2/5）。失败都是真实的 Rust 习惯化极限（游标指针、字段派生长度的数组），不是我们能修的。
+</div>
+
+<div class="callout warn">
+  <b>对路线的含义：</b> SACTOR 作为 matcher 的外部验证源偏薄 —— 能跑通的程序少、且不改名。
+  这反而强化了定位：<b>matcher 真正的主场是无 map 的重命名场景</b>（裸 LLM 直翻、人写 Rust 移植）。
+  下一步要么转向裸 LLM 直翻线，要么评估第二个框架 C2SaferRust；若框架普遍跑不动真实程序，可能需要<b>自建 benchmark</b>。
+</div>
+
+<p class="sub">工程副产品：<code>--continue-run-when-incomplete</code> 应进默认配方（合成 main 这类 scaffolding 失败时不拖垮全局）；translate 超时设 ≥900s（595s 把 fft 在最后 10 秒杀了）；SSE 内联（clhash）、递归结构（cJSON）预先排除。</p>
+
+<h2>5 · 接下来的步骤</h2>
+
+<h3 class="ok">✅ 已完成：Rust analyzer 排除嵌套/局部函数</h3>
+<p>
+已在 <code>analyzer/src/lib.rs</code> 实现（祖先含另一个 <code>ast::Fn</code> = 局部函数，标 <code>nested_local</code> 排除，调用边由父函数递归遍历保留）。
+hamming 现在<b>开箱即 6/6</b>（不再需要手动过滤），fft 的 11 个宏展开 helper 也被自动剔除；<b>lil 回归门仍 PASS（126/128）</b>。
+C 没有嵌套函数，这些局部 helper 也没有 C 对应物 —— 排除它们让真实语料的匹配从一开始就干净。
+信号很清晰：顶层 = col-0 的 <code>pub fn</code>；嵌套 = 函数体内的 <code>fn</code>，rust-analyzer 的 HIR 知道父作用域。
+改完用 <b>lil 回归门</b>（128 函数 / 55 个同形 <code>fnc_*</code>，门槛 126/128）把关，确保不回退。同时顺手把那个 hir-id 重名隐患一并处理。
+</p>
+
+<h3>▶ 然后：扩面跑更多 CRUST-bench 程序</h3>
+<p>
+按已验证的 bin 配方，挑函数多、标量/简单 struct 的真实程序（如 fft、其它算法库）多跑几个，
+得到一张「matcher 在真实 SACTOR 输出上的准确率」表 —— 这是论文里外部验证那一节的数据。
+</p>
+
+<h3>▶ 之后：把差分 fuzzing 接到 SACTOR 译文上（主线收口）</h3>
+<p>
+这是整件事的终点：matcher 配好 C↔Rust 对 → 我们的 <b>覆盖率引导 + UB-free gate</b> 差分 fuzzing 去 SACTOR 样例之外猛打。
+找到分叉 = SACTOR 的样例验证给了假信心（强结果）；找不到 = 独立佐证。FastHamming 是纯整数、确定性，正是理想的第一个 fuzzing 目标。
+</p>
+
+<h3>▶ 平行：第二个框架 C2SaferRust</h3>
+<p>
+为扩大 benchmark 规模，C2SaferRust 早晚要上 —— 但它需要工具链手术（pin nightly-2022-08-08 的 rustc_private slicer、无单文件入口）。优先级排在上面三项之后。
+</p>
+
+<table style="margin-top:24px">
+  <tr><th>步骤</th><th>产出</th><th>状态</th></tr>
+  <tr><td>SACTOR 接入 + 真实语料跑通</td><td>idiomatic 译文 + name map</td><td class="ok">✅ 完成</td></tr>
+  <tr><td>matcher 真实语料外部验证</td><td>FastHamming 6/6</td><td class="mid">◷ 进行中（待扩面）</td></tr>
+  <tr><td>analyzer 排除嵌套函数</td><td>更干净的候选集</td><td>○ 下一步</td></tr>
+  <tr><td>差分 fuzzing 接 SACTOR 译文</td><td>真/假等价判定</td><td>○ 待办</td></tr>
+  <tr><td>C2SaferRust 第二框架</td><td>更大 benchmark</td><td>○ 待办</td></tr>
+</table>
+
+<footer>
+  生成于 2026-06-28 · C→Rust 差分测试项目 · 工作目录
+  <code>tools/frameworks/sactor/tests/c_examples/hamming_crust/</code><br>
+  两个核心新意：① name-independent C↔Rust 函数匹配（应对重命名/重构）；② 正确 UB 归因的差分 fuzzing + frontier 选择。
+</footer>
+
+</div>
+</body>
+</html>

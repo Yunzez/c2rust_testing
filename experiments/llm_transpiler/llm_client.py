@@ -45,6 +45,11 @@ def _is_reasoning(model: str) -> bool:
     return model.startswith(("gpt-5", "o1", "o3", "o4"))
 
 
+def _needs_responses_api(model: str) -> bool:
+    # codex / *-pro / o1-pro etc. are not served on v1/chat/completions — use v1/responses.
+    return "codex" in model or model.endswith("-pro") or "-pro-" in model
+
+
 class LLMClient:
     def __init__(self, model: str = DEFAULT_MODEL, dry_run=None):
         self.model = model

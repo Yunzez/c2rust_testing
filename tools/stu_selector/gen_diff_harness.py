@@ -58,6 +58,7 @@ SCALAR_MAP = {
     "long long": ("i64", 8), "unsigned long long": ("u64", 8),
     "char": ("i8", 1), "signed char": ("i8", 1), "unsigned char": ("u8", 1),
     "_Bool": ("bool", 1),
+    "float": ("f32", 4), "double": ("f64", 8),
 }
 
 
@@ -82,13 +83,23 @@ def safe_name(name: str, idx: int) -> str:
     return f"{name}_" if name in RUST_KEYWORDS else name
 
 
-def describe_type(t) -> dict:
+MAX_TYPE_DEPTH = 12  # depth guard: recursive structs (struct Node { Node* next; }) would recurse
+                     # forever -> a crash (RecursionError) is NOT a clean exclusion, so cap the
+                     # descent and return a clean `unsupported` (recursive/too-deep) instead.
+
+
+def describe_type(t, _depth: int = 0) -> dict:
     """Recursive, canonical-aware type descriptor (shared by ptr-to-array and future T**).
 
     Typedef/elaborated wrappers are peeled to reveal the structural kind, so `typedef size_t
     Edge[2]; const Edge *` is recognized as pointer->array. The scalar leaf prefers the ORIGINAL
     spelling (keeps size_t->usize) and falls back to the canonical one.
+
+    `_depth` bounds the structural descent so recursive/self-referential records (a struct whose
+    field points back at the struct) yield a clean UNSUPPORTED rather than a RecursionError crash.
     """
+    if _depth > MAX_TYPE_DEPTH:
+        return {"kind": "unsupported", "spelling": t.spelling, "reason": "recursive/too-deep type"}
     s = t
     seen = 0
     while s.kind in (TypeKind.TYPEDEF, TypeKind.ELABORATED) and seen < 8:
@@ -97,18 +108,18 @@ def describe_type(t) -> dict:
     if s.kind == TypeKind.POINTER:
         pointee = s.get_pointee()
         return {"kind": "pointer", "const": pointee.is_const_qualified(),
-                "inner": describe_type(pointee)}
+                "inner": describe_type(pointee, _depth + 1)}
     if s.kind == TypeKind.CONSTANTARRAY:
         et = s.element_type
         return {"kind": "array", "extent": s.element_count,
-                "const": et.is_const_qualified(), "elem": describe_type(et)}
+                "const": et.is_const_qualified(), "elem": describe_type(et, _depth + 1)}
     if s.kind in (TypeKind.FUNCTIONPROTO, TypeKind.FUNCTIONNOPROTO):
         return {"kind": "function", "spelling": t.spelling}
     sc = map_scalar(t.spelling) or map_scalar(s.spelling)
     if sc:
         return {"kind": "scalar", "rust": sc[0], "width": sc[1]}
     if s.kind == TypeKind.RECORD:
-        return _describe_record(t, s)
+        return _describe_record(t, s, _depth)
     return {"kind": "unsupported", "spelling": t.spelling}
 
 
@@ -120,7 +131,7 @@ def _rust_record_name(t) -> str:
     return name.strip()
 
 
-def _describe_record(t, s) -> dict:
+def _describe_record(t, s, _depth: int = 0) -> dict:
     """Struct/union descriptor: fields in declaration order + a POD verdict.
 
     POD (this increment) = every field is a scalar or a fixed array of scalars. Pointer / nested
@@ -134,7 +145,7 @@ def _describe_record(t, s) -> dict:
     for f in decl.get_children():
         if f.kind != CursorKind.FIELD_DECL:
             continue
-        fd = describe_type(f.type)
+        fd = describe_type(f.type, _depth + 1)
         fields.append({"name": f.spelling, "desc": fd})
         if pod:
             if fd["kind"] == "scalar":
@@ -149,8 +160,19 @@ def _describe_record(t, s) -> dict:
                 pod, reason = False, f"has function-pointer field '{f.spelling}'"
             else:
                 pod, reason = False, f"has unsupported field '{f.spelling}' ({fd.get('kind')})"
-    return {"kind": "struct", "name": _rust_record_name(t), "fields": fields,
-            "pod": pod, "reason": reason}
+    # An opaque / incomplete (forward-declared) struct has NO visible fields -> the POD check above
+    # passes vacuously, which is wrong: it can't be constructed or field-compared (e.g. OpenSSL's
+    # EVP_PKEY/BIGNUM, or any handle behind a `struct foo;`). Treat a zero-field record as non-POD.
+    if pod and not fields:
+        pod, reason = False, "opaque/incomplete (no visible fields)"
+    # c_name = the spelling usable in a C declaration (keeps the `struct`/`union` keyword for
+    # non-typedef'd tags, drops only cv-qualifiers). Used by the out-of-process C oracle to declare
+    # the struct; the Rust `name` (keyword stripped) is what c2rust calls the type.
+    c_name = t.spelling
+    for q in ("const ", "volatile "):
+        c_name = c_name.replace(q, "")
+    return {"kind": "struct", "name": _rust_record_name(t), "c_name": c_name.strip(),
+            "fields": fields, "pod": pod, "reason": reason}
 
 
 def _param_from_descriptor(desc: dict, name: str) -> dict:
@@ -701,44 +723,88 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
     Iterating the schema params in declaration order is what makes a length param that PRECEDES
     its buffer (e.g. f(size_t n, T* buf, ...)) come out in the right ABI position.
     """
-    c_args, r_args, decl = [], [], []
+    def _is_slice(rty: str) -> bool:
+        rty = (rty or "").replace(" ", "")
+        return (rty.startswith("&[") or rty.startswith("&mut[") or "Box<[" in rty
+                or rty.startswith("Vec<") or rty.startswith("&Vec<")
+                or rty.startswith("Option<&mut[") or rty.startswith("Option<&["))
+
+    # pass 1: a buffer rendered as a Rust slice FOLDS its length/capacity param (the slice
+    # carries its own len), so that scalar must be DROPPED from the Rust call (idiomatic
+    # translations like `f(&[u8], &mut [u8])` from C `f(const u8*, size_t, u8*, size_t)`).
+    folded: set[str] = set()
+    for p in abi:
+        if p["role"] in ("input_buffer", "inout_buffer", "output_buffer") and _is_slice(p.get("rust_pty")):
+            ln = p.get("length_param") or p.get("capacity_param")
+            if ln:
+                folded.add(ln)
+
+    c_args, decl = [], []
+    r_pairs: list[tuple[str, str]] = []  # (param_name, rust_call_expr); filtered for folding below
     for p in abi:
         role, n = p["role"], p["name"]
+        rty = (p.get("rust_pty") or "").replace(" ", "")
         if role in ("scalar", "length", "capacity"):
-            c_args.append(n); r_args.append(n); decl.append(f"{n}: {p['rust']}")
+            c_args.append(n); r_pairs.append((n, n)); decl.append(f"{n}: {p['rust']}")
         elif role == "input_buffer":
-            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            c_args.append(f"{n}_buf.as_ptr()")
             decl.append(f"{n}: *const {p['elem']}")
+            if "Box<[" in rty:
+                r_pairs.append((n, f"&{n}_buf.clone().into_boxed_slice()"))
+            elif rty.startswith("Option<&["):           # Option<&[T]>
+                r_pairs.append((n, f"Some(&{n}_buf[..])"))
+            elif rty.startswith("&[") or rty.startswith("&mut["):
+                r_pairs.append((n, f"&{n}_buf[..]"))
+            elif rty.startswith("Vec<"):
+                r_pairs.append((n, f"{n}_buf.clone()"))
+            elif rty.startswith("&Vec<"):
+                r_pairs.append((n, f"&{n}_buf.clone()"))
+            else:  # raw pointer / C-ABI (c2rust, gpt4o raw-ptr style) or unknown -> default
+                r_pairs.append((n, f"{n}_buf.as_ptr()"))
         elif role in ("inout_buffer", "output_buffer"):
-            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
+            c_args.append(f"{n}_c.as_mut_ptr()")
             decl.append(f"{n}: *mut {p['elem']}")
+            if rty.startswith("Option<&mut["):
+                r_pairs.append((n, f"Some(&mut {n}_r[..])"))
+            elif rty.startswith("&mut[") or rty.startswith("&["):
+                r_pairs.append((n, f"&mut {n}_r[..]"))
+            else:
+                r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
         elif role == "out_scalar":
-            c_args.append(f"&mut {n}_c"); r_args.append(f"&mut {n}_r")
+            c_args.append(f"&mut {n}_c"); r_pairs.append((n, f"&mut {n}_r"))
             decl.append(f"{n}: *mut {p['elem']}")
         elif role == "output_array":
-            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
+            c_args.append(f"{n}_c.as_mut_ptr()")
             decl.append(f"{n}: *mut {p['elem']}")
+            if rty.startswith("Option<&mut["):     # Option<&mut [T]>
+                r_pairs.append((n, f"Some(&mut {n}_r[..])"))
+            elif rty.startswith("&mut["):           # &mut [T]
+                r_pairs.append((n, f"&mut {n}_r[..]"))
+            else:                                    # raw pointer / default
+                r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
         elif role == "input_string":
-            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            c_args.append(f"{n}_buf.as_ptr()"); r_pairs.append((n, f"{n}_buf.as_ptr()"))
             decl.append(f"{n}: *const {p['elem']}")
         elif role == "input_fixed_array_buffer":
-            c_args.append(f"{n}_buf.as_ptr()"); r_args.append(f"{n}_buf.as_ptr()")
+            c_args.append(f"{n}_buf.as_ptr()"); r_pairs.append((n, f"{n}_buf.as_ptr()"))
             decl.append(f"{n}: *const [{p['elem']}; {p['inner_extent']}]")
         elif role in ("input_rectangular_pointer_table", "input_string_pointer_table"):
-            c_args.append(f"{n}_tab_c.as_mut_ptr()"); r_args.append(f"{n}_tab_r.as_mut_ptr()")
+            c_args.append(f"{n}_tab_c.as_mut_ptr()"); r_pairs.append((n, f"{n}_tab_r.as_mut_ptr()"))
             decl.append(f"{n}: *mut *mut {p['elem']}")
         elif role == "input_struct":
-            c_args.append(f"&{n}_val"); r_args.append(f"&{n}_val")
+            c_args.append(f"&{n}_val"); r_pairs.append((n, f"&{n}_val"))
             decl.append(f"{n}: *const translated::{p['struct_name']}")
         elif role == "inout_struct":
-            c_args.append(f"&mut {n}_c"); r_args.append(f"&mut {n}_r")
+            c_args.append(f"&mut {n}_c"); r_pairs.append((n, f"&mut {n}_r"))
             decl.append(f"{n}: *mut translated::{p['struct_name']}")
         elif role == "input_struct_array":
-            c_args.append(f"{n}_data.as_ptr()"); r_args.append(f"{n}_data.as_ptr()")
+            c_args.append(f"{n}_data.as_ptr()"); r_pairs.append((n, f"{n}_data.as_ptr()"))
             decl.append(f"{n}: *const translated::{p['struct_name']}")
         elif role == "inout_struct_array":
-            c_args.append(f"{n}_c.as_mut_ptr()"); r_args.append(f"{n}_r.as_mut_ptr()")
+            c_args.append(f"{n}_c.as_mut_ptr()"); r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
             decl.append(f"{n}: *mut translated::{p['struct_name']}")
+    # drop folded length/capacity params from the Rust call (they live inside the slice now)
+    r_args = [expr for (nm, expr) in r_pairs if nm not in folded]
     return c_args, r_args, decl
 
 
@@ -766,7 +832,8 @@ H(load_invalid_value)
 
 
 def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
-               ub_free: bool = False) -> str:
+               ub_free: bool = False, rust_entry: str | None = None,
+               rust_ret: str | None = None) -> str:
     """Generate the fuzz_target source: decode from items, call/signature in ABI order.
 
     When ub_free, the C oracle is UBSan-instrumented (recover + minimal runtime, flag-based
@@ -779,17 +846,45 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
     extern_args = ", ".join(decl)
     extern_ret = "" if ret == "void" else f"-> {ret}"
 
+    # decode-shape bridge: C `(.., T* out) -> count` (0 = failure sentinel) is folded by idiomatic
+    # Rust into `(..) -> Option<(value, count)>`. The single out-param moves INTO the return tuple,
+    # so drop it from the Rust call + its standalone post-compare; the return comparison (below)
+    # normalises BOTH sides to (ok, value, consumed). Assumption (documented): tuple = (out-value,
+    # return-count), None <=> C return 0. A wrong assumption would surface as spurious DIVERGENCE.
+    out_scalars = [p["name"] for p in abi if p["role"] == "out_scalar"]
+    decode_shape = bool(rust_ret and rust_ret.replace(" ", "").startswith("Option<(")
+                        and len(out_scalars) == 1 and ret in _INT_TYPES)
+    if decode_shape:
+        osc = out_scalars[0]
+        r_args = [a for a in r_args if a != f"&mut {osc}_r"]
+        post = [l for l in post if f"{osc}_c != {osc}_r" not in l]
+
     call_c = f"c_{entry}({', '.join(c_args)})"
-    call_r = f"translated::{entry}({', '.join(r_args)})"
+    call_r = f"translated::{rust_entry or entry}({', '.join(r_args)})"
     # UB-free gate: reset before C, reject (return) if C tripped UB, then call Rust.
     pre = "        c2r_ub_reset();\n" if ub_free else ""
     gate = "        if c2r_ub_get() != 0 { return; }  // C hit UB -> reject input\n" if ub_free else ""
     if ret == "void":
         body_call = f"{pre}        {call_c};\n{gate}        {call_r};"
         ret_cmp = ""
+    elif decode_shape:
+        osc = out_scalars[0]
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
+        ret_cmp = (
+            f"        let (c_ok, c_val, c_cons) = (c_ret != 0, {osc}_c, c_ret);\n"
+            f"        let (r_ok, r_val, r_cons) = match r_ret {{ Some((v, c)) => (true, v, c), None => (false, 0, 0) }};\n"
+            f'        if c_ok != r_ok {{ panic!("divergence: success/None mismatch"); }}\n'
+            f'        if c_ok && (c_val != r_val || (c_cons as i128) != (r_cons as i128)) {{ panic!("divergence: decoded value/consumed"); }}'
+        )
     else:
         body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
-        ret_cmp = '        if c_ret != r_ret { panic!("divergence: return value"); }'
+        # idiomatic translations may return a different-but-compatible integer width/signedness
+        # (e.g. C `int`/i32 vs Rust `isize`); compare via i128 so the widths line up.
+        if rust_ret and rust_ret != ret and ret in _INT_TYPES and rust_ret in _INT_TYPES:
+            cmp = "(c_ret as i128) != (r_ret as i128)"
+        else:
+            cmp = "c_ret != r_ret"
+        ret_cmp = f'        if {cmp} {{ panic!("divergence: return value"); }}'
     ub_externs = ["    fn c2r_ub_reset();", "    fn c2r_ub_get() -> i32;"] if ub_free else []
 
     return "\n".join([
@@ -833,10 +928,17 @@ def expose_entry(rs_text: str, entry: str) -> tuple[str, bool]:
     `extern "C" fn`, prepend `#[no_mangle] pub`. No-op if it is already `pub`. Returns
     (text, changed). This is what lets the harvester test an internal boundary."""
     import re
-    if re.search(rf'(?m)^\s*pub\s+(?:unsafe\s+)?extern\s+"C"\s+fn\s+{re.escape(entry)}\b', rs_text):
+    # already pub (c2rust extern "C" or plain idiomatic fn) -> no-op
+    if re.search(rf'(?m)^\s*pub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\b', rs_text):
         return rs_text, False
+    # c2rust `extern "C" fn` -> prepend `#[no_mangle] pub`
     pat = rf'(?m)^(\s*)((?:unsafe\s+)?extern\s+"C"\s+fn\s+{re.escape(entry)}\b)'
     new = re.sub(pat, r'\1#[no_mangle]\n\1pub \2', rs_text, count=1)
+    if new != rs_text:
+        return new, True
+    # plain idiomatic `fn` (LLM-translated, not C-ABI) -> prepend `pub`
+    pat2 = rf'(?m)^(\s*)((?:unsafe\s+)?fn\s+{re.escape(entry)}\b)'
+    new = re.sub(pat2, r'\1pub \2', rs_text, count=1)
     return new, (new != rs_text)
 
 
@@ -847,6 +949,52 @@ def strip_static_c(c_text: str, entry: str) -> tuple[str, bool]:
     pat = rf'(?m)^(\s*)static(\s+[^\n;{{]*\b{re.escape(entry)}\s*\()'
     new = re.sub(pat, r'\1\2', c_text, count=1)
     return new, (new != c_text)
+
+
+_INT_TYPES = {"i8", "i16", "i32", "i64", "i128", "isize",
+              "u8", "u16", "u32", "u64", "u128", "usize"}
+
+
+def parse_rust_ret_type(rs_text: str, entry: str) -> str | None:
+    """Return type spelling of `entry` in the translation (None if no `-> T`, i.e. unit)."""
+    import re
+    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\s*\([^;{{]*?\)\s*->\s*([^{{]+?)\s*\{{', rs_text, re.S)
+    return m.group(1).strip() if m else None
+
+
+def parse_rust_param_types(rs_text: str, entry: str) -> list[str]:
+    """Extract the Rust translation's per-parameter TYPE strings for `entry`, in declaration order.
+
+    For name-preserving idiomatic translations the params line up 1:1 with the C signature, so this
+    lets the harness marshal each C-ABI value into the idiomatic Rust type the translation expects
+    (e.g. C `const i32*` + len  ->  Rust `&Box<[i32]>` / `&[i32]` / `Vec<i32>`). Returns [] if the
+    signature can't be found (caller falls back to the C-ABI form)."""
+    import re
+    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\s*\(([^;{{]*?)\)\s*(?:->|\{{)', rs_text, re.S)
+    if not m:
+        return []
+    inner = m.group(1).strip()
+    if not inner:
+        return []
+    # split on top-level commas (respect <> and [] nesting)
+    parts, depth, cur = [], 0, ""
+    for ch in inner:
+        if ch in "<[(": depth += 1
+        elif ch in ">])": depth -= 1
+        if ch == "," and depth == 0:
+            parts.append(cur); cur = ""
+        else:
+            cur += ch
+    if cur.strip():
+        parts.append(cur)
+    types = []
+    for part in parts:
+        # `name: type`  (ignore `mut`, `self`)
+        if ":" in part:
+            types.append(part.split(":", 1)[1].strip())
+        else:
+            types.append(part.strip())
+    return types
 
 
 def main() -> int:
@@ -860,6 +1008,10 @@ def main() -> int:
                     help="force inference even if schemas/<name>.json exists (harvesting non-entry boundaries)")
     ap.add_argument("--expose-entry", action="store_true",
                     help="make a private (static) entry callable by prepending #[no_mangle] pub")
+    ap.add_argument("--rust-entry", default=None,
+                    help="name of the matched function in the Rust translation when it differs from "
+                    "the C entry (renamed translations); the harness calls translated::<rust-entry> "
+                    "while the C oracle keeps c_<entry>. Defaults to <entry>.")
     ap.add_argument("--ub-free", action="store_true",
                     help="in-loop UB-free gate: UBSan-instrument the C oracle and reject "
                     "(skip comparison on) inputs where C hits UB, so divergences are reported "
@@ -882,10 +1034,28 @@ def main() -> int:
     (out / "c").mkdir(exist_ok=True)
     (out / "fuzz" / "fuzz_targets").mkdir(parents=True, exist_ok=True)
 
+    rust_entry = args.rust_entry or args.entry
     c_text = c_src.read_text()
     rs_text = rs.read_text()
+    # idiomatic bridge: record each Rust param type so _call_and_decl can marshal C-ABI data into
+    # the idiomatic shape. Two alignments: (a) 1:1 with the C ABI (no folding); (b) Rust has FEWER
+    # params because length/capacity scalars were FOLDED into slices -> align to the non-len/cap
+    # "core" params (e.g. C `(const u8*, size_t, u8*, size_t)` -> Rust `(&[u8], &mut [u8])`).
+    rust_ptys = parse_rust_param_types(rs_text, rust_entry)
+    rust_ret = parse_rust_ret_type(rs_text, rust_entry)
+    # Align the Rust param types to the C ABI params. Idiomatic translations fold scalars away:
+    # length/capacity fold into slices, and (decode shape) an out-param folds into the return tuple.
+    # Try progressively-reduced ABI subsets and use the first whose arity matches the Rust signature.
+    if rust_ptys:
+        for cand in (abi,
+                     [p for p in abi if p["role"] not in ("length", "capacity")],
+                     [p for p in abi if p["role"] not in ("length", "capacity", "out_scalar")]):
+            if len(rust_ptys) == len(cand):
+                for p, t in zip(cand, rust_ptys):
+                    p["rust_pty"] = t
+                break
     if args.expose_entry:
-        rs_text, _ = expose_entry(rs_text, args.entry)
+        rs_text, _ = expose_entry(rs_text, rust_entry)
         c_text, _ = strip_static_c(c_text, args.entry)
     (out / "c" / c_src.name).write_text(c_text, encoding="utf-8")
     # Real libs split into .c + sibling .h (authored corpus is self-contained single-TU).
@@ -907,7 +1077,7 @@ def main() -> int:
     (out / "build.rs").write_text(f'''fn main() {{
     let mut build = cc::Build::new();
     build.compiler("clang").flag("-O1").flag("-g")
-        .flag("-fsanitize-coverage=trace-pc-guard,trace-cmp"){ub_flags}.warnings(false);
+        .flag("-fsanitize-coverage=inline-8bit-counters,pc-table,trace-cmp"){ub_flags}.warnings(false);
     build
 {defines};
     build.file("c/{c_src.name}");{ub_file}
@@ -931,7 +1101,7 @@ edition = "2021"
 cargo-fuzz = true
 
 [dependencies]
-libfuzzer-sys = {{ version = "0.15.4", package = "libafl_libfuzzer" }}
+libfuzzer-sys = "0.4"
 
 [dependencies.{crate}]
 path = ".."
@@ -950,7 +1120,8 @@ doc = false
 ''', encoding="utf-8")
 
     (out / "fuzz" / "fuzz_targets" / f"{crate}_ft.rs").write_text(
-        gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free), encoding="utf-8")
+        gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free, rust_entry=rust_entry,
+                   rust_ret=rust_ret), encoding="utf-8")
 
     print(f"generated harness at {out}")
     print(f"  entry: {args.entry} -> {ret}")

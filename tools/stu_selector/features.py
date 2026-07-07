@@ -172,8 +172,43 @@ def c_metrics_from_cc(cc_dir: Path) -> dict:
     return out
 
 
+def c_feature_rows(cc_dir: Path) -> list[dict]:
+    """C-only feature rows ready for frontier.score_row, INDEPENDENT of any Rust naming.
+
+    features_for_pair() aligns C<->Rust by name, so it yields nothing on renamed translations;
+    the frontier selector only needs C-side signature/structure features, which are generator-
+    agnostic. This walks the C TU(s) and builds one row per defined function."""
+    cgmod._configure_libclang()
+    from clang.cindex import CompilationDatabase
+    cdb = CompilationDatabase.fromDirectory(str(cc_dir))
+    index = Index.create()
+    rows, seen, cwd0 = [], set(), os.getcwd()
+    for cmd in cdb.getAllCompileCommands():
+        src_abs = str((Path(cmd.directory) / cmd.filename).resolve())
+        names = {cmd.filename, src_abs, Path(cmd.filename).name}
+        args = cgmod._filter_compile_args(list(cmd.arguments), names)
+        os.chdir(cmd.directory if Path(cmd.directory).exists() else cc_dir)
+        try:
+            tu = index.parse(src_abs, args=args)
+        finally:
+            os.chdir(cwd0)
+        for cur in tu.cursor.walk_preorder():
+            if cur.kind != CursorKind.FUNCTION_DECL or not cur.is_definition():
+                continue
+            f = cur.location.file.name if cur.location and cur.location.file else None
+            if _is_sys(f) or not cur.spelling or cur.spelling in seen:
+                continue
+            seen.add(cur.spelling)
+            m = _fn_metrics(cur)
+            m["fn"] = cur.spelling
+            m["c_nodes"] = m["nodes"]
+            m.setdefault("c_indirect_calls", 0)
+            rows.append(m)
+    return rows
+
+
 def rust_metrics(rust_file: Path, rust_bin: Path) -> dict:
-    raw = subprocess.run([str(rust_bin), str(rust_file)], check=True,
+    raw = subprocess.run([str(rust_bin), str(rust_file), "--enable-metrics"], check=True,
                          capture_output=True, text=True).stdout
     data = json.loads(raw)
     return {f["name"]: f["metrics"] for f in data["functions"]}

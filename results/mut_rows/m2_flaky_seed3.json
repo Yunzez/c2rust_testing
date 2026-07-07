@@ -1,0 +1,112 @@
+[
+ {
+  "id": "dm_div_intmin_drop",
+  "program": "div_mod",
+  "operator": "guard-weakening",
+  "entry": "div_mod_safe",
+  "site": "div_signed_guarded: drop INT_MIN/-1 guard",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "detect_wall_s": 0.25,
+  "seed": 3,
+  "evidence": {
+   "args": [
+    -2147483648,
+    -1
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "na_final_sub",
+  "program": "negate_abs",
+  "operator": "operator-replacement",
+  "entry": "negate_abs_safe",
+  "site": "negate_abs_safe: wrapping_add -> wrapping_sub",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "detect_wall_s": 0.21,
+  "seed": 3,
+  "evidence": {
+   "args": [
+    10
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "so_mask15",
+  "program": "shift_ops",
+  "operator": "constant-perturbation",
+  "entry": "shift_ops_safe",
+  "site": "shl_u32_masked: mask 31 -> 15",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "detect_wall_s": 0.21,
+  "seed": 3,
+  "evidence": {
+   "args": [
+    168444164,
+    82
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "su_sat_min_const",
+  "program": "sub_overflow",
+  "operator": "constant-perturbation",
+  "entry": "sub_overflow_safe",
+  "site": "sub_signed_sat: low-sat returns INT32_MIN -> INT32_MAX",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "detect_wall_s": 0.21,
+  "seed": 3,
+  "evidence": {
+   "args": [
+    -1990391252,
+    170009115
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "im_isqrt_const",
+  "program": "intmath",
+  "operator": "constant-perturbation",
+  "entry": "intmath_eval",
+  "site": "isqrt_u64: n<2 -> n<3",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "detect_wall_s": 0.34,
+  "seed": 3,
+  "evidence": {
+   "args": [
+    3,
+    2,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ }
+]

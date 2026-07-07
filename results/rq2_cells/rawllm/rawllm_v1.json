@@ -60,5 +60,16 @@
       "divergence_found": "user-defined functions INERT (func g...; print [g 3 4] -> C:7, Rust:empty) \u2014 root cause = Rc::make_mut(&mut clone()) lost-mutation in fnc_func, THE SAME defect the borrow checker flagged as E0716. Silent wrong-answer class. See fuzz/lil_coverage/README.md",
       "real_fuzz": "libFuzzer/cargo-fuzz fork mode 300s coverage-guided (NOT grammar replay). paired 115/117=98.3%, crate fn 96.1%, lines 74.8%. Bugs found: int-overflow panic (Rust abort/C wrap), codeat index-oob panic, Rc-cycle leak->OOM. 8 timeout artifacts = shared while-dialect quirk (C hangs too), not bugs. fuzz/lil_coverage/rust_cov/"
     }
+  },
+  "bzip2": {
+    "scorable": 41,
+    "dissolved": 23,
+    "allC": 64,
+    "matcher": 0.634,
+    "gross": 0.406,
+    "name_eq_mechanical": 0.146,
+    "name_eq_leaf": 0.146,
+    "fed": "PER-FILE (per translation unit): 5 core .c translated separately with bzlib_private.h as read-only context. 5 clean Rust files, no truncation.",
+    "note": "REAL RENAME cell (unlike lil/cJSON the LLM renamed heavily: BZ2_bsInitWrite->init_bit_write etc), name-eq 0.146 -> matcher 0.634 = 4.3x gap, the raw-LLM column working as intended on a structured lib. Blind-check PASSED (scramble->identical 0.634, name-eq->0). 23/64 dissolved = the stdio FILE API (BZ2_bzWrite/Read/open/close/myfeof, buffer-only Rust) + allocator + Drop-ends. FINDING (per-file tradeoff): per-file feeding is tractable to translate+label BUT duplicates cross-file-called functions (3 huffman fns translated in 2-3 modules each) and stubs others (compress_block_stub); ~5 of 15 misses are the matcher picking a VALID non-canonical copy/stub under strict 1:1 truth -> duplicate-aware recall ~0.75. Honest tradeoff of the per-file granularity."
   }
 }

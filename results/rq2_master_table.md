@@ -44,7 +44,7 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 | **cJSON** | JSON parser | 58 | high | 1.00/1.0 | — | — | — | — | ∅ᴴ(partial) | **0.55/0.15**ᴴ˙ᶜ |
 | **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.96/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | **0.55/0.55**ᴴ˙ᵏ |
 | **lodepng** | PNG codec | 235 | high | 0.99/1.0 | — | — | 0.97/1.0 | — | — | ∅ |
-| **bzip2** | compressor | 64 | high | 1.00/1.0 | 1.00/1.0 | 0.98/1.0 | 1.00/1.0 | — | — | ∅ |
+| **bzip2** | compressor | 64 | high | 1.00/1.0 | 1.00/1.0 | 0.98/1.0 | 1.00/1.0 | — | — | **0.63/0.15**ᴴ |
 | **tulipindicators** | indicators | ~100 | **very high** | ∅ᴺ | ∅ᴺ | ∅ᴺ | ▽ᴺ | — | — | ∅ |
 | **optipng** (incl. zlib) | PNG optimizer | ~400 | high | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | — | ∅ |
 
@@ -98,7 +98,7 @@ laertes_benchmarks ones point at `/Users/emre/…`).
 
 ## raw-LLM column v1 (2026-07-07) — the beat-the-baseline result
 
-**6 cells** on the E1 libraries, hand-labeled truth (`results/rq2_cells/rawllm/`). gpt-5.1, the disclosed
+**7 cells** on the E1 libraries, hand-labeled truth (`results/rq2_cells/rawllm/`). gpt-5.1, the disclosed
 prompt (commands renaming, leaks no correspondence). This is the column where **name-equality collapses**
 — usually to 0.0, so it is where the matcher's name-independence is actually *tested* rather than validated.
 **Two honest exceptions where the LLM disobeyed and kept names**: cJSON (0.15, kept 6 `parse_*`) and **lil
@@ -113,6 +113,7 @@ competitor, which is exactly why the matcher's advantage must be read off the *r
 | **quadtree** | 0.64 (9/14) | 0.0 | `is_empty↔is_pointer` swap (near-identical `&self→bool` predicates), `walk` (fn-ptr→closure reshape) missed. 3 `*_new` constructors EXCLUDED — the analyzer collapses 4 `new` methods to 1 ([[matcher-hir-id-todo]] name-collision). |
 | **cJSON** | **0.55** (22/40)ᶜ | 0.15 | The **big-but-flat counterexample**, and the case that motivated **signal-C**. Matcher recovers the topology-rich recursive core (parse_*/print_* mutual recursion) but originally **permuted the 12 `cJSON_Create*` leaf constructors** — all `()→Value`/`(scalar)→Value`, tiny bodies, *call nothing* → zero topology, homogeneous io-shape (**0.40 baseline**). signal-C (type-tag/enum-variant jaccard) recovered **7/12 constructors** → **0.50**; the input-element-type signal then split the int/float/double-array trio signal-C had grouped under one `array` tag → **0.55**. Residual (not pursued): True/Bool (bool-literal asymmetry) + ~8 accessor family (shallow shape + LLM helper attractors). name-eq **≠ 0**: LLM kept 6 `parse_*` verbatim. 18/58 dissolved. |
 | **lil** | **0.55** (61/111)ᵏ | 0.55 | The **names-kept boundary case — and the round-2 signal story.** The LLM **disobeyed the rename order and KEPT names** (`fnc_append` verbatim, methodized), so a naive leaf-name matcher scores 0.55 → *not the matcher's regime* (its edge is the renamed regime where name-eq→0). At 0.495 the matcher trailed that baseline; **two literature-standard signals closed the gap to a tie (0.55) without reading names**: re-including **unary negation** in the op histogram (previously a documented "too noisy" skip) resolved the `fnc_inc↔fnc_dec` twin — the discriminator is one `-` present on BOTH sides; and **signal-S string-literal refs** (BinDiff lineage; 19/55 handlers carry a distinctive string like `"global"`, preserved verbatim by behavioral equivalence) added 3 more (W=0.10 mid-band, NOT the 0.08 peak — anti-test-tuning). Family-level **92%** (all 55 `fnc_*` pinned to the handler family, zero leak); `fnc_upeval↔fnc_downeval` remains swapped (C `==`/`!` vs Rust nothing — no honest signal). Graceful degradation: c2rust exact-graph 0.97 → LLM approx-graph 0.55. gross 0.48 (61/128), 17/128 dissolved. Zero regression: 57-cell harness, 3-way comparison. |
+| **bzip2** | **0.63** (26/41) | 0.15 | **The clean real-rename cell + a per-file-feeding finding.** Unlike lil/cJSON, the LLM heavily renamed (`BZ2_bsInitWrite`→`init_bit_write`, `sendMTFValues`→`send_mtf_values`) → name-eq 0.15, matcher 0.63 (**4.3× gap**), the raw-LLM column doing its job on a structured compressor. Blind-check passed. **Fed PER-FILE** (5 core `.c` translated as separate units with `bzlib_private.h` as read-only context — clean, no truncation, and file boundaries scope the hand-labeling). 23/64 dissolved = the stdio `FILE` API (`BZ2_bzWrite/Read/open/close`, buffer-only Rust) + allocator + Drop-ends. **Per-file tradeoff finding**: feeding by translation-unit is tractable but *duplicates* cross-file-called functions (3 huffman fns re-translated in 2–3 modules) and *stubs* others (`compress_block_stub`) — ~5 of 15 misses are the matcher picking a VALID non-canonical copy/stub under strict 1:1 truth; duplicate-aware recall ≈ 0.75. gross 0.41 (26/64). |
 
 **Read**: matcher recovers **.55–1.00** under genuine LLM renaming where name-equality gets **0.0–0.15** —
 this is the "matcher enables differential testing on renaming translators" claim, on the E1 libraries.

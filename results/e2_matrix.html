@@ -156,7 +156,7 @@
       <span>rows = E1 libraries (locked)</span>
       <span>cols = 6 tools + raw-LLM, by rename-aggressiveness</span>
       <span>cell = matcher-recall / name-eq-recall</span>
-      <span>v1 — 19 name-preserving cells (6 libraries, 3→235 fn), blind-check passed</span>
+      <span>v1 — 24 name-preserving cells (8 libraries, 3→235 fn), blind-check passed</span>
     </div>
   </header>
 
@@ -179,9 +179,9 @@
       <div class="sub">matcher holds, name-eq floors</div>
     </div>
     <div class="tile">
-      <div class="n">19<small> / ~21</small></div>
+      <div class="n">24<small> / ~16</small></div>
       <div class="k">Name-preserving cells done / to go</div>
-      <div class="sub">6 libraries · 3→235 fn · blind-check ✓</div>
+      <div class="sub">8 libraries · 3→235 fn · blind-check ✓</div>
     </div>
   </div>
 
@@ -292,8 +292,8 @@ Rules:
             <td class="c todo">∅</td>
           </tr>
           <tr>
-            <th>cJSON<span class="scale">118 fn · high</span></th>
-            <td class="c todoN">∅<sup>ᴺ</sup></td>
+            <th>cJSON<span class="scale">58 fn · high</span></th>
+            <td class="c done" title="c2rust 58/58 blind (cJSON.c has 58 real fns; the 118 is PtrTrans code-units). High homogeneity, perfect blind recovery."><span class="r">1.00</span>/<span class="s">1.0</span></td>
             <td class="c na">—</td>
             <td class="c na" title="C2SaferRust cJSON env-blocked (E1 ⊘ nightly slicer) — no artifact.">—</td>
             <td class="c na" title="CROWN cJSON rewrite crash (E1 ✗) — no artifact.">—</td>
@@ -322,11 +322,11 @@ Rules:
             <td class="c todo">∅</td>
           </tr>
           <tr>
-            <th>bzip2<span class="scale">~110 fn · high</span></th>
-            <td class="c todoN">∅<sup>ᴺ</sup></td>
-            <td class="c todoN">∅<sup>ᴺ</sup></td>
-            <td class="c todoN">∅<sup>ᴺ</sup></td>
-            <td class="c todoN" title="CROWN bzip2 artifact exists (buggy but parseable, E1 headline #3). Truth free.">∅<sup>ᴺ</sup></td>
+            <th>bzip2<span class="scale">64 fn · high</span></th>
+            <td class="c done" title="c2rust 64/64 blind (multi-file compressor)."><span class="r">1.00</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="Laertes 64/64 blind."><span class="r">1.00</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="C2SaferRust 63/64 blind."><span class="r">0.98</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="CROWN 64/64 blind despite the ownership rewrite that broke it at runtime (E1 #3)."><span class="r">1.00</span>/<span class="s">1.0</span></td>  
             <td class="c na" title="SACTOR bzip2 parse-fail (E1 ✗).">—</td>
             <td class="c na" title="PtrTrans bzip2 compile-fail (E1 ✗).">—</td>
             <td class="c todo">∅</td>

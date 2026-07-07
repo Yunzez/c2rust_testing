@@ -37,10 +37,10 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 | **urlparser** | URL parsing | 21 | low | 0.95/1.0 | 0.91/1.0 | 0.95/1.0 | 1.00/1.0 | — | — | ∅ |
 | **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.67/1.0 | — | ∅ᴴ | ∅ |
 | **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | ∅ |
-| **cJSON** | JSON parser | 118 | high | ∅ᴺ | — | — | — | — | ∅ᴴ(partial) | ∅ |
+| **cJSON** | JSON parser | 58 | high | 1.00/1.0 | — | — | — | — | ∅ᴴ(partial) | ∅ |
 | **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.95/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | ∅ |
 | **lodepng** | PNG codec | 235 | high | 0.99/1.0 | — | — | 0.97/1.0 | — | — | ∅ |
-| **bzip2** | compressor | ~110 | high | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | ∅ |
+| **bzip2** | compressor | 64 | high | 1.00/1.0 | 1.00/1.0 | 0.98/1.0 | 1.00/1.0 | — | — | ∅ |
 | **tulipindicators** | indicators | ~100 | **very high** | ∅ᴺ | ∅ᴺ | ∅ᴺ | ▽ᴺ | — | — | ∅ |
 | **optipng** (incl. zlib) | PNG optimizer | ~400 | high | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | — | ∅ |
 
@@ -54,11 +54,20 @@ clearest demonstration of the matcher's value. All ∅ pending generation on the
 
 ## Filled so far — name-preserving batch v1 (2026-07-07)
 
-**19 cells** filled with real matcher runs on the E1 artifacts (`results/rq2_cells/name_preserving_v1.json`),
-across 6 libraries (qsort / urlparser / quadtree / genann / lil / lodepng). Cell =
+**24 cells** filled with real matcher runs on the E1 artifacts (`results/rq2_cells/name_preserving_v1.json`),
+across **8 libraries** (qsort / urlparser / quadtree / genann / cJSON / lil / lodepng / bzip2). Cell =
 **matcher-recall / name-eq-recall**; name-eq = 1.0 for these tools (names kept), so the cell is a
-**validation** (the matcher recovers the correspondence BLIND, not a "beat the baseline"). The
-beat-the-baseline win is the renaming columns (SACTOR/PtrTrans/raw-LLM), still pending.
+**validation** (the matcher recovers the correspondence BLIND, not a "beat the baseline").
+
+**Ground-truth finding (2026-07-07): ALL SIX shipped tools give the mapping for free** — c2rust /
+Laertes / C2SaferRust / CROWN keep C names exactly (name-equality = truth); **PtrTrans keeps names too**
+(KG-based; its `_trans_metadata.jsonl` `rust_definition_name` field is misaligned/unreliable, but the
+actual `.rs` keeps the C names — modulo minor `camelCase→snake_case`); **SACTOR ships
+`function_name_map.json`** (+ unidiomatic keeps names). **Only raw-LLM has NO mapping and renames by
+design** → it is the sole column that requires hand-labeled truth, and the only genuine test of the
+matcher's name-independence on unmapped output. This reinforces the collaborator's framing: the shipped
+tools don't rename, so raw-LLM (and mechanical scramble) is the synthetic renamed test set for the
+matcher. beat-the-baseline win = raw-LLM column, pending.
 
 - **Scale holds up**: 235-fn `lodepng` (0.99 c2rust / 0.97 CROWN) and 145-fn `lil` (0.97/0.95/0.99/0.92)
   — the matcher recovers ~95%+ BLIND on the two largest, highest-homogeneity libraries, across every

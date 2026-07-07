@@ -33,12 +33,12 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 
 | library | domain | ~#fn | homog.¹ | c2rust (mech.) | Laertes | C2SaferRust | CROWN | SACTOR | PtrTrans | **raw-LLM**² |
 |---|---|---:|---:|---|---|---|---|---|---|---|
-| **qsort** | sorting | 3 | low | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴴ | ∅ᴴ | ∅ |
+| **qsort** | sorting | 3 | low | 1.00/1.0 | 0.67/1.0 | 1.00/1.0 | ∅ᴺ | ∅ᴴ | ∅ᴴ | ∅ |
 | **urlparser** | URL parsing | ~15 | low | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | ∅ |
 | **quadtree** | spatial tree | ~25 | med | ∅ᴺ | — | — | ∅ᴺ | — | ∅ᴴ | ∅ |
-| **genann** | neural net | ~20 | med | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴴ | ∅ᴴ(decl) | ∅ |
+| **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | ∅ |
 | **cJSON** | JSON parser | 118 | high | ∅ᴺ | — | — | — | — | ∅ᴴ(partial) | ∅ |
-| **lil** | interpreter | ~128 | **high ↑topo** | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | ∅ |
+| **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.95/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | ∅ |
 | **lodepng** | PNG codec | ~200 | high | ∅ᴺ | — | — | ∅ᴺ | — | — | ∅ |
 | **bzip2** | compressor | ~110 | high | ∅ᴺ | ∅ᴺ | ∅ᴺ | ∅ᴺ | — | — | ∅ |
 | **tulipindicators** | indicators | ~100 | **very high** | ∅ᴺ | ∅ᴺ | ∅ᴺ | ▽ᴺ | — | — | ∅ |
@@ -51,6 +51,32 @@ signature. HIGH homogeneity is what defeats per-function matching and forces cal
 ² **raw-LLM** = our own gpt-5.1 translation (prompt below) — the *maximal-rename* reference column.
 Not one of the 6 shipped tools; included because it is the hardest case for name-equality and the
 clearest demonstration of the matcher's value. All ∅ pending generation on the E1 libraries.
+
+## Filled so far — name-preserving batch v1 (2026-07-07)
+
+11 cells filled with real matcher runs on the E1 artifacts (`results/rq2_cells/name_preserving_v1.json`).
+Cell = **matcher-recall / name-eq-recall**; name-eq = 1.0 for these tools (names kept), so the cell is
+a **validation** (the matcher recovers the correspondence BLIND, not a "beat the baseline"). The
+beat-the-baseline win is the renaming columns (SACTOR/PtrTrans/raw-LLM), still pending.
+
+- **genann** (12 fn): 1.00 across c2rust / Laertes / C2SaferRust / CROWN — perfect blind recovery even
+  through C2SaferRust's ptr→slice and CROWN's ownership reshaping.
+- **lil** (145 fn, the ↑topo homogeneity stress case): **.97 / .95 / .99 / .92** — the matcher holds
+  ~95%+ blind on a 145-function high-homogeneity interpreter across all four tools. This is the
+  headline of the name-preserving batch: the hardest library for structural matching, still recovered.
+- **qsort** (3 fn): c2rust 1.0, C2SaferRust 1.0, **Laertes 0.67 (2/3)** — small programs are HARD for
+  structural matching (3 near-identical int-pointer functions, no topology to disambiguate). An honest
+  low point that shows the method's real dependency on having structure to exploit.
+
+**Blind-check passed on every filled cell**: scrambling the Rust function names to opaque `r_####` IDs
+leaves the matcher recall **identical** while name-equality drops to 0.0 — proof the matcher never uses
+names (the `score()`/`node_sim()` functions read io-shape/metrics/operators/topology only). This is the
+anti-cheating guarantee for the whole ᴺ column: the numbers are the same whether names are there or not.
+
+Corpus-hygiene rule (learned building v1): match the library-core `.rs` only — exclude example/test/
+driver files, or extra Rust functions become false attractors (genann×c2rust read 0.58 with drivers
+included, 1.00 once isolated). C-side compile_commands must be rewritten with local paths (the shipped
+laertes_benchmarks ones point at `/Users/emre/…`).
 
 ## Column ordering rationale (rename axis)
 

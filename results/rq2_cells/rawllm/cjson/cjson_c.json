@@ -1,0 +1,3974 @@
+{
+  "functions": [
+    {
+      "name": "cJSON_GetErrorPtr",
+      "line": 37,
+      "signature": {
+        "params": [],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 3,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_strcasecmp",
+      "line": 39,
+      "signature": {
+        "params": [
+          {
+            "name": "s1",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "s2",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "==": 3,
+        "-": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 9,
+        "nodes": 51,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 5
+      }
+    },
+    {
+      "name": "cJSON_strdup",
+      "line": 49,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "!": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 6,
+        "nodes": 28,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_InitHooks",
+      "line": 60,
+      "signature": {
+        "params": [
+          {
+            "name": "hooks",
+            "ty": "cJSON_Hooks *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON_Hooks *",
+            "shape": "*{*fn,*fn}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [
+        "hooks"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 30,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "cJSON_New_Item",
+      "line": 73,
+      "signature": {
+        "params": [],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 15,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_Delete",
+      "line": 81,
+      "signature": {
+        "params": [
+          {
+            "name": "c",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "&&": 3,
+        "!": 3,
+        "&": 3
+      },
+      "consts": [
+        "cjson",
+        "isreference",
+        "stringisconst"
+      ],
+      "metrics": {
+        "cyclomatic": 8,
+        "stmts": 7,
+        "nodes": 57,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 10
+      }
+    },
+    {
+      "name": "parse_number",
+      "line": 96,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "num",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "==": 7,
+        "&&": 6,
+        ">=": 5,
+        "<=": 5,
+        "+": 4,
+        "*": 6,
+        "-": 3,
+        "||": 1
+      },
+      "consts": [
+        "cjson",
+        "number"
+      ],
+      "metrics": {
+        "cyclomatic": 18,
+        "stmts": 16,
+        "nodes": 191,
+        "loops": 3,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 23
+      }
+    },
+    {
+      "name": "pow2gt",
+      "line": 117,
+      "signature": {
+        "params": [
+          {
+            "name": "x",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "|": 5,
+        ">>": 5,
+        "+": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 32,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "ensure",
+      "line": 121,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "printbuffer *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "needed",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "printbuffer *",
+            "shape": "*{*i8,i32,i32}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1,
+        "!": 3,
+        "+": 3,
+        "<=": 1
+      },
+      "consts": [
+        "printbuffer"
+      ],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 12,
+        "nodes": 83,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 14
+      }
+    },
+    {
+      "name": "update",
+      "line": 138,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "printbuffer *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "printbuffer *",
+            "shape": "*{*i8,i32,i32}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "||": 1,
+        "!": 2,
+        "+": 2
+      },
+      "consts": [
+        "printbuffer"
+      ],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 25,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "print_number",
+      "line": 147,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "p",
+            "ty": "printbuffer *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "printbuffer *",
+            "shape": "*{*i8,i32,i32}"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "==": 1,
+        "&&": 3,
+        "<=": 3,
+        "-": 2,
+        ">=": 1,
+        "<": 2,
+        "||": 1,
+        ">": 1
+      },
+      "consts": [
+        "cjson",
+        "epsilon",
+        "max",
+        "min",
+        "printbuffer"
+      ],
+      "metrics": {
+        "cyclomatic": 15,
+        "stmts": 18,
+        "nodes": 140,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "parse_hex4",
+      "line": 177,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "unsigned int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "unsigned int",
+          "shape": "u32"
+        }
+      },
+      "ops": {
+        "&&": 12,
+        ">=": 12,
+        "<=": 12,
+        "+": 20,
+        "-": 12,
+        "<<": 3
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 25,
+        "stmts": 19,
+        "nodes": 254,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 36
+      }
+    },
+    {
+      "name": "parse_string",
+      "line": 192,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "str",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "+": 10,
+        "!=": 6,
+        "&&": 5,
+        "==": 3,
+        "!": 1,
+        "||": 3,
+        ">=": 2,
+        "<=": 2,
+        "<": 4,
+        ">": 1,
+        "|": 5,
+        "<<": 1,
+        "&": 5,
+        ">>": 3
+      },
+      "consts": [
+        "cjson",
+        "string"
+      ],
+      "metrics": {
+        "cyclomatic": 33,
+        "stmts": 52,
+        "nodes": 338,
+        "loops": 2,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 28
+      }
+    },
+    {
+      "name": "print_string_ptr",
+      "line": 252,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "p",
+            "ty": "printbuffer *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "printbuffer *",
+            "shape": "*{*i8,i32,i32}"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "|": 1,
+        "||": 2,
+        "&&": 4,
+        ">": 2,
+        "<": 2,
+        "==": 2,
+        "!": 5,
+        "-": 1,
+        "+": 7,
+        "!=": 2
+      },
+      "consts": [
+        "printbuffer"
+      ],
+      "metrics": {
+        "cyclomatic": 28,
+        "stmts": 48,
+        "nodes": 311,
+        "loops": 3,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 27
+      }
+    },
+    {
+      "name": "print_string",
+      "line": 309,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "p",
+            "ty": "printbuffer *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "printbuffer *",
+            "shape": "*{*i8,i32,i32}"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "printbuffer"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "skip",
+      "line": 320,
+      "signature": {
+        "params": [
+          {
+            "name": "in",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "&&": 2,
+        "<=": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 3,
+        "nodes": 16,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_ParseWithOpts",
+      "line": 323,
+      "signature": {
+        "params": [
+          {
+            "name": "value",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "return_parse_end",
+            "ty": "const char **",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "require_null_terminated",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "const char **",
+            "shape": "**i8"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "!": 2
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 15,
+        "nodes": 59,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 1,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.3,
+        "norm_burden": 0.9,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_Parse",
+      "line": 339,
+      "signature": {
+        "params": [
+          {
+            "name": "value",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_Print",
+      "line": 342,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_PrintUnformatted",
+      "line": 343,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_PrintBuffered",
+      "line": 345,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "prebuffer",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "fmt",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "printbuffer"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 4,
+        "nodes": 28,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "parse_value",
+      "line": 357,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "value",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 4,
+        "+": 3,
+        "==": 4,
+        "||": 1,
+        "&&": 1,
+        ">=": 1,
+        "<=": 1
+      },
+      "consts": [
+        "cjson",
+        "false",
+        "null",
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 25,
+        "nodes": 118,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 10
+      }
+    },
+    {
+      "name": "print_value",
+      "line": 372,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "depth",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "fmt",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "p",
+            "ty": "printbuffer *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "printbuffer *",
+            "shape": "*{*i8,i32,i32}"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "&": 2
+      },
+      "consts": [
+        "array",
+        "cjson",
+        "false",
+        "null",
+        "number",
+        "object",
+        "printbuffer",
+        "string",
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 20,
+        "stmts": 46,
+        "nodes": 180,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "parse_array",
+      "line": 406,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "value",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "+": 4,
+        "==": 3,
+        "!": 4
+      },
+      "consts": [
+        "array",
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 9,
+        "stmts": 21,
+        "nodes": 119,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 9
+      }
+    },
+    {
+      "name": "print_array",
+      "line": 434,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "depth",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "fmt",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "p",
+            "ty": "printbuffer *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "printbuffer *",
+            "shape": "*{*i8,i32,i32}"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 9,
+        "&&": 2,
+        "+": 10,
+        "*": 2,
+        "<": 2,
+        "!=": 1,
+        "-": 1
+      },
+      "consts": [
+        "cjson",
+        "printbuffer",
+        "t"
+      ],
+      "metrics": {
+        "cyclomatic": 25,
+        "stmts": 45,
+        "nodes": 366,
+        "loops": 5,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 31
+      }
+    },
+    {
+      "name": "parse_object",
+      "line": 514,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "value",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!=": 3,
+        "+": 6,
+        "==": 3,
+        "!": 6
+      },
+      "consts": [
+        "cjson",
+        "object"
+      ],
+      "metrics": {
+        "cyclomatic": 13,
+        "stmts": 31,
+        "nodes": 193,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 17
+      }
+    },
+    {
+      "name": "print_object",
+      "line": 550,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "depth",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "fmt",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "p",
+            "ty": "printbuffer *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "printbuffer *",
+            "shape": "*{*i8,i32,i32}"
+          }
+        ],
+        "output": {
+          "ty": "char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 11,
+        "+": 20,
+        "<": 7,
+        "-": 4,
+        "*": 4,
+        "&&": 1,
+        "!=": 1
+      },
+      "consts": [
+        "cjson",
+        "printbuffer",
+        "t"
+      ],
+      "metrics": {
+        "cyclomatic": 43,
+        "stmts": 70,
+        "nodes": 674,
+        "loops": 10,
+        "max_loop_depth": 2,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 59
+      }
+    },
+    {
+      "name": "cJSON_GetArraySize",
+      "line": 661,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 17,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_GetArrayItem",
+      "line": 662,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "item",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        ">": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 4,
+        "nodes": 19,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_GetObjectItem",
+      "line": 663,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "string",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "&&": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 4,
+        "nodes": 18,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "suffix_object",
+      "line": 666,
+      "signature": {
+        "params": [
+          {
+            "name": "prev",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "create_reference",
+      "line": 668,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "|": 1
+      },
+      "consts": [
+        "cjson",
+        "isreference"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 31,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "cJSON_AddItemToArray",
+      "line": 671,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "&&": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 8,
+        "nodes": 30,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "cJSON_AddItemToObject",
+      "line": 672,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "string",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 4,
+        "nodes": 22,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "cJSON_AddItemToObjectCS",
+      "line": 673,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "string",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "&&": 1,
+        "&": 1,
+        "|": 1
+      },
+      "consts": [
+        "cjson",
+        "stringisconst"
+      ],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 4,
+        "nodes": 32,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 5
+      }
+    },
+    {
+      "name": "cJSON_AddItemReferenceToArray",
+      "line": 674,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_AddItemReferenceToObject",
+      "line": 675,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "string",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_DetachItemFromArray",
+      "line": 677,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "which",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        ">": 1,
+        "!": 1,
+        "==": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 7,
+        "stmts": 9,
+        "nodes": 59,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 15
+      }
+    },
+    {
+      "name": "cJSON_DeleteItemFromArray",
+      "line": 679,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "which",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_DetachItemFromObject",
+      "line": 680,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "string",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "&&": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 7,
+        "nodes": 30,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "cJSON_DeleteItemFromObject",
+      "line": 681,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "string",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "cJSON_InsertItemInArray",
+      "line": 684,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "which",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "newitem",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        ">": 1,
+        "!": 1,
+        "==": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 7,
+        "nodes": 53,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 10
+      }
+    },
+    {
+      "name": "cJSON_ReplaceItemInArray",
+      "line": 686,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "which",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "newitem",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        ">": 1,
+        "!": 1,
+        "==": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 7,
+        "nodes": 63,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 15
+      }
+    },
+    {
+      "name": "cJSON_ReplaceItemInObject",
+      "line": 689,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "string",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "newitem",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "&&": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 6,
+        "nodes": 35,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "cJSON_CreateNull",
+      "line": 692,
+      "signature": {
+        "params": [],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "null"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "cJSON_CreateTrue",
+      "line": 693,
+      "signature": {
+        "params": [],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "cJSON_CreateFalse",
+      "line": 694,
+      "signature": {
+        "params": [],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "false"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "cJSON_CreateBool",
+      "line": 695,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "false",
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 15,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "cJSON_CreateNumber",
+      "line": 696,
+      "signature": {
+        "params": [
+          {
+            "name": "num",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "number"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 22,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "cJSON_CreateString",
+      "line": 697,
+      "signature": {
+        "params": [
+          {
+            "name": "string",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "string"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 19,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_CreateArray",
+      "line": 698,
+      "signature": {
+        "params": [],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "array",
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "cJSON_CreateObject",
+      "line": 699,
+      "signature": {
+        "params": [],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "cjson",
+        "object"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "cJSON_CreateIntArray",
+      "line": 702,
+      "signature": {
+        "params": [
+          {
+            "name": "numbers",
+            "ty": "const int *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "count",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "<": 1,
+        "!": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 7,
+        "nodes": 42,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_CreateFloatArray",
+      "line": 703,
+      "signature": {
+        "params": [
+          {
+            "name": "numbers",
+            "ty": "const float *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "count",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const float *",
+            "shape": "*f32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "<": 1,
+        "!": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 7,
+        "nodes": 42,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_CreateDoubleArray",
+      "line": 704,
+      "signature": {
+        "params": [
+          {
+            "name": "numbers",
+            "ty": "const double *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "count",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const double *",
+            "shape": "*f64"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "<": 1,
+        "!": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 7,
+        "nodes": 42,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_CreateStringArray",
+      "line": 705,
+      "signature": {
+        "params": [
+          {
+            "name": "strings",
+            "ty": "const char **",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "count",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char **",
+            "shape": "**i8"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "<": 1,
+        "!": 1
+      },
+      "consts": [
+        "cjson"
+      ],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 7,
+        "nodes": 42,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 1,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.45,
+        "norm_burden": 0.7,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "cJSON_Duplicate",
+      "line": 708,
+      "signature": {
+        "params": [
+          {
+            "name": "item",
+            "ty": "cJSON *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "recurse",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "cJSON *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "cJSON *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "cJSON *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,i32,*i8,i32,f64,*i8}"
+        }
+      },
+      "ops": {
+        "!": 7,
+        "&": 1
+      },
+      "consts": [
+        "cjson",
+        "isreference"
+      ],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 27,
+        "nodes": 136,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 19
+      }
+    },
+    {
+      "name": "cJSON_Minify",
+      "line": 735,
+      "signature": {
+        "params": [
+          {
+            "name": "json",
+            "ty": "char *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "==": 12,
+        "&&": 6,
+        "!=": 2,
+        "!": 1,
+        "+": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 19,
+        "stmts": 18,
+        "nodes": 148,
+        "loops": 4,
+        "max_loop_depth": 2,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 29
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "cJSON_AddItemReferenceToArray",
+      "to": "cJSON_AddItemToArray"
+    },
+    {
+      "from": "cJSON_AddItemReferenceToArray",
+      "to": "create_reference"
+    },
+    {
+      "from": "cJSON_AddItemReferenceToObject",
+      "to": "cJSON_AddItemToObject"
+    },
+    {
+      "from": "cJSON_AddItemReferenceToObject",
+      "to": "create_reference"
+    },
+    {
+      "from": "cJSON_AddItemToArray",
+      "to": "suffix_object"
+    },
+    {
+      "from": "cJSON_AddItemToObject",
+      "to": "cJSON_AddItemToArray"
+    },
+    {
+      "from": "cJSON_AddItemToObject",
+      "to": "cJSON_strdup"
+    },
+    {
+      "from": "cJSON_AddItemToObjectCS",
+      "to": "cJSON_AddItemToArray"
+    },
+    {
+      "from": "cJSON_CreateArray",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_CreateBool",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_CreateDoubleArray",
+      "to": "cJSON_CreateArray"
+    },
+    {
+      "from": "cJSON_CreateDoubleArray",
+      "to": "cJSON_CreateNumber"
+    },
+    {
+      "from": "cJSON_CreateDoubleArray",
+      "to": "suffix_object"
+    },
+    {
+      "from": "cJSON_CreateFalse",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_CreateFloatArray",
+      "to": "cJSON_CreateArray"
+    },
+    {
+      "from": "cJSON_CreateFloatArray",
+      "to": "cJSON_CreateNumber"
+    },
+    {
+      "from": "cJSON_CreateFloatArray",
+      "to": "suffix_object"
+    },
+    {
+      "from": "cJSON_CreateIntArray",
+      "to": "cJSON_CreateArray"
+    },
+    {
+      "from": "cJSON_CreateIntArray",
+      "to": "cJSON_CreateNumber"
+    },
+    {
+      "from": "cJSON_CreateIntArray",
+      "to": "suffix_object"
+    },
+    {
+      "from": "cJSON_CreateNull",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_CreateNumber",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_CreateObject",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_CreateString",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_CreateString",
+      "to": "cJSON_strdup"
+    },
+    {
+      "from": "cJSON_CreateStringArray",
+      "to": "cJSON_CreateArray"
+    },
+    {
+      "from": "cJSON_CreateStringArray",
+      "to": "cJSON_CreateString"
+    },
+    {
+      "from": "cJSON_CreateStringArray",
+      "to": "suffix_object"
+    },
+    {
+      "from": "cJSON_CreateTrue",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_Delete",
+      "to": "cJSON_Delete"
+    },
+    {
+      "from": "cJSON_DeleteItemFromArray",
+      "to": "cJSON_Delete"
+    },
+    {
+      "from": "cJSON_DeleteItemFromArray",
+      "to": "cJSON_DetachItemFromArray"
+    },
+    {
+      "from": "cJSON_DeleteItemFromObject",
+      "to": "cJSON_Delete"
+    },
+    {
+      "from": "cJSON_DeleteItemFromObject",
+      "to": "cJSON_DetachItemFromObject"
+    },
+    {
+      "from": "cJSON_DetachItemFromObject",
+      "to": "cJSON_DetachItemFromArray"
+    },
+    {
+      "from": "cJSON_DetachItemFromObject",
+      "to": "cJSON_strcasecmp"
+    },
+    {
+      "from": "cJSON_Duplicate",
+      "to": "cJSON_Delete"
+    },
+    {
+      "from": "cJSON_Duplicate",
+      "to": "cJSON_Duplicate"
+    },
+    {
+      "from": "cJSON_Duplicate",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_Duplicate",
+      "to": "cJSON_strdup"
+    },
+    {
+      "from": "cJSON_GetObjectItem",
+      "to": "cJSON_strcasecmp"
+    },
+    {
+      "from": "cJSON_InsertItemInArray",
+      "to": "cJSON_AddItemToArray"
+    },
+    {
+      "from": "cJSON_New_Item",
+      "to": "memset"
+    },
+    {
+      "from": "cJSON_Parse",
+      "to": "cJSON_ParseWithOpts"
+    },
+    {
+      "from": "cJSON_ParseWithOpts",
+      "to": "cJSON_Delete"
+    },
+    {
+      "from": "cJSON_ParseWithOpts",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "cJSON_ParseWithOpts",
+      "to": "parse_value"
+    },
+    {
+      "from": "cJSON_ParseWithOpts",
+      "to": "skip"
+    },
+    {
+      "from": "cJSON_Print",
+      "to": "print_value"
+    },
+    {
+      "from": "cJSON_PrintBuffered",
+      "to": "print_value"
+    },
+    {
+      "from": "cJSON_PrintUnformatted",
+      "to": "print_value"
+    },
+    {
+      "from": "cJSON_ReplaceItemInArray",
+      "to": "cJSON_Delete"
+    },
+    {
+      "from": "cJSON_ReplaceItemInObject",
+      "to": "cJSON_ReplaceItemInArray"
+    },
+    {
+      "from": "cJSON_ReplaceItemInObject",
+      "to": "cJSON_strcasecmp"
+    },
+    {
+      "from": "cJSON_ReplaceItemInObject",
+      "to": "cJSON_strdup"
+    },
+    {
+      "from": "cJSON_strcasecmp",
+      "to": "tolower"
+    },
+    {
+      "from": "cJSON_strdup",
+      "to": "memcpy"
+    },
+    {
+      "from": "cJSON_strdup",
+      "to": "strlen"
+    },
+    {
+      "from": "create_reference",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "create_reference",
+      "to": "memcpy"
+    },
+    {
+      "from": "ensure",
+      "to": "memcpy"
+    },
+    {
+      "from": "ensure",
+      "to": "pow2gt"
+    },
+    {
+      "from": "parse_array",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "parse_array",
+      "to": "parse_value"
+    },
+    {
+      "from": "parse_array",
+      "to": "skip"
+    },
+    {
+      "from": "parse_number",
+      "to": "pow"
+    },
+    {
+      "from": "parse_object",
+      "to": "cJSON_New_Item"
+    },
+    {
+      "from": "parse_object",
+      "to": "parse_string"
+    },
+    {
+      "from": "parse_object",
+      "to": "parse_value"
+    },
+    {
+      "from": "parse_object",
+      "to": "skip"
+    },
+    {
+      "from": "parse_string",
+      "to": "parse_hex4"
+    },
+    {
+      "from": "parse_value",
+      "to": "parse_array"
+    },
+    {
+      "from": "parse_value",
+      "to": "parse_number"
+    },
+    {
+      "from": "parse_value",
+      "to": "parse_object"
+    },
+    {
+      "from": "parse_value",
+      "to": "parse_string"
+    },
+    {
+      "from": "parse_value",
+      "to": "strncmp"
+    },
+    {
+      "from": "print_array",
+      "to": "ensure"
+    },
+    {
+      "from": "print_array",
+      "to": "memcpy"
+    },
+    {
+      "from": "print_array",
+      "to": "memset"
+    },
+    {
+      "from": "print_array",
+      "to": "print_value"
+    },
+    {
+      "from": "print_array",
+      "to": "strcpy"
+    },
+    {
+      "from": "print_array",
+      "to": "strlen"
+    },
+    {
+      "from": "print_array",
+      "to": "update"
+    },
+    {
+      "from": "print_number",
+      "to": "ensure"
+    },
+    {
+      "from": "print_number",
+      "to": "fabs"
+    },
+    {
+      "from": "print_number",
+      "to": "floor"
+    },
+    {
+      "from": "print_number",
+      "to": "sprintf"
+    },
+    {
+      "from": "print_number",
+      "to": "strcpy"
+    },
+    {
+      "from": "print_object",
+      "to": "ensure"
+    },
+    {
+      "from": "print_object",
+      "to": "memcpy"
+    },
+    {
+      "from": "print_object",
+      "to": "memset"
+    },
+    {
+      "from": "print_object",
+      "to": "print_string_ptr"
+    },
+    {
+      "from": "print_object",
+      "to": "print_value"
+    },
+    {
+      "from": "print_object",
+      "to": "strcpy"
+    },
+    {
+      "from": "print_object",
+      "to": "strlen"
+    },
+    {
+      "from": "print_object",
+      "to": "update"
+    },
+    {
+      "from": "print_string",
+      "to": "print_string_ptr"
+    },
+    {
+      "from": "print_string_ptr",
+      "to": "ensure"
+    },
+    {
+      "from": "print_string_ptr",
+      "to": "sprintf"
+    },
+    {
+      "from": "print_string_ptr",
+      "to": "strchr"
+    },
+    {
+      "from": "print_string_ptr",
+      "to": "strcpy"
+    },
+    {
+      "from": "print_value",
+      "to": "cJSON_strdup"
+    },
+    {
+      "from": "print_value",
+      "to": "ensure"
+    },
+    {
+      "from": "print_value",
+      "to": "print_array"
+    },
+    {
+      "from": "print_value",
+      "to": "print_number"
+    },
+    {
+      "from": "print_value",
+      "to": "print_object"
+    },
+    {
+      "from": "print_value",
+      "to": "print_string"
+    },
+    {
+      "from": "print_value",
+      "to": "strcpy"
+    },
+    {
+      "from": "update",
+      "to": "strlen"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "cJSON_strdup",
+      "line": 55,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "cJSON_New_Item",
+      "line": 75,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "cJSON_Delete",
+      "line": 88,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "cJSON_Delete",
+      "line": 89,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "cJSON_Delete",
+      "line": 90,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "ensure",
+      "line": 129,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "ensure",
+      "line": 130,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "ensure",
+      "line": 132,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_number",
+      "line": 154,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_number",
+      "line": 160,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_number",
+      "line": 166,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 199,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_string_ptr",
+      "line": 261,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_string_ptr",
+      "line": 273,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_string_ptr",
+      "line": 281,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "cJSON_PrintBuffered",
+      "line": 348,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_array",
+      "line": 448,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_array",
+      "line": 472,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_array",
+      "line": 486,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_array",
+      "line": 493,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_array",
+      "line": 494,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_array",
+      "line": 505,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_array",
+      "line": 507,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 563,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 611,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 613,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 614,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 629,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 635,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 635,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 636,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 636,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 650,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 650,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 653,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "print_object",
+      "line": 653,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "cJSON_AddItemToObject",
+      "line": 672,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "cJSON_AddItemToObjectCS",
+      "line": 673,
+      "kind": "call_unresolved"
+    }
+  ]
+}

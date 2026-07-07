@@ -1,5 +1,5 @@
 {
-  "_meta": "E2 raw-LLM column v1 (2026-07-07). gpt-5.1, disclosed prompt (commands renaming, leaks no correspondence). Truth = HAND-LABELED (raw-LLM is the ONLY column without a free mapping). Cell = matcher-recall / name-eq-recall. name-eq=0.0 everywhere (LLM renamed all). scorable = C fns with a genuine Rust counterpart (dropped/dissolved fns excluded; FILE-IO + free/copy typically dissolved under std-only prompt). [2026-07-07 hir-id fix applied: analyzer keys methods as Type::method, no more silent same-name dedup. Re-validated: name-preserving cells stable, qsort/genann/urlparser raw-LLM unchanged, quadtree raw-LLM 0.64->0.71.]",
+  "_meta": "E2 raw-LLM column v1 (2026-07-07). gpt-5.1, disclosed prompt (commands renaming, leaks no correspondence). Truth = HAND-LABELED (raw-LLM is the ONLY column without a free mapping). Cell = matcher-recall / name-eq-recall. name-eq usually 0.0 (LLM renames all) BUT NOT ALWAYS — cJSON kept 6 parse-core names verbatim despite the rename instruction (name-eq 0.15). scorable = C fns with a genuine Rust counterpart (dropped/dissolved fns excluded; FILE-IO + free/copy typically dissolved under std-only prompt). [2026-07-07 hir-id fix applied: analyzer keys methods as Type::method, no more silent same-name dedup. Re-validated: name-preserving cells stable, qsort/genann/urlparser raw-LLM unchanged, quadtree raw-LLM 0.64->0.71.] FINDING (cjson): matcher recall tracks TOPOLOGICAL RICHNESS not function count — recursive parse/print core recovers, flat Create* leaf constructors permute.",
   "qsort": {
     "scorable": 3,
     "matcher": 0.667,
@@ -23,5 +23,15 @@
     "matcher": 0.706,
     "name_eq": 0.0,
     "note": "AFTER hir-id fix (analyzer no longer collapses the 4 'new' methods): 12/17, no exclusions. All 3 constructors recovered (QuadNode/QuadPoint/QuadTree::new, distinguished by topology). Misses: is_empty<->is_pointer swap, bounds_new vs from_corners, node_contains, walk. Was 0.643 (9/14 with 3 excluded) pre-fix."
+  },
+  "cjson": {
+    "scorable": 40,
+    "dissolved": 18,
+    "matcher": 0.55,
+    "ablation_deterministic": {"baseline": 0.375, "signalC_only": 0.475, "inputscalar_only": 0.375, "both_shipped": 0.55, "const_weight": 0.20, "input_weight": 0.12},
+    "determinism_note": "matcher was non-deterministic pre-fix (topology _dir summed over hash-seed-ordered sets; float non-assoc flipped near-ties in cJSON's homogeneous cluster -> recall wandered 0.375-0.55 across runs). FIXED: _dir now iterates neighbor sets SORTED. cJSON now stable 0.55 across all seeds. Old 0.40 baseline was a lucky seed; deterministic baseline is 0.375.",
+    "weight_note": "signal-C weight is 0.20, NOT 0.35. At 0.35 cJSON also hit 0.55 but lil REGRESSED 0.984->0.969 (signal-C overrode lil's confident interpreter-variant matches). The regression harness caught this ONLY after fixing a harness bug that silently dropped lil (crate code in src/lil.rs not src/lib.rs). 0.20 = lowest weight giving cJSON full 0.55 with lil (and all 56 name-preserving libs) intact.",
+    "name_eq": 0.15,
+    "note": "22/40 with signal-C + input-scalar (baseline was 16/40). Source = crustbench cJSON.c (Dave Gamble, 58 C fns, == E1 name-preserving scorable). Baseline nailed the topology-rich recursive core (parse_*/print_*) but PERMUTED the flat leaf half (12x cJSON_Create*: ()->Value/(scalar)->Value, call nothing => zero topology). signal-C (type-tag/enum-variant jaccard, W=0.35, gated) recovered 7/12 constructors -> 0.50. input-scalar signal (input element-type jaccard, W=0.12, gated) splits the int/float/double/string-array trio that signal-C grouped under one 'array' tag -> 0.55. ABLATION: baseline 0.40, +signalC 0.50, +input-scalar-ALONE 0.40 (no effect without signalC), +BOTH 0.55 -- input-scalar only refines WITHIN signalC's tag groups (composition, not independent). Residual: CreateTrue/Bool (bool-literal asymmetry) + ~8 accessor family (Get/Add/Detach shallow shape + LLM helper attractors -- the real hard core, NOT pursued). name-eq 0.15 (LLM kept 6 parse_* verbatim). BOTH signals VALIDATED: ZERO regression across 55 name-preserving libs (results/rq2_cells/regression/, two harness runs). See cjson/NOTES.md + regression/SIGNAL_C.md."
   }
 }

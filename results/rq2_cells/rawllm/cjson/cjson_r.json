@@ -1,0 +1,3422 @@
+{
+  "functions": [
+    {
+      "name": "JsonValue::as_number_pair",
+      "line": 34,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<(i32, f64)>"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "Option<(i32, f64)>",
+          "shape": "Option<<i32,f64>>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "skip_whitespace",
+      "line": 47,
+      "signature": {
+        "params": [
+          {
+            "name": "input",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "idx",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "usize"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "usize",
+          "shape": "u64"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 4,
+        "nodes": 25,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "case_insensitive_eq",
+      "line": 61,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "b",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          },
+          {
+            "ty": "&str",
+            "shape": "&str"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "==": 1
+      },
+      "consts": [
+        "false"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 2,
+        "nodes": 24,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 8
+      }
+    },
+    {
+      "name": "parse_json_with_opts",
+      "line": 74,
+      "signature": {
+        "params": [
+          {
+            "name": "input",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "require_null_terminated",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<JsonValue, JsonError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "Result<JsonValue, JsonError>",
+          "shape": "Result<enum,{u64,{Vec<u8,{}>}}>"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "&&": 1
+      },
+      "consts": [
+        "jsonerror"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 39,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "parse_json",
+      "line": 93,
+      "signature": {
+        "params": [
+          {
+            "name": "input",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<JsonValue, JsonError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          }
+        ],
+        "output": {
+          "ty": "Result<JsonValue, JsonError>",
+          "shape": "Result<enum,{u64,{Vec<u8,{}>}}>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "false"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "parse_value",
+      "line": 99,
+      "signature": {
+        "params": [
+          {
+            "name": "input",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "idx",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(JsonValue, usize), JsonError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Result<(JsonValue, usize), JsonError>",
+          "shape": "Result<<enum,u64>,{u64,{Vec<u8,{}>}}>"
+        }
+      },
+      "ops": {
+        "+": 3,
+        ">=": 1
+      },
+      "consts": [
+        "bool",
+        "false",
+        "jsonerror",
+        "null",
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 10,
+        "stmts": 9,
+        "nodes": 110,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 7
+      }
+    },
+    {
+      "name": "parse_number",
+      "line": 131,
+      "signature": {
+        "params": [
+          {
+            "name": "input",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "idx",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(JsonValue, usize), JsonError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Result<(JsonValue, usize), JsonError>",
+          "shape": "Result<<enum,u64>,{u64,{Vec<u8,{}>}}>"
+        }
+      },
+      "ops": {
+        "&&": 4,
+        "*": 6,
+        "+": 15,
+        "-": 4,
+        "<": 7,
+        "==": 4,
+        ">=": 1,
+        "||": 1
+      },
+      "consts": [
+        "jsonerror",
+        "number"
+      ],
+      "metrics": {
+        "cyclomatic": 21,
+        "stmts": 31,
+        "nodes": 279,
+        "loops": 3,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 13
+      }
+    },
+    {
+      "name": "parse_hex4",
+      "line": 230,
+      "signature": {
+        "params": [
+          {
+            "name": "bytes",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "idx",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<(u16, usize)>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Option<(u16, usize)>",
+          "shape": "Option<<u16,u64>>"
+        }
+      },
+      "ops": {
+        "+": 5,
+        "-": 3,
+        "<<": 1,
+        ">": 1,
+        "|": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 7,
+        "stmts": 7,
+        "nodes": 73,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "parse_string",
+      "line": 248,
+      "signature": {
+        "params": [
+          {
+            "name": "input",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "idx",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(JsonValue, usize), JsonError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Result<(JsonValue, usize), JsonError>",
+          "shape": "Result<<enum,u64>,{u64,{Vec<u8,{}>}}>"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "!=": 3,
+        "+": 12,
+        "-": 2,
+        "<": 1,
+        "<<": 1,
+        "==": 1,
+        ">": 1,
+        ">=": 2,
+        "|": 1,
+        "||": 4
+      },
+      "consts": [
+        "jsonerror",
+        "string"
+      ],
+      "metrics": {
+        "cyclomatic": 27,
+        "stmts": 31,
+        "nodes": 316,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 27
+      }
+    },
+    {
+      "name": "parse_array",
+      "line": 373,
+      "signature": {
+        "params": [
+          {
+            "name": "input",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "idx",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(JsonValue, usize), JsonError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Result<(JsonValue, usize), JsonError>",
+          "shape": "Result<<enum,u64>,{u64,{Vec<u8,{}>}}>"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "&&": 1,
+        "+": 4,
+        "<": 1,
+        "==": 1,
+        ">=": 2,
+        "||": 1
+      },
+      "consts": [
+        "array",
+        "jsonerror"
+      ],
+      "metrics": {
+        "cyclomatic": 8,
+        "stmts": 14,
+        "nodes": 129,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 8
+      }
+    },
+    {
+      "name": "parse_object",
+      "line": 418,
+      "signature": {
+        "params": [
+          {
+            "name": "input",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "idx",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(JsonValue, usize), JsonError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&str",
+            "shape": "&str"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Result<(JsonValue, usize), JsonError>",
+          "shape": "Result<<enum,u64>,{u64,{Vec<u8,{}>}}>"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "&&": 1,
+        "+": 5,
+        "<": 1,
+        "==": 1,
+        ">=": 3,
+        "||": 2
+      },
+      "consts": [
+        "jsonerror",
+        "object"
+      ],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 20,
+        "nodes": 180,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 10
+      }
+    },
+    {
+      "name": "ensure_capacity",
+      "line": 481,
+      "signature": {
+        "params": [
+          {
+            "name": "buf",
+            "ty": "&mut String",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "needed_extra",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut String",
+            "shape": "&{Vec<u8,{}>}"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "-": 1,
+        "<": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 2,
+        "nodes": 19,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "format_number_pair",
+      "line": 488,
+      "signature": {
+        "params": [
+          {
+            "name": "int_value",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "double_value",
+            "ty": "f64",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "String"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "String",
+          "shape": "{Vec<u8,{}>}"
+        }
+      },
+      "ops": {
+        "&&": 3,
+        "-": 2,
+        "<": 2,
+        "<=": 3,
+        "==": 1,
+        ">": 1,
+        ">=": 1,
+        "||": 1
+      },
+      "consts": [
+        "epsilon",
+        "max",
+        "min"
+      ],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 5,
+        "nodes": 75,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 6
+      }
+    },
+    {
+      "name": "escape_string_to",
+      "line": 512,
+      "signature": {
+        "params": [
+          {
+            "name": "buf",
+            "ty": "&mut String",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "s",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut String",
+            "shape": "&{Vec<u8,{}>}"
+          },
+          {
+            "ty": "&str",
+            "shape": "&str"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "&&": 1,
+        "+": 1,
+        "<": 2,
+        "==": 2,
+        ">": 1,
+        "||": 2
+      },
+      "consts": [
+        "false",
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 14,
+        "stmts": 14,
+        "nodes": 114,
+        "loops": 2,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 16
+      }
+    },
+    {
+      "name": "print_json_pretty",
+      "line": 550,
+      "signature": {
+        "params": [
+          {
+            "name": "value",
+            "ty": "&JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "String"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&JsonValue",
+            "shape": "&enum"
+          }
+        ],
+        "output": {
+          "ty": "String",
+          "shape": "{Vec<u8,{}>}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 13,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "print_json_compact",
+      "line": 557,
+      "signature": {
+        "params": [
+          {
+            "name": "value",
+            "ty": "&JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "String"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&JsonValue",
+            "shape": "&enum"
+          }
+        ],
+        "output": {
+          "ty": "String",
+          "shape": "{Vec<u8,{}>}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "false"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 13,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "print_json_buffered",
+      "line": 564,
+      "signature": {
+        "params": [
+          {
+            "name": "value",
+            "ty": "&JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "prebuffer",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "pretty",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "String"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "String",
+          "shape": "{Vec<u8,{}>}"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 14,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "print_value_to",
+      "line": 570,
+      "signature": {
+        "params": [
+          {
+            "name": "buf",
+            "ty": "&mut String",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "value",
+            "ty": "&JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "depth",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "pretty",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut String",
+            "shape": "&{Vec<u8,{}>}"
+          },
+          {
+            "ty": "&JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "false",
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 8,
+        "stmts": 2,
+        "nodes": 43,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "print_array_to",
+      "line": 588,
+      "signature": {
+        "params": [
+          {
+            "name": "buf",
+            "ty": "&mut String",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "arr",
+            "ty": "&[JsonValue]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "depth",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "pretty",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut String",
+            "shape": "&{Vec<u8,{}>}"
+          },
+          {
+            "ty": "&[JsonValue]",
+            "shape": "&[JsonValue]"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "+": 3
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 10,
+        "stmts": 16,
+        "nodes": 92,
+        "loops": 3,
+        "max_loop_depth": 2,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 12
+      }
+    },
+    {
+      "name": "print_object_to",
+      "line": 622,
+      "signature": {
+        "params": [
+          {
+            "name": "buf",
+            "ty": "&mut String",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "obj",
+            "ty": "&[(String, JsonValue)]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "depth",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "pretty",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut String",
+            "shape": "&{Vec<u8,{}>}"
+          },
+          {
+            "ty": "&[(String, JsonValue)]",
+            "shape": "&[(String, JsonValue)]"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "+": 3
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 13,
+        "stmts": 23,
+        "nodes": 126,
+        "loops": 4,
+        "max_loop_depth": 2,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 16
+      }
+    },
+    {
+      "name": "json_array_size",
+      "line": 675,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "&JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<usize>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&JsonValue",
+            "shape": "&enum"
+          }
+        ],
+        "output": {
+          "ty": "Option<usize>",
+          "shape": "Option<u64>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "json_array_get",
+      "line": 683,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "&JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&JsonValue>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Option<&JsonValue>",
+          "shape": "Option<&enum>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "json_array_get_mut",
+      "line": 691,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "&mut JsonValue",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&mut JsonValue>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Option<&mut JsonValue>",
+          "shape": "Option<&enum>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "json_object_get",
+      "line": 699,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "&'a JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "key",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a JsonValue>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'a JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "&str",
+            "shape": "&str"
+          }
+        ],
+        "output": {
+          "ty": "Option<&'a JsonValue>",
+          "shape": "Option<&enum>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 14,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "json_object_get_mut",
+      "line": 710,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "&'a mut JsonValue",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "key",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a mut JsonValue>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'a mut JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "&str",
+            "shape": "&str"
+          }
+        ],
+        "output": {
+          "ty": "Option<&'a mut JsonValue>",
+          "shape": "Option<&enum>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 14,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "json_object_get_nocase",
+      "line": 724,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "&'a JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "key",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a JsonValue>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'a JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "&str",
+            "shape": "&str"
+          }
+        ],
+        "output": {
+          "ty": "Option<&'a JsonValue>",
+          "shape": "Option<&enum>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 15,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "json_array_add",
+      "line": 735,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "&mut JsonValue",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "item",
+            "ty": "JsonValue",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(), ()>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "JsonValue",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "Result<(), ()>",
+          "shape": "Result<(),()>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 1,
+        "nodes": 14,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "json_object_set",
+      "line": 746,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "&mut JsonValue",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "key",
+            "ty": "String",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "value",
+            "ty": "JsonValue",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(), ()>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "String",
+            "shape": "{Vec<u8,{}>}"
+          },
+          {
+            "ty": "JsonValue",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "Result<(), ()>",
+          "shape": "Result<(),()>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 1,
+        "nodes": 33,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "json_array_detach",
+      "line": 763,
+      "signature": {
+        "params": [
+          {
+            "name": "array",
+            "ty": "&mut JsonValue",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<JsonValue>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Option<JsonValue>",
+          "shape": "Option<enum>"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 0,
+        "nodes": 18,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "json_object_detach",
+      "line": 777,
+      "signature": {
+        "params": [
+          {
+            "name": "object",
+            "ty": "&mut JsonValue",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "key",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<JsonValue>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "&str",
+            "shape": "&str"
+          }
+        ],
+        "output": {
+          "ty": "Option<JsonValue>",
+          "shape": "Option<enum>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 0,
+        "nodes": 23,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "json_null",
+      "line": 792,
+      "signature": {
+        "params": [],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "null"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 2,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "json_true",
+      "line": 796,
+      "signature": {
+        "params": [],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "bool",
+        "true"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 4,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "json_false",
+      "line": 800,
+      "signature": {
+        "params": [],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "bool",
+        "false"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 4,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "json_bool",
+      "line": 804,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "bool"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 4,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "json_number",
+      "line": 808,
+      "signature": {
+        "params": [
+          {
+            "name": "num",
+            "ty": "f64",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "number"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "json_string",
+      "line": 815,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "S",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "S",
+            "shape": "S"
+          }
+        ],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "string"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "json_array",
+      "line": 819,
+      "signature": {
+        "params": [],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "array"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "json_object",
+      "line": 823,
+      "signature": {
+        "params": [],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "object"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "json_int_array",
+      "line": 827,
+      "signature": {
+        "params": [
+          {
+            "name": "numbers",
+            "ty": "&[i32]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[i32]",
+            "shape": "&[i32]"
+          }
+        ],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "array"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "json_float_array",
+      "line": 831,
+      "signature": {
+        "params": [
+          {
+            "name": "numbers",
+            "ty": "&[f32]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[f32]",
+            "shape": "&[f32]"
+          }
+        ],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "array"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "json_double_array",
+      "line": 835,
+      "signature": {
+        "params": [
+          {
+            "name": "numbers",
+            "ty": "&[f64]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[f64]",
+            "shape": "&[f64]"
+          }
+        ],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "array"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "json_string_array",
+      "line": 839,
+      "signature": {
+        "params": [
+          {
+            "name": "strings",
+            "ty": "&[&str]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[&str]",
+            "shape": "&[&str]"
+          }
+        ],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "array"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "json_duplicate",
+      "line": 846,
+      "signature": {
+        "params": [
+          {
+            "name": "value",
+            "ty": "&JsonValue",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "_recurse",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "JsonValue"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&JsonValue",
+            "shape": "&enum"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "JsonValue",
+          "shape": "enum"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 3,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "json_minify",
+      "line": 852,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut String",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut String",
+            "shape": "&{Vec<u8,{}>}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "!=": 2,
+        "&&": 6,
+        "+": 18,
+        "<": 8,
+        "==": 5,
+        ">=": 1
+      },
+      "consts": [],
+      "metrics": {
+        "cyclomatic": 14,
+        "stmts": 25,
+        "nodes": 221,
+        "loops": 4,
+        "max_loop_depth": 2,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 18
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "skip_whitespace",
+      "to": "as_bytes"
+    },
+    {
+      "from": "skip_whitespace",
+      "to": "len"
+    },
+    {
+      "from": "skip_whitespace",
+      "to": "is_ascii_whitespace"
+    },
+    {
+      "from": "case_insensitive_eq",
+      "to": "len"
+    },
+    {
+      "from": "case_insensitive_eq",
+      "to": "len"
+    },
+    {
+      "from": "case_insensitive_eq",
+      "to": "all"
+    },
+    {
+      "from": "case_insensitive_eq",
+      "to": "zip"
+    },
+    {
+      "from": "case_insensitive_eq",
+      "to": "bytes"
+    },
+    {
+      "from": "case_insensitive_eq",
+      "to": "bytes"
+    },
+    {
+      "from": "case_insensitive_eq",
+      "to": "to_ascii_lowercase"
+    },
+    {
+      "from": "case_insensitive_eq",
+      "to": "to_ascii_lowercase"
+    },
+    {
+      "from": "parse_json_with_opts",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_json_with_opts",
+      "to": "parse_value"
+    },
+    {
+      "from": "parse_json_with_opts",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_json_with_opts",
+      "to": "len"
+    },
+    {
+      "from": "parse_json_with_opts",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_json",
+      "to": "parse_json_with_opts"
+    },
+    {
+      "from": "parse_value",
+      "to": "as_bytes"
+    },
+    {
+      "from": "parse_value",
+      "to": "len"
+    },
+    {
+      "from": "parse_value",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_value",
+      "to": "starts_with"
+    },
+    {
+      "from": "parse_value",
+      "to": "starts_with"
+    },
+    {
+      "from": "parse_value",
+      "to": "starts_with"
+    },
+    {
+      "from": "parse_value",
+      "to": "parse_string"
+    },
+    {
+      "from": "parse_value",
+      "to": "parse_number"
+    },
+    {
+      "from": "parse_value",
+      "to": "parse_array"
+    },
+    {
+      "from": "parse_value",
+      "to": "parse_object"
+    },
+    {
+      "from": "parse_value",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_number",
+      "to": "as_bytes"
+    },
+    {
+      "from": "parse_number",
+      "to": "len"
+    },
+    {
+      "from": "parse_number",
+      "to": "len"
+    },
+    {
+      "from": "parse_number",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_number",
+      "to": "len"
+    },
+    {
+      "from": "parse_number",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_number",
+      "to": "len"
+    },
+    {
+      "from": "parse_number",
+      "to": "is_ascii_digit"
+    },
+    {
+      "from": "parse_number",
+      "to": "len"
+    },
+    {
+      "from": "parse_number",
+      "to": "len"
+    },
+    {
+      "from": "parse_number",
+      "to": "len"
+    },
+    {
+      "from": "parse_number",
+      "to": "len"
+    },
+    {
+      "from": "parse_number",
+      "to": "powf"
+    },
+    {
+      "from": "parse_hex4",
+      "to": "len"
+    },
+    {
+      "from": "parse_string",
+      "to": "as_bytes"
+    },
+    {
+      "from": "parse_string",
+      "to": "len"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::new"
+    },
+    {
+      "from": "parse_string",
+      "to": "len"
+    },
+    {
+      "from": "parse_string",
+      "to": "len"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "parse_hex4"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_string",
+      "to": "RangeInclusive::contains"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_string",
+      "to": "RangeInclusive::contains"
+    },
+    {
+      "from": "parse_string",
+      "to": "len"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_string",
+      "to": "parse_hex4"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_string",
+      "to": "RangeInclusive::contains"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_string",
+      "to": "from_u32"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_string",
+      "to": "String::push"
+    },
+    {
+      "from": "parse_string",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_array",
+      "to": "as_bytes"
+    },
+    {
+      "from": "parse_array",
+      "to": "len"
+    },
+    {
+      "from": "parse_array",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_array",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_array",
+      "to": "Vec::new"
+    },
+    {
+      "from": "parse_array",
+      "to": "len"
+    },
+    {
+      "from": "parse_array",
+      "to": "parse_value"
+    },
+    {
+      "from": "parse_array",
+      "to": "Vec::push"
+    },
+    {
+      "from": "parse_array",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_array",
+      "to": "len"
+    },
+    {
+      "from": "parse_array",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_array",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_array",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_object",
+      "to": "as_bytes"
+    },
+    {
+      "from": "parse_object",
+      "to": "len"
+    },
+    {
+      "from": "parse_object",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_object",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_object",
+      "to": "Vec::new"
+    },
+    {
+      "from": "parse_object",
+      "to": "len"
+    },
+    {
+      "from": "parse_object",
+      "to": "parse_string"
+    },
+    {
+      "from": "parse_object",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_object",
+      "to": "len"
+    },
+    {
+      "from": "parse_object",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_object",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_object",
+      "to": "parse_value"
+    },
+    {
+      "from": "parse_object",
+      "to": "Vec::push"
+    },
+    {
+      "from": "parse_object",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_object",
+      "to": "len"
+    },
+    {
+      "from": "parse_object",
+      "to": "to_string"
+    },
+    {
+      "from": "parse_object",
+      "to": "skip_whitespace"
+    },
+    {
+      "from": "parse_object",
+      "to": "to_string"
+    },
+    {
+      "from": "ensure_capacity",
+      "to": "saturating_add"
+    },
+    {
+      "from": "ensure_capacity",
+      "to": "String::len"
+    },
+    {
+      "from": "ensure_capacity",
+      "to": "String::capacity"
+    },
+    {
+      "from": "ensure_capacity",
+      "to": "String::reserve"
+    },
+    {
+      "from": "ensure_capacity",
+      "to": "String::capacity"
+    },
+    {
+      "from": "format_number_pair",
+      "to": "to_string"
+    },
+    {
+      "from": "format_number_pair",
+      "to": "abs"
+    },
+    {
+      "from": "format_number_pair",
+      "to": "to_string"
+    },
+    {
+      "from": "format_number_pair",
+      "to": "abs"
+    },
+    {
+      "from": "format_number_pair",
+      "to": "abs"
+    },
+    {
+      "from": "format_number_pair",
+      "to": "floor"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "ensure_capacity"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "len"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "as_bytes"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "chars"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push"
+    },
+    {
+      "from": "escape_string_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_json_pretty",
+      "to": "String::new"
+    },
+    {
+      "from": "print_json_pretty",
+      "to": "print_value_to"
+    },
+    {
+      "from": "print_json_compact",
+      "to": "String::new"
+    },
+    {
+      "from": "print_json_compact",
+      "to": "print_value_to"
+    },
+    {
+      "from": "print_json_buffered",
+      "to": "String::with_capacity"
+    },
+    {
+      "from": "print_json_buffered",
+      "to": "print_value_to"
+    },
+    {
+      "from": "print_value_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "print_value_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "print_value_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "print_value_to",
+      "to": "format_number_pair"
+    },
+    {
+      "from": "print_value_to",
+      "to": "String::push_str"
+    },
+    {
+      "from": "print_value_to",
+      "to": "escape_string_to"
+    },
+    {
+      "from": "print_value_to",
+      "to": "print_array_to"
+    },
+    {
+      "from": "print_value_to",
+      "to": "print_object_to"
+    },
+    {
+      "from": "print_array_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_array_to",
+      "to": "is_empty"
+    },
+    {
+      "from": "print_array_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_array_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_array_to",
+      "to": "enumerate"
+    },
+    {
+      "from": "print_array_to",
+      "to": "iter"
+    },
+    {
+      "from": "print_array_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_array_to",
+      "to": "print_value_to"
+    },
+    {
+      "from": "print_array_to",
+      "to": "len"
+    },
+    {
+      "from": "print_array_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_array_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_array_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_array_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "is_empty"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "enumerate"
+    },
+    {
+      "from": "print_object_to",
+      "to": "iter"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "escape_string_to"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "print_value_to"
+    },
+    {
+      "from": "print_object_to",
+      "to": "len"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "print_object_to",
+      "to": "String::push"
+    },
+    {
+      "from": "json_array_size",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_array_get",
+      "to": "get"
+    },
+    {
+      "from": "json_array_get_mut",
+      "to": "get_mut"
+    },
+    {
+      "from": "json_object_get",
+      "to": "Option::map"
+    },
+    {
+      "from": "json_object_get",
+      "to": "Iter::find"
+    },
+    {
+      "from": "json_object_get",
+      "to": "iter"
+    },
+    {
+      "from": "json_object_get_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "json_object_get_mut",
+      "to": "IterMut::find"
+    },
+    {
+      "from": "json_object_get_mut",
+      "to": "iter_mut"
+    },
+    {
+      "from": "json_object_get_nocase",
+      "to": "Option::map"
+    },
+    {
+      "from": "json_object_get_nocase",
+      "to": "Iter::find"
+    },
+    {
+      "from": "json_object_get_nocase",
+      "to": "iter"
+    },
+    {
+      "from": "json_object_get_nocase",
+      "to": "case_insensitive_eq"
+    },
+    {
+      "from": "json_array_add",
+      "to": "Vec::push"
+    },
+    {
+      "from": "json_object_set",
+      "to": "Iter::position"
+    },
+    {
+      "from": "json_object_set",
+      "to": "iter"
+    },
+    {
+      "from": "json_object_set",
+      "to": "String::as_str"
+    },
+    {
+      "from": "json_object_set",
+      "to": "String::as_str"
+    },
+    {
+      "from": "json_object_set",
+      "to": "Vec::push"
+    },
+    {
+      "from": "json_array_detach",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_array_detach",
+      "to": "Vec::remove"
+    },
+    {
+      "from": "json_object_detach",
+      "to": "Iter::position"
+    },
+    {
+      "from": "json_object_detach",
+      "to": "iter"
+    },
+    {
+      "from": "json_object_detach",
+      "to": "Vec::remove"
+    },
+    {
+      "from": "json_string",
+      "to": "into"
+    },
+    {
+      "from": "json_array",
+      "to": "Vec::new"
+    },
+    {
+      "from": "json_object",
+      "to": "Vec::new"
+    },
+    {
+      "from": "json_int_array",
+      "to": "collect"
+    },
+    {
+      "from": "json_int_array",
+      "to": "map"
+    },
+    {
+      "from": "json_int_array",
+      "to": "iter"
+    },
+    {
+      "from": "json_int_array",
+      "to": "json_number"
+    },
+    {
+      "from": "json_float_array",
+      "to": "collect"
+    },
+    {
+      "from": "json_float_array",
+      "to": "map"
+    },
+    {
+      "from": "json_float_array",
+      "to": "iter"
+    },
+    {
+      "from": "json_float_array",
+      "to": "json_number"
+    },
+    {
+      "from": "json_double_array",
+      "to": "collect"
+    },
+    {
+      "from": "json_double_array",
+      "to": "map"
+    },
+    {
+      "from": "json_double_array",
+      "to": "copied"
+    },
+    {
+      "from": "json_double_array",
+      "to": "iter"
+    },
+    {
+      "from": "json_string_array",
+      "to": "collect"
+    },
+    {
+      "from": "json_string_array",
+      "to": "map"
+    },
+    {
+      "from": "json_string_array",
+      "to": "iter"
+    },
+    {
+      "from": "json_string_array",
+      "to": "json_string"
+    },
+    {
+      "from": "json_duplicate",
+      "to": "JsonValue::clone"
+    },
+    {
+      "from": "json_minify",
+      "to": "to_vec"
+    },
+    {
+      "from": "json_minify",
+      "to": "String::as_bytes"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::with_capacity"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::push"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::push"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::push"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::len"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::push"
+    },
+    {
+      "from": "json_minify",
+      "to": "Vec::push"
+    },
+    {
+      "from": "json_minify",
+      "to": "Result::unwrap_or_default"
+    },
+    {
+      "from": "json_minify",
+      "to": "String::from_utf8"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "JsonValue::as_number_pair",
+      "line": 39,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_json_with_opts",
+      "line": 83,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_json_with_opts",
+      "line": 89,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_value",
+      "line": 102,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_value",
+      "line": 110,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_value",
+      "line": 113,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_value",
+      "line": 113,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_value",
+      "line": 116,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_value",
+      "line": 116,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_value",
+      "line": 124,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_number",
+      "line": 143,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_number",
+      "line": 168,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_number",
+      "line": 221,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_hex4",
+      "line": 245,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 251,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 263,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 263,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 268,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 287,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 296,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 308,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 317,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 324,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 340,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 351,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_string",
+      "line": 367,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_array",
+      "line": 376,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_array",
+      "line": 386,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_array",
+      "line": 386,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_array",
+      "line": 395,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_array",
+      "line": 406,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_array",
+      "line": 406,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_array",
+      "line": 409,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_object",
+      "line": 421,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_object",
+      "line": 431,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_object",
+      "line": 431,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_object",
+      "line": 444,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_object",
+      "line": 456,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_object",
+      "line": 467,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_object",
+      "line": 467,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "parse_object",
+      "line": 470,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_array_size",
+      "line": 677,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_array_add",
+      "line": 739,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_array_add",
+      "line": 741,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_object_set",
+      "line": 756,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_object_set",
+      "line": 758,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_array_detach",
+      "line": 767,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_object_detach",
+      "line": 781,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_true",
+      "line": 797,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_false",
+      "line": 801,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_bool",
+      "line": 805,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_string",
+      "line": 816,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_array",
+      "line": 820,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_object",
+      "line": 824,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_int_array",
+      "line": 828,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_float_array",
+      "line": 832,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_double_array",
+      "line": 836,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "json_string_array",
+      "line": 840,
+      "kind": "call_unresolved"
+    }
+  ],
+  "excluded_scaffolding": [
+    {
+      "name": "fmt",
+      "reason": "trait_boilerplate:Display"
+    }
+  ]
+}

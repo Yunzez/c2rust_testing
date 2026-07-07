@@ -9,6 +9,7 @@
 //! calls. Signature and structural I/O fingerprints come in later phases.
 
 mod io;
+mod consts;
 mod metrics;
 mod ops;
 mod signature;
@@ -54,6 +55,7 @@ pub struct FnRec {
     pub signature: signature::Signature,
     pub io: io::Io,
     pub ops: ops::OpHist,
+    pub consts: Vec<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metrics: Option<metrics::Metrics>,
 }
@@ -253,6 +255,7 @@ impl AnalyzedCrate {
                         signature: signature::signature_of(&fnode),
                         io: io::io_of(db, func),
                         ops: ops::ops_of(&fnode),
+                        consts: consts::consts_of(&fnode),
                         metrics: if enable_metrics {
                             Some(metrics::metrics_of(&fnode))
                         } else {

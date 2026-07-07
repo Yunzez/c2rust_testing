@@ -95,12 +95,57 @@ def score(fc, fr, dc, dr) -> float:
     return 0.30 * soft + 0.15 * exact + 0.15 * met + 0.20 * ops + 0.10 * deg + 0.10 * arity
 
 
+USE_CONSTS = True   # signal-C toggle (main() clears it for --no-consts ablation)
+_CONST_W = 0.20     # weight of the type-tag term, applied post-propagation ONLY when both sides expose tags.
+                    # 0.20 = lowest weight that gives cJSON its full gain (0.55) while NOT overriding lil's
+                    # confident matches (0.35 regressed lil 0.984->0.969; 0.20-0.25 keep lil intact).
+_INPUT_W = 0.12     # weight of the input-element-scalar term (separates typed-container ctor families
+                    # e.g. int/float/double array whose only difference is the element type, which the
+                    # return-type expansion otherwise drowns). Small: it fires broadly (many fns have inputs).
+_SCALARS = {"i8", "i16", "i32", "i64", "u8", "u16", "u32", "u64", "f32", "f64",
+            "bool", "str", "char", "usize", "isize"}
+
+
+def input_scalars(f) -> set:
+    """The set of scalar element/param types on a function's INPUTS only (return type excluded).
+    &[i32]->{i32}, const double*->{f64}. Cross-language via the analyzers' scalar normalization."""
+    out = set()
+    for inp in f["io"]["inputs"]:
+        for tok in re.findall(r"[a-z0-9]+", inp.get("shape", "")):
+            if tok in _SCALARS:
+                out.add(tok)
+    return out
+
+
+def input_sim(fc, fr):
+    """Jaccard of input scalar types. None (gate) when either side has no scalar inputs, so
+    nullary / pointer-only functions keep their exact score."""
+    a = input_scalars(fc)
+    b = input_scalars(fr)
+    if not a or not b:
+        return None
+    return jaccard(a, b)
+
+
+def const_sim(fc, fr):
+    """signal-C: jaccard of the TYPE-TAG / enum-variant token sets (analyzer `consts`).
+    Returns None when EITHER side has no tags — the gate that makes this term invisible to
+    functions that construct no variants (they keep exactly their pre-signal-C score, so a
+    library of plain logic functions cannot regress). Discriminates the flat leaf
+    constructors (cJSON `Create*`) that share io-shape and have no call topology."""
+    a = fc.get("consts") or []
+    b = fr.get("consts") or []
+    if not a or not b:
+        return None
+    return jaccard(a, b)
+
+
 def node_sim(fc, fr, feat="full") -> float:
     """Per-function similarity (NO topology) — the restart prior for propagation.
     feat="shape" = io-SHAPE-ONLY ablation baseline: uses ONLY the normalized parameter/
     return shape CATEGORIES (+ arity), EXCLUDING operators, metrics, topology, AND degree
     — the clean answer to "isn't the type signature already enough?". feat="full" = all
-    per-function signals (shape + exact + metrics + operator histogram + arity)."""
+    per-function signals (shape + exact + metrics + operator histogram + arity + signal-C)."""
     exact = 1.0 if shape_sig(fc) == shape_sig(fr) else 0.0
     soft = jaccard(shape_tokens(fc), shape_tokens(fr))
     arity = 1.0 if len(fc["io"]["inputs"]) == len(fr["io"]["inputs"]) else 0.0
@@ -109,6 +154,30 @@ def node_sim(fc, fr, feat="full") -> float:
     met = metric_sim(fc, fr)
     ops = op_sim(fc, fr)
     return 0.35 * soft + 0.15 * exact + 0.15 * met + 0.25 * ops + 0.10 * arity
+
+
+def apply_consts(sim, c_data, r_data) -> dict:
+    """Blend signal-C into the FINAL similarity matrix (post-propagation), so the type-tag
+    discriminator votes at full assignment weight instead of being diluted to (1-alpha) as
+    a restart prior — critical for flat leaf constructors whose topology term is a uniform
+    ~1.0 (empty neighbor sets 'agree') that would otherwise drown it. Gated: only pairs
+    where BOTH sides expose tags are adjusted; every other pair keeps its exact prior score,
+    so a library of tag-less logic functions cannot regress."""
+    if not USE_CONSTS:
+        return sim
+    cf = {f["name"]: f for f in c_data["functions"]}
+    rf = {f["name"]: f for f in r_data["functions"]}
+    out = dict(sim)
+    for (c, r), s in sim.items():
+        v = s
+        cs = const_sim(cf[c], rf[r])
+        if cs is not None:
+            v = (1.0 - _CONST_W) * v + _CONST_W * cs
+        isim = input_sim(cf[c], rf[r])
+        if isim is not None:
+            v = (1.0 - _INPUT_W) * v + _INPUT_W * isim
+        out[(c, r)] = v
+    return out
 
 
 def adjacency(data) -> tuple:
@@ -125,11 +194,14 @@ def adjacency(data) -> tuple:
 
 
 def _dir(A, B, S, c_first) -> float:
-    """mean over a in A of (max over b in B of S[a,b]) — neighbor-set best-match."""
+    """mean over a in A of (max over b in B of S[a,b]) — neighbor-set best-match.
+    A/B are sets; iterate them SORTED so the float summation order is fixed. Without this,
+    set iteration order varies with PYTHONHASHSEED and float non-associativity flips near-ties
+    in homogeneous clusters (e.g. cJSON's 12 leaf constructors) => non-reproducible recall."""
     tot = 0.0
-    for a in A:
+    for a in sorted(A):
         best = 0.0
-        for b in B:
+        for b in sorted(B):
             v = S[(a, b)] if c_first else S[(b, a)]
             if v > best:
                 best = v
@@ -315,6 +387,7 @@ def match(c_data, r_data, topo=True, alpha=0.7, iters=15, assign="hungarian",
     cn = [f["name"] for f in c_data["functions"]]
     rn = [f["name"] for f in r_data["functions"]]
     sim = propagate(c_data, r_data, alpha, iters, df_cap, feat) if topo else node_matrix(c_data, r_data, feat)
+    sim = apply_consts(sim, c_data, r_data)
     if partial:
         pairs, c_only, rust_only = _assign_partial(cn, rn, sim, tau)
     elif assign == "hungarian":
@@ -402,11 +475,14 @@ def main() -> int:
     ap.add_argument("--abstain-eps", type=float, default=None,
                     help="abstention: move pairs with two-sided confidence < eps from "
                     "matched to ambiguous (isolate, don't guess). Default off (accept all).")
+    ap.add_argument("--no-consts", action="store_true",
+                    help="disable signal-C (type-tag/enum-variant term) -- ablation control")
     ap.add_argument("-v", "--verbose", action="store_true")
     ap.add_argument("--emit-pairs", default=None,
                     help="write the matched C->Rust correspondence as JSON {c_name: rust_name} "
                     "(for the end-to-end driver to drive gen_diff_harness --rust-entry)")
     args = ap.parse_args()
+    globals()["USE_CONSTS"] = not args.no_consts
     c_data = json.loads(Path(args.c).read_text())
     r_data = json.loads(Path(args.rust).read_text())
 

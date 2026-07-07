@@ -20,6 +20,7 @@ recovers.**
 | superscript `ᴴ` | truth is **hand-labeled** — this tool renames/restructures, so the correspondence was labeled by hand (expensive) |
 | superscript `ᴵ` | truth is **independent/mechanical** (e.g. a name-scramble applied to a known-correct pairing) |
 | `↑topo` | topology propagation is **load-bearing** here (homogeneous io-shape cluster; per-function signals alone fail) |
+| superscript `ᶜ` | **signal-C** (type-tag/enum-variant discriminator + input-element-type) is load-bearing here; the cell shows the with-signal-C number (cJSON deterministic: 0.375 baseline →0.475 tag →0.55 +input-type). Both gated + regression-verified across 56 name-preserving libs incl lil (results/rq2_cells/regression/SIGNAL_C.md) |
 | `—` | **no analyzable artifact** — the tool produced no parseable Rust for this library (inherits the E1 tool-failure ✗/×); nothing to match |
 | `∅ᴺ / ∅ᴴ` | **not yet run (TODO)**, superscript flags the truth-source cost (ᴺ ≈ free, ᴴ = needs labeling) |
 | `≡ / ≠` | **column naming behavior**: `≡` = tool keeps C names (name-equality works) · `≠` = tool **renames** (name-equality breaks → matcher needed). PtrTrans renames a subset (camelCase→snake_case, e.g. `quickSort→quick_sort`); raw-LLM renames everything. c2rust/Laertes/C2SaferRust/CROWN/SACTOR keep names. |
@@ -39,7 +40,7 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 | **urlparser** | URL parsing | 21 | low | 0.95/1.0 | 0.91/1.0 | 0.95/1.0 | 1.00/1.0 | — | — | **0.88/0.0**ᴴ |
 | **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.63/1.0 | — | ∅ᴴ | **0.71/0.0**ᴴ |
 | **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | **1.00/0.0**ᴴ |
-| **cJSON** | JSON parser | 58 | high | 1.00/1.0 | — | — | — | — | ∅ᴴ(partial) | ∅ |
+| **cJSON** | JSON parser | 58 | high | 1.00/1.0 | — | — | — | — | ∅ᴴ(partial) | **0.55/0.15**ᴴ˙ᶜ |
 | **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.96/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | ∅ |
 | **lodepng** | PNG codec | 235 | high | 0.99/1.0 | — | — | 0.97/1.0 | — | — | ∅ |
 | **bzip2** | compressor | 64 | high | 1.00/1.0 | 1.00/1.0 | 0.98/1.0 | 1.00/1.0 | — | — | ∅ |
@@ -96,10 +97,10 @@ laertes_benchmarks ones point at `/Users/emre/…`).
 
 ## raw-LLM column v1 (2026-07-07) — the beat-the-baseline result
 
-**4 cells** on the E1 libraries, hand-labeled truth (`results/rq2_cells/rawllm/`). gpt-5.1, the disclosed
-prompt (commands renaming, leaks no correspondence). This is the ONLY column where **name-equality = 0.0**
-(the LLM renamed everything) — so it is the only place the matcher's name-independence is actually
-*tested* rather than validated.
+**5 cells** on the E1 libraries, hand-labeled truth (`results/rq2_cells/rawllm/`). gpt-5.1, the disclosed
+prompt (commands renaming, leaks no correspondence). This is the column where **name-equality collapses**
+(usually to 0.0; cJSON is the exception at 0.15 — the LLM kept 6 `parse_*` names despite the rename order)
+— so it is the place the matcher's name-independence is actually *tested* rather than validated.
 
 | library | matcher | name-eq | what happened |
 |---|--:|--:|---|
@@ -107,14 +108,36 @@ prompt (commands renaming, leaks no correspondence). This is the ONLY column whe
 | **urlparser** | **0.88** (15/17) | 0.0 | misses `url_get_query` (get_query/search homogeneous family) + `strff→skip_forward` (tiny helper) |
 | **qsort** | 0.67 (2/3) | 0.0 | LLM added idiomatic wrapper `quick_sort`; matcher picked it over the true recursive core `quick_sort_range`. Tiny programs are adversarial (no structure to grip). |
 | **quadtree** | 0.64 (9/14) | 0.0 | `is_empty↔is_pointer` swap (near-identical `&self→bool` predicates), `walk` (fn-ptr→closure reshape) missed. 3 `*_new` constructors EXCLUDED — the analyzer collapses 4 `new` methods to 1 ([[matcher-hir-id-todo]] name-collision). |
+| **cJSON** | **0.55** (22/40)ᶜ | 0.15 | The **big-but-flat counterexample**, and the case that motivated **signal-C**. Matcher recovers the topology-rich recursive core (parse_*/print_* mutual recursion) but originally **permuted the 12 `cJSON_Create*` leaf constructors** — all `()→Value`/`(scalar)→Value`, tiny bodies, *call nothing* → zero topology, homogeneous io-shape (**0.40 baseline**). signal-C (type-tag/enum-variant jaccard) recovered **7/12 constructors** → **0.50**; the input-element-type signal then split the int/float/double-array trio signal-C had grouped under one `array` tag → **0.55**. Residual (not pursued): True/Bool (bool-literal asymmetry) + ~8 accessor family (shallow shape + LLM helper attractors). name-eq **≠ 0**: LLM kept 6 `parse_*` verbatim. 18/58 dissolved. |
 
-**Read**: matcher recovers **.64–1.00** under genuine LLM renaming where name-equality gets **0.0** across
-the board — this is the "matcher enables differential testing on renaming translators" claim, on the E1
-libraries. The two low cells (qsort, quadtree) are the adversarial small/pointer-heavy cases with
-homogeneous predicate clusters; the medium ones (genann, urlparser) are strong. Matches the separate
-llm-transpiler corpus (.88 micro over 10 programs). **Hand-labeling honesty**: `scorable` = C functions
-with a genuine Rust counterpart; LLM-dissolved functions (FILE-IO, free/copy → Drop/Clone) are excluded
-(can't match what wasn't translated), and dissolution counts are reported per cell, not hidden in recall.
+**Read**: matcher recovers **.40–1.00** under genuine LLM renaming where name-equality gets **0.0–0.15** —
+this is the "matcher enables differential testing on renaming translators" claim, on the E1 libraries.
+The medium cells (genann 1.00, urlparser 0.88) are strong; the low cells expose **when structure runs
+out**: qsort/quadtree are the adversarial small/pointer-heavy cases with homogeneous predicate clusters,
+and **cJSON (0.40 → 0.55 with signal-C + input-type) is the big-but-flat counterexample** — it refutes the naive "more
+functions ⇒ easier" hypothesis. Recall tracks **topological richness, not function count**: cJSON's recursive parse/print core
+matches cleanly, but its wide flat `Create*` constructor API (leaf nodes, identical shapes, no call
+topology) permutes. Matches the separate llm-transpiler corpus (.88 micro over 10 programs) on the
+structured cases. **Hand-labeling honesty**: `scorable` = C functions with a genuine Rust counterpart;
+LLM-dissolved functions (FILE-IO, free/copy → Drop/Clone, C-alloc → enum) are excluded (can't match what
+wasn't translated), and dissolution counts are reported per cell, not hidden in recall.
+
+**The cJSON finding sharpens E2's thesis** (worth a sentence in the paper): a structural matcher's ceiling
+is set by *how much call-graph topology the program exposes*, not its size. This both motivates the
+topology signal (it is what carries the wins) AND scopes its limit (flat leaf constructors need a
+non-structural discriminator). An honest low cell is a stronger paper artifact than a suspiciously
+uniform column.
+
+**signal-C closes part of that gap (implemented 2026-07-07).** The flat-leaf limit motivated a 4th node
+signal: the **type-tag / enum-variant** set each function constructs (C `#define`/enum tag recovered from
+the token stream, Rust variant path + bool literals), normalized cross-language (`cJSON_Number` ≡
+`JsonValue::Number` → `number`) and blended post-propagation at gated weight 0.35. It lifts cJSON
+**0.40→0.50** (7/12 constructors recovered) with a validated **regression firewall**: gated on
+both-sides-have-tags so tag-less functions are untouched, verified **zero regression across 55
+name-preserving libraries** + clean ablation (`results/rq2_cells/regression/`, `SIGNAL_C.md`). The
+residual (True/Bool bool-literal asymmetry; identical-body numeric-array trio) is a *different* lever
+(input-element-type weight), honestly out of signal-C's reach. This is the ablation story E2 wants:
+shape → +node → +topology → +signal-C, each earning its place, each with a characterized limit.
 
 **hir-id fix applied (2026-07-07)**: the analyzer now keys functions by `Type::method` (impl methods)
 / bare name (free fns) instead of bare-name-with-silent-dedup — see [[matcher-hir-id-todo]], DONE. This
@@ -123,8 +146,11 @@ no exclusions)**, all three `*_new` now distinguished by topology. Re-validated:
 stable (±1 fn from edge re-keying), qsort/genann/urlparser raw-LLM unchanged. The fix caps nothing and
 only makes multi-constructor libraries scorable — accuracy preserved.
 
-**Open**: raw-LLM on the larger libs (cJSON/lil/lodepng/bzip2 — more structure, expect higher recall) +
-resolve the analyzer name-collision (hir-id) which currently caps quadtree-like multi-constructor cases.
+**Open**: raw-LLM on lil/lodepng/bzip2 (cJSON DONE — 0.50 w/ signal-C, the flat-API counterexample; lil
+expected strong given its `↑topo` recursive command-dispatch, lodepng/bzip2 TBD). hir-id name-collision
+RESOLVED. **signal-C follow-up**: re-score the other 4 raw-LLM cells (genann/urlparser/qsort/quadtree) with
+signal-C once their pre-hir-id truth files are refreshed to `Type::method` names — signal-C is gated (never
+regressed any of 55 libs) and ~inert on low-variant libs, but quadtree may move.
 
 ## Column ordering rationale (rename axis)
 
@@ -178,9 +204,21 @@ rows `results/rq3_rows/*.v2.json`.
 | SACTOR idiomatic (names kept, shape moved, indep. truth) | 2 | 1.000 / 1.000 | 1.000 / 1.000 | validation |
 | SACTOR mechanically-renamed (indep. truth) | 2 | **1.000 / 1.000** | 0.000 / 0.000 | maximal |
 
-Ablation ladder (lil 128-fn homogeneous stress): shape-only **.359** → node-only **.742** →
-**full + call-graph topology .984** (+24pp from topology alone). The topology signal is what cracks the
-homogeneous `fnc_*` cluster — the plan in `~/.claude/plans/jaunty-noodling-lark.md` is DONE, not pending.
+Ablation ladder — two complementary stress cases, each isolating one signal:
+- **lil** (128-fn homogeneous command-dispatch): shape-only **.359** → node-only **.742** →
+  **+call-graph topology .984** (+24pp from **topology**). Topology cracks the homogeneous `fnc_*` cluster.
+- **cJSON** (58-fn flat constructor API, deterministic numbers): **+topology alone leaves .375** (leaf
+  constructors call nothing → no topology to grip) → **+signal-C .475** (**type-tag** groups by JSON kind)
+  → **+input-element-type .55** (splits the int/float/double-array trio *within* the tag group; note it does
+  **nothing alone** — .375 — it only refines what signal-C already grouped). signal-C cracks what topology
+  cannot; input-type refines within it. Regression-verified: zero drop across 55 name-preserving libs
+  (`SIGNAL_C.md`). *(Validating signal-C also surfaced + fixed a pre-existing non-determinism: topology's
+  `_dir` summed over hash-seed-ordered sets, flipping near-ties in cJSON's homogeneous cluster; `_dir` now
+  sorts → cJSON stable 0.55 on every seed.)*
+
+Together they show the structural axes are non-redundant and compose: topology carries connected clusters,
+signal-C groups flat leaves by type-tag, input-type splits within a tag group. shape → +node → +topology →
++signal-C → +input-type, each earning its rung on a different case, each with a characterized limit.
 
 ## What this table needs to become "filled" (the work-list)
 

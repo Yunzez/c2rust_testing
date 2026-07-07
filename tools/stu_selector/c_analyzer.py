@@ -135,6 +135,56 @@ def ops_of(fn_cur) -> dict:
     return h
 
 
+_C_KW = {"if", "else", "for", "while", "do", "return", "switch", "case", "break",
+         "continue", "goto", "default", "sizeof", "typedef", "struct", "union", "enum",
+         "const", "static", "extern", "void", "int", "char", "short", "long", "float",
+         "double", "signed", "unsigned", "register", "volatile", "NULL"}
+
+
+def _norm_tag(s: str) -> str:
+    """Shared normalization (mirror analyzer/src/consts.rs): last `_`/`::` segment, lowercased.
+    So C macro `cJSON_Number` and Rust variant `JsonValue::Number` both collapse to `number`."""
+    seg = s.replace("::", "_").split("_")[-1]
+    return seg.lower()
+
+
+def consts_of(fn_cur) -> list:
+    """signal-C: the set of TYPE-TAG / enum-constant tokens a function references — the
+    name-independent discriminator for flat leaf constructors that share io-shape and have
+    no call topology (cJSON's cJSON_Create* family). Captures BOTH enum-constant DECL_REFs
+    AND `#define` macro constants (recovered from the pre-expansion token stream, since the
+    AST only sees the expanded integer). Excludes the fn's own name, params, locals, called
+    fns and field names so only genuine constants remain. NULL and 0/1 are too common to
+    discriminate and are dropped. Cross-language-comparable via _norm_tag."""
+    known = {fn_cur.spelling}
+    consts = set()
+    for a in fn_cur.get_arguments():
+        if a.spelling:
+            known.add(a.spelling)
+    for c in fn_cur.walk_preorder():
+        k = c.kind.name
+        if k == "VAR_DECL":
+            known.add(c.spelling)
+        elif k == "DECL_REF_EXPR":
+            ref = c.referenced
+            if ref is not None and ref.kind == CursorKind.ENUM_CONSTANT_DECL:
+                if c.spelling and c.spelling != "NULL":
+                    consts.add(_norm_tag(c.spelling))
+            elif c.spelling:
+                known.add(c.spelling)
+        elif k == "MEMBER_REF_EXPR" and c.spelling:
+            known.add(c.spelling)
+    # macro constants: identifier tokens that resolved to nothing in the AST (expanded away)
+    for t in fn_cur.get_tokens():
+        if t.kind.name != "IDENTIFIER":
+            continue
+        s = t.spelling
+        if s in known or s in _C_KW:
+            continue
+        consts.add(_norm_tag(s))
+    return sorted(consts)
+
+
 def clang_ptr_kind(t) -> str:
     s = _peel(t)
     if s.kind == TypeKind.POINTER:
@@ -161,6 +211,7 @@ def _fn_record(cur, metrics_by_name: dict, enable_metrics: bool) -> dict:
         "signature": {"params": params, "ret": ret.spelling},
         "io": {"inputs": inputs, "output": {"ty": ret.spelling, "shape": clang_shape(ret)}},
         "ops": ops_of(cur),
+        "consts": consts_of(cur),
     }
     if enable_metrics:
         m = dict(metrics_by_name.get(name, {}))

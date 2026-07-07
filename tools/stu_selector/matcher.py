@@ -127,6 +127,22 @@ def input_sim(fc, fr):
     return jaccard(a, b)
 
 
+_STR_W = 0.10       # weight of the string-literal term (signal-S, BinDiff-style string refs:
+                    # user-facing strings survive translation verbatim). Gated like the others.
+                    # Band 0.05-0.12 all gain on lil (+2..+4); we ship the MID-BAND 0.10, not
+                    # the 0.08 peak, to avoid tuning to the test cell. 0.15+ loses the gain.
+
+
+def string_sim(fc, fr):
+    """Jaccard of referenced string-literal sets (analyzer `strings`). None (gate) when
+    either side references no strings — string-less functions keep their exact score."""
+    a = fc.get("strings") or []
+    b = fr.get("strings") or []
+    if not a or not b:
+        return None
+    return jaccard(sorted(set(a)), sorted(set(b)))
+
+
 def const_sim(fc, fr):
     """signal-C: jaccard of the TYPE-TAG / enum-variant token sets (analyzer `consts`).
     Returns None when EITHER side has no tags — the gate that makes this term invisible to
@@ -176,6 +192,9 @@ def apply_consts(sim, c_data, r_data) -> dict:
         isim = input_sim(cf[c], rf[r])
         if isim is not None:
             v = (1.0 - _INPUT_W) * v + _INPUT_W * isim
+        ssim = string_sim(cf[c], rf[r])
+        if ssim is not None:
+            v = (1.0 - _STR_W) * v + _STR_W * ssim
         out[(c, r)] = v
     return out
 

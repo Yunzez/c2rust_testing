@@ -1,5 +1,5 @@
 {
-  "_meta": "E2 raw-LLM column v1 (2026-07-07). gpt-5.1, disclosed prompt (commands renaming, leaks no correspondence). Truth = HAND-LABELED (raw-LLM is the ONLY column without a free mapping). Cell = matcher-recall / name-eq-recall. name-eq usually 0.0 (LLM renames all) BUT NOT ALWAYS — cJSON kept 6 parse-core names verbatim despite the rename instruction (name-eq 0.15). scorable = C fns with a genuine Rust counterpart (dropped/dissolved fns excluded; FILE-IO + free/copy typically dissolved under std-only prompt). [2026-07-07 hir-id fix applied: analyzer keys methods as Type::method, no more silent same-name dedup. Re-validated: name-preserving cells stable, qsort/genann/urlparser raw-LLM unchanged, quadtree raw-LLM 0.64->0.71.] FINDING (cjson): matcher recall tracks TOPOLOGICAL RICHNESS not function count — recursive parse/print core recovers, flat Create* leaf constructors permute.",
+  "_meta": "E2 raw-LLM column v1 (2026-07-07). gpt-5.1, disclosed prompt (commands renaming, leaks no correspondence). Truth = HAND-LABELED (raw-LLM is the ONLY column without a free mapping). Cell = matcher-recall / name-eq-recall. name-eq usually 0.0 (LLM renames all) BUT NOT ALWAYS \u2014 cJSON kept 6 parse-core names verbatim despite the rename instruction (name-eq 0.15). scorable = C fns with a genuine Rust counterpart (dropped/dissolved fns excluded; FILE-IO + free/copy typically dissolved under std-only prompt). [2026-07-07 hir-id fix applied: analyzer keys methods as Type::method, no more silent same-name dedup. Re-validated: name-preserving cells stable, qsort/genann/urlparser raw-LLM unchanged, quadtree raw-LLM 0.64->0.71.] FINDING (cjson): matcher recall tracks TOPOLOGICAL RICHNESS not function count \u2014 recursive parse/print core recovers, flat Create* leaf constructors permute.",
   "qsort": {
     "scorable": 3,
     "matcher": 0.667,
@@ -28,10 +28,37 @@
     "scorable": 40,
     "dissolved": 18,
     "matcher": 0.55,
-    "ablation_deterministic": {"baseline": 0.375, "signalC_only": 0.475, "inputscalar_only": 0.375, "both_shipped": 0.55, "const_weight": 0.20, "input_weight": 0.12},
+    "ablation_deterministic": {
+      "baseline": 0.375,
+      "signalC_only": 0.475,
+      "inputscalar_only": 0.375,
+      "both_shipped": 0.55,
+      "const_weight": 0.2,
+      "input_weight": 0.12
+    },
     "determinism_note": "matcher was non-deterministic pre-fix (topology _dir summed over hash-seed-ordered sets; float non-assoc flipped near-ties in cJSON's homogeneous cluster -> recall wandered 0.375-0.55 across runs). FIXED: _dir now iterates neighbor sets SORTED. cJSON now stable 0.55 across all seeds. Old 0.40 baseline was a lucky seed; deterministic baseline is 0.375.",
     "weight_note": "signal-C weight is 0.20, NOT 0.35. At 0.35 cJSON also hit 0.55 but lil REGRESSED 0.984->0.969 (signal-C overrode lil's confident interpreter-variant matches). The regression harness caught this ONLY after fixing a harness bug that silently dropped lil (crate code in src/lil.rs not src/lib.rs). 0.20 = lowest weight giving cJSON full 0.55 with lil (and all 56 name-preserving libs) intact.",
     "name_eq": 0.15,
     "note": "22/40 with signal-C + input-scalar (baseline was 16/40). Source = crustbench cJSON.c (Dave Gamble, 58 C fns, == E1 name-preserving scorable). Baseline nailed the topology-rich recursive core (parse_*/print_*) but PERMUTED the flat leaf half (12x cJSON_Create*: ()->Value/(scalar)->Value, call nothing => zero topology). signal-C (type-tag/enum-variant jaccard, W=0.35, gated) recovered 7/12 constructors -> 0.50. input-scalar signal (input element-type jaccard, W=0.12, gated) splits the int/float/double/string-array trio that signal-C grouped under one 'array' tag -> 0.55. ABLATION: baseline 0.40, +signalC 0.50, +input-scalar-ALONE 0.40 (no effect without signalC), +BOTH 0.55 -- input-scalar only refines WITHIN signalC's tag groups (composition, not independent). Residual: CreateTrue/Bool (bool-literal asymmetry) + ~8 accessor family (Get/Add/Detach shallow shape + LLM helper attractors -- the real hard core, NOT pursued). name-eq 0.15 (LLM kept 6 parse_* verbatim). BOTH signals VALIDATED: ZERO regression across 55 name-preserving libs (results/rq2_cells/regression/, two harness runs). See cjson/NOTES.md + regression/SIGNAL_C.md."
+  },
+  "lil": {
+    "scorable": 111,
+    "dissolved": 17,
+    "allC": 128,
+    "matcher": 0.55,
+    "gross": 0.477,
+    "name_eq_mechanical": 0.0,
+    "name_eq_leaf": 0.55,
+    "family_level": 0.919,
+    "note": "THE boundary case: LLM DISOBEYED rename order, KEPT names (fnc_append verbatim, methodized to LilInterpreter::fnc_append). So leaf-name-eq=0.55 >= matcher 0.50 -> not the matchers regime (its edge is renamed code where name-eq->0). Matcher still nails FAMILY level 91% (all 55 fnc_ handlers pinned to handler family, zero leak). 29/32 misses = intra-family twin-swaps (fnc_inc/dec differ by +/- passed to shared helper; fnc_upeval/downeval by direction constant) -> discriminator invisible to shape/ops/topology/consts (op-histograms verified identical) = genuine structural ceiling, pushing higher=overfitting. Graceful degradation: c2rust exact-graph 0.97 -> LLM approx-graph 0.50, family held. Baseline ladder: random 0.9%, shape-only 9%, node 32%, full+neg+strings 55%. Two denominators: scorable 55/111=0.495, gross 55/128=0.43 (gap 6.6pp small). Partition asserted (truth+dissolved==128).",
+    "signal_round2": "neg (unary negation re-included in base ops) resolved the fnc_inc/fnc_dec twin (+the exact discriminator, present both sides, previously a documented skip); signal-S (string literals, BinDiff-style refs, W=0.10 MID-BAND not the 0.08 peak to avoid test-cell tuning) +3 more. 0.495 -> 0.550: matcher now TIES the leaf-name baseline (0.55) WITHOUT reading names. fnc cluster 23->28/55, family 92%. upeval/downeval still swapped (C ==/! vs Rust nothing - no honest signal). Zero regression: 57-cell harness 3-way (v3_off/v3_on/final_on comparisons).",
+    "compiles": false,
+    "compile_note": "11 borrow-checker errors (4x E0716 temp-dropped, 3x E0502 mut/immut conflict, 2x E0506 assign-while-borrowed, 1x E0382 moved, +missing rand dep). NOT minimally fixable: at least one is a genuine LLM logic bug (Rc::make_mut on a temporary clone = mutation silently lost) - fixing means co-authoring semantics. Recorded as compile-fail (same class as E1 PtrTrans/lodepng footnote 28). E2 matching unaffected (parse-only).",
+    "coverage_probe": {
+      "c_side": "122/122 script-reachable (100%), 55/55 handlers",
+      "rust_crate": "112/117=95.7% (100% of entry-wired: 3 host-API + 1 dead-code pop_env + 1 defect-blocked fnc_return)",
+      "divergence_found": "user-defined functions INERT (func g...; print [g 3 4] -> C:7, Rust:empty) \u2014 root cause = Rc::make_mut(&mut clone()) lost-mutation in fnc_func, THE SAME defect the borrow checker flagged as E0716. Silent wrong-answer class. See fuzz/lil_coverage/README.md",
+      "real_fuzz": "libFuzzer/cargo-fuzz fork mode 300s coverage-guided (NOT grammar replay). paired 115/117=98.3%, crate fn 96.1%, lines 74.8%. Bugs found: int-overflow panic (Rust abort/C wrap), codeat index-oob panic, Rc-cycle leak->OOM. 8 timeout artifacts = shared while-dialect quirk (C hangs too), not bugs. fuzz/lil_coverage/rust_cov/"
+    }
   }
 }

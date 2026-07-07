@@ -20,6 +20,7 @@ import matcher  # noqa
 if os.environ.get("SIGNALS_OFF") == "1":
     matcher.USE_CONSTS = False
     matcher._INPUT_W = 0.0
+    matcher._STR_W = 0.0
 
 PAIRS = f"{ROOT}/benchmark/pairs"
 
@@ -83,13 +84,14 @@ def main():
                 rows[lib] = {"recall": rec, "scorable": scor, "kind": "name-eq"}
         except Exception as e:
             rows[lib] = {"error": str(e)[:80], "kind": "name-eq"}
-    # raw-LLM cjson (stored)
-    cc = f"{ROOT}/results/rq2_cells/rawllm/cjson"
-    try:
-        rec, scor = recall_hand(f"{cc}/cjson_c.json", f"{cc}/cjson_r.json", f"{cc}/truth.json")
-        rows["cjson_rawllm"] = {"recall": rec, "scorable": scor, "kind": "hand"}
-    except Exception as e:
-        rows["cjson_rawllm"] = {"error": str(e)[:80], "kind": "hand"}
+    # raw-LLM cells with stored analyses + hand truth
+    for lib in ("cjson", "lil"):
+        cc = f"{ROOT}/results/rq2_cells/rawllm/{lib}"
+        try:
+            rec, scor = recall_hand(f"{cc}/{lib}_c.json", f"{cc}/{lib}_r.json", f"{cc}/truth.json")
+            rows[f"{lib}_rawllm"] = {"recall": rec, "scorable": scor, "kind": "hand"}
+        except Exception as e:
+            rows[f"{lib}_rawllm"] = {"error": str(e)[:80], "kind": "hand"}
     shutil.rmtree(tmp, ignore_errors=True)
     print(json.dumps(rows, indent=2, sort_keys=True))
 

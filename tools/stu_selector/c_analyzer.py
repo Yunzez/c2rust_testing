@@ -132,6 +132,8 @@ def ops_of(fn_cur) -> dict:
             toks = [t.spelling for t in cur.get_tokens()]
             if toks and toks[0] in ("!", "~"):
                 h["!"] = h.get("!", 0) + 1
+            elif toks and toks[0] == "-":  # unary negation: the lil fnc_inc/fnc_dec twin
+                h["neg"] = h.get("neg", 0) + 1  # discriminator (-(...)); `--` excluded by !=
     return h
 
 
@@ -185,6 +187,21 @@ def consts_of(fn_cur) -> list:
     return sorted(consts)
 
 
+def strings_of(fn_cur) -> list:
+    """signal-S: the set of string literals a function references (BinDiff-style string
+    refs). User-facing strings survive translation verbatim (behavioral equivalence forces
+    it), so they discriminate handlers that are structurally identical (19/55 lil fnc_*
+    carry one). Source-text form (escapes kept) so C "\\n" == Rust "\\n". len>=2 drops
+    single-char noise. Cross-checked with analyzer/src/consts.rs strings_of."""
+    out = set()
+    for c in fn_cur.walk_preorder():
+        if c.kind.name == "STRING_LITERAL":
+            s = (c.spelling or "").strip('"')
+            if len(s) >= 2:
+                out.add(s)
+    return sorted(out)
+
+
 def clang_ptr_kind(t) -> str:
     s = _peel(t)
     if s.kind == TypeKind.POINTER:
@@ -212,6 +229,7 @@ def _fn_record(cur, metrics_by_name: dict, enable_metrics: bool) -> dict:
         "io": {"inputs": inputs, "output": {"ty": ret.spelling, "shape": clang_shape(ret)}},
         "ops": ops_of(cur),
         "consts": consts_of(cur),
+        "strings": strings_of(cur),
     }
     if enable_metrics:
         m = dict(metrics_by_name.get(name, {}))

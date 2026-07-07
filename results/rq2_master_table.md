@@ -20,6 +20,7 @@ recovers.**
 | superscript `ᴴ` | truth is **hand-labeled** — this tool renames/restructures, so the correspondence was labeled by hand (expensive) |
 | superscript `ᴵ` | truth is **independent/mechanical** (e.g. a name-scramble applied to a known-correct pairing) |
 | `↑topo` | topology propagation is **load-bearing** here (homogeneous io-shape cluster; per-function signals alone fail) |
+| superscript `ᵏ` | **LLM kept names** (disobeyed the rename order) — so name-eq here is the *fair leaf-name* baseline (strip `Type::`), and this is the one regime where a name-matcher competes; the matcher's edge is the renamed regime, not this one. Honest boundary case. |
 | superscript `ᶜ` | **signal-C** (type-tag/enum-variant discriminator + input-element-type) is load-bearing here; the cell shows the with-signal-C number (cJSON deterministic: 0.375 baseline →0.475 tag →0.55 +input-type). Both gated + regression-verified across 56 name-preserving libs incl lil (results/rq2_cells/regression/SIGNAL_C.md) |
 | `—` | **no analyzable artifact** — the tool produced no parseable Rust for this library (inherits the E1 tool-failure ✗/×); nothing to match |
 | `∅ᴺ / ∅ᴴ` | **not yet run (TODO)**, superscript flags the truth-source cost (ᴺ ≈ free, ᴴ = needs labeling) |
@@ -41,7 +42,7 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 | **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.63/1.0 | — | ∅ᴴ | **0.71/0.0**ᴴ |
 | **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | **1.00/0.0**ᴴ |
 | **cJSON** | JSON parser | 58 | high | 1.00/1.0 | — | — | — | — | ∅ᴴ(partial) | **0.55/0.15**ᴴ˙ᶜ |
-| **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.96/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | ∅ |
+| **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.96/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | **0.55/0.55**ᴴ˙ᵏ |
 | **lodepng** | PNG codec | 235 | high | 0.99/1.0 | — | — | 0.97/1.0 | — | — | ∅ |
 | **bzip2** | compressor | 64 | high | 1.00/1.0 | 1.00/1.0 | 0.98/1.0 | 1.00/1.0 | — | — | ∅ |
 | **tulipindicators** | indicators | ~100 | **very high** | ∅ᴺ | ∅ᴺ | ∅ᴺ | ▽ᴺ | — | — | ∅ |
@@ -97,10 +98,12 @@ laertes_benchmarks ones point at `/Users/emre/…`).
 
 ## raw-LLM column v1 (2026-07-07) — the beat-the-baseline result
 
-**5 cells** on the E1 libraries, hand-labeled truth (`results/rq2_cells/rawllm/`). gpt-5.1, the disclosed
+**6 cells** on the E1 libraries, hand-labeled truth (`results/rq2_cells/rawllm/`). gpt-5.1, the disclosed
 prompt (commands renaming, leaks no correspondence). This is the column where **name-equality collapses**
-(usually to 0.0; cJSON is the exception at 0.15 — the LLM kept 6 `parse_*` names despite the rename order)
-— so it is the place the matcher's name-independence is actually *tested* rather than validated.
+— usually to 0.0, so it is where the matcher's name-independence is actually *tested* rather than validated.
+**Two honest exceptions where the LLM disobeyed and kept names**: cJSON (0.15, kept 6 `parse_*`) and **lil
+(0.55, kept the `fnc_*` handler names)** — in those the LLM's disobedience makes name-matching a fair
+competitor, which is exactly why the matcher's advantage must be read off the *renamed* cells, not these.
 
 | library | matcher | name-eq | what happened |
 |---|--:|--:|---|
@@ -109,8 +112,9 @@ prompt (commands renaming, leaks no correspondence). This is the column where **
 | **qsort** | 0.67 (2/3) | 0.0 | LLM added idiomatic wrapper `quick_sort`; matcher picked it over the true recursive core `quick_sort_range`. Tiny programs are adversarial (no structure to grip). |
 | **quadtree** | 0.64 (9/14) | 0.0 | `is_empty↔is_pointer` swap (near-identical `&self→bool` predicates), `walk` (fn-ptr→closure reshape) missed. 3 `*_new` constructors EXCLUDED — the analyzer collapses 4 `new` methods to 1 ([[matcher-hir-id-todo]] name-collision). |
 | **cJSON** | **0.55** (22/40)ᶜ | 0.15 | The **big-but-flat counterexample**, and the case that motivated **signal-C**. Matcher recovers the topology-rich recursive core (parse_*/print_* mutual recursion) but originally **permuted the 12 `cJSON_Create*` leaf constructors** — all `()→Value`/`(scalar)→Value`, tiny bodies, *call nothing* → zero topology, homogeneous io-shape (**0.40 baseline**). signal-C (type-tag/enum-variant jaccard) recovered **7/12 constructors** → **0.50**; the input-element-type signal then split the int/float/double-array trio signal-C had grouped under one `array` tag → **0.55**. Residual (not pursued): True/Bool (bool-literal asymmetry) + ~8 accessor family (shallow shape + LLM helper attractors). name-eq **≠ 0**: LLM kept 6 `parse_*` verbatim. 18/58 dissolved. |
+| **lil** | **0.55** (61/111)ᵏ | 0.55 | The **names-kept boundary case — and the round-2 signal story.** The LLM **disobeyed the rename order and KEPT names** (`fnc_append` verbatim, methodized), so a naive leaf-name matcher scores 0.55 → *not the matcher's regime* (its edge is the renamed regime where name-eq→0). At 0.495 the matcher trailed that baseline; **two literature-standard signals closed the gap to a tie (0.55) without reading names**: re-including **unary negation** in the op histogram (previously a documented "too noisy" skip) resolved the `fnc_inc↔fnc_dec` twin — the discriminator is one `-` present on BOTH sides; and **signal-S string-literal refs** (BinDiff lineage; 19/55 handlers carry a distinctive string like `"global"`, preserved verbatim by behavioral equivalence) added 3 more (W=0.10 mid-band, NOT the 0.08 peak — anti-test-tuning). Family-level **92%** (all 55 `fnc_*` pinned to the handler family, zero leak); `fnc_upeval↔fnc_downeval` remains swapped (C `==`/`!` vs Rust nothing — no honest signal). Graceful degradation: c2rust exact-graph 0.97 → LLM approx-graph 0.55. gross 0.48 (61/128), 17/128 dissolved. Zero regression: 57-cell harness, 3-way comparison. |
 
-**Read**: matcher recovers **.40–1.00** under genuine LLM renaming where name-equality gets **0.0–0.15** —
+**Read**: matcher recovers **.55–1.00** under genuine LLM renaming where name-equality gets **0.0–0.15** —
 this is the "matcher enables differential testing on renaming translators" claim, on the E1 libraries.
 The medium cells (genann 1.00, urlparser 0.88) are strong; the low cells expose **when structure runs
 out**: qsort/quadtree are the adversarial small/pointer-heavy cases with homogeneous predicate clusters,

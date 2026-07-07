@@ -119,3 +119,40 @@ PYTHONHASHSEED=0 SIGNALS_OFF=1 python3 results/rq2_cells/regression/harness.py >
 PYTHONHASHSEED=0                python3 results/rq2_cells/regression/harness.py > /tmp/on.json    # shipped
 python3 results/rq2_cells/regression/compare.py /tmp/off.json /tmp/on.json
 ```
+
+## Round 2 (2026-07-07 evening): signal audit → neg + signal-S, validated the same way
+
+A reviewer-defense audit of the signal space ("which signals exist that you don't use, and why?")
+found two gaps with **in-corpus evidence**, both fixed and validated:
+
+1. **Unary negation re-included in the base op histogram.** `ops.rs` had a documented skip
+   ("neg — too noisy cross-language") — but probing showed neg is the EXACT discriminator of the
+   lil `fnc_inc`/`fnc_dec` twin (`-(...)` in C, `-amount` in Rust, both preserved). Re-included on
+   both sides. Effect: resolves the twin; **zero change on all 57 harness cells** (the "noisy"
+   worry was empirically unfounded).
+2. **signal-S: string-literal references** (BinDiff-lineage; the standard signal we lacked).
+   User-facing strings survive translation verbatim (behavioral equivalence forces it): 19/55 lil
+   handlers carry a distinctive string (`"global"`, `"clean"`, `"unknown function '%s'"`).
+   Extracted both sides (source-text form so `"\n"`≡`"\n"`), gated jaccard, post-propagation
+   **W=0.10 — the MID-BAND, deliberately NOT the 0.08 peak** (band 0.05–0.12 all gain; taking the
+   peak would be tuning on the test cell).
+
+**Result: lil raw-LLM 0.495 → 0.550 (61/111)** — the name-independent matcher now TIES the
+leaf-name baseline (0.55) on the very cell where the LLM kept names, without reading a name.
+fnc cluster 23→28/55, family-level 92%. cJSON unchanged (0.55). `fnc_upeval↔fnc_downeval` stays
+swapped — C-side discriminator `==` vs `!`, Rust-side nothing: no honest signal exists; documented.
+
+**Overfit guard (3-way, all zero-regression):** v3_off vs v3_on (gated signals), final_off vs
+v3_off (neg alone — 57/57 unchanged), final_on vs v3_on (old shipped vs new shipped — 57/57
+unchanged). The lil_rawllm cell is now IN the harness (58 cells forward).
+
+**Reviewer-ready signal inventory** (use verbatim if asked "why not signal X?"):
+- USED (9): io-shape soft+exact, arity, metrics vector, op histogram (incl. neg), local call-graph
+  topology (IsoRank, df-cap), type-tag consts, input-element scalars, string-literal refs.
+- EXCLUDED with reasons: external/std-call fingerprints (needs curated cross-language std mapping —
+  future work, BinDiff-imports precedent); source/declaration order (positional not semantic, zero
+  robustness to reordering, would smuggle the answer into twin cases); CFG-shape hashes (reshaping
+  translators destroy CFG isomorphism; metrics vector is the coarse proxy); field-access sets
+  (field names rename too; shape covers struct types); identifiers/comments (the thesis).
+- TESTED-AND-BOUNDED: every adopted signal carries a weight-band + 57-cell zero-regression run;
+  every excluded signal has either a principled reason or an empirical probe.

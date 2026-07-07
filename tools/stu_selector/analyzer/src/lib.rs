@@ -56,6 +56,7 @@ pub struct FnRec {
     pub io: io::Io,
     pub ops: ops::OpHist,
     pub consts: Vec<String>,
+    pub strings: Vec<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metrics: Option<metrics::Metrics>,
 }
@@ -256,6 +257,7 @@ impl AnalyzedCrate {
                         io: io::io_of(db, func),
                         ops: ops::ops_of(&fnode),
                         consts: consts::consts_of(&fnode),
+                        strings: consts::strings_of(&fnode),
                         metrics: if enable_metrics {
                             Some(metrics::metrics_of(&fnode))
                         } else {

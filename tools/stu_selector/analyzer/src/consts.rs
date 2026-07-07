@@ -43,6 +43,33 @@ fn push_path(set: &mut BTreeSet<String>, path: Option<ast::Path>) {
     }
 }
 
+/// signal-S: string literals referenced in the body (BinDiff-style string refs). Source
+/// text with quotes/raw-markers stripped, escapes kept, so C `"\n"` == Rust `"\n"`.
+/// Mirrors c_analyzer.py strings_of.
+pub fn strings_of(fnode: &ast::Fn) -> Vec<String> {
+    let mut set: BTreeSet<String> = BTreeSet::new();
+    let body = match fnode.body() {
+        Some(b) => b,
+        None => return Vec::new(),
+    };
+    for node in body.syntax().descendants() {
+        if let Some(lit) = ast::Literal::cast(node.clone()) {
+            if let ast::LiteralKind::String(_) = lit.kind() {
+                let t = lit.syntax().text().to_string();
+                let t = t
+                    .trim_start_matches('r')
+                    .trim_matches('#')
+                    .trim_matches('"')
+                    .to_string();
+                if t.len() >= 2 {
+                    set.insert(t);
+                }
+            }
+        }
+    }
+    set.into_iter().collect()
+}
+
 pub fn consts_of(fnode: &ast::Fn) -> Vec<String> {
     let mut set: BTreeSet<String> = BTreeSet::new();
     let body = match fnode.body() {

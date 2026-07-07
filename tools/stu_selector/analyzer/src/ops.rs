@@ -26,6 +26,11 @@ pub fn ops_of(fnode: &ast::Fn) -> OpHist {
         } else if let Some(p) = ast::PrefixExpr::cast(node.clone()) {
             if p.op_kind() == Some(UnaryOp::Not) {
                 *h.entry("!".to_string()).or_insert(0) += 1;
+            } else if p.op_kind() == Some(UnaryOp::Neg) {
+                // unary negation — re-included (was skipped as "noisy"): it is the exact
+                // discriminator of the lil fnc_inc/fnc_dec twin (-amount), preserved on
+                // both sides. Validated against the 57-cell regression harness.
+                *h.entry("neg".to_string()).or_insert(0) += 1;
             }
         }
     }

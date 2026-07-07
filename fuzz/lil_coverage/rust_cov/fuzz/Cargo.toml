@@ -1,0 +1,23 @@
+[package]
+name = "lil-fuzz"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+lil_llm = { path = ".." }
+
+[[bin]]
+name = "eval"
+path = "fuzz_targets/eval.rs"
+test = false
+doc = false
+bench = false
+
+[profile.release]
+panic = "unwind"
+debug = 1

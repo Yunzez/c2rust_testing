@@ -156,7 +156,7 @@
       <span>rows = E1 libraries (locked)</span>
       <span>cols = 6 tools + raw-LLM, by rename-aggressiveness</span>
       <span>cell = matcher-recall / name-eq-recall</span>
-      <span>v1 — 24 name-preserving cells (8 libraries, 3→235 fn), blind-check passed</span>
+      <span>v1 — 24 name-preserving + 4 raw-LLM cells; raw-LLM: matcher .64–1.0 vs name-eq 0.0</span>
     </div>
   </header>
 
@@ -259,7 +259,7 @@ Rules:
             <td class="c todoN" title="CROWN qsort artifact is elsewhere (fed via C→c2rust→CROWN recipe, not in laertes_benchmarks). TODO.">∅<sup>ᴺ</sup></td>
             <td class="c todoH" title="SACTOR idiomatic rename → hand-labeled truth needed. Artifact exists (E1 s:1).">∅<sup>ᴴ</sup></td>
             <td class="c todoH" title="PtrTrans reshapes/renames → hand truth. Artifact exists (E1 s:1).">∅<sup>ᴴ</sup></td>
-            <td class="c todo" title="Generate gpt-5.1 translation with the disclosed prompt, hand-label, run.">∅</td>
+            <td class="c done" title="raw-LLM (gpt-5.1): name-eq 0.0 (renamed all). matcher 2/3 — LLM added idiomatic wrapper quick_sort; matcher picked it over the recursive core quick_sort_range. Tiny programs are adversarial."><span class="r">0.67</span>/<span class="s">0.0</span></td>
           </tr>
           <tr>
             <th>urlparser<span class="scale">21 fn · low</span></th>
@@ -269,7 +269,7 @@ Rules:
             <td class="c done" title="CROWN 20/20 blind (url_free surface)."><span class="r">1.00</span>/<span class="s">1.0</span></td>  
             <td class="c na" title="No SACTOR artifact (E1 ⊘ library-level; SACTOR's test loop can't anchor on a UB-aborting reference).">—</td>
             <td class="c na" title="No PtrTrans artifact (E1 ⊘).">—</td>
-            <td class="c todo">∅</td>
+            <td class="c done" title="raw-LLM: name-eq 0.0. matcher 15/17 — renamed all (url_get_hostname→get_hostname, url_parse→parse_url). Misses url_get_query (homogeneous get_* family) + strff (tiny helper)."><span class="r">0.88</span>/<span class="s">0.0</span></td>
           </tr>
           <tr>
             <th>quadtree<span class="scale">24 fn · med</span></th>
@@ -279,7 +279,7 @@ Rules:
             <td class="c done" title="CROWN 16/24 — the honest low point: --force-box reshapes the pointer-heavy node signatures (nw/ne/sw/se) enough to break structural matching, where c2rust on the same setup = 1.0. Motivates signal-C (constants) beyond shape+topology."><span class="r">0.67</span>/<span class="s">1.0</span></td>  
             <td class="c na" title="SACTOR ✗(circular) — no whole artifact (3/5 leaf TUs only).">—</td>
             <td class="c todoH" title="PtrTrans shipped quadtree (E1 ✓F) — reshaped/renamed → hand truth.">∅<sup>ᴴ</sup></td>
-            <td class="c todo">∅</td>
+            <td class="c done" title="raw-LLM: name-eq 0.0. matcher 9/14 — is_empty↔is_pointer swap (near-identical &self→bool predicates), walk (fn-ptr→closure) missed. 3 *_new constructors excluded (analyzer collapses 4 'new' to 1)."><span class="r">0.64</span>/<span class="s">0.0</span></td>
           </tr>
           <tr>
             <th>genann<span class="scale">12 fn · med</span></th>
@@ -289,7 +289,7 @@ Rules:
             <td class="c done" title="CROWN: 12/12 blind despite ownership lift. Blind-check passed."><span class="r">1.00</span>/<span class="s">1.0</span></td>
             <td class="c todoH" title="SACTOR artifact exists after our pipeline patches (E1 headline #6). Idiomatic → hand truth.">∅<sup>ᴴ</sup></td>
             <td class="c todoH" title="PtrTrans genann is decl-only (E1 ▲) — core fns are unimplemented!() stubs; matcher will see degenerate shapes. Hand truth, note the caveat.">∅<sup>ᴴ</sup><span style="color:var(--ink-3)">·decl</span></td>
-            <td class="c todo">∅</td>
+            <td class="c done" title="raw-LLM: name-eq 0.0. matcher 8/8 — renamed all + dissolved 4 fns (FILE-IO, free/copy) + free-fn→method, yet recovered every pair incl genann_init→new. The headline raw-LLM cell."><span class="r">1.00</span>/<span class="s">0.0</span></td>
           </tr>
           <tr>
             <th>cJSON<span class="scale">58 fn · high</span></th>

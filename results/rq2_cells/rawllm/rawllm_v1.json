@@ -1,0 +1,7 @@
+{
+  "_meta": "E2 raw-LLM column v1 (2026-07-07). gpt-5.1, disclosed prompt (commands renaming, leaks no correspondence). Truth = HAND-LABELED (raw-LLM is the ONLY column without a free mapping). Cell = matcher-recall / name-eq-recall. name-eq=0.0 everywhere (LLM renamed all). scorable = C fns with a genuine Rust counterpart (dropped/dissolved fns excluded; FILE-IO + free/copy typically dissolved under std-only prompt).",
+  "qsort":     {"scorable": 3,  "matcher": 0.667, "name_eq": 0.0, "note": "3 fns; LLM added idiomatic wrapper quick_sort — matcher picked it over the real recursive core quick_sort_range for quickSort. Tiny programs are adversarial."},
+  "genann":    {"scorable": 8,  "matcher": 1.0,   "name_eq": 0.0, "note": "8/8 despite rename + 4 dissolved (read/write=FILE-IO dropped, free=Drop, copy=derive Clone) + free-fn->method. genann_init->new recovered."},
+  "urlparser": {"scorable": 17, "matcher": 0.882, "name_eq": 0.0, "note": "15/17; misses url_get_query (get_query/search homogeneous family) + strff->skip_forward (tiny helper)."},
+  "quadtree":  {"scorable": 14, "matcher": 0.643, "name_eq": 0.0, "note": "9/14; is_empty<->is_pointer swap (near-identical &self->bool predicates), node_contains + walk (fn-ptr->closure) missed. 3 *_new constructors EXCLUDED: analyzer collapses 4 'new' methods to 1 (hir-id name-collision)."}
+}

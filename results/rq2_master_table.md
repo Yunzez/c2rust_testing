@@ -33,10 +33,10 @@ Method for every filled cell: run both analyzers (C via `c_analyzer.py`, Rust vi
 
 | library | domain | ~#fn | homog.¹ | c2rust (mech.) | Laertes | C2SaferRust | CROWN | SACTOR | PtrTrans | **raw-LLM**² |
 |---|---|---:|---:|---|---|---|---|---|---|---|
-| **qsort** | sorting | 3 | low | 1.00/1.0 | 0.67/1.0 | 1.00/1.0 | ∅ᴺ | ∅ᴴ | ∅ᴴ | ∅ |
-| **urlparser** | URL parsing | 21 | low | 0.95/1.0 | 0.91/1.0 | 0.95/1.0 | 1.00/1.0 | — | — | ∅ |
-| **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.67/1.0 | — | ∅ᴴ | ∅ |
-| **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | ∅ |
+| **qsort** | sorting | 3 | low | 1.00/1.0 | 0.67/1.0 | 1.00/1.0 | ∅ᴺ | ∅ᴴ | ∅ᴴ | **0.67/0.0**ᴴ |
+| **urlparser** | URL parsing | 21 | low | 0.95/1.0 | 0.91/1.0 | 0.95/1.0 | 1.00/1.0 | — | — | **0.88/0.0**ᴴ |
+| **quadtree** | spatial tree | 24 | med | 1.00/1.0 | — | — | 0.67/1.0 | — | ∅ᴴ | **0.64/0.0**ᴴ |
+| **genann** | neural net | ~20 | med | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | 1.00/1.0 | ∅ᴴ | ∅ᴴ(decl) | **1.00/0.0**ᴴ |
 | **cJSON** | JSON parser | 58 | high | 1.00/1.0 | — | — | — | — | ∅ᴴ(partial) | ∅ |
 | **lil** | interpreter | 145 | **high ↑topo** | 0.97/1.0 | 0.95/1.0 | 0.99/1.0 | 0.92/1.0 | — | — | ∅ |
 | **lodepng** | PNG codec | 235 | high | 0.99/1.0 | — | — | 0.97/1.0 | — | — | ∅ |
@@ -91,6 +91,31 @@ Corpus-hygiene rule (learned building v1): match the library-core `.rs` only —
 driver files, or extra Rust functions become false attractors (genann×c2rust read 0.58 with drivers
 included, 1.00 once isolated). C-side compile_commands must be rewritten with local paths (the shipped
 laertes_benchmarks ones point at `/Users/emre/…`).
+
+## raw-LLM column v1 (2026-07-07) — the beat-the-baseline result
+
+**4 cells** on the E1 libraries, hand-labeled truth (`results/rq2_cells/rawllm/`). gpt-5.1, the disclosed
+prompt (commands renaming, leaks no correspondence). This is the ONLY column where **name-equality = 0.0**
+(the LLM renamed everything) — so it is the only place the matcher's name-independence is actually
+*tested* rather than validated.
+
+| library | matcher | name-eq | what happened |
+|---|--:|--:|---|
+| **genann** | **1.00** (8/8) | 0.0 | renamed all + dissolved 4 (read/write=FILE-IO, free=Drop, copy=derive Clone) + free-fn→method; matcher still recovered `genann_init→new`, `genann_randomize→randomize_weights`, etc. |
+| **urlparser** | **0.88** (15/17) | 0.0 | misses `url_get_query` (get_query/search homogeneous family) + `strff→skip_forward` (tiny helper) |
+| **qsort** | 0.67 (2/3) | 0.0 | LLM added idiomatic wrapper `quick_sort`; matcher picked it over the true recursive core `quick_sort_range`. Tiny programs are adversarial (no structure to grip). |
+| **quadtree** | 0.64 (9/14) | 0.0 | `is_empty↔is_pointer` swap (near-identical `&self→bool` predicates), `walk` (fn-ptr→closure reshape) missed. 3 `*_new` constructors EXCLUDED — the analyzer collapses 4 `new` methods to 1 ([[matcher-hir-id-todo]] name-collision). |
+
+**Read**: matcher recovers **.64–1.00** under genuine LLM renaming where name-equality gets **0.0** across
+the board — this is the "matcher enables differential testing on renaming translators" claim, on the E1
+libraries. The two low cells (qsort, quadtree) are the adversarial small/pointer-heavy cases with
+homogeneous predicate clusters; the medium ones (genann, urlparser) are strong. Matches the separate
+llm-transpiler corpus (.88 micro over 10 programs). **Hand-labeling honesty**: `scorable` = C functions
+with a genuine Rust counterpart; LLM-dissolved functions (FILE-IO, free/copy → Drop/Clone) are excluded
+(can't match what wasn't translated), and dissolution counts are reported per cell, not hidden in recall.
+
+**Open**: raw-LLM on the larger libs (cJSON/lil/lodepng/bzip2 — more structure, expect higher recall) +
+resolve the analyzer name-collision (hir-id) which currently caps quadtree-like multi-constructor cases.
 
 ## Column ordering rationale (rename axis)
 

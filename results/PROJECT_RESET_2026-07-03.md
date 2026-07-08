@@ -152,9 +152,14 @@ may be several frames up; one level is arbitrary).
 |---|---|---|---|---|
 | **E1** | **Bug finding** (all 3 classes; **semantic diff = the headline**) | Do we find real bugs — especially the semantic differences only differential testing can find? | 5 crash bugs; soundness census (0 FP / 126); **mutation recall 27/27 = we CAN catch injected semantic diffs** | **real semantic-diff bugs (currently 0)** |
 | **E2** | **Matcher** | Fair name-independent matching across tools that don't preserve names | matcher (bignum 92%, stable under rename); topology fix designed | run on the **union of CRUST-bench programs that ALL name-changing tools can translate**; **c2rust = baseline** (it keeps names) |
-| **E3** | **Coverage** | Do we bring *higher* coverage than what ships? | OOP harness generator; coverage census tool | **per-program: how many functions can we fuzz? coverage after 24h fuzzing? vs the program's shipped unit tests** (if none, count as 0). *If we're below their own tests, we're a joke.* |
+| **E3** | **Per-function hit-DEPTH** (REFRAMED 2026-07-08; not "coverage %") | Not "did we cover it" (plain fuzzing covers too — that critique killed the coverage-% framing) but **how DEEPLY** — how many times is each Rust function hit by the tool's/library's OWN validation vs by our differential fuzzing? | llvm-cov gives per-fn entry `count` FREE (no instrumenter); fft_crust prototype ready (8 fns, SACTOR validated with **6 samples** = shallow) | run the per-fn `their-tests-hits` vs `our-fuzz-hits` table on a bug library; annotate the bug'd functions. Claim = *validation is O(1) hits/fn → bugs survive; we hit O(10^5)×.* **E1-credibility, NOT matcher justification.** |
 
 Dropped: RQ4 head-to-head (FLOURINE/RustAssure), RQ5 frontier selection (retired).
+
+**Second finding axis — MAPPING (see §2b), NOT in the E1/E2/E3 program-behavior table above because it is
+a different axis (tool metadata, not runtime):** independent matcher audits the tool's shipped C↔Rust map.
+SACTOR clean, **PtrTrans 143/255 (56%) broken** — the sharpest, uniquely-ours justification for the matcher.
+`results/rq2_cells/mapping_audit/`.
 
 ---
 

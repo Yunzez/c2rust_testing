@@ -52,6 +52,50 @@ normally on it (the panic could be a precondition violation the C caller never m
 UB gate is what turned our 5 panics into **confirmed, attributed** transpiler bugs. So: **discovery**
 of class #3 doesn't need us; **attribution** does. The gap is that class #1 needs us for both.
 
+## 2b. A SECOND axis of defect — mapping bugs (the tool's own bookkeeping)
+
+Classes #1–#3 above are properties of the **translated program's runtime behavior**. There is a
+distinct, orthogonal axis: defects in the **tool's own output metadata** — specifically the C↔Rust
+**function-correspondence map** that a tool ships. This is NOT a runtime bug (the translated code can
+be perfectly correct while the map lies), so it does not belong in the semantic/crash taxonomy — it is
+a different kind of finding on a different axis. Frame as two layers, NOT a flat three-class list:
+**(layer 1) program-behavior bugs found by differential testing = semantic + crash/hang; (layer 2)
+tool-metadata bugs found by our independent name-independent matcher = mapping.**
+
+**Why only we can find it:** every other verifier (symbolic, formal, name-based differential) *trusts*
+the tool's claimed correspondence to set up its check. You cannot audit a tool's mapping using the
+tool's own mapping — that is circular. An **independent structural matcher** (name-blind) produces an
+alignment that does not come from the tool, so a disagreement between the tool's claimed map and the
+structural map is itself the finding. This is the sharpest answer to "why build a matcher when tools
+ship maps."
+
+**Audit result (2026-07-08) — we audited BOTH tools that ship an explicit map:**
+- **SACTOR — CLEAN.** `function_name_map.json` on every example SACTOR actually produced
+  (atoi/fft/hamming/course_manage/cmake_multi): no dangling targets, complete (extra Rust decomposition
+  helpers correctly excluded), renames correct (`printUsage→print_usage`). Reason it's trustworthy: the
+  map is a **deterministic record of SACTOR's own renaming**, not an inferred alignment. (SACTOR
+  produced no map on the real E1 libs — it failed to translate them.)
+- **PtrTrans — BROKEN.** `lodepng_Trans_PA_trans_metadata.jsonl`, 255 function-level records:
+  **143/255 (56%) have `rust_definition_name` ≠ the C name; only 101 (40%) self-consistent; 102/255
+  (40%) are AIRTIGHT scrambles** — the claimed Rust target name is itself a *distinct C function*.
+  Smoking guns: `lodepng_save_file → "load_file"` (save mapped to its semantic opposite),
+  `set32bitInt → "alloc_string"`, `read32bitInt → "memcpy"`, `update_adler32 → "deflate"`. These can't
+  be renames (the name already belongs to a different function). Reason it's broken: the map is an
+  **inferred KG alignment**, a separate fallible step. **Correction to earlier notes:** the old
+  "143/244 off-by-one" phrasing is imprecise — it's 143/255 mismatches and it is NOT off-by-one (only
+  18 are strict neighbor shifts); it is broad scrambling (102 airtight). Reproduce:
+  `scratchpad/sactor_audit.py` logic + the metadata jsonl; source at
+  `tools/frameworks/ptrtrans_rebuild/.../PA_trans_projects/lodepng_Trans_PA_trans_metadata.jsonl`.
+
+**Impact + the claim we make:** a differential test built on PtrTrans's shipped map would compare ~40%
+*wrong function pairs* → spurious divergences (false bugs) and missed real bugs, invisibly. Our claim:
+*mapping correctness is tool-specific and not guaranteed a priori (deterministic-record maps are sound,
+inferred maps can be badly wrong); an independent name-independent matcher is the only way to tell them
+apart, and it caught a 40%-scrambled map that every downstream consumer would have trusted.* One
+confirmed instance (PtrTrans) is enough to establish the class and to justify the matcher's audit role.
+Do NOT overclaim "mapping bugs are pervasive" — we audited 2 map-emitting tools, found 1 sound + 1
+broken.
+
 ---
 
 ## 3. Novelty — RE-ANCHORED (frontier selection is dead)

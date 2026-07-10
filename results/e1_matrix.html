@@ -151,10 +151,10 @@
       is a certificate, a crash is a finding — never a blank.</b> The recurring result: translator
       correctness is <b>per-library, not per-tool</b>.</p>
     <div class="meta">
-      <span>16 confirmed bugs · 4 tools</span>
+      <span>20 confirmed bugs · 5 tools</span>
       <span>16 equivalence certificates</span>
       <span>C-backed · UB-gated</span>
-      <span>updated 2026-07-06</span>
+      <span>updated 2026-07-10</span>
     </div>
   </header>
 
@@ -269,7 +269,7 @@
             <th>quadtree<span class="scale">spatial tree · 439 / ~25</span></th>
             <td class="c base">✓ base</td>
             <td class="c na" title="Laertes ships neither this library nor a runnable tool binary (only its 10 benchmark artifacts: bzip2/genann/grabc/lil/optipng/qsort/snudown/tulip/urlparser/xzoom). Can't generate a Laertes translation.">—</td>
-            <td class="c na">—</td>
+            <td class="c na" title="— no artifact. C2SaferRust is not a runnable C→Rust translator we can point at new libraries: we test its PUBLISHED safety-lifted outputs, which cover Laertes's 10-benchmark set. quadtree is not among them, and its lift stage is env-blocked (old nightly slicer). Nothing to differentially test.">—</td>
             <td class="c cert" title="CROWN --force-box rewrite (444 lines). 0 diffs on every non-crashing input; a shared crash (base c2rust segfaults identically) is a pre-existing recursion artifact, not CROWN.">✓* box</td>
             <td class="c fail" title="Circular-deps refusal (same class as cJSON): core quadtree.c refused pre-LLM — insert_ ↔ split_node_ textbook mutual recursion; SACTOR's topological translation order can't admit it. 3/5 leaf TUs translated fine but no linkable whole. Contrast: quadtree is PtrTrans's OWN benchmark (✓F) and CROWN lifts it.">✗ circular</td>
             <td class="c cert" title="PtrTrans shipped translation, differential clean.">✓</td>
@@ -286,7 +286,7 @@
           <tr>
             <th>cJSON<span class="scale">JSON parser · 3206 / 118</span></th>
             <td class="c cert" title="Round-trip 100k/0 — mechanical baseline faithful, validates harness.">✓ 100k</td>
-            <td class="c na">—</td>
+            <td class="c na" title="— no artifact. Laertes ships only its 10 fixed benchmark outputs and no runnable tool binary; cJSON is not among them, so there is no Laertes translation to differentially test.">—</td>
             <td class="c excl" title="Pipeline needs an old nightly slicer — environment-blocked.">⊘ env</td>
             <td class="c fail" title="rewrite crashes: internal error at rewrite_fn.rs:217 on print's [printbuffer;1].">✗ crash</td>
             <td class="c fail" title="Circular dependencies not supported — mutually-recursive descent parser.">✗ deps</td>
@@ -305,7 +305,7 @@
             <th>lodepng<span class="scale">PNG codec · 6658 / ~200</span></th>
             <td class="c cert" title="Original lodepng.c ≡ base c2rust, 3036 images roundtrip.">✓ 3036</td>
             <td class="c na" title="Laertes ships neither this library nor a runnable tool binary — can't generate a Laertes translation (unlike CROWN, whose tool we have and can feed via C→c2rust→CROWN).">—</td>
-            <td class="c na">—</td>
+            <td class="c na" title="— no artifact. We test C2SaferRust's PUBLISHED outputs (Laertes's 10-benchmark set); lodepng isn't among them and its lift stage is env-blocked. Sharp contrast: c2rust AND CROWN both certify this codec faithful (✓3036), but C2SaferRust has no artifact to test here.">—</td>
             <td class="c cert" title="HEADLINE (positive). Ran CROWN pipeline: 5689 lines rewritten, did NOT crash. C-backed: lodepng.c ≡ base ≡ CROWN, 3036 diverse images, encode+decode roundtrip, 0 diffs. CROWN CAN faithfully lift a 6.6k-LOC codec.">✓ 3036 <span class="star">★</span></td>
             <td class="c fail" title="Translate-fail, probe-evidenced: 7 struct-free leaf fns passed first-attempt (env healthy), then the FIRST struct-touching fn (uivector_init) hit the identical input-independent scaffold error genann died of (E0425 _IO_FILE, from lodepng_load_file(FILE*) in the typedef closure). ~180/200 fns struct-dependent → all inherit it. Probe terminated instead of burning ~1200 doomed LLM calls re-confirming a sealed outcome.">✗ translate</td>
             <td class="c fail" title="Compile-fail #3 (after lil, bzip2). 271 units translated, 95% ended Compile_Failed (176 exhausted all 5 repairs); final crate: 363 module-assembly errors (E0252×177 dup-imports, E0255×65, E0428×51, E0432×46 unresolved forward refs). NOT translation refusal — only 5 unimplemented!(). Sharpest contrast: c2rust AND CROWN both hold 3036-image certificates on this codec; PtrTrans can't assemble it.">✗ compile</td>
@@ -325,18 +325,17 @@
             <td class="c cert" title="11 arithmetic indicators (sma/ema/wma/rsi/mom/roc/dema/tema/trima/wilders/zlema), 150k random price-series records, 0 diffs vs base c2rust. Base-referenced (tulip C source not in repo). The 2 grep-flagged 'zeroed tables' are test-file scratch buffers, not lookup tables.">✓ 150k</td>
             <td class="c bug" title="Triage of the '7 utf8 sites' flipped: the utf8 suspicion = NON-bug (6/7 static ASCII; the argv one masked — both crates' env::args() wrappers panic identically first → shared artifact, excluded). Found instead: (1) CRASH — guard hoisting: argv[1] read moved above the argc<2 check → ./sample with no args segfaults (base prints usage). (2) SEMANTIC — argc off-by-one in the rewritten main() wrapper → valid 'sample sma 5' rejected with ERROR NOT ENOUGH OPTIONS (base prints the SMA table). Both driver-level. Indicator values faithful: 150k records × 11 indicators byte-identical vs base.">1c 1s</td>
             <td class="c excl" title="CROWN rewrote only ti_buffer alloc/free + a test helper; ~100 indicators left mechanical. No value-semantics surface.">▽ min</td>
-            <td class="c na">—</td>
-            <td class="c na">—</td>
+            <td class="c todo" title="∅ INGESTS — not a parse-fail, not '—' (2026-07-10). tulip's C source isn't in the repo; we pulled it from upstream (TulipCharts v0.9.2). SACTOR's resolver parses all 108 TUs + reaches the LLM translation stage (Translating indicators.c) — tulip has no member-fn-ptr allocator, so it clears the wall that stops bzip2/optipng. Verdict is a paid run (104 indicators + the 104-entry ti_indicators[] fn-ptr dispatch table; translation-stage failure plausible but unmeasured). Rigor: a first flat-dir harness broke tulip's ../indicators.h includes → spurious USR=None; caught by checking the C compiles first. Evidence: rq1_bugs/tulip_sactor/.">∅<span style="color:var(--ink-3)">·ingests</span></td>
+            <td class="c todo" title="∅ not attempted (distinct from Laertes/C2SaferRust '—'). Our rebuilt PtrTrans pipeline is runnable but tulip isn't set up as a crown_dataset entry (needs an amalgamated .c + SVF pre-pass; tulip = 104 files w/ the fn-ptr dispatch table). Failure likely per the scale cliff (PtrTrans compile-fails on lil/bzip2/lodepng) but UNVERIFIED → ∅ not ✗.">∅</td>
           </tr>
           <tr>
             <th>optipng<span class="scale">PNG optimizer · ~30k / ~400</span></th>
             <td class="c base">✓ base</td>
-            <td class="c cert" title="crc32_z 3-way tested faithful (partial).">✓ᵖ</td>
             <td class="c bug" title="Laertes uncalled-init zeroes zlib's crc_table (no DYNAMIC_CRC_TABLE, no runtime rebuild). C ≡ base c2rust: 0 diffs; C vs Laertes: 196,985/200,006 wrong CRC (98.49%). adler32 (no table) untouched — isolates the bug to the table path. THIRD checksum-corruption instance — same crc32_z C2SaferRust broke differently.">1s <span class="star">★</span></td>
             <td class="c bug" title="HEADLINE #1. crc32_z + adler32_z empty-chunk reset (is_null→is_empty) + -dir UTF-8 panic. The SAME crc32_z Laertes also breaks — differently.">1c 2s <span class="star">★</span></td>
             <td class="c fail" title="Fed to CROWN via C→c2rust→CROWN. CRASHES in the analyse phase: ownership inference solves 1087 functions then aborts — assertion failed at infer.rs:658 on png_create_png_struct (precision-3 pass). Empty analysis_results → rewrite can't run. Earlier crash than cJSON. No --no-attempt escape (solver, not per-fn).">✗ analyse</td>
-            <td class="c na">—</td>
-            <td class="c na">—</td>
+            <td class="c fail" title="✗(parse) — genuine resolver failure at $0 (was '—', 2026-07-10). Whole-program walk from optipng.c reaches bundled zlib deflate.c:277 — s = ZALLOC(strm,1,sizeof(deflate_state)) where ZALLOC = (*((strm)->zalloc))(...), the member-fn-pointer allocator: the IDENTICAL construct that parse-fails bzip2 (BZALLOC). The C compiles clean under the same compile_commands (gcc exit 0), so it's SACTOR's resolver limit, not a build artifact; 0 LLM calls. Evidence: rq1_bugs/optipng_sactor/.">✗ parse</td>
+            <td class="c todo" title="∅ not attempted (distinct from Laertes/C2SaferRust '—'). Our rebuilt PtrTrans pipeline is runnable but optipng (30k LOC, multi-file) isn't set up as a crown_dataset entry. Failure very likely per the scale cliff (PtrTrans compile-fails on the far smaller lil/bzip2/lodepng) but UNVERIFIED → ∅ not ✗. SVF pre-LLM probe is ~$0; a full per-unit translation is not.">∅</td>
           </tr>
         </tbody>
       </table>

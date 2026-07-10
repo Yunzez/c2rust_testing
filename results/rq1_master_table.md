@@ -114,12 +114,14 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
   **CROWN lodepng C-backed cert — faithfully lifts a 6.6k-LOC PNG codec**; CROWN quadtree faithful)
 - **CROWN column now complete**: broken on bzip2 (headline #3) + cJSON (rewrite crash); faithful on
   lodepng/genann/lil/quadtree; urlparser UB-excluded; tulip minimal-surface. **Per-library, not per-tool.**
-- **Tool failures: 12** (CROWN on cJSON *rewrite* + optipng *analyse*; C2SaferRust env-blocked;
+- **Process failures (`✗`): 14** (CROWN on cJSON *rewrite* + optipng *analyse*;
   **PtrTrans compile-fail ×3: lil, bzip2, lodepng** — scale cliff: its three biggest tightly-coupled
-  targets all fail assembly; **SACTOR ×5: cJSON/quadtree/lil circular-deps refusals (recursive cores
-  are structurally outside its topological order), lodepng fn-ptr-typedef scaffold break, bzip2
-  parse-fail** — genann upgraded from failure to a headline BUG after our pipeline patches, #32); **4 UB-gate exclusions** (urlparser × CROWN, × Laertes, × PtrTrans, × SACTOR —
-  same UB C, library-level gate); **1 oracle-nondeterminism exclusion** (Laertes lil)
+  targets all fail assembly; **SACTOR ×7: cJSON/quadtree/lil circular-deps refusals (recursive cores
+  are structurally outside its topological order), lodepng fn-ptr-typedef scaffold break, bzip2 +
+  optipng member-fn-ptr-allocator parse-fail, tulip fn-ptr-dispatch-table verify-link-fail** — genann
+  upgraded from failure to a headline BUG after our pipeline patches, #32); **4 UB-gate exclusions**
+  (urlparser × CROWN, × Laertes, × PtrTrans, × SACTOR — same UB C, library-level gate); **1
+  oracle-nondeterminism exclusion** (Laertes lil)
 - **SACTOR column complete (10/10 attempted cells)**: qsort ✓F / urlparser ⊘ / **genann s:1 ★#6 (the
   immutable lookup — recovered from its broken pipeline via 4 disclosed patches, then 100% divergent)**
   / quadtree ✗ / cJSON ✗ / lil ✗ / lodepng ✗ / bzip2 ✗ / **tulip ✗(verify)** / **optipng ✗(parse)**. Its

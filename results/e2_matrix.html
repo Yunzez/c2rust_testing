@@ -156,7 +156,8 @@
       <span>rows = E1 libraries (locked)</span>
       <span>cols = 6 tools + raw-LLM, by rename-aggressiveness</span>
       <span>cell = matcher-recall / name-eq-recall</span>
-      <span>v1 — 24 name-preserving + 4 raw-LLM cells; raw-LLM: matcher .64–1.0 vs name-eq 0.0</span>
+      <span>24 name-preserving + 7 raw-LLM cells · raw-LLM: matcher .55–1.0 vs name-eq 0.0–0.15</span>
+      <span>+ mapping audit: PtrTrans shipped map 143/255 broken · SACTOR clean</span>
     </div>
   </header>
 
@@ -179,8 +180,8 @@
       <div class="sub">matcher holds, name-eq floors</div>
     </div>
     <div class="tile">
-      <div class="n">24<small> / ~16</small></div>
-      <div class="k">Name-preserving cells done / to go</div>
+      <div class="n">31<small> cells</small></div>
+      <div class="k">24 name-preserving + 7 raw-LLM</div>
       <div class="sub">8 libraries · 3→235 fn · blind-check ✓</div>
     </div>
   </div>
@@ -229,9 +230,13 @@ Rules:
         </tbody>
       </table>
     </div>
-    <p class="thesis" style="margin-top:14px;font-size:13px">Ablation on lil's 128-function homogeneous
-      stress: shape-only <b>.359</b> → node signals <b>.742</b> → <b>+ call-graph topology .984</b>.
-      Topology cracks the cluster per-function signals cannot.</p>
+    <p class="thesis" style="margin-top:14px;font-size:13px">Ablation ladder, two complementary stress cases:
+      <b>lil</b> (128-fn homogeneous dispatch): shape-only <b>.359</b> → node signals <b>.742</b> →
+      <b>+ call-graph topology .984</b> — topology cracks connected clusters.
+      <b>cJSON</b> (58-fn flat constructor API): +topology alone stalls at <b>.375</b> (leaf constructors
+      call nothing) → <b>+ signal-C</b> (type-tag/enum-variant) <b>.475</b> → <b>+ input-element-type .55</b> —
+      signal-C cracks what topology cannot. Each signal earns its rung on a different case; zero
+      regression across 56 name-preserving libs (SIGNAL_C.md).</p>
   </section>
 
   <section class="section">
@@ -254,7 +259,7 @@ Rules:
           <tr>
             <th>qsort<span class="scale">3 fn · low</span></th>
             <td class="c done" title="c2rust 3/3 blind."><span class="r">1.00</span>/<span class="s">1.0</span></td>
-            <td class="c done" title="Laertes 2/3 — small programs are HARD for structural matching: 3 near-identical int-pointer fns (swap/partition), no topology to disambiguate. Honest low point."><span class="r">0.63</span>/<span class="s">1.0</span></td>
+            <td class="c done" title="Laertes 2/3 — small programs are HARD for structural matching: 3 near-identical int-pointer fns (swap/partition), no topology to disambiguate. Honest low point."><span class="r">0.67</span>/<span class="s">1.0</span></td>
             <td class="c done" title="C2SaferRust 3/3 blind."><span class="r">1.00</span>/<span class="s">1.0</span></td>
             <td class="c todoN" title="CROWN qsort artifact is elsewhere (fed via C→c2rust→CROWN recipe, not in laertes_benchmarks). TODO.">∅<sup>ᴺ</sup></td>
             <td class="c todoH" title="SACTOR idiomatic rename → hand-labeled truth needed. Artifact exists (E1 s:1).">∅<sup>ᴴ</sup></td>
@@ -276,7 +281,7 @@ Rules:
             <td class="c done" title="c2rust 24/24 blind."><span class="r">1.00</span>/<span class="s">1.0</span></td>
             <td class="c na" title="Laertes does not ship quadtree (E1 —).">—</td>
             <td class="c na" title="C2SaferRust does not ship quadtree (E1 —).">—</td>
-            <td class="c done" title="CROWN 16/24 — the honest low point: --force-box reshapes the pointer-heavy node signatures (nw/ne/sw/se) enough to break structural matching, where c2rust on the same setup = 1.0. Motivates signal-C (constants) beyond shape+topology."><span class="r">0.67</span>/<span class="s">1.0</span></td>  
+            <td class="c done" title="CROWN 15/24 — the honest low point: --force-box reshapes the pointer-heavy node signatures (nw/ne/sw/se) enough to break structural matching, where c2rust on the same setup = 1.0. Motivates signal-C (constants) beyond shape+topology."><span class="r">0.63</span>/<span class="s">1.0</span></td>
             <td class="c na" title="SACTOR ✗(circular) — no whole artifact (3/5 leaf TUs only).">—</td>
             <td class="c todoH" title="PtrTrans shipped quadtree (E1 ✓F) — reshaped/renamed → hand truth.">∅<sup>ᴴ</sup></td>
             <td class="c done" title="raw-LLM: name-eq 0.0. matcher 12/17 (after hir-id fix — analyzer now distinguishes the 4 new methods). All 3 constructors recovered by topology. Misses: is_empty↔is_pointer swap, bounds_new vs from_corners, walk. Was 0.64 (9/14, 3 excluded) before the fix."><span class="r">0.71</span>/<span class="s">0.0</span></td>
@@ -299,7 +304,7 @@ Rules:
             <td class="c na" title="CROWN cJSON rewrite crash (E1 ✗) — no artifact.">—</td>
             <td class="c na" title="SACTOR cJSON circular (E1 ✗) — no artifact.">—</td>
             <td class="c todoH" title="PtrTrans cJSON partial: 94/118 units (E1 headline #2). Hand truth on the translated subset.">∅<sup>ᴴ</sup><span style="color:var(--ink-3)">·94/118</span></td>
-            <td class="c todo">∅</td>
+            <td class="c done" title="raw-LLM: the big-but-flat counterexample that motivated signal-C. Matcher recovers the recursive parse_*/print_* core but the 12 cJSON_Create* leaf constructors (identical ()→Value shapes, call nothing → zero topology) permuted: 0.375 baseline → +signal-C (type-tag/enum-variant jaccard) 0.475 → +input-element-type 0.55 (22/40). Deterministic (matcher _dir sort fix). name-eq 0.15 ≠ 0: the LLM disobeyed and kept 6 parse_* names. 18/58 dissolved. Zero regression across 56 name-preserving libs (SIGNAL_C.md)."><span class="r">0.55</span>/<span class="s">0.15</span><sup>ᶜ</sup></td>
           </tr>
           <tr>
             <th>lil<span class="scale">145 fn · <span class="tp">high ↑topo</span></span></th>
@@ -309,7 +314,7 @@ Rules:
             <td class="c done" title="CROWN 118/128 blind. The matcher holds ~95%+ across all four tools on a 145-fn high-homogeneity interpreter — the batch headline."><span class="r">0.92</span>/<span class="s">1.0</span></td>
             <td class="c na" title="SACTOR lil circular (E1 ✗) — no artifact.">—</td>
             <td class="c na" title="PtrTrans lil compile-fail (E1 ✗) — no artifact.">—</td>
-            <td class="c todo">∅</td>
+            <td class="c done" title="raw-LLM: the names-kept boundary case. The LLM DISOBEYED the rename order and kept the fnc_* handler names (methodized), so leaf-name matching scores 0.55 too — not the matcher's regime (its edge is the renamed regime where name-eq→0). Matcher ties it at 0.55 (61/111) WITHOUT reading names: round-2 signals (unary neg in op histogram resolved the fnc_inc↔fnc_dec twin; signal-S string-literal refs, BinDiff lineage, W=0.10 mid-band anti-test-tuning). Family-level 92% (all 55 fnc_* pinned, zero leak). 17/128 dissolved. Graceful degradation: exact-graph 0.97 → LLM approx-graph 0.55."><span class="r">0.55</span>/<span class="s">0.55</span><sup>ᵏ</sup></td>
           </tr>
           <tr>
             <th>lodepng<span class="scale">235 fn · high</span></th>
@@ -329,7 +334,7 @@ Rules:
             <td class="c done" title="CROWN 64/64 blind despite the ownership rewrite that broke it at runtime (E1 #3)."><span class="r">1.00</span>/<span class="s">1.0</span></td>  
             <td class="c na" title="SACTOR bzip2 parse-fail (E1 ✗).">—</td>
             <td class="c na" title="PtrTrans bzip2 compile-fail (E1 ✗).">—</td>
-            <td class="c todo">∅</td>
+            <td class="c done" title="raw-LLM: the clean real-rename cell. LLM heavily renamed (BZ2_bsInitWrite→init_bit_write, sendMTFValues→send_mtf_values) → name-eq 0.15, matcher 0.63 (26/41) = 4.3× gap. Blind-check passed. Fed PER-FILE (5 core .c as separate units + bzlib_private.h context) — tractable, but duplicates cross-file fns + stubs others: ~5/15 misses are the matcher picking a valid non-canonical copy under strict 1:1 truth (duplicate-aware ≈0.75). 23/64 dissolved (stdio FILE API, allocator, Drop)."><span class="r">0.63</span>/<span class="s">0.15</span></td>
           </tr>
           <tr>
             <th>tulipindicators<span class="scale">~100 fn · very high</span></th>
@@ -361,6 +366,7 @@ Rules:
       <span><i class="sw na"></i>— no artifact (inherits E1 fail)</span>
       <span><b class="tp" style="color:var(--star)">↑topo</b> topology load-bearing</span>
       <span><span style="color:var(--free)">≡</span> keeps names · <span style="color:var(--star)">≠</span> renames (name-eq breaks)</span>
+      <span><sup>ᶜ</sup> signal-C load-bearing · <sup>ᵏ</sup> LLM kept names (fair leaf-name baseline)</span>
     </div>
   </section>
 
@@ -397,6 +403,15 @@ Rules:
           signals saturate and <span class="lead">call-graph topology carries the match</span>.</p>
       </div>
       <div class="ins">
+        <h4><span class="dot" style="background:var(--base)"></span>The mapping audit — a shipped map you can't trust</h4>
+        <p>"Tools ship their own C↔Rust map, why a matcher?" Because the map itself can be a
+          <span class="lead">tool-metadata bug</span>: PtrTrans's shipped lodepng mapping is
+          <b>143/255 (56%) broken</b> — 102 airtight scrambles where the claimed Rust name is a
+          <i>different</i> C function (<code>save_file→load_file</code>). SACTOR's map audits clean.
+          Only an independent, name-blind matcher can audit a tool's bookkeeping — checking it with
+          its own map is circular. (<code>rq2_cells/mapping_audit/</code>)</p>
+      </div>
+      <div class="ins">
         <h4><span class="dot" style="background:var(--free)"></span>Ground-truth economics</h4>
         <p>~40 cells are near-free: the name-preserving tools mean <span class="lead">name-equality IS
           the truth</span>, so we just check the blind matcher recovers it. Only the ~6 renaming-tool
@@ -412,7 +427,7 @@ Rules:
   </section>
 
   <footer>
-    <span>results/rq2_master_table.md · rq3_matcher_v1.md · matcher.py</span>
+    <span>results/rq2_master_table.md · rq2_cells/{regression/SIGNAL_C.md, mapping_audit} · matcher.py</span>
     <span>method: dual analyzers → matcher.match() (no names) → precision/recall/coverage vs truth</span>
   </footer>
 </div>

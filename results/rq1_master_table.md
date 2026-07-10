@@ -45,8 +45,8 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 | **lil** | script interpreter | 3723 | ~128 | ✓ base | **✓F(111k)** ¹⁵ | **c:1** ⁶ | **✓F(111k)** ¹¹ | **✗(circular)** ³⁴ | **✗(compile)** ²⁵ |
 | **lodepng** | PNG codec | 6658 | ~200 | **✓F(3036)** ¹⁹ | — | — | **✓F(3036)** ★¹⁹ | **✗(translate)** ³⁵ | **✗(compile)** ²⁸ |
 | **bzip2** | compressor | 7344 | ~110 | ✓ base | **s:1** ★¹⁴ | **c:1 s:1** ⁷ | **c:1 s:2** ★¹⁰ | **✗(parse)** ³⁶ | **✗(compile)** ²⁶ |
-| **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | **✓F(150k)** ²³ | **c:1 s:1** ³⁰ | ▽(minimal surface)¹³ | **✗(verify)** ³⁷ | ∅³⁹ |
-| **optipng** (incl. zlib) | PNG optimizer | ~30k | ~400 | ✓ base | **s:1** ★⁸ | **c:1 s:2** ★⁹ | **✗(analyse panic)** ²¹ | **✗(parse)** ³⁸ | ∅³⁹ |
+| **tulipindicators** | financial indicators | ~5k | ~100 | ✓ base | **✓F(150k)** ²³ | **c:1 s:1** ³⁰ | ▽(minimal surface)¹³ | **✗(verify)** ³⁷ | **✗(PA)** ³⁹ |
+| **optipng** (incl. zlib) | PNG optimizer | ~30k | ~400 | ✓ base | **s:1** ★⁸ | **c:1 s:2** ★⁹ | **✗(analyse panic)** ²¹ | **✗(parse)** ³⁸ | **✗(PA, >2h)** ⁴⁰ |
 
 ᵃ CROWN artifact **already shipped** in laertes_benchmarks (`*_crown/`) — zero-cost to test.
 ᵖ C source in PtrTrans crown_dataset — our reproduced pipeline can translate (LLM cost per lib).
@@ -92,7 +92,8 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 19. ★ CROWN lodepng: ran CROWN's pipeline (preprocess→analyse→rewrite `--no-attempt bpmnode_create|uivector_resize`, **5689 lines rewritten**, builds — did NOT crash like cJSON). **C-backed certificate**: original lodepng.c ≡ base c2rust ≡ CROWN, **3036 diverse images (solid/gradient/random/patterns, 1×1–64×64), encode32+decode32 roundtrip, 0 diffs**. C oracle from crown_dataset lodepng.c (commit 997936f). CROWN CAN faithfully lift a 6.6k-LOC PNG codec — sharpens the per-library story: CROWN faithful on lodepng (big codec) yet broken on bzip2 (also a codec). Scratch `cl_ws/`, `cl_base/`, `cl_oracle.c`.
 37. SACTOR tulipindicators (2026-07-10): **`✗(verify)` — process failure at the verification-link stage; the paid run settled it (was `—`)**. tulip's C source isn't in the repo; we pulled it from upstream (TulipCharts/tulipindicators v0.9.2) and ran the full pipeline. SACTOR **parses all 108 TUs and the LLM translated every indicator** — tulip has no member-fn-ptr *allocator*, so it clears the parse wall that stops bzip2/optipng. But **all 108 functions then failed identically at SACTOR's per-function verification**: it embeds each translated Rust fn back into the C program and links a test harness, and the link fails with **217 undefined symbols**. Root cause traced to the linker: SACTOR's `build_link_closure` (project_index.py) walks **direct call edges only**, but tulip's `ti_indicators[]` **function-pointer dispatch table** references all 104 indicators by **address in a `.data` initializer** (not calls) — invisible to the closure, so the harness links only `sample.o + indicators.o` and every `ti_*` symbol is undefined (reproduced by hand: `indicators.o:(.data+0x10): undefined reference to ti_abs_start`). Same fn-ptr construct that is SACTOR's recurring nemesis, now at a **third stage** (parse → scaffold → **verify-link**). **We did NOT patch SACTOR** (deliberate — we evaluate tools as-shipped; the closure gap for address-taken functions is a genuine SACTOR limitation, so `✗` is the honest verdict). This is `✗(process)`-class (tool produced no *testable* translation), same class as the parse-fails — see the process-failure note below. **Rigor note**: a first flat-directory harness broke tulip's `#include "../indicators.h"` relative includes → a *spurious* `USR=None`; caught by checking the C compiles under the exact `compile_commands.json` before trusting any failure. Evidence: `rq1_bugs/tulip_sactor/`.
 38. SACTOR optipng (2026-07-10): **`✗(parse)` — genuine resolver failure at $0 (was `—`)**. Whole-program walk from `optipng.c` reaches bundled zlib `deflate.c:277`, `s = ZALLOC(strm, 1, sizeof(deflate_state))` where `ZALLOC` = `(*((strm)->zalloc))(...)` — the **member-function-pointer allocator**, the identical construct that parse-fails bzip2 (`BZALLOC`, #36). The C compiles clean under the same `compile_commands.json` (`gcc` exit 0; deflate.c only `-Wold-style-definition` warnings), so it is SACTOR's resolver limit, not a build artifact; 0 LLM calls. Consistent whole-program verdict (the E1 row is "optipng incl. zlib"; optipng cannot run without its compression backend). Evidence: `rq1_bugs/optipng_sactor/`.
-39. PtrTrans tulipindicators / optipng: **`∅` — not attempted (distinct from Laertes/C2SaferRust `—`)**. Our rebuilt PtrTrans pipeline (`tools/frameworks/ptrtrans_rebuild/`) is runnable, but neither library is set up as a `crown_dataset` entry yet (PtrTrans wants a single amalgamated `.c` + SVF pre-pass; tulip is 104 files with the fn-ptr dispatch table, optipng is 30k LOC multi-file). Given the scale cliff (PtrTrans compile-fails on lil 3.7k / bzip2 7.3k / lodepng 6.6k, #25/#26/#28), failure on the two largest targets is *likely* — but **unverified**, so `∅` (runnable-not-run), not a claimed `✗`. Deferred pending a decision on setup cost (SVF pre-LLM stage is ~$0; a full per-unit translation of optipng is not).
+39. PtrTrans tulipindicators (2026-07-10): **`✗(PA)` — its required program-analysis stage crashes on the fn-ptr dispatch table; measured at $0 (was `∅`)**. Entry = tulip's own shipped amalgamation (`make tiamalgamation.c`, 248 KB single .c, the qsort-style input). The *pipeline* ingests it fine — expand/deal, doxygen, KG (856 relationships), slicing all pass, reaching the first LLM call (stopped by a dummy-key money guard, $0). But the **PA pre-pass fails both ways**: `pa_struct` **hard-crashes** (`std::invalid_argument: stoul`, abort) precisely while analyzing **`struct.ti_indicator_info` — the 104-entry function-pointer dispatch table** (reproduced with AND without `-g`); `pa_func` does not terminate in 1 h (qsort: seconds; optipng's *larger* IR: completes — it's the fn-ptr table, not size). Without the SA reports, Trans_PA (the paper's claimed configuration) cannot run. **Cross-tool echo: the same dispatch table defeats SACTOR at verify-link (#37) and PtrTrans at struct-analysis — the fn-ptr nemesis is not a single-tool quirk.** Not patched (as-shipped policy). Evidence: `rq1_bugs/tulip_ptrtrans/`.
+40. PtrTrans optipng (2026-07-10): **`✗(PA, >2h)` — struct analysis exceeds a 2-hour budget; measured at $0 (was `∅`)**. Flat 53-TU entry (bzip2-entry precedent); all TUs compile, all 53 IRs generate, `llvm-link` clean (8.6 MB). `pa_func` **completes** (func_analysis_report.json produced — SVF handles the 95 kLOC bundle at function level). `pa_struct` **does not terminate in 2 h**, stuck in the same struct-usage analysis that crashes on tulip — here grinding libpng/zlib's function-pointer-bearing structs (`png_struct` callbacks, `z_stream` zalloc/zfree). Budget stated honestly (a longer run could in principle upgrade it); context: PtrTrans compile-fails at *assembly* on lil/bzip2/lodepng after full paid runs, and optipng is 4–15× larger than all three. Evidence: `rq1_bugs/optipng_ptrtrans/`.
 
 ## Current totals (filled cells only)
 
@@ -114,14 +115,20 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
   **CROWN lodepng C-backed cert — faithfully lifts a 6.6k-LOC PNG codec**; CROWN quadtree faithful)
 - **CROWN column now complete**: broken on bzip2 (headline #3) + cJSON (rewrite crash); faithful on
   lodepng/genann/lil/quadtree; urlparser UB-excluded; tulip minimal-surface. **Per-library, not per-tool.**
-- **Process failures (`✗`): 14** (CROWN on cJSON *rewrite* + optipng *analyse*;
-  **PtrTrans compile-fail ×3: lil, bzip2, lodepng** — scale cliff: its three biggest tightly-coupled
-  targets all fail assembly; **SACTOR ×7: cJSON/quadtree/lil circular-deps refusals (recursive cores
-  are structurally outside its topological order), lodepng fn-ptr-typedef scaffold break, bzip2 +
-  optipng member-fn-ptr-allocator parse-fail, tulip fn-ptr-dispatch-table verify-link-fail** — genann
-  upgraded from failure to a headline BUG after our pipeline patches, #32); **4 UB-gate exclusions**
-  (urlparser × CROWN, × Laertes, × PtrTrans, × SACTOR — same UB C, library-level gate); **1
-  oracle-nondeterminism exclusion** (Laertes lil)
+- **Process failures (`✗`): 16** (CROWN on cJSON *rewrite* + optipng *analyse*;
+  **PtrTrans ×5: compile-fail on lil, bzip2, lodepng** — scale cliff: its three biggest tightly-coupled
+  targets all fail assembly — **+ PA-stage fail on tulip (pa_struct crashes on the fn-ptr dispatch
+  table) and optipng (pa_struct >2h)**; **SACTOR ×7: cJSON/quadtree/lil circular-deps refusals
+  (recursive cores are structurally outside its topological order), lodepng fn-ptr-typedef scaffold
+  break, bzip2 + optipng member-fn-ptr-allocator parse-fail, tulip fn-ptr-dispatch-table
+  verify-link-fail** — genann upgraded from failure to a headline BUG after our pipeline patches,
+  #32); **4 UB-gate exclusions** (urlparser × CROWN, × Laertes, × PtrTrans, × SACTOR — same UB C,
+  library-level gate); **1 oracle-nondeterminism exclusion** (Laertes lil)
+- **The fn-ptr nemesis is CROSS-TOOL**: tulip's 104-entry `ti_indicators[]` dispatch table defeats
+  SACTOR at verify-link (#37) AND PtrTrans at struct-analysis (#39 — `pa_struct` aborts on that very
+  struct); optipng's fn-ptr-bearing struct family (libpng callbacks, zlib allocator hooks) parse-fails
+  SACTOR (#38) AND stalls PtrTrans's `pa_struct` past 2 h (#40). One C idiom, two tools, four cells,
+  four different pipeline stages.
 - **SACTOR column complete (10/10 attempted cells)**: qsort ✓F / urlparser ⊘ / **genann s:1 ★#6 (the
   immutable lookup — recovered from its broken pipeline via 4 disclosed patches, then 100% divergent)**
   / quadtree ✗ / cJSON ✗ / lil ✗ / lodepng ✗ / bzip2 ✗ / **tulip ✗(verify)** / **optipng ✗(parse)**. Its
@@ -132,9 +139,10 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
   indicators all translate, then 108/108 fail because `build_link_closure`'s call-graph walk can't see
   the `ti_indicators[]` table's address-taken references → 217 undefined `.data` symbols). Its
   per-function FFI verification cannot see whole-program bugs — and, on tulip, cannot even be assembled.
-- **PtrTrans column now complete (8/8 C-backed cells)**: quadtree ✓F / cJSON ▲+s:3 (headline #2) /
+- **PtrTrans column now complete (10/10 cells)**: quadtree ✓F / cJSON ▲+s:3 (headline #2) /
   genann ▲decl-only / qsort **s:1 — the sort that doesn't sort** (#29) / lil ✗ / bzip2 ✗ / lodepng ✗ /
-  urlparser ⊘. Its only two runnable nontrivial artifacts (cJSON, qsort) BOTH carry silent semantic
+  urlparser ⊘ / **tulip ✗(PA — pa_struct crashes on the fn-ptr table, #39)** / **optipng ✗(PA, >2h,
+  #40)**. Its only two runnable nontrivial artifacts (cJSON, qsort) BOTH carry silent semantic
   bugs of the same reshaping-contract class.
 - **Scale defeats CROWN's pipeline**: the two largest/most realistic libs both crash it — cJSON (3.2k
   recursive parser, rewrite) + optipng (~95k codec bundle, analysis). Its certificates are all smaller,

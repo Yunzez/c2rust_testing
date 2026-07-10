@@ -326,7 +326,7 @@
             <td class="c bug" title="Triage of the '7 utf8 sites' flipped: the utf8 suspicion = NON-bug (6/7 static ASCII; the argv one masked — both crates' env::args() wrappers panic identically first → shared artifact, excluded). Found instead: (1) CRASH — guard hoisting: argv[1] read moved above the argc<2 check → ./sample with no args segfaults (base prints usage). (2) SEMANTIC — argc off-by-one in the rewritten main() wrapper → valid 'sample sma 5' rejected with ERROR NOT ENOUGH OPTIONS (base prints the SMA table). Both driver-level. Indicator values faithful: 150k records × 11 indicators byte-identical vs base.">1c 1s</td>
             <td class="c excl" title="CROWN rewrote only ti_buffer alloc/free + a test helper; ~100 indicators left mechanical. No value-semantics surface.">▽ min</td>
             <td class="c fail" title="✗(verify) — process failure at the verification-link stage; the paid run settled it (was '—', 2026-07-10). Parse PASSES (all 108 TUs, unresolved=0 — no member-fn-ptr allocator, so it clears the bzip2/optipng wall) and the LLM translated all 104 indicators. Then 108/108 failed identically at SACTOR's per-function verify harness: it embeds each Rust fn back into C and the link fails with 217 undefined symbols. Root cause traced to the linker: build_link_closure walks direct CALL edges only, but tulip's ti_indicators[] dispatch table references all 104 indicators by ADDRESS in a .data initializer (not calls) → invisible to the closure → harness links only sample.o+indicators.o → every ti_* undefined (reproduced: indicators.o:(.data+0x10): undefined reference to ti_abs_start). The fn-ptr nemesis at a THIRD stage (parse → scaffold → verify-link). We did NOT patch SACTOR — genuine as-shipped limitation. Evidence: rq1_bugs/tulip_sactor/.">✗ verify</td>
-            <td class="c todo" title="∅ not attempted (distinct from Laertes/C2SaferRust '—'). Our rebuilt PtrTrans pipeline is runnable but tulip isn't set up as a crown_dataset entry (needs an amalgamated .c + SVF pre-pass; tulip = 104 files w/ the fn-ptr dispatch table). Failure likely per the scale cliff (PtrTrans compile-fails on lil/bzip2/lodepng) but UNVERIFIED → ∅ not ✗.">∅</td>
+            <td class="c fail" title="✗(PA) — its required program-analysis stage crashes on the fn-ptr dispatch table; measured at $0 (2026-07-10). Entry = tulip's own shipped amalgamation (make tiamalgamation.c, qsort-style single .c). The pipeline ingests it fine — expand/deal, doxygen, KG (856 relationships), slicing all pass, reaching the first LLM call (dummy-key money guard, $0). But the PA pre-pass fails both ways: pa_struct HARD-CRASHES (std::invalid_argument: stoul, abort) precisely while analyzing struct.ti_indicator_info — the 104-entry function-pointer dispatch table (reproduced with AND without -g); pa_func doesn't terminate in 1h (qsort: seconds; optipng's LARGER IR completes — it's the table, not size). Cross-tool echo: the same table defeats SACTOR at verify-link and PtrTrans at struct-analysis. Not patched (as-shipped). Evidence: rq1_bugs/tulip_ptrtrans/.">✗ PA</td>
           </tr>
           <tr>
             <th>optipng<span class="scale">PNG optimizer · ~30k / ~400</span></th>
@@ -335,7 +335,7 @@
             <td class="c bug" title="HEADLINE #1. crc32_z + adler32_z empty-chunk reset (is_null→is_empty) + -dir UTF-8 panic. The SAME crc32_z Laertes also breaks — differently.">1c 2s <span class="star">★</span></td>
             <td class="c fail" title="Fed to CROWN via C→c2rust→CROWN. CRASHES in the analyse phase: ownership inference solves 1087 functions then aborts — assertion failed at infer.rs:658 on png_create_png_struct (precision-3 pass). Empty analysis_results → rewrite can't run. Earlier crash than cJSON. No --no-attempt escape (solver, not per-fn).">✗ analyse</td>
             <td class="c fail" title="✗(parse) — genuine resolver failure at $0 (was '—', 2026-07-10). Whole-program walk from optipng.c reaches bundled zlib deflate.c:277 — s = ZALLOC(strm,1,sizeof(deflate_state)) where ZALLOC = (*((strm)->zalloc))(...), the member-fn-pointer allocator: the IDENTICAL construct that parse-fails bzip2 (BZALLOC). The C compiles clean under the same compile_commands (gcc exit 0), so it's SACTOR's resolver limit, not a build artifact; 0 LLM calls. Evidence: rq1_bugs/optipng_sactor/.">✗ parse</td>
-            <td class="c todo" title="∅ not attempted (distinct from Laertes/C2SaferRust '—'). Our rebuilt PtrTrans pipeline is runnable but optipng (30k LOC, multi-file) isn't set up as a crown_dataset entry. Failure very likely per the scale cliff (PtrTrans compile-fails on the far smaller lil/bzip2/lodepng) but UNVERIFIED → ∅ not ✗. SVF pre-LLM probe is ~$0; a full per-unit translation is not.">∅</td>
+            <td class="c fail" title="✗(PA, >2h) — struct analysis exceeds a 2-hour budget; measured at $0 (2026-07-10). Flat 53-TU entry (bzip2 precedent); all TUs compile, all 53 IRs generate, llvm-link clean (8.6MB). pa_func COMPLETES (func_analysis_report.json — SVF handles the 95kLOC bundle at function level). pa_struct does NOT terminate in 2h, stuck in the same struct-usage analysis that crashes on tulip — here grinding libpng/zlib's fn-ptr-bearing structs (png_struct callbacks, z_stream zalloc/zfree). Budget stated honestly; context: PtrTrans compile-fails at assembly on lil/bzip2/lodepng after full paid runs, and optipng is 4-15x larger. Evidence: rq1_bugs/optipng_ptrtrans/.">✗ PA</td>
           </tr>
         </tbody>
       </table>
@@ -343,7 +343,7 @@
     <div class="legend">
       <span><i class="sw bug"></i>bug — <b style="color:var(--bug)">c</b>rash / <b style="color:var(--bug)">s</b>emantic</span>
       <span><i class="sw cert"></i>✓ certificate (ᴱ exhaustive · N fuzzed)</span>
-      <span><i class="sw fail"></i>✗ process failure (stage: parse/scaffold/compile/verify/analyse)</span>
+      <span><i class="sw fail"></i>✗ process failure (stage: parse/scaffold/compile/verify/analyse/PA)</span>
       <span><i class="sw excl"></i>⊘ excluded · ▽ minimal surface</span>
       <span><i class="sw todo"></i>∅ not yet run</span>
       <span style="color:var(--ink-3)">— tool doesn't ship this library <span style="color:var(--ink-3)">(≠ crash)</span></span>
@@ -391,7 +391,10 @@
         <h4><span class="dot" style="background:var(--fail)"></span>PtrTrans column complete: a scale cliff</h4>
         <p>Its three biggest tightly-coupled targets (<code>lil</code> 3.7k, <code>bzip2</code> 7.3k,
           <code>lodepng</code> 6.6k) ALL fail module assembly — on <code>lodepng</code> where c2rust and
-          CROWN both hold 3036-image certificates. <span class="lead">And its only two runnable nontrivial
+          CROWN both hold 3036-image certificates. On tulip/optipng its <b>required PA pre-pass</b> fails
+          first: <code>pa_struct</code> <span class="lead">crashes on the fn-ptr dispatch-table
+          struct</span> (tulip) / exceeds 2&nbsp;h (optipng) — the same table that defeats SACTOR, so the
+          fn-ptr nemesis is <b>cross-tool</b>. <span class="lead">And its only two runnable nontrivial
           artifacts (cJSON, qsort) both carry silent semantic bugs of the same reshaping-contract
           class.</span></p>
       </div>

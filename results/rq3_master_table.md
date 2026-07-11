@@ -109,9 +109,17 @@ is *still* a bug cell — 100% wrong under those O(1) tests, the sharpest `O(1) 
    partition 726); the mean is meaningless, the median honest, the **min** the strongest defensible line.
 3. **Uniform 1-h budget per cell** — fixes corpus size across cells so counts are comparable within the
    protocol; fast libraries (qsort ~63 k exec/s) simply pile up more, which only widens the gap.
-4. **Crash cells** (the bug cells) abort under ASan, defeating in-process coverage accumulation → depth is
-   measured by **per-process replay of the real fuzzer corpus, merging survivors** (buggy side = lower
-   bound + the crash rate; the crash itself is the E1 finding).
+4. **ASan is OFF for E3** (`--sanitizer=none`). ASan is E1's *crash oracle* (it turns silent OOB into an
+   abort to find bugs); E3 only measures depth, so we disable it — faster, and it lets the corpus grow
+   past OOB-read-into-mapped-memory bugs that ASan would have aborted. What still crashes without ASan =
+   genuine hard faults (stack overflow from non-termination, wild-pointer SIGSEGV, heap corruption);
+   those inputs are unavoidable and handled by (5).
+5. **Crash cells** (a minority — most bugs are silent: checksum/reshaping/parse bugs don't fault) are
+   censused by **per-process replay of the real fuzzer corpus, merging survivors** → `ours` is a lower
+   bound. Framing: on a hard-fault cell our 1-h fuzz *crashed the translation the tool shipped* — the
+   tool's acceptance had executed that function **0 times**, so a truncated-but-nonzero depth over
+   0 is already the whole point (empirically confirmed: qsort×C2SaferRust median 921 / min 454 vs 0,
+   with 22/36 inputs SIGSEGV-ing even ASan-off — the int→usize non-termination is a genuine hard fault).
 
 ## Validated prototype — qsort × C2SaferRust (the buggy WIP)
 

@@ -1,65 +1,122 @@
-# E3 Master Table — coverage + depth of each tool-translation (rows = library, cols = tool)
+# E3 Master Table — per-function hit-DEPTH (rows = library, cols = tool)
 
 **The paper's Table 3 — the credibility backstop for E1.** Same shape as E1/E2: **rows = the 10 E1
-libraries, columns = the 6 shipped translators.** Each cell is the same contrast, on that tool's actual
-Rust translation of that library: **what the tool's own tests reach vs what our differential fuzz reaches.**
+libraries, columns = the 6 shipped translators.** Each cell asks one question about that tool's actual
+Rust translation of that library: **when the tool declared this code "done" (compiles / passes its own
+check), how many times had each function actually been executed — vs how deep our fuzzing drives it?**
 
-Two metrics, both free from one `-C instrument-coverage` build + `llvm-cov` per cell:
-1. **Coverage** — `their-cov / our-cov` (fn% or line%): do we exercise **at least as much** of the
-   translated Rust as the tool's own tests? Answers "did we look everywhere they did, and more."
-2. **Hit-DEPTH** — median executions per function, ours vs theirs (in the per-cell detail): the causal
-   part coverage can't claim — *their validation is shallow (O(1) hits/fn) → bugs survive; we hit
-   O(10⁴–10⁵)× deeper → we find them.*
+## The metric (locked 2026-07-10)
 
-**Cell = `their / ours`** (mirrors E2's two-number cell). Rust side only (each tool emits Rust and
-validates on Rust; C stays the differential oracle). raw-LLM is NOT a column — E3 tests the *shipped
-tools* (collaborator's call).
+**Cell = `theirs / ours`**, where each number is a **per-function execution count summarised as the
+median** (with the **min** reported alongside as the strongest line — "even the *least*-exercised
+function was hit ≥ min times"):
+
+- **`ours`** = median per-function entry count after a **uniform 1-hour coverage-guided libFuzzer run**
+  per cell, obtained by replaying the grown corpus through a `-C instrument-coverage` build and reading
+  each function's `count` via `llvm-cov export`. Reported as a **lower bound** (corpus-replay counts the
+  saved corpus, not every one of the run's executions — see caveat).
+- **`theirs`** = the per-function execution count under the tool's *own* acceptance criterion. **For
+  almost every cell this is 0 by construction** (see the their-side table below) — the tools accept a
+  translation on *compiles / fewer-unsafe / cargo-check*, which executes nothing. So the typical cell is
+  literally **`0 / 1487`**. The point needs no statistics: **their validation ran the function zero
+  times; ours ran it thousands.**
+
+**What E3 claims (non-tautological):** current C→Rust translation is accepted with **near-zero
+per-function execution evidence**, so bugs survive into shipped output; a uniform 1-hour coverage-guided
+fuzz exercises every function O(10³–10⁵)× deeper, which is *why* the E1 bugs sit in functions the tools
+had passed. It does **NOT** claim "X% correct" (depth bounds *scrutiny*, not correctness) and does **not**
+showcase the matcher (plain fuzzing reaches the same code — depth-vs-their-evidence is the point).
 
 ## Cell legend
 
 | mark | meaning |
 |---|---|
-| `their / ours` | coverage under the tool's own tests **/** under our differential fuzz (fn% or line%); depth ratio in the per-cell detail |
-| `∅ᵀ` | artifact exists, **not yet run** |
-| `∅ᵀ★` | not yet run **and this cell holds a confirmed E1 bug** — priority (punchline: bug in a shallow-validated fn) |
-| `—` | no runnable artifact (this tool produced no parseable/compiling Rust for this library — inherits E1's ✗) |
+| `theirs / ours` | median per-fn execution count under the tool's own acceptance **/** under our 1-h fuzz (min in the per-cell detail); `ours` is a lower bound |
+| `∅` | **runnable artifact — queued to run** (our work list) |
+| `∅★` | queued **and this cell holds a confirmed E1 bug** — run first (the punchline: a bug in a function executed 0× by the tool) |
+| `⊘` | urlparser — the transpiled Rust inherits the C `url_parse` heap-overflow, so it ASan-aborts near entry; depth would be shallow up-to-crash and uninformative. Low-value, deprioritised (could be run as a crash-cell if wanted) |
+| `▽` | tool's rewrite surface is minimal (CROWN×tulip) — nothing depth-informative |
+| `—` | no runnable Rust (inherits E1's `✗`/`—` — the tool never produced a testable artifact) |
 
-Method per cell: build that tool's translated crate once with `-C instrument-coverage`; run (a) the tool's
-/ library's tests → llvm-cov → per-fn `count` + fn/line %, (b) our differential fuzz → same; the cell
-shows `their-cov / our-cov`, the detail shows median-depth `theirs → ours`. Runner:
-`scripts/eval_rq3_depth.py` (TBD); mechanism proven on the fft_crust prototype below.
+**Pure-Rust measurement — the C oracle is not used.** Depth is a Rust-side quantity (how deep our fuzz
+drives the *translated* functions); `llvm-cov` counts the Rust crate only. Differential comparison
+against C is an **E1** concern (finding divergences) — E3 needs no oracle. We therefore **reuse the
+existing E1 harnesses as-is**: their C side simply goes unread for depth (or is dropped). Input legality
+comes from each harness's **call-contract** (e.g. qsort's `low=0, high=len−1`), not a C-side UB gate.
 
-## The matrix
+**Harness reuse (no rebuild).** The per-signature byte→parameter decoder is the hard part and already
+exists:
+- **Ready cargo-fuzz (coverage-guided) harnesses:** `fuzz/qsort_example` (c2rust), `fuzz/qsort_c2saferrust`
+  (bug cell, validated), `fuzz/lil_coverage`, `fuzz/urlparser_example` — run directly.
+- **Bug-cell drivers already written** (reshaped ABIs solved during E1): `rq1_bugs/{cjson_ptrtrans,
+  qsort_ptrtrans,bzip2_crown,optipng_laertes,utf8_panic_c2saferrust}/…driver/diff.rs`.
+- **Generator + rundiff for the rest:** `tools/stu_selector/gen_diff_harness.py` emits a cargo-fuzz
+  project for supported signatures; `laertes_benchmarks/*/rundiff.rs` already encode each library's call
+  contract (lift the byte→param logic into a libFuzzer target).
+
+Runner: `scripts/eval_rq3_depth.py` (locate-or-generate harness → build instrumented → 1 h `cargo fuzz
+run` fork-mode → `cargo fuzz coverage` / per-process replay for crashing cells → `llvm-cov export` per-fn
+`count` → median+min → delete the ~4.6 GB target, keep corpus + JSON). Validated on qsort×C2SaferRust
+(below).
+
+## The matrix (fillable state derived from E1 final)
 
 | library | domain | ~#fn | c2rust | Laertes | C2SaferRust | CROWN | SACTOR | PtrTrans |
 |---|---|---:|---|---|---|---|---|---|
-| **qsort** | sorting | 3 | ∅ᵀ | ∅ᵀ | ∅ᵀ★ | ∅ᵀ | ∅ᵀ | ∅ᵀ★ |
-| **urlparser** | URL parsing | 21 | ∅ᵀ | ∅ᵀ | ∅ᵀ | ∅ᵀ | — | — |
-| **quadtree** | spatial tree | 24 | ∅ᵀ | — | — | ∅ᵀ | — | ∅ᵀ |
-| **genann** | neural net | ~20 | ∅ᵀ | ∅ᵀ | ∅ᵀ | ∅ᵀ | ∅ᵀ | ∅ᵀ |
-| **cJSON** | JSON parser | 58 | ∅ᵀ | — | — | — | — | ∅ᵀ★ |
-| **lil** | interpreter | 145 | ∅ᵀ | ∅ᵀ | ∅ᵀ | ∅ᵀ | — | — |
-| **lodepng** | PNG codec | 235 | ∅ᵀ | — | — | ∅ᵀ | — | — |
-| **bzip2** | compressor | 64 | ∅ᵀ | ∅ᵀ★ | ∅ᵀ | ∅ᵀ | — | — |
-| **tulipindicators** | indicators | ~100 | ∅ᵀ | ∅ᵀ | ∅ᵀ | ∅ᵀ | — | — |
-| **optipng** | PNG optimizer | ~400 | ∅ᵀ | ∅ᵀ | ∅ᵀ★ | — | — | — |
+| **qsort** | sorting | 3 | ∅ | ∅ | ∅★ | ∅ | ∅ | ∅★ |
+| **urlparser** | URL parsing | 21 | ⊘ | ⊘ | ⊘ | ⊘ | — | — |
+| **quadtree** | spatial tree | 24 | ∅ | — | — | ∅ | — | ∅ |
+| **genann** | neural net | ~20 | ∅ | ∅ | ∅ | ∅ | ∅★ | — |
+| **cJSON** | JSON parser | 58 | ∅ | — | ⊘ | — | — | ∅★ |
+| **lil** | interpreter | 145 | ∅ | ∅ | ∅★ | ∅ | — | — |
+| **lodepng** | PNG codec | 235 | ∅ | — | — | ∅ | — | — |
+| **bzip2** | compressor | 64 | ∅ | ∅★ | ∅★ | ∅★ | — | — |
+| **tulipindicators** | indicators | ~100 | ∅ | ∅ | ∅★ | ▽ | — | — |
+| **optipng** | PNG optimizer | ~400 | ∅ | ∅★ | ∅★ | — | — | — |
 
-Same `—` pattern as E2 (no artifact where the tool failed to translate). `∅ᵀ★` cells = the 5 confirmed
-E1 bugs (qsort×C2SaferRust int→usize · qsort×PtrTrans unsorted · cJSON×PtrTrans parse_string ·
-bzip2×Laertes zeroed-table · optipng×C2SaferRust crc32) — fill these first: the punchline is a bug in a
-function the tool's own tests hit shallowly.
+**~32 fillable cells** (∅/∅★), **11 of them bug cells** (∅★). The `—`/`⊘`/`▽` cells inherit E1's
+outcome — a sparse column is itself a finding (**SACTOR has only 2 runnable cells; that its per-function
+verification can't even produce testable output is the E1 story, restated**). E3 is not "empty where
+blank" — it is exactly as full as each tool's translations are runnable.
 
-## Method prototype — fft_crust (SACTOR)
+### Run order (value-first, serial — user's call 2026-07-10)
+1. **The 11 bug cells first** — each is the money shot `0 / <deep>`: qsort×{C2SaferRust, PtrTrans},
+   cJSON×PtrTrans, genann×SACTOR, lil×C2SaferRust, bzip2×{Laertes, C2SaferRust, CROWN}, tulip×C2SaferRust,
+   optipng×{Laertes, C2SaferRust}.
+2. **Then the certificate cells, small→large library** (qsort → quadtree → genann → lil → lodepng →
+   bzip2 → tulip → optipng), reusing each library's harness (C-compare unread) across its tool columns.
 
-Not a corpus cell (a SACTOR test example) — proves the pipeline + anchors the "shallow" number.
-**SACTOR validated the whole fft program with 6 test samples**; its 8 internal functions are each hit a
-handful of times by the tool's own correctness check. Buildable crate + 6 baseline samples + C oracle all
-present → produces the per-cell `their-cov / our-cov` + median-depth the grid uses. (The 6-sample fact is
-already in the eval plan §6: the input space beyond it is unverified.)
+## The "theirs" side — mostly 0, documented once
 
-## What E3 says / does NOT say
+| tool | acceptance criterion | per-fn executions at acceptance |
+|---|---|---|
+| **c2rust** | mechanical transpile (no validation) | **0** |
+| **Laertes** | compiles + fewer-unsafe | **0** |
+| **C2SaferRust** | compiles + fewer-unsafe | **0** |
+| **CROWN** | compiles + ownership-lift, unsafe reduced | **0** |
+| **PtrTrans** | passes its own `cargo check` gate | **0** (check ≠ run) |
+| **SACTOR** | per-function FFI test vs C | **O(1)** — e.g. genann embedded tests hit each fn a handful of times |
 
-- **Says:** we exercise ≥ what the tool's own tests do (coverage), and we hit each function O(10⁴–10⁵)×
-  deeper (depth) — so the bugs we found sit in functions their shallow validation had passed.
-- **Does NOT say:** "X% correctly translated" (coverage ≠ correctness — it bounds scope). And it does not
-  showcase the matcher (plain fuzzing reaches the same code; depth-vs-their-tests is the point).
+So `theirs = 0` for every cell except the SACTOR column, where it is a small constant (and genann×SACTOR
+is *still* a bug cell — 100% wrong under those O(1) tests, the sharpest `O(1) / deep` contrast).
+
+## Method caveats (reviewer-facing, stated up front)
+
+1. **`ours` is a lower bound.** `llvm-cov`'s per-fn `count` is over the *replayed final corpus*, not the
+   run's full execution stream (qsort: 36-file corpus → quickSort 1487, but the 1-h run itself executed
+   ~9.5M times). We report the corpus-replay median as a floor; against `theirs = 0` a floor is plenty.
+2. **Median, not mean.** Hot leaf functions (loop-called) have heavy-tailed counts (qsort: swap 4211 vs
+   partition 726); the mean is meaningless, the median honest, the **min** the strongest defensible line.
+3. **Uniform 1-h budget per cell** — fixes corpus size across cells so counts are comparable within the
+   protocol; fast libraries (qsort ~63 k exec/s) simply pile up more, which only widens the gap.
+4. **Crash cells** (the bug cells) abort under ASan, defeating in-process coverage accumulation → depth is
+   measured by **per-process replay of the real fuzzer corpus, merging survivors** (buggy side = lower
+   bound + the crash rate; the crash itself is the E1 finding).
+
+## Validated prototype — qsort × C2SaferRust (the buggy WIP)
+
+Real cargo-fuzz harness (`fuzz/qsort_c2saferrust/`, C-compare unread for depth): 1-h fork-mode run
+drives the translated crate (and en route hits the ASan heap-overflow = E1 bug #1), and per-function
+depth over the real corpus gives
+**swap 4211 / partition 726 / quickSort 1487** vs the tool's **0** — cell reads `0 / 726` (median). This
+anchors the pipeline end-to-end; the runner generalises it across the ∅ cells above.

@@ -13,6 +13,15 @@ mkdir -p "$OUT"
 cd "$PROJ" || exit 1
 ulimit -c 0   # no core dumps (crash cells abort a lot)
 
+shopt -s nullglob   # empty corpus glob must expand to nothing, not a literal '*'
+
+# ---- 0) seed the corpus if empty so coverage-guided fuzzing has a starting point ----
+mkdir -p fuzz/corpus/$TARGET
+if [ -z "$(ls -A fuzz/corpus/$TARGET 2>/dev/null)" ]; then
+  echo "[$LABEL] empty corpus -> planting 8 seeds"
+  for i in $(seq 1 8); do head -c $((16*i)) /dev/urandom > fuzz/corpus/$TARGET/seed_$i 2>/dev/null; done
+fi
+
 # ---- 1) coverage-guided fuzz, ASan OFF (E3 = depth not bug-finding; faster + deeper corpus on
 #         non-hard-fault bugs), hard time-boxed + process-group-killed ----
 echo "[$LABEL] fuzz ${SECS}s forks=$FORKS (sanitizer=none)"
@@ -47,7 +56,8 @@ for f in fuzz/corpus/$TARGET/*; do
 done
 echo "[$LABEL] replay: survivors=$ok crashers=$crash"
 N=$(ls "$PD"/*.profraw 2>/dev/null | wc -l)
-if [ "$N" -eq 0 ]; then echo "[$LABEL] FAIL: every corpus input crashed the coverage build"; exit 4; fi
+if [ "$N" -eq 0 ]; then echo "[$LABEL] FAIL: 0 survivors — harness crashes on every input (check output-buffer caps / entry contract)"; exit 4; fi
+if [ "$CORPUS" -le 8 ]; then echo "[$LABEL] WARN: corpus did not grow past seeds ($CORPUS) — harness may crash early or entry unreached"; fi
 "$LLVM/llvm-profdata" merge -sparse "$PD"/*.profraw -o /tmp/rq3_${LABEL}.profdata 2>/dev/null
 "$LLVM/llvm-cov" export "$BIN" -instr-profile=/tmp/rq3_${LABEL}.profdata 2>/dev/null > /tmp/rq3_${LABEL}.json
 

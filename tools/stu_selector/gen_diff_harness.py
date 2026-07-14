@@ -831,6 +831,43 @@ H(load_invalid_value)
 '''
 
 
+def gen_target_rust_only(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
+                         rust_entry: str | None = None) -> str:
+    """E3 depth harness: pure Rust, NO C oracle, NO differential compare. Decode fuzz bytes into
+    the entry's params and call ONLY translated::<entry>. Used to measure per-function hit-depth
+    (llvm-cov counts the Rust crate); correctness/divergence is E1's job, not E3's."""
+    decode, _post = _decode_and_post(items)
+    _c_args, r_args, _decl = _call_and_decl(abi)
+    call_r = f"translated::{rust_entry or entry}({', '.join(r_args)})"
+    body = f"        {call_r};" if ret == "void" else f"        let _ = {call_r};"
+    return "\n".join([
+        "#![no_main]",
+        "#![allow(unused, unused_mut, non_snake_case)]",
+        'use libfuzzer_sys::fuzz_target;',
+        "struct Cur<'a> { d: &'a [u8], p: usize }",
+        "impl<'a> Cur<'a> {",
+        "    fn new(d: &'a [u8]) -> Self { Cur { d, p: 0 } }",
+        "    fn byte(&mut self) -> u8 { let b = if self.p < self.d.len() { self.d[self.p] } else { 0 }; self.p += 1; b }",
+        *[f"    fn take_{t}(&mut self) -> {t} {{ let mut v = [0u8; {w}]; for i in 0..{w} {{ v[i] = self.byte(); }} {t}::from_le_bytes(v) }}"
+          for t, w in [("u8", 1), ("i8", 1), ("u16", 2), ("i16", 2), ("u32", 4), ("i32", 4),
+                       ("u64", 8), ("i64", 8), ("usize", 8)]],
+        *[f"    fn take_vec_{t}(&mut self) -> Vec<{t}> {{ let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_{t}()).collect() }}"
+          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64"]],
+        "}",
+        "",
+        f"use {crate} as translated;",
+        "",
+        "fuzz_target!(|data: &[u8]| {",
+        "    let mut cur = Cur::new(data);",
+        *decode,  # full decode kept; _r depends on _c (clone), _c side simply goes unused
+        "    unsafe {",
+        body,
+        "    }",
+        "});",
+        "",
+    ])
+
+
 def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
                ub_free: bool = False, rust_entry: str | None = None,
                rust_ret: str | None = None) -> str:
@@ -1016,6 +1053,10 @@ def main() -> int:
                     help="in-loop UB-free gate: UBSan-instrument the C oracle and reject "
                     "(skip comparison on) inputs where C hits UB, so divergences are reported "
                     "only on UB-free input (vs post-hoc per-artifact exclusion)")
+    ap.add_argument("--rust-only", action="store_true",
+                    help="E3 depth mode: emit a PURE-RUST harness (no C oracle, no build.rs, no "
+                    "differential compare) that only drives translated::<entry>. For per-function "
+                    "hit-depth measurement; correctness is E1's job.")
     args = ap.parse_args()
 
     pair = Path(args.pair)
@@ -1056,13 +1097,54 @@ def main() -> int:
                 break
     if args.expose_entry:
         rs_text, _ = expose_entry(rs_text, rust_entry)
-        c_text, _ = strip_static_c(c_text, args.entry)
+        if not args.rust_only:
+            c_text, _ = strip_static_c(c_text, args.entry)
+    (out / "src" / "lib.rs").write_text(rs_text, encoding="utf-8")
+
+    if args.rust_only:
+        # E3 depth: pure-Rust crate, NO C oracle, NO build.rs.
+        (out / "Cargo.toml").write_text(
+            f'[package]\nname = "{crate}"\nversion = "0.1.0"\nedition = "2021"\n\n[dependencies]\n',
+            encoding="utf-8")
+        (out / "fuzz" / "Cargo.toml").write_text(f'''[package]
+name = "{crate}-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.{crate}]
+path = ".."
+
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "{crate}_ft"
+path = "fuzz_targets/{crate}_ft.rs"
+test = false
+doc = false
+''', encoding="utf-8")
+        (out / "fuzz" / "fuzz_targets" / f"{crate}_ft.rs").write_text(
+            gen_target_rust_only(args.entry, items, abi, ret, crate, rust_entry=rust_entry),
+            encoding="utf-8")
+        print(f"generated RUST-ONLY (E3 depth) harness at {out}")
+        print(f"  entry: translated::{rust_entry}  abi roles: {[(p['name'], p['role']) for p in abi]}")
+        return 0
+
     (out / "c" / c_src.name).write_text(c_text, encoding="utf-8")
     # Real libs split into .c + sibling .h (authored corpus is self-contained single-TU).
     # Copy the headers next to the .c so `#include "foo.h"` resolves from the harness c/ dir.
     for h in (pair / "source").glob("*.h"):
         (out / "c" / h.name).write_text(h.read_text(), encoding="utf-8")
-    (out / "src" / "lib.rs").write_text(rs_text, encoding="utf-8")
 
     (out / "Cargo.toml").write_text(
         f'[package]\nname = "{crate}"\nversion = "0.1.0"\nedition = "2021"\n\n'

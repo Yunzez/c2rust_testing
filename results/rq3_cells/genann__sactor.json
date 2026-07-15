@@ -1,0 +1,25 @@
+{
+ "cell": "genann__sactor",
+ "library": "genann",
+ "tool": "sactor",
+ "metric": "corpus-replay-floor",
+ "runs_budget": 1000000,
+ "n_functions": 9,
+ "corpus": 8,
+ "theirs": 0,
+ "median_hits": 6,
+ "min_hits": 0,
+ "max_hits": 24576,
+ "per_fn": {
+  "genann_act_sigmoid": 24576,
+  "genann_run": 48,
+  "genann_train": 18,
+  "genann_free": 12,
+  "genann_copy": 6,
+  "genann_init": 6,
+  "genann_read": 0,
+  "genann_act_linear": 0,
+  "genann_act_threshold": 0
+ },
+ "note": "crash-heavy: the immutable-lookup UB (E1 headline #6) writes through a const-cast to an immutable static -> the debug-assertions coverage build SIGSEGVs (.rodata write) during genann_init_sigmoid_lookup, so fuzzing crashes at setup. Manual inspection: unrecoverable (the UB is in init). Floor still > theirs=0; the crash IS the finding."
+}

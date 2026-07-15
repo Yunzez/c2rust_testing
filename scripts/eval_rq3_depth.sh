@@ -68,8 +68,14 @@ label, corpus, secs, forks, crate, surv, crash = sys.argv[1:8]
 corpus, secs, forks, surv, crash = map(int,(corpus,secs,forks,surv,crash))
 d = json.load(open(f"/tmp/rq3_{label}.json"))["data"][0]
 needle = f"{crate}/src/lib.rs"   # crate-specific — avoids libfuzzer_sys/arbitrary own lib.rs
+# Count only the TRANSLATED C FUNCTIONS = #[no_mangle] plain names (swap/partition/quickSort).
+# Exclude: c_* (C oracle), and Rust-MANGLED _R* — the tool's injected runtime shim (Laertes emits
+# ~80 CustomSlice/Get/borrow_mut generic helpers the entry never reaches) + any monomorphised glue.
+# (Correct for c2rust/Laertes/C2SaferRust/CROWN which keep no_mangle; idiomatic renamers like
+# PtrTrans/SACTOR may need an explicit --fn-list, handled per-cell.)
 rows=[(f["name"].split("::")[-1], f.get("count",0)) for f in d["functions"]
       if any(needle in p for p in f.get("filenames",[]))
+      and not f["name"].startswith("_R")
       and not f["name"].split("::")[-1].startswith("c_")]
 counts=[c for _,c in rows]
 res={"cell":label,"library":label.split("__")[0],"tool":label.split("__")[-1],

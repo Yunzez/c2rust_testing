@@ -32,7 +32,7 @@ if [ -z "$BIN" ]; then echo "[$LABEL] FAIL: no coverage binary"; exit 3; fi
 # ---- 2) run it as a libFuzzer for RUNS iterations; clean exit => profraw flushes with TOTAL counts ----
 echo "[$LABEL] fuzzing -runs=$RUNS (sanitizer=none)"
 PD=/tmp/rq3_${LABEL}_prof; rm -rf "$PD"; mkdir -p "$PD"
-LLVM_PROFILE_FILE="$PD/live.profraw" setsid timeout --kill-after=15 1800 \
+LLVM_PROFILE_FILE="$PD/live.profraw" setsid timeout --kill-after=15 200 \
   "$BIN" -runs=$RUNS -rss_limit_mb=4096 -timeout=5 fuzz/corpus/$TARGET >/tmp/rq3_${LABEL}_run.log 2>&1
 RC=$?
 CORPUS=$(ls fuzz/corpus/$TARGET | wc -l)

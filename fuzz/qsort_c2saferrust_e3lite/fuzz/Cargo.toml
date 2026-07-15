@@ -1,0 +1,20 @@
+[package]
+name = "qsort_c2saferrust_e3lite-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+[package.metadata]
+cargo-fuzz = true
+[dependencies]
+libfuzzer-sys = "0.4"
+[dependencies.qsort_c2saferrust_e3lite]
+path = ".."
+[workspace]
+members = ["."]
+[profile.release]
+debug = 1
+[[bin]]
+name = "q_ft"
+path = "fuzz_targets/q_ft.rs"
+test = false
+doc = false

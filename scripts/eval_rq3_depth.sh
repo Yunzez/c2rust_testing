@@ -70,7 +70,7 @@ import json, sys, statistics
 label, corpus, secs, forks, crate, surv, crash, fn_list = sys.argv[1:9]
 corpus, secs, forks, surv, crash = map(int,(corpus,secs,forks,surv,crash))
 d = json.load(open(f"/tmp/rq3_{label}.json"))["data"][0]
-needle = f"{crate}/src/lib.rs"   # crate-specific — avoids libfuzzer_sys/arbitrary own lib.rs
+needle = f"{crate}/src/"   # crate-specific — avoids libfuzzer_sys/arbitrary own lib.rs
 wanted = [w for w in fn_list.split(",") if w]
 rows=[]
 for f in d["functions"]:
@@ -84,7 +84,7 @@ for f in d["functions"]:
     else:
         # default: translated C fns = #[no_mangle] plain names; drop Rust-mangled _R* (tool runtime
         # shim, e.g. Laertes CustomSlice/Get helpers) + c_* oracle. Correct for c2rust-family.
-        if nm.startswith("_R") or leaf.startswith("c_"): continue
+        if nm.startswith("_R") or leaf.startswith("c_") or leaf == "__assert_rtn": continue
         rows.append((leaf, f.get("count",0)))
 # collapse duplicate substring hits (mangled monomorphisations) to the MAX count per fn
 agg={}

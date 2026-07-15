@@ -5,7 +5,10 @@
 # corpus through the coverage binary, merging survivors (clean cells simply have 0 crashers). Process
 # hygiene: the fuzz run is wrapped in `timeout` in its own process group and hard-killed by pgid.
 set -u
-PROJ="$1"; TARGET="$2"; SECS="$3"; LABEL="$4"; FORKS="${5:-1}"
+PROJ="$1"; TARGET="$2"; SECS="$3"; LABEL="$4"; FORKS="${5:-1}"; FN_LIST="${6:-}"
+# FN_LIST (optional): comma-sep translated-fn names for this cell (e.g. swap,partition,quick_sort).
+# Match by substring — works for no_mangle plain names AND idiomatic mangled symbols, and excludes
+# tool runtime shims. Omit for c2rust-family (no_mangle) where the default plain-name filter suffices.
 NIGHTLY=nightly-2025-09-01
 OUT=/home/yunzez/c2rust_testing/results/rq3_cells
 CRATE=$(basename "$PROJ")
@@ -62,21 +65,31 @@ if [ "$CORPUS" -le 8 ]; then echo "[$LABEL] WARN: corpus did not grow past seeds
 "$LLVM/llvm-cov" export "$BIN" -instr-profile=/tmp/rq3_${LABEL}.profdata 2>/dev/null > /tmp/rq3_${LABEL}.json
 
 # ---- 4) median + min over THIS crate's translated functions ----
-python3 - "$LABEL" "$CORPUS" "$SECS" "$FORKS" "$CRATE" "$ok" "$crash" <<'PY'
+python3 - "$LABEL" "$CORPUS" "$SECS" "$FORKS" "$CRATE" "$ok" "$crash" "$FN_LIST" <<'PY'
 import json, sys, statistics
-label, corpus, secs, forks, crate, surv, crash = sys.argv[1:8]
+label, corpus, secs, forks, crate, surv, crash, fn_list = sys.argv[1:9]
 corpus, secs, forks, surv, crash = map(int,(corpus,secs,forks,surv,crash))
 d = json.load(open(f"/tmp/rq3_{label}.json"))["data"][0]
 needle = f"{crate}/src/lib.rs"   # crate-specific — avoids libfuzzer_sys/arbitrary own lib.rs
-# Count only the TRANSLATED C FUNCTIONS = #[no_mangle] plain names (swap/partition/quickSort).
-# Exclude: c_* (C oracle), and Rust-MANGLED _R* — the tool's injected runtime shim (Laertes emits
-# ~80 CustomSlice/Get/borrow_mut generic helpers the entry never reaches) + any monomorphised glue.
-# (Correct for c2rust/Laertes/C2SaferRust/CROWN which keep no_mangle; idiomatic renamers like
-# PtrTrans/SACTOR may need an explicit --fn-list, handled per-cell.)
-rows=[(f["name"].split("::")[-1], f.get("count",0)) for f in d["functions"]
-      if any(needle in p for p in f.get("filenames",[]))
-      and not f["name"].startswith("_R")
-      and not f["name"].split("::")[-1].startswith("c_")]
+wanted = [w for w in fn_list.split(",") if w]
+rows=[]
+for f in d["functions"]:
+    if not any(needle in p for p in f.get("filenames",[])): continue
+    nm = f["name"]; leaf = nm.split("::")[-1]
+    if wanted:
+        # explicit per-cell list: match by substring (no_mangle exact OR mangled symbol contains it)
+        hit = next((w for w in wanted if w in nm), None)
+        if not hit: continue
+        rows.append((hit, f.get("count",0)))
+    else:
+        # default: translated C fns = #[no_mangle] plain names; drop Rust-mangled _R* (tool runtime
+        # shim, e.g. Laertes CustomSlice/Get helpers) + c_* oracle. Correct for c2rust-family.
+        if nm.startswith("_R") or leaf.startswith("c_"): continue
+        rows.append((leaf, f.get("count",0)))
+# collapse duplicate substring hits (mangled monomorphisations) to the MAX count per fn
+agg={}
+for k,v in rows: agg[k]=max(agg.get(k,0), v)
+rows=list(agg.items())
 counts=[c for _,c in rows]
 res={"cell":label,"library":label.split("__")[0],"tool":label.split("__")[-1],
      "n_functions":len(rows),"corpus":corpus,"survivors":surv,"crashers":crash,

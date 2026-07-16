@@ -7,7 +7,7 @@
 # skips the profraw flush), so the counts reflect ALL executions, not just the saved corpus.
 # Crash cells (hard fault mid-run lose the flush) fall back to per-process corpus replay (a floor).
 set -u
-PROJ="$1"; TARGET="$2"; RUNS="$3"; LABEL="$4"; FORKS="${5:-1}"; FN_LIST="${6:-}"
+PROJ="$1"; TARGET="$2"; RUNS="$3"; LABEL="$4"; FORKS="${5:-1}"; FN_LIST="${6:-}"; EXCL="${7:-}"
 NIGHTLY=nightly-2025-09-01
 OUT=/home/yunzez/c2rust_testing/results/rq3_cells
 CRATE=$(basename "$PROJ")
@@ -53,16 +53,18 @@ if [ "$N" -eq 0 ]; then echo "[$LABEL] FAIL: no profile (crashes on everything?)
 "$LLVM/llvm-cov" export "$BIN" -instr-profile=/tmp/rq3_${LABEL}.profdata 2>/dev/null > /tmp/rq3_${LABEL}.json
 
 # ---- 3) median + min over this cell's translated functions ----
-python3 - "$LABEL" "$CORPUS" "$RUNS" "$CRATE" "$FN_LIST" "$MODE" <<'PY'
+python3 - "$LABEL" "$CORPUS" "$RUNS" "$CRATE" "$FN_LIST" "$MODE" "$EXCL" <<'PY'
 import json, sys, statistics
-label, corpus, runs, crate, fn_list, mode = sys.argv[1:7]
+label, corpus, runs, crate, fn_list, mode, excl = sys.argv[1:8]
 corpus, runs = int(corpus), int(runs)
 d = json.load(open(f"/tmp/rq3_{label}.json"))["data"][0]
 needle = f"{crate}/src/"
 wanted = [w for w in fn_list.split(",") if w]
 rows=[]
 for f in d["functions"]:
-    if not any(needle in p for p in f.get("filenames",[])): continue
+    fns=f.get("filenames",[])
+    if not any(needle in p for p in fns): continue
+    if excl and any(excl in p for p in fns): continue
     nm=f["name"]; leaf=nm.split("::")[-1]
     if wanted:
         hit=next((w for w in wanted if w in nm), None)
@@ -73,11 +75,17 @@ for f in d["functions"]:
         rows.append((leaf, f.get("count",0)))
 agg={}
 for k,v in rows: agg[k]=max(agg.get(k,0), v)
-rows=list(agg.items()); counts=[c for _,c in rows]
+rows=list(agg.items())
+# median over the functions the harness actually DRIVES (count>0). Unreached functions are separate
+# API surfaces (e.g. bzip2's FILE-I/O BZ2_bzRead/Write) not exercised by this entry; reported as the
+# reached/total split, not folded into the median (that would understate depth on the tested surface).
+reached=[(k,c) for k,c in rows if c>0]
+rc=[c for _,c in reached]
 res={"cell":label,"library":label.split("__")[0],"tool":label.split("__")[-1],
-     "metric":mode,"runs_budget":runs,"n_functions":len(rows),"corpus":corpus,"theirs":0,
-     "median_hits":statistics.median(counts) if counts else 0,
-     "min_hits":min(counts) if counts else 0,"max_hits":max(counts) if counts else 0,
+     "metric":mode,"runs_budget":runs,"corpus":corpus,"theirs":0,
+     "n_functions":len(rows),"n_reached":len(reached),
+     "median_hits":statistics.median(rc) if rc else 0,
+     "min_hits":min(rc) if rc else 0,"max_hits":max(rc) if rc else 0,
      "per_fn":dict(sorted(rows,key=lambda x:-x[1]))}
 json.dump(res,open(f"/home/yunzez/c2rust_testing/results/rq3_cells/{label}.json","w"),indent=1)
 print(f"[{label}] {mode} fns={res['n_functions']} MEDIAN={res['median_hits']:,} min={res['min_hits']:,} max={res['max_hits']:,} vs theirs=0")

@@ -1,0 +1,13 @@
+{
+ "cell": "optipng__c2saferrust",
+ "library": "optipng",
+ "tool": "c2saferrust",
+ "metric": "crash-all",
+ "theirs": 0,
+ "n_functions": null,
+ "n_reached": null,
+ "median_hits": null,
+ "min_hits": null,
+ "max_hits": null,
+ "note": "CRASH-ALL: C2SaferRust's optipng translation crashes (deadly signal, not a Rust panic) on EVERY valid PNG seed (survivors 1/243: RGBA/RGB/gray/palette all abort). The base c2rust runs these same PNGs to full depth (150/374), so this is a C2SaferRust-introduced regression -- a hard memory/longjmp fault in the rewritten read path. Corroborates E1 optipng x C2SaferRust = c:1 s:2. Crash-on-all is the finding; no depth number."
+}

@@ -16,3 +16,10 @@ revisit slowly. Each has a placeholder JSON with a `note`.
 - Reshaped ABIs per tool: `Option<&mut u32>` destLen (Laertes/CROWN bzip2), `&mut Vec<u8>` (C2SaferRust), `Option<&mut [i32]>` (PtrTrans), nested `crate::src::…` modules (CROWN), `&genann` (C2SaferRust copy).
 - Multi-API-surface libs (bzip2): exclude the CLI module for types via EXCLUDE_FILE arg; median over REACHED fns only.
 - Crash cells: fall back to per-process corpus-replay floor; note "manual inspection: unrecoverable, the crash is the finding".
+
+## Idiomatic-Rust translators (PtrTrans, SACTOR): mangled-name census
+The runner's default census excludes `_R*` names (they're Laertes runtime shims). But
+idiomatic translators keep normal Rust fns → v0-mangled `_R…`/`Px…` symbols → the exclusion
+wrongly drops the whole translation. Two ways to census these:
+- pass FN_LIST of the driven leaf names (keys the median by those, bypasses `_R` filter) — used for qsort×PtrTrans, genann×SACTOR;
+- or re-census the cached `/tmp/rq3_<label>.json` filtering only on the lib source path (`…/src/<file>.rs`), dedup by mangled name — captures internal helpers too (cJSON×PtrTrans: this surfaced `get_decimal_point`, an internal parse_number helper a plain fn-list misses). reached 6/121, median 3.87M.

@@ -1,0 +1,14 @@
+{
+ "cell": "cjson__ptrtrans",
+ "library": "cjson",
+ "tool": "ptrtrans",
+ "metric": "total-exec",
+ "runs_budget": 1000000,
+ "theirs": 0,
+ "n_functions": 121,
+ "n_reached": 6,
+ "median_hits": 3868007.0,
+ "min_hits": 421301,
+ "max_hits": 5290646,
+ "note": "Idiomatic-Rust (mangled) names: the default _R shim-exclusion is skipped (PtrTrans has no runtime shim). Harness drives the 4 executable leaf parsers (parse_hex4/number/string, utf16_literal_to_utf8) + their internal helpers via the E1 op-dispatch driver; the full recursive cJSON_Parse path is allocation-stubbed in PtrTrans's reshaping and not reachable."
+}

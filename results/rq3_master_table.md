@@ -128,3 +128,27 @@ drives the translated crate (and en route hits the ASan heap-overflow = E1 bug #
 depth over the real corpus gives
 **swap 4211 / partition 726 / quickSort 1487** vs the tool's **0** — cell reads `0 / 726` (median). This
 anchors the pipeline end-to-end; the runner generalises it across the ∅ cells above.
+
+## E3 results table (filled 2026-07-17) — median per-function total-exec / *ours*, theirs=0 everywhere
+
+Cell = median executions per reached function under our coverage-guided fuzz; `[reached/total]`; *(floor)* = crash-cell corpus-replay lower bound; CRASH-ALL = translation faults on all/valid input (a finding, not a number).
+
+| library | c2rust | Laertes | C2SaferRust | CROWN | SACTOR | PtrTrans |
+|---|---|---|---|---|---|---|
+| **qsort** | 41,439,382 | 38,102 *(floor)* | 153 *(floor)* | — | — | 226,029,454 |
+| **urlparser** | — | — | — | — | — | — |
+| **quadtree** | 178,753 *(floor)* [16/17] | — | — | 71,307 *(floor)* [16/17] | — | 127,103,674 [18/19] |
+| **genann** | 1,606,774 | 817,574 | 818,835 | 816,519 | 6 *(floor)* | — |
+| **cjson** | 220 *(floor)* [3/37] | — | — | — | — | 3,868,007 [6/121] |
+| **lil** | 389 *(floor)* [38/51] | 480 *(floor)* [35/51] | **CRASH-ALL** | 344 *(floor)* [34/43] | — | — |
+| **lodepng** | 1,000,000 [25/75] | — | — | 1,000,000 [23/75] | — | — |
+| **bzip2** | 99,463 [16/35] | 99,657 [16/35] | **CRASH-ALL** | 3 *(floor)* [9/35] | — | — |
+| **tulip** | 27,043 [173/224] | 27,272 [173/224] | 27,068 [173/224] | 27,138 [173/224] | — | — |
+| **optipng** | 8,510 [150/374] | 247 *(floor)* [33/374] | **CRASH-ALL** | — | — | — |
+
+**31 cells filled.** Remaining: qsort×CROWN and qsort×SACTOR (artifacts wiped; need regeneration). `—` = no runnable translation artifact (tool failed to translate that library, per E1).
+
+Cross-cutting findings:
+- **CRASH-ALL trio** (lil/bzip2/optipng × C2SaferRust): C2SaferRust's idiomatic rewrites fault on all/valid input where the c2rust base runs to full depth — each corroborates an E1 bug (lil c:1, bzip2 c:1 s:1, optipng c:1 s:2) *through execution depth*.
+- **tulip = uniform full depth**: all 4 tools reach 173/224, median ~27k — a well-behaved numeric library every tool translates soundly. Sharp contrast with the lil interpreter (3 crash-floor + 1 crash-all).
+- **PtrTrans idiomatic = deep AND safe**: quadtree×PtrTrans runs 127M-deep, never crashes, vs the c2rust base crashing to a 178k floor.

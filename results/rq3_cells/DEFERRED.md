@@ -23,3 +23,5 @@ idiomatic translators keep normal Rust fns → v0-mangled `_R…`/`Px…` symbol
 wrongly drops the whole translation. Two ways to census these:
 - pass FN_LIST of the driven leaf names (keys the median by those, bypasses `_R` filter) — used for qsort×PtrTrans, genann×SACTOR;
 - or re-census the cached `/tmp/rq3_<label>.json` filtering only on the lib source path (`…/src/<file>.rs`), dedup by mangled name — captures internal helpers too (cJSON×PtrTrans: this surfaced `get_decimal_point`, an internal parse_number helper a plain fn-list misses). reached 6/121, median 3.87M.
+
+| **lil × c2saferrust** | Panics on EVERY valid script (0/5 survive) at `ptr/unique.rs:88` via `hm_destroy`/`lil_free_env` teardown -- NonNull built from a nullable C hashmap ptr. | `metric: crash-all`. Corroborates E1 lil×C2SaferRust c:1; crash-on-all is the finding. |

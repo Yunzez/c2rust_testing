@@ -16,7 +16,19 @@ import argparse, re, sys
 from pathlib import Path
 
 SCALARS = {"u8","u16","u32","u64","usize","i8","i16","i32","i64","isize","bool","c_int","c_uint",
-           "c_long","c_ulong","c_char","c_uchar","f32","f64"}
+           "c_long","c_ulong","c_char","c_uchar","c_short","c_ushort","c_longlong","c_ulonglong","f32","f64"}
+
+# Common c2rust / zlib / libpng type aliases that point across modules (which we can't follow) but whose
+# concrete scalar type is well-known. Used as a resolve() fallback so cross-module aliases still classify.
+KNOWN_ALIASES = {
+    "size_t":"c_ulong","z_size_t":"c_ulong","ssize_t":"c_long","ptrdiff_t":"c_long",
+    "uLong":"c_ulong","uLongf":"c_ulong","uInt":"c_uint","uIntf":"c_uint",
+    "Byte":"c_uchar","Bytef":"c_uchar","z_crc_t":"c_uint",
+    "off_t":"c_long","off64_t":"c_long","__off_t":"c_long","__off64_t":"c_long",
+    "png_uint_32":"c_uint","png_int_32":"c_int","png_byte":"c_uchar","png_size_t":"c_ulong",
+    "png_uint_16":"c_ushort","png_int_16":"c_short","png_alloc_size_t":"c_ulong",
+    "lilint_t":"c_longlong","opng_bitset_t":"c_uint","opng_id_t":"c_uint",
+}
 
 def norm_ty(t: str) -> str:
     t = t.strip()
@@ -77,9 +89,16 @@ def resolve(ty: str, aliases: dict, depth=0) -> str:
     m = re.match(r'^&(mut )?\[\s*(.+?)\s*\]$', ty)
     if m: return f"&{'mut ' if m.group(1) else ''}[{resolve(m.group(2), aliases, depth+1)}]"
     m = re.match(r'^&(mut )?(.+)$', ty)
-    if m and (m.group(2).strip() in aliases): return f"&{'mut ' if m.group(1) else ''}{resolve(m.group(2), aliases, depth+1)}"
+    if m and (m.group(2).strip() in aliases or m.group(2).strip() in KNOWN_ALIASES):
+        return f"&{'mut ' if m.group(1) else ''}{resolve(m.group(2), aliases, depth+1)}"
     if ty in aliases and aliases[ty] != ty:
         return resolve(aliases[ty], aliases, depth+1)
+    if ty in KNOWN_ALIASES:               # cross-module alias we can't follow, but know the scalar
+        return resolve(KNOWN_ALIASES[ty], aliases, depth+1)
+    # bare cross-module path like `crate::src::zlib::adler32::z_size_t` -> take the leaf name
+    leaf = ty.split("::")[-1].strip()
+    if leaf in KNOWN_ALIASES:
+        return resolve(KNOWN_ALIASES[leaf], aliases, depth+1)
     return ty
 
 def role_of(ty: str, aliases: dict = None):

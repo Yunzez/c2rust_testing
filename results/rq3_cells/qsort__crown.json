@@ -1,0 +1,20 @@
+{
+ "cell": "qsort__crown",
+ "library": "qsort",
+ "tool": "crown",
+ "metric": "total-exec",
+ "runs_budget": 1000000,
+ "corpus": 76,
+ "theirs": 0,
+ "n_functions": 3,
+ "n_reached": 3,
+ "median_hits": 40119635,
+ "min_hits": 19584802,
+ "max_hits": 697365266,
+ "per_fn": {
+  "swap": 697365266,
+  "quickSort": 40119635,
+  "partition": 19584802
+ },
+ "note": "Regenerated CROWN output (nightly-2023-01-26: preprocess->explicit-addr->analyse->rewrite). CROWN FAILED to lift qsort pointers: statistics.json = 4 unsafe ptrs in, only 1 owning detected, 0 converted to safe refs -- the computed pointer arithmetic (arr.offset(j)) defeats CROWN fatness analysis, so it kept everything raw *mut c_int (only normalized &mut *p -> addr_of_mut!). Output is functionally identical to c2rust; depth matches (median 40.1M vs c2rust 41.4M). A safety-lifter that removed zero unsafe here."
+}

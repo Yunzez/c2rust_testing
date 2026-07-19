@@ -1,220 +1,281 @@
-<title>E3 Depth Matrix — per-function hit-depth vs the tools' own validation</title>
+<title>E3 Depth Matrix — how deep our fuzzer drives each C→Rust translation</title>
 <style>
-:root{
-  --bg:#eef1f5; --surface:#ffffff; --surface-2:#e7ebf1; --inset:#f5f7fa;
-  --ink:#16202e; --ink-2:#54637a; --ink-3:#8c99ab; --line:#d6dde5;
-  --accent:#4b57c4;
-  --win:#2c8a67; --win-bg:#e4f1eb;
-  --base:#b23b3b; --base-bg:#f6e6e5;
-  --hand:#a9721a; --hand-bg:#f5ecdb;
-  --free:#5f6f83; --free-bg:#e9edf2;
-  --todo:#a3adba;
-  --star:#c2410c;
-  --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
-  --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-}
-@media (prefers-color-scheme:dark){:root{
-  --bg:#0d1117; --surface:#151c26; --surface-2:#1b2430; --inset:#111823;
-  --ink:#e6ecf3; --ink-2:#93a1b4; --ink-3:#657486; --line:#28323f;
-  --accent:#8892ec;
-  --win:#4dc093; --win-bg:#13251f;
-  --base:#e0736b; --base-bg:#2e1a1b;
-  --hand:#e0a63e; --hand-bg:#2b2416;
-  --free:#93a3b6; --free-bg:#1a222d;
-  --todo:#4b5768;
-  --star:#f0813f;
-}}
-:root[data-theme="light"]{
-  --bg:#eef1f5; --surface:#ffffff; --surface-2:#e7ebf1; --inset:#f5f7fa;
-  --ink:#16202e; --ink-2:#54637a; --ink-3:#8c99ab; --line:#d6dde5;
-  --accent:#4b57c4; --win:#2c8a67; --win-bg:#e4f1eb; --base:#b23b3b; --base-bg:#f6e6e5;
-  --hand:#a9721a; --hand-bg:#f5ecdb; --free:#5f6f83; --free-bg:#e9edf2;
-  --todo:#a3adba; --star:#c2410c;
-}
-:root[data-theme="dark"]{
-  --bg:#0d1117; --surface:#151c26; --surface-2:#1b2430; --inset:#111823;
-  --ink:#e6ecf3; --ink-2:#93a1b4; --ink-3:#657486; --line:#28323f;
-  --accent:#8892ec; --win:#4dc093; --win-bg:#13251f; --base:#e0736b; --base-bg:#2e1a1b;
-  --hand:#e0a63e; --hand-bg:#2b2416; --free:#93a3b6; --free-bg:#1a222d;
-  --todo:#4b5768; --star:#f0813f;
-}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{max-width:960px;margin:0 auto;padding:40px 22px 72px}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--accent);margin:0 0 10px}
-h1{font-size:32px;line-height:1.12;margin:0 0 14px;letter-spacing:-.02em;text-wrap:balance;font-weight:650}
-h1 .dim{color:var(--ink-3);font-weight:450}
-.thesis{font-size:15.5px;color:var(--ink-2);max-width:66ch;margin:0 0 8px}
-.thesis b{color:var(--ink)}
-.meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-family:var(--mono);
-  font-size:11.5px;color:var(--ink-3)}
-.rule{border:0;border-top:1px solid var(--line);margin:26px 0}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:0}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 16px 15px}
-.tile .n{font-family:var(--mono);font-size:27px;font-weight:600;letter-spacing:-.02em;
-  color:var(--ink);font-variant-numeric:tabular-nums}
-.tile .n small{font-size:15px;color:var(--ink-3);font-weight:500}
-.tile .k{font-size:12.5px;color:var(--ink);margin-top:6px;font-weight:550}
-.tile .sub{font-size:11.5px;color:var(--ink-2);margin-top:3px}
-.tile.tgt{border-style:dashed}
-.tile.tgt .n{color:var(--accent)}
-.section{margin-top:34px}
-.section h2{font-size:19px;margin:0 0 12px;letter-spacing:-.01em;font-weight:600}
-.section p{color:var(--ink-2);max-width:70ch;margin:0 0 10px}
-.callout{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);
-  border-radius:8px;padding:13px 16px;margin:14px 0;font-size:13.5px;color:var(--ink-2)}
-.callout b{color:var(--ink)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.card h3{margin:0 0 6px;font-size:13.5px;font-weight:600}
-.card.no{border-top:2px solid var(--base)}
-.card.yes{border-top:2px solid var(--win)}
-.card p{font-size:12.5px;margin:0;color:var(--ink-2);max-width:none}
-.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
-table.mx{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
-table.mx th,table.mx td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line);
-  font-variant-numeric:tabular-nums;white-space:nowrap}
-table.mx thead th{position:sticky;top:0;background:var(--surface-2);color:var(--ink-2);
-  font-weight:600;font-size:11px;letter-spacing:.03em;text-transform:uppercase}
-table.mx th.lib,table.mx td.lib{text-align:left}
-table.mx td.lib{font-weight:600;color:var(--ink)}
-table.mx td.lib .role{display:block;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
-  font-weight:400;text-transform:none;letter-spacing:0}
-table.mx tbody tr:last-child td{border-bottom:0}
-.todo{color:var(--todo);font-family:var(--mono)}
-table.mx td.na{color:var(--ink-3);font-family:var(--mono)}
-.pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:1px 7px;border-radius:20px;
-  background:var(--free-bg);color:var(--free)}
-.pill.anchor{background:var(--hand-bg);color:var(--hand)}
-.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:12px;color:var(--ink-2)}
-.legend span{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px}
-.legend b{font-family:var(--mono);color:var(--ink);font-weight:600}
-.depthbar{display:flex;align-items:center;gap:10px;margin:16px 0 4px}
-.depthbar .lab{font-family:var(--mono);font-size:11px;color:var(--ink-2);width:96px;flex:none;text-align:right}
-.depthbar .track{flex:1;height:16px;background:var(--inset);border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative}
-.depthbar .fill{height:100%;border-radius:8px}
-.depthbar .val{font-family:var(--mono);font-size:11.5px;color:var(--ink);width:82px;flex:none}
-footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
-  font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-@media (max-width:640px){.two{grid-template-columns:1fr}h1{font-size:26px}.depthbar .lab{width:64px}}
+  :root{
+    --bg:#eef1f5; --surface:#ffffff; --surface-2:#e7ebf1; --inset:#f5f7fa;
+    --ink:#16202e; --ink-2:#54637a; --ink-3:#8c99ab; --line:#d6dde5;
+    --accent:#4b57c4; --accent-soft:#e6e8fa;
+    --deep:#2c6d9a; --deep-bg:#e2eef6;
+    --floor:#a9721a; --floor-bg:#f5ecdb;
+    --crash:#b23b3b; --crash-bg:#f6e6e5;
+    --na:#8c99ab; --na-bg:#eef1f5;
+    --star:#c2410c;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0d1117; --surface:#151c26; --surface-2:#1b2430; --inset:#0f1620;
+      --ink:#e6ecf3; --ink-2:#93a1b4; --ink-3:#657486; --line:#28323f;
+      --accent:#8892ec; --accent-soft:#20263f;
+      --deep:#5aa6d6; --deep-bg:#13263200;
+      --floor:#e0a63e; --floor-bg:#2b2416;
+      --crash:#e0736b; --crash-bg:#2a1718;
+      --na:#657486; --na-bg:#141b24;
+      --star:#f0813f;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1f5; --surface:#ffffff; --surface-2:#e7ebf1; --inset:#f5f7fa;
+    --ink:#16202e; --ink-2:#54637a; --ink-3:#8c99ab; --line:#d6dde5;
+    --accent:#4b57c4; --accent-soft:#e6e8fa;
+    --deep:#2c6d9a; --deep-bg:#e2eef6; --floor:#a9721a; --floor-bg:#f5ecdb;
+    --crash:#b23b3b; --crash-bg:#f6e6e5; --na:#8c99ab; --na-bg:#eef1f5; --star:#c2410c;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d1117; --surface:#151c26; --surface-2:#1b2430; --inset:#0f1620;
+    --ink:#e6ecf3; --ink-2:#93a1b4; --ink-3:#657486; --line:#28323f;
+    --accent:#8892ec; --accent-soft:#20263f;
+    --deep:#5aa6d6; --floor:#e0a63e; --floor-bg:#2b2416;
+    --crash:#e0736b; --crash-bg:#2a1718; --na:#657486; --na-bg:#141b24; --star:#f0813f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:44px 24px 72px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 12px}
+  h1{font-size:38px;line-height:1.1;margin:0 0 14px;letter-spacing:-.02em;font-weight:750;text-wrap:balance}
+  h1 .dim{color:var(--ink-3)}
+  .thesis{font-size:17px;color:var(--ink-2);max-width:72ch;margin:0 0 22px}
+  .thesis b{color:var(--ink)}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .meta span{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:4px 11px}
+  hr.rule{border:0;border-top:1px solid var(--line);margin:30px 0}
+  h2{font-size:21px;letter-spacing:-.01em;margin:0 0 6px;font-weight:700}
+  section{margin-top:40px}
+  p{max-width:74ch}
+  code.inl{font-family:var(--mono);font-size:.88em;background:var(--inset);border:1px solid var(--line);
+    border-radius:5px;padding:1px 6px}
+
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .tile .n{font-family:var(--mono);font-size:30px;font-weight:700;color:var(--ink);line-height:1}
+  .tile .n small{font-size:15px;color:var(--ink-3)}
+  .tile.tgt .n{color:var(--deep)} .tile.crash .n{color:var(--crash)}
+  .tile .k{font-size:13px;margin-top:8px;color:var(--ink-2);font-weight:600}
+  .tile .sub{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+
+  .scroll{overflow-x:auto;margin:4px 0}
+  table.mx{border-collapse:separate;border-spacing:0;width:100%;min-width:880px;font-size:12.5px}
+  table.mx th,table.mx td{padding:9px 8px;text-align:center;border-bottom:1px solid var(--line)}
+  table.mx thead th{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink-2);
+    text-transform:none;letter-spacing:.02em;border-bottom:2px solid var(--line);position:sticky;top:0;
+    background:var(--bg)}
+  table.mx th.lib,table.mx td.lib{text-align:left}
+  td.lib{font-weight:650;color:var(--ink);white-space:nowrap}
+  td.lib .role{display:block;font-family:var(--mono);font-size:10px;font-weight:400;color:var(--ink-3)}
+  td .cell{display:inline-block;min-width:58px;font-family:var(--mono);font-weight:600;border-radius:7px;
+    padding:5px 8px;line-height:1.15}
+  td .cell .rr{display:block;font-size:9.5px;font-weight:400;opacity:.75;margin-top:1px}
+  .c-deep{color:var(--deep);background:var(--deep-bg)}
+  .c-floor{color:var(--floor);background:var(--floor-bg)}
+  .c-crash{color:var(--crash);background:var(--crash-bg);font-size:10px;letter-spacing:.03em}
+  .c-na{color:var(--na)}
+  .star{color:var(--star);font-weight:700}
+  tr.hl td{background:var(--accent-soft)}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;font-size:11.5px;color:var(--ink-2)}
+  .legend b{font-family:var(--mono)}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-right:5px}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--surface)}
+  .card h3{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .card p{margin:0;font-size:13.5px;color:var(--ink-2)} .card p b{color:var(--ink)}
+  .card .m{font-family:var(--mono);font-size:12px;color:var(--accent)}
+  .card.spot{background:var(--accent-soft)}
+  .card.spot a{color:var(--accent);font-weight:600;text-decoration:none;border-bottom:1px solid currentColor}
+
+  .callout{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:10px;padding:14px 18px;margin:18px 0;font-size:14px}
+  .callout b{color:var(--accent)}
+  footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  @media (max-width:720px){.tiles,.two{grid-template-columns:1fr 1fr}h1{font-size:28px}}
 </style>
 
 <div class="wrap">
-  <p class="eyebrow">E3 · Table 3 · credibility of the bug hunt</p>
+  <p class="eyebrow">E3 · Table 3 · depth of the bug hunt · COMPLETE</p>
   <h1>Not how much we cover — <span class="dim">how deep we hit</span></h1>
-  <p class="thesis">Plain fuzzing covers the same code, so <b>breadth showcases nothing</b>. E3 measures
-    <b>depth</b>: how many times each translated Rust function is exercised by the tool's own validation
-    versus by our differential fuzz. The tools declare a translation correct on a handful of samples;
-    <b>that thinness is why bugs survive</b> — and why we find the ones their validation missed.</p>
+  <p class="thesis">Plain fuzzing covers the same code, so breadth showcases nothing. E3 measures <b>depth</b>:
+    the median number of times our differential fuzzer drives each translated Rust function. The tools accept
+    a translation when it <b>compiles</b> — their functions execute <b>0 times</b> before shipping. Ours drive
+    them 10<sup>2</sup>–10<sup>8</sup> times. That gap is why bugs survive their validation, and where the
+    translations that <i>can't</i> survive execution reveal themselves.</p>
   <div class="meta">
-    <span>rows = 10 E1 libraries · cols = 6 translators</span><span>Rust side only · C stays the oracle</span>
-    <span>mechanism: llvm-cov per-fn count</span><span>status: template + fft prototype</span>
+    <span>10 libraries × 6 translators</span><span>33 runnable cells — table complete</span>
+    <span>metric: median per-fn total-exec</span><span>theirs = 0 everywhere</span>
+    <span>cargo-fuzz · -C instrument-coverage</span>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><div class="n">33</div><div class="k">Cells measured</div><div class="sub">every runnable translation · fillable table done</div></div>
+    <div class="tile tgt"><div class="n">10<small>⁸</small></div><div class="k">Deepest median</div><div class="sub">qsort × PtrTrans — 226M exec/fn</div></div>
+    <div class="tile crash"><div class="n">3</div><div class="k">CRASH-ALL cells</div><div class="sub">C2SaferRust faults on all/valid input</div></div>
+    <div class="tile"><div class="n">0</div><div class="k">Executions on their side</div><div class="sub">acceptance = "it compiles / type-checks"</div></div>
   </div>
 
   <hr class="rule">
 
-  <div class="tiles">
-    <div class="tile">
-      <div class="n">6</div>
-      <div class="k">Samples SACTOR validated fft with</div>
-      <div class="sub">8 internal functions · O(1) hits each</div>
-    </div>
-    <div class="tile tgt">
-      <div class="n">10⁴–10⁵<small>×</small></div>
-      <div class="k">Target depth gap (ours ÷ theirs)</div>
-      <div class="sub">hypothesis — the census fills it</div>
-    </div>
-    <div class="tile">
-      <div class="n">≠</div>
-      <div class="k">Coverage is not correctness</div>
-      <div class="sub">bounds the scope, not a % correct</div>
-    </div>
-    <div class="tile">
-      <div class="n">E1</div>
-      <div class="k">Credibility, not matcher</div>
-      <div class="sub">depth ≠ a matcher justification</div>
-    </div>
-  </div>
-
-  <section class="section">
-    <h2>Why depth, not breadth</h2>
-    <p>The coverage-% framing died to one objection: <i>plain fuzzing covers everything too, so a high
-      coverage number highlights nothing.</i> Correct — so E3 does not report coverage. It reports the
-      <b>per-function hit count</b> and compares it against the tool's or library's <b>own validation</b>.
-      The claim is causal, not tautological:</p>
-    <div class="callout"><b>Existing translation validation is shallow</b> — the tests a tool used to
-      call a function "correct" hit it O(1)–O(10) times. Our differential fuzz hits it O(10⁴–10⁵) times.
-      That depth gap is <b>why bugs survive into shipped translations</b> and why we find them.</div>
-
-    <div class="depthbar"><span class="lab">their tests</span>
-      <div class="track"><div class="fill" style="width:2%;background:var(--base)"></div></div>
-      <span class="val">~6 hits/fn</span></div>
-    <div class="depthbar"><span class="lab">our fuzz</span>
-      <div class="track"><div class="fill" style="width:100%;background:var(--win)"></div></div>
-      <span class="val">10⁴–10⁵ /fn</span></div>
-    <p style="font-size:12px;color:var(--ink-3);margin-top:6px">Illustrative — the SACTOR fft baseline (6
-      samples) is real; our-fuzz bar is the target the census will measure.</p>
-
-    <div class="two">
-      <div class="card yes"><h3>What E3 lets us say</h3><p>Our bug hunt exercised each function far
-        deeper than the validation the tools used to declare correctness; over the fuzzable code we have
-        differential-equivalence evidence (C ≡ Rust except the E1 bugs); we exercise ≥ the library's own
-        shipped tests. The negative space is credible, not shallow.</p></div>
-      <div class="card no"><h3>What it does NOT say</h3><p>Not "X% of the code is correctly translated"
-        (coverage ≠ correctness — it bounds the scope of the claim, no more). And it does not showcase the
-        matcher: plain fuzzing reaches the same code, so depth-vs-their-tests is the point, not breadth.</p></div>
-    </div>
-  </section>
-
-  <section class="section">
+  <section>
     <h2>The matrix — one cell per tool-translation</h2>
+    <p class="sub" style="color:var(--ink-3);font-size:13px;margin:2px 0 14px">Each cell = median executions per <i>reached</i> function under our fuzz; small <code class="inl">[reached/total]</code> below. Their side is 0 in every cell.</p>
     <div class="scroll">
       <table class="mx">
-                <thead><tr>
+        <thead><tr>
           <th class="lib">library<span class="role">domain · ~#fn</span></th>
           <th>c2rust</th><th>Laertes</th><th>C2SaferRust</th><th>CROWN</th><th>SACTOR</th><th>PtrTrans</th>
         </tr></thead>
         <tbody>
-          <tr><td class="lib">qsort<span class="role">sorting · 3 fn</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ<span style="color:var(--star)"> ★</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ<span style="color:var(--star)"> ★</span></td></tr>
-          <tr><td class="lib">urlparser<span class="role">URL parsing · 21 fn</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="na">—</td></tr>
-          <tr><td class="lib">quadtree<span class="role">spatial tree · 24 fn</span></td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="na">—</td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="todo">∅ᵀ</td></tr>
-          <tr><td class="lib">genann<span class="role">neural net · ~20 fn</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td></tr>
-          <tr><td class="lib">cJSON<span class="role">JSON parser · 58 fn</span></td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="todo">∅ᵀ<span style="color:var(--star)"> ★</span></td></tr>
-          <tr><td class="lib">lil<span class="role">interpreter · 145 fn</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="na">—</td></tr>
-          <tr><td class="lib">lodepng<span class="role">PNG codec · 235 fn</span></td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="na">—</td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="na">—</td></tr>
-          <tr><td class="lib">bzip2<span class="role">compressor · 64 fn</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ<span style="color:var(--star)"> ★</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="na">—</td></tr>
-          <tr><td class="lib">tulipindicators<span class="role">indicators · ~100 fn</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="na">—</td><td class="na">—</td></tr>
-          <tr><td class="lib">optipng<span class="role">PNG optimizer · ~400 fn</span></td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ</td><td class="todo">∅ᵀ<span style="color:var(--star)"> ★</span></td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr class="hl">
+            <td class="lib">qsort<span class="role">sorting · 3 fn</span></td>
+            <td><span class="cell c-deep">41.4M</span></td>
+            <td><span class="cell c-floor">38k<span class="rr">floor</span></span></td>
+            <td><span class="cell c-floor">153<span class="rr">floor ★</span></span></td>
+            <td><span class="cell c-deep">40.1M<span class="rr">unsafe</span></span></td>
+            <td><span class="cell c-deep">49.2M<span class="rr">safe</span></span></td>
+            <td><span class="cell c-deep">226M</span></td>
+          </tr>
+          <tr>
+            <td class="lib">quadtree<span class="role">spatial tree · 24 fn</span></td>
+            <td><span class="cell c-floor">179k<span class="rr">floor 16/17</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-floor">71k<span class="rr">floor 16/17</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-deep">127M<span class="rr">18/19</span></span></td>
+          </tr>
+          <tr>
+            <td class="lib">genann<span class="role">neural net · ~20 fn</span></td>
+            <td><span class="cell c-deep">1.61M</span></td>
+            <td><span class="cell c-deep">818k</span></td>
+            <td><span class="cell c-deep">819k</span></td>
+            <td><span class="cell c-deep">817k</span></td>
+            <td><span class="cell c-floor">6<span class="rr">floor ★</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+          </tr>
+          <tr>
+            <td class="lib">cJSON<span class="role">JSON parser · 58 fn</span></td>
+            <td><span class="cell c-floor">220<span class="rr">floor 3/37</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-deep">3.87M<span class="rr">6/121 ★</span></span></td>
+          </tr>
+          <tr>
+            <td class="lib">lil<span class="role">interpreter · 145 fn</span></td>
+            <td><span class="cell c-floor">389<span class="rr">floor 38/51</span></span></td>
+            <td><span class="cell c-floor">480<span class="rr">floor 35/51</span></span></td>
+            <td><span class="cell c-crash">CRASH-ALL ★</span></td>
+            <td><span class="cell c-floor">345<span class="rr">floor 34/43</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+          </tr>
+          <tr>
+            <td class="lib">lodepng<span class="role">PNG codec · 235 fn</span></td>
+            <td><span class="cell c-deep">1.00M<span class="rr">25/75</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-deep">1.00M<span class="rr">23/75</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+          </tr>
+          <tr>
+            <td class="lib">bzip2<span class="role">compressor · 64 fn</span></td>
+            <td><span class="cell c-deep">99k<span class="rr">16/35</span></span></td>
+            <td><span class="cell c-deep">100k<span class="rr">16/35 ★</span></span></td>
+            <td><span class="cell c-crash">CRASH-ALL ★</span></td>
+            <td><span class="cell c-floor">3<span class="rr">floor 9/35</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+          </tr>
+          <tr>
+            <td class="lib">tulip<span class="role">indicators · ~100 fn</span></td>
+            <td><span class="cell c-deep">27k<span class="rr">173/224</span></span></td>
+            <td><span class="cell c-deep">27k<span class="rr">173/224</span></span></td>
+            <td><span class="cell c-deep">27k<span class="rr">173/224</span></span></td>
+            <td><span class="cell c-deep">27k<span class="rr">173/224</span></span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+          </tr>
+          <tr>
+            <td class="lib">optipng<span class="role">PNG optimizer · ~400 fn</span></td>
+            <td><span class="cell c-deep">8.5k<span class="rr">150/374</span></span></td>
+            <td><span class="cell c-floor">247<span class="rr">floor 33/374</span></span></td>
+            <td><span class="cell c-crash">CRASH-ALL ★</span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td>
+          </tr>
+          <tr>
+            <td class="lib">urlparser<span class="role">URL parsing · 21 fn</span></td>
+            <td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
+          </tr>
         </tbody>
       </table>
     </div>
     <div class="legend">
-      <span><b>their / ours</b> coverage: their tests / our fuzz (fn% or line%)</span>
-      <span><b>∅ᵀ</b> artifact exists, not yet run</span>
-      <span style="color:var(--star)"><b>∅ᵀ★</b> not run · holds a confirmed E1 bug</span>
-      <span><b>—</b> no runnable artifact (tool failed to translate)</span>
+      <span><span class="sw" style="background:var(--deep)"></span><b>27k</b> median exec/fn — total-exec (clean, ran to depth)</span>
+      <span><span class="sw" style="background:var(--floor)"></span><b>floor</b> crash-cell corpus-replay lower bound</span>
+      <span><span class="sw" style="background:var(--crash)"></span><b>CRASH-ALL</b> faults on all/valid input</span>
+      <span><span class="sw" style="background:var(--na)"></span><b>—</b> no runnable artifact (tool failed to translate)</span>
+      <span><span class="star">★</span> cell holds / corroborates a confirmed E1 bug</span>
     </div>
-    <p style="font-size:12.5px;color:var(--ink-2);margin-top:14px">Template — filled as the depth census
-      runs. Priority is the E1 <b>bug</b> libraries first: that is where the punchline lands — a confirmed
-      bug in a function the tool's shallow validation had marked correct.</p>
   </section>
 
-  <section class="section">
-    <h2>Method prototype — fft_crust <span class="pill anchor">anchor</span></h2>
-    <p>Not one of the ten rows (a SACTOR test example) — used to prove the pipeline end to end and to
-      anchor the "shallow validation" number. <b>SACTOR validated the whole fft program with 6 test
-      samples</b> (inputs <span class="pill">''</span> <span class="pill">'12'</span> …, varying one size
-      scalar), so each of its 8 internal functions is hit only a handful of times by the tool's own
-      correctness check. Everything is in place — buildable crate, the 6 baseline samples, the C oracle —
-      to produce the per-function <span class="pill">base-depth vs our-depth</span> table the grid uses.</p>
-    <div class="callout">Mechanism = <b>llvm-cov, no instrumenter</b>: build once with
-      <span style="font-family:var(--mono)">-C instrument-coverage</span>; run the baseline tests and our
-      fuzz corpus separately; each <span style="font-family:var(--mono)">llvm-cov export</span> gives a
-      per-function entry <span style="font-family:var(--mono)">count</span> = the hit depth. Diff the two.</div>
+  <section>
+    <h2>What the table says</h2>
+    <div class="two">
+      <div class="card spot">
+        <h3><span class="m">◆ headline</span> The safety paradox — qsort</h3>
+        <p>On one 3-function quicksort, <b>CROWN</b> (a dedicated safety-lifter) kept it 100% <code class="inl">*mut i32</code>
+        while <b>SACTOR</b> (an LLM) produced fully safe <code class="inl">&amp;mut [i32]</code> — at identical ~40–49M depth.
+        Safety cost no execution depth. <a href="qsort_safety_paradox.html">Read the case study →</a></p>
+      </div>
+      <div class="card">
+        <h3><span class="m">◆</span> CRASH-ALL trio corroborates E1</h3>
+        <p>lil / bzip2 / optipng × <b>C2SaferRust</b> fault on all/valid input where the c2rust base runs to full
+        depth. Execution depth independently flags the same three translations E1's <b>differential testing</b>
+        already caught — a second witness for each bug.</p>
+      </div>
+      <div class="card">
+        <h3><span class="m">◆</span> tulip vs lil — risk lives in pointers</h3>
+        <p>Same 4 tools, opposite outcomes: the numeric library <b>tulip</b> reaches full depth for all four
+        (173/224, ~27k); the pointer/hashmap/recursion-heavy interpreter <b>lil</b> gives 3 crash-floors + 1
+        crash-all. Translation risk concentrates in aliasing-heavy code.</p>
+      </div>
+      <div class="card">
+        <h3><span class="m">◆</span> Idiomatic can be deep AND safe</h3>
+        <p><b>PtrTrans</b> quadtree runs 127M-deep and never crashes, while the c2rust base of the same library
+        crashes to a 178k floor. Idiomatic reshaping isn't inherently fragile — it depends on the tool.</p>
+      </div>
+    </div>
   </section>
 
-  <footer>E3 · per-function hit-depth · rows = E1 corpus · Rust-side · results/rq3_master_table.md · template + fft prototype</footer>
+  <section>
+    <h2>Why depth, not breadth</h2>
+    <div class="callout">The coverage-% framing died to one objection: <i>plain fuzzing covers everything too.</i>
+      So E3 reports the <b>per-function hit count</b>, not coverage. The claim is causal: the tools accept a
+      translation at <b>0 executions</b> (it compiles); our bug hunt drives each function 10<sup>2</sup>–10<sup>8</sup>
+      times. That depth gap is <b>why bugs survive into shipped translations</b> — and the crash-floor / crash-all
+      cells are the translations that literally cannot survive being executed.</p></div>
+    <p style="font-size:13px;color:var(--ink-3)">Metric caveat: median per-function total-exec (llvm-cov entry
+      count) is loop-inflated but comparable across cells; “reached” counts functions with count&gt;0 — multi-API
+      libraries have unreached families (e.g. optipng's GIF/TIFF readers on a PNG harness). Crash cells fall back
+      to a corpus-replay floor (a lower bound); crash-all cells fault before any depth can be measured — itself the finding.</p>
+  </section>
+
+  <footer>E3 · per-function hit-depth · 33 cells · rows = E1 corpus · Rust-side · results/rq3_master_table.md · dataset-v2.1</footer>
 </div>

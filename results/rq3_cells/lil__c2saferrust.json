@@ -9,5 +9,9 @@
  "median_hits": null,
  "min_hits": null,
  "max_hits": null,
- "note": "CRASH-ALL: C2SaferRust's lil translation panics on EVERY valid script (survivors 0/5, incl. `set x 5`). Panic at core/ptr/unique.rs:88 -> lil.rs hm_destroy (line ~2983), reached via lil_free_env teardown (line 772): the rewrite builds a NonNull/reference from a possibly-null internal hashmap pointer that the C allows to be null. Fires on every run's cleanup -> translation is unusable under execution. Corroborates E1 lil x C2SaferRust = c:1. The crash-on-all is itself the finding; no depth number."
+ "note": "CRASH-ALL: C2SaferRust's lil translation panics on EVERY valid script (survivors 0/5, incl. `set x 5`). Panic at core/ptr/unique.rs:88 -> lil.rs hm_destroy (line ~2983), reached via lil_free_env teardown (line 772): the rewrite builds a NonNull/reference from a possibly-null internal hashmap pointer that the C allows to be null. Fires on every run's cleanup -> translation is unusable under execution. Corroborates E1 lil x C2SaferRust = c:1. The crash-on-all is itself the finding; no depth number.",
+ "median_reached": null,
+ "median_all": null,
+ "median_all_src": "crash-all",
+ "reach_frac": null
 }

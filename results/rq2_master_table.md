@@ -1,9 +1,46 @@
 # E2 Master Table — matcher accuracy (name-independent C↔Rust alignment)
 
-**The paper's Table 2** — the enabler-novelty. E1 shows the tools produce bugs; E2 shows we can
-**recover the C↔Rust function correspondence WITHOUT function names**, on the *same* libraries and the
-*same* tool artifacts — which is what makes the E1 differential possible on structure-non-preserving
-translators (the thing FLOURINE / RustAssure's name-pairing cannot do).
+**The paper's Table 2.** E1 shows the tools produce bugs; E2 measures whether the C↔Rust function
+correspondence can be recovered **without function names**, on the *same* libraries and the *same* tool
+artifacts.
+
+> ### ⚠️ STATUS AND CLAIM SCOPE (corrected 2026-08-09) — read before quoting this table
+>
+> **Fill state: 32 of 48 attemptable cells.** (70 grid cells − 22 with no artifact = 48 attemptable;
+> 16 still open.) The **tulipindicators and optipng rows are almost entirely unfilled**, and the
+> **SACTOR column has one open cell in every row it could occupy** — including `genann×SACTOR`, which
+> supplies an E1 headline bug. This table is **not complete**; do not present it as such.
+>
+> **The "enabler" claim is retracted as previously worded.** The header used to say the matcher "is what
+> makes the E1 differential possible." That is not supported by our own evidence:
+> - **5 of the 6 shipped tools preserve C function names** (only PtrTrans renames, and only a subset) —
+>   so name-equality suffices for most of the grid.
+> - **The matcher found none of the 20 E1 bugs.** 16 of 20 are in name-preserving artifacts; the qsort
+>   ★ cell is the one place a real tool's rename (`quickSort→quick_sort`) made the matcher necessary, and
+>   it buys exactly one function.
+> - The maximal-rename regime (raw-LLM, where name-eq recall collapses to 0.0) produced **zero E1 bugs**
+>   and has no column in Table 1 at all.
+>
+> **What E2 can honestly claim, in priority order:**
+> 1. **Alignment is a measurable error source, and we are the only ones who measured it.** The PtrTrans
+>    audit — **143/255 (56%)** of a *shipped, FSE'26-published* C↔Rust map is wrong, 102 of them airtight
+>    scrambles including `lodepng_save_file → "load_file"` (mapped to its semantic opposite) — is the
+>    strongest and most defensible result here. It answers "why not just use the tool's own map?" with a
+>    number. See `PROJECT_RESET_2026-07-03.md:78-85`. **This belongs in the paper as a result, not a
+>    footnote.**
+> 2. **Precision under abstention, not recall, is the deployment metric.** For a differential oracle a
+>    confidently *wrong* pairing manufactures false bugs, while an abstention merely leaves a function
+>    untested. The number to lead with is **precision .969 at coverage .73** (25 ambiguous pairs isolated
+>    rather than guessed, `rq3_matcher_v1.md:52`) — *not* forced recall .876, and certainly not the
+>    per-cell recalls of 0.55 (cJSON), 0.55 (lil), 0.63 (bzip2) under maximal rename.
+> 3. **The technique itself is not novel** — signature + call-graph topology + operator histograms is the
+>    standard binary-code-similarity feature set, and MatchFixAgent already does name-independent
+>    cross-language pairing. Claim the *application and the measurement*, never the technique.
+>
+> **The one experiment that would restore an enabler claim:** hold the oracle fixed and vary only the
+> alignment source ∈ {name-equality, tool-shipped map, matcher, hand-truth}, then report bugs-found and
+> false-divergences for each. That converts a recall table into "alignment error costs N real bugs and
+> buys M false alarms." Until that runs, E2 is a component measurement, not an enabler.
 
 **Rows = the E1 libraries** (locked to E1 on purpose: one corpus, two tables; future-proof if a
 reviewer wants more libraries — the format doesn't change, only rows are added).
@@ -58,7 +95,9 @@ clearest demonstration of the matcher's value. All ∅ pending generation on the
 
 ## Filled so far — name-preserving batch v1 (2026-07-07)
 
-**24 cells** filled with real matcher runs on the E1 artifacts (`results/rq2_cells/name_preserving_v1.json`),
+**24 cells** *in this batch* (name-preserving tools only — the table's 32 filled cells = these 24 + 7
+raw-LLM + 1 PtrTrans; see the status box at the top for the full fill state)
+filled with real matcher runs on the E1 artifacts (`results/rq2_cells/name_preserving_v1.json`),
 across **8 libraries** (qsort / urlparser / quadtree / genann / cJSON / lil / lodepng / bzip2). Cell =
 **matcher-recall / name-eq-recall**; name-eq = 1.0 for these tools (names kept), so the cell is a
 **validation** (the matcher recovers the correspondence BLIND, not a "beat the baseline").

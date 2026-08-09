@@ -16,5 +16,9 @@
   "quickSort": 40119635,
   "partition": 19584802
  },
- "note": "Regenerated CROWN output (nightly-2023-01-26: preprocess->explicit-addr->analyse->rewrite). CROWN FAILED to lift qsort pointers: statistics.json = 4 unsafe ptrs in, only 1 owning detected, 0 converted to safe refs -- the computed pointer arithmetic (arr.offset(j)) defeats CROWN fatness analysis, so it kept everything raw *mut c_int (only normalized &mut *p -> addr_of_mut!). Output is functionally identical to c2rust; depth matches (median 40.1M vs c2rust 41.4M). A safety-lifter that removed zero unsafe here."
+ "note": "Regenerated CROWN output (nightly-2023-01-26: preprocess->explicit-addr->analyse->rewrite). CROWN FAILED to lift qsort pointers: statistics.json = 4 unsafe ptrs in, only 1 owning detected, 0 converted to safe refs -- the computed pointer arithmetic (arr.offset(j)) defeats CROWN fatness analysis, so it kept everything raw *mut c_int (only normalized &mut *p -> addr_of_mut!). Output is functionally identical to c2rust; depth matches (median 40.1M vs c2rust 41.4M). A safety-lifter that removed zero unsafe here.",
+ "median_reached": 40119635,
+ "median_all": 40119635,
+ "median_all_src": "computed",
+ "reach_frac": "3/3"
 }

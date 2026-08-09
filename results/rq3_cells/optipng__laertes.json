@@ -387,5 +387,9 @@
   "zlibCompileFlags": 0,
   "zlibVersion": 0
  },
- "note": "CLI driver: main_0(argc,[optipng,-simulate,png]) writes fuzz bytes to a temp PNG and runs the full read+optimize path. Crashes under fuzz (rc=77, deadly signal not a Rust panic) even at 4k runs on tiny malformed input (8 zero bytes); valid-PNG corpus replays clean (246/246). Corroborates E1 optipng x Laertes = s:1. Corpus-replay floor: reached 33/374, median 247."
+ "note": "CLI driver: main_0(argc,[optipng,-simulate,png]) writes fuzz bytes to a temp PNG and runs the full read+optimize path. Crashes under fuzz (rc=77, deadly signal not a Rust panic) even at 4k runs on tiny malformed input (8 zero bytes); valid-PNG corpus replays clean (246/246). Corroborates E1 optipng x Laertes = s:1. Corpus-replay floor: reached 33/374, median 247.",
+ "median_reached": 247,
+ "median_all": 0.0,
+ "median_all_src": "computed",
+ "reach_frac": "33/374"
 }

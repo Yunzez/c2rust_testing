@@ -101,34 +101,39 @@
   footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);
     font-family:var(--mono);font-size:11px;color:var(--ink-3)}
   @media (max-width:720px){.tiles,.two{grid-template-columns:1fr 1fr}h1{font-size:28px}}
+  .c-zero{color:var(--crash);background:var(--na-bg);border:1px dashed var(--line)}
 </style>
 
 <div class="wrap">
-  <p class="eyebrow">E3 · Table 3 · depth of the bug hunt · COMPLETE</p>
+  <p class="eyebrow">E3 · Table 3 · depth of the bug hunt · medians corrected 2026-08-09</p>
   <h1>Not how much we cover — <span class="dim">how deep we hit</span></h1>
-  <p class="thesis">Plain fuzzing covers the same code, so breadth showcases nothing. E3 measures <b>depth</b>:
-    the median number of times our differential fuzzer drives each translated Rust function. The tools accept
-    a translation when it <b>compiles</b> — their functions execute <b>0 times</b> before shipping. Ours drive
-    them 10<sup>2</sup>–10<sup>8</sup> times. That gap is why bugs survive their validation, and where the
-    translations that <i>can't</i> survive execution reveal themselves.</p>
+  <p class="thesis">Plain fuzzing covers the same code, so breadth showcases nothing. E3 measures
+    <b>depth</b>: how many times our differential fuzzer drives each translated Rust function. The tools
+    accept a translation when it <b>compiles</b> — their acceptance criterion executes it <b>0 times</b>.
+    But the honest median counts the functions our fuzzing <i>never reached</i> as well, and in
+    <b>9 of 33 cells that median is also 0</b>. This page shows both numbers, because only
+    one of them is a depth result.</p>
   <div class="meta">
     <span>10 libraries × 6 translators</span><span>33 runnable cells — table complete</span>
-    <span>metric: median per-fn total-exec</span><span>theirs = 0 everywhere</span>
+    <span>headline = median over ALL functions</span><span>budgets 4k–2M (500× spread)</span>
     <span>cargo-fuzz · -C instrument-coverage</span>
   </div>
 
   <div class="tiles">
     <div class="tile"><div class="n">33</div><div class="k">Cells measured</div><div class="sub">every runnable translation · fillable table done</div></div>
-    <div class="tile tgt"><div class="n">10<small>⁸</small></div><div class="k">Deepest median</div><div class="sub">qsort × PtrTrans — 226M exec/fn</div></div>
+    <div class="tile crash"><div class="n">9</div><div class="k">Cells whose honest median is 0</div><div class="sub">same value as <i>theirs</i> — reach, not depth</div></div>
+    <div class="tile tgt"><div class="n">173<small>/224</small></div><div class="k">Cleanest comparison</div><div class="sub">tulip · 4 tools · fixed N=30,000 · ~27k</div></div>
     <div class="tile crash"><div class="n">3</div><div class="k">CRASH-ALL cells</div><div class="sub">C2SaferRust faults on all/valid input</div></div>
-    <div class="tile"><div class="n">0</div><div class="k">Executions on their side</div><div class="sub">acceptance = "it compiles / type-checks"</div></div>
   </div>
 
   <hr class="rule">
 
   <section>
     <h2>The matrix — one cell per tool-translation</h2>
-    <p class="sub" style="color:var(--ink-3);font-size:13px;margin:2px 0 14px">Each cell = median executions per <i>reached</i> function under our fuzz; small <code class="inl">[reached/total]</code> below. Their side is 0 in every cell.</p>
+    <p class="sub" style="color:var(--ink-3);font-size:13px;margin:2px 0 14px">Big number = median over
+      <b>all</b> censused functions (unreached counted as 0). Small line = the reached-only median, the
+      reach fraction, and that cell's <code class="inl">-runs</code> budget. <b>Budgets differ by up to
+      500×, so magnitudes are not comparable between libraries</b> — only within a library at fixed N.</p>
     <div class="scroll">
       <table class="mx">
         <thead><tr>
@@ -136,102 +141,56 @@
           <th>c2rust</th><th>Laertes</th><th>C2SaferRust</th><th>CROWN</th><th>SACTOR</th><th>PtrTrans</th>
         </tr></thead>
         <tbody>
-          <tr class="hl">
+          <tr>
             <td class="lib">qsort<span class="role">sorting · 3 fn</span></td>
-            <td><span class="cell c-deep">41.4M</span></td>
-            <td><span class="cell c-floor">38k<span class="rr">floor</span></span></td>
-            <td><span class="cell c-floor">153<span class="rr">floor ★</span></span></td>
-            <td><span class="cell c-deep">40.1M<span class="rr">unsafe</span></span></td>
-            <td><span class="cell c-deep">49.2M<span class="rr">safe</span></span></td>
-            <td><span class="cell c-deep">226M</span></td>
+            <td><span class="cell c-deep">41.4M<span class="rr">reached 41.4M · 3/3 · N=1M</span></span></td><td><span class="cell c-floor">38.1k<span class="rr">reached 38.1k · floor 3/3 · N=1M</span></span></td><td><span class="cell c-floor">153 <span class="star">★</span><span class="rr">reached 153 · floor 3/3 · N=1M</span></span></td><td><span class="cell c-deep">40.1M<span class="rr">reached 40.1M · 3/3 · N=1M</span></span></td><td><span class="cell c-deep">49.2M<span class="rr">reached-only · 6/8 · N=1M</span></span></td><td><span class="cell c-deep">226M <span class="star">★</span><span class="rr">reached 226M · 3/3 · N=2M</span></span></td>
           </tr>
           <tr>
             <td class="lib">quadtree<span class="role">spatial tree · 24 fn</span></td>
-            <td><span class="cell c-floor">179k<span class="rr">floor 16/17</span></span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-floor">71k<span class="rr">floor 16/17</span></span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-deep">127M<span class="rr">18/19</span></span></td>
+            <td><span class="cell c-floor">178.8k<span class="rr">reached 178.8k · floor 16/17 · N=1M</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-floor">71.3k<span class="rr">reached 71.3k · floor 16/17 · N=1M</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-deep">127.1M<span class="rr">reached-only · 18/19 · N=100k</span></span></td>
           </tr>
           <tr>
             <td class="lib">genann<span class="role">neural net · ~20 fn</span></td>
-            <td><span class="cell c-deep">1.61M</span></td>
-            <td><span class="cell c-deep">818k</span></td>
-            <td><span class="cell c-deep">819k</span></td>
-            <td><span class="cell c-deep">817k</span></td>
-            <td><span class="cell c-floor">6<span class="rr">floor ★</span></span></td>
-            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-deep">1.6M<span class="rr">reached 3.2M · 7/11 · N=2M</span></span></td><td><span class="cell c-deep">817.6k<span class="rr">reached 1.6M · 7/11 · N=1M</span></span></td><td><span class="cell c-deep">818.8k<span class="rr">reached 1.6M · 7/11 · N=1M</span></span></td><td><span class="cell c-deep">816.5k<span class="rr">reached 1.6M · 7/11 · N=1M</span></span></td><td><span class="cell c-floor">6 <span class="star">★</span><span class="rr">reached 15 · floor 6/9 · N=1M</span></span></td><td><span class="cell c-na">—</span></td>
           </tr>
           <tr>
-            <td class="lib">cJSON<span class="role">JSON parser · 58 fn</span></td>
-            <td><span class="cell c-floor">220<span class="rr">floor 3/37</span></span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-deep">3.87M<span class="rr">6/121 ★</span></span></td>
+            <td class="lib">cjson<span class="role">JSON parser · 58 fn</span></td>
+            <td><span class="cell c-zero">0<span class="rr">reached 220 · floor 3/37 · N=1M</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-zero">0<span class="rr">reached 3.9M · 6/121 · N=1M</span></span></td>
           </tr>
           <tr>
             <td class="lib">lil<span class="role">interpreter · 145 fn</span></td>
-            <td><span class="cell c-floor">389<span class="rr">floor 38/51</span></span></td>
-            <td><span class="cell c-floor">480<span class="rr">floor 35/51</span></span></td>
-            <td><span class="cell c-crash">CRASH-ALL ★</span></td>
-            <td><span class="cell c-floor">345<span class="rr">floor 34/43</span></span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-floor">164<span class="rr">reached 389 · floor 38/51 · N=1M</span></span></td><td><span class="cell c-floor">173<span class="rr">reached 480 · floor 35/51 · N=1M</span></span></td><td><span class="cell c-crash">CRASH-ALL <span class="star">★</span></span></td><td><span class="cell c-floor">158<span class="rr">reached 344 · floor 34/43 · N=1M</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
           </tr>
           <tr>
             <td class="lib">lodepng<span class="role">PNG codec · 235 fn</span></td>
-            <td><span class="cell c-deep">1.00M<span class="rr">25/75</span></span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-deep">1.00M<span class="rr">23/75</span></span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-zero">0<span class="rr">reached 1M · 25/75 · N=1M</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-zero">0<span class="rr">reached 1M · 23/75 · N=1M</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
           </tr>
           <tr>
             <td class="lib">bzip2<span class="role">compressor · 64 fn</span></td>
-            <td><span class="cell c-deep">99k<span class="rr">16/35</span></span></td>
-            <td><span class="cell c-deep">100k<span class="rr">16/35 ★</span></span></td>
-            <td><span class="cell c-crash">CRASH-ALL ★</span></td>
-            <td><span class="cell c-floor">3<span class="rr">floor 9/35</span></span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-zero">0<span class="rr">reached 99.5k · 16/35 · N=100k</span></span></td><td><span class="cell c-zero">0<span class="rr">reached 99.7k · 16/35 · N=100k</span></span></td><td><span class="cell c-crash">CRASH-ALL <span class="star">★</span></span></td><td><span class="cell c-zero">0<span class="rr">reached 3 · floor 9/35 · N=100k</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
           </tr>
           <tr>
             <td class="lib">tulip<span class="role">indicators · ~100 fn</span></td>
-            <td><span class="cell c-deep">27k<span class="rr">173/224</span></span></td>
-            <td><span class="cell c-deep">27k<span class="rr">173/224</span></span></td>
-            <td><span class="cell c-deep">27k<span class="rr">173/224</span></span></td>
-            <td><span class="cell c-deep">27k<span class="rr">173/224</span></span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-deep">27k<span class="rr">reached 27k · 173/224 · N=30k</span></span></td><td><span class="cell c-deep">27.3k<span class="rr">reached 27.3k · 173/224 · N=30k</span></span></td><td><span class="cell c-deep">27.1k <span class="star">★</span><span class="rr">reached 27.1k · 173/224 · N=30k</span></span></td><td><span class="cell c-deep">27.1k<span class="rr">reached 27.1k · 173/224 · N=30k</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
           </tr>
           <tr>
             <td class="lib">optipng<span class="role">PNG optimizer · ~400 fn</span></td>
-            <td><span class="cell c-deep">8.5k<span class="rr">150/374</span></span></td>
-            <td><span class="cell c-floor">247<span class="rr">floor 33/374</span></span></td>
-            <td><span class="cell c-crash">CRASH-ALL ★</span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-zero">0<span class="rr">reached 8.5k · 150/374 · N=50k</span></span></td><td><span class="cell c-zero">0<span class="rr">reached 247 · floor 33/374 · N=4k</span></span></td><td><span class="cell c-crash">CRASH-ALL <span class="star">★</span></span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
           </tr>
           <tr>
             <td class="lib">urlparser<span class="role">URL parsing · 21 fn</span></td>
-            <td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
-            <td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
+            <td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td><td><span class="cell c-na">—</span></td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="legend">
-      <span><span class="sw" style="background:var(--deep)"></span><b>27k</b> median exec/fn — total-exec (clean, ran to depth)</span>
+      <span><span class="sw" style="background:var(--deep)"></span><b>27k</b> median exec/fn — ran to depth</span>
       <span><span class="sw" style="background:var(--floor)"></span><b>floor</b> crash-cell corpus-replay lower bound</span>
+      <span><span class="sw" style="background:var(--na-bg);border:1px dashed var(--line)"></span><b>0</b> honest median 0 — fuzzing reached &lt;½ the functions</span>
       <span><span class="sw" style="background:var(--crash)"></span><b>CRASH-ALL</b> faults on all/valid input</span>
-      <span><span class="sw" style="background:var(--na)"></span><b>—</b> no runnable artifact (tool failed to translate)</span>
-      <span><span class="star">★</span> cell holds / corroborates a confirmed E1 bug</span>
+      <span><span class="sw" style="background:var(--na)"></span><b>—</b> no runnable artifact</span>
+      <span><span class="star">★</span> corroborates a confirmed E1 bug</span>
     </div>
   </section>
 
@@ -240,42 +199,51 @@
     <div class="two">
       <div class="card spot">
         <h3><span class="m">◆ headline</span> The safety paradox — qsort</h3>
-        <p>On one 3-function quicksort, <b>CROWN</b> (a dedicated safety-lifter) kept it 100% <code class="inl">*mut i32</code>
-        while <b>SACTOR</b> (an LLM) produced fully safe <code class="inl">&amp;mut [i32]</code> — at identical ~40–49M depth.
+        <p>On one 3-function quicksort, <b>CROWN</b> (a dedicated safety-lifter) kept it 100%
+        <code class="inl">*mut i32</code> while <b>SACTOR</b> (an LLM) produced fully safe
+        <code class="inl">&amp;mut [i32]</code> — at the same order of depth (~40–49M), both at full reach.
         Safety cost no execution depth. <a href="qsort_safety_paradox.html">Read the case study →</a></p>
       </div>
       <div class="card">
         <h3><span class="m">◆</span> CRASH-ALL trio corroborates E1</h3>
-        <p>lil / bzip2 / optipng × <b>C2SaferRust</b> fault on all/valid input where the c2rust base runs to full
-        depth. Execution depth independently flags the same three translations E1's <b>differential testing</b>
-        already caught — a second witness for each bug.</p>
+        <p>lil / bzip2 / optipng × <b>C2SaferRust</b> fault on all/valid input where the c2rust base runs
+        to full depth. A qualitative outcome, so it is <b>unaffected by the median correction</b> — a
+        second, independent witness for each of those three E1 bugs.</p>
       </div>
       <div class="card">
         <h3><span class="m">◆</span> tulip vs lil — risk lives in pointers</h3>
-        <p>Same 4 tools, opposite outcomes: the numeric library <b>tulip</b> reaches full depth for all four
-        (173/224, ~27k); the pointer/hashmap/recursion-heavy interpreter <b>lil</b> gives 3 crash-floors + 1
-        crash-all. Translation risk concentrates in aliasing-heavy code.</p>
+        <p>The one methodologically clean cross-tool comparison here: all four tools on <b>tulip</b> at a
+        <b>fixed</b> N=30,000, same reach (173/224), same ~27k median. A <i>negative</i> result. The
+        pointer- and recursion-heavy interpreter <b>lil</b> gives 3 crash-floors + 1 crash-all instead.</p>
       </div>
       <div class="card">
-        <h3><span class="m">◆</span> Idiomatic can be deep AND safe</h3>
-        <p><b>PtrTrans</b> quadtree runs 127M-deep and never crashes, while the c2rust base of the same library
-        crashes to a 178k floor. Idiomatic reshaping isn't inherently fragile — it depends on the tool.</p>
+        <h3><span class="m">◆</span> Where the fuzzer never goes</h3>
+        <p>In <b>9 cells</b> the honest median is 0: lodepng's entire <b>encoder</b> half (25/75,
+        23/75), optipng's non-PNG readers (150/374, 33/374), bzip2's file-I/O layer (16/35), cJSON
+        (3/37, 6/121). Multi-API-surface libraries need <b>more harnesses</b>, not more fuzz-hours.</p>
       </div>
     </div>
   </section>
 
   <section>
-    <h2>Why depth, not breadth</h2>
-    <div class="callout">The coverage-% framing died to one objection: <i>plain fuzzing covers everything too.</i>
-      So E3 reports the <b>per-function hit count</b>, not coverage. The claim is causal: the tools accept a
-      translation at <b>0 executions</b> (it compiles); our bug hunt drives each function 10<sup>2</sup>–10<sup>8</sup>
-      times. That depth gap is <b>why bugs survive into shipped translations</b> — and the crash-floor / crash-all
-      cells are the translations that literally cannot survive being executed.</p></div>
-    <p style="font-size:13px;color:var(--ink-3)">Metric caveat: median per-function total-exec (llvm-cov entry
-      count) is loop-inflated but comparable across cells; “reached” counts functions with count&gt;0 — multi-API
-      libraries have unreached families (e.g. optipng's GIF/TIFF readers on a PNG harness). Crash cells fall back
-      to a corpus-replay floor (a lower bound); crash-all cells fault before any depth can be measured — itself the finding.</p>
+    <h2>What this table does <i>not</i> claim</h2>
+    <div class="callout">Three corrections applied 2026-08-09. <b>(1)</b> The budget is <b>not</b> uniform
+      — an earlier revision claimed a "uniform 1-hour budget per cell" and used it to justify cross-cell
+      comparison; actual budgets run 4,000–2,000,000. <b>(2)</b> The median was taken over <b>reached</b>
+      functions only, which hid the 9 cells above. <b>(3)</b> The depth gap is <b>not</b> a causal
+      explanation of the E1 bugs: <code class="inl">theirs = 0</code> is constant across bug cells and
+      certificate cells alike, and a constant cannot explain the difference between them.</div>
+    <p style="font-size:13px;color:var(--ink-3)"><b>The <code class="inl">theirs = 0</code> baseline is
+      definitional, not measured</b> — nobody claims <code class="inl">cargo check</code> executes code.
+      The comparison that would carry real weight, and which E3 does not yet make, is against each
+      <b>library's own shipped test suite</b> run on the translated Rust (bzip2, cJSON, lodepng and lil
+      all ship tests). Until then E3 claims only that the acceptance criterion carries no per-function
+      execution evidence. Two cells (<code class="inl">qsort×SACTOR</code>,
+      <code class="inl">quadtree×PtrTrans</code>) show a reached-only median because their per-function
+      census was not retained; both have reach &gt;½, so the two medians differ by less than one order
+      statistic.</p>
   </section>
 
-  <footer>E3 · per-function hit-depth · 33 cells · rows = E1 corpus · Rust-side · results/rq3_master_table.md · dataset-v2.1</footer>
+  <footer>E3 · per-function hit-depth · 33 cells · rows = E1 corpus · Rust-side ·
+    results/rq3_master_table.md · medians corrected 2026-08-09 · dataset-v2.1</footer>
 </div>

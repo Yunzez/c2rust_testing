@@ -1,0 +1,451 @@
+{
+ "pilot": "ALIGN axis: qsort x PtrTrans (Trans_PA, gpt-5.1)",
+ "date": "2026-08-25",
+ "seed": 42,
+ "git_commit": "dda70a4d5228453aa8850ae7b59b2bb033680065",
+ "subject": {
+  "c": "results/rq1_bugs/qsort_ptrtrans/original_qsort.c",
+  "rust": "results/rq1_bugs/qsort_ptrtrans/translated_qsort.rs",
+  "known_defect": "partition split_at_mut index error (right.get_mut(j-i) should be right[0]); 34,012/50,000 unsorted"
+ },
+ "manual_truth": {
+  "swap": "swap",
+  "partition": "partition",
+  "quickSort": "quick_sort"
+ },
+ "trials_per_pair": 50000,
+ "ub_gate": "C driver under clang -fsanitize=address,undefined -fno-sanitize-recover=all, whole batch, rc=0, empty stderr for all 3 pairs",
+ "reached_functions": "n/a (not coverage-instrumented; batch replay, every record calls the pair's function directly)",
+ "configurations_buildable": {
+  "c_pairs (ASan+UBSan)": true,
+  "rs_driver (release, debug-assertions+overflow-checks)": true,
+  "matcher analyzer": true
+ },
+ "sources": {
+  "name_eq": {
+   "proposed": [
+    {
+     "c": "swap",
+     "rust": "swap",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 0,
+     "ttfd_s": "none",
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 0,
+      "abstention": 0
+     },
+     "first_divergence_example": null
+    },
+    {
+     "c": "partition",
+     "rust": "partition",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 30480,
+     "ttfd_s": 0.0,
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 30480,
+      "abstention": 0
+     },
+     "first_divergence_example": {
+      "t": 0,
+      "C": "ret=0 : -2147483648 -43",
+      "RS": "ret=0 : -43 -2147483648"
+     }
+    }
+   ],
+   "abstained": [],
+   "unproposed_c": [
+    "quickSort"
+   ]
+  },
+  "tool_map": {
+   "proposed": [
+    {
+     "c": "swap",
+     "rust": "swap",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 0,
+     "ttfd_s": "none",
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 0,
+      "abstention": 0
+     },
+     "first_divergence_example": null
+    },
+    {
+     "c": "partition",
+     "rust": "partition",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 30480,
+     "ttfd_s": 0.0,
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 30480,
+      "abstention": 0
+     },
+     "first_divergence_example": {
+      "t": 0,
+      "C": "ret=0 : -2147483648 -43",
+      "RS": "ret=0 : -43 -2147483648"
+     }
+    },
+    {
+     "c": "quickSort",
+     "rust": "quick_sort",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 34012,
+     "ttfd_s": 0.0001,
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 34012,
+      "abstention": 0
+     },
+     "first_divergence_example": {
+      "t": 2,
+      "C": " -2147483648 43 94",
+      "RS": " 94 -2147483648 43"
+     }
+    }
+   ],
+   "abstained": [],
+   "unproposed_c": [],
+   "source_file": "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/PA_trans_projects/qsort_Trans_PA_trans_metadata.jsonl"
+  },
+  "matcher_main": {
+   "proposed": [
+    {
+     "c": "swap",
+     "rust": "swap",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 0,
+     "ttfd_s": "none",
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 0,
+      "abstention": 0
+     },
+     "first_divergence_example": null
+    },
+    {
+     "c": "partition",
+     "rust": "partition",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 30480,
+     "ttfd_s": 0.0,
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 30480,
+      "abstention": 0
+     },
+     "first_divergence_example": {
+      "t": 0,
+      "C": "ret=0 : -2147483648 -43",
+      "RS": "ret=0 : -43 -2147483648"
+     }
+    },
+    {
+     "c": "quickSort",
+     "rust": "quick_sort",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 34012,
+     "ttfd_s": 0.0001,
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 34012,
+      "abstention": 0
+     },
+     "first_divergence_example": {
+      "t": 2,
+      "C": " -2147483648 43 94",
+      "RS": " 94 -2147483648 43"
+     }
+    }
+   ],
+   "abstained": [],
+   "unproposed_c": [],
+   "note": "Hungarian 1-1 assignment; reproduces the star cell 3/3. partition's ROW-best is quick_sort (0.296 vs 0.278, margin 0.018); it is assigned correctly only because quickSort claims quick_sort at 0.495."
+  },
+  "matcher_abstain_eps0.01": {
+   "proposed": [
+    {
+     "c": "swap",
+     "rust": "swap",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 0,
+     "ttfd_s": "none",
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 0,
+      "abstention": 0
+     },
+     "first_divergence_example": null
+    },
+    {
+     "c": "quickSort",
+     "rust": "quick_sort",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 34012,
+     "ttfd_s": 0.0001,
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 34012,
+      "abstention": 0
+     },
+     "first_divergence_example": {
+      "t": 2,
+      "C": " -2147483648 43 94",
+      "RS": " 94 -2147483648 43"
+     }
+    }
+   ],
+   "abstained": [
+    "partition"
+   ],
+   "unproposed_c": [],
+   "note": "abstention isolates partition (low two-sided confidence). quickSort<->quick_sort still accepted."
+  },
+  "manual": {
+   "proposed": [
+    {
+     "c": "swap",
+     "rust": "swap",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 0,
+     "ttfd_s": "none",
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 0,
+      "abstention": 0
+     },
+     "first_divergence_example": null
+    },
+    {
+     "c": "partition",
+     "rust": "partition",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 30480,
+     "ttfd_s": 0.0,
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 30480,
+      "abstention": 0
+     },
+     "first_divergence_example": {
+      "t": 0,
+      "C": "ret=0 : -2147483648 -43",
+      "RS": "ret=0 : -43 -2147483648"
+     }
+    },
+    {
+     "c": "quickSort",
+     "rust": "quick_sort",
+     "in_manual_truth": true,
+     "harnessable": true,
+     "buildable": true,
+     "valid_records": 50000,
+     "divergences": 34012,
+     "ttfd_s": 0.0001,
+     "classification": {
+      "C-UB": 0,
+      "C-unstable": 0,
+      "Rust-failure": 0,
+      "semantic-difference": 34012,
+      "abstention": 0
+     },
+     "first_divergence_example": {
+      "t": 2,
+      "C": " -2147483648 43 94",
+      "RS": " 94 -2147483648 43"
+     }
+    }
+   ],
+   "abstained": [],
+   "unproposed_c": []
+  }
+ },
+ "downstream_table": [
+  {
+   "source": "name_eq",
+   "pairs_proposed": 2,
+   "harnessable": 2,
+   "buildable": 2,
+   "true_defects_recovered": 0,
+   "false_divergences": 0,
+   "missed_defects": 1,
+   "abstentions": 0,
+   "divergences_per_pair": {
+    "swap<->swap": 0,
+    "partition<->partition": 30480
+   }
+  },
+  {
+   "source": "tool_map",
+   "pairs_proposed": 3,
+   "harnessable": 3,
+   "buildable": 3,
+   "true_defects_recovered": 1,
+   "false_divergences": 0,
+   "missed_defects": 0,
+   "abstentions": 0,
+   "divergences_per_pair": {
+    "swap<->swap": 0,
+    "partition<->partition": 30480,
+    "quickSort<->quick_sort": 34012
+   }
+  },
+  {
+   "source": "matcher_main",
+   "pairs_proposed": 3,
+   "harnessable": 3,
+   "buildable": 3,
+   "true_defects_recovered": 1,
+   "false_divergences": 0,
+   "missed_defects": 0,
+   "abstentions": 0,
+   "divergences_per_pair": {
+    "swap<->swap": 0,
+    "partition<->partition": 30480,
+    "quickSort<->quick_sort": 34012
+   }
+  },
+  {
+   "source": "matcher_abstain_eps0.01",
+   "pairs_proposed": 2,
+   "harnessable": 2,
+   "buildable": 2,
+   "true_defects_recovered": 1,
+   "false_divergences": 0,
+   "missed_defects": 0,
+   "abstentions": 1,
+   "divergences_per_pair": {
+    "swap<->swap": 0,
+    "quickSort<->quick_sort": 34012
+   }
+  },
+  {
+   "source": "manual",
+   "pairs_proposed": 3,
+   "harnessable": 3,
+   "buildable": 3,
+   "true_defects_recovered": 1,
+   "false_divergences": 0,
+   "missed_defects": 0,
+   "abstentions": 0,
+   "divergences_per_pair": {
+    "swap<->swap": 0,
+    "partition<->partition": 30480,
+    "quickSort<->quick_sort": 34012
+   }
+  }
+ ],
+ "matcher_scores": {
+  "swap": {
+   "best": "swap",
+   "0": 0.353,
+   "2nd": 0.172
+  },
+  "partition": {
+   "best": "quick_sort",
+   "best_s": 0.296,
+   "true_partition_s": 0.278,
+   "margin": 0.018
+  },
+  "quickSort": {
+   "best": "quick_sort",
+   "best_s": 0.495,
+   "2nd": 0.271
+  }
+ },
+ "cjson_audit": {
+  "metadata_jsonl_present": false,
+  "crate_buildable": true,
+  "cargo_check": "Finished (186 warnings)",
+  "method": "fallback: crate self-declared '/// Translated from:' doc comments (10 records) + name-set overlap; the cJSON 1.7.x C source PtrTrans translated is not on disk either (only older CRUST-bench/c2rust cJSON.c, 58 fns)",
+  "doc_records": 10,
+  "doc_mismatches": 0,
+  "rust_fns": 108,
+  "buildable_wrong_map_witness": "NOT ESTABLISHED (no map artifact survives to audit); wrong-map downstream harm stays potential (lodepng 143/255 evidence is unbuildable)"
+ },
+ "commands": [
+  "python3 gen_inputs.py",
+  "clang -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all c_pairs.c -o c_pairs",
+  "cargo build --release (rs_driver)",
+  "python3 run_diff.py {swap,partition,quicksort}",
+  "analyzer <crate> --enable-metrics ; c_analyzer.py --compile-commands <build> --enable-metrics",
+  "matcher.py --c qsort.c.json --rust qsort.rust.json --truth qsort_truth.json --diag [--abstain-eps 0.01]"
+ ],
+ "raw_logs": {
+  "results_dir": "/home/yunzez/c2rust_testing/results/pilots/align_qsort_ptrtrans/logs/",
+  "matcher": "/home/yunzez/c2rust_testing/results/pilots/align_qsort_ptrtrans/matcher/",
+  "scratch_outputs": "/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/align/out_*_{c,rs}.txt"
+ },
+ "fixes": [
+  "tools/stu_selector/analyzer binary was not built (cargo build --release, ~1 min)",
+  "results/rq2_cells/ptrtrans_rename/qsort_ptrtrans.rs has a stray `use crate::*;` \u2014 stripped for a standalone lib crate",
+  "no per-pair harness existed: existing harness only drives quickSort; wrote c_pairs.c / main.rs with an op argument; partition inputs restricted to n>=1 (n=0 would read arr[-1] in C = UB, excluded a priori, not by the gate)",
+  "TTFD is batch-mode: wall-clock scaled by first-diverging record index (records processed sequentially)"
+ ]
+}

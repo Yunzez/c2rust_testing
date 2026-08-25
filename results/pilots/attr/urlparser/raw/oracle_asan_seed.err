@@ -1,0 +1,56 @@
+=================================================================
+==1695955==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7bdfa0fe0071 at pc 0x556a2d4f143e bp 0x7fff943f2df0 sp 0x7fff943f2578
+WRITE of size 10 at 0x7bdfa0fe0071 thread T0
+    #0 0x556a2d4f143d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x5943d) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #1 0x556a2d4f2213  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x5a213) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #2 0x556a2d5b482c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x11c82c) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #3 0x556a2d5b3cc8  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x11bcc8) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #4 0x556a2d5b624f  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x11e24f) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #5 0x7fbfa1e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #6 0x7fbfa1e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #7 0x556a2d4ca364  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x32364) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+
+0x7bdfa0fe0071 is located 0 bytes after 1-byte region [0x7bdfa0fe0070,0x7bdfa0fe0071)
+allocated by thread T0 here:
+    #0 0x556a2d56f908  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0xd7908) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #1 0x556a2d5b4768  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x11c768) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #2 0x556a2d5b3cc8  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x11bcc8) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #3 0x556a2d5b624f  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x11e24f) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+    #4 0x7fbfa1e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #5 0x7fbfa1e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #6 0x556a2d4ca364  (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x32364) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow (/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/attr/url_oracle_asan+0x5943d) (BuildId: 16e61ba75445475b8ca42e66d6ee999618750afc) 
+Shadow bytes around the buggy address:
+  0x7bdfa0fdfd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfa0fdfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfa0fdfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfa0fdff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfa0fdff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x7bdfa0fe0000: fa fa 00 00 fa fa 05 fa fa fa 01 fa fa fa[01]fa
+  0x7bdfa0fe0080: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bdfa0fe0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bdfa0fe0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bdfa0fe0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bdfa0fe0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==1695955==ABORTING
+asan rc=1

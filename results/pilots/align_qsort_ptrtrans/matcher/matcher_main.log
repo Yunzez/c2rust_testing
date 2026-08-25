@@ -1,0 +1,12 @@
+C functions: 3 | Rust functions: 3
+matched: 3 | ambiguous: 0 | c_only_unmatched: 0 | rust_only_unmatched: 0
+CORRECT (labeled): 3 | accuracy: 3/3 = 100%
+wrote 3 pairs -> /tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/align/matcher/pairs_main.json
+
+C func                 best_rust              best    2nd margin | true_rust              true rank  dTtrue  dTbest
+-------------------------------------------------------------------------------------------------------------------
+swap                   swap                  0.353  0.172  0.182 | swap                  0.353    0  -0.191  -0.191
+partition              quick_sort            0.296  0.278  0.018 | partition             0.278    1  -0.321  -0.244
+quickSort              quick_sort            0.495  0.271  0.225 | quick_sort            0.495    0  -0.207  -0.207
+
+hubs (in-degree df)  C: [(1, 'swap'), (1, 'quickSort'), (1, 'partition')]   Rust: [(2, 'swap'), (1, 'quick_sort'), (1, 'partition')]

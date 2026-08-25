@@ -1,0 +1,203 @@
+{
+ "pilot": "ATTR",
+ "part": "lil",
+ "seed": 42,
+ "git_commit": "dda70a4d5228453aa8850ae7b59b2bb033680065",
+ "date": "2026-08-25",
+ "corpus": {
+  "records": 313,
+  "reconstructed_ub_inputs": 12,
+  "order_dependence_record": 12,
+  "generated": 300,
+  "note": "fn-11/15 111,043-record corpus (scratch lil_crown_diff/) is NOT archived; corpus reconstructed with random.seed(42)"
+ },
+ "oracles": {
+  "C_new": "laertes_benchmarks/lil/lil.c (3518 lines, has ee_invalidpunct) -- Laertes source",
+  "C_old": "crown/c-code/lil/lil.c (2962 lines, ispunct) -- CROWN source"
+ },
+ "configs": {
+  "none": {
+   "buildable": true,
+   "harnessable": true,
+   "reached_functions": "n/a",
+   "CROWN_vs_C_old": {
+    "valid_records": 313,
+    "divergences": 0,
+    "ttfd_s": "none"
+   },
+   "Laertes_vs_C_new": {
+    "valid_records": 313,
+    "divergences": 0,
+    "ttfd_s": "none"
+   },
+   "CROWN_vs_C_new_WRONG_VERSION": {
+    "divergences": 1,
+    "records": [
+     12
+    ],
+    "note": "oracle-version mismatch artifact, not a bug"
+   }
+  },
+  "inloop_ubsan_gate": {
+   "buildable": true,
+   "harnessable": true,
+   "reached_functions": "n/a",
+   "excluded_new": 37,
+   "excluded_old": 37,
+   "excluded_idx": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    21,
+    32,
+    50,
+    61,
+    64,
+    92,
+    123,
+    147,
+    150,
+    157,
+    180,
+    190,
+    195,
+    208,
+    210,
+    214,
+    217,
+    226,
+    252,
+    254,
+    274,
+    288,
+    292,
+    295,
+    299,
+    311
+   ],
+   "reconstructed_ub_caught": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11
+   ],
+   "reconstructed_ub_missed": [
+    7
+   ],
+   "valid_records": 276,
+   "CROWN_vs_C_old_divergences": 0,
+   "Laertes_vs_C_new_divergences": 0,
+   "ttfd_s": "none"
+  },
+  "isolated_asan_ubsan": {
+   "buildable": true,
+   "harnessable": true,
+   "reached_functions": "n/a",
+   "excluded_new": 37,
+   "excluded_old": 37,
+   "excluded_idx": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    21,
+    32,
+    50,
+    61,
+    64,
+    92,
+    123,
+    147,
+    150,
+    157,
+    180,
+    190,
+    195,
+    208,
+    210,
+    214,
+    217,
+    226,
+    252,
+    254,
+    274,
+    288,
+    292,
+    295,
+    299,
+    311
+   ],
+   "same_set_as_gate": true,
+   "valid_records": 276,
+   "divergences": 0,
+   "ttfd_s": "none",
+   "t_oracle_s": 1.63
+  },
+  "repeated_c_replay": {
+   "orderings": [
+    "alone (fresh process)",
+    "batch forward",
+    "batch reversed"
+   ],
+   "unstable_records": [],
+   "unstable_old": [],
+   "order_record_outputs": {
+    "alone": "[21]",
+    "fwd": "[21]",
+    "rev": "[21]",
+    "C_old": "[]",
+    "CROWN": "[]",
+    "Laertes": "[21]"
+   }
+  }
+ },
+ "classification": {
+  "C-UB": 37,
+  "C-unstable": 0,
+  "Rust-failure": 0,
+  "semantic-difference": 0,
+  "abstention": 0
+ },
+ "expectations": {
+  "gate_excludes_recoverable_UB": "held (11/12 reconstructed; #7 reconstruction did not trip UB)",
+  "isolated_agrees_with_gate": "held (identical 37-record set)",
+  "order_record_clean_under_b_and_c": "held",
+  "order_record_flagged_only_by_d": "DID NOT HOLD: C stable [21] in all 3 orderings; the [] vs [21] split is a lil.c VERSION difference (CROWN's older lil.c uses ispunct, Laertes' uses ee_invalidpunct)"
+ },
+ "fixes": [
+  "clang-21 minimal-runtime already defines __ubsan_handle_load_invalid_value_minimal -> link with -fno-sanitize-link-runtime",
+  "Laertes/c2rust-on-macOS crates need a real _DefaultRuneLocale.__runetype table (zeroed shim => isspace false => every record returned [] = 313 bogus divergences)",
+  "CROWN was translated from a DIFFERENT lil.c (2962-line, ispunct) than the Laertes benchmark (3518-line, ee_invalidpunct); oracle must be version-matched or record 12 shows a bogus divergence"
+ ],
+ "commands": [
+  "python3 gen_lil_corpus.py",
+  "clang -O1 -g -w -o lil_c_none rundiff_lil.c lil.c -lm",
+  "clang -O1 -g -w -fsanitize=signed-integer-overflow,shift,integer-divide-by-zero,bounds,null,unreachable -fsanitize-recover=all -fsanitize-minimal-runtime -fno-sanitize-link-runtime -o lil_c_gate rundiff_lil.c lil.c ubshim.c -lm",
+  "clang -O1 -g -w -fsanitize=address,undefined -fno-omit-frame-pointer -o lil_c_asan rundiff_lil.c lil.c -lm",
+  "cargo +nightly-2023-01-26 build --release --bin rundiff  (lil_crown, lil_laertes copies)",
+  "./lil_c_{none,gate} < lil_corpus.bin ; ./target/release/rundiff < lil_corpus.bin ; python3 lil_isolated.py"
+ ],
+ "raw_logs": "results/pilots/attr/lil/raw/"
+}

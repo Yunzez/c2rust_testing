@@ -1,0 +1,285 @@
+{
+ "pilot": "OBS (observation-axis) matrix cell",
+ "subject": "qsort x C2SaferRust (WIP, int->usize quickSort; Rust-failure branch)",
+ "date": "2026-08-25",
+ "git_commit": "747f5f09eac314bc4e32687e71497e269af36848",
+ "seed": 42,
+ "corpus": {
+  "generator": "libFuzzer via cargo-fuzz +nightly-2025-09-01 on scratchpad crate (C2SaferRust WIP lib verbatim, target q_ft), FRESH empty corpus dir",
+  "args": "-seed=42 -max_total_time=300 -max_len=1024 -fork=1 -ignore_crashes=1",
+  "wall_s": 309,
+  "execs": 2018124,
+  "cov_edges": 71,
+  "features": 72,
+  "fork_jobs_crashed": 10398,
+  "files_fresh": 3,
+  "files_unique_crashes": 6,
+  "files_archived_seed42": 104,
+  "files_merged": 113,
+  "note": "fresh corpus saturated at 3 files: virtually every n>=2 unsorted input crashes the target, so coverage-guided accumulation stalls (crash cell cannot census itself). Archived seed-42 corpus of the obs_qsort_ptrtrans pilot (identical decoding: raw bytes -> i32 LE chunks, take 256) replayed as a third set.",
+  "decoding": "raw bytes -> i32 LE chunks, take 256 (fuzz target, C driver, Rust driver identical)"
+ },
+ "buildable": {
+  "C silent (clang ASan+UBSan)": true,
+  "C print (same binary)": true,
+  "Rust silent (C2SaferRust WIP verbatim)": true,
+  "Rust print": true
+ },
+ "harnessable": {
+  "silent": true,
+  "print": true
+ },
+ "reached_functions": "n/a (not instrumented in replay; libFuzzer cov=71 edges over swap/partition/quickSort)",
+ "ub_gate": "C driver -fsanitize=address,undefined -fno-sanitize-recover=all, halt_on_error; excluded if exit!=0 or sanitizer report; repeated C replay for C-unstable",
+ "per_process_timeout_s": 10,
+ "inputs_total": 113,
+ "inputs_excluded_c_ub": 0,
+ "inputs_excluded_c_unstable": 0,
+ "valid_differential_records": 113,
+ "classification": {
+  "C-UB": 0,
+  "C-unstable": 0,
+  "Rust-failure": 51,
+  "semantic-difference": 0,
+  "abstention": 0,
+  "agree": 62
+ },
+ "classification_by_set": {
+  "fresh": {
+   "valid": 3,
+   "c_ub": 0,
+   "c_unstable": 0,
+   "rust_failure": 0,
+   "semantic_difference": 0,
+   "abstention": 0,
+   "agree": 3,
+   "total": 3
+  },
+  "crashes": {
+   "valid": 6,
+   "c_ub": 0,
+   "c_unstable": 0,
+   "rust_failure": 6,
+   "semantic_difference": 0,
+   "abstention": 0,
+   "agree": 0,
+   "total": 6
+  },
+  "archived": {
+   "valid": 104,
+   "c_ub": 0,
+   "c_unstable": 0,
+   "rust_failure": 45,
+   "semantic_difference": 0,
+   "abstention": 0,
+   "agree": 59,
+   "total": 104
+  }
+ },
+ "rust_failure_form": "SIGABRT (rc=-6) \"thread main has overflowed its stack\" in all 51; no state file written => O-R sees NO-RETURN; no timeout (-999) cases",
+ "agree_breakdown": {
+  "already-sorted": 33,
+  "unsorted but partition never returns 0": 26,
+  "n<=1": 3
+ },
+ "cells": {
+  "silent": {
+   "O-R": {
+    "divergences": 51,
+    "time_to_first_divergence_s": 2.281,
+    "first_div_input": "archived_00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-P": {
+    "divergences": 51,
+    "time_to_first_divergence_s": 2.281,
+    "first_div_input": "archived_00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-S": {
+    "divergences": 51,
+    "time_to_first_divergence_s": 2.281,
+    "first_div_input": "archived_00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-F": {
+    "divergences": 51,
+    "time_to_first_divergence_s": 2.281,
+    "first_div_input": "archived_00a3050bececa7bc72f42e94405f9ca101464b57"
+   }
+  },
+  "print": {
+   "O-R": {
+    "divergences": 51,
+    "time_to_first_divergence_s": 2.281,
+    "first_div_input": "archived_00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-P": {
+    "divergences": 51,
+    "time_to_first_divergence_s": 2.281,
+    "first_div_input": "archived_00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-S": {
+    "divergences": 51,
+    "time_to_first_divergence_s": 2.281,
+    "first_div_input": "archived_00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-F": {
+    "divergences": 51,
+    "time_to_first_divergence_s": 2.281,
+    "first_div_input": "archived_00a3050bececa7bc72f42e94405f9ca101464b57"
+   }
+  }
+ },
+ "cells_by_set": {
+  "fresh": {
+   "silent": {
+    "O-R": {
+     "divergences": 0,
+     "time_to_first_divergence_s": "none",
+     "first_div_input": null
+    },
+    "O-P": {
+     "divergences": 0,
+     "time_to_first_divergence_s": "none",
+     "first_div_input": null
+    },
+    "O-S": {
+     "divergences": 0,
+     "time_to_first_divergence_s": "none",
+     "first_div_input": null
+    },
+    "O-F": {
+     "divergences": 0,
+     "time_to_first_divergence_s": "none",
+     "first_div_input": null
+    }
+   },
+   "print": {
+    "O-R": {
+     "divergences": 0,
+     "time_to_first_divergence_s": "none",
+     "first_div_input": null
+    },
+    "O-P": {
+     "divergences": 0,
+     "time_to_first_divergence_s": "none",
+     "first_div_input": null
+    },
+    "O-S": {
+     "divergences": 0,
+     "time_to_first_divergence_s": "none",
+     "first_div_input": null
+    },
+    "O-F": {
+     "divergences": 0,
+     "time_to_first_divergence_s": "none",
+     "first_div_input": null
+    }
+   }
+  },
+  "crashes": {
+   "silent": {
+    "O-R": {
+     "divergences": 6,
+     "time_to_first_divergence_s": 2.261,
+     "first_div_input": "crash-0903bfc7bb32b155c4210bb86fd109eab1664aba"
+    },
+    "O-P": {
+     "divergences": 6,
+     "time_to_first_divergence_s": 2.261,
+     "first_div_input": "crash-0903bfc7bb32b155c4210bb86fd109eab1664aba"
+    },
+    "O-S": {
+     "divergences": 6,
+     "time_to_first_divergence_s": 2.261,
+     "first_div_input": "crash-0903bfc7bb32b155c4210bb86fd109eab1664aba"
+    },
+    "O-F": {
+     "divergences": 6,
+     "time_to_first_divergence_s": 2.261,
+     "first_div_input": "crash-0903bfc7bb32b155c4210bb86fd109eab1664aba"
+    }
+   },
+   "print": {
+    "O-R": {
+     "divergences": 6,
+     "time_to_first_divergence_s": 2.261,
+     "first_div_input": "crash-0903bfc7bb32b155c4210bb86fd109eab1664aba"
+    },
+    "O-P": {
+     "divergences": 6,
+     "time_to_first_divergence_s": 2.261,
+     "first_div_input": "crash-0903bfc7bb32b155c4210bb86fd109eab1664aba"
+    },
+    "O-S": {
+     "divergences": 6,
+     "time_to_first_divergence_s": 2.261,
+     "first_div_input": "crash-0903bfc7bb32b155c4210bb86fd109eab1664aba"
+    },
+    "O-F": {
+     "divergences": 6,
+     "time_to_first_divergence_s": 2.261,
+     "first_div_input": "crash-0903bfc7bb32b155c4210bb86fd109eab1664aba"
+    }
+   }
+  },
+  "archived": {
+   "silent": {
+    "O-R": {
+     "divergences": 45,
+     "time_to_first_divergence_s": 2.266,
+     "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+    },
+    "O-P": {
+     "divergences": 45,
+     "time_to_first_divergence_s": 2.266,
+     "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+    },
+    "O-S": {
+     "divergences": 45,
+     "time_to_first_divergence_s": 2.266,
+     "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+    },
+    "O-F": {
+     "divergences": 45,
+     "time_to_first_divergence_s": 2.266,
+     "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+    }
+   },
+   "print": {
+    "O-R": {
+     "divergences": 45,
+     "time_to_first_divergence_s": 2.266,
+     "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+    },
+    "O-P": {
+     "divergences": 45,
+     "time_to_first_divergence_s": 2.266,
+     "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+    },
+    "O-S": {
+     "divergences": 45,
+     "time_to_first_divergence_s": 2.266,
+     "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+    },
+    "O-F": {
+     "divergences": 45,
+     "time_to_first_divergence_s": 2.266,
+     "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+    }
+   }
+  }
+ },
+ "replay_wall_s": 116.909,
+ "commands": [
+  "clang -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all driver.c -o driver_c",
+  "cargo build --release  (rs/, depends on lib/ = WIP verbatim)",
+  "cargo +nightly-2025-09-01 fuzz run q_ft fuzz/corpus_fresh -- -seed=42 -max_total_time=300 -max_len=1024 -fork=1 -ignore_crashes=1",
+  "OBS_TIMEOUT=10 python3 harness/replay.py <corpus> raw/replay_<set> c/driver_c rs/target/release/obs_rs_driver"
+ ],
+ "raw_logs": [
+  "raw/libfuzzer_seed42.log",
+  "raw/replay_{fresh,crashes,archived,merged}/replay_summary.json",
+  "raw/replay_{...}/replay_records.jsonl",
+  "raw/replay_*_stdout.log"
+ ],
+ "build_dir": "/tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/obsmx/qsort_c2saferrust"
+}

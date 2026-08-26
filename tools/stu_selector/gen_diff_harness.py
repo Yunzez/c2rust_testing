@@ -831,6 +831,34 @@ H(load_invalid_value)
 '''
 
 
+def clang_major() -> int | None:
+    """Major version of the `clang` on PATH (the compiler build.rs pins), or None if absent."""
+    import re as _re
+    import subprocess as _sp
+    try:
+        out = _sp.run(["clang", "--version"], capture_output=True, text=True, timeout=10).stdout
+    except (OSError, _sp.TimeoutExpired):
+        return None
+    m = _re.search(r"clang version (\d+)", out)
+    return int(m.group(1)) if m else None
+
+
+def ub_sanitize_flags() -> list[str]:
+    """UB_SANITIZE_FLAGS, plus `-fno-sanitize-link-runtime` on clang >= 21.
+
+    clang >= 21 ships `__ubsan_handle_*_minimal` in libclang_rt.ubsan_minimal and links that
+    runtime whenever -fsanitize-minimal-runtime reaches a driver link, so UBSHIM_C's handlers
+    collide with it (duplicate-symbol link error; hit by the 2026-08-25 pilots). With
+    -fno-sanitize-link-runtime the shim IS the runtime. Older clang only pulls its archive
+    runtime for handlers the shim lacks (none), so it never collided; keep its flag set
+    unchanged. build.rs compiles with -c (rustc links, no runtime pulled) so the flag is inert
+    there -- it matters for anything that reuses this flag set on a clang-driver link (probes)."""
+    major = clang_major()
+    if major is not None and major >= 21:
+        return UB_SANITIZE_FLAGS + ["-fno-sanitize-link-runtime"]
+    return list(UB_SANITIZE_FLAGS)
+
+
 def gen_target_rust_only(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
                          rust_entry: str | None = None) -> str:
     """E3 depth harness: pure Rust, NO C oracle, NO differential compare. Decode fuzz bytes into
@@ -1154,7 +1182,7 @@ doc = false
     # --ub-free: instrument the oracle with UBSan (recover) and compile the flag shim in.
     if args.ub_free:
         (out / "c" / "ubshim.c").write_text(UBSHIM_C, encoding="utf-8")
-    ub_flags = "".join(f'\n        .flag("{f}")' for f in UB_SANITIZE_FLAGS) if args.ub_free else ""
+    ub_flags = "".join(f'\n        .flag("{f}")' for f in ub_sanitize_flags()) if args.ub_free else ""
     ub_file = f'\n    build.file("c/ubshim.c");' if args.ub_free else ""
     (out / "build.rs").write_text(f'''fn main() {{
     let mut build = cc::Build::new();
@@ -1209,7 +1237,8 @@ doc = false
     print(f"  entry: {args.entry} -> {ret}")
     print(f"  abi roles: {[(p['name'], p['role']) for p in abi]}")
     if args.ub_free:
-        print("  in-loop UB-free gate: ON (C UBSan-instrumented; UB inputs rejected)")
+        print(f"  in-loop UB-free gate: ON (C UBSan-instrumented; UB inputs rejected; "
+              f"clang major {clang_major()}, flags {ub_sanitize_flags()})")
     return 0
 
 

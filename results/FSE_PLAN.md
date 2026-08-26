@@ -13,6 +13,10 @@ and `PROJECT_RESET_2026-07-03.md`.
   qsort×PtrTrans; observation axis recast as four channels O-R/O-P/O-S/O-F with a two-driver qsort
   pilot; ATTR witnesses added (lil fn 11 / fn 15); axes renamed OBS/ATTR/ALIGN; a proposed
   "level-2-only" witness was found false and dropped.
+- **2026-08-25 (v4)** — post-pilot corrections (commit 747f5f0, `results/pilots/*/RESULT.md`): §4 items 2/3/4
+  marked PILOT DONE; lil order dependence (fn 15) **retracted** and removed as a C-unstable witness;
+  "reference version provenance" added as an attribution requirement; ALIGN reframed as three separate
+  metrics (new C7); two pipeline fixes recorded.
 
 ---
 
@@ -30,7 +34,7 @@ and `PROJECT_RESET_2026-07-03.md`.
 (alignment); the intro/motivation challenges are **CH-O / CH-U / CH-M** with the same long forms. The
 following identifiers are *reserved* for repo use and must not appear in the paper: **E1/E2/E3** are the
 repo evidence tables (E1 = `rq1` bug corpus, E2 = `rq2` matcher, E3 = `rq3` execution depth); **A1/A2**
-are `rq2_ubgate_v1.md`'s 48-boundary sampling frame; **C1–C4** (and C5/C6 below) are the §2 constraints
+are `rq2_ubgate_v1.md`'s 48-boundary sampling frame; **C1–C4** (and C5/C6/C7 below) are the §2 constraints
 of this plan. None of those appear in the paper.
 
 Contributions, in the order they should appear:
@@ -164,6 +168,26 @@ process-output oracle would catch. But optipng × Laertes `crc32("a")` returns t
 is an O-P-only case. What the two-driver qsort pilot does show is that O-P's sensitivity depends on
 whether the driver externalises internal state: *process-output oracles are driver-dependent*.
 
+### C7 — alignment: three metrics, kept separate (from the ALIGN pilot, P5)
+
+The qsort × PtrTrans pilot (`results/pilots/align_qsort_ptrtrans/RESULT.md`) showed that "recall" alone
+misdescribes the alignment cost. Report three separate quantities per alignment source:
+
+- **correspondence recall** — name-eq 2/3, tool map 3/3, matcher 3/3, manual 3/3;
+- **defective contract boundaries recovered** — name-eq 0/1 (quickSort↔quick_sort never proposed), all
+  others 1/1;
+- **unique underlying defects recovered** — name-eq 1/1, all others 1/1 (the name-preserved internal
+  `partition` pair exposes the same defect, 30,480/50,000 divergences).
+
+Required wording: *"Name equality misses the translated top-level API boundary at which the sorting
+contract is expressed, although a name-preserved internal function still exposes the same underlying
+defect."* Forbidden: "name equality misses the pair and therefore the confirmed defect." Zero false
+divergences under every source. Matcher abstention (eps = 0.01) isolates `partition` (margin 0.018).
+PtrTrans's tool-provided qsort map is correct. No buildable wrong-map witness exists — a witness requires a
+PtrTrans re-run that keeps the trans-metadata jsonl (archived only for bzip2 / lodepng / qsort); until then
+wrong-map downstream harm remains *potential*. C4's downstream columns are amended accordingly: "true bugs
+recovered" splits into the last two metrics above.
+
 ---
 
 ## 3. The experiment — three ablation axes on one fixed corpus
@@ -174,7 +198,7 @@ real-library UB row (currently a library-level `⊘` exclusion, so it is new har
 | axis | levels | what it measures |
 |---|---|---|
 | **OBS — observation** | four channels: **O-R** return value only · **O-P** process output (stdout + exit status) · **O-S** boundary state (return + designated output memory + designated globals) · **O-F** full union O-S ∪ O-P (the shipped oracle). O-P ⊆ O-F and O-S ⊆ O-F by definition (C6) | most of our defects are **state mutation, not return value**: qsort sorts in place (void return), `BZ2_crc32Table` / zlib `crc_table` / genann `lookup` are globals, cJSON `valuestring` is a struct field. O-R is structurally blind to them. Expected pattern: qsort — O-R misses, O-S finds; bzip2 × Laertes (fn 14) — O-R misses, O-P and O-S both find; tulip argc-off-by-one (fn 30) — O-P finds. **Process-output oracles are driver-dependent**: a silent-consumer driver leaves O-P blind to qsort, an array-printing driver lets O-P see it, O-S sees it under both |
-| **ATTR — UB attribution** | none · in-loop UBSan gate · **isolated ASan+UBSan oracle** (subprocess, per C1) | false translation-bug reports caused by source-C UB. Real-library row = urlparser; the 13 micro-programs become *UB taxonomy coverage*, not the headline. **Witness set:** (i) urlparser — memory UB (`url.h:208` heap overflow), caught by the isolated oracle only, **no confirmed defect** (fns 12/22/27/31): proves *suppression*, not survival; (ii) lil `expr` × CROWN (fn 11) — 12 inputs trigger recoverable C-side UB (shift-out-of-range / INT_MIN-negate / signed-overflow), the in-loop gate suffices — the opposite direction; (iii) lil `expr` order dependence (fn 15) — `expr ((1+2)*(3+4))` is order-dependent in the *original* C, ASan/UBSan-clean → the **C-unstable branch**, currently untested; (iv) 27/27 mutation recall (`mutation_recall_v1.md`) — the retained-difference branch, with an oracle-independent validity denominator |
+| **ATTR — UB attribution** | none · in-loop UBSan gate · **isolated ASan+UBSan oracle** (subprocess, per C1) | false translation-bug reports caused by source-C UB. Real-library row = urlparser; the 13 micro-programs become *UB taxonomy coverage*, not the headline. **Witness set:** (i) urlparser — memory UB (`url.h:208` heap overflow), caught by the isolated oracle only, **no confirmed defect** (fns 12/22/27/31): proves *suppression*, not survival; (ii) lil `expr` × CROWN (fn 11) — 12 inputs trigger recoverable C-side UB (shift-out-of-range / INT_MIN-negate / signed-overflow), the in-loop gate suffices — the opposite direction; (iii) **C-unstable: no corpus witness observed.** The earlier lil `expr` order-dependence witness (fn 15) is **retracted** (`results/pilots/attr/lil/RESULT.md`: `expr ((1+2)*(3+4))` is stable `[21]` under all orderings; the `[]`/`[21]` split was a lil.c version mismatch between CROWN's 2962-line source and the Laertes 3518-line source). Repeated C replay on the fixed corpus with randomised order is the planned check; if it stays 0, report 0. **Attribution requirement — reference version provenance:** the C oracle must be the exact source the tool translated, otherwise a faithful translation shows a false divergence (lil record 12 under mismatched versions); (iv) 27/27 mutation recall (`mutation_recall_v1.md`) — the retained-difference branch, with an oracle-independent validity denominator |
 | **ALIGN — alignment** | name equality · tool-provided map · our matcher · manual ground truth | downstream cost of a wrong correspondence, per C4/C5; measured on compiling PtrTrans cells only |
 
 O-F = return value + pointer-reachable out-params + globals written + stdout + exit status.
@@ -189,12 +213,14 @@ urlparser evidence supports. Do not collapse them, and never use "UB gate" as an
 | # | item | blocks | cost |
 |---|---|---|---|
 | 1 | **Freeze thesis; rewrite README / INDEX**, purge MTU / frontier / retired-RQ narrative (`README.md:3,13,22` still describe the pre-reset project) | nothing; do it first because it is currently misleading every reader | hours |
-| 2 | **urlparser real-library UB ablation** — build the ASan+UBSan subprocess oracle, run ATTR at all three levels | the strongest design claim rests on this | days |
-| 3 | **Observation feasibility** — `qsort × PtrTrans` (compiles, 68% unsorted, fn 29) under **two drivers** (silent-consumer / array-printing): expect O-R blind under both, O-S sees under both, O-P blind → sees. Deliverable = a **per-channel detection table**, not a staircase. Explicitly: there is no reverse-direction check; O-P ⊆ O-F by definition (C6) | commits us to the full OBS sweep | 1–2 days |
-| 4 | **ALIGN pilot** — `qsort × PtrTrans` (name-eq recall 0.67 vs matcher 1.00, `rq2_master_table.md:107-113`; confirmed defect fn 29), scale-up `cJSON × PtrTrans` (fn 5). `lodepng × PtrTrans` **disqualified**: 241/255 `Compile_Failed`, 363 assembly errors (fn 28). The 143/255 audit stays static in motivation (per C4) | makes E2 load-bearing | days |
+| 2 | **urlparser real-library UB ablation** — build the ASan+UBSan subprocess oracle, run ATTR at all three levels. **PILOT DONE (commit 747f5f0, `results/pilots/attr/urlparser/`)**: (a) none and (b) in-loop gate both yield an unattributed crash candidate on the first ordinary URL (gate UB flag = 0, heap overflow out of scope); only (c) isolated ASan+UBSan excludes it as C-UB; raw candidates 1 / admissible 0 / confirmed translation divergences 0 in every config. lil part (`results/pilots/attr/lil/`): reconstructed 313-record corpus, (b) and (c) exclude the same 37, fn 15 retracted | the strongest design claim rests on this | days |
+| 3 | **Observation feasibility** — `qsort × PtrTrans` (compiles, 68% unsorted, fn 29) under **two drivers** (silent-consumer / array-printing): expect O-R blind under both, O-S sees under both, O-P blind → sees. Deliverable = a **per-channel detection table**, not a staircase. Explicitly: there is no reverse-direction check; O-P ⊆ O-F by definition (C6). **PILOT DONE (commit 747f5f0, `results/pilots/obs_qsort_ptrtrans/`)**: single seed 42, 104 valid records, C ASan+UBSan clean 104/104 — O-R 0/0 · O-P 0 (silent driver) / 71 (printing driver) · O-S 71/71 · O-F 71/71; single-seed pilot, not a general rate | commits us to the full OBS sweep | 1–2 days |
+| 4 | **ALIGN pilot** — `qsort × PtrTrans` (name-eq recall 0.67 vs matcher 1.00, `rq2_master_table.md:107-113`; confirmed defect fn 29), scale-up `cJSON × PtrTrans` (fn 5). `lodepng × PtrTrans` **disqualified**: 241/255 `Compile_Failed`, 363 assembly errors (fn 28). The 143/255 audit stays static in motivation (per C4). **PILOT DONE (commit 747f5f0, `results/pilots/align_qsort_ptrtrans/`)**: three pairs × 50,000 records, C gate clean; correspondence recall name-eq 2/3 vs 3/3 for tool map / matcher / manual; defective contract boundary recovered 0/1 (name-eq) vs 1/1; unique underlying defect recovered 1/1 for all sources (partition exposes it); zero false divergences; PtrTrans's qsort map is correct (see C7). **Wrong-map downstream witness requires a PtrTrans re-run**: trans metadata is archived only for bzip2 / lodepng / qsort, none for cJSON | makes E2 load-bearing | days |
 | 5 | **Uniform one-hour re-run + multi-seed**, six-quantity reporting per C3; lodepng × {c2rust, CROWN} (the two certificate cells, fn 19) | the false-alarm column | machine time |
 | 6 | **Shipped-test baseline pilot** — cJSON + bzip2 × {c2rust, CROWN}, protocol per C2; then scope the rest | E3's third column | unknown until pilot |
 | 7 | **Taxonomy · threats to validity · selection protocol · RustAssure qualitative table · upstream disclosure** | disclosure is latency-bound — **start it in parallel, not at the end** | ~1 week total |
+| 8 | **Pipeline fix** — `tools/stu_selector/gen_diff_harness.py --ub-free` needs `-fno-sanitize-link-runtime` on clang ≥ 21 (`libclang_rt.ubsan_minimal` already defines `__ubsan_handle_load_invalid_value_minimal`; duplicate-symbol link error against the shim; hit in both ATTR pilots) | any new `--ub-free` build on clang ≥ 21 | hours |
+| 9 | **Pipeline fix** — the `fuzz/lil_{laertes,c2rust,wip}_e3` zeroed `_DefaultRuneLocale` rune shim is **wrong for differential use** (every char non-space → every record `[]` → 313/313 false divergences); acceptable for depth-only runs, must be replaced by the `rune_fill.rs` population for any lil differential cell | any lil differential re-run | hours |
 
 ### Notes on 7
 

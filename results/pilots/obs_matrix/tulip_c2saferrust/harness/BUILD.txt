@@ -1,0 +1,8 @@
+# exact commands (BUILD = /tmp/claude-1000/-home-yunzez-c2rust-testing/1f18b0e9-85a1-4720-97e0-8c9d8d673339/scratchpad/obsmx/tulip_c2saferrust)
+mkdir -p BUILD/c BUILD/rs
+cp -r tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_WIP/. BUILD/rs/ && rm -rf BUILD/rs/target   # crate copied verbatim; sample_bin.rs already carries the __assert_rtn Linux shim
+cd BUILD/rs && cargo +nightly-2025-09-01 build --release --bin sample
+cd tools/frameworks/tulipindicators && clang -fsanitize=address,undefined -fno-sanitize-recover=all -O1 -g -I. sample.c tiamalgamation.c -lm -o BUILD/c/sample_c
+BUILD/c/sample_c --list | awk '{print $4}' > harness/indicators.txt          # 104 names (decoder table, shared by both sides)
+python3 harness/gen_corpus.py BUILD/corpus_seed42                             # seeded generator, random.seed(42), 202 records
+python3 harness/replay.py BUILD/corpus_seed42 BUILD/raw BUILD/harness/wrap_c BUILD/harness/wrap_rs > raw/replay_stdout.log

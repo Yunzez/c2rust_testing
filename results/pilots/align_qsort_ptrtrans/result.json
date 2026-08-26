@@ -330,75 +330,85 @@
   {
    "source": "name_eq",
    "pairs_proposed": 2,
+   "correspondence_recall": "2/3",
    "harnessable": 2,
    "buildable": 2,
-   "true_defects_recovered": 0,
+   "defective_contract_boundaries_recovered": 0,
+   "unique_underlying_defects_recovered": 1,
    "false_divergences": 0,
-   "missed_defects": 1,
    "abstentions": 0,
    "divergences_per_pair": {
     "swap<->swap": 0,
     "partition<->partition": 30480
-   }
+   },
+   "missed_contract_boundaries": 1
   },
   {
    "source": "tool_map",
    "pairs_proposed": 3,
+   "correspondence_recall": "3/3",
    "harnessable": 3,
    "buildable": 3,
-   "true_defects_recovered": 1,
+   "defective_contract_boundaries_recovered": 1,
+   "unique_underlying_defects_recovered": 1,
    "false_divergences": 0,
-   "missed_defects": 0,
    "abstentions": 0,
    "divergences_per_pair": {
     "swap<->swap": 0,
     "partition<->partition": 30480,
     "quickSort<->quick_sort": 34012
-   }
+   },
+   "missed_contract_boundaries": 0
   },
   {
    "source": "matcher_main",
    "pairs_proposed": 3,
+   "correspondence_recall": "3/3",
    "harnessable": 3,
    "buildable": 3,
-   "true_defects_recovered": 1,
+   "defective_contract_boundaries_recovered": 1,
+   "unique_underlying_defects_recovered": 1,
    "false_divergences": 0,
-   "missed_defects": 0,
    "abstentions": 0,
    "divergences_per_pair": {
     "swap<->swap": 0,
     "partition<->partition": 30480,
     "quickSort<->quick_sort": 34012
-   }
+   },
+   "missed_contract_boundaries": 0
   },
   {
    "source": "matcher_abstain_eps0.01",
    "pairs_proposed": 2,
+   "correspondence_recall": "3/3",
    "harnessable": 2,
    "buildable": 2,
-   "true_defects_recovered": 1,
+   "defective_contract_boundaries_recovered": 1,
+   "unique_underlying_defects_recovered": 1,
    "false_divergences": 0,
-   "missed_defects": 0,
    "abstentions": 1,
    "divergences_per_pair": {
     "swap<->swap": 0,
     "quickSort<->quick_sort": 34012
-   }
+   },
+   "missed_contract_boundaries": 0
   },
   {
    "source": "manual",
    "pairs_proposed": 3,
+   "correspondence_recall": "3/3",
    "harnessable": 3,
    "buildable": 3,
-   "true_defects_recovered": 1,
+   "defective_contract_boundaries_recovered": 1,
+   "unique_underlying_defects_recovered": 1,
    "false_divergences": 0,
-   "missed_defects": 0,
    "abstentions": 0,
    "divergences_per_pair": {
     "swap<->swap": 0,
     "partition<->partition": 30480,
     "quickSort<->quick_sort": 34012
-   }
+   },
+   "missed_contract_boundaries": 0
   }
  ],
  "matcher_scores": {
@@ -444,8 +454,10 @@
  },
  "fixes": [
   "tools/stu_selector/analyzer binary was not built (cargo build --release, ~1 min)",
-  "results/rq2_cells/ptrtrans_rename/qsort_ptrtrans.rs has a stray `use crate::*;` \u2014 stripped for a standalone lib crate",
+  "results/rq2_cells/ptrtrans_rename/qsort_ptrtrans.rs has a stray `use crate::*;` — stripped for a standalone lib crate",
   "no per-pair harness existed: existing harness only drives quickSort; wrote c_pairs.c / main.rs with an op argument; partition inputs restricted to n>=1 (n=0 would read arr[-1] in C = UB, excluded a priori, not by the gate)",
   "TTFD is batch-mode: wall-clock scaled by first-diverging record index (records processed sequentially)"
- ]
+ ],
+ "downstream_metrics_note": "Three metrics kept separate (CONTRACT P5): correspondence_recall = manual-truth pairs proposed (abstained pairs count as correctly identified for recall); defective_contract_boundaries_recovered = the quickSort<->quick_sort boundary at which the sorting contract is expressed; unique_underlying_defects_recovered = the single partition index bug, which name-eq still exposes via partition<->partition.",
+ "summary": "Name equality misses the translated top-level API boundary at which the sorting contract is expressed, although a name-preserved internal function still exposes the same underlying defect. Zero false divergences under every source. PtrTrans's tool-provided qsort map is correct; no buildable wrong-map witness exists."
 }

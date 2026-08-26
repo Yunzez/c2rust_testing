@@ -1,5 +1,12 @@
 # ATTR pilot — Part 2: lil (CROWN + Laertes), seed 42, commit dda70a4d
 
+> **Scope note (2026-08-25).** This is a **reconstructed 313-record pilot** (12 reconstructed recoverable-UB
+> inputs + the fn-15 record + 300 seeded scripts), **not** the archived 111,043-record campaign behind
+> `rq1_master_table.md` fns 11/15; its 37 exclusions do not replace the archived "12 of 111,043". The
+> **retraction of fn 15** (order dependence → lil.c version mismatch, stable `[21]` under all orderings) is
+> recorded in place in `results/rq1_master_table.md` footnote 15; the new exclusion category is
+> reference-version provenance, not reference nondeterminism.
+
 Study question: are the three UB-attribution mechanisms — (b) in-loop UBSan gate, (c) isolated
 ASan+UBSan oracle, (d) repeated C replay — a simple inclusion chain, or do they separate?
 

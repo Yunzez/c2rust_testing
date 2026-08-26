@@ -48,19 +48,22 @@ quickSort. Abstention correctly flags this as the shaky pair. Honest reading: th
 assignment, not on partition being individually confident.
 
 ## Downstream table
-| source | harnessable | buildable | true defects recovered | false divergences | missed defects | abstentions |
-|---|---|---|---|---|---|---|
-| name-eq | 2/2 | 2/2 | **0** (quickSort pair never proposed) | 0 | 1 | 0 |
-| tool map | 3/3 | 3/3 | 1 | 0 | 0 | 0 |
-| matcher (main) | 3/3 | 3/3 | 1 | 0 | 0 | 0 |
-| matcher (abstain 0.01) | 2/2 | 2/2 | 1 | 0 | 0 | 1 (partition) |
-| manual | 3/3 | 3/3 | 1 | 0 | 0 | 0 |
+| source | correspondence recall | harnessable | buildable | defective contract boundaries recovered | unique underlying defects recovered | false divergences | missed contract boundaries | abstentions |
+|---|---|---|---|---|---|---|---|---|
+| name-eq | 2/3 | 2/2 | 2/2 | **0/1** (quickSort↔quick_sort never proposed) | 1/1 (via partition) | 0 | 1 | 0 |
+| tool map | 3/3 | 3/3 | 3/3 | 1/1 | 1/1 | 0 | 0 | 0 |
+| matcher (main) | 3/3 | 3/3 | 3/3 | 1/1 | 1/1 | 0 | 0 | 0 |
+| matcher (abstain 0.01) | 3/3 (2 proposed, 1 abstained) | 2/2 | 2/2 | 1/1 | 1/1 | 0 | 0 | 1 (partition) |
+| manual | 3/3 | 3/3 | 3/3 | 1/1 | 1/1 | 0 | 0 | 0 |
 
-Expectation confirmed by test: name-eq misses the defect; tool map / matcher / manual recover it; zero
-false divergences everywhere (every divergence is on a manual-truth pair). Caveat on name-eq: it still
-sees 30,480 divergences on partition↔partition — the *root cause* is reachable by name-eq, only the
-quickSort-level symptom is not. With abstention the matcher loses the partition observation but keeps the
-defect.
+Three metrics, kept separate: *correspondence recall* (pairs of the manual truth proposed), *defective
+contract boundaries recovered* (the quickSort↔quick_sort boundary at which the sorting contract is
+expressed), and *unique underlying defects recovered* (the single `partition` index bug). **Summary: name
+equality misses the translated top-level API boundary at which the sorting contract is expressed, although
+a name-preserved internal function still exposes the same underlying defect.** Tool map / matcher / manual
+recover both the boundary and the defect; zero false divergences under every source (every divergence is
+on a manual-truth pair). With abstention the matcher loses the partition observation but keeps the
+boundary and the defect.
 
 ## Secondary: cJSON × PtrTrans buildable wrong-map witness
 - **No `cjson*_trans_metadata.jsonl` exists anywhere on disk** (searched whole FS; only bzip2/lodepng/qsort

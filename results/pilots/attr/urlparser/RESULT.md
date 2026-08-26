@@ -9,13 +9,15 @@ Oracle defect: `url_parse -> get_part`, `sscanf` at `url.h:208` writes 10 bytes 
 heap-buffer-overflow on the **first, entirely ordinary URL**.
 
 ## Table
-| config | valid records | divergences reported | exclusions | classification | TTFD |
-|---|---|---|---|---|---|
-| (a) none | 0 | 1 (crash) | 0 | crash charged as translation bug | 0.01 s |
-| (b) in-loop UBSan gate | 0 | 1 (crash) | 0 | crash charged as translation bug — **identical to (a)** | 0.01 s |
-| (c) isolated ASan+UBSan | 0 | 0 | 1 | **C-UB** (correctly excluded) | none |
+| config | raw failure candidates | admissible comparisons | confirmed translation divergences | C-UB exclusions | outcome | TTFD |
+|---|---|---|---|---|---|---|
+| (a) none | 1 | 0 | 0 | 0 | **unattributed crash candidate** (the crash can occur in the C call itself) | 0.01 s |
+| (b) in-loop UBSan gate | 1 | 0 | 0 | 0 | **unattributed crash candidate** — identical to (a) | 0.01 s |
+| (c) isolated ASan+UBSan | 1 | 0 | 0 | 1 | C-UB excluded (heap-buffer-overflow, `get_part` url.h:208) | none |
 
 Classification totals: C-UB 1 · C-unstable 0 · Rust-failure 0 · semantic-difference 0 · abstention 0.
+No configuration produces a confirmed translation divergence; (a)/(b) leave an unattributed crash
+candidate that they cannot assign to either side, (c) attributes it to the C reference.
 Reached functions: n/a (differential harness, not instrumented for coverage census).
 
 ## The C1 measurement (the point of this pilot)
@@ -29,15 +31,15 @@ Decisive probe (`raw/url_gate_probe.c`, built with the exact `--ub-free` flag se
 
 i.e. the UBSan minimal-runtime gate (`signed-integer-overflow,shift,integer-divide-by-zero,bounds,null,
 unreachable`) sees **zero** UB. `-fsanitize=bounds` covers compile-time-known array bounds, not a heap
-`malloc` overflow through `sscanf`. So the gate does not reject the input; Rust runs and the corrupted
-heap aborts — exactly config (a). **C1 CONFIRMED, measured: (b) really fails to catch it.**
+`malloc` overflow through `sscanf`. So the gate does not reject the input; the process aborts on the corrupted
+heap — an unattributed crash candidate, exactly as in config (a). **C1 CONFIRMED, measured: (b) really fails to catch it.**
 
 (c) the fresh-process ASan+UBSan oracle exits with `AddressSanitizer: heap-buffer-overflow` (WRITE size
-10, `get_part` @ url.h:208, `url_parse` @ url.h:247) → the input is discarded as C-UB. 0 admissible → 0
-divergences attributable to any translator. This is the only configuration that attributes correctly.
+10, `get_part` @ url.h:208, `url_parse` @ url.h:247) → the input is discarded as C-UB. 0 admissible
+comparisons → 0 confirmed translation divergences. This is the only configuration that attributes correctly.
 
 Note on the "libFuzzer ≤10 min" step: it degenerates. The seed URL crashes on exec 0, so no
-generative fuzzing happens under (a)/(b) — a crash is "found" immediately (this matches fn 27: the UB
+generative fuzzing happens under (a)/(b) — an unattributed crash candidate appears immediately (this matches fn 27: the UB
 gate/oracle catches it on the first input). The library is a library-level exclusion, not a translation
 defect, in every configuration that runs the C reference under memory sanitization.
 

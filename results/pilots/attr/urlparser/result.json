@@ -12,42 +12,44 @@
    "buildable": true,
    "harnessable": true,
    "reached_functions": "n/a",
-   "valid_records": 0,
-   "divergences_reported": 1,
-   "exclusions": 0,
-   "classification": "crash reported as translation bug (double free / heap corruption)",
-   "outcome": "CRASH on the seed input (first exec): 'double free or corruption', libFuzzer deadly signal, rc=77",
+   "classification": "unattributed crash candidate (double free / heap corruption; the crash can occur in the C call itself)",
+   "outcome": "Unattributed crash candidate on the seed input (first exec): 'double free or corruption', libFuzzer deadly signal, rc=77",
    "ttfd_s": 0.01,
-   "libfuzzer_note": "the requested <=10min campaign degenerates: the seed corpus URL crashes on exec 0, so no generative fuzzing occurs; a differential/crash is 'found' immediately."
+   "libfuzzer_note": "the requested <=10min campaign degenerates: the seed corpus URL crashes on exec 0, so no generative fuzzing occurs; an unattributed crash candidate appears immediately.",
+   "raw_failure_candidates": 1,
+   "admissible_comparisons": 0,
+   "confirmed_translation_divergences": 0,
+   "C_UB_exclusions": 0
   },
   "inloop_ubsan_gate": {
    "buildable": true,
    "harnessable": true,
    "reached_functions": "n/a",
-   "valid_records": 0,
-   "divergences_reported": 1,
-   "exclusions": 0,
-   "classification": "crash reported as translation bug -- IDENTICAL to (a)",
-   "outcome": "CRASH on the seed input, same 'double free or corruption', rc=77, ttfd 0.01s",
+   "classification": "unattributed crash candidate (double free / heap corruption; the crash can occur in the C call itself) -- IDENTICAL to (a)",
+   "outcome": "Unattributed crash candidate on the seed input, same 'double free or corruption', rc=77, ttfd 0.01s",
    "C1_measurement": {
     "gate_probe_UB_flag_after_parse": 0,
     "meaning": "UBSan minimal-runtime gate (signed-overflow,shift,div0,bounds,null,unreachable) sees ZERO UB on the heap-overflowing parse; -fsanitize=bounds does not cover a heap malloc overflow. The input is NOT rejected -> Rust runs -> crash, exactly like (a).",
     "verdict": "C1 CONFIRMED: (b) really fails to catch it (measured, not assumed)."
    },
-   "ttfd_s": 0.01
+   "ttfd_s": 0.01,
+   "raw_failure_candidates": 1,
+   "admissible_comparisons": 0,
+   "confirmed_translation_divergences": 0,
+   "C_UB_exclusions": 0
   },
   "isolated_asan_ubsan": {
    "buildable": true,
    "harnessable": true,
    "reached_functions": "n/a",
-   "valid_records": 0,
-   "admissible_records": 0,
-   "divergences_reported": 0,
-   "exclusions": 1,
    "exclusion_kind": "asan:heap-buffer-overflow (WRITE size 10, get_part @ url.h:208, url_parse @ url.h:247)",
    "classification": "C-UB (excluded, correctly attributed to the C reference)",
    "ttfd_s": "none",
-   "outcome": "fresh-process ASan+UBSan oracle exits with a sanitizer report on the seed -> input discarded; 0 admissible -> 0 divergences to charge to any translator."
+   "outcome": "fresh-process ASan+UBSan oracle exits with a sanitizer report on the seed -> input discarded; 0 admissible comparisons -> 0 confirmed translation divergences.",
+   "raw_failure_candidates": 1,
+   "admissible_comparisons": 0,
+   "confirmed_translation_divergences": 0,
+   "C_UB_exclusions": 1
   }
  },
  "classification_totals": {
@@ -58,7 +60,7 @@
   "abstention": 0
  },
  "expectations": {
-  "a_reports_as_bug": "held (crash on first input)",
+  "a_reports_as_bug": "held as unattributed crash candidate on first input (not a confirmed translation bug)",
   "b_fails_to_catch_ASan_only_overflow": "HELD and MEASURED: gate UB-flag=0, gate build crashes identically to (a)",
   "c_excludes_as_C_UB": "held (heap-buffer-overflow, 0 admissible)"
  },
@@ -75,5 +77,6 @@
   "python3 url_isolated.py corpus_seed   # isolated oracle + admissible-replay",
   "clang ... <UBSan gate flags> -fno-sanitize-link-runtime -o url_gate_probe url_gate_probe.c ubshim.c   # C1 probe -> UB_FLAG=0"
  ],
- "raw_logs": "results/pilots/attr/urlparser/raw/"
+ "raw_logs": "results/pilots/attr/urlparser/raw/",
+ "table_columns_note": "Per CONTRACT P2: raw failure candidates = 1, admissible comparisons = 0, confirmed translation divergences = 0 for all three configs; (c) additionally C-UB exclusions = 1. (a)/(b) produce an unattributed crash candidate, not a translation bug."
 }

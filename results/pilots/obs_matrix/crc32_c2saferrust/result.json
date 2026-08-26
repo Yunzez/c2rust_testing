@@ -1,0 +1,108 @@
+{
+ "pilot": "OBS matrix cell",
+ "subject": "crc32_z x C2SaferRust (optipng zlib 1.2.11)",
+ "date": "2026-08-25",
+ "git_commit": "747f5f09eac314bc4e32687e71497e269af36848",
+ "seed": 42,
+ "defect": "is_null->is_empty: empty chunk resets running CRC (silent, return-value-visible)",
+ "corpus": {
+  "generator": "libFuzzer via cargo-fuzz nightly-2025-09-01, scratchpad crate, FRESH corpus dir",
+  "args": "-seed=42 -max_total_time=300 -max_len=1024",
+  "wall_s": 301,
+  "execs": 95624711,
+  "cov_edges": 68,
+  "features": 253,
+  "files": 65,
+  "path": "corpus_seed42/",
+  "decoding": "bytes[0..4]=seed crc LE; then chunks: 1 byte L, min(L,rest) bytes; crc=crc32_z(crc,chunk,L)"
+ },
+ "buildable": {
+  "C silent (clang ASan+UBSan, zlib 1.2.11)": true,
+  "C print": true,
+  "Rust silent (C2SaferRust wip.rs verbatim)": true,
+  "Rust print": true
+ },
+ "harnessable": {
+  "silent": true,
+  "print": true
+ },
+ "reached_functions": "n/a (libFuzzer cov=68 edges over crc32_z)",
+ "ub_gate": "C driver under -fsanitize=address,undefined -fno-sanitize-recover=all; excluded if exit!=0 or sanitizer report; repeated C replay for C-unstable",
+ "inputs_total": 65,
+ "inputs_excluded_c_ub": 0,
+ "inputs_excluded_c_unstable": 0,
+ "valid_differential_records": 65,
+ "classification": {
+  "C-UB": 0,
+  "C-unstable": 0,
+  "Rust-failure": 0,
+  "semantic-difference": 15,
+  "abstention": 0,
+  "agree": 50
+ },
+ "trigger_check": {
+  "divergent_inputs_with_empty_chunk_at_nonzero_crc": 15,
+  "agreeing_inputs_with_empty_chunk_at_nonzero_crc": 0
+ },
+ "cells": {
+  "silent": {
+   "O-R": {
+    "divergences": 15,
+    "time_to_first_divergence_s": 0.041,
+    "first_div_input": "129d49db32125a65d4b724a4b2c54ebefd365bc8"
+   },
+   "O-P": {
+    "divergences": 0,
+    "time_to_first_divergence_s": "none",
+    "first_div_input": null
+   },
+   "O-S": {
+    "divergences": 15,
+    "time_to_first_divergence_s": 0.041,
+    "first_div_input": "129d49db32125a65d4b724a4b2c54ebefd365bc8"
+   },
+   "O-F": {
+    "divergences": 15,
+    "time_to_first_divergence_s": 0.041,
+    "first_div_input": "129d49db32125a65d4b724a4b2c54ebefd365bc8"
+   }
+  },
+  "print": {
+   "O-R": {
+    "divergences": 15,
+    "time_to_first_divergence_s": 0.041,
+    "first_div_input": "129d49db32125a65d4b724a4b2c54ebefd365bc8"
+   },
+   "O-P": {
+    "divergences": 15,
+    "time_to_first_divergence_s": 0.041,
+    "first_div_input": "129d49db32125a65d4b724a4b2c54ebefd365bc8"
+   },
+   "O-S": {
+    "divergences": 15,
+    "time_to_first_divergence_s": 0.041,
+    "first_div_input": "129d49db32125a65d4b724a4b2c54ebefd365bc8"
+   },
+   "O-F": {
+    "divergences": 15,
+    "time_to_first_divergence_s": 0.041,
+    "first_div_input": "129d49db32125a65d4b724a4b2c54ebefd365bc8"
+   }
+  }
+ },
+ "expected_pattern": "O-R detects (return-value-visible); O-P blind under silent only",
+ "expected_pattern_holds": true,
+ "commands": [
+  "cd rs && cargo +nightly-2025-09-01 fuzz run ft corpus_seed42 -- -seed=42 -max_total_time=300 -max_len=1024",
+  "clang -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -I. -w driver.c crc32.c -o driver_c",
+  "cargo +nightly-2025-09-01 build --release",
+  "python3 replay.py corpus_seed42 raw c/driver_c rs/target/release/obs_rs_driver"
+ ],
+ "raw_logs": [
+  "raw/libfuzzer_seed42.log",
+  "raw/replay_summary.json",
+  "raw/replay_records.jsonl",
+  "raw/replay_stdout.log"
+ ],
+ "what_did_not_work": "in-repo C zlib copies lack crc32_z (pre-1.2.9); fetched zlib-1.2.11 crc32.c (optipng's vendored version)"
+}

@@ -1,0 +1,160 @@
+{
+ "meta": {
+  "date": "2026-08-26",
+  "repo_commit": "c2471df5b557079d91fc4cdb936c9f06067a6f4d",
+  "seed": 42,
+  "ub_gate": "C side clang -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all, halt_on_error=1; 0 reports on all triaged records",
+  "not_settled": [
+   "whether the user wants rec138 promoted to an S-id despite being unexternalised in the crate",
+   "tulip OBS cell RESULT.md/result.json still reflect the 0.9.2 oracle; re-run against 6b3ff6d not written into the cell (no edits outside triage/)"
+  ]
+ },
+ "items": [
+  {
+   "item": "A.cjson_ptrtrans.class_c.rec138",
+   "cell": "cjson_ptrtrans",
+   "records": [
+    {
+     "idx": 138,
+     "input": "fc744c1fe14a043eb825f7afff8680d6689d1f18",
+     "c_offset": 1,
+     "rust_offset": 0
+    }
+   ],
+   "minimal_repro": "printf 'a' | parse_string at offset 0: C offset=1, Rust offset=0",
+   "root_cause": "translated_crate/src/cjson.rs:731-737 not-a-string fail path stores current_offset; C stores input_pointer=start+1 (pre-initialised before the check, cJSON.c:821/941)",
+   "verdict": "distinct-root-cause, function-level divergence, NOT promoted (unexternalised: parse_object and cJSON_ParseWithLengthOpts are stubs in the crate)",
+   "defect_id_or_null": null,
+   "suggested_id_if_promoted": "S14-cand (minor, unexternalised)",
+   "c_ub": 0,
+   "externally_observable": {
+    "C": "yes via return_parse_end/cJSON_GetErrorPtr through parse_object keys ({a:1} -> idx 2)",
+    "translated_crate": "no (both externalising callers are stubs)"
+   },
+   "provenance": "version-matched reconstructed (cJSON v1.7.19 re-fetched; sha256 298581a0...)"
+  },
+  {
+   "item": "A.cjson_ptrtrans.class_c.rec40",
+   "cell": "cjson_ptrtrans",
+   "records": [
+    {
+     "idx": 40,
+     "input": "3f6b2273cc6e64349e7508040135154004995775",
+     "c_offset": 55,
+     "rust_offset": 11
+    }
+   ],
+   "minimal_repro": "\"\\u0041\\i\" -> C offset=7 (fails at \\i), Rust offset=1 (fails at \\u)",
+   "root_cause": "S7 empty-slice input_end at the utf16_literal_to_utf8 call site (cjson.rs:823-830); Rust aborts at the \\u, C continues to the real invalid escape",
+   "verdict": "symptom of existing defect",
+   "defect_id_or_null": "S7",
+   "c_ub": 0,
+   "provenance": "version-matched reconstructed (cJSON v1.7.19 re-fetched; sha256 298581a0...)"
+  },
+  {
+   "item": "B.tulip_c2saferrust.both_exit0.groupA_dx_adxr",
+   "cell": "tulip_c2saferrust",
+   "records": [
+    {
+     "idx": 33,
+     "argv": "dx 15 14 16"
+    },
+    {
+     "idx": 139,
+     "argv": "dx 18 14 13"
+    },
+    {
+     "idx": 144,
+     "argv": "adxr 8 3 14 9"
+    },
+    {
+     "idx": 163,
+     "argv": "adxr 15 8"
+    }
+   ],
+   "minimal_repro": "sample dx 15 8: C-0.9.2 header 'high low dx', C-0.8.4 == base == WIP header 'high low close dx'; numeric column identical",
+   "root_cause": "C oracle is TI 0.9.2 (be18abb) but all crates translate TI 0.8.4 (6b3ff6d) whose indicators_index.c declares adx/adxr/dx with inputs {high,low,close} and output name 'dx'",
+   "verdict": "harness artifact (C oracle version mismatch)",
+   "defect_id_or_null": null,
+   "c_ub": 0,
+   "provenance": "cell oracle: version-mismatched (0.9.2 vs 0.8.4) -> manifest 'unknown'; triage oracle: exact-version 6b3ff6d rebuilt from source"
+  },
+  {
+   "item": "B.tulip_c2saferrust.both_exit0.groupB_alt_input_column",
+   "cell": "tulip_c2saferrust",
+   "records": [
+    {
+     "idx": 23,
+     "argv": "cosh 8 17"
+    },
+    {
+     "idx": 83,
+     "argv": "tanh 16"
+    },
+    {
+     "idx": 85,
+     "argv": "todeg 7 1 2 15"
+    },
+    {
+     "idx": 179,
+     "argv": "acos 11 15 2"
+    },
+    {
+     "idx": 199,
+     "argv": "acos 5 1 4 8"
+    }
+   ],
+   "minimal_repro": "sample cosh 1: C-0.8.4 == C-0.9.2 == base print 'date input cosh' + alternative[] column; WIP prints 'date cosh' only",
+   "root_cause": "tulipindicators_WIP/sample.rs:228-241: `while let Some(&a)` shadows the display flag `a`; the `a = 1` assignment was deleted ('Removed the assignment to `a` since it was incorrect'), so `if a != 0` header/row prints are dead",
+   "verdict": "confirmed distinct defect (driver/display rewrite; column loss, values intact; not S13, not C6, not float formatting)",
+   "defect_id_or_null": "S14-cand",
+   "c_ub": 0,
+   "provenance": "exact-version 0.8.4 oracle (6b3ff6d) and base c2rust both confirm"
+  },
+  {
+   "item": "B.tulip_c2saferrust.exit_visible_47",
+   "cell": "tulip_c2saferrust",
+   "records": "47 records, all k==need, C exit 0 / WIP exit 1",
+   "verdict": "symptom of existing defect",
+   "defect_id_or_null": "S13",
+   "provenance": "same under 0.8.4 and 0.9.2 oracles"
+  },
+  {
+   "item": "B.tulip_c2saferrust.stdout_only_both_exit1_21",
+   "cell": "tulip_c2saferrust",
+   "records": {
+    "S13_k0_guard": 16,
+    "S13_psar_idx185": 1,
+    "S13_site_stderr_routing_idx93": 1,
+    "version_artifact_argv_echo": [
+     64,
+     125,
+     129
+    ]
+   },
+   "verdict": "18 = S13 (two symptoms: argc<2 guard text; eprintln routing); 3 = harness artifact (0.9.2 argv-echo lines absent in 0.8.4 sample.c)",
+   "defect_id_or_null": "S13",
+   "provenance": "exact-version 0.8.4 oracle confirms the 3 artifacts vanish"
+  },
+  {
+   "item": "B.tulip_c2saferrust.cell_recount_084",
+   "cell": "tulip_c2saferrust",
+   "records": {
+    "valid": 200,
+    "agree": 123,
+    "exit_visible_S13": 47,
+    "stdout_only": 23,
+    "stdout_only_breakdown": {
+     "S13": 18,
+     "groupB_S14cand": 5
+    },
+    "diverge_only_vs_0.9.2_oracle": 7,
+    "semantic_difference_honest": 70,
+    "semantic_difference_reported": 77
+   },
+   "verdict": "O-P-print/O-F-print 78 -> 71 with a version-matched oracle; O-R/O-S/O-P-silent 48 unchanged",
+   "defect_id_or_null": null,
+   "provenance": "triage/tulip/recount_084.json"
+  }
+ ]
+}

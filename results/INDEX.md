@@ -20,7 +20,7 @@ Historical north star: [PROJECT_RESET_2026-07-03.md](PROJECT_RESET_2026-07-03.md
 | [mutation_recall_v1.md](mutation_recall_v1.md) | 27/27 mutation recall, three-layer denominator; rows in [mut_rows/](mut_rows/) | RQ4 protocol (negative control) |
 | [rq2_ubgate_v1.md](rq2_ubgate_v1.md) | UB-gate study: 48 boundaries, 13 gate-OFF divergences all attributed, 0 false bug reports | RQ4 protocol |
 | [severed_init_law.md](severed_init_law.md) / [severed_init_scan.json](severed_init_scan.json) | Laertes severed-init census: 277 init fns, 0 calls, 10 crates | RQ4 taxonomy |
-| [llm_fidelity_v1.md](llm_fidelity_v1.md), [rq1_genann_matrix.md](rq1_genann_matrix.md), [rq1_cjson_matrix.md](rq1_cjson_matrix.md) | equivalence-certificate evidence (bignum, genann, cJSON×c2rust) | RQ2 specificity leg |
+| [llm_fidelity_v1.md](llm_fidelity_v1.md), [rq1_genann_matrix.md](rq1_genann_matrix.md), [rq1_cjson_matrix.md](rq1_cjson_matrix.md) | equivalence-certificate evidence (raw-LLM micro certs — note bignum is compile-only, NOT a cert; genann; cJSON×c2rust) | RQ2 specificity leg |
 | [related_work_landscape.md](related_work_landscape.md) | competitor map; deferred additions tracked in memory | paper §RW |
 
 ## Archive

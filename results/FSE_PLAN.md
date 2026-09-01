@@ -1,6 +1,6 @@
 # FSE plan — consolidated
 
-Canonical plan. Supersedes `FSE_PLAN_2026-08-09.md` (which is kept for the framing argument in its §1)
+Canonical plan. Supersedes `archive/FSE_PLAN_2026-08-09.md` (kept for the framing argument in its §1)
 and `PROJECT_RESET_2026-07-03.md`.
 
 **Revision history**

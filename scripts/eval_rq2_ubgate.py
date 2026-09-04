@@ -12,11 +12,11 @@ Per boundary (matched C fn / Rust fn), for a fuzz budget:
      take_* recipe, emit a standalone full-UBSan C driver, run it -> UB kind + file:line.
 
 Suppression is defined PER ARTIFACT by replay, never by "gate-ON fuzz found nothing".
-See results/rq2_eval_plan.md. Emits JSON + a per-boundary table.
+See results/archive/rq2_eval_plan.md. Emits JSON + a per-boundary table.
 
 Usage:
   eval_rq2_ubgate.py --boundaries scripts/rq2_boundaries.json --secs 25 \
-      --json results/rq2_rows/controls.json
+      --json results/ablations/attribution/ubgate_rows/controls.json
 """
 from __future__ import annotations
 import argparse, json, re, subprocess, sys, shutil, time

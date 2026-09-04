@@ -3,7 +3,7 @@
 
 Reuses the existing CSS block verbatim (lines up to and including </style>) so
 the visual identity is unchanged; regenerates every number, the tiles, the
-findings and the caveats from results/rq3_cells/*.json.
+findings and the caveats from results/rq4_effectiveness/reach_cells/*.json.
 """
 import glob
 import json
@@ -24,7 +24,7 @@ STAR = {("qsort", "c2saferrust"), ("qsort", "ptrtrans"), ("cjson", "ptrtrans"),
         ("optipng", "laertes"), ("optipng", "c2saferrust")}
 
 cells = {}
-for f in glob.glob("results/rq3_cells/*.json"):
+for f in glob.glob("results/rq4_effectiveness/reach_cells/*.json"):
     d = json.load(open(f))
     cells[(d.get("library"), d.get("tool"))] = d
 
@@ -183,7 +183,7 @@ html = css + f"""
   </section>
 
   <footer>E3 · per-function hit-depth · {n_cells} cells · rows = E1 corpus · Rust-side ·
-    results/rq3_master_table.md · medians corrected 2026-08-09 · dataset-v2.1</footer>
+    results/rq4_effectiveness/reach_census.md · medians corrected 2026-08-09 · dataset-v2.1</footer>
 </div>
 """
 

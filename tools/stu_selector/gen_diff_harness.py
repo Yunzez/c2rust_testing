@@ -26,11 +26,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
+import shutil
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import callgraph as cgmod  # noqa: E402
+import contract_templates as ctpl  # noqa: E402
 import clang.cindex  # noqa: E402
 from clang.cindex import CursorKind, Index, TypeKind  # noqa: E402
 
@@ -38,12 +41,24 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
 # different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
-GEN_VERSION = "0.5"
+GEN_VERSION = "0.7"   # 2026-09-04: HARNESS PLAN path (--plan). The InputPlan is derived from the
+                      # C AST + body by tools/stu_selector/harness_plan.py and lowered here; no
+                      # schema file is read or written. Adds the `plan_array` adapter (a
+                      # harness-owned allocation sized by a plan expression) and short/unsigned
+                      # short to the scalar map. There is NO ObservationPlan: what to compare is
+                      # the fixed ladder of docs/harness_oracle_plan.md, so a pointer return no
+                      # longer fails construction -- it degrades to `pointer_nullness`. The
+                      # generator's own local is `_c2r_m`, not `mode`, which is a common C
+                      # parameter name (BZ2_bzopen(path, mode)) and was being shadowed.
+                      # 0.6 (2026-09-03): output_buffer+capacity_ptr, max_len, per-entry schema,
+                      # runtime C2R_MODE, canonical return type, C-global renaming, rem_euclid
 GEN_CAPABILITIES = (
     "scalar", "bounded_scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
     "input_string", "input_fixed_array_buffer", "input_rectangular_pointer_table",
     "input_string_pointer_table", "input_struct", "inout_struct",
     "input_struct_array", "inout_struct_array", "output_array",
+    "output_buffer_with_capacity_ptr",   # RQ4
+    "plan_array",                        # HarnessPlan lowering
 )
 
 # c2rust type spelling -> (rust_ffi_type, byte_width). size_t -> usize to match translation.
@@ -54,6 +69,8 @@ SCALAR_MAP = {
     "uint16_t": ("u16", 2), "int16_t": ("i16", 2),
     "uint8_t": ("u8", 1), "int8_t": ("i8", 1),
     "int": ("i32", 4), "unsigned int": ("u32", 4), "unsigned": ("u32", 4),
+    "short": ("i16", 2), "short int": ("i16", 2),
+    "unsigned short": ("u16", 2), "unsigned short int": ("u16", 2),
     "long": ("i64", 8), "unsigned long": ("u64", 8),
     "long long": ("i64", 8), "unsigned long long": ("u64", 8),
     "char": ("i8", 1), "signed char": ("i8", 1), "unsigned char": ("u8", 1),
@@ -193,6 +210,12 @@ def _param_from_descriptor(desc: dict, name: str) -> dict:
                 raise SystemExit(f"struct-invariant param {name}: {inner['name']} "
                                  f"{inner['reason']} (needs invariant reconstruction)")
             return {"kind": "ptr_struct", "const": desc["const"], "struct": inner, "name": name}
+        if inner["kind"] == "unsupported" and inner.get("spelling", "").replace("const ", "") == "void":
+            # `void*` carries no shape, so there is nothing to decode -- but NULL is the one
+            # pointer value that is universally valid to pass: malloc-style opaque slots ignore
+            # it and `free(NULL)` is a no-op. Both sides get NULL, which is a real comparison of
+            # how each handles it, and it cannot be a wild pointer.
+            return {"kind": "void_ptr", "const": desc["const"], "name": name}
         if inner["kind"] == "function":
             raise SystemExit(f"callback parameter {name} deferred: function pointers "
                              f"(callback binding) not yet supported")
@@ -229,7 +252,10 @@ def _param_usage(fn, names: set) -> dict:
     return usage
 
 
-def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, list[str]]:
+def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = False):
+    # with_return_desc=True adds a 4th element: the structural descriptor of the RETURN type,
+    # which eligibility needs in order to decide whether the return value can be compared at
+    # all. Default stays a 3-tuple so existing callers are unaffected.
     """Return (params, ret_rust_type, all_function_names) for the entry via libclang.
     Each param dict also carries body-usage flags (subscripted / used_as_index)."""
     cgmod._configure_libclang()
@@ -240,7 +266,15 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
     cwd0 = os.getcwd()
     params: list[dict] = []
     ret = "i32"
+    ret_desc: dict = {"kind": "void"}
     all_fns: list[str] = []
+    # RQ4 FIX 2 (2026-09-03): file-scope VARIABLES with external linkage must be renamed in the
+    # oracle too. c2rust emits translated globals as #[no_mangle] statics, so an un-renamed C
+    # global and its translation collapse onto ONE storage location at link time -- the linker
+    # either rejects it (duplicate symbol) or, worse, silently makes the differential compare a
+    # value against itself. Real libraries have such tables (bzip2: BZ2_crc32Table, BZ2_rNums);
+    # the micro-benchmark corpus this generator was built on has none.
+    all_globals: list[str] = []
     for cmd in cdb.getAllCompileCommands():
         src_abs = str((Path(cmd.directory) / cmd.filename).resolve())
         names = {cmd.filename, src_abs, Path(cmd.filename).name}
@@ -251,6 +285,14 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
         finally:
             os.chdir(cwd0)
         for cur in tu.cursor.walk_preorder():
+            if cur.kind == CursorKind.VAR_DECL and cur.is_definition():
+                f = cur.location.file.name if cur.location and cur.location.file else None
+                if (f and not f.startswith(("/usr/", "/lib/"))
+                        and cur.semantic_parent is not None
+                        and cur.semantic_parent.kind == CursorKind.TRANSLATION_UNIT
+                        and cur.linkage == clang.cindex.LinkageKind.EXTERNAL):
+                    all_globals.append(cur.spelling)
+                continue
             if cur.kind != CursorKind.FUNCTION_DECL or not cur.is_definition():
                 continue
             f = cur.location.file.name if cur.location and cur.location.file else None
@@ -271,11 +313,198 @@ def parse_entry_signature(cc_dir: Path, entry: str) -> tuple[list[dict], str, li
             rt = cur.result_type
             if rt.kind == TypeKind.VOID:
                 ret = "void"
+                ret_desc = {"kind": "void"}
             else:
-                sc = map_scalar(rt.spelling)
-                ret = sc[0] if sc else "i32"
-    return params, ret, sorted(set(all_fns))
+                # RQ4 FIX 1 (2026-09-03): resolve typedefs, exactly as describe_type already does
+                # for PARAMETERS. Upstream mapped only rt.spelling and silently fell back to i32,
+                # so a `UChar`-returning C function got an `-> i32` extern declaration: on x86-64
+                # SysV the upper 24 bits of eax are unspecified for a byte return, so the oracle's
+                # return value was read as garbage. Now bzip2's UChar/Int32/UInt32 returns map
+                # through the same canonical path the parameters use.
+                d = describe_type(rt)
+                ret_desc = d
+                if d["kind"] == "scalar":
+                    ret = d["rust"]
+                elif d["kind"] == "pointer":
+                    # A pointer return is never a scalar. The sentinel keeps it out of the scalar
+                    # comparison path; what it means is decided by the return contract template.
+                    ret = "ptr"
+                else:
+                    sc = map_scalar(rt.spelling)
+                    ret = sc[0] if sc else "i32"
+    _fns = sorted(set(all_fns)) + [f"@var:{g}" for g in sorted(set(all_globals))]
+    return (params, ret, _fns, ret_desc) if with_return_desc else (params, ret, _fns)
 
+
+
+# ---------------------------------------------------------------------------
+# Contract templates
+#
+# Eligibility asks whether a boundary's parameters AND its return value AND every mutable output
+# match a SUPPORTED CONTRACT, not merely whether a pointer appears. A pointer with no declared
+# contract is rejected HERE, with a reason, instead of being accepted and then failing to compile
+# or - worse - being compared as a raw address. Two heap pointers from two allocators are never
+# equal, so an undeclared pointer return is not a build accident: it is an unsupported contract.
+#
+# Parameter templates are the existing roles (scalar / bounded_scalar / input_buffer /
+# inout_buffer / output_buffer+capacity_ptr / out_scalar / output_array / input_string /
+# fixed-array / pointer tables / POD struct). Return templates are declared below.
+# ---------------------------------------------------------------------------
+def load_plugins(paths: list[str] | None) -> list[dict]:
+    """Comparator plugins: user-supplied CODE behind a stable ABI, not a declaration.
+
+    docs/harness_oracle_plan.md section 5. A plugin extends OUTPUT comparison only; it never
+    touches the InputPlan. It is untrusted code linked into the harness.
+    """
+    import tomllib
+    out = []
+    for path in (paths or []):
+        f = Path(path)
+        d = tomllib.loads(f.read_text(encoding="utf-8"))["plugin"]
+        for key in ("c_type", "c_source", "rust_source"):
+            if key not in d:
+                raise SystemExit(f"plugin {path}: missing required key {key!r}")
+        d["_dir"] = f.parent
+        for key in ("c_source", "rust_source"):
+            if d.get(key):
+                q = f.parent / d[key]
+                if not q.exists():
+                    raise SystemExit(f"plugin {path}: {key} {q} does not exist")
+                d["_" + key] = q
+        d.setdefault("max_bytes", 1 << 20)
+        out.append(d)
+    return out
+
+
+def _match_plugin(ret_desc: dict, plugins: list[dict]) -> dict | None:
+    inner = ret_desc.get("inner") or {}
+    names = {inner.get("name"), inner.get("c_name"), inner.get("spelling")}
+    names = {n.replace("struct ", "").strip() for n in names if n}
+    for pl in plugins:
+        if pl["c_type"].replace("*", "").replace("struct ", "").strip() in names:
+            return pl
+    return None
+
+
+RETURN_TEMPLATES = {
+    "void":              "nothing to compare",
+    "scalar":            "compare the value",
+    "interior_pointer":  "compare nullness and (returned_ptr - base_of_named_input)",
+    "structured_object": "compare a canonical extraction of the pointed-to object",
+    "opaque_handle":     "do not compare the handle; compare the observations of an operation sequence",
+    "pointer_nullness":  "compare NULL vs non-NULL only (never the address)",
+    "comparator_plugin": "compare the user comparator's canonical bytes for the pointed-to object",
+}
+
+
+def return_contract(ret_desc: dict, ret_rust: str, schema: dict | None,
+                    plugins: list[dict] | None = None) -> dict:
+    """Classify the C return type into a comparison contract, or say why there is none.
+
+    A schema may declare `return: {kind: ...}` to select a pointer template; without one, any
+    pointer return is unsupported.
+    """
+    declared = ((schema or {}).get("return") or {}).get("kind")
+    if ret_desc.get("kind") == "void" or ret_rust == "void":
+        return {"template": "void", "compare": "none"}
+    if ret_desc.get("kind") == "scalar":
+        return {"template": "scalar", "compare": "value", "rust": ret_desc["rust"]}
+    if ret_desc.get("kind") == "pointer":
+        pl = _match_plugin(ret_desc, plugins or [])
+        if pl is not None:
+            # Rung 5: a registered comparator turns a partial oracle into a full one.
+            return {"template": "comparator_plugin", "compare": RETURN_TEMPLATES["comparator_plugin"],
+                    # NOT "full": what is compared is the object state the PLUGIN declares, not
+                    # all program semantics.
+                    "oracle_strength": "structured-state", "plugin": pl}
+        if declared == "interior_pointer":
+            base = ((schema or {}).get("return") or {}).get("base")
+            byrole = {q["name"]: q.get("role") for q in (schema or {}).get("params", [])}
+            if base not in byrole:
+                return {"template": None, "reason":
+                        f"interior_pointer declares base {base!r}, which is not a parameter"}
+            if byrole[base] not in ("input_buffer", "inout_buffer", "output_buffer", "input_string"):
+                return {"template": None, "reason":
+                        f"interior_pointer base {base!r} has role {byrole[base]!r}; the base must be "
+                        f"a buffer or string parameter so an offset is defined"}
+            return {"template": "interior_pointer", "compare": RETURN_TEMPLATES["interior_pointer"],
+                    "base": base, "elem": (ret_desc.get("inner") or {}).get("rust", "i8"),
+                    "const": ret_desc.get("const", True), "declared": True}
+        if declared == "structured_object":
+            r = (schema or {}).get("return") or {}
+            miss = [k for k in ("type", "fields", "child", "next", "header", "free") if k not in r]
+            if miss:
+                return {"template": None, "reason":
+                        f"structured_object is missing {miss}; the object graph must be declared "
+                        f"(type, fields, child, next, header, free) so BOTH extractors can be "
+                        f"generated without calling the library's own printer"}
+            for f in r["fields"]:
+                if f.get("kind") not in ("int", "double", "cstring"):
+                    return {"template": None, "reason":
+                            f"structured_object field {f.get('name')!r} has unsupported kind "
+                            f"{f.get('kind')!r} (int | double | cstring)"}
+            out = dict(r); out.update({"template": "structured_object",
+                                       "compare": RETURN_TEMPLATES["structured_object"],
+                                       "declared": True})
+            return out
+        if declared == "opaque_handle":
+            return {"template": declared, "compare": RETURN_TEMPLATES[declared], "declared": True}
+        # No declared contract: the boundary is NOT rejected.  A raw pointer cannot be compared
+        # across two allocators, so the ladder degrades to rung 3 -- nullness, never the address.
+        # docs/harness_oracle_plan.md: inputs must be exact, outputs may be partial.
+        inner = (ret_desc.get("inner") or {}).get("kind", "?")
+        return {"template": "pointer_nullness", "compare": RETURN_TEMPLATES["pointer_nullness"],
+                "oracle_strength": "partial(nullness)",
+                "note": f"pointer return (to {inner}) has no canonical comparator; register a "
+                        f"comparator plugin to compare the pointed-to object"}
+    return {"template": None, "reason":
+            f"return type {ret_desc.get('spelling', ret_desc.get('kind'))} is neither void, a "
+            f"scalar, nor a pointer with a declared contract"}
+
+
+def eligibility(name: str, cc_dir: Path, entry: str, infer: bool = True,
+                schema_path: Path | None = None) -> dict:
+    """Single eligibility verdict for one boundary: parameters, return value and comparator.
+
+    Returns {"supported": bool, "reason": str|None, "param_templates": [...],
+             "return_contract": {...}} . A rejection is reported as unsupported:<reason>; nothing
+    is deferred to the build.
+    """
+    import json as _json
+    schema = None
+    if schema_path and Path(schema_path).exists():
+        schema = _json.loads(Path(schema_path).read_text(encoding="utf-8"))
+    try:
+        params, ret, _fns, ret_desc = parse_entry_signature(cc_dir, entry, with_return_desc=True)
+    except SystemExit as e:
+        return {"supported": False, "reason": f"signature: {e}"}
+    if not params:
+        return {"supported": False,
+                "reason": "no parameters: the entry was not found in the C translation unit, or it "
+                          "takes no arguments, so no logical input can be constructed"}
+    try:
+        items = items_from_schema(schema) if schema else classify(params)
+        _abi = schema["params"] if schema else _infer_abi(params)
+    except SystemExit as e:
+        return {"supported": False, "reason": f"parameter: {e}"}
+    # Every decoded item needs a cursor method; a type the byte cursor cannot produce is an
+    # unsupported contract, not a build accident. (float/double were accepted by SCALAR_MAP long
+    # before the cursor could emit them.)
+    DECODABLE = {"u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64", "usize", "f32", "f64", "bool"}
+    for it in items:
+        for key in ("rust", "elem"):
+            ty = it.get(key)
+            if ty is not None and ty not in DECODABLE:
+                return {"supported": False,
+                        "reason": f"decode: parameter {it['name']!r} has type {ty!r}, which the "
+                                  f"byte cursor cannot construct"}
+    rc = return_contract(ret_desc, ret, schema)
+    if rc.get("template") is None:
+        return {"supported": False, "reason": f"return: {rc['reason']}",
+                "param_templates": [(i["name"], i["role"]) for i in items]}
+    return {"supported": True, "reason": None,
+            "param_templates": [(i["name"], i["role"]) for i in items],
+            "return_contract": rc}
 
 def items_from_schema(schema: dict) -> list[dict]:
     """Reproduce classify()'s items from an explicit schema (schemas/<prog>.json).
@@ -290,6 +519,8 @@ def items_from_schema(schema: dict) -> list[dict]:
     # (real libs use `unsigned int` etc.), the call must cast to the param's actual Rust type.
     # Map every param name -> its declared rust type so buffer items can carry their len's type.
     param_rust = {p["name"]: p.get("rust") for p in schema["params"]}
+    param_role = {p["name"]: p.get("role") for p in schema["params"]}
+    param_elem = {p["name"]: p.get("elem") for p in schema["params"]}
     for p in schema["params"]:
         role = p["role"]
         if role == "scalar":
@@ -303,28 +534,65 @@ def items_from_schema(schema: dict) -> list[dict]:
                     it["min_value"] = p["min_value"]
             items.append(it)
         elif role == "input_buffer":
-            items.append({"kind": "ptr", "role": "in_buf", "name": p["name"],
-                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": p["length_param"],
-                          "len_rust": param_rust.get(p["length_param"]) or "usize"})
-        elif role in ("inout_buffer", "output_buffer"):
+            it = {"kind": "ptr", "role": "in_buf", "name": p["name"],
+                  "elem": p["elem"], "elem_w": p["elem_width"], "len_name": p["length_param"],
+                  "len_rust": param_rust.get(p["length_param"]) or "usize"}
+            if "max_len" in p:
+                it["max_len"] = p["max_len"]
+            items.append(it)
+        elif role == "output_buffer":
+            # RQ4: a real output buffer -- allocated to `cap`, with its capacity handed to the
+            # callee. When the capacity param is itself a pointer (`capacity_ptr`) the callee both
+            # READS it as the capacity and WRITES the produced length back, so it is an in/out
+            # scalar seeded with the allocation size, and the observable output is the prefix
+            # [0, written_length).
+            cp = p["capacity_param"]
+            if param_role.get(cp) == "capacity_ptr":
+                items.append({"kind": "ptr", "role": "out_buf_cap", "name": p["name"],
+                              "elem": p["elem"], "elem_w": p["elem_width"], "cap": p["cap"],
+                              "cap_name": cp, "cap_rust": param_elem.get(cp) or "u32"})
+            else:
+                items.append({"kind": "ptr", "role": "io_buf", "name": p["name"],
+                              "elem": p["elem"], "elem_w": p["elem_width"], "len_name": cp,
+                              "len_rust": param_rust.get(cp) or "usize"})
+        elif role == "inout_buffer":
             ln = p.get("length_param") or p.get("capacity_param")
-            items.append({"kind": "ptr", "role": "io_buf", "name": p["name"],
-                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": ln,
-                          "len_rust": param_rust.get(ln) or "usize"})
+            it = {"kind": "ptr", "role": "io_buf", "name": p["name"],
+                  "elem": p["elem"], "elem_w": p["elem_width"], "len_name": ln,
+                  "len_rust": param_rust.get(ln) or "usize"}
+            if "max_len" in p:
+                it["max_len"] = p["max_len"]
+            items.append(it)
         elif role == "out_scalar":
             items.append({"kind": "ptr", "role": "out_scalar", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"]})
         elif role == "output_array":
             items.append({"kind": "ptr", "role": "out_arr", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"], "cap": p["cap"]})
+        elif role == "null_pointer":
+            items.append({"kind": "void_ptr", "role": "null_ptr", "name": p["name"]})
+        elif role == "plan_array":
+            # HarnessPlan lowering: an allocation the harness owns, sized by a plan expression
+            # (a constant, or a usize expression over already-decoded parameters), filled from the
+            # fuzz input exactly when the callee reads it.  Each side gets its own copy.
+            items.append({"kind": "ptr", "role": "plan_arr", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"],
+                          "elems": p["elems"], "fill": p.get("fill", "zero"),
+                          "const": bool(p.get("const"))})
         elif role == "input_string":
-            items.append({"kind": "ptr", "role": "in_str", "name": p["name"],
-                          "elem": p["elem"], "elem_w": p["elem_width"]})
+            it = {"kind": "ptr", "role": "in_str", "name": p["name"],
+                  "elem": p["elem"], "elem_w": p["elem_width"]}
+            if "max_len" in p:
+                it["max_len"] = p["max_len"]
+            items.append(it)
         elif role == "input_fixed_array_buffer":
             items.append({"kind": "ptr_array", "role": "in_arr", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"],
                           "inner_extent": p["inner_extent"], "len_name": p["length_param"],
-                          "len_rust": param_rust.get(p["length_param"]) or "usize"})
+                          "len_rust": param_rust.get(p["length_param"]) or "usize",
+                          # `const char **` needs a table of `*const T`; `char **` a table of
+                          # `*mut T`. Using the wrong one is a hard type error at the call.
+                          "inner_const": bool(p.get("inner_const"))})
         elif role == "input_rectangular_pointer_table":
             items.append({"kind": "ptr_ptr", "role": "in_table", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"],
@@ -333,7 +601,13 @@ def items_from_schema(schema: dict) -> list[dict]:
         elif role == "input_string_pointer_table":
             items.append({"kind": "ptr_ptr", "role": "in_str_table", "name": p["name"],
                           "elem": p["elem"], "elem_w": p["elem_width"],
-                          "len_name": p["length_param"], "count_max": p["count_max"]})
+                          "len_name": p["length_param"], "count_max": p["count_max"],
+                          # the count is not always size_t (cJSON declares `int count`), so the
+                          # decoded value has to be cast to the parameter's real Rust type
+                          "len_rust": param_rust.get(p["length_param"]) or "usize",
+                          # `const char **` needs a table of `*const T`; `char **` a table of
+                          # `*mut T`. Using the wrong one is a hard type error at the call.
+                          "inner_const": bool(p.get("inner_const"))})
         elif role in ("input_struct", "inout_struct"):
             items.append({"kind": "ptr_struct",
                           "role": "in_struct" if role == "input_struct" else "io_struct",
@@ -344,7 +618,16 @@ def items_from_schema(schema: dict) -> list[dict]:
                           "role": "in_struct_arr" if role == "input_struct_array" else "io_struct_arr",
                           "name": p["name"], "len_name": p["length_param"],
                           "struct": _struct_from_schema(p["struct_name"], p["fields"])})
-        # length / capacity params are consumed by their owning buffer (not standalone items)
+        # length / capacity / capacity_ptr params are consumed by their owning buffer
+    if schema.get("decode_scalars_first"):
+        # RQ4: decode every scalar before any buffer, so a scalar's byte offset does not move when
+        # a (possibly megabyte-sized) buffer changes length. Call order is unaffected: the call is
+        # built from `abi`, in strict declaration order.
+        buf_roles = ("in_buf", "io_buf", "out_buf_cap", "in_str", "in_arr", "in_table",
+                     "in_str_table", "in_struct_arr", "io_struct_arr")
+        # plan arrays go LAST: their size may be an expression over a length a buffer defines.
+        items.sort(key=lambda i: 2 if i["role"] == "plan_arr" else
+                                 (1 if i["role"] in buf_roles else 0))
     return items
 
 
@@ -383,6 +666,9 @@ def _infer_abi(params: list[dict]) -> list[dict]:
     prev_index = None  # for monotone slice indices (lo <= mid <= hi)
     for p in params:
         n = p["name"]
+        if p["kind"] == "void_ptr":
+            abi.append({"name": n, "role": "null_pointer", "decode": "null"})
+            continue
         if n in struct_items:
             it = struct_items[n]
             base = {"name": n, "struct_name": it["struct"]["name"],
@@ -458,7 +744,8 @@ def _infer_items_abi(params: list[dict]) -> tuple[list[dict], list[dict]]:
     return items, abi
 
 
-def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False, ignore_schema: bool = False):
+def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False, ignore_schema: bool = False,
+            schema_path: Path | None = None):
     """(params, ret, all_fns, items, abi). Require + strongly validate the schema; --infer to fall back.
 
     items drive byte-decode (role-based, order preserved per buffer); abi is the schema params in
@@ -470,7 +757,9 @@ def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False, ignore_sch
     if ignore_schema:
         items, abi = _infer_items_abi(params)
         return params, ret, all_fns, items, abi
-    schema_path = ROOT / "schemas" / f"{name}.json"
+    # RQ4: --schema selects an explicit file, because schemas/<program>.json is keyed to a
+    # single entry and a library needs one schema per boundary.
+    schema_path = Path(schema_path) if schema_path else (ROOT / "schemas" / f"{name}.json")
     if schema_path.exists():
         import harness_schema as hs
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
@@ -495,6 +784,10 @@ def classify(params: list[dict]) -> list[dict]:
     i = 0
     while i < len(params):
         p = params[i]
+        if p["kind"] == "void_ptr":
+            out.append({**p, "role": "null_ptr"})
+            i += 1
+            continue
         if p["kind"] == "ptr_ptr":
             n1 = params[i + 1] if i + 1 < len(params) else None
             n2 = params[i + 2] if i + 2 < len(params) else None
@@ -638,18 +931,40 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             if it.get("decode") == "bounded_scalar":
                 hi, ty = it["max_value"], it["rust"]
                 mn = it["min_var"] if it.get("min_var") else it["min_value"]
-                decode.append(f"    let {n} = ({mn} as {ty}) + (cur.take_{ty}() "
-                              f"% (({hi} - {mn} + 1) as {ty}));")
+                # RQ4: rem_euclid, not %. Rust's % keeps the sign of the dividend, so a signed
+                # bounded_scalar produced values in [min-(span-1), max] -- e.g. bzip2's
+                # blockSize100k, declared 1..9, actually ranged -7..9 and half of every campaign
+                # was spent on inputs the callee rejects outright.
+                decode.append(f"    let {n} = ({mn} as {ty}) + (cur.take_{ty}()"
+                              f".rem_euclid((({hi}) as {ty}) - ({mn} as {ty}) + 1));")
             else:
                 decode.append(f"    let {n} = cur.take_{it['rust']}();")
         elif it["role"] == "in_buf":
-            decode.append(f"    let {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
+            take = (f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
+                    else f"cur.take_vec_{it['elem']}()")
+            decode.append(f"    let {n}_buf: Vec<{it['elem']}> = {take};")
             decode.append(f"    let {it['len_name']} = {n}_buf.len(){_len_cast(it)};")
         elif it["role"] == "io_buf":
-            decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
+            take = (f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
+                    else f"cur.take_vec_{it['elem']}()")
+            decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = {take};")
             decode.append(f"    let {it['len_name']} = {n}_c.len(){_len_cast(it)};")
             decode.append(f"    let mut {n}_r = {n}_c.clone();")
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: buffer {n}"); }}')
+        elif it["role"] == "out_buf_cap":
+            # RQ4: output buffer whose capacity is passed by pointer. Both sides get their own
+            # zeroed allocation of `cap` elements and their own capacity cell seeded with `cap`.
+            # After the call the callee has overwritten the cell with the length it produced, so
+            # the observable output is that length plus the prefix it names -- comparing the whole
+            # allocation would compare bytes the callee never wrote.
+            c, cn, cr = it["cap"], it["cap_name"], it["cap_rust"]
+            decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = vec![0 as {it['elem']}; {c}];")
+            decode.append(f"    let mut {n}_r: Vec<{it['elem']}> = vec![0 as {it['elem']}; {c}];")
+            decode.append(f"    let mut {cn}_c: {cr} = {c} as {cr};")
+            decode.append(f"    let mut {cn}_r: {cr} = {c} as {cr};")
+            post.append(f'    if {cn}_c != {cn}_r {{ panic!("divergence: written length {cn}"); }}')
+            post.append(f"    {{ let _n = ({cn}_c as usize).min({c});")
+            post.append(f'      if {n}_c[.._n] != {n}_r[.._n] {{ panic!("divergence: output buffer {n}"); }} }}')
         elif it["role"] == "out_scalar":
             decode.append(f"    let mut {n}_c: {it['elem']} = 0 as {it['elem']};")
             decode.append(f"    let mut {n}_r: {it['elem']} = 0 as {it['elem']};")
@@ -660,8 +975,22 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = vec![0 as {it['elem']}; {it['cap']}];")
             decode.append(f"    let mut {n}_r: Vec<{it['elem']}> = vec![0 as {it['elem']}; {it['cap']}];")
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: out array {n}"); }}')
+        elif it["role"] == "plan_arr":
+            e = it["elem"]
+            decode.append(f"    let {n}_n: usize = {it['elems']};")
+            if it["fill"] == "fuzz":
+                decode.append(f"    let mut {n}_c: Vec<{e}> = "
+                              f"(0..{n}_n).map(|_| cur.take_{e}()).collect();")
+            else:
+                decode.append(f"    let mut {n}_c: Vec<{e}> = vec![0 as {e}; {n}_n];")
+            decode.append(f"    let mut {n}_r: Vec<{e}> = {n}_c.clone();")
+            post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: array {n}"); }}')
         elif it["role"] == "in_str":
-            decode.append(f"    let mut {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
+            # take_vec_* caps at 63 bytes, which is far too short for a real parser input; the
+            # plan's policy bound is used when it has one.
+            _take = (f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
+                     else f"cur.take_vec_{it['elem']}()")
+            decode.append(f"    let mut {n}_buf: Vec<{it['elem']}> = {_take};")
             decode.append(f"    {n}_buf.push(0 as {it['elem']});")
         elif it["role"] == "in_arr":
             ext = it["inner_extent"]
@@ -684,13 +1013,16 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             post.append(f'    if {n}_back_c != {n}_back_r {{ panic!("divergence: table {n}"); }}')
         elif it["role"] == "in_str_table":
             el, cm, ln = it["elem"], it["count_max"], it["len_name"]
-            decode.append(f"    let {ln} = (cur.byte() as usize) % ({cm} + 1);")
+            _lr = it.get("len_rust") or "usize"
+            decode.append(f"    let {ln} = ((cur.byte() as usize) % ({cm} + 1)) as {_lr};")
+            _pk = "const" if it.get("inner_const") else "mut"
+            _as = "as_ptr" if it.get("inner_const") else "as_mut_ptr"
             decode.append(f"    let {n}_data: Vec<Vec<{el}>> = (0..{ln}).map(|_| "
                           f"{{ let mut s = cur.take_vec_{el}(); s.push(0 as {el}); s }}).collect();")
             for side in ("c", "r"):
                 decode.append(f"    let mut {n}_back_{side} = {n}_data.clone();")
-                decode.append(f"    let mut {n}_tab_{side}: Vec<*mut {el}> = "
-                              f"{n}_back_{side}.iter_mut().map(|s| s.as_mut_ptr()).collect();")
+                decode.append(f"    let mut {n}_tab_{side}: Vec<*{_pk} {el}> = "
+                              f"{n}_back_{side}.iter_mut().map(|s| s.{_as}()).collect();")
             post.append(f'    if {n}_back_c != {n}_back_r {{ panic!("divergence: string table {n}"); }}')
         elif it["role"] == "in_struct":
             # const struct pointer: one decoded value shared by both sides (callee must not mutate).
@@ -715,6 +1047,23 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
                 post.append(f'    if {_struct_arr_cmp(n, sd)} '
                             f'{{ panic!("divergence: struct array {n}"); }}')
     return decode, post
+
+
+
+def _base_exprs(abi: list[dict], base: str) -> tuple[str, str, str, str]:
+    """(c_base, r_base, c_len, r_len) expressions for the buffer an interior pointer points into.
+
+    Shared inputs (input_buffer / input_string) give both sides the SAME allocation, so the two
+    offsets are taken against one base; mutable buffers give each side its own copy, so each offset
+    is taken against that side's own base. Comparing offsets, never addresses, is the whole point.
+    """
+    role = next((p["role"] for p in abi if p["name"] == base), None)
+    if role in ("input_buffer", "input_string"):
+        return (f"{base}_buf.as_ptr()", f"{base}_buf.as_ptr()",
+                f"{base}_buf.len()", f"{base}_buf.len()")
+    if role in ("inout_buffer", "output_buffer"):
+        return (f"{base}_c.as_ptr()", f"{base}_r.as_ptr()", f"{base}_c.len()", f"{base}_r.len()")
+    raise SystemExit(f"interior_pointer base {base!r} has unusable role {role!r}")
 
 
 def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
@@ -770,9 +1119,17 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
                 r_pairs.append((n, f"&mut {n}_r[..]"))
             else:
                 r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
-        elif role == "out_scalar":
-            c_args.append(f"&mut {n}_c"); r_pairs.append((n, f"&mut {n}_r"))
+        elif role in ("out_scalar", "capacity_ptr"):
+            c_args.append(f"&mut {n}_c")
             decl.append(f"{n}: *mut {p['elem']}")
+            # Safety lifters raise a raw out-pointer to Option<&mut T> (Laertes and CROWN both do
+            # this to bzip2's `unsigned int* destLen`). The generator already bridges the buffer
+            # form Option<&mut [T]>; the scalar form needs the same wrapper or the harness will not
+            # compile against the lifted signature.
+            if rty.startswith("Option<&mut"):
+                r_pairs.append((n, f"Some(&mut {n}_r)"))
+            else:
+                r_pairs.append((n, f"&mut {n}_r"))
         elif role == "output_array":
             c_args.append(f"{n}_c.as_mut_ptr()")
             decl.append(f"{n}: *mut {p['elem']}")
@@ -782,6 +1139,32 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
                 r_pairs.append((n, f"&mut {n}_r[..]"))
             else:                                    # raw pointer / default
                 r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
+        elif role == "null_pointer":
+            c_args.append("core::ptr::null_mut()")
+            r_pairs.append((n, "core::ptr::null_mut()"))
+            decl.append(f"{n}: *mut core::ffi::c_void")
+        elif role == "plan_array" and p.get("one_elem") and (
+                rty.startswith("&mut") or rty.startswith("Option<&mut") or rty.startswith("&")
+                or rty.startswith("Option<&")):
+            # a one-element allocation the translation renders as a scalar reference
+            c_args.append(f"{n}_c.as_mut_ptr()")
+            decl.append(f"{n}: *mut {p['elem']}")
+            r_pairs.append((n, f"Some(&mut {n}_r[0])" if rty.startswith("Option<")
+                            else f"&mut {n}_r[0]"))
+        elif role == "plan_array":
+            if p.get("const"):
+                c_args.append(f"{n}_c.as_ptr()")
+                decl.append(f"{n}: *const {p['elem']}")
+                r_pairs.append((n, f"&{n}_r[..]" if rty.startswith("&[") else f"{n}_r.as_ptr()"))
+            else:
+                c_args.append(f"{n}_c.as_mut_ptr()")
+                decl.append(f"{n}: *mut {p['elem']}")
+                if rty.startswith("Option<&mut["):
+                    r_pairs.append((n, f"Some(&mut {n}_r[..])"))
+                elif rty.startswith("&mut["):
+                    r_pairs.append((n, f"&mut {n}_r[..]"))
+                else:
+                    r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
         elif role == "input_string":
             c_args.append(f"{n}_buf.as_ptr()"); r_pairs.append((n, f"{n}_buf.as_ptr()"))
             decl.append(f"{n}: *const {p['elem']}")
@@ -790,7 +1173,8 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
             decl.append(f"{n}: *const [{p['elem']}; {p['inner_extent']}]")
         elif role in ("input_rectangular_pointer_table", "input_string_pointer_table"):
             c_args.append(f"{n}_tab_c.as_mut_ptr()"); r_pairs.append((n, f"{n}_tab_r.as_mut_ptr()"))
-            decl.append(f"{n}: *mut *mut {p['elem']}")
+            _pk = "const" if p.get("inner_const") else "mut"
+            decl.append(f"{n}: *mut *{_pk} {p['elem']}")
         elif role == "input_struct":
             c_args.append(f"&{n}_val"); r_pairs.append((n, f"&{n}_val"))
             decl.append(f"{n}: *const translated::{p['struct_name']}")
@@ -813,7 +1197,13 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
 # just set a flag and continue -- no print, no abort). Checks restricted to the UB classes
 # the risk model cares about; the handler set in UBSHIM_C is a superset so linking is robust.
 UB_SANITIZE_FLAGS = [
-    "-fsanitize=signed-integer-overflow,shift,integer-divide-by-zero,bounds,null,unreachable",
+    # float-cast-overflow is NOT optional: casting an out-of-range double to int is UB in C and
+    # the two sides disagree by construction -- x86-64 `cvttsd2si` yields INT_MIN, Rust's `as i32`
+    # saturates to i32::MAX. cJSON's `item->valueint = (int)n` (cJSON.c:112) hits it on any number
+    # literal above 2^31, and without this flag the gate lets it through and the difference is
+    # misreported as a translation defect.
+    "-fsanitize=signed-integer-overflow,shift,integer-divide-by-zero,bounds,null,unreachable,"
+    "float-cast-overflow,pointer-overflow,return,vla-bound",
     "-fsanitize-recover=all",
     "-fsanitize-minimal-runtime",
 ]
@@ -827,6 +1217,12 @@ H(add_overflow) H(sub_overflow) H(mul_overflow) H(negate_overflow)
 H(divrem_overflow) H(shift_out_of_bounds) H(out_of_bounds)
 H(type_mismatch) H(builtin_unreachable) H(pointer_overflow)
 H(load_invalid_value)
+/* float_cast_overflow is the one that matters for a differential oracle: the two sides disagree
+   BY CONSTRUCTION on an out-of-range double->int cast (x86-64 gives INT_MIN, Rust saturates), so
+   without this handler the gate lets the input through and a UB-associated value difference is
+   misreported as a translation defect. */
+H(float_cast_overflow) H(missing_return) H(vla_bound_not_positive)
+H(nonnull_arg) H(invalid_builtin) H(alignment_assumption)
 #undef H
 '''
 
@@ -878,9 +1274,12 @@ def gen_target_rust_only(entry: str, items: list[dict], abi: list[dict], ret: st
         "    fn byte(&mut self) -> u8 { let b = if self.p < self.d.len() { self.d[self.p] } else { 0 }; self.p += 1; b }",
         *[f"    fn take_{t}(&mut self) -> {t} {{ let mut v = [0u8; {w}]; for i in 0..{w} {{ v[i] = self.byte(); }} {t}::from_le_bytes(v) }}"
           for t, w in [("u8", 1), ("i8", 1), ("u16", 2), ("i16", 2), ("u32", 4), ("i32", 4),
-                       ("u64", 8), ("i64", 8), ("usize", 8)]],
+                       ("u64", 8), ("i64", 8), ("usize", 8), ("f32", 4), ("f64", 8)]],
         *[f"    fn take_vec_{t}(&mut self) -> Vec<{t}> {{ let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_{t}()).collect() }}"
-          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64"]],
+          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64", "f32", "f64"]],
+        *[f"    fn take_rest_{t}(&mut self, max: usize) -> Vec<{t}> {{ let mut v = Vec::new(); "
+          f"while self.p < self.d.len() && v.len() < max {{ v.push(self.take_{t}()); }} v }}"
+          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64", "f32", "f64"]],
         "}",
         "",
         f"use {crate} as translated;",
@@ -898,7 +1297,7 @@ def gen_target_rust_only(entry: str, items: list[dict], abi: list[dict], ret: st
 
 def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
                ub_free: bool = False, rust_entry: str | None = None,
-               rust_ret: str | None = None) -> str:
+               rust_ret: str | None = None, ret_contract: dict | None = None) -> str:
     """Generate the fuzz_target source: decode from items, call/signature in ABI order.
 
     When ub_free, the C oracle is UBSan-instrumented (recover + minimal runtime, flag-based
@@ -909,7 +1308,14 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
     decode, post = _decode_and_post(items)
     c_args, r_args, decl = _call_and_decl(abi)
     extern_args = ", ".join(decl)
-    extern_ret = "" if ret == "void" else f"-> {ret}"
+    if ret == "void":
+        extern_ret = ""
+    elif ret == "ptr":
+        rcp = ret_contract or {}
+        _cst = "const" if rcp.get("const", True) else "mut"
+        extern_ret = f"-> *{_cst} {rcp.get('elem') or 'core::ffi::c_void'}"
+    else:
+        extern_ret = f"-> {ret}"
 
     # decode-shape bridge: C `(.., T* out) -> count` (0 = failure sentinel) is folded by idiomatic
     # Rust into `(..) -> Option<(value, count)>`. The single out-param moves INTO the return tuple,
@@ -928,21 +1334,111 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
     call_r = f"translated::{rust_entry or entry}({', '.join(r_args)})"
     # UB-free gate: reset before C, reject (return) if C tripped UB, then call Rust.
     pre = "        c2r_ub_reset();\n" if ub_free else ""
-    gate = "        if c2r_ub_get() != 0 { return; }  // C hit UB -> reject input\n" if ub_free else ""
+    gate = ('        if _c2r_m == C2R_GATED && c2r_ub_get() != 0 '
+            '{ c2r_outcome("ub-gated", ""); return; }  // C hit UB -> reject\n'
+            if ub_free else "")
     if ret == "void":
-        body_call = f"{pre}        {call_c};\n{gate}        {call_r};"
+        body_call = f"{pre}        {call_c};\n{gate}"
+        rust_call = f"        {call_r};"
         ret_cmp = ""
     elif decode_shape:
         osc = out_scalars[0]
-        body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
+        rust_call = f"        let r_ret = {call_r};"
         ret_cmp = (
             f"        let (c_ok, c_val, c_cons) = (c_ret != 0, {osc}_c, c_ret);\n"
             f"        let (r_ok, r_val, r_cons) = match r_ret {{ Some((v, c)) => (true, v, c), None => (false, 0, 0) }};\n"
             f'        if c_ok != r_ok {{ panic!("divergence: success/None mismatch"); }}\n'
             f'        if c_ok && (c_val != r_val || (c_cons as i128) != (r_cons as i128)) {{ panic!("divergence: decoded value/consumed"); }}'
         )
+    elif (ret_contract or {}).get("template") == "structured_object":
+        rc = ret_contract
+        cap = int((rc.get("limits") or {}).get("extract_cap", 1 << 20))
+        fc, fr = rc["free"]["c"], rc["free"]["rust"]
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
+        rust_call = f"        let r_ret = {call_r};"
+        ret_cmp = (
+            "        // Compare CANONICAL EXTRACTIONS, never addresses and never the library's own\n"
+            "        // printer: a printer is translated code too, so a defect it also mis-handles\n"
+            "        // would be hidden (cf. S8, cJSON valuestring lost on the success path).\n"
+            f"        let mut _cbuf = vec![0u8; {cap}];\n"
+            f"        let _cn = c2r_extract(c_ret as *const core::ffi::c_void,\n"
+            f"                              _cbuf.as_mut_ptr() as *mut i8, _cbuf.len());\n"
+            f"        let _rs = c2r_r_extract(r_ret as *const _);\n"
+            f"        if _cn > _cbuf.len() || _rs.len() > {cap} {{\n"
+            '            c2r_div("structured object extraction exceeded the buffer (raise limits)");\n'
+            "        } else if _cbuf[.._cn] != _rs[..] {\n"
+            '            c2r_div("structured object canonical extraction");\n'
+            "        }\n"
+            "        // free is an OBSERVATION step, not cleanup: a normal return, a Rust panic, an\n"
+            "        // abort or a sanitizer failure here are all outcomes of the boundary. A panic is\n"
+            "        // caught and reported; an abort or sanitizer report terminates and is attributed\n"
+            "        // by the saved crash input and its stack.\n"
+            f"        c_{fc}(c_ret as *mut core::ffi::c_void);\n"
+            "        if std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {\n"
+            f"            translated::{fr}(r_ret)\n"
+            "        })).is_err() {\n"
+            '            c2r_div("panic while freeing the Rust object");\n'
+            "        }")
+    elif (ret_contract or {}).get("template") == "comparator_plugin":
+        pl = ret_contract["plugin"]
+        cap = int(pl.get("max_bytes", 1 << 20))
+        free = pl.get("free") or {}
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
+        rust_call = f"        let r_ret = {call_r};"
+        _free_lines = []
+        if free.get("c") and free.get("rust"):
+            _free_lines = [
+                "        // Releasing what the boundary allocated is CONTRACT, not comparison: a",
+                "        // campaign without it is dominated by RSS growth. A panic while freeing",
+                "        // is itself an outcome of the boundary, so it is reported, not swallowed.",
+                f"        c_{free['c']}(c_ret as *mut core::ffi::c_void);",
+                "        if std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {",
+                f"            translated::{free['rust']}(r_ret)",
+                "        })).is_err() {",
+                '            c2r_div("panic while freeing the object returned by the boundary");',
+                "        }"]
+        ret_cmp = "\n".join([
+            "        // Rung 5: the user comparator's canonical bytes. Never an address, and never",
+            "        // the library's own printer -- a printer is translated code too, so a defect",
+            "        // it also mis-handles would be invisible.",
+            f"        let mut _cbuf = vec![0u8; {cap}];",
+            "        let _cn = c2r_canon(c_ret as *const core::ffi::c_void,",
+            "                            _cbuf.as_mut_ptr() as *mut i8, _cbuf.len());",
+            "        let _rs = c2r_canon_rust(r_ret as *const core::ffi::c_void);",
+            f"        if _cn > _cbuf.len() || _rs.len() > {cap} {{",
+            '            c2r_div("canonical form exceeded the plugin buffer (raise max_bytes)");',
+            "        } else if _cbuf[.._cn] != _rs[..] {",
+            '            c2r_div("canonical object comparison");',
+            "        }"] + _free_lines)
+    elif (ret_contract or {}).get("template") == "pointer_nullness":
+        # Rung 3 of the fixed ladder. Two allocators never agree on an address, so only nullness
+        # is comparable; everything past this rung needs a comparator plugin.
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
+        rust_call = f"        let r_ret = {call_r};"
+        ret_cmp = (
+            "        let c_null = (c_ret as *const core::ffi::c_void).is_null();\n"
+            "        let r_null = (r_ret as *const core::ffi::c_void).is_null();\n"
+            '        if c_null != r_null { c2r_div("returned pointer nullness"); }')
+    elif (ret_contract or {}).get("template") == "interior_pointer":
+        # The returned pointer is compared as NULLNESS + OFFSET FROM ITS DECLARED BASE, never as an
+        # address: two runs allocate at different addresses, so an address comparison is meaningless
+        # and an equality test on raw pointers would be either always-false or accidentally true.
+        base = ret_contract["base"]
+        cb, rb, cl, rl = _base_exprs(abi, base)
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
+        rust_call = f"        let r_ret = {call_r};"
+        ret_cmp = (
+            f"        let c_i = c2r_interior(c_ret as *const u8, {cb} as *const u8, {cl});\n"
+            f"        let r_i = c2r_interior(r_ret as *const u8, {rb} as *const u8, {rl});\n"
+            f"        if c_i == C2rInterior::OutOfRange || r_i == C2rInterior::OutOfRange {{\n"
+            f'            c2r_div("interior pointer outside the declared base buffer {base}");\n'
+            f"        }} else if c_i != r_i {{\n"
+            f'            c2r_div("interior pointer offset into {base}");\n'
+            f"        }}")
     else:
-        body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
+        body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
+        rust_call = f"        let r_ret = {call_r};"
         # idiomatic translations may return a different-but-compatible integer width/signedness
         # (e.g. C `int`/i32 vs Rust `isize`); compare via i128 so the widths line up.
         if rust_ret and rust_ret != ret and ret in _INT_TYPES and rust_ret in _INT_TYPES:
@@ -951,6 +1447,46 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
             cmp = "c_ret != r_ret"
         ret_cmp = f'        if {cmp} {{ panic!("divergence: return value"); }}'
     ub_externs = ["    fn c2r_ub_reset();", "    fn c2r_ub_get() -> i32;"] if ub_free else []
+    _pl = (ret_contract or {}).get("template") == "comparator_plugin"
+    if _pl:
+        _p = ret_contract["plugin"]
+        ub_externs += ["    fn c2r_canon(obj: *const core::ffi::c_void, out: *mut i8, "
+                       "cap: usize) -> usize;"]
+        _f = _p.get("free") or {}
+        if _f.get("c"):
+            ub_externs += [f"    fn c_{_f['c']}(p: *mut core::ffi::c_void);"]
+    _so = (ret_contract or {}).get("template") == "structured_object"
+    if _so:
+        ub_externs += [
+            "    fn c2r_extract(p: *const core::ffi::c_void, out: *mut i8, cap: usize) -> usize;",
+            f"    fn c_{ret_contract['free']['c']}(p: *mut core::ffi::c_void);",
+        ]
+    _extractor = ctpl.rust_extractor_lines(ret_contract, crate) if _so else []
+    if _pl:
+        # the plugin's Rust half, verbatim. It is written against `translated`, so it names no
+        # crate -- but it reads the translated struct's fields BY NAME, so it is reusable only
+        # across translations whose layout stays compatible with the C header's.
+        _extractor = (Path(ret_contract["plugin"]["_rust_source"])
+                      .read_text(encoding="utf-8").split("\n"))
+    _rust_only_free = ([f"            translated::{ret_contract['free']['rust']}(r_ret);"]
+                       if _so else [])
+    # emitted ONLY for a boundary that actually uses the interior-pointer contract, so every other
+    # generated target is byte-identical to before this template existed
+    _interior_helper = ([
+        "// interior-pointer contract: [base, base+len] is IN contract, one-past-end included,",
+        "// which C permits and parsers rely on. NULL is a distinct outcome. Anything else is out",
+        "// of contract and is reported rather than silently compared.",
+        "#[derive(PartialEq, Eq, Debug)]",
+        "enum C2rInterior { Null, At(usize), OnePastEnd, OutOfRange }",
+        "fn c2r_interior(p: *const u8, base: *const u8, len: usize) -> C2rInterior {",
+        "    if p.is_null() { return C2rInterior::Null; }",
+        "    let (a, b) = (p as usize, base as usize);",
+        "    if a < b || a > b.wrapping_add(len) { return C2rInterior::OutOfRange; }",
+        "    if a == b.wrapping_add(len) { return C2rInterior::OnePastEnd; }",
+        "    C2rInterior::At(a - b)",
+        "}",
+        "",
+    ] if (ret_contract or {}).get("template") == "interior_pointer" else [])
 
     return "\n".join([
         "#![no_main]",
@@ -961,11 +1497,99 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "    fn byte(&mut self) -> u8 { let b = if self.p < self.d.len() { self.d[self.p] } else { 0 }; self.p += 1; b }",
         *[f"    fn take_{t}(&mut self) -> {t} {{ let mut v = [0u8; {w}]; for i in 0..{w} {{ v[i] = self.byte(); }} {t}::from_le_bytes(v) }}"
           for t, w in [("u8", 1), ("i8", 1), ("u16", 2), ("i16", 2), ("u32", 4), ("i32", 4),
-                       ("u64", 8), ("i64", 8), ("usize", 8)]],
+                       ("u64", 8), ("i64", 8), ("usize", 8), ("f32", 4), ("f64", 8)]],
         *[f"    fn take_vec_{t}(&mut self) -> Vec<{t}> {{ let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_{t}()).collect() }}"
-          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64"]],
+          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64", "f32", "f64"]],
+        *[f"    fn take_rest_{t}(&mut self, max: usize) -> Vec<{t}> {{ let mut v = Vec::new(); "
+          f"while self.p < self.d.len() && v.len() < max {{ v.push(self.take_{t}()); }} v }}"
+          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64", "f32", "f64"]],
         "}",
         "",
+        "// RQ4: C reference and UB gate are selected at RUN TIME so every mode shares one binary,",
+        "// one coverage map and one set of identities. C2R_MODE=gated|nogate|rust-only.",
+        "const C2R_GATED: u8 = 0; const C2R_NOGATE: u8 = 1; const C2R_RUST_ONLY: u8 = 2;",
+        "const C2R_COVERAGE: u8 = 3; const C2R_C_ONLY: u8 = 4;",
+        "fn c2r_mode() -> u8 {",
+        "    static M: std::sync::OnceLock<u8> = std::sync::OnceLock::new();",
+        "    *M.get_or_init(|| match std::env::var(\"C2R_MODE\").as_deref() {",
+        "        Ok(\"nogate\") => C2R_NOGATE,",
+        "        Ok(\"rust-only\") => C2R_RUST_ONLY,",
+        "        Ok(\"coverage\") => C2R_COVERAGE,",
+        "        // Confirmation phase A: run ONLY C, so a sanitizer report is unambiguously C's.",
+        "        // Sanitizing both sides at once makes the report unattributable.",
+        "        Ok(\"c-only\") => C2R_C_ONLY,",
+        "        // `combined` is the both-sides replay and is the default. `gated` stays as an",
+        "        // alias: the in-loop UB gate used to be the main line and no longer is.",
+        "        Ok(\"combined\") | Ok(\"gated\") => C2R_GATED,",
+        "        _ => C2R_GATED,",
+        "    })",
+        "}",
+        "",
+        "// ---- termination rung (docs/harness_oracle_plan.md, rung 1) -------------------------",
+        "// The outcome vocabulary is FIXED and is the contract with the confirmation driver:",
+        "//     normal | divergence | panic | signal | nonzero-exit | timeout",
+        "// The last three are observed by the driver from the process result; the first three are",
+        "// reported from here. `phase` says how far the execution got, which is what turns an",
+        "// abort into an attribution: phase>=2 means C already returned normally, so a panic or a",
+        "// crash at phase 3 is the translation diverging on TERMINATION, not a C-side failure.",
+        "const C2R_PH_DECODE: u8 = 0; const C2R_PH_C: u8 = 1; const C2R_PH_C_DONE: u8 = 2;",
+        "const C2R_PH_RUST: u8 = 3; const C2R_PH_RUST_DONE: u8 = 4; const C2R_PH_COMPARED: u8 = 5;",
+        "static C2R_PHASE: std::sync::atomic::AtomicU8 = std::sync::atomic::AtomicU8::new(0);",
+        "fn c2r_phase(p: u8) { C2R_PHASE.store(p, std::sync::atomic::Ordering::Relaxed); }",
+        "fn c2r_outcome_file() -> Option<&\'static str> {",
+        "    static F: std::sync::OnceLock<Option<String>> = std::sync::OnceLock::new();",
+        "    F.get_or_init(|| std::env::var(\"C2R_OUTCOME_FILE\").ok()).as_deref()",
+        "}",
+        "fn c2r_outcome(kind: &str, detail: &str) {",
+        "    let ph = C2R_PHASE.load(std::sync::atomic::Ordering::Relaxed);",
+        "    let d: String = detail.chars().map(|c| if c == \'\\n\' { \' \' } else { c }).take(200).collect();",
+        "    let line = format!(\"C2R_OUTCOME kind={kind} phase={ph} detail={d}\\n\");",
+        "    // `normal` is never printed: in discovery that would be one write per execution.",
+        "    if kind != \"normal\" { eprint!(\"{line}\"); }",
+        "    if let Some(f) = c2r_outcome_file() {",
+        "        use std::io::Write;",
+        "        if let Ok(mut h) = std::fs::OpenOptions::new().create(true).append(true).open(f) {",
+        "            let _ = h.write_all(line.as_bytes());",
+        "        }",
+        "    }",
+        "}",
+        "// libfuzzer-sys installs a panic hook that ABORTS before unwinding, so catch_unwind cannot",
+        "// see a panic. Chaining a hook in front of it records the outcome and then lets libFuzzer",
+        "// do exactly what it did before.",
+        "fn c2r_install_panic_hook() {",
+        "    static ONCE: std::sync::Once = std::sync::Once::new();",
+        "    ONCE.call_once(|| {",
+        "        let prev = std::panic::take_hook();",
+        "        std::panic::set_hook(Box::new(move |info| {",
+        "            c2r_outcome(\"panic\", &format!(\"{info}\"));",
+        "            prev(info);",
+        "        }));",
+        "    });",
+        "}",
+        "// A divergence is the ORACLE, so by default it panics and libFuzzer records the finding.",
+        "// In `coverage` mode the same comparison runs but a mismatch is only counted: a coverage",
+        "// replay must not abort, or an artifact whose defect lies on the main path yields NO",
+        "// coverage at all (observed on bzip2 x Laertes and x CROWN, whose compress corpora are",
+        "// almost entirely divergence-triggering inputs).",
+        "fn c2r_div(what: &str) {",
+        "    if c2r_mode() == C2R_COVERAGE {",
+        "        static N: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);",
+        "        if N.fetch_add(1, std::sync::atomic::Ordering::Relaxed) == 0 {",
+        "            eprintln!(\"c2r: divergence recorded, not panicking (coverage mode): {what}\");",
+        "        }",
+        "        return;",
+        "    }",
+        "    // Report and abort DETERMINISTICALLY rather than unwinding. A divergence is a terminal",
+        "    // observation, so there is nothing to unwind to, and unwinding out of this helper was",
+        "    // observed to hang the single-input replay path (libFuzzer\'s fork mode was unaffected,",
+        "    // which is why the campaigns still recorded every event). SIGABRT is what libFuzzer\'s",
+        "    // deadly-signal handler expects.",
+        "    c2r_outcome(\"divergence\", what);",
+        "    std::process::abort();",
+        "}",
+        "",
+        *_interior_helper,
+        *_extractor,
         "fn cd() -> i8 { 0 }  // silence unused on some shapes",
         "",
         f"use {crate} as translated;",
@@ -976,16 +1600,43 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "",
         "fuzz_target!(|data: &[u8]| {",
         "    let _ = cd();",
+        "    c2r_install_panic_hook();",
+        "    c2r_phase(C2R_PH_DECODE);",
         "    let mut cur = Cur::new(data);",
         *decode,
+        "    let _c2r_m = c2r_mode();",
         "    unsafe {",
-        body_call,
-        ret_cmp,
-        *post,
+        "        if _c2r_m == C2R_C_ONLY {",
+        "            // confirmation phase A: C alone, so any sanitizer report is C's",
+        "            c2r_phase(C2R_PH_C);",
+        *[l.replace("        ", "            ", 1)
+          for l in body_call.split("\n") if l and "C hit UB -> reject" not in l],
+        "            c2r_phase(C2R_PH_C_DONE);",
+        "        } else if _c2r_m == C2R_RUST_ONLY {",
+        "            // no C reference, so nothing can be compared; throughput bound only",
+        "            c2r_phase(C2R_PH_RUST);",
+        rust_call.replace("        ", "            ", 1),
+        "            c2r_phase(C2R_PH_RUST_DONE);",
+        # Releasing what the boundary allocated is part of the CONTRACT, not part of the
+        # comparison: without this, rust-only replay leaks every returned object and
+        # LeakSanitizer fails the run, which is how the cJSON_Create* coverage replays died.
+        *_rust_only_free,
+        "        } else {",
+        "            c2r_phase(C2R_PH_C);",
+        *[l.replace("        ", "            ", 1) for l in body_call.split("\n") if l],
+        "            c2r_phase(C2R_PH_C_DONE);",
+        rust_call.replace("        ", "            ", 1).replace(
+            "            ", "            c2r_phase(C2R_PH_RUST);\n            ", 1),
+        "            c2r_phase(C2R_PH_RUST_DONE);",
+        *[l.replace("        ", "            ", 1) for l in ret_cmp.split("\n") if l],
+        *[l.replace("        ", "            ", 1) for l in post],
+        "        }",
         "    }",
+        "    c2r_phase(C2R_PH_COMPARED);",
+        "    c2r_outcome(\"normal\", \"\");",
         "});",
         "",
-    ])
+    ]).replace('panic!("divergence: ', 'c2r_div("')
 
 
 def expose_entry(rs_text: str, entry: str) -> tuple[str, bool]:
@@ -1011,7 +1662,7 @@ def strip_static_c(c_text: str, entry: str) -> tuple[str, bool]:
     """Give the renamed C oracle symbol `c_<entry>` external linkage by dropping `static` from the
     entry's definition (a `static` C function isn't linkable even after the f->c_f #define rename)."""
     import re
-    pat = rf'(?m)^(\s*)static(\s+[^\n;{{]*\b{re.escape(entry)}\s*\()'
+    pat = rf'(?m)^(\s*)static(\s+[^\n;{{]*\b{re.escape(entry)}\s*(?:<[^>()]*>)?\s*\()'
     new = re.sub(pat, r'\1\2', c_text, count=1)
     return new, (new != c_text)
 
@@ -1023,7 +1674,7 @@ _INT_TYPES = {"i8", "i16", "i32", "i64", "i128", "isize",
 def parse_rust_ret_type(rs_text: str, entry: str) -> str | None:
     """Return type spelling of `entry` in the translation (None if no `-> T`, i.e. unit)."""
     import re
-    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\s*\([^;{{]*?\)\s*->\s*([^{{]+?)\s*\{{', rs_text, re.S)
+    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\s*(?:<[^>()]*>)?\s*\([^;{{]*?\)\s*->\s*([^{{]+?)\s*\{{', rs_text, re.S)
     return m.group(1).strip() if m else None
 
 
@@ -1035,7 +1686,7 @@ def parse_rust_param_types(rs_text: str, entry: str) -> list[str]:
     (e.g. C `const i32*` + len  ->  Rust `&Box<[i32]>` / `&[i32]` / `Vec<i32>`). Returns [] if the
     signature can't be found (caller falls back to the C-ABI form)."""
     import re
-    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\s*\(([^;{{]*?)\)\s*(?:->|\{{)', rs_text, re.S)
+    m = re.search(rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(entry)}\s*(?:<[^>()]*>)?\s*\(([^;{{]*?)\)\s*(?:->|\{{)', rs_text, re.S)
     if not m:
         return []
     inner = m.group(1).strip()
@@ -1069,6 +1720,19 @@ def main() -> int:
     ap.add_argument("--out", default=None, help="output project dir (default fuzz_gen/<name>)")
     ap.add_argument("--infer-schema", action="store_true",
                     help="fall back to signature inference when no schema exists (default: require schema)")
+    ap.add_argument("--c-source", default=None,
+                    help="which .c in pair/source/ is the oracle translation unit (required when a "
+                         "pair ships an amalgamation plus its siblings)")
+    ap.add_argument("--schema", default=None,
+                    help="explicit schema file (schemas/<program>.json is keyed to ONE entry; a "
+                         "library needs one schema per boundary)")
+    ap.add_argument("--plan", action="store_true",
+                    help="HARNESS PLAN path (docs/harness_plan_architecture.md): derive the "
+                         "InputPlan/ObservationPlan from the C AST + body, lower the resulting "
+                         "HarnessPlan, and build from that. No schema file is read or written. "
+                         "A boundary whose plan is incomplete is a harness-construction FAILURE.")
+    ap.add_argument("--plan-json", default=None,
+                    help="with --plan, also write the generated plan here for audit")
     ap.add_argument("--ignore-schema", action="store_true",
                     help="force inference even if schemas/<name>.json exists (harvesting non-entry boundaries)")
     ap.add_argument("--expose-entry", action="store_true",
@@ -1077,6 +1741,18 @@ def main() -> int:
                     help="name of the matched function in the Rust translation when it differs from "
                     "the C entry (renamed translations); the harness calls translated::<rust-entry> "
                     "while the C oracle keeps c_<entry>. Defaults to <entry>.")
+    ap.add_argument("--plugins", action="append", default=None,
+                    help="comparator plugin manifest (plugins/<lib>/plugin.toml); repeatable. "
+                         "A plugin extends OUTPUT comparison only and never touches the InputPlan; "
+                         "a boundary whose return type it covers gets oracle_strength=structured-state.")
+    ap.add_argument("--c-sanitize", "--c-asan", dest="c_sanitize", action="store_true",
+                    help="CONFIRMATION build: compile the C oracle with -fsanitize=address,undefined "
+                         "so BOTH a C-side memory error and value-level UB are detected. ASan alone "
+                         "is not enough -- an out-of-range double->int cast is UB but not a memory "
+                         "error, so an ASan-only replay reports C `clean` and a UB-associated "
+                         "difference is misadjudicated as a translation defect. The Rust side "
+                         "already links the ASan runtime, so both share one shadow map. Pair with "
+                         "C2R_MODE=c-only to attribute the report to C.")
     ap.add_argument("--ub-free", action="store_true",
                     help="in-loop UB-free gate: UBSan-instrument the C oracle and reject "
                     "(skip comparison on) inputs where C hits UB, so divergences are reported "
@@ -1092,10 +1768,70 @@ def main() -> int:
     crate = name.replace("-", "_")
     cc = pair / "build"
     rs = next((pair / "translated").glob("*.rs"))
-    c_src = next((pair / "source").glob("*.c"))
+    # 2026-09-03: `next(glob(...))` is filesystem-order dependent. With a single-file pair that is
+    # harmless, but a real library is given to the generator as an amalgamation plus its siblings,
+    # and the arbitrary pick silently compiled the wrong translation unit as the oracle (observed:
+    # `undefined symbol: c_mmed3`). Selection is now sorted, and --c-source names it explicitly.
+    _cs = sorted((pair / "source").glob("*.c"))
+    if args.c_source:
+        _m = [c for c in _cs if c.name == args.c_source]
+        if not _m:
+            raise SystemExit(f"--c-source {args.c_source} not in {pair/'source'}: "
+                             f"{[c.name for c in _cs]}")
+        c_src = _m[0]
+    else:
+        if len(_cs) > 1:
+            print(f"  note: {len(_cs)} .c files in the pair; using {_cs[0].name} "
+                  f"(pass --c-source to choose)")
+        c_src = _cs[0]
 
-    params, ret, all_fns, items, abi = resolve(
-        name, cc, args.entry, infer=args.infer_schema, ignore_schema=args.ignore_schema)
+    # Eligibility is decided BEFORE anything is written: parameters, return value and comparator
+    # must all match a supported contract template. A boundary that does not is reported here with
+    # its reason, never generated and then left to fail at build time.
+    if args.plan:
+        import harness_plan as hp
+        # The RustBridge needs the translated signature: a parameter shape the bridge cannot
+        # reproduce losslessly is a construction failure, decided HERE rather than at build time.
+        _rs_text = rs.read_text(encoding="utf-8", errors="replace")
+        _rt = parse_rust_param_types(_rs_text, args.rust_entry or args.entry)
+        plan, lowered = hp.plan_and_lower(cc, args.entry, name, rust_types=(_rt or None),
+                                          rust_aliases=hp.rust_type_aliases(_rs_text))
+        if args.plan_json:
+            from dataclasses import asdict as _asdict
+            Path(args.plan_json).write_text(json.dumps(_asdict(plan), indent=1) + "\n")
+        if lowered is None:
+            print(f"harness construction failed: {'; '.join(plan.failures)}")
+            return 2
+        params, ret, all_fns = parse_entry_signature(cc, args.entry)
+        items, abi = items_from_schema(lowered), lowered["params"]
+        seen = [q["name"] for q in abi]
+        assert seen == [q["name"] for q in params], f"lowering lost ABI order: {seen}"
+        print(f"  plan: {len(plan.inputs)} inputs; bridges "
+              + ", ".join(f"{i['param']}={i['rust_bridge']}" for i in plan.inputs))
+        # The return value is not a construction gate: the fixed ladder decides what about it is
+        # comparable (void -> nothing, scalar -> value, pointer -> nullness, or a plugin).
+        _rd = parse_entry_signature(cc, args.entry, with_return_desc=True)[3]
+        verdict = {"supported": True,
+                   "return_contract": return_contract(_rd, ret, None, load_plugins(args.plugins))}
+        _rc0 = verdict["return_contract"]
+        # termination-only : nothing but how the two runs ended is comparable
+        # partial(nullness) : a returned pointer, compared as NULL vs non-NULL only
+        # observable-state  : return scalars plus every buffer the harness itself owns
+        # structured-state  : observable-state, plus the object state a comparator plugin declares
+        _strength = _rc0.get("oracle_strength") or (
+            "termination-only" if _rc0["template"] == "void" and not plan.inputs
+            else "observable-state")
+        print(f"  oracle: return={_rc0['template']} (oracle_strength={_strength})")
+    else:
+        verdict = eligibility(name, cc, args.entry, infer=args.infer_schema,
+                              schema_path=args.schema)
+        if not verdict["supported"]:
+            print(f"unsupported: {verdict['reason']}")
+            return 2
+
+        params, ret, all_fns, items, abi = resolve(
+            name, cc, args.entry, infer=args.infer_schema, ignore_schema=args.ignore_schema,
+            schema_path=args.schema)
 
     out = Path(args.out) if args.out else (ROOT / "fuzz_gen" / name)
     out.mkdir(parents=True, exist_ok=True)
@@ -1121,7 +1857,11 @@ def main() -> int:
                      [p for p in abi if p["role"] not in ("length", "capacity", "out_scalar")]):
             if len(rust_ptys) == len(cand):
                 for p, t in zip(cand, rust_ptys):
-                    p["rust_pty"] = t
+                    # Normalise away explicit lifetimes before storing: safety lifters annotate the
+                    # lifted types (`Option<&'a1 mut u32>`, `&'a mut [u8]`), and every downstream
+                    # shape test here matches on the bare form, so an annotated type silently took
+                    # the raw-pointer fallback and the harness failed to compile.
+                    p["rust_pty"] = re.sub(r"&\s*'\w+\s*", "&", t)
                 break
     if args.expose_entry:
         rs_text, _ = expose_entry(rs_text, rust_entry)
@@ -1178,11 +1918,51 @@ doc = false
         f'[package]\nname = "{crate}"\nversion = "0.1.0"\nedition = "2021"\n\n'
         f'[build-dependencies]\ncc = "1"\n\n[dependencies]\n', encoding="utf-8")
 
-    defines = "\n".join(f'        .define("{fn}", "c_{fn}")' for fn in all_fns)
+    # RQ4 FIX 2: all_fns now also carries "@var:<name>" entries for file-scope C globals.
+    _rename = [f.removeprefix("@var:") for f in all_fns]
+    defines = "\n".join(f'        .define("{fn}", "c_{fn}")' for fn in _rename)
     # --ub-free: instrument the oracle with UBSan (recover) and compile the flag shim in.
     if args.ub_free:
         (out / "c" / "ubshim.c").write_text(UBSHIM_C, encoding="utf-8")
-    ub_flags = "".join(f'\n        .flag("{f}")' for f in ub_sanitize_flags()) if args.ub_free else ""
+    _rcv = verdict.get("return_contract") or {}
+    _so_file = ""
+    if _rcv.get("template") == "comparator_plugin":
+        _p = _rcv["plugin"]
+        # The plugin's C half is compiled INTO the oracle, so the generator's function renaming
+        # applies to it: a call to `cJSON_Delete` in the plugin becomes `c_cJSON_Delete`, i.e. the
+        # C side's own function. That is what makes one plugin serve both sides.
+        shutil.copy(_p["_c_source"], out / "c" / "c2r_plugin.c")
+        # `header` names a header of the LIBRARY, not a file the plugin ships: the generator has
+        # already copied every *.h from the pair's source into c/.
+        if _p.get("header") and not (out / "c" / Path(_p["header"]).name).exists():
+            raise SystemExit(f"plugin {_p['library']}: header {_p['header']} is not among the "
+                             f"pair's headers, so the plugin's C half cannot compile")
+        _so_file = '\n    build.file("c/c2r_plugin.c");'
+        print(f"  comparator plugin: {_p['library']} for `{_p['c_type']}` "
+              f"(oracle_strength=structured-state, max_bytes={_p['max_bytes']})")
+    if _rcv.get("template") == "structured_object":
+        (out / "c" / "c2r_extract.c").write_text(ctpl.c_extractor_source(_rcv), encoding="utf-8")
+        _so_file = '\n    build.file("c/c2r_extract.c");'
+        print(f"  structured_object: canonical extractors generated for {_rcv['type']} "
+              f"({len(_rcv['fields'])} fields, child={_rcv['child']}, next={_rcv['next']})")
+    _cflags = list(ub_sanitize_flags()) if args.ub_free else []
+    if args.c_sanitize:
+        # CONFIRMATION build: C-DEFINEDNESS checking, which is the adjudication oracle.
+        #
+        # ASan alone is not enough. An out-of-range double->int cast (cJSON.c:112,
+        # `item->valueint = (int)n`) is UB in C but is NOT a memory error, so an ASan-only replay
+        # reports C `clean` and the resulting value difference is misadjudicated as a translation
+        # defect. Full UBSan is what catches it, `float-cast-overflow` explicitly.
+        #
+        # The in-loop UBSan-minimal instrumentation is dropped here: clang rejects
+        # `-fsanitize-minimal-runtime` alongside `-fsanitize=address`, and the in-loop gate is a
+        # DISCOVERY-side noise filter, not the adjudicator. ubshim.c is still compiled so the
+        # harness's c2r_ub_* externs resolve; with no minimal instrumentation the gate never trips
+        # and every input reaches the C call, which is exactly what a C-only replay wants.
+        _cflags = ["-fsanitize=address,undefined",
+                   "-fsanitize=float-cast-overflow,pointer-overflow,return,vla-bound",
+                   "-fno-sanitize-recover=all"]
+    ub_flags = "".join(f'\n        .flag("{f}")' for f in _cflags)
     ub_file = f'\n    build.file("c/ubshim.c");' if args.ub_free else ""
     (out / "build.rs").write_text(f'''fn main() {{
     let mut build = cc::Build::new();
@@ -1190,7 +1970,7 @@ doc = false
         .flag("-fsanitize-coverage=inline-8bit-counters,pc-table,trace-cmp"){ub_flags}.warnings(false);
     build
 {defines};
-    build.file("c/{c_src.name}");{ub_file}
+    build.file("c/{c_src.name}");{ub_file}{_so_file}
     build.compile("c_oracle");
     let rd = std::process::Command::new("clang").arg("--print-resource-dir").output().unwrap();
     let rd = String::from_utf8(rd.stdout).unwrap().trim().to_string();
@@ -1231,7 +2011,7 @@ doc = false
 
     (out / "fuzz" / "fuzz_targets" / f"{crate}_ft.rs").write_text(
         gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free, rust_entry=rust_entry,
-                   rust_ret=rust_ret), encoding="utf-8")
+                   rust_ret=rust_ret, ret_contract=verdict.get("return_contract")), encoding="utf-8")
 
     print(f"generated harness at {out}")
     print(f"  entry: {args.entry} -> {ret}")

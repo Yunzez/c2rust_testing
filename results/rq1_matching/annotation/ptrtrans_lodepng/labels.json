@@ -1,0 +1,951 @@
+{
+ "case": "ptrtrans_lodepng",
+ "sheet_fingerprint": "dfbdc9c3007a6e5f",
+ "labeler": "claude (main session + 3 subagents, one per 79/79/77-row slice of the C function list)",
+ "method": "per C function: read C body (lodepng.c), inspect every candidate Rust fn (same-name, tool_claim, matcher_forced/deploy, grep of distinctive constants/strings/loops over dataset/Trans_C-Rust-KG/lodepng/src/**); truth=Rust fn only when a body implementing the C logic exists; STUB:x when the crate contains only a signature-only placeholder x for the C fn; AMBIGUOUS when two duplicate empty stubs (CamelCase + snake_case) claim the same C fn; NONE when no counterpart or the counterpart is absent from the rust-analyzer inventory",
+ "date": "2026-09-01",
+ "reviewed_by_user": false,
+ "crate_note": "shipped PtrTrans lodepng crate is a stub shell: ~8 functions with real logic, the rest signature-only placeholders; many duplicate same-name definitions (crate cannot compile)",
+ "labels": {
+  "lodepng_malloc": {
+   "truth": "STUB:lodepng_malloc",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C lodepng.c:74 malloc wrapper. src/lodepng.rs:661 `pub fn lodepng_malloc(size: usize) -> Option<&mut u8> { None }`. Rejected tool_claim mbstowcs [642] / wcstombs [653]: those are stubs of libc decls, unrelated."
+  },
+  "lodepng_realloc": {
+   "truth": "STUB:lodepng_realloc",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:82 realloc wrapper. src/lodepng.rs:611 doc 'Translation of: static void* lodepng_realloc(void* ptr, size_t new_size)', body returns None. Rejected tool_claim atof [590] (libc stub) and matcher_forced bpmnode_sort [1097] (stub for C bpmnode_sort:918, unrelated)."
+  },
+  "lodepng_free": {
+   "truth": "NONE",
+   "note": "C:89 `static void lodepng_free(void* ptr) { free(ptr); }`. No Rust fn named lodepng_free/free anywhere (grep 'lodepng_free|fn free|drop(' over src/*.rs, src/common/*.rs: 0 hits). Rejected tool_claim lodepng_malloc [661] (different C fn), LODEPNG_VERSION_STRING (a static, common/lodepng_mod.rs:103 / lodepng.rs:660), matcher_forced uivector_init [880] (stub for C uivector_init:246)."
+  },
+  "lodepng_memcpy": {
+   "truth": "STUB:lodepng_memcpy",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:120. src/lodepng.rs:541 doc 'Stub for the C function lodepng_memcpy', no-op; SECOND same-name definition src/lodepng.rs:595 doc cites the C:120 signature verbatim, also no-op (inventory keeps one entry). Rejected tool_claim lodepng_realloc [611] and matcher_forced add_length_distance [1204] (stub for C addLengthDistance:1461)."
+  },
+  "lodepng_memset": {
+   "truth": "AMBIGUOUS",
+   "note": "Two distinct-named stubs both designate C lodepng_memset:126 and neither has a body: (a) src/lodepng.rs:601 `lodepng_memset(dst, value, num)` doc 'Translation of: static void lodepng_memset(void* dst, int value, size_t num)', no-op; (b) src/lodepng.rs:568 `unnamed_loop_function(_dst, _num, _value)` doc quotes the ENTIRE memset body `for(i = 0; i < num; i++) ((char*)dst)[i] = (char)value;` (C:129), no-op. Preferred if one must be chosen: lodepng_memset [601] (exact name+signature). Both are empty -> STUB either way. Rejected tool_claim lodepng_memcpy [541]."
+  },
+  "lodepng_strlen": {
+   "truth": "STUB:lodepng_strlen",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:133 (loop until NUL). src/lodepng.rs:559 `lodepng_strlen(a: Option<&str>) -> usize { 0 }`. Rejected tool_claim lodepng_memcpy [541], lodepng_memset [601]."
+  },
+  "lodepng_addofl": {
+   "truth": "STUB:lodepng_addofl",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:148 `*result = a + b; return *result < a;`. src/lodepng.rs:751 `lodepng_addofl(a, b, result: &mut usize) -> u32 { 0 }`. Rejected tool_claim unnamed_loop_function [568]: its doc quotes the lodepng_memset loop, not addofl."
+  },
+  "lodepng_mulofl": {
+   "truth": "STUB:lodepng_mulofl",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:157. src/lodepng.rs:1678 `lodepng_mulofl(a, b, out: &mut usize) -> u32 { 0 }`; second same-name def src/lodepng.rs:1683 `(line, h, total)` is a call-site-shaped stub. Rejected tool_claim lodepng_strlen [559]."
+  },
+  "lodepng_gtofl": {
+   "truth": "STUB:lodepng_gtofl",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:164 `return a > b;` (with LODEPNG_MAX_ALLOC). src/lodepng.rs:664 `lodepng_gtofl(a: usize) -> u32 { 0 }`. Rejected tool_claim lodepng_addofl [751]."
+  },
+  "uivector_cleanup": {
+   "truth": "STUB:uivector_cleanup",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:224. src/lodepng.rs:871 doc cites `static void uivector_cleanup(void* p)`, no-op; duplicate same-name def src/lodepng.rs:874. Rejected tool_claim lodepng_unknown_chunks_init [629] (unrelated stub)."
+  },
+  "uivector_resize": {
+   "truth": "STUB:uivector_resize",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:231 (realloc data, set allocsize/size). src/lodepng.rs:877 `uivector_resize(p: Option<&mut c_void>, size: usize) -> u32 { 0 }`. Note: src/lodepng.rs:880 uivector_init's doc comment quotes a fragment of THIS function (`p->allocsize = newsize; p->data = (unsigned*)data;` C:236-238) but is named/aritied as uivector_init, so it is not the resize slot. Rejected tool_claim lodepng_state_copy, uivector_cleanup [871]."
+  },
+  "uivector_init": {
+   "truth": "STUB:uivector_init",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:246 `p->data = NULL; p->size = p->allocsize = 0;`. src/lodepng.rs:880 `uivector_init(p: Option<&mut ()>)` no-op; name and arity match uivector_init, but its doc comment mis-cites a uivector_resize fragment. Rejected tool_claim getNumColorChannels [1461] (unrelated)."
+  },
+  "uivector_push_back": {
+   "truth": "STUB:uivector_push_back",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:252 (resize if full, then data[size]=c). src/lodepng.rs:667 `uivector_push_back(p: Option<&mut Uivector>, c: u32) -> u32 { 0 }`; duplicate same-name def src/lodepng.rs:1201 `(p: Option<&mut c_void>, size)`. Rejected tool_claim read_bits [571]."
+  },
+  "ucvector_reserve": {
+   "truth": "STUB:ucvector_reserve",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:270 (grow via lodepng_realloc, `size + (size >> 1)`). src/lodepng.rs:825 `ucvector_reserve(p: Option<&mut u8>, size) -> usize { 0 }`; duplicate same-name def src/lodepng.rs:952 `(p: Option<&mut Ucvector>, size) -> u32 { 0 }`. Rejected tool_claim uivector_resize [877]."
+  },
+  "ucvector_resize": {
+   "truth": "STUB:ucvector_resize",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:284 `p->size = size; return ucvector_reserve(p, size);`. src/lodepng.rs:955 `ucvector_resize(p: Option<&mut Ucvector>, size) -> u32 { 0 }`; duplicate same-name def src/lodepng.rs:1479. Rejected tool_claim ucvector_reserve [825]."
+  },
+  "ucvector_init": {
+   "truth": "STUB:ucvector_init",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:289 (returns ucvector by value with buffer/size/allocsize). src/lodepng.rs:828 `ucvector_init(buffer: Option<&mut u8>, size) -> u8 { 0 }` (return type garbled). Rejected tool_claim ucvector_resize [955], ucvector_reserve [825]."
+  },
+  "string_cleanup": {
+   "truth": "STUB:string_cleanup",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:302 `lodepng_free(*out); *out = NULL;`. src/lodepng.rs:822 doc 'Translation of: static void string_cleanup(char** out)', no-op. Rejected tool_claim lodepng_free_itext (not a real slot) / lodepng_unknown_chunks_init [629]."
+  },
+  "alloc_string_sized": {
+   "truth": "STUB:alloc_string_sized",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:308 (malloc insize+1, memcpy, NUL-terminate). src/lodepng.rs:1154 `alloc_string_sized(in_ptr: Option<&c_char>, insize) -> Option<&mut c_char> { None }`. Note src/lodepng.rs:553 lodepng_copy_and_terminate is a fragment stub whose doc quotes C:311-312 `lodepng_memcpy(out, in, insize); out[insize] = 0;` with (out, input, insize) params -- a sub-fragment, not the function slot. Rejected tool_claim lodepng_strlen [559], alloc_string [459]."
+  },
+  "alloc_string": {
+   "truth": "alloc_string",
+   "note": "REAL body. C:318 `return alloc_string_sized(in, lodepng_strlen(in));`. src/lodepng.rs:459-464 `alloc_string(input: Option<&str>) -> Option<String> { input.map(|s| s.to_string()) }` -- the strlen+copy collapses to to_string, semantically the same (copy string, None passthrough). Rejected tool_claim lodepng_chunk_safetocopy (stub, unrelated), alloc_string_sized [1154] (different C fn)."
+  },
+  "lodepng_read32bitInt": {
+   "truth": "lodepng_get32bit_int",
+   "note": "REAL body, renamed. C:327 `((unsigned)buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3]`. src/lodepng.rs:494-500 `lodepng_get32bit_int(buffer: &[u8]) -> u32` computes exactly that expression (doc quotes the C). matcher_forced=lodepng_get32bit_int is correct. Rejected tool_claim lodepng_memcpy [541] and lodepng_copy_and_terminate [553] (both unrelated stubs). No fn named lodepng_read32bit_int exists."
+  },
+  "lodepng_set32bitInt": {
+   "truth": "lodepng_set32bit_int",
+   "note": "REAL body, renamed. C:335 writes value>>24, >>16, >>8, value into buffer[0..3]. src/lodepng.rs:508-514 `lodepng_set32bit_int(buffer: &mut [u8], value: u32)` does exactly that. Rejected tool_claim alloc_string [459]."
+  },
+  "lodepng_filesize": {
+   "truth": "translated_function",
+   "note": "PARTIAL real body under a generic name. C:350: fopen(rb) -> NULL=-1; fseek(END) fail -> -1; size=ftell; if size==LONG_MAX size=-1; fclose; return size. src/lodepng.rs:474-490 `translated_function(file: &mut File) -> i64`: `file.seek(SeekFrom::End(0)).is_err() -> -1`, `size = stream_position()`, `if size == 9_223_372_036_854_775_807 { size = -1 }`, return size -- the distinctive LONG_MAX check and fseek/ftell logic of C:356-366, minus fopen/NULL-check/fclose (takes an already-open File). The same-name slot src/lodepng.rs:405 `lodepng_filesize(_filename: Option<&str>) -> Option<i64> { unimplemented!() }` holds no body. Body evidence wins -> translated_function; graders treating unimplemented!() slot as target should note the split. Rejected tool_claim lodepng_get32bit_int [494] / lodepng_set32bit_int [508] (32-bit int helpers), matcher_forced lodepng_chunk_generate_crc (stub, unrelated)."
+  },
+  "lodepng_buffer_file": {
+   "truth": "STUB:lodepng_buffer_file",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:370 (fopen rb -> 78, fread, fclose). src/lodepng.rs:408 `lodepng_buffer_file(_out: &mut [u8], _size: usize, _filename: Option<&str>) -> u32 { unimplemented!() }`. No other fn does fread/read_to_end (grep). Rejected tool_claim translated_function [474] (filesize fragment: seek/LONG_MAX, no read) and readChunk_tRNS (stub, unrelated)."
+  },
+  "lodepng_load_file": {
+   "truth": "lodepng_load_file",
+   "note": "REAL body. C:383: size = lodepng_filesize; if size<0 return 78; *outsize=size; *out=malloc; if !*out && size>0 return 83; return lodepng_buffer_file(*out,size,filename). src/lodepng.rs:357-399 `lodepng_load_file(out: &mut Option<Vec<u8>>, outsize: &mut usize, filename: Option<&str>) -> u32`: calls lodepng_filesize(filename), None/size<0 -> 78, `*outsize = size as usize`, allocates zeroed Vec (comment quotes the 83 branch), returns lodepng_buffer_file(buf, *outsize, filename) else 83. Two other same-name definitions (src/lodepng.rs:810 and src/lodepng.rs:3454) are `0` stubs; the inventory entry [357] is the real one. Rejected tool_claim deflateNoCompression [2000]."
+  },
+  "lodepng_save_file": {
+   "truth": "STUB:lodepng_save_file",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:395 (fopen wb -> 79, fwrite, fclose). src/lodepng.rs:940 `lodepng_save_file(buffer: Option<&[u8]>, buffersize, filename: Option<&str>) -> u32 { 0 }`; duplicate same-name def src/lodepng.rs:1464. No fn contains 'wb'/error 79 (grep). Rejected tool_claim lodepng_load_file [357], lodepng_filesize [405], lodepng_buffer_file [408]."
+  },
+  "LodePNGBitWriter_init": {
+   "truth": "STUB:LodePNGBitWriter_init",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:420 `writer->data = data; writer->bp = 0;`. src/lodepng.rs:1958 `LodePNGBitWriter_init(writer: Option<&mut LodePNGBitWriter>, data: Option<&mut Ucvector>)` no-op. Rejected tool_claim lodepng_save_file [940]."
+  },
+  "writeBits": {
+   "truth": "NONE",
+   "note": "C:437 (WRITEBIT macro loop, LSB-first). No Rust fn named writeBits/write_bits; grep 'fn write_bits\\b|fn writeBits\\b|WRITEBIT|bp & 7' hits only the writeBitsReversed comment at src/lodepng.rs:678 and def at 1972. Rejected tool_claim LodePNGBitWriter (a struct, not a fn), LodePNGBitWriter_init [1958] (C:420, different fn), addChunk_iCCP (stub, unrelated)."
+  },
+  "writeBitsReversed": {
+   "truth": "AMBIGUOUS",
+   "note": "Two distinct-named empty stubs both designate C writeBitsReversed:450: (a) src/lodepng.rs:1972 `writeBitsReversed(writer: Option<&mut LodePNGBitWriter>, value: u32, nbits: usize)` no-op, doc 'Stub for the function implied by the provided C code fragment that writes bits in reversed order'; (b) src/lodepng.rs:676 `write_bits_reversed(writer, value, nbits)` no-op, comment 'C original: static void writeBitsReversed(LodePNGBitWriter* writer, unsigned value, size_t nbits)'. Neither has a body -> STUB either way. Rejected tool_claim readChunk_tEXt (stub, unrelated)."
+  },
+  "LodePNGBitReader_init": {
+   "truth": "NONE",
+   "note": "C:470 (sets data/size/bitsize with error 105 on overflow, bp=0, buffer=0). No Rust fn named LodePNGBitReader_init/lodepng_bit_reader_init; grep 'bitreader_init|bit_reader_init|105' hits only the struct field `bitsize` at src/lodepng.rs:961 (struct LodePNGBitReader defined at 958). Rejected tool_claim lodepng_get_raw_size (common/lodepng_mod.rs:11, unrelated stub)."
+  },
+  "ensureBits9": {
+   "truth": "STUB:ensureBits9",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:493. src/lodepng.rs:967 `ensureBits9(reader: Option<&mut LodePNGBitReader>, nbits: usize)` no-op. Rejected tool_claim lodepng_realloc [611]."
+  },
+  "ensureBits17": {
+   "truth": "STUB:ensure_bits17",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:508. src/lodepng.rs:973 `ensure_bits17(reader: Option<&mut LodePNGBitReader>, nbits: usize)` no-op, doc 'C original: static void ensureBits17(LodePNGBitReader* reader, size_t nbits)'. No fn named ensureBits17 (CamelCase) exists. Rejected tool_claim addChunk_bKGD (stub, unrelated)."
+  },
+  "ensureBits25": {
+   "truth": "STUB:ensureBits25",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:524. src/lodepng.rs:979 `ensureBits25(reader, nbits)` no-op. Rejected tool_claim ensureBits9 [967] (different C fn)."
+  },
+  "ensureBits32": {
+   "truth": "STUB:ensureBits32",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:541. src/lodepng.rs:985 `ensureBits32(reader, nbits)` no-op. Rejected tool_claim ensureBits25 [979]."
+  },
+  "peekBits": {
+   "truth": "STUB:peek_bits",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:563 `return reader->buffer & ((1u << nbits) - 1u);`. src/lodepng.rs:992 `peek_bits(reader: Option<&LodePNGBitReader>, start, size) -> u32 { 0 }` (params garbled, doc mentions peekBits placeholder); duplicate same-name def src/lodepng.rs:1485 `peek_bits(reader: Option<&mut LodePNGBitReader>, nbits: u32) -> u32 { 0 }` doc 'Stub for the C function peekBits'. Rejected tool_claim LodePNGIText_copy (stub, unrelated)."
+  },
+  "advanceBits": {
+   "truth": "STUB:advance_bits",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:569 `reader->buffer >>= nbits; reader->bp += nbits;`. src/lodepng.rs:1001 `advance_bits(reader: Option<&mut LodePNGBitReader>, nbits: usize)` no-op, doc cites 'static void advanceBits'. Rejected tool_claim lodepng_info_copy (stub, unrelated)."
+  },
+  "readBits": {
+   "truth": "STUB:read_bits",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:575 `result = peekBits; advanceBits; return result`. src/lodepng.rs:571 `read_bits(reader: &mut LodePngBitReader, nbits: usize) -> u32 { 0 }`; duplicate same-name def src/lodepng.rs:2775 doc 'Translation of: static unsigned readBits(LodePNGBitReader* reader, size_t nbits)'. Rejected tool_claim peek_bits [992] (C peekBits:563, different fn) and addChunk_pHYs (stub, unrelated)."
+  },
+  "reverseBits": {
+   "truth": "STUB:reverse_bits",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:582 (bit-reverse of num bits). src/lodepng.rs:466 `reverse_bits(bits: u32, num: u32) -> u32 { unimplemented!() }`. Rejected tool_claim read_bits [571]."
+  },
+  "HuffmanTree_init": {
+   "truth": "STUB:HuffmanTree_init",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:665 (NULL codes/lengths/table_len/table_value). src/lodepng.rs:1005 `HuffmanTree_init(tree: Option<&mut HuffmanTree>)` no-op, comment quotes the C body. Rejected tool_claim huffman_tree_make_from_lengths2 [1073]."
+  },
+  "HuffmanTree_cleanup": {
+   "truth": "STUB:HuffmanTree_cleanup",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:672 (four lodepng_free). src/lodepng.rs:1016 `HuffmanTree_cleanup(tree: Option<&mut HuffmanTree>)` no-op. Rejected tool_claim HuffmanTree_init [1005], generate_fixed_distance_tree [1493]."
+  },
+  "HuffmanTree_makeTable": {
+   "truth": "STUB:HuffmanTree_makeTable",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:682 (FIRSTBITS=9 two-level table, errors 83/55, INVALIDSYMBOL). src/lodepng.rs:1021 `HuffmanTree_makeTable(tree: Option<&mut HuffmanTree>) -> u32 { 0 }`. No fn contains 65535/FIRSTBITS/error 55 (grep). Rejected tool_claim HuffmanTree_cleanup [1016]."
+  },
+  "HuffmanTree_makeFromLengths2": {
+   "truth": "AMBIGUOUS",
+   "note": "Two distinct-named empty stubs both designate C HuffmanTree_makeFromLengths2:786: (a) src/lodepng.rs:1509 `HuffmanTree_makeFromLengths2(tree: Option<&mut HuffmanTree>) -> u32 { 0 }` doc 'Translation of: static unsigned HuffmanTree_makeFromLengths2(HuffmanTree* tree)'; (b) src/lodepng.rs:1073 `huffman_tree_make_from_lengths2(tree) -> u32 { 0 }` doc 'Translated from: return HuffmanTree_makeFromLengths2(tree);' (generated from the call site in makeFromLengths C:834). Neither has a body -> STUB either way. Preferred if one must be chosen: (a). Rejected tool_claim HuffmanTree_makeTable [1021]."
+  },
+  "HuffmanTree_makeFromLengths": {
+   "truth": "AMBIGUOUS",
+   "note": "Two distinct-named empty stubs both claim C HuffmanTree_makeFromLengths:827: (a) src/lodepng.rs:706 `huffman_tree_make_from_lengths(tree, bitlen: Option<&[u32]>, numcodes: usize, maxbitlen: u32) -> u32 { 0 }` doc cites the exact 4-param C signature; (b) src/lodepng.rs:2035 `HuffmanTree_makeFromLengths(tree, bitlen: Option<&[i32]>) -> u32 { 0 }` -- only 2 params and its doc quotes `if(!error) error = HuffmanTree_makeTable(tree); return error;`, which is actually the tail of makeFromLengths2 (C:818-819). Preferred if one must be chosen: (a) huffman_tree_make_from_lengths [706] (faithful signature). Neither has a body -> STUB either way. Rejected tool_claim uivector_cleanup [871]."
+  },
+  "bpmnode_create": {
+   "truth": "STUB:bpmnode_create",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:895 (allocate from lists->memory/freelist, set weight/index/tail). src/lodepng.rs:1577 `bpmnode_create(lists: Option<&mut BPMLists>, weight: i32, index: u32, tail: Option<Box<BPMNode>>) -> Option<Box<BPMNode>> { None }`. Rejected tool_claim huffman_tree_make_from_lengths [706]."
+  },
+  "bpmnode_sort": {
+   "truth": "STUB:bpmnode_sort",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:918 (bottom-up mergesort on weight with stable index tie-break). src/lodepng.rs:1097 `bpmnode_sort(leaves: Option<&mut [BPMNode]>, num: usize)` no-op. Rejected tool_claim generateFixedDistanceTree [2394]."
+  },
+  "boundaryPM": {
+   "truth": "STUB:boundary_pm",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:943 (recursive boundary package-merge). src/lodepng.rs:2051 `boundary_pm(lists, leaves, numpresent, c, num)` no-op, doc cites 'static void boundaryPM'. No CamelCase boundaryPM fn exists. Rejected tool_claim HuffmanTree_makeFromFrequencies [2640]."
+  },
+  "lodepng_huffman_code_lengths": {
+   "truth": "STUB:lodepng_huffman_code_lengths",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1022 (errors 80/83, BPM lists, numpresent). src/lodepng.rs:2432 `lodepng_huffman_code_lengths(lengths: Option<&mut HuffmanTree>, frequencies: Option<&[i32]>, numcodes, maxbitlen) -> u32 { 0 }` (lengths type garbled). Rejected tool_claim writeLZ77data [2238]."
+  },
+  "HuffmanTree_makeFromFrequencies": {
+   "truth": "STUB:HuffmanTree_makeFromFrequencies",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1038 (calls lodepng_huffman_code_lengths then makeFromLengths2). src/lodepng.rs:2640 `HuffmanTree_makeFromFrequencies(tree, frequencies, mincodes, numcodes, maxbitlen) -> u32 { 0 }`. Rejected tool_claim post_process_scanlines (stub, unrelated)."
+  },
+  "generateFixedLitLenTree": {
+   "truth": "STUB:generateFixedLitLenTree",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1056 (288 lengths 8/9/7/8, then makeFromLengths). src/lodepng.rs:2384 `generateFixedLitLenTree(tree: Option<&mut HuffmanTree>) -> u32 { 0 }`. Rejected tool_claim HuffmanTree_cleanup [1016]."
+  },
+  "generateFixedDistanceTree": {
+   "truth": "AMBIGUOUS",
+   "note": "Two distinct-named empty stubs both claim C generateFixedDistanceTree:1074: (a) src/lodepng.rs:1493 `generate_fixed_distance_tree(tree: Option<&mut HuffmanTree>) -> u32 { 0 }` doc 'Translation of: static unsigned generateFixedDistanceTree(HuffmanTree* tree)' (exact sig); (b) src/lodepng.rs:2394 `generateFixedDistanceTree(tree, bitlen: Option<&mut [i32]>) -> u32 { 0 }` doc says 'inferred signature ... int* bitlen' (spurious extra param). Preferred if one must be chosen: (a). Neither has a body. Rejected tool_claim generateFixedLitLenTree [2384]."
+  },
+  "huffmanDecodeSymbol": {
+   "truth": "STUB:huffman_decode_symbol",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1098 (two-level table lookup with FIRSTBITS). src/lodepng.rs:1499 `huffman_decode_symbol(reader: Option<&mut LodePNGBitReader>, codetree: Option<&HuffmanTree>) -> u32 { 0 }`. Rejected tool_claim generate_fixed_distance_tree [1493]."
+  },
+  "getTreeInflateFixed": {
+   "truth": "STUB:get_tree_inflate_fixed",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1105 (generateFixedLitLenTree then generateFixedDistanceTree). src/lodepng.rs:2402 `get_tree_inflate_fixed(tree_ll, tree_d) -> u32 { 0 }`. No CamelCase getTreeInflateFixed fn exists; no tool_claim candidates."
+  },
+  "getTreeInflateDynamic": {
+   "truth": "STUB:get_tree_inflate_dynamic",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1239 (HCLIT/HDIST/HCLEN, code-length codes, errors 50-59). src/lodepng.rs:2416 `get_tree_inflate_dynamic(tree_ll, tree_d, reader) -> u32 { 0 }`. Rejected tool_claim get_tree_inflate_fixed [2402] (C:1105) and read_chunk_sbit (stub, unrelated)."
+  },
+  "inflateHuffmanBlock": {
+   "truth": "STUB:inflate_huffman_block",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1239/inflateHuffmanBlock (LZ77 decode loop, errors 51/52/109). src/lodepng.rs:2677 `inflate_huffman_block(out, reader, btype, settings, max_output_size) -> u32 { 0 }`. Rejected tool_claim lodepng_pixel_overflow (stub, unrelated)."
+  },
+  "inflateNoCompression": {
+   "truth": "AMBIGUOUS",
+   "note": "Two distinct-named empty stubs both claim C inflateNoCompression:1347: (a) src/lodepng.rs:1979 `inflateNoCompression(out, reader, settings) -> u32 { 0 }` (no doc); (b) src/lodepng.rs:2764 `inflate_no_compression(out, reader, settings) -> u32 { 0 }` doc cites 'static unsigned inflateNoCompression(ucvector* out, LodePNGBitReader* reader, const LodePNGDecompressSettings* settings)'. Neither has a body -> STUB either way. Rejected tool_claim auto_choose_color (stub, unrelated)."
+  },
+  "lodepng_inflatev": {
+   "truth": "STUB:lodepng_inflatev",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1382 (BFINAL/BTYPE loop dispatching to the three block inflaters). src/lodepng.rs:2713 `lodepng_inflatev(out, input: Option<&i8>, insize, settings) -> u32 { 0 }`. Note src/lodepng.rs:2753 lodepng_inflate_block_logic is a fragment stub ('logic containing readBits in the inflate routine') of this C body, not a separate C fn. Rejected tool_claim readChunk_iTXt (stub, unrelated)."
+  },
+  "lodepng_inflate": {
+   "truth": "STUB:lodepng_inflate",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1408 (ucvector_init then lodepng_inflatev). src/lodepng.rs:2782 `lodepng_inflate(out, outsize, input, insize, settings) -> u32 { 0 }`. Rejected tool_claim lodepng_inflate_block_logic [2753] (fragment of inflatev), inflate_no_compression [2764], read_bits [571], lodepng_chunk_createv (all different C fns)."
+  },
+  "inflatev": {
+   "truth": "STUB:inflatev",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1418 (custom_inflate dispatch else lodepng_inflatev; error 110). src/lodepng.rs:2798 `inflatev(out, input, insize, settings) -> u32 { 0 }`. Rejected tool_claim lodepng_inflate [2782] (C:1408)."
+  },
+  "searchCodeIndex": {
+   "truth": "STUB:search_code_index",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1447 (binary search in array for value). src/lodepng.rs:470 `search_code_index(array: &[u32], value: usize) -> usize { unimplemented!() }`. Rejected tool_claim reverse_bits [466], write_bits_reversed [676]."
+  },
+  "addLengthDistance": {
+   "truth": "STUB:add_length_distance",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1461 (4 uivector_push_back of length/dist codes and extra bits). src/lodepng.rs:1204 `add_length_distance(values: Option<&mut c_void>, length: usize, distance: usize)` no-op. Rejected tool_claim writeBitsReversed [1972]."
+  },
+  "hash_init": {
+   "truth": "STUB:hash_init",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1502 (allocate head/val/chain/headz/chainz/zeros, HASH_NUM_VALUES, error 83). src/lodepng.rs:1041 `hash_init(hash: Option<&mut Hash>, windowsize: c_uint) -> c_uint { 0 }`. Rejected tool_claim HuffmanTree_makeFromLengths [2035]."
+  },
+  "hash_cleanup": {
+   "truth": "STUB:hash_cleanup",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1527 (six lodepng_free). src/lodepng.rs:1048 `hash_cleanup(hash: Option<&Hash>) -> i32 { 0 }`; duplicate same-name def src/lodepng.rs:2848 `(hash: Option<&mut Hash>)`. Rejected tool_claim hash_init [1041]."
+  },
+  "getHash": {
+   "truth": "NONE",
+   "note": "C:1539 (shift-xor hash over 3 bytes, HASH_BIT_MASK). No Rust fn named getHash/get_hash; grep 'fn get_hash|fn getHash|HASH_BIT_MASK|65535' finds nothing. Rejected tool_claim hash_cleanup [1048] (C:1527), matcher_forced unnamed_loop_function [568] (its doc quotes the lodepng_memset loop C:129, nothing to do with hashing)."
+  },
+  "countZeros": {
+   "truth": "STUB:count_zeros",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1558 (count consecutive zero bytes up to MAX_SUPPORTED_DEFLATE_LENGTH). src/lodepng.rs:865 `count_zeros(data: Option<&c_char>, size, pos, error: bool) -> u32 { 0 }`; duplicate same-name def src/lodepng.rs:1051 `count_zeros(data: &[u8], size, pos) -> u32 { 0 }`. Rejected tool_claim lodepng_copy_and_terminate [553]."
+  },
+  "updateHashChain": {
+   "truth": "STUB:update_hash_chain",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1569 (write hashval/head/chain, and zeros/headz/chainz). src/lodepng.rs:1632 `update_hash_chain(hash: Option<&mut Hash>, wpos, hashval: u32, numzeros: u16)` no-op. Rejected tool_claim count_zeros [865], lodepng_huffman_code_lengths [2432]."
+  },
+  "encodeLZ77": {
+   "truth": "STUB:encode_lz77",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1588 (main LZ77 search: hash chains, lazy matching, addLengthDistance). src/lodepng.rs:1649 `encode_lz77(out, hash, input, inpos, insize, windowsize, minmatch, nicematch, lazymatching) -> u32 { 0 }` doc cites the C:1588 signature. Rejected tool_claim update_hash_chain [1632]."
+  },
+  "deflateNoCompression": {
+   "truth": "STUB:deflateNoCompression",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1739 (65535-byte stored blocks, LEN/NLEN). src/lodepng.rs:2000 `deflateNoCompression(out: Option<&mut Ucvector>, data: Option<&i8>, datasize) -> u32 { 0 }`. Rejected tool_claim readChunk_PLTE (stub, unrelated)."
+  },
+  "writeLZ77data": {
+   "truth": "STUB:writeLZ77data",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1777 (writeBitsReversed of lit/len/dist codes + extra bits). src/lodepng.rs:2238 `writeLZ77data(writer, lz77_encoded, tree_ll, tree_d)` no-op. Rejected tool_claim lodepng_add_text_entry [2071] (stub for a non-existent C fn)."
+  },
+  "deflateDynamic": {
+   "truth": "STUB:deflateDynamic",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:1802 (dynamic huffman block: frequencies, HLIT/HDIST/HCLEN, run-length code lengths). src/lodepng.rs:2700 `deflateDynamic(data: Option<&[i8]>, ...) -> u32 { 0 }`; duplicate same-name def src/lodepng.rs:2833. Rejected tool_claim deflateFixed [2621] (C:2024)."
+  },
+  "deflateFixed": {
+   "truth": "STUB:deflateFixed",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2024 (BTYPE=1, fixed trees, lz77 or literal). src/lodepng.rs:2621 `deflateFixed(..., final_block: u32) -> u32 { 0 }`; duplicate same-name def src/lodepng.rs:2816 `(input, start, end, ..., final_block: i32)`. Rejected tool_claim deflateDynamic [2700] (C:1802)."
+  },
+  "lodepng_deflatev": {
+   "truth": "STUB:lodepng_deflatev",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2069 (btype dispatch 0/1/2, block split, error 61, hash_init/cleanup). src/lodepng.rs:2743 `lodepng_deflatev(out, input, insize, settings) -> u32 { 0 }`. Rejected tool_claim read_chunk_ztxt (stub, unrelated)."
+  },
+  "lodepng_deflate": {
+   "truth": "STUB:lodepng_deflate",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2110 (ucvector_init then lodepng_deflatev). src/lodepng.rs:2883 `lodepng_deflate(out, outsize, input, insize, settings) -> u32 { 0 }`. Rejected tool_claim deflateFixed [2621], deflateDynamic [2700], hash_cleanup [1048], lodepng_inflate [2782] (all different C fns)."
+  },
+  "deflate": {
+   "truth": "STUB:deflate",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2120 (custom_deflate dispatch else lodepng_deflate; error 111). src/lodepng.rs:574 `deflate(out, outsize, input, insize, settings) -> u32 { 0 }`. Rejected tool_claim lodepng_deflate [2883] (C:2110)."
+  },
+  "update_adler32": {
+   "truth": "STUB:update_adler32",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2138 (5552-block loop, mod 65521). src/lodepng.rs:583 `update_adler32(adler: u32, data: &[u8], len: usize) -> u32 { 0 }`. No fn contains 65521/5552 (grep). Rejected tool_claim deflate [574] and translated_bit_manipulation [688] (fragment stub of pixel bit code, unrelated)."
+  },
+  "adler32": {
+   "truth": "STUB:adler32",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2159 `return update_adler32(1u, data, len);`. src/lodepng.rs:757 `adler32(data: &[u8], amount: usize) -> u32 { 0 }`. Rejected tool_claim isGrayICCProfile (stub, unrelated)."
+  },
+  "lodepng_zlib_decompressv": {
+   "truth": "STUB:lodepng_zlib_decompressv",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2169 (CMF/FLG checks 53/24/25/26, inflatev, adler 58). src/lodepng.rs:2855 `lodepng_zlib_decompressv(out, input, insize, settings) -> u32 { 0 }`. Rejected tool_claim addChunk_zTXt (stub, unrelated)."
+  },
+  "lodepng_zlib_decompress": {
+   "truth": "STUB:lodepng_zlib_decompress",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2211 (ucvector_init then lodepng_zlib_decompressv). src/lodepng.rs:2897 `lodepng_zlib_decompress(out: Option<&mut Ucvector>, outsize, input, insize, settings) -> u32 { 0 }` (doc describes the decompressv body: 'inflate call and Adler-32 validation'); duplicate same-name def src/lodepng.rs:2919 doc cites the C:2211 signature verbatim. Rejected tool_claim lodepng_zlib_decompressv [2855] (C:2169)."
+  },
+  "zlib_decompress": {
+   "truth": "STUB:zlib_decompress",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2221 (custom_zlib dispatch 110, else lodepng_zlib_decompress, expected_size check 109). src/lodepng.rs:2942 `zlib_decompress(out, outsize, expected_size, input, insize, settings) -> u32 { 0 }` -- expected_size param matches C. Rejected tool_claim lodepng_zlib_decompress [2897] (C:2211)."
+  },
+  "lodepng_zlib_compress": {
+   "truth": "STUB:lodepng_zlib_compress",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2250 (CMF=120/FLG header, lodepng_deflate, adler32 trailer, error 83). src/lodepng.rs:2976 `lodepng_zlib_compress(out, outsize, input, insize, settings) -> u32 { 0 }`. No fn contains 120/CMF header logic. Rejected tool_claim lodepng_deflate [2883]."
+  },
+  "zlib_compress": {
+   "truth": "STUB:zlib_compress",
+   "note": "STUB: PtrTrans lodepng crate is a stub crate; this Rust fn is the tool's designated slot for the C fn (name/signature/doc comment cite it) but its body is an empty placeholder. Convert to NONE if strict 'implements' is required. C:2288 (custom_zlib dispatch 111, else lodepng_zlib_compress). src/lodepng.rs:898 `zlib_compress(out, outsize, input, insize, settings) -> u32 { 0 }`; two more same-name defs at src/lodepng.rs:2590 and src/lodepng.rs:3056 (garbled signature). Rejected matcher_forced lodepng_zlib_compress [2976] (C:2250, the callee, not this wrapper)."
+  },
+  "lodepng_compress_settings_init": {
+   "truth": "STUB:lodepng_compress_settings_init",
+   "note": "STUB-ONLY. C lodepng.c:2328 sets btype=2,use_lz77=1,windowsize=2048,minmatch=3,nicematch=128,lazymatching=1,custom_*=0. Rust src/lodepng.rs:907 lodepng_compress_settings_init is an empty fn (and takes LodePNGEncoderSettings, wrong type); a second empty stub with the correct LodePNGCompressSettings param and doc 'Stub for: void lodepng_compress_settings_init(...)' is at src/common/lodepng_mod.rs:153. No fn in the crate assigns btype/windowsize/nicematch (grep 2048/128/nicematch: none). Rejected tool_claim zlib_compress @898 (stub for a different C fn, 5-arg compress signature) and matcher_forced HuffmanTree_makeFromLengths2 @1509 (stub for HuffmanTree_makeFromLengths2)."
+  },
+  "lodepng_decompress_settings_init": {
+   "truth": "STUB:lodepng_decompress_settings_init",
+   "note": "STUB-ONLY. C lodepng.c:2349 zeroes ignore_adler32/ignore_nlen/max_output_size/custom_*. Rust src/lodepng.rs:893 lodepng_decompress_settings_init: empty body, doc 'stub for the C function that initializes LodePNGDecompressSettings' (param typed LodePNGDecoderSettings). No fn touches ignore_adler32/ignore_nlen. Rejected matcher_forced lodepng_state_cleanup @3348 (empty stub explicitly for lodepng_state_cleanup)."
+  },
+  "lodepng_crc32": {
+   "truth": "STUB:lodepng_crc32",
+   "note": "STUB-ONLY. C lodepng.c:2414 table-driven CRC (lodepng_crc32_table, 0xffffffff). Rust src/lodepng.rs:635 lodepng_crc32(data,length) returns 0, doc 'Translated from: unsigned lodepng_crc32(...)'; duplicate 1-arg stub lodepng_crc32 @854 (not in inventory). No CRC table anywhere in crate (grep 1996959894 / 0xedb88320 / 0xffffffff: none)."
+  },
+  "readBitFromReversedStream": {
+   "truth": "STUB:readBitFromReversedStream",
+   "note": "STUB-ONLY. C lodepng.c:2435 (bitstream[bp>>3] >> (7-(bp&7))) & 1, ++bp. Rust src/lodepng.rs:769 readBitFromReversedStream returns 0, doc cites the exact C signature. Rejected tool_claim lodepng_crc32 @635 (crc stub) and matcher_forced ucvector_init @828 (stub returning u8 0, unrelated)."
+  },
+  "readBitsFromReversedStream": {
+   "truth": "STUB:read_bits_from_reversed_stream",
+   "note": "STUB-ONLY. C lodepng.c:2442 loops nbits times shifting in readBitFromReversedStream. Rust src/lodepng.rs:526 read_bits_from_reversed_stream(bitpointer,bitstream,nbits)->u32 returns 0 (snake_case of the C name, same 3-arg shape). Rejected tool_claim readBitFromReversedStream @769 (that is the single-bit C function's stub). Rejected matcher_forced lodepng_memcpy @541 (memcpy stub)."
+  },
+  "setBitOfReversedStream": {
+   "truth": "set_bit_of_reversed_stream",
+   "note": "REAL. C lodepng.c:2452: if bit==0 clear bit (7-(bp&7)) of bitstream[bp>>3] else set it; ++bp. Rust src/lodepng.rs:338 set_bit_of_reversed_stream: byte_index=*bp>>3, bit_index=7-(*bp&7), if bit==0 {*byte &= !(1<<bit_index)} else {*byte |= 1<<bit_index}, *bp+=1 (adds a bounds-checked get_mut). Exact control-flow match; the only non-stub target in this part. Rejected tool_claim read_bits_from_reversed_stream @526 (stub for readBitsFromReversedStream)."
+  },
+  "lodepng_chunk_length": {
+   "truth": "STUB:lodepng_chunk_length",
+   "note": "STUB-ONLY. C lodepng.c:2463 returns lodepng_read32bitInt(chunk). Rust src/lodepng.rs:748 lodepng_chunk_length returns 0 (duplicate stub @763, not in inventory). Rejected matcher_forced get_num_color_channels_stub @1461 (stub from getNumColorChannels' switch snippet)."
+  },
+  "lodepng_chunk_type": {
+   "truth": "STUB:lodepng_copy_type_from_chunk",
+   "note": "STUB-ONLY. C lodepng.c:2467 copies chunk[4..8] into type[5] and NUL-terminates. Rust src/lodepng.rs:533 lodepng_copy_type_from_chunk(chunk, type_buf: &mut [u8;5]) is a no-op ('Stub only') whose name and [u8;5] out-param describe exactly this C function; no other fn writes a 5-byte type buffer. matcher_forced was right by signature. Rejected tool_claim set_bit_of_reversed_stream @338 (real translation of setBitOfReversedStream, unrelated)."
+  },
+  "lodepng_chunk_type_equals": {
+   "truth": "STUB:lodepng_chunk_type_equals",
+   "note": "STUB (partial: only the first statement translated, body marked incomplete). PARTIAL. C lodepng.c:2473: if strlen(type)!=4 return 0; return chunk[4..8]==type[0..4]. Rust src/lodepng.rs:331 lodepng_chunk_type_equals(chunk,&str)->u8: translates only the first statement (`if r#type.len()!=4 {return 0;}`) then returns 0 with comment 'Function body is incomplete'. Rejected tool_claim lodepng_chunk_length @748 and matcher_forced lodepng_chunk_next @1112 (both empty stubs for other C fns)."
+  },
+  "lodepng_chunk_ancillary": {
+   "truth": "STUB:lodepng_chunk_ancillary",
+   "note": "STUB-ONLY. C lodepng.c:2478 (chunk[4]&32)!=0. Rust src/lodepng.rs:326 lodepng_chunk_ancillary: unimplemented!() with 'Body not provided'. No fn tests bit 32 of chunk[4]. Rejected tool_claim lodepng_copy_type_from_chunk @533 (stub for lodepng_chunk_type) and matcher_forced lodepng_chunk_data @1181 (stub)."
+  },
+  "lodepng_chunk_private": {
+   "truth": "STUB:lodepng_chunk_private",
+   "note": "STUB-ONLY. C lodepng.c:2482 (chunk[6]&32)!=0. Rust src/lodepng.rs:321 lodepng_chunk_private returns 0, 'direct signature translation only'. Rejected tool_claim lodepng_chunk_type_equals @331 (partial translation of a different C fn)."
+  },
+  "lodepng_chunk_safetocopy": {
+   "truth": "STUB:lodepng_chunk_safetocopy",
+   "note": "STUB-ONLY. C lodepng.c:2486 (chunk[7]&32)!=0. Rust src/lodepng.rs:515 lodepng_chunk_safetocopy(chunk: Option<&i8>)->Option<&i8> just returns its argument (wrong return type, no logic). Rejected tool_claim lodepng_chunk_ancillary @326 and matcher_forced lodepng_chunk_type_equals @331 (other C fns)."
+  },
+  "lodepng_chunk_data": {
+   "truth": "STUB:lodepng_chunk_data",
+   "note": "STUB-ONLY. C lodepng.c:2490 returns &chunk[8]. Rust src/lodepng.rs:1181 lodepng_chunk_data returns None ('no-op implementation stub'). Rejected tool_claim lodepng_chunk_private @321 and matcher_forced lodepng_chunk_ancillary @326."
+  },
+  "lodepng_chunk_data_const": {
+   "truth": "STUB:lodepng_chunk_data_const",
+   "note": "STUB-ONLY. C lodepng.c:2494 returns &chunk[8]. Rust src/lodepng.rs:1186 lodepng_chunk_data_const returns None. Rejected tool_claim lodepng_chunk_safetocopy @515 (identity stub for a different C fn)."
+  },
+  "lodepng_chunk_check_crc": {
+   "truth": "STUB:lodepng_chunk_check_crc",
+   "note": "STUB-ONLY. C lodepng.c:2498 compares read32bitInt(&chunk[length+8]) with crc32(&chunk[4],length+4) -> 1/0. Rust src/lodepng.rs:1198 lodepng_chunk_check_crc returns 0, doc 'Stub for the C function lodepng_chunk_check_crc'. Rejected tool_claims lodepng_chunk_data @1181 / lodepng_chunk_data_const @1186 and matcher_forced lodepng_palette_add @1906 (all stubs for other C fns)."
+  },
+  "lodepng_chunk_generate_crc": {
+   "truth": "STUB:lodepng_chunk_generate_crc",
+   "note": "STUB-ONLY. C lodepng.c:2507 crc32(&chunk[4],length+4) then set32bitInt(chunk+8+length). Rust src/lodepng.rs:1109 lodepng_chunk_generate_crc is a no-op. Rejected tool_claim lodepng_chunk_check_crc @1198 and matcher_forced lodepng_chunk_find @1585."
+  },
+  "lodepng_chunk_next": {
+   "truth": "STUB:lodepng_chunk_next",
+   "note": "STUB-ONLY. C lodepng.c:2513 checks available_size<12, PNG magic 0x89 0x50 0x4e 0x47 0x0d 0x0a 0x1a 0x0a -> chunk+8, else addofl(length,12). Rust src/lodepng.rs:1112 lodepng_chunk_next returns None. No PNG-magic bytes anywhere in crate (grep 0x89/0x4e/0x1a: none). Rejected tool_claim lodepng_chunk_generate_crc @1109 and matcher_forced color_tree_get @1539."
+  },
+  "lodepng_chunk_next_const": {
+   "truth": "STUB:lodepng_chunk_next_const",
+   "note": "STUB-ONLY. C lodepng.c:2528 identical to lodepng_chunk_next with const pointers. Rust src/lodepng.rs:1118 lodepng_chunk_next_const returns None. Rejected matcher_forced lodepng_chunk_find_const @1128 (stub for lodepng_chunk_find_const)."
+  },
+  "lodepng_chunk_find": {
+   "truth": "STUB:lodepng_chunk_find",
+   "note": "STUB-ONLY. C lodepng.c:2543 loop: end-chunk<12 -> 0; type_equals -> chunk; chunk=chunk_next. Rust src/lodepng.rs:1585 lodepng_chunk_find returns None (only `let _ =` lines); duplicate stub @1597 (not in inventory) with doc citing the C signature. Rejected matcher_forced lodepng_chunk_check_crc @1198."
+  },
+  "lodepng_chunk_find_const": {
+   "truth": "STUB:lodepng_chunk_find_const",
+   "note": "STUB-ONLY. C lodepng.c:2551 const variant of chunk_find. Rust src/lodepng.rs:1128 lodepng_chunk_find_const returns None, doc 'Corresponds to: const unsigned char* lodepng_chunk_find_const(...)'. Rejected tool_claim lodepng_chunk_find @1585 (non-const C fn's stub) and matcher_forced lodepng_chunk_length @748."
+  },
+  "lodepng_chunk_append": {
+   "truth": "STUB:lodepng_chunk_append",
+   "note": "STUB-ONLY. C lodepng.c:2559 addofl x2 (err 77), realloc (err 83), byte copy. Rust src/lodepng.rs:1143 lodepng_chunk_append returns 0, doc 'Corresponds to: unsigned lodepng_chunk_append(...)'. No fn returns 77 anywhere (grep: none). Rejected tool_claim lodepng_chunk_find_const @1128."
+  },
+  "lodepng_chunk_init": {
+   "truth": "NONE",
+   "note": "NONE (analyzer limitation: Rust fn exists in source but is absent from the rust-analyzer inventory, so it cannot be a matcher target). STUB-ONLY, and the target is MISSING FROM THE INVENTORY: src/lodepng.rs:2014 `pub fn lodepng_chunk_init(_chunk: Option<&mut i8>, _out: Option<&mut Ucvector>, _r#type: Option<&i8>) -> u32 { 0 }` (probably dropped by the inventory parser because of the `_r#type` param). C lodepng.c:2582 (chunk**, out ucvector*, length, type): addofl (77), ucvector_resize (83), set32bitInt(length), memcpy type. The Rust stub has the same name and chunk/out/type params (length param dropped), doc 'Stub translated from an inferred C function surrounding the provided snippet'. The tool_claim (lodepng_chunk_init) was therefore correct in name. Rejected matcher_forced lodepng_assign_icc @620 (call-site stub for lodepng_assign_icc). If the inventory must be authoritative, this row becomes NONE."
+  },
+  "lodepng_chunk_createv": {
+   "truth": "STUB:lodepng_chunk_createv",
+   "note": "STUB-ONLY. C lodepng.c:2601 (out, length, type, data): chunk_init, memcpy data to chunk+8, generate_crc. Rust src/lodepng.rs:2264 lodepng_chunk_createv(out,type_,data,length,chunk-out-param) returns 0; doc says the snippet 'is part of a function ... commonly named lodepng_chunk_createv'; the extra `chunk` out-param is the local `unsigned char* chunk` of the C body leaked into the signature. Rejected matcher_forced count_zeros @865 (LZ77 zeros-count stub)."
+  },
+  "lodepng_chunk_create": {
+   "truth": "STUB:lodepng_chunk_create",
+   "note": "STUB-ONLY. C lodepng.c:2615 ucvector_init(*out,*outsize); createv; write back data/size. Rust src/lodepng.rs:918 lodepng_chunk_create returns 0, doc 'Stub for: unsigned lodepng_chunk_create(unsigned char** out, size_t* outsize, unsigned length, const char* type, const unsigned char* data)'. Rejected tool_claim lodepng_chunk_createv @2264 (stub for the static createv)."
+  },
+  "checkColorValidity": {
+   "truth": "STUB:checkColorValidity",
+   "note": "STUB-ONLY. C lodepng.c:2630 switch on colortype, bitdepth checks returning 37, invalid type 31. Rust src/lodepng.rs:929 checkColorValidity returns 0, doc 'Stub for: static unsigned checkColorValidity(LodePNGColorType colortype, unsigned bd)'. No fn returns 37 or 31 (grep: none). Rejected tool_claim lodepng_chunk_create @918."
+  },
+  "getNumColorChannels": {
+   "truth": "STUB:getNumColorChannels",
+   "note": "STUB-ONLY. C lodepng.c:2643 switch GREY->1, RGB->3, PALETTE->1, GREY_ALPHA->2, RGBA->4. Rust src/lodepng.rs:937 getNumColorChannels returns 0 ('Stub translated from: static unsigned getNumColorChannels(...)'); duplicate stub @1255 (not in inventory). A THIRD stub for the same C body exists: get_num_color_channels_stub @1461, whose doc quotes 'case LCT_GREY: return 1; case LCT_RGB: return 3; case LCT_PALETTE: return 1' — i.e. it was generated from this C function's switch, but it is also empty. Chose the same-name signature stub as canonical; get_num_color_channels_stub is a duplicate placeholder, not a translation of any other C fn. Rejected matcher_forced lodepng_filesize @405 (unimplemented!() stub)."
+  },
+  "lodepng_get_bpp_lct": {
+   "truth": "STUB:lodepng_get_bpp_lct",
+   "note": "STUB-ONLY. C lodepng.c:2655 getNumColorChannels(colortype)*bitdepth. Rust src/lodepng.rs:1262 lodepng_get_bpp_lct returns 0, doc cites the C signature. Rejected tool_claim get_num_color_channels_stub @1461 (duplicate stub of getNumColorChannels, see that row)."
+  },
+  "lodepng_color_mode_init": {
+   "truth": "STUB:lodepng_color_mode_init",
+   "note": "STUB-ONLY. C lodepng.c:2662 key_defined=0,key_rgb=0,colortype=LCT_RGBA,bitdepth=8,palette=0,palettesize=0. Rust src/lodepng.rs:1308 lodepng_color_mode_init no-op stub, doc 'Stub for: void lodepng_color_mode_init(LodePNGColorMode* info)'. No fn assigns colortype=RGBA/bitdepth=8. Rejected tool_claims getNumColorChannels @937 / lodepng_get_bpp_lct @1262 and matcher_forced lodepng_is_greyscale_type @1290 (stubs for other C fns)."
+  },
+  "lodepng_color_mode_alloc_palette": {
+   "truth": "STUB:lodepng_color_mode_alloc_palette",
+   "note": "STUB-ONLY. C lodepng.c:2672 malloc(1024), fill 256 entries with 0,0,0,255. Rust src/lodepng.rs:1315 lodepng_color_mode_alloc_palette no-op stub, doc cites 'static void lodepng_color_mode_alloc_palette'. No fn writes palette[i*4+3]=255 (grep 1024 only hits the struct field). Rejected tool_claim lodepng_color_mode_init @1308 and matcher_forced HuffmanTree_makeTable @1021."
+  },
+  "lodepng_color_mode_cleanup": {
+   "truth": "STUB:lodepng_color_mode_cleanup",
+   "note": "STUB-ONLY. C lodepng.c:2689 calls lodepng_palette_clear. Rust src/lodepng.rs:1886 lodepng_color_mode_cleanup no-op stub (duplicate no-op @2141, not in inventory). Rejected matcher_forced lodepng_is_palette_type @1302."
+  },
+  "lodepng_color_mode_copy": {
+   "truth": "NONE",
+   "note": "C lodepng.c:2693: cleanup(dest), memcpy struct, if source->palette malloc(1024) + memcpy palettesize*4, err 83. Searched crate for 'color_mode_copy', 'ColorMode.*copy', 'memcpy(dest', '1024', 'palettesize' — no function named or documented as this C function and no body copying a palette. The only palette mention is a doc comment at src/lodepng.rs:1444 explicitly saying no stub was generated (that snippet was lodepng_palette_add's anyway). Rejected tool_claim lodepng_color_mode_cleanup @1886 (stub for the C cleanup fn, which copy merely calls) and matcher_forced addChunk_gAMA @2365 (encoder chunk stub)."
+  },
+  "lodepng_color_mode_make": {
+   "truth": "STUB:lodepng_color_mode_make",
+   "note": "STUB-ONLY. C lodepng.c:2704 init + set colortype/bitdepth. Rust src/lodepng.rs:1318 lodepng_color_mode_make returns LodePNGColorMode::default() ignoring its arguments ('default stub')."
+  },
+  "lodepng_color_mode_equal": {
+   "truth": "STUB:lodepng_color_mode_equal",
+   "note": "STUB-ONLY. C lodepng.c:2712 field-by-field compare incl. palette bytes. Rust src/lodepng.rs:1326 lodepng_color_mode_equal returns 0 ('equality not evaluated'), doc cites C signature. Rejected tool_claim lodepng_color_mode_make @1318 and matcher_forced addChunk_cHRM @2368."
+  },
+  "lodepng_palette_clear": {
+   "truth": "STUB:lodepng_palette_clear",
+   "note": "STUB-ONLY. C lodepng.c:2729 free palette, palette=0, palettesize=0. Rust src/lodepng.rs:1269 lodepng_palette_clear no-op stub (duplicate no-op @1899, not in inventory), doc cites C signature. Rejected matcher_forced lodepng_is_alpha_type @1296."
+  },
+  "lodepng_palette_add": {
+   "truth": "STUB:lodepng_palette_add",
+   "note": "STUB-ONLY. C lodepng.c:2735 alloc_palette if null (83), palettesize>=256 -> 108, write 4 bytes, ++palettesize. Rust src/lodepng.rs:1906 lodepng_palette_add returns 0, doc cites C signature. A doc-only comment @1444-1452 quotes this body ('writes RGBA values into a palette and increments palettesize') but generates no fn. No fn returns 108 (grep: only the version string). Rejected tool_claim lodepng_palette_clear @1269 and matcher_forced zlib_compress @898."
+  },
+  "lodepng_get_bpp": {
+   "truth": "STUB:lodepng_get_bpp",
+   "note": "STUB-ONLY. C lodepng.c:2753 get_bpp_lct(info->colortype, info->bitdepth). Rust src/lodepng.rs:1276 lodepng_get_bpp returns 0 (duplicate stub @1937, not in inventory). Rejected matcher_forced lodepng_get_channels @1283 (stub for the sibling C fn)."
+  },
+  "lodepng_get_channels": {
+   "truth": "STUB:lodepng_get_channels",
+   "note": "STUB-ONLY. C lodepng.c:2757 getNumColorChannels(info->colortype). Rust src/lodepng.rs:1283 lodepng_get_channels returns 0, doc cites C signature. Rejected matcher_forced lodepng_get_bpp @1276."
+  },
+  "lodepng_is_greyscale_type": {
+   "truth": "STUB:lodepng_is_greyscale_type",
+   "note": "STUB-ONLY. C lodepng.c:2761 colortype==GREY||GREY_ALPHA. Rust src/lodepng.rs:1290 returns 0, doc cites C signature. Rejected tool_claim lodepng_get_bpp @1276 and matcher_forced lodepng_decoder_settings_init @1231."
+  },
+  "lodepng_is_alpha_type": {
+   "truth": "STUB:lodepng_is_alpha_type",
+   "note": "STUB-ONLY. C lodepng.c:2765 (colortype&4)!=0. Rust src/lodepng.rs:1296 returns 0, doc cites C signature. Rejected tool_claim lodepng_get_channels @1283 and matcher_forced LodePNGIText_init @1733."
+  },
+  "lodepng_is_palette_type": {
+   "truth": "STUB:lodepng_is_palette_type",
+   "note": "STUB-ONLY. C lodepng.c:2769 colortype==LCT_PALETTE. Rust src/lodepng.rs:1302 returns 0, doc cites C signature. Rejected tool_claim lodepng_is_greyscale_type @1290 and matcher_forced lodepng_color_stats_init @911."
+  },
+  "lodepng_has_palette_alpha": {
+   "truth": "STUB:lodepng_has_palette_alpha",
+   "note": "STUB-ONLY. C lodepng.c:2773 loop palette[i*4+3]<255 -> 1. Rust src/lodepng.rs:1893 lodepng_has_palette_alpha returns 0, doc cites C signature. A second empty stub has_palette_alpha_stub @1951 (param LodePNGInfo) quotes this exact C loop in its doc — duplicate placeholder for the same C fn, chose the same-name one. Rejected tool_claims lodepng_is_alpha_type @1296 / lodepng_is_palette_type @1302 and matcher_forced LodePNGIText_cleanup @1736."
+  },
+  "lodepng_can_have_alpha": {
+   "truth": "STUB:lodepng_can_have_alpha",
+   "note": "STUB-ONLY. C lodepng.c:2781 key_defined || is_alpha_type || has_palette_alpha. Rust src/lodepng.rs:2230 lodepng_can_have_alpha returns 0, doc cites C signature. Rejected tool_claim lodepng_has_palette_alpha @1893 and matcher_forced lodepng_info_cleanup @2158."
+  },
+  "lodepng_get_raw_size_lct": {
+   "truth": "STUB:lodepng_get_raw_size_lct",
+   "note": "STUB-ONLY. C lodepng.c:2787 (n/8)*bpp + ((n&7)*bpp+7)/8. Rust src/lodepng.rs:518 lodepng_get_raw_size_lct(w,h,colortype,bitdepth) returns 0. Rejected tool_claim has_palette_alpha_stub @1951 (duplicate stub of lodepng_has_palette_alpha)."
+  },
+  "lodepng_get_raw_size": {
+   "truth": "STUB:lodepng_get_raw_size",
+   "note": "STUB-ONLY. C lodepng.c:2793 get_raw_size_lct(w,h,color->colortype,color->bitdepth). Rust src/lodepng.rs:2185 lodepng_get_raw_size returns 0 ('Rust stub for: size_t lodepng_get_raw_size'); a second identical stub is at src/common/lodepng_mod.rs:11. Rejected tool_claim lodepng_can_have_alpha @2230 and matcher_forced read_chunk_srgb @3026."
+  },
+  "lodepng_get_raw_size_idat": {
+   "truth": "STUB:lodepng_get_raw_size_idat",
+   "note": "STUB-ONLY. C lodepng.c:2803 line=(w/8)*bpp+1+((w&7)*bpp+7)/8; h*line. Rust src/lodepng.rs:2190 lodepng_get_raw_size_idat returns 0, doc cites C signature. Rejected tool_claim lodepng_get_raw_size_lct @518."
+  },
+  "lodepng_pixel_overflow": {
+   "truth": "STUB:lodepng_pixel_overflow",
+   "note": "STUB-ONLY. C lodepng.c:2819 chain of mulofl/addofl checks (+5 per line), returns 1 on overflow. Rust src/lodepng.rs:2203 lodepng_pixel_overflow returns 0, doc cites C signature. Rejected tool_claims lodepng_get_raw_size @2185 / lodepng_get_raw_size_idat @2190 and matcher_forced lodepng_set_icc @1664."
+  },
+  "LodePNGUnknownChunks_init": {
+   "truth": "STUB:lodepng_unknown_chunks_init",
+   "note": "STUB-ONLY. C lodepng.c:2842 zero unknown_chunks_data[3]/size[3]. Rust src/lodepng.rs:628 lodepng_unknown_chunks_init(dest: Option<&mut ()>) is an empty fn generated from the call `LodePNGUnknownChunks_init(dest)` inside lodepng_info_copy (hence the param name `dest` and the () type); no other fn touches unknown_chunks_*. Rejected tool_claim lodepng_mulofl @1678 (overflow-check stub) and matcher_forced LodePNGText_init @1698 (stub for the text init)."
+  },
+  "LodePNGUnknownChunks_cleanup": {
+   "truth": "STUB:LodePNGUnknownChunks_cleanup",
+   "note": "STUB-ONLY. C lodepng.c:2848 frees unknown_chunks_data[0..3]. Rust src/lodepng.rs:1689 LodePNGUnknownChunks_cleanup no-op, doc 'Stub for LodePNGUnknownChunks_cleanup'. Rejected tool_claim lodepng_mulofl @1678 and matcher_forced has_palette_alpha_stub @1951."
+  },
+  "LodePNGUnknownChunks_copy": {
+   "truth": "STUB:LodePNGUnknownChunks_copy",
+   "note": "STUB-ONLY. C lodepng.c:2853 cleanup(dest), per i<3 malloc+byte copy, err 83. Rust src/lodepng.rs:2065 LodePNGUnknownChunks_copy returns 0, doc cites the exact C signature. A second call-site-derived empty stub lodepng_unknown_chunks_copy @630 (dest/source: Option<&mut ()>) is a duplicate placeholder for the same C fn; chose the one citing the C signature. Rejected matcher_forced read_chunk_time @1805."
+  },
+  "LodePNGText_init": {
+   "truth": "STUB:LodePNGText_init",
+   "note": "STUB-ONLY. C lodepng.c:2873 text_num=0, keys/strings=NULL. Rust src/lodepng.rs:1698 LodePNGText_init no-op (duplicate no-op @1701, not in inventory), doc cites 'void LodePNGText_init(LodePNGInfo* info)'. Rejected matcher_forced lodepng_add_text_sized @1710."
+  },
+  "LodePNGText_cleanup": {
+   "truth": "STUB:LodePNGText_cleanup",
+   "note": "STUB-ONLY. C lodepng.c:2879 string_cleanup each key/string, free arrays. Rust src/lodepng.rs:2446 LodePNGText_cleanup 'Default no-op body'. Rejected tool_claim LodePNGText_init @1698 and matcher_forced lodepng_clear_text @1730 (C clear_text merely calls Text_cleanup; separate stub exists)."
+  },
+  "LodePNGText_copy": {
+   "truth": "STUB:lodepng_text_copy",
+   "note": "STUB-ONLY. C lodepng.c:2889 null dest text fields, loop lodepng_add_text over source->text_num. Rust src/lodepng.rs:614 lodepng_text_copy(dest,source)->u32 returns 0 — call-site-derived placeholder (from `LodePNGText_copy(dest, source)` in lodepng_info_copy), params typed Option<&mut ()>. No other fn loops over text_num. Rejected tool_claim LodePNGText_cleanup @2446 (cleanup stub) and matcher_forced ensure_bits17 @973 (bit-reader stub)."
+  },
+  "lodepng_add_text_sized": {
+   "truth": "STUB:lodepng_add_text_sized",
+   "note": "STUB-ONLY. C lodepng.c:2900 realloc keys/strings (83), ++text_num, alloc_string(key), alloc_string_sized(str,size). Rust src/lodepng.rs:1710 lodepng_add_text_sized returns 0, doc cites exact C signature. A second empty stub lodepng_add_text_entry @2071 (info,key,str_val,size; doc: 'operating on info->text_keys and info->text_strings ... matching the return 83 semantics') was generated from this same C body — duplicate placeholder, chose the same-name one. Rejected matcher_forced getPixelColorsRGB8 @1388."
+  },
+  "lodepng_add_text": {
+   "truth": "STUB:lodepng_add_text",
+   "note": "STUB-ONLY. C lodepng.c:2917 add_text_sized(info,key,str,strlen(str)). Rust src/lodepng.rs:1723 lodepng_add_text returns 0, doc cites C signature (duplicate stub @2084 with Option<&LodePNGInfo>, not in inventory). Rejected matcher_forced get_tree_inflate_dynamic @2416."
+  },
+  "lodepng_clear_text": {
+   "truth": "STUB:lodepng_clear_text",
+   "note": "STUB-ONLY. C lodepng.c:2921 calls LodePNGText_cleanup. Rust src/lodepng.rs:1730 lodepng_clear_text no-op, doc cites C signature. Rejected tool_claim lodepng_add_text_entry @2071 (duplicate stub of lodepng_add_text_sized) and matcher_forced lodepng_clear_itext @1741 (itext sibling)."
+  },
+  "LodePNGIText_init": {
+   "truth": "STUB:LodePNGIText_init",
+   "note": "STUB-ONLY. C lodepng.c:2927 itext_num=0, four arrays=NULL. Rust src/lodepng.rs:1733 LodePNGIText_init no-op. Note: the out-of-inventory duplicate lodepng_clear_itext @2105 has a real 3-line body setting itext_langtags/transkeys/strings=None — a fragment of this init (C 2930-2932) mislabelled as clear_itext; not attributed here because it is not an inventory entry and its name claims another C fn. Rejected tool_claims lodepng_add_text @1723 / lodepng_clear_text @1730 and matcher_forced lodepng_clear_icc @1676."
+  },
+  "LodePNGIText_cleanup": {
+   "truth": "STUB:LodePNGIText_cleanup",
+   "note": "STUB-ONLY. C lodepng.c:2935 string_cleanup x4 per entry, free 4 arrays. Rust src/lodepng.rs:1736 LodePNGIText_cleanup no-op. Rejected tool_claim LodePNGIText_init @1733 and matcher_forced LodePNGUnknownChunks_cleanup @1689."
+  },
+  "LodePNGIText_copy": {
+   "truth": "STUB:LodePNGIText_copy",
+   "note": "STUB-ONLY. C lodepng.c:2949 null dest itext fields, loop lodepng_add_itext over source->itext_num. Rust src/lodepng.rs:2475 LodePNGIText_copy returns 0, doc cites exact C signature. Duplicate call-site stub lodepng_i_text_copy @617 (Option<&mut ()> params) is a placeholder for the same C fn; chose the one citing the signature. Rejected matcher_forced lodepng_chunk_next_const @1118."
+  },
+  "lodepng_clear_itext": {
+   "truth": "STUB:lodepng_clear_itext",
+   "note": "STUB-ONLY. C lodepng.c:2963 calls LodePNGIText_cleanup. Rust src/lodepng.rs:1741 lodepng_clear_itext: `let _ = info;` no-op, doc cites C signature. Out-of-inventory duplicate @2105 sets three itext pointer fields to None (a fragment of LodePNGIText_init, not of clear_itext's cleanup semantics). Rejected matcher_forced lodepng_has_palette_alpha @1893."
+  },
+  "lodepng_add_itext_sized": {
+   "truth": "STUB:lodepng_add_itext_sized",
+   "note": "STUB-ONLY. C lodepng.c:2967 realloc 4 arrays (83), ++itext_num, alloc_string x3 + alloc_string_sized. Rust src/lodepng.rs:1748 lodepng_add_itext_sized returns 0, doc cites exact C signature. Rejected tool_claim lodepng_clear_itext @1741."
+  },
+  "lodepng_add_itext": {
+   "truth": "STUB:lodepng_add_itext",
+   "note": "STUB-ONLY. C lodepng.c:2991 add_itext_sized(..., strlen(str)). Rust src/lodepng.rs:1764 lodepng_add_itext returns 0, doc cites C signature (duplicate stub @2116, not in inventory)."
+  },
+  "lodepng_assign_icc": {
+   "truth": "STUB:lodepng_assign_icc",
+   "note": "STUB-ONLY. C lodepng.c:2997 profile_size==0 -> 100; alloc_string(name), malloc(profile_size) (83), memcpy, set iccp_profile_size. Rust inventory entry lodepng_assign_icc @620 (dest: Option<&mut ()>, iccp_name, iccp_profile, iccp_profile_size) returns 0 — call-site-derived from lodepng_info_copy; a second stub with the same name and the exact C signature in its doc is @2128 (not in inventory). Both empty; no fn returns 100 (grep: none). Rejected tool_claim lodepng_add_itext @1764 and matcher_forced lodepng_zlib_decompressv @2855."
+  },
+  "lodepng_set_icc": {
+   "truth": "STUB:lodepng_set_icc",
+   "note": "STUB-ONLY. C lodepng.c:3011 clear_icc if name set, iccp_defined=1, assign_icc. Rust src/lodepng.rs:1664 lodepng_set_icc returns 0, doc cites exact C signature. Rejected tool_claim lodepng_assign_icc @620 and matcher_forced lodepng_inflatev @2713."
+  },
+  "lodepng_clear_icc": {
+   "truth": "STUB:lodepng_clear_icc",
+   "note": "STUB-ONLY. C lodepng.c:3018 string_cleanup name, free profile, size=0, defined=0. Rust src/lodepng.rs:1676 lodepng_clear_icc empty body, doc cites C signature. Rejected tool_claim lodepng_set_icc @1664 and matcher_forced LodePNGText_cleanup @2446."
+  },
+  "lodepng_info_init": {
+   "truth": "STUB:lodepng_info_init",
+   "note": "STUB-ONLY. C lodepng.c:3027 color_mode_init, zero interlace/compression/filter, background, Text_init, IText_init, time/phys/gama/chrm/srgb/iccp/sbit fields, UnknownChunks_init. Rust src/lodepng.rs:2097 lodepng_info_init no-op, doc 'Translated from: void lodepng_info_init(LodePNGInfo* info)'. Note lodepng_info_cleanup @2158's doc quotes a fragment of THIS function's body (chrm_defined=0 ... sbit_a=0, C 3043-3050) but its name/param make it the cleanup placeholder; body is empty either way."
+  },
+  "lodepng_info_cleanup": {
+   "truth": "STUB:lodepng_info_cleanup",
+   "note": "STUB-ONLY. C lodepng.c:3056 color_mode_cleanup, Text_cleanup, IText_cleanup, clear_icc, UnknownChunks_cleanup. Rust src/lodepng.rs:2158 lodepng_info_cleanup: `if let Some(_info) = info {}` no-op; its doc comment quotes an lodepng_info_init snippet (chrm/srgb/iccp/sbit = 0), so the placeholder is name-matched only. Rejected matcher_forced rgba8ToPixel @1547."
+  },
+  "lodepng_info_copy": {
+   "truth": "STUB:lodepng_info_copy",
+   "note": "STUB-ONLY. C lodepng.c:3068 cleanup, memcpy, color_mode_init+copy, Text_copy, IText_copy, assign_icc if iccp_defined, UnknownChunks_init+copy. Rust src/lodepng.rs:2671 lodepng_info_copy returns 0 (`let _ = (dest, source)`). The call-site stubs lodepng_text_copy/lodepng_i_text_copy/lodepng_assign_icc/lodepng_unknown_chunks_init/lodepng_unknown_chunks_copy @614-632 were generated from this C body's callees, not from this fn itself. Rejected tool_claim lodepng_info_cleanup @2158 and matcher_forced readChunk_sRGB @1860."
+  },
+  "addColorBits": {
+   "truth": "STUB:translated_bit_manipulation",
+   "note": "STUB-ONLY (not a candidate from any source). C lodepng.c:3090: m = bits==1?7:bits==2?3:1; p=index&m; in &= (1<<bits)-1; in <<= bits*(m-p); out[index*bits/8] = or |= in. Rust src/lodepng.rs:688 translated_bit_manipulation(bits,index,input)->u32 returns 0, but its doc quotes this exact C body verbatim ('Stubbed translation of: unsigned m = bits == 1 ? 7 : bits == 2 ? 3 : 1; unsigned p = index & m; in &= (1u << bits) - 1u; in = in << (bits * (m - p))') — it is the translator's placeholder for addColorBits (the `out` param was dropped). No other fn contains this bit-group logic. Rejected all five tool_claims (lodepng_text_copy @614, lodepng_i_text_copy @617, lodepng_assign_icc @620, lodepng_unknown_chunks_init @628, lodepng_unknown_chunks_copy @630 — those are call-site stubs from lodepng_info_copy) and matcher_forced lodepng_encode24_file @1243."
+  },
+  "color_tree_init": {
+   "truth": "STUB:color_tree_init",
+   "note": "STUB-ONLY. C lodepng.c:3113 memset children, index=-1. Rust src/lodepng.rs:1055 color_tree_init no-op (duplicate no-op @1062 after the ColorTree struct with children[16]/index, not in inventory). Rejected tool_claim ColorTree (a struct, not a fn) and matcher_forced translated_function @474 (real translation of the fseek/ftell filesize helper, unrelated)."
+  },
+  "color_tree_cleanup": {
+   "truth": "STUB:color_tree_cleanup",
+   "note": "STUB-ONLY. C lodepng.c:3118 recursive cleanup+free of 16 children. Rust src/lodepng.rs:1065 color_tree_cleanup no-op, doc 'Stubbed translation of: static void color_tree_cleanup(ColorTree* tree)'. Rejected tool_claims ColorTree (struct) / color_tree_init @1055 and matcher_forced wctomb @2306 (libc stub)."
+  },
+  "color_tree_get": {
+   "truth": "STUB:color_tree_get",
+   "note": "STUB-ONLY. C lodepng.c:3129 8-bit descent i=8r+4g+2b+a bits, -1 if missing else index. Rust src/lodepng.rs:1539 color_tree_get returns 0 ('Default return value for stub'). Rejected tool_claim color_tree_cleanup @1065 and matcher_forced boundary_pm @2051."
+  },
+  "color_tree_has": {
+   "truth": "STUB:color_tree_has",
+   "note": "STUB-ONLY. C lodepng.c:3140 color_tree_get(...)>=0. Rust src/lodepng.rs:1516 color_tree_has returns 0, doc cites exact C signature. Rejected tool_claim color_tree_get @1539."
+  },
+  "color_tree_add": {
+   "truth": "STUB:color_tree_add",
+   "note": "STUB-ONLY. C lodepng.c:3148 8-bit descent allocating children (83), set index. Rust src/lodepng.rs:1529 color_tree_add returns 0, doc cites exact C signature. Rejected tool_claim color_tree_has @1516."
+  },
+  "rgba8ToPixel": {
+   "truth": "STUB:rgba8ToPixel",
+   "note": "STUB-ONLY. C lodepng.c:3165 per-colortype writes incl. addColorBits for sub-8-bit, palette lookup err 82. Rust src/lodepng.rs:1547 rgba8ToPixel returns 0, doc cites exact C signature. No fn returns 82 (grep: none). Rejected matcher_forced search_code_index @470 (unimplemented!() stub)."
+  },
+  "rgba16ToPixel": {
+   "truth": "STUB:rgba16ToPixel",
+   "note": "STUB-ONLY. C lodepng.c:3219 big-endian 16-bit writes per colortype. Rust src/lodepng.rs:1336 rgba16ToPixel no-op, doc cites exact C signature."
+  },
+  "getPixelColorRGBA8": {
+   "truth": "STUB:getPixelColorRGBA8",
+   "note": "STUB-ONLY. C lodepng.c:3252 per-colortype reads with key_defined transparency and readBitsFromReversedStream. Rust src/lodepng.rs:1352 getPixelColorRGBA8 no-op, doc cites exact C signature. No fn references key_defined/palette (grep: none). Rejected matcher_forced preProcessScanlines @3245."
+  },
+  "getPixelColorsRGBA8": {
+   "truth": "STUB:getPixelColorsRGBA8",
+   "note": "STUB-ONLY. C lodepng.c:3326 bulk 4-channel conversion loops. Rust src/lodepng.rs:1372 getPixelColorsRGBA8 no-op, doc cites exact C signature (with __restrict). Rejected matcher_forced update_hash_chain @1632."
+  },
+  "getPixelColorsRGB8": {
+   "truth": "STUB:getPixelColorsRGB8",
+   "note": "STUB-ONLY. C lodepng.c:3422 bulk 3-channel conversion loops. Rust src/lodepng.rs:1388 getPixelColorsRGB8 no-op, doc cites exact C signature. Rejected matcher_forced huffman_tree_make_from_lengths @706."
+  },
+  "getPixelColorRGBA16": {
+   "truth": "STUB:getPixelColorRGBA16",
+   "note": "STUB-ONLY. C lodepng.c:3496 256*in[..]+in[..] reads, 65535 alpha. Rust src/lodepng.rs:1400 getPixelColorRGBA16 no-op, doc cites exact C signature. No 65535 literal anywhere in crate. Rejected matcher_forced addChunk_iTXt @3150."
+  },
+  "lodepng_convert": {
+   "truth": "STUB:lodepng_convert",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 3522-3592 (codes 107, memcpy fast path, palette->palette check). Rust src/lodepng.rs:2551 stub (doc names C fn) and a second same-name stub in src/common/lodepng_mod.rs:122. matcher_forced/tool_claim/same_name agree."
+  },
+  "lodepng_convert_rgb": {
+   "truth": "STUB:lodepng_convert_rgb",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 3595-3640 (codes 31/82). Rust src/lodepng.rs:1419 stub, doc names C fn."
+  },
+  "lodepng_color_stats_init": {
+   "truth": "STUB:lodepng_color_stats_init",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 3645-3657 (zeroes stats, allow_palette=1). Rust src/lodepng.rs:911 stub, name+signature (Option<&mut LodePNGColorStats>). matcher_forced=lodepng_decompress_settings_init rejected: different name, takes LodePNGDecoderSettings, is the placeholder for C lodepng_decompress_settings_init."
+  },
+  "getValueRequiredBits": {
+   "truth": "STUB:getValueRequiredBits",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 3667-3673 (255/85/17 divisibility test). Rust src/lodepng.rs:2165 stub, doc names C fn."
+  },
+  "lodepng_compute_color_stats": {
+   "truth": "STUB:lodepng_compute_color_stats",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 3679-3868 (long stats loop, code 83). Rust src/lodepng.rs:2172 stub (doc names C fn) and second same-name stub src/common/lodepng_mod.rs:141. tool_claim=getValueRequiredBits rejected: that is the placeholder for the adjacent C fn getValueRequiredBits (tool span off-by-one)."
+  },
+  "lodepng_color_stats_add": {
+   "truth": "STUB:lodepng_color_stats_add",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 3872-3884. Rust src/lodepng.rs:2534 stub, doc names C fn."
+  },
+  "auto_choose_color": {
+   "truth": "STUB:auto_choose_color",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 3893-3968 (palette_ok/gray_ok heuristics). Rust src/lodepng.rs:2490 stub, doc names C fn (mode_in oddly typed LodePNGState). matcher_forced=readChunk_gAMA rejected: unrelated stub for C readChunk_gAMA."
+  },
+  "paethPredictor": {
+   "truth": "STUB:paethPredictor",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 3975-3987. Rust src/lodepng.rs:831 stub, signature (a,b,c: i16)->u8 matches C short args."
+  },
+  "Adam7_getpassvalues": {
+   "truth": "STUB:Adam7_getpassvalues",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4008-4031. Rust src/lodepng.rs:834 stub, signature with [u32;7]/[u64;8] arrays matches C passw/passh/filter_passstart/padded_passstart/passstart. tool_claim=paethPredictor rejected: placeholder for adjacent C paethPredictor (off-by-one)."
+  },
+  "lodepng_inspect": {
+   "truth": "STUB:lodepng_inspect",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4041-4102 (codes 27/28/29/32/33/34/48/57/93/94, 'IHDR'). Rust src/lodepng.rs:2521 stub, doc names C fn. No 'IHDR' literal anywhere in crate code."
+  },
+  "unfilterScanline": {
+   "truth": "STUB:unfilterScanline",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4106-4204 (recon[i] = scanline[i] + ..., default returns 36). Rust src/lodepng.rs:720 stub, signature matches. translated_segment@src/lodepng.rs:428 is NOT this: it subtracts (scanline[i]-scanline[i-bytewidth]) with 'i < length' loop and 'default: return;' comment, i.e. filterScanline case 1, not the unfilter (which adds and returns 36 on default)."
+  },
+  "unfilter": {
+   "truth": "STUB:unfilter",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4206-4222. Rust src/lodepng.rs:1100 stub."
+  },
+  "Adam7_deinterlace": {
+   "truth": "STUB:Adam7_deinterlace",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4230-4276. Rust src/lodepng.rs:1160 stub, doc names C fn. matcher_forced=Adam7_interlace rejected: that is the stub for C Adam7_interlace (doc says so, src/lodepng.rs:1171)."
+  },
+  "removePaddingBits": {
+   "truth": "STUB:remove_padding_bits",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4278-4297. Rust src/lodepng.rs:778 stub, doc names C removePaddingBits. matcher_forced=addPaddingBits rejected: stub for C addPaddingBits (src/lodepng.rs:790)."
+  },
+  "postProcessScanlines": {
+   "truth": "STUB:post_process_scanlines",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4301-4337 (code 31). Rust src/lodepng.rs:2214 stub, doc names C fn. matcher_forced=remove_padding_bits rejected: stub for C removePaddingBits."
+  },
+  "readChunk_PLTE": {
+   "truth": "STUB:readChunk_PLTE",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4339-4354 (codes 38/83). Rust src/lodepng.rs:1923 stub, doc names C fn. matcher_forced=lodepng_add_text rejected: unrelated stub for C lodepng_add_text."
+  },
+  "readChunk_tRNS": {
+   "truth": "STUB:readChunk_tRNS",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4356-4385 (codes 30/39/41/42). Rust src/lodepng.rs:1437 stub, doc names C fn. matcher_forced=lodepng_buffer_file rejected: unrelated (file-IO stub)."
+  },
+  "readChunk_bKGD": {
+   "truth": "STUB:readChunk_bKGD",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4390-4418 (codes 43/44/45/103). Rust src/lodepng.rs:1781 stub, doc names C fn. matcher_forced=mbstowcs rejected: libc wrapper, unrelated."
+  },
+  "readChunk_tEXt": {
+   "truth": "STUB:readChunk_tEXt",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4421-4457 (codes 83/89). Rust src/lodepng.rs:2456 stub, doc names C fn. matcher_forced=read_bits_from_reversed_stream rejected: bit-reader stub, unrelated."
+  },
+  "readChunk_zTXt": {
+   "truth": "STUB:read_chunk_ztxt",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4460-4508 (codes 72/75/83/89). Rust src/lodepng.rs:2997 stub, doc names C readChunk_zTXt; call-site 'use' imports it as readChunk_zTXt. matcher_forced=lodepng_deflatev rejected: deflate stub, unrelated."
+  },
+  "readChunk_iTXt": {
+   "truth": "STUB:readChunk_iTXt",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4511-4590 (codes 30/72/75/83/89). Rust src/lodepng.rs:3015 stub, doc names C fn. matcher_forced=getPixelColorsRGBA8 rejected: unrelated."
+  },
+  "readChunk_tIME": {
+   "truth": "STUB:readChunk_tIME",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4592-4604 (code 73). Rust src/lodepng.rs:1793 stub with 3 params (info, data, chunkLength) and doc naming C fn; call sites import readChunk_tIME. Also read_chunk_time@src/lodepng.rs:1805 is a 2-param fragment stub ('snippet that manipulates info->time') of the same C fn -- duplicate placeholder, rejected as not the named translation. matcher_forced=peek_bits rejected: unrelated."
+  },
+  "readChunk_pHYs": {
+   "truth": "STUB:readChunk_pHYs",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4606-4614 (code 74). Rust src/lodepng.rs:1817 stub, doc names C fn. tool_claim=read_chunk_time rejected: tIME fragment stub (tool span off-by-one). matcher_forced=inflateNoCompression rejected: unrelated."
+  },
+  "readChunk_gAMA": {
+   "truth": "STUB:readChunk_gAMA",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4616-4622 (code 96). Rust src/lodepng.rs:1831 stub, doc names C fn. tool_claim=readChunk_pHYs rejected: placeholder for adjacent C readChunk_pHYs (off-by-one)."
+  },
+  "readChunk_cHRM": {
+   "truth": "STUB:readChunk_cHRM",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4624-4637 (code 97). Rust src/lodepng.rs:1844 stub, doc names C fn. tool_claim=readChunk_gAMA rejected: off-by-one placeholder."
+  },
+  "readChunk_sRGB": {
+   "truth": "STUB:read_chunk_srgb",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4639-4645 (code 98). Rust src/lodepng.rs:3026 stub with the correct 3-param signature ->u32 and doc naming C fn; call sites import 'read_chunk_srgb as readChunk_sRGB'. same_name candidate readChunk_sRGB@src/lodepng.rs:1860 rejected: 2-param, returns (), doc admits 'exact C function name isn't given' -- a fragment placeholder, not the named translation. matcher_forced=lodepng_inflate_block_logic rejected: unrelated."
+  },
+  "readChunk_iCCP": {
+   "truth": "STUB:read_chunk_iccp",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4647-4691 (codes 72/75/83/89). Rust src/lodepng.rs:3043 stub, doc names C fn. tool_claim also lists read_chunk_srgb: rejected (sRGB placeholder). matcher_forced=addChunk_IDAT rejected: unrelated."
+  },
+  "readChunk_sBIT": {
+   "truth": "STUB:read_chunk_sbit",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4695-4735 (codes 114/115). Rust src/lodepng.rs:1865 stub, doc names C fn. matcher_forced=readChunk_bKGD rejected: bKGD placeholder."
+  },
+  "lodepng_inspect_chunk": {
+   "truth": "STUB:lodepng_inspect_chunk",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4738-4795 (codes 30/57/63, chunk-name dispatch). Rust src/lodepng.rs:3073 stub, doc names C fn. matcher_forced=lodepng_load_file rejected: that is a REAL fn (file loader, codes 78/83) translating C lodepng_load_file."
+  },
+  "decodeGeneric": {
+   "truth": "STUB:decodeGeneric",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4799-4993 (codes 30/57/63/64/69/95). Rust src/lodepng.rs:3099 stub, doc names C fn. matcher_forced=lodepng_encode rejected: encoder placeholder."
+  },
+  "lodepng_decode": {
+   "truth": "STUB:lodepng_decode",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 4996-5040 (code 56). Rust src/lodepng.rs:3221 stub (doc names C fn); duplicate same-name stub at src/lodepng.rs:3336."
+  },
+  "lodepng_decode_memory": {
+   "truth": "STUB:lodepng_decode_memory",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5042-5054. Rust src/lodepng.rs:3267 stub; duplicate at src/lodepng.rs:3477."
+  },
+  "lodepng_decode32": {
+   "truth": "STUB:lodepng_decode32",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5056-5058. Rust src/lodepng.rs:3321 stub; duplicate at src/lodepng.rs:3353. matcher_forced=lodepng_decode24 rejected: decode24 placeholder."
+  },
+  "lodepng_decode24": {
+   "truth": "STUB:lodepng_decode24",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5060-5062. Rust src/lodepng.rs:3366 stub, doc names C fn. tool_claim lodepng_decode/lodepng_state_cleanup rejected: placeholders for other C fns (tool span mismatch). matcher_forced=lodepng_decode32 rejected."
+  },
+  "lodepng_decode_file": {
+   "truth": "STUB:lodepng_decode_file",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5065-5076 (load_file then decode_memory). Rust src/lodepng.rs:3385 stub, doc names C fn. tool_claim decode32/decode24 rejected: placeholders for other C fns."
+  },
+  "lodepng_decode32_file": {
+   "truth": "STUB:lodepng_decode32_file",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5078-5080. Rust src/lodepng.rs:1209 stub; duplicate at src/lodepng.rs:3430. matcher_forced=lodepng_decode24_file rejected."
+  },
+  "lodepng_decode24_file": {
+   "truth": "STUB:lodepng_decode24_file",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5082-5084 (calls lodepng_decode_file with LCT_RGB,8). Rust src/lodepng.rs:1219 stub. tool_claim lodepng_load_file/lodepng_decode_memory rejected: those are callees of lodepng_decode_file, not this fn. matcher_forced=lodepng_decode32_file rejected."
+  },
+  "lodepng_decoder_settings_init": {
+   "truth": "STUB:lodepng_decoder_settings_init",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5089-5101. Rust src/lodepng.rs:1231 stub; duplicate same-name stub src/common/lodepng_mod.rs:27. tool_claim decode32_file/decode24_file rejected (other C fns). matcher_forced=lodepng_state_init rejected."
+  },
+  "lodepng_state_init": {
+   "truth": "STUB:lodepng_state_init",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5107-5120. Rust src/lodepng.rs:2467 stub; duplicate at src/lodepng.rs:2502. matcher_forced=readChunk_cHRM rejected: unrelated."
+  },
+  "lodepng_state_cleanup": {
+   "truth": "STUB:lodepng_state_cleanup",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5122-5126. Rust src/lodepng.rs:3348 stub; duplicate at src/lodepng.rs:3514. tool_claim=lodepng_state_init rejected (adjacent C fn). matcher_forced=readChunk_tIME rejected."
+  },
+  "lodepng_state_copy": {
+   "truth": "STUB:lodepng_state_copy",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5128-5136. Rust src/lodepng.rs:2026 stub, doc names C fn. tool_claim ELIDED. matcher_forced=LodePNGUnknownChunks_copy rejected: different C fn."
+  },
+  "writeSignature": {
+   "truth": "STUB:writeSignature",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5145-5150 (PNG signature bytes 137 80 78 71..., code 83). Rust src/lodepng.rs:2273 stub. tool_claim=lodepng_state_copy rejected: adjacent C fn placeholder. No signature-byte literal in crate."
+  },
+  "addChunk_IHDR": {
+   "truth": "STUB:addChunk_IHDR",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5152-5170. Rust src/lodepng.rs:2276 stub. tool_claim=writeSignature rejected (off-by-one)."
+  },
+  "addChunk_PLTE": {
+   "truth": "STUB:addChunk_PLTE",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5174-5188 (code 68). Rust src/lodepng.rs:2292 stub, doc names C fn. matcher_forced=addChunk_sBIT rejected."
+  },
+  "addChunk_tRNS": {
+   "truth": "STUB:addChunk_tRNS",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5190-5220. Rust src/lodepng.rs:2300 stub, doc names C fn. matcher_forced=unknown_function_name rejected: that stub (src/lodepng.rs:1608) is an addUnknownChunks fragment placeholder."
+  },
+  "addChunk_IDAT": {
+   "truth": "STUB:addChunk_IDAT",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5222-5236. Rust src/lodepng.rs:3122 stub, doc names C fn. matcher_forced=lodepng_inspect_chunk rejected."
+  },
+  "addChunk_IEND": {
+   "truth": "STUB:addChunk_IEND",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5238-5240. Rust src/lodepng.rs:2312 stub, doc names C fn. tool_claim=zlib_compress rejected: it is a callee of addChunk_IDAT, not IEND."
+  },
+  "addChunk_tEXt": {
+   "truth": "STUB:addChunk_tEXt",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5244-5257 (code 89). Rust src/lodepng.rs:2323 stub, doc names C fn. tool_claim wctomb/addChunk_IEND rejected: libc wrapper / adjacent C fn."
+  },
+  "addChunk_zTXt": {
+   "truth": "STUB:addChunk_zTXt",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5259-5285 (code 89). Rust src/lodepng.rs:3136 stub, doc names C fn. matcher_forced=inflate_huffman_block rejected."
+  },
+  "addChunk_iTXt": {
+   "truth": "STUB:addChunk_iTXt",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5287-5323 (code 89). Rust src/lodepng.rs:3150 stub, doc names C fn. matcher_forced=getPixelColorRGBA8 rejected."
+  },
+  "addChunk_bKGD": {
+   "truth": "STUB:addChunk_bKGD",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5325-5342. Rust src/lodepng.rs:2337 stub, doc names C fn. matcher_forced=ensureBits32 rejected."
+  },
+  "addChunk_tIME": {
+   "truth": "STUB:addChunk_tIME",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5344-5356. Rust src/lodepng.rs:2346 stub, doc names C fn."
+  },
+  "addChunk_pHYs": {
+   "truth": "STUB:addChunk_pHYs",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5358-5366. Rust src/lodepng.rs:2357 stub; duplicate same-name stub at src/lodepng.rs:2362. matcher_forced=ensureBits9 rejected."
+  },
+  "addChunk_gAMA": {
+   "truth": "STUB:addChunk_gAMA",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5368-5373. Rust src/lodepng.rs:2365 stub. tool_claim=addChunk_pHYs rejected (off-by-one). matcher_forced=advance_bits rejected."
+  },
+  "addChunk_cHRM": {
+   "truth": "STUB:addChunk_cHRM",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5375-5387. Rust src/lodepng.rs:2368 stub. tool_claim=addChunk_gAMA rejected (off-by-one). matcher_forced=ensureBits25 rejected. Note: addChunk_sRGB@src/lodepng.rs:2615 doc admits its source snippet was cHRM code (chrm_* fields) but was named sRGB per metadata -- a mislabeled cHRM fragment stub, not a second cHRM translation."
+  },
+  "addChunk_sRGB": {
+   "truth": "STUB:addChunk_sRGB",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5389-5392. Rust src/lodepng.rs:2615 stub (doc says snippet was actually cHRM code, named sRGB by metadata) and duplicate src/lodepng.rs:3163 stub whose doc correctly names 'static unsigned addChunk_sRGB'. Both stubs. matcher_forced=huffman_decode_symbol rejected."
+  },
+  "addChunk_iCCP": {
+   "truth": "STUB:addChunk_iCCP",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5394-5423 (code 89). Rust src/lodepng.rs:3171 stub, doc names C fn. tool_claim=addChunk_sRGB rejected (adjacent). matcher_forced=readChunk_pHYs rejected."
+  },
+  "addChunk_sBIT": {
+   "truth": "STUB:addChunk_sBIT",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5425-5445 (code 115). Rust src/lodepng.rs:2376 stub, doc names C fn. matcher_forced=adler32 rejected."
+  },
+  "filterScanline": {
+   "truth": "SPLIT:filter_scanline;translated_segment",
+   "note": "PARTIAL. C 5497-5545 (5-case switch on filterType, Sub case: out[i]=scanline[i]-scanline[i-bytewidth]). Rust filter_scanline@src/lodepng.rs:737 is a stub (doc names C filterScanline) = nominal entry. translated_segment@src/lodepng.rs:428 is the only REAL code: a match with a single '_' arm doing exactly the Sub-filter loops (copy first bytewidth bytes, then wrapping_sub with 'i < length' comment and 'default: return;' comment) = C case 1 (also identical to case 4 no-prevline branch). Remaining 4 filter cases absent. tool_claim=translated_segment agrees on the fragment; matcher_forced=filter_scanline agrees on the entry. Neither alone is a full translation."
+  },
+  "ilog2": {
+   "truth": "STUB:ilog2",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5548-5557 (binary-search log2). Rust src/lodepng.rs:716 stub, doc names C fn. tool_claim=translated_segment rejected: filterScanline Sub-case fragment, no log2 logic. matcher_forced=ilog2i rejected: placeholder for C ilog2i."
+  },
+  "ilog2i": {
+   "truth": "STUB:ilog2i",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5559-5567. Rust src/lodepng.rs:3180 stub, doc names C fn. tool_claim=ilog2 rejected (adjacent C fn)."
+  },
+  "filter": {
+   "truth": "STUB:filter",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5570-5750 (codes 31/88, strategy switch). Rust src/lodepng.rs:3196 stub, doc names C fn. tool_claim=ilog2i rejected (adjacent)."
+  },
+  "addPaddingBits": {
+   "truth": "STUB:addPaddingBits",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5752-5770. Rust src/lodepng.rs:790 stub, doc names C fn. matcher_forced=translated_segment rejected: filterScanline fragment."
+  },
+  "Adam7_interlace": {
+   "truth": "STUB:Adam7_interlace",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5777-5820. Rust src/lodepng.rs:1171 stub, doc names C fn. matcher_forced=Adam7_deinterlace rejected: deinterlace placeholder."
+  },
+  "preProcessScanlines": {
+   "truth": "STUB:preProcessScanlines",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5825-5895 (code 83). Rust src/lodepng.rs:3245 stub, doc names C fn. matcher_forced=getPixelColorRGBA16 rejected."
+  },
+  "addUnknownChunks": {
+   "truth": "STUB:add_unknown_chunks",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5901-5909 (loop over inchunk, lodepng_chunk_append / lodepng_chunk_next). Rust add_unknown_chunks@src/lodepng.rs:422 stub with signature matching C (out: &mut Vec<u8>, data, datasize). Three more stub placeholders for the SAME C fn: add_unknown_chunks@src/lodepng.rs:1616 (different signature, doc 'Stub for the addUnknownChunks function'), unknown_function_name@src/lodepng.rs:1608 ('surrounding function returning error code'), inchunk_function_stub@src/lodepng.rs:415 (comment quotes 'inchunk = lodepng_chunk_next(inchunk, data + datasize)'). All are empty; picked the inventory-named one. tool_claim lists unknown_function_name and add_unknown_chunks (latter agrees)."
+  },
+  "isGrayICCProfile": {
+   "truth": "STUB:isGrayICCProfile",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5913-5920 ('GRAY' at offset 16). Rust src/lodepng.rs:3281 stub, doc names C fn. No 'GRAY' literal in crate. tool_claim=add_unknown_chunks rejected; matcher_forced=uivector_push_back rejected."
+  },
+  "isRGBICCProfile": {
+   "truth": "STUB:isRGBICCProfile",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5922-5928 ('RGB '). Rust src/lodepng.rs:3287 stub, doc names C fn. tool_claim=inchunk_function_stub rejected: addUnknownChunks fragment placeholder."
+  },
+  "lodepng_encode": {
+   "truth": "STUB:lodepng_encode",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 5932-6162 (main encoder, codes 59/60/61/62/64/65/66/67/68/71/86/87). Rust src/lodepng.rs:3301 stub; duplicate at src/lodepng.rs:3499. tool_claim isGrayICCProfile/isRGBICCProfile rejected: they are callees. matcher_forced=decodeGeneric rejected."
+  },
+  "lodepng_encode_memory": {
+   "truth": "STUB:lodepng_encode_memory",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 6264-6280. Rust src/lodepng.rs:3408 stub, doc names C fn."
+  },
+  "lodepng_encode32": {
+   "truth": "lodepng_encode32",
+   "note": "REAL translation. C 6282-6284: return lodepng_encode_memory(out,outsize,image,w,h,LCT_RGBA,8). Rust src/lodepng.rs:3516 body: lodepng_encode_memory(out, outsize, image, w, h, LodePNGColorType::LCT_RGBA, 8) -- identical. tool_claim EMPTY (tool did not claim it), same_name/matcher_forced agree."
+  },
+  "lodepng_encode24": {
+   "truth": "lodepng_encode24",
+   "note": "REAL translation. C 6286-6288 (LCT_RGB, 8). Rust src/lodepng.rs:3525 body: lodepng_encode_memory(..., LodePNGColorType::LCT_RGB, 8) -- identical. tool_claim lodepng_encode/lodepng_state_cleanup rejected: those are stubs for other C fns."
+  },
+  "lodepng_encode_file": {
+   "truth": "STUB:lodepng_encode_file",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 6291-6299 (encode_memory then lodepng_save_file, free). Rust src/lodepng.rs:3534 stub. tool_claim encode32/encode24 rejected: those are the real translations of C lodepng_encode32/24 (one-line LCT_RGBA/LCT_RGB wrappers), not this fn. Note: lodepng_encode24_file@src/lodepng.rs:3549 has a doc describing THIS fn's body (encode_memory then save_file) but is a stub under the wrong name; rejected as not the named translation."
+  },
+  "lodepng_encode32_file": {
+   "truth": "STUB:lodepng_encode32_file",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 6301-6303. Rust src/lodepng.rs:1235 stub. tool_claim=lodepng_encode_file rejected (adjacent C fn)."
+  },
+  "lodepng_encode24_file": {
+   "truth": "STUB:lodepng_encode24_file",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 6305-6307. Rust src/lodepng.rs:1243 stub; duplicate same-name stub at src/lodepng.rs:3549 (doc mis-describes encode_file's body). matcher_forced=update_adler32 rejected."
+  },
+  "lodepng_encoder_settings_init": {
+   "truth": "STUB:lodepng_encoder_settings_init",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 6311-6321. Only definition is src/common/lodepng_mod.rs:233 (no-op stub, doc names C fn). tool_claim encode32_file/encode24_file rejected (other C fns). lodepng_compress_settings_init@src/lodepng.rs:907 takes LodePNGEncoderSettings but is the compress-settings placeholder, rejected."
+  },
+  "lodepng_error_text": {
+   "truth": "STUB:lodepng_error_text",
+   "note": "STUB (Rust body is empty/returns default; correspondence by name+signature+doc-comment only, no body evidence exists in the crate). C 6331-6457 (127-line switch of error strings, 'nothing done yet'/'unknown error code'). Rust src/lodepng.rs:354 returns Option<&'static str> = None; no error string literal exists anywhere in the crate."
+  }
+ }
+}

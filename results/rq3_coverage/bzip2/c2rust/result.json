@@ -1,0 +1,208 @@
+{
+ "scope_files": [
+  "blocksort",
+  "bzlib",
+  "compress",
+  "crctable",
+  "decompress",
+  "huffman",
+  "randtable"
+ ],
+ "checkpoint_minutes": [
+  1,
+  5,
+  10,
+  30,
+  60
+ ],
+ "harnesses_unioned": 10,
+ "curve": [
+  {
+   "minute": 1,
+   "harnesses": 10,
+   "corpus_inputs": 755,
+   "functions_covered": 45,
+   "regions_covered": 6970,
+   "function_coverage": 0.681818,
+   "region_coverage": 0.793037,
+   "identities_outside_universe": {
+    "functions": 0,
+    "regions": 0
+   }
+  },
+  {
+   "minute": 5,
+   "harnesses": 10,
+   "corpus_inputs": 1263,
+   "functions_covered": 45,
+   "regions_covered": 6982,
+   "function_coverage": 0.681818,
+   "region_coverage": 0.794402,
+   "identities_outside_universe": {
+    "functions": 0,
+    "regions": 0
+   }
+  },
+  {
+   "minute": 10,
+   "harnesses": 10,
+   "corpus_inputs": 1426,
+   "functions_covered": 45,
+   "regions_covered": 6998,
+   "function_coverage": 0.681818,
+   "region_coverage": 0.796223,
+   "identities_outside_universe": {
+    "functions": 0,
+    "regions": 0
+   }
+  },
+  {
+   "minute": 30,
+   "harnesses": 10,
+   "corpus_inputs": 1495,
+   "functions_covered": 45,
+   "regions_covered": 7005,
+   "function_coverage": 0.681818,
+   "region_coverage": 0.797019,
+   "identities_outside_universe": {
+    "functions": 0,
+    "regions": 0
+   }
+  },
+  {
+   "minute": 60,
+   "harnesses": 10,
+   "corpus_inputs": 1563,
+   "functions_covered": 45,
+   "regions_covered": 7018,
+   "function_coverage": 0.681818,
+   "region_coverage": 0.798498,
+   "identities_outside_universe": {
+    "functions": 0,
+    "regions": 0
+   }
+  }
+ ],
+ "per_harness_final": [
+  {
+   "harness": "BZ2_bzBuffToBuffCompress",
+   "functions_covered": 35,
+   "regions_covered": 4510,
+   "inputs_replayed": 647,
+   "reached_rust": 647,
+   "ub_gate_excluded": 0
+  },
+  {
+   "harness": "BZ2_bzBuffToBuffDecompress",
+   "functions_covered": 13,
+   "regions_covered": 2528,
+   "inputs_replayed": 438,
+   "reached_rust": 438,
+   "ub_gate_excluded": 0
+  },
+  {
+   "harness": "BZ2_hbAssignCodes",
+   "functions_covered": 1,
+   "regions_covered": 26,
+   "inputs_replayed": 46,
+   "reached_rust": 44,
+   "ub_gate_excluded": 2
+  },
+  {
+   "harness": "BZ2_hbCreateDecodeTables",
+   "functions_covered": 1,
+   "regions_covered": 83,
+   "inputs_replayed": 58,
+   "reached_rust": 54,
+   "ub_gate_excluded": 4
+  },
+  {
+   "harness": "BZ2_hbMakeCodeLengths",
+   "functions_covered": 1,
+   "regions_covered": 88,
+   "inputs_replayed": 8,
+   "reached_rust": 7,
+   "ub_gate_excluded": 1
+  },
+  {
+   "harness": "BZ2_indexIntoF",
+   "functions_covered": 1,
+   "regions_covered": 23,
+   "inputs_replayed": 5,
+   "reached_rust": 5,
+   "ub_gate_excluded": 0
+  },
+  {
+   "harness": "fallbackQSort3",
+   "functions_covered": 2,
+   "regions_covered": 158,
+   "inputs_replayed": 21,
+   "reached_rust": 21,
+   "ub_gate_excluded": 0
+  },
+  {
+   "harness": "fallbackSimpleSort",
+   "functions_covered": 1,
+   "regions_covered": 53,
+   "inputs_replayed": 16,
+   "reached_rust": 16,
+   "ub_gate_excluded": 0
+  },
+  {
+   "harness": "fallbackSort",
+   "functions_covered": 3,
+   "regions_covered": 538,
+   "inputs_replayed": 320,
+   "reached_rust": 320,
+   "ub_gate_excluded": 0
+  },
+  {
+   "harness": "mmed3",
+   "functions_covered": 1,
+   "regions_covered": 16,
+   "inputs_replayed": 4,
+   "reached_rust": 4,
+   "ub_gate_excluded": 0
+  }
+ ],
+ "function": {
+  "total_in_scope": 66,
+  "covered_tests": 51,
+  "covered_ours": 45,
+  "covered_both": 43,
+  "only_tests": 8,
+  "only_ours": 2,
+  "union": 53,
+  "covered_by_neither": 13,
+  "tests_coverage": 0.772727,
+  "ours_coverage": 0.681818,
+  "growth": -0.090909,
+  "sanity": {
+   "both_plus_only_tests_eq_covered_tests": true,
+   "both_plus_only_ours_eq_covered_ours": true,
+   "both_plus_onlys_eq_union": true,
+   "all_reported_in_scope": true,
+   "covered_le_denominator": true
+  }
+ },
+ "region": {
+  "total_in_scope": 8789,
+  "covered_tests": 7007,
+  "covered_ours": 7018,
+  "covered_both": 6609,
+  "only_tests": 398,
+  "only_ours": 409,
+  "union": 7416,
+  "covered_by_neither": 1373,
+  "tests_coverage": 0.797247,
+  "ours_coverage": 0.798498,
+  "growth": 0.001252,
+  "sanity": {
+   "both_plus_only_tests_eq_covered_tests": true,
+   "both_plus_only_ours_eq_covered_ours": true,
+   "both_plus_onlys_eq_union": true,
+   "all_reported_in_scope": true,
+   "covered_le_denominator": true
+  }
+ }
+}

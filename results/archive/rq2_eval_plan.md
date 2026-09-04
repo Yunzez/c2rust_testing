@@ -1,6 +1,6 @@
 # RQ2 evaluation plan v2 (UB-free gate — precision of the differential oracle)
 
-Authoritative plan for RQ2. Mirrors `results/rq3_eval_plan.md`. v2 folds in the artifact-replay redesign
+Authoritative plan for RQ2. Mirrors `results/archive/rq3_eval_plan.md`. v2 folds in the artifact-replay redesign
 (the one substantive rigor fix) + claim-precision wording. Survives compact.
 
 ## RQ2 (tightened)
@@ -114,7 +114,7 @@ before it counts as evidence; `controlled-injected` = we inserted a known UB-fre
    artifact under gate-ON and full-UBSan**, classify (UB_SUPPRESSED / UB_FREE_DIVERGENCE / GATE_MISS /
    REPRO_FAIL) with UB kind+loc; also run gate-ON fuzz (RQ2b survivor search). Emit
    `{boundaries, artifacts:[{class, ub_kind, loc}], suppression_rate, sensitivity, by_class}` JSON +
-   `results/rq2_ubgate_v1.md` (Tables A/B/C).
+   `results/ablations/attribution/ubgate_v1.md` (Tables A/B/C).
 2. Every UB_SUPPRESSED artifact carries its full-UBSan diagnostic.
 3. RQ2c: all known UB-free controls flagged gate-ON (observed sensitivity K/K).
 

@@ -1,0 +1,37 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2818663240
+INFO: Loaded 1 modules   (800 inline 8-bit counters): 800 [0x561f2acfee90, 0x561f2acff1b0), 
+INFO: Loaded 1 PC tables (800 PCs): 800 [0x561f2acff1b0,0x561f2ad023b0), 
+INFO:       70 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/BZ2_hbAssignCodes
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: seed corpus: files: 70 min: 1b max: 521b total: 1841b rss: 32Mb
+#71	INITED cov: 108 ft: 274 corp: 56/1640b exec/s: 0 rss: 34Mb
+#28138	REDUCE cov: 108 ft: 274 corp: 56/1637b lim: 800 exec/s: 9379 rss: 69Mb L: 30/521 MS: 2 ChangeBit-EraseBytes-
+#32768	pulse  cov: 108 ft: 274 corp: 56/1637b lim: 845 exec/s: 10922 rss: 74Mb
+#65536	pulse  cov: 108 ft: 274 corp: 56/1637b lim: 1165 exec/s: 9362 rss: 107Mb
+#92740	REDUCE cov: 108 ft: 274 corp: 56/1636b lim: 1435 exec/s: 9274 rss: 134Mb L: 9/521 MS: 2 ChangeBit-EraseBytes-
+#128934	REDUCE cov: 108 ft: 274 corp: 56/1635b lim: 1795 exec/s: 9209 rss: 171Mb L: 29/521 MS: 4 ChangeByte-ChangeBit-EraseBytes-InsertByte-
+#130516	REDUCE cov: 108 ft: 274 corp: 56/1633b lim: 1805 exec/s: 9322 rss: 173Mb L: 27/521 MS: 2 ShuffleBytes-EraseBytes-
+#131072	pulse  cov: 108 ft: 274 corp: 56/1633b lim: 1805 exec/s: 9362 rss: 173Mb
+#262144	pulse  cov: 108 ft: 274 corp: 56/1633b lim: 3111 exec/s: 9039 rss: 304Mb
+#353508	REDUCE cov: 108 ft: 274 corp: 56/1632b lim: 4024 exec/s: 8837 rss: 397Mb L: 26/521 MS: 1 EraseBytes-
+#405244	DONE   cov: 108 ft: 274 corp: 56/1632b lim: 4096 exec/s: 8809 rss: 446Mb
+Done 405244 runs in 46 second(s)
+stat::number_of_executed_units: 405244
+
+### sanitizer / crash report
+
+### tail
+#128934	REDUCE cov: 108 ft: 274 corp: 56/1635b lim: 1795 exec/s: 9209 rss: 171Mb L: 29/521 MS: 4 ChangeByte-ChangeBit-EraseBytes-InsertByte-
+#130516	REDUCE cov: 108 ft: 274 corp: 56/1633b lim: 1805 exec/s: 9322 rss: 173Mb L: 27/521 MS: 2 ShuffleBytes-EraseBytes-
+#131072	pulse  cov: 108 ft: 274 corp: 56/1633b lim: 1805 exec/s: 9362 rss: 173Mb
+#262144	pulse  cov: 108 ft: 274 corp: 56/1633b lim: 3111 exec/s: 9039 rss: 304Mb
+#353508	REDUCE cov: 108 ft: 274 corp: 56/1632b lim: 4024 exec/s: 8837 rss: 397Mb L: 26/521 MS: 1 EraseBytes-
+#405244	DONE   cov: 108 ft: 274 corp: 56/1632b lim: 4096 exec/s: 8809 rss: 446Mb
+Done 405244 runs in 46 second(s)
+stat::number_of_executed_units: 405244
+stat::average_exec_per_sec:     8809
+stat::new_units_added:          5
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              446

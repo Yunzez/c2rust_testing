@@ -526,7 +526,7 @@ pub(crate) mod laertes_rt {
 // E3 harness shim for the macOS-transpiled ctype path: `_DefaultRuneLocale` with a POPULATED
 // `__runetype` (the 2026-08-25 lil pilot: a zeroed table makes isspace/ispunct/isdigit always false
 // -> every script returns [] = 313 false divergences; fill ported from
-// results/pilots/attr/lil/raw/rune_fill.rs). Layout = the leading fields of lil::_RuneLocale
+// results/ablations/attribution/lil/raw/rune_fill.rs). Layout = the leading fields of lil::_RuneLocale
 // (magic[8], encoding[32], 2 fn ptrs, invalid_rune, __runetype[256], __maplower[256],
 // __mapupper[256]); the zero tail keeps the object as large as the original 64 KiB shim.
 #[repr(C)]

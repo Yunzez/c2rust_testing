@@ -1,0 +1,25 @@
+{
+  "function_name": "url_free",
+  "fields": [
+    {
+      "u_field": {
+        "name": "data",
+        "type": "*mut url_data",
+        "shape": {
+          "ptr": {
+            "kind": "ref",
+            "null": "nullable"
+          }
+        }
+      },
+      "i_field": {
+        "name": "data",
+        "type": "Option<UrlData>"
+      },
+      "ownership": "owning",
+      "compare": "skip",
+      "llm_note": "In C, `data` is an owning pointer to a heap-allocated `url_data` whose fields are freed manually. In idiomatic Rust, we take ownership of `UrlData` (nullable -> Option) and let it be dropped to free all owned Strings, so the function body is effectively a no-op."
+    }
+  ],
+  "idiomatic_name": "url_free"
+}

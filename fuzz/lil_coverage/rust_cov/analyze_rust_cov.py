@@ -13,7 +13,7 @@ funcs = exp["data"][0]["functions"]
 hot = [f["name"] for f in funcs if f.get("count",0) > 0]
 cold= [f["name"] for f in funcs if f.get("count",0) == 0]
 # the analyzer's 117 function names for this crate
-known=[f["name"] for f in json.load(open("../../../results/rq2_cells/rawllm/lil/lil_r.json"))["functions"]]
+known=[f["name"] for f in json.load(open("../../../results/rq1_matching/cells/rawllm/lil/lil_r.json"))["functions"]]
 def hit(name):
     parts = name.split("::")           # e.g. LilInterpreter::fnc_append -> both parts must appear
     return any(all(p in sym for p in parts) for sym in hot)

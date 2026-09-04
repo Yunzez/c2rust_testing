@@ -1,0 +1,215 @@
+{
+  "functions": [
+    {
+      "name": "swap",
+      "line": 1,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 13,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "partition",
+      "line": 8,
+      "signature": {
+        "params": [
+          {
+            "name": "arr",
+            "ty": "int[]",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "low",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "high",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int[]",
+            "shape": "[i32]"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "-": 2,
+        "<=": 2,
+        "+": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 9,
+        "nodes": 55,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 6
+      }
+    },
+    {
+      "name": "quickSort",
+      "line": 23,
+      "signature": {
+        "params": [
+          {
+            "name": "arr",
+            "ty": "int[]",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "low",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "high",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int[]",
+            "shape": "[i32]"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1,
+        "-": 1,
+        "+": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 26,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 0
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "partition",
+      "to": "swap"
+    },
+    {
+      "from": "quickSort",
+      "to": "partition"
+    },
+    {
+      "from": "quickSort",
+      "to": "quickSort"
+    }
+  ],
+  "indirect_calls": []
+}

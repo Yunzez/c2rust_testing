@@ -1,0 +1,230 @@
+{
+ "_meta": {
+  "sources": [
+   "rows/group_a_table.json",
+   "rows/group_b_full.json"
+  ],
+  "rule": "mean over COMPLETE outputs within library, equal weight over 10 libraries; forced; strict",
+  "group_a_meta": {
+   "source_rows": "results/rq1_matching/rows/group_a_full.json",
+   "source_meta": {
+    "eps": 0.01,
+    "raw_dir": "results/rq1_matching/raw/group_a",
+    "runner": "scripts/rq1_name_preserving_full.py",
+    "tool_versions": {
+     "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+     "analyzer_src_commit": "509751d",
+     "c_analyzer_sha256": "b771a6b013b22779",
+     "matcher_commit": "509751d",
+     "matcher_sha256": "fe49e5bb76996922",
+     "repo_head": "b647a44",
+     "stu_selector_dirty": false
+    }
+   },
+   "pooling": "see docstring of scripts/rq1_group_a_table.py"
+  },
+  "group_b_meta": {
+   "scorer": "scripts/rq1_group_b_score.py",
+   "annotation_dir": "results/rq1_matching/annotation",
+   "labels_unreviewed_by_user": [
+    "ptrtrans_bzip2",
+    "ptrtrans_cjson",
+    "ptrtrans_genann",
+    "ptrtrans_lil",
+    "ptrtrans_lodepng",
+    "ptrtrans_qsort",
+    "ptrtrans_quadtree",
+    "ptrtrans_urlparser",
+    "sactor_bzip2",
+    "sactor_genann",
+    "sactor_lodepng",
+    "sactor_qsort",
+    "sactor_quadtree",
+    "sactor_tulip",
+    "sactor_urlparser"
+   ],
+   "partial_artifacts": [
+    "ptrtrans_lil",
+    "sactor_bzip2",
+    "sactor_lodepng",
+    "sactor_quadtree",
+    "sactor_tulip",
+    "sactor_urlparser"
+   ],
+   "scoring": "see docstring of scripts/rq1_group_b_score.py"
+  }
+ },
+ "per_library": {
+  "qsort": {
+   "outputs": 5,
+   "artifact_keys": [
+    "qsort__c2rust",
+    "qsort__c2saferrust",
+    "qsort__laertes",
+    "ptrtrans_qsort",
+    "sactor_qsort"
+   ],
+   "partial_tools": [],
+   "pairs": 15,
+   "renamed_pairs": 2,
+   "renamed_correct": 1,
+   "precision": 0.8666666666666666,
+   "recall": 0.8666666666666666
+  },
+  "urlparser": {
+   "outputs": 5,
+   "artifact_keys": [
+    "urlparser__c2rust",
+    "urlparser__c2saferrust",
+    "urlparser__crown",
+    "urlparser__laertes",
+    "ptrtrans_urlparser"
+   ],
+   "partial_tools": [
+    "sactor"
+   ],
+   "pairs": 102,
+   "renamed_pairs": 0,
+   "renamed_correct": 0,
+   "precision": 0.9123809523809523,
+   "recall": 0.9301587301587301
+  },
+  "quadtree": {
+   "outputs": 3,
+   "artifact_keys": [
+    "quadtree__c2rust",
+    "quadtree__crown",
+    "ptrtrans_quadtree"
+   ],
+   "partial_tools": [
+    "sactor"
+   ],
+   "pairs": 65,
+   "renamed_pairs": 0,
+   "renamed_correct": 0,
+   "precision": 0.9607843137254902,
+   "recall": 0.9607843137254902
+  },
+  "genann": {
+   "outputs": 6,
+   "artifact_keys": [
+    "genann__c2rust",
+    "genann__c2saferrust",
+    "genann__crown",
+    "genann__laertes",
+    "ptrtrans_genann",
+    "sactor_genann"
+   ],
+   "partial_tools": [],
+   "pairs": 74,
+   "renamed_pairs": 0,
+   "renamed_correct": 0,
+   "precision": 0.9047619047619048,
+   "recall": 0.9242424242424242
+  },
+  "cjson": {
+   "outputs": 2,
+   "artifact_keys": [
+    "cjson__c2rust",
+    "ptrtrans_cjson"
+   ],
+   "partial_tools": [],
+   "pairs": 135,
+   "renamed_pairs": 1,
+   "renamed_correct": 1,
+   "precision": 0.6990740740740741,
+   "recall": 0.7792207792207793
+  },
+  "lil": {
+   "outputs": 4,
+   "artifact_keys": [
+    "lil__c2rust",
+    "lil__c2saferrust",
+    "lil__crown",
+    "lil__laertes"
+   ],
+   "partial_tools": [
+    "ptrtrans"
+   ],
+   "pairs": 563,
+   "renamed_pairs": 0,
+   "renamed_correct": 0,
+   "precision": 0.9611530172413794,
+   "recall": 0.9611530172413794
+  },
+  "lodepng": {
+   "outputs": 3,
+   "artifact_keys": [
+    "lodepng__c2rust",
+    "lodepng__crown",
+    "ptrtrans_lodepng"
+   ],
+   "partial_tools": [
+    "sactor"
+   ],
+   "pairs": 478,
+   "renamed_pairs": 4,
+   "renamed_correct": 3,
+   "precision": 0.6680851063829788,
+   "recall": 0.8693262411347518
+  },
+  "bzip2": {
+   "outputs": 5,
+   "artifact_keys": [
+    "bzip2__c2rust",
+    "bzip2__c2saferrust",
+    "bzip2__crown",
+    "bzip2__laertes",
+    "ptrtrans_bzip2"
+   ],
+   "partial_tools": [
+    "sactor"
+   ],
+   "pairs": 265,
+   "renamed_pairs": 2,
+   "renamed_correct": 2,
+   "precision": 0.8228009259259259,
+   "recall": 0.9524305555555556
+  },
+  "tulip": {
+   "outputs": 4,
+   "artifact_keys": [
+    "tulip__c2rust",
+    "tulip__c2saferrust",
+    "tulip__crown",
+    "tulip__laertes"
+   ],
+   "partial_tools": [
+    "sactor"
+   ],
+   "pairs": 852,
+   "renamed_pairs": 0,
+   "renamed_correct": 0,
+   "precision": 0.5539906103286385,
+   "recall": 0.5539906103286385
+  },
+  "optipng": {
+   "outputs": 3,
+   "artifact_keys": [
+    "optipng__c2rust",
+    "optipng__c2saferrust",
+    "optipng__laertes"
+   ],
+   "partial_tools": [],
+   "pairs": 1653,
+   "renamed_pairs": 0,
+   "renamed_correct": 0,
+   "precision": 0.9408212560386474,
+   "recall": 0.9425287356321839
+  }
+ },
+ "overall": {
+  "libraries": 10,
+  "outputs": 40,
+  "pairs": 4202,
+  "renamed": 9,
+  "renamed_correct": 7,
+  "precision": 0.8290518827526657,
+  "recall": 0.87405020739066
+ }
+}

@@ -9,7 +9,7 @@
 set -u
 PROJ="$1"; TARGET="$2"; RUNS="$3"; LABEL="$4"; FORKS="${5:-1}"; FN_LIST="${6:-}"; EXCL="${7:-}"
 NIGHTLY=nightly-2025-09-01
-OUT=/home/yunzez/c2rust_testing/results/rq3_cells
+OUT=/home/yunzez/c2rust_testing/results/rq4_effectiveness/reach_cells
 CRATE=$(basename "$PROJ")
 mkdir -p "$OUT"; cd "$PROJ" || exit 1
 ulimit -c 0
@@ -87,7 +87,7 @@ res={"cell":label,"library":label.split("__")[0],"tool":label.split("__")[-1],
      "median_hits":statistics.median(rc) if rc else 0,
      "min_hits":min(rc) if rc else 0,"max_hits":max(rc) if rc else 0,
      "per_fn":dict(sorted(rows,key=lambda x:-x[1]))}
-json.dump(res,open(f"/home/yunzez/c2rust_testing/results/rq3_cells/{label}.json","w"),indent=1)
+json.dump(res,open(f"/home/yunzez/c2rust_testing/results/rq4_effectiveness/reach_cells/{label}.json","w"),indent=1)
 print(f"[{label}] {mode} fns={res['n_functions']} MEDIAN={res['median_hits']:,} min={res['min_hits']:,} max={res['max_hits']:,} vs theirs=0")
 PY
 

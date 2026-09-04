@@ -49,10 +49,12 @@ TYPE_RANGE = {
 }
 
 ROLES = {"scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
+         "capacity_ptr",  # RQ4: in/out capacity passed BY POINTER, owned by an output_buffer
          "input_string", "output_array", "input_fixed_array_buffer", "input_rectangular_pointer_table",
          "input_string_pointer_table", "input_struct", "inout_struct",
          "input_struct_array", "inout_struct_array", "length", "capacity"}
 DECODES = {"scalar", "bounded_scalar", "vector", "derived_from_buffer", "out_scalar_zero",
+           "capacity_ptr_inout",  # RQ4
            "nul_string", "output_array_vector", "fixed_array_vector", "rectangular_pointer_table",
            "string_pointer_table", "struct_value", "struct_array_vector"}
 
@@ -187,6 +189,13 @@ def derive(cc_dir: Path, entry: str) -> dict:
     }
 
 
+def _cap_is_ptr(schema: dict, p: dict) -> bool:
+    """True when this output_buffer's capacity parameter is itself a pointer (role capacity_ptr)."""
+    cp = p.get("capacity_param")
+    return any(q.get("name") == cp and q.get("role") == "capacity_ptr"
+               for q in schema.get("params", []))
+
+
 def validate(schema: dict) -> list[str]:
     """Return a list of problems; empty means valid."""
     errs = []
@@ -247,11 +256,22 @@ def validate(schema: dict) -> list[str]:
                 errs.append(f"{p['name']}: struct array missing length_param")
         if p.get("role") == "output_buffer" and "capacity_param" not in p:
             errs.append(f"{p['name']}: output_buffer missing capacity_param")
+        # `cap` is required only for the RQ4 capacity_ptr flavour, where the buffer is allocated to
+        # a fixed size and its capacity is handed to the callee. The original output_buffer takes
+        # its length from the decoded vector, so demanding a cap there would reject every schema
+        # written before this change (kv_config, leb128, rle_codec).
+        if p.get("role") == "output_buffer" and _cap_is_ptr(schema, p) \
+                and not isinstance(p.get("cap"), int):
+            errs.append(f"{p['name']}: output_buffer with a capacity_ptr needs an integer cap")
+        if p.get("role") in ("input_buffer", "inout_buffer") and "max_len" in p \
+                and not isinstance(p["max_len"], int):
+            errs.append(f"{p['name']}: max_len must be an int")
     # observable_length kind must be known
     for p in schema.get("params", []):
         if p.get("role") == "output_buffer":
             ol = p.get("observable_length", {})
-            if ol.get("kind") not in ("unknown", "return_value", "nul_terminated"):
+            if ol.get("kind") not in ("unknown", "return_value", "nul_terminated",
+                                      "capacity_ptr_writeback"):
                 errs.append(f"{p['name']}: bad observable_length {ol}")
     # every length/capacity must be referenced by EXACTLY one buffer, and its of_buffer must name
     # that same buffer (not merely an existing param).
@@ -261,7 +281,7 @@ def validate(schema: dict) -> list[str]:
             if ref in p:
                 owners.setdefault(p[ref], []).append(p["name"])
     for p in schema.get("params", []):
-        if p.get("role") in ("length", "capacity"):
+        if p.get("role") in ("length", "capacity", "capacity_ptr"):
             owning = owners.get(p["name"], [])
             if len(owning) != 1:
                 errs.append(f"{p['name']}: {p['role']} referenced by {len(owning)} buffers (must be exactly 1)")
@@ -282,6 +302,7 @@ _ROLE_DECODE = {
     "input_struct": "struct_value", "inout_struct": "struct_value",
     "input_struct_array": "struct_array_vector", "inout_struct_array": "struct_array_vector",
     "length": "derived_from_buffer", "capacity": "derived_from_buffer",
+    "capacity_ptr": "capacity_ptr_inout",
 }
 
 
@@ -299,7 +320,7 @@ def validate_against_signature(schema: dict, params: list[dict], ret: str) -> li
     if len(sp) != len(params):
         return errs + [f"param count mismatch: schema {len(sp)} vs signature {len(params)}"]
     const_roles = ("input_buffer", "input_string")
-    mut_roles = ("output_buffer", "inout_buffer", "out_scalar")
+    mut_roles = ("output_buffer", "inout_buffer", "out_scalar", "capacity_ptr", "output_array")
     for s, p in zip(sp, params):
         if s["name"] != p["name"]:
             errs.append(f"order/name mismatch: schema {s['name']} vs signature {p['name']}")

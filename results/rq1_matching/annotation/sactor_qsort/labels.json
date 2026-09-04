@@ -1,0 +1,22 @@
+{
+ "case": "sactor_qsort",
+ "sheet_fingerprint": "fda2c8e04711c9d9",
+ "labeler": "Claude (claude-fable-5-1), session 6278f822",
+ "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+ "date": "2026-09-01",
+ "reviewed_by_user": false,
+ "labels": {
+  "swap": {
+   "truth": "swap",
+   "note": "qsort.c:1 -> combined.rs:1 swap(&mut i32,&mut i32) delegating to nested fn inner (combined.rs:2, std::mem::swap); nested fns are not separate inventory entries"
+  },
+  "partition": {
+   "truth": "partition",
+   "note": "qsort.c:8 -> combined.rs:7 partition(&mut [i32],low,high)->i32: pivot=arr[high], i=low-1, j-loop with swap via nested do_swap (split_at_mut), final swap arr[i+1]<->arr[high], returns i+1. The matcher's forced proposal quick_sort is WRONG"
+  },
+  "quickSort": {
+   "truth": "quick_sort",
+   "note": "qsort.c:23 -> combined.rs:54 quick_sort: body moved into nested inner_quick_sort (combined.rs:55) which calls partition and recurses; real rename camel->snake. Matcher forced proposal partition is WRONG"
+  }
+ }
+}

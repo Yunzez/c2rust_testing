@@ -1,0 +1,37 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 1951765588
+INFO: Loaded 1 modules   (1467 inline 8-bit counters): 1467 [0x559e643ce6f0, 0x559e643cecab), 
+INFO: Loaded 1 PC tables (1467 PCs): 1467 [0x559e643cecb0,0x559e643d4860), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/BZ2_hbCreateDecodeTables
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 196 ft: 197 corp: 1/1b exec/s: 0 rss: 33Mb
+#7	NEW    cov: 198 ft: 199 corp: 2/3b lim: 4 exec/s: 0 rss: 33Mb L: 2/2 MS: 5 ShuffleBytes-ShuffleBytes-ChangeByte-ChangeBit-InsertByte-
+#8	NEW    cov: 200 ft: 201 corp: 3/6b lim: 4 exec/s: 0 rss: 34Mb L: 3/3 MS: 1 CrossOver-
+#14	NEW    cov: 201 ft: 202 corp: 4/10b lim: 4 exec/s: 0 rss: 34Mb L: 4/4 MS: 1 InsertByte-
+#217	NEW    cov: 219 ft: 220 corp: 5/11b lim: 4 exec/s: 0 rss: 50Mb L: 1/4 MS: 3 ChangeBinInt-EraseBytes-EraseBytes-
+#446	NEW    cov: 221 ft: 222 corp: 6/16b lim: 6 exec/s: 0 rss: 66Mb L: 5/5 MS: 4 CrossOver-ChangeBit-EraseBytes-InsertRepeatedBytes-
+#450	NEW    cov: 238 ft: 253 corp: 7/21b lim: 6 exec/s: 0 rss: 66Mb L: 5/5 MS: 4 ChangeByte-ShuffleBytes-ChangeBinInt-ChangeByte-
+#473	NEW    cov: 240 ft: 255 corp: 8/27b lim: 6 exec/s: 0 rss: 68Mb L: 6/6 MS: 3 InsertByte-EraseBytes-CrossOver-
+#482	NEW    cov: 240 ft: 285 corp: 9/33b lim: 6 exec/s: 0 rss: 68Mb L: 6/6 MS: 4 ShuffleBytes-ChangeBit-ShuffleBytes-CopyPart-
+#546	NEW    cov: 240 ft: 315 corp: 10/39b lim: 6 exec/s: 0 rss: 73Mb L: 6/6 MS: 4 CopyPart-ChangeByte-ChangeBit-CopyPart-
+#606	NEW    cov: 240 ft: 345 corp: 11/45b lim: 6 exec/s: 0 rss: 77Mb L: 6/6 MS: 5 CrossOver-ChangeByte-ChangeBit-InsertByte-CopyPart-
+#704	NEW    cov: 240 ft: 375 corp: 12/51b lim: 6 exec/s: 0 rss: 83Mb L: 6/6 MS: 3 CopyPart-ShuffleBytes-CrossOver-
+#963	NEW    cov: 242 ft: 377 corp: 13/58b lim: 8 exec/s: 0 rss: 101Mb L: 7/7 MS: 4 EraseBytes-ShuffleBytes-InsertByte-InsertRepeatedBytes-
+
+### sanitizer / crash report
+
+### tail
+"n\000\000\000" # Uses: 3169
+"\376\377\377\377" # Uses: 3103
+"i \000\000\000\000\000\000" # Uses: 2789
+"\000\000\000\000\000\000\003\363" # Uses: 2846
+"\000\000\002\372" # Uses: 2823
+###### End of recommended dictionary. ######
+Done 316932 runs in 46 second(s)
+stat::number_of_executed_units: 316932
+stat::average_exec_per_sec:     6889
+stat::new_units_added:          124
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              402

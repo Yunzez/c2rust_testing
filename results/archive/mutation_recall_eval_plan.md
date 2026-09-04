@@ -1,7 +1,7 @@
 # RQ1b / Mutation-Recall — evaluation plan (draft for review 2026-07-02)
 
 The recall half of the comparator claim (RQ2 = precision / no false positives; this = sensitivity / we
-still catch real bugs). Mirrors `results/rq2_eval_plan.md`. Based on Codex's design + refinements below.
+still catch real bugs). Mirrors `results/archive/rq2_eval_plan.md`. Based on Codex's design + refinements below.
 
 ## RQ1b (tightened)
 > Can the comparator **detect injected UB-free semantic bugs** while preserving the precision gains from
@@ -91,13 +91,13 @@ Static metadata per mutation: `{program, function, operator, patch, expected}`.
 3. time-to-detect reported (fixed seed/budget).
 4. every NOT-detected mutation classified (no unexplained misses).
 5. denominator = valid-non-equivalent mutations, equivalence decided by an INDEPENDENT oracle.
-6. `results/mutation_recall_v1.md`.
+6. `results/ablations/attribution/mutation_recall_v1.md`.
 
 ## Phases
 - **M1**: mutation schema + metadata format + 5 smoke mutations end-to-end (prove inject→compile→fuzz→
   DETECTED_UB_FREE with evidence, on e.g. leb128/hex_encode). Reuse eval_rq2_ubgate.
 - **M2**: expand to ~30 valid injected bugs across 4 operators / ~10 programs; independent equivalence check.
-- **M3**: `results/mutation_recall_v1.md` (tables + missed-case taxonomy) + paper table for RQ1b.
+- **M3**: `results/ablations/attribution/mutation_recall_v1.md` (tables + missed-case taxonomy) + paper table for RQ1b.
 
 ## The one risk to watch
 Equivalent mutants inflating "NOT_DETECTED". Mitigate with the independent oracle (#2). If a mutation shows

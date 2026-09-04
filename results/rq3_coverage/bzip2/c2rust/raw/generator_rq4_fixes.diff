@@ -1,0 +1,326 @@
+--- /home/yunzez/c2rust_testing/tools/stu_selector/gen_diff_harness.py	2026-08-25 22:54:09.590001188 +0000
++++ /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rq4_cov/rq4_gen/gen_diff_harness.py	2026-09-03 16:46:58.425827574 +0000
+@@ -38,12 +38,13 @@
+ 
+ # Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
+ # different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
+-GEN_VERSION = "0.5"
++GEN_VERSION = "0.5+rq4fix2026-09-03c"  # + runtime-switchable C reference / UB gate
+ GEN_CAPABILITIES = (
+     "scalar", "bounded_scalar", "input_buffer", "inout_buffer", "output_buffer", "out_scalar",
+     "input_string", "input_fixed_array_buffer", "input_rectangular_pointer_table",
+     "input_string_pointer_table", "input_struct", "inout_struct",
+     "input_struct_array", "inout_struct_array", "output_array",
++    "output_buffer_with_capacity_ptr",   # RQ4
+ )
+ 
+ # c2rust type spelling -> (rust_ffi_type, byte_width). size_t -> usize to match translation.
+@@ -241,6 +242,13 @@
+     params: list[dict] = []
+     ret = "i32"
+     all_fns: list[str] = []
++    # RQ4 FIX 2 (2026-09-03): file-scope VARIABLES with external linkage must be renamed in the
++    # oracle too. c2rust emits translated globals as #[no_mangle] statics, so an un-renamed C
++    # global and its translation collapse onto ONE storage location at link time -- the linker
++    # either rejects it (duplicate symbol) or, worse, silently makes the differential compare a
++    # value against itself. Real libraries have such tables (bzip2: BZ2_crc32Table, BZ2_rNums);
++    # the micro-benchmark corpus this generator was built on has none.
++    all_globals: list[str] = []
+     for cmd in cdb.getAllCompileCommands():
+         src_abs = str((Path(cmd.directory) / cmd.filename).resolve())
+         names = {cmd.filename, src_abs, Path(cmd.filename).name}
+@@ -251,6 +259,14 @@
+         finally:
+             os.chdir(cwd0)
+         for cur in tu.cursor.walk_preorder():
++            if cur.kind == CursorKind.VAR_DECL and cur.is_definition():
++                f = cur.location.file.name if cur.location and cur.location.file else None
++                if (f and not f.startswith(("/usr/", "/lib/"))
++                        and cur.semantic_parent is not None
++                        and cur.semantic_parent.kind == CursorKind.TRANSLATION_UNIT
++                        and cur.linkage == clang.cindex.LinkageKind.EXTERNAL):
++                    all_globals.append(cur.spelling)
++                continue
+             if cur.kind != CursorKind.FUNCTION_DECL or not cur.is_definition():
+                 continue
+             f = cur.location.file.name if cur.location and cur.location.file else None
+@@ -272,9 +288,19 @@
+             if rt.kind == TypeKind.VOID:
+                 ret = "void"
+             else:
+-                sc = map_scalar(rt.spelling)
+-                ret = sc[0] if sc else "i32"
+-    return params, ret, sorted(set(all_fns))
++                # RQ4 FIX 1 (2026-09-03): resolve typedefs, exactly as describe_type already does
++                # for PARAMETERS. Upstream mapped only rt.spelling and silently fell back to i32,
++                # so a `UChar`-returning C function got an `-> i32` extern declaration: on x86-64
++                # SysV the upper 24 bits of eax are unspecified for a byte return, so the oracle's
++                # return value was read as garbage. Now bzip2's UChar/Int32/UInt32 returns map
++                # through the same canonical path the parameters use.
++                d = describe_type(rt)
++                if d["kind"] == "scalar":
++                    ret = d["rust"]
++                else:
++                    sc = map_scalar(rt.spelling)
++                    ret = sc[0] if sc else "i32"
++    return params, ret, sorted(set(all_fns)) + [f"@var:{g}" for g in sorted(set(all_globals))]
+ 
+ 
+ def items_from_schema(schema: dict) -> list[dict]:
+@@ -290,6 +316,8 @@
+     # (real libs use `unsigned int` etc.), the call must cast to the param's actual Rust type.
+     # Map every param name -> its declared rust type so buffer items can carry their len's type.
+     param_rust = {p["name"]: p.get("rust") for p in schema["params"]}
++    param_role = {p["name"]: p.get("role") for p in schema["params"]}
++    param_elem = {p["name"]: p.get("elem") for p in schema["params"]}
+     for p in schema["params"]:
+         role = p["role"]
+         if role == "scalar":
+@@ -303,14 +331,35 @@
+                     it["min_value"] = p["min_value"]
+             items.append(it)
+         elif role == "input_buffer":
+-            items.append({"kind": "ptr", "role": "in_buf", "name": p["name"],
+-                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": p["length_param"],
+-                          "len_rust": param_rust.get(p["length_param"]) or "usize"})
+-        elif role in ("inout_buffer", "output_buffer"):
++            it = {"kind": "ptr", "role": "in_buf", "name": p["name"],
++                  "elem": p["elem"], "elem_w": p["elem_width"], "len_name": p["length_param"],
++                  "len_rust": param_rust.get(p["length_param"]) or "usize"}
++            if "max_len" in p:
++                it["max_len"] = p["max_len"]
++            items.append(it)
++        elif role == "output_buffer":
++            # RQ4: a real output buffer -- allocated to `cap`, with its capacity handed to the
++            # callee. When the capacity param is itself a pointer (`capacity_ptr`) the callee both
++            # READS it as the capacity and WRITES the produced length back, so it is an in/out
++            # scalar seeded with the allocation size, and the observable output is the prefix
++            # [0, written_length).
++            cp = p["capacity_param"]
++            if param_role.get(cp) == "capacity_ptr":
++                items.append({"kind": "ptr", "role": "out_buf_cap", "name": p["name"],
++                              "elem": p["elem"], "elem_w": p["elem_width"], "cap": p["cap"],
++                              "cap_name": cp, "cap_rust": param_elem.get(cp) or "u32"})
++            else:
++                items.append({"kind": "ptr", "role": "io_buf", "name": p["name"],
++                              "elem": p["elem"], "elem_w": p["elem_width"], "len_name": cp,
++                              "len_rust": param_rust.get(cp) or "usize"})
++        elif role == "inout_buffer":
+             ln = p.get("length_param") or p.get("capacity_param")
+-            items.append({"kind": "ptr", "role": "io_buf", "name": p["name"],
+-                          "elem": p["elem"], "elem_w": p["elem_width"], "len_name": ln,
+-                          "len_rust": param_rust.get(ln) or "usize"})
++            it = {"kind": "ptr", "role": "io_buf", "name": p["name"],
++                  "elem": p["elem"], "elem_w": p["elem_width"], "len_name": ln,
++                  "len_rust": param_rust.get(ln) or "usize"}
++            if "max_len" in p:
++                it["max_len"] = p["max_len"]
++            items.append(it)
+         elif role == "out_scalar":
+             items.append({"kind": "ptr", "role": "out_scalar", "name": p["name"],
+                           "elem": p["elem"], "elem_w": p["elem_width"]})
+@@ -344,7 +393,14 @@
+                           "role": "in_struct_arr" if role == "input_struct_array" else "io_struct_arr",
+                           "name": p["name"], "len_name": p["length_param"],
+                           "struct": _struct_from_schema(p["struct_name"], p["fields"])})
+-        # length / capacity params are consumed by their owning buffer (not standalone items)
++        # length / capacity / capacity_ptr params are consumed by their owning buffer
++    if schema.get("decode_scalars_first"):
++        # RQ4: decode every scalar before any buffer, so a scalar's byte offset does not move when
++        # a (possibly megabyte-sized) buffer changes length. Call order is unaffected: the call is
++        # built from `abi`, in strict declaration order.
++        buf_roles = ("in_buf", "io_buf", "out_buf_cap", "in_str", "in_arr", "in_table",
++                     "in_str_table", "in_struct_arr", "io_struct_arr")
++        items.sort(key=lambda i: 1 if i["role"] in buf_roles else 0)
+     return items
+ 
+ 
+@@ -458,7 +514,8 @@
+     return items, abi
+ 
+ 
+-def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False, ignore_schema: bool = False):
++def resolve(name: str, cc_dir: Path, entry: str, infer: bool = False, ignore_schema: bool = False,
++            schema_path: Path | None = None):
+     """(params, ret, all_fns, items, abi). Require + strongly validate the schema; --infer to fall back.
+ 
+     items drive byte-decode (role-based, order preserved per buffer); abi is the schema params in
+@@ -470,7 +527,9 @@
+     if ignore_schema:
+         items, abi = _infer_items_abi(params)
+         return params, ret, all_fns, items, abi
+-    schema_path = ROOT / "schemas" / f"{name}.json"
++    # RQ4: --schema selects an explicit file, because schemas/<program>.json is keyed to a
++    # single entry and a library needs one schema per boundary.
++    schema_path = Path(schema_path) if schema_path else (ROOT / "schemas" / f"{name}.json")
+     if schema_path.exists():
+         import harness_schema as hs
+         schema = json.loads(schema_path.read_text(encoding="utf-8"))
+@@ -638,18 +697,40 @@
+             if it.get("decode") == "bounded_scalar":
+                 hi, ty = it["max_value"], it["rust"]
+                 mn = it["min_var"] if it.get("min_var") else it["min_value"]
+-                decode.append(f"    let {n} = ({mn} as {ty}) + (cur.take_{ty}() "
+-                              f"% (({hi} - {mn} + 1) as {ty}));")
++                # RQ4: rem_euclid, not %. Rust's % keeps the sign of the dividend, so a signed
++                # bounded_scalar produced values in [min-(span-1), max] -- e.g. bzip2's
++                # blockSize100k, declared 1..9, actually ranged -7..9 and half of every campaign
++                # was spent on inputs the callee rejects outright.
++                decode.append(f"    let {n} = ({mn} as {ty}) + (cur.take_{ty}()"
++                              f".rem_euclid((({hi}) as {ty}) - ({mn} as {ty}) + 1));")
+             else:
+                 decode.append(f"    let {n} = cur.take_{it['rust']}();")
+         elif it["role"] == "in_buf":
+-            decode.append(f"    let {n}_buf: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
++            take = (f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
++                    else f"cur.take_vec_{it['elem']}()")
++            decode.append(f"    let {n}_buf: Vec<{it['elem']}> = {take};")
+             decode.append(f"    let {it['len_name']} = {n}_buf.len(){_len_cast(it)};")
+         elif it["role"] == "io_buf":
+-            decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = cur.take_vec_{it['elem']}();")
++            take = (f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
++                    else f"cur.take_vec_{it['elem']}()")
++            decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = {take};")
+             decode.append(f"    let {it['len_name']} = {n}_c.len(){_len_cast(it)};")
+             decode.append(f"    let mut {n}_r = {n}_c.clone();")
+             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: buffer {n}"); }}')
++        elif it["role"] == "out_buf_cap":
++            # RQ4: output buffer whose capacity is passed by pointer. Both sides get their own
++            # zeroed allocation of `cap` elements and their own capacity cell seeded with `cap`.
++            # After the call the callee has overwritten the cell with the length it produced, so
++            # the observable output is that length plus the prefix it names -- comparing the whole
++            # allocation would compare bytes the callee never wrote.
++            c, cn, cr = it["cap"], it["cap_name"], it["cap_rust"]
++            decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = vec![0 as {it['elem']}; {c}];")
++            decode.append(f"    let mut {n}_r: Vec<{it['elem']}> = vec![0 as {it['elem']}; {c}];")
++            decode.append(f"    let mut {cn}_c: {cr} = {c} as {cr};")
++            decode.append(f"    let mut {cn}_r: {cr} = {c} as {cr};")
++            post.append(f'    if {cn}_c != {cn}_r {{ panic!("divergence: written length {cn}"); }}')
++            post.append(f"    {{ let _n = ({cn}_c as usize).min({c});")
++            post.append(f'      if {n}_c[.._n] != {n}_r[.._n] {{ panic!("divergence: output buffer {n}"); }} }}')
+         elif it["role"] == "out_scalar":
+             decode.append(f"    let mut {n}_c: {it['elem']} = 0 as {it['elem']};")
+             decode.append(f"    let mut {n}_r: {it['elem']} = 0 as {it['elem']};")
+@@ -770,7 +851,7 @@
+                 r_pairs.append((n, f"&mut {n}_r[..]"))
+             else:
+                 r_pairs.append((n, f"{n}_r.as_mut_ptr()"))
+-        elif role == "out_scalar":
++        elif role in ("out_scalar", "capacity_ptr"):
+             c_args.append(f"&mut {n}_c"); r_pairs.append((n, f"&mut {n}_r"))
+             decl.append(f"{n}: *mut {p['elem']}")
+         elif role == "output_array":
+@@ -881,6 +962,9 @@
+                        ("u64", 8), ("i64", 8), ("usize", 8)]],
+         *[f"    fn take_vec_{t}(&mut self) -> Vec<{t}> {{ let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_{t}()).collect() }}"
+           for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64"]],
++        *[f"    fn take_rest_{t}(&mut self, max: usize) -> Vec<{t}> {{ let mut v = Vec::new(); "
++          f"while self.p < self.d.len() && v.len() < max {{ v.push(self.take_{t}()); }} v }}"
++          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64"]],
+         "}",
+         "",
+         f"use {crate} as translated;",
+@@ -928,13 +1012,16 @@
+     call_r = f"translated::{rust_entry or entry}({', '.join(r_args)})"
+     # UB-free gate: reset before C, reject (return) if C tripped UB, then call Rust.
+     pre = "        c2r_ub_reset();\n" if ub_free else ""
+-    gate = "        if c2r_ub_get() != 0 { return; }  // C hit UB -> reject input\n" if ub_free else ""
++    gate = ("        if mode == C2R_GATED && c2r_ub_get() != 0 { return; }  // C hit UB -> reject\n"
++            if ub_free else "")
+     if ret == "void":
+-        body_call = f"{pre}        {call_c};\n{gate}        {call_r};"
++        body_call = f"{pre}        {call_c};\n{gate}"
++        rust_call = f"        {call_r};"
+         ret_cmp = ""
+     elif decode_shape:
+         osc = out_scalars[0]
+-        body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
++        body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
++        rust_call = f"        let r_ret = {call_r};"
+         ret_cmp = (
+             f"        let (c_ok, c_val, c_cons) = (c_ret != 0, {osc}_c, c_ret);\n"
+             f"        let (r_ok, r_val, r_cons) = match r_ret {{ Some((v, c)) => (true, v, c), None => (false, 0, 0) }};\n"
+@@ -942,7 +1029,8 @@
+             f'        if c_ok && (c_val != r_val || (c_cons as i128) != (r_cons as i128)) {{ panic!("divergence: decoded value/consumed"); }}'
+         )
+     else:
+-        body_call = f"{pre}        let c_ret = {call_c};\n{gate}        let r_ret = {call_r};"
++        body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
++        rust_call = f"        let r_ret = {call_r};"
+         # idiomatic translations may return a different-but-compatible integer width/signedness
+         # (e.g. C `int`/i32 vs Rust `isize`); compare via i128 so the widths line up.
+         if rust_ret and rust_ret != ret and ret in _INT_TYPES and rust_ret in _INT_TYPES:
+@@ -964,6 +1052,21 @@
+                        ("u64", 8), ("i64", 8), ("usize", 8)]],
+         *[f"    fn take_vec_{t}(&mut self) -> Vec<{t}> {{ let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_{t}()).collect() }}"
+           for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64"]],
++        *[f"    fn take_rest_{t}(&mut self, max: usize) -> Vec<{t}> {{ let mut v = Vec::new(); "
++          f"while self.p < self.d.len() && v.len() < max {{ v.push(self.take_{t}()); }} v }}"
++          for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64"]],
++        "}",
++        "",
++        "// RQ4: C reference and UB gate are selected at RUN TIME so every mode shares one binary,",
++        "// one coverage map and one set of identities. C2R_MODE=gated|nogate|rust-only.",
++        "const C2R_GATED: u8 = 0; const C2R_NOGATE: u8 = 1; const C2R_RUST_ONLY: u8 = 2;",
++        "fn c2r_mode() -> u8 {",
++        "    static M: std::sync::OnceLock<u8> = std::sync::OnceLock::new();",
++        "    *M.get_or_init(|| match std::env::var(\"C2R_MODE\").as_deref() {",
++        "        Ok(\"nogate\") => C2R_NOGATE,",
++        "        Ok(\"rust-only\") => C2R_RUST_ONLY,",
++        "        _ => C2R_GATED,",
++        "    })",
+         "}",
+         "",
+         "fn cd() -> i8 { 0 }  // silence unused on some shapes",
+@@ -978,10 +1081,17 @@
+         "    let _ = cd();",
+         "    let mut cur = Cur::new(data);",
+         *decode,
++        "    let mode = c2r_mode();",
+         "    unsafe {",
+-        body_call,
+-        ret_cmp,
+-        *post,
++        "        if mode == C2R_RUST_ONLY {",
++        "            // no C reference, so nothing can be compared; throughput bound only",
++        rust_call.replace("        ", "            ", 1),
++        "        } else {",
++        *[l.replace("        ", "            ", 1) for l in body_call.split("\n") if l],
++        rust_call.replace("        ", "            ", 1),
++        *[l.replace("        ", "            ", 1) for l in ret_cmp.split("\n") if l],
++        *[l.replace("        ", "            ", 1) for l in post],
++        "        }",
+         "    }",
+         "});",
+         "",
+@@ -1069,6 +1179,9 @@
+     ap.add_argument("--out", default=None, help="output project dir (default fuzz_gen/<name>)")
+     ap.add_argument("--infer-schema", action="store_true",
+                     help="fall back to signature inference when no schema exists (default: require schema)")
++    ap.add_argument("--schema", default=None,
++                    help="explicit schema file (schemas/<program>.json is keyed to ONE entry; a "
++                         "library needs one schema per boundary)")
+     ap.add_argument("--ignore-schema", action="store_true",
+                     help="force inference even if schemas/<name>.json exists (harvesting non-entry boundaries)")
+     ap.add_argument("--expose-entry", action="store_true",
+@@ -1095,7 +1208,8 @@
+     c_src = next((pair / "source").glob("*.c"))
+ 
+     params, ret, all_fns, items, abi = resolve(
+-        name, cc, args.entry, infer=args.infer_schema, ignore_schema=args.ignore_schema)
++        name, cc, args.entry, infer=args.infer_schema, ignore_schema=args.ignore_schema,
++        schema_path=args.schema)
+ 
+     out = Path(args.out) if args.out else (ROOT / "fuzz_gen" / name)
+     out.mkdir(parents=True, exist_ok=True)
+@@ -1178,7 +1292,9 @@
+         f'[package]\nname = "{crate}"\nversion = "0.1.0"\nedition = "2021"\n\n'
+         f'[build-dependencies]\ncc = "1"\n\n[dependencies]\n', encoding="utf-8")
+ 
+-    defines = "\n".join(f'        .define("{fn}", "c_{fn}")' for fn in all_fns)
++    # RQ4 FIX 2: all_fns now also carries "@var:<name>" entries for file-scope C globals.
++    _rename = [f.removeprefix("@var:") for f in all_fns]
++    defines = "\n".join(f'        .define("{fn}", "c_{fn}")' for fn in _rename)
+     # --ub-free: instrument the oracle with UBSan (recover) and compile the flag shim in.
+     if args.ub_free:
+         (out / "c" / "ubshim.c").write_text(UBSHIM_C, encoding="utf-8")

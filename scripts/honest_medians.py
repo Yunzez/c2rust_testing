@@ -23,7 +23,7 @@ import json
 import statistics
 
 rows = []
-for f in sorted(glob.glob("results/rq3_cells/*.json")):
+for f in sorted(glob.glob("results/rq4_effectiveness/reach_cells/*.json")):
     d = json.load(open(f))
     pf = d.get("per_fn")
     nf, nr = d.get("n_functions"), d.get("n_reached")

@@ -1,0 +1,24 @@
+{
+  "cell": "bzip2__c2rust",
+  "library": "bzip2",
+  "tool": "c2rust",
+  "src_root": "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rq4_cov/c2rust/crate/src",
+  "include_files": [
+    "blocksort.rs", "bzlib.rs", "compress.rs", "crctable.rs",
+    "decompress.rs", "huffman.rs", "randtable.rs"
+  ],
+  "include_rule": "path whitelist over the translated bzip2 *library* sources (the transpilation of bzlib.c and the files it compiles with: blocksort.c, compress.c, crctable.c, decompress.c, huffman.c, randtable.c)",
+  "exclude": {
+    "bzip2.rs": "translated CLI *program* (bzip2.c), not the library; it is the adapter path through which the shipped suite reaches the library",
+    "bzip2recover.rs": "separate translated program (bzip2recover.c); exercised by neither side",
+    "src/bin/bzip2cli.rs": "test adapter written for this experiment",
+    "src/bin/covreplay.rs": "replay driver written for this experiment",
+    "src/lib.rs": "crate root (module declarations only)",
+    "shims.c / build.rs": "platform shims and build script",
+    "std / external crates": "not translated code"
+  },
+  "notes": [
+    "crctable.rs and randtable.rs are in scope but contain no functions (pure static tables), so they contribute 0 to both the function and the region denominator; llvm-cov omits them from its reports for that reason.",
+    "The same scope and the same denominator are used for both sides."
+  ]
+}

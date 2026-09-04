@@ -1,0 +1,1118 @@
+{
+  "functions": [
+    {
+      "name": "main",
+      "line": 2,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 1,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "genann_act_sigmoid",
+      "line": 52,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "f64",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "f64"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "f64",
+          "shape": "f64"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "/": 1,
+        "<": 1,
+        ">": 1,
+        "neg": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 31,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "genann_act_sigmoid_cached",
+      "line": 59,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "std::os::raw::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "std::os::raw::c_double"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "f64",
+          "shape": "f64"
+        }
+      },
+      "ops": {
+        "*": 1,
+        "+": 3,
+        "-": 3,
+        "/": 2,
+        "<": 1,
+        "<=": 1,
+        "==": 1,
+        ">=": 1,
+        "neg": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 13,
+        "nodes": 119,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "genann_act_threshold",
+      "line": 92,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "f64",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "f64"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "f64",
+          "shape": "f64"
+        }
+      },
+      "ops": {
+        ">": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "genann_act_linear",
+      "line": 97,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "f64",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "f64"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "f64",
+          "shape": "f64"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 2,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "genann_init",
+      "line": 102,
+      "signature": {
+        "params": [
+          {
+            "name": "inputs",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hidden_layers",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hidden",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "outputs",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut genann"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "*mut {unknown}",
+          "shape": "*{unknown}"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "&&": 1,
+        "*": 5,
+        "+": 10,
+        "-": 2,
+        "<": 4,
+        ">": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 8,
+        "stmts": 24,
+        "nodes": 261,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 15,
+        "allocs": 1,
+        "method_calls": 6
+      }
+    },
+    {
+      "name": "genann_read",
+      "line": 167,
+      "signature": {
+        "params": [
+          {
+            "name": "in_0",
+            "ty": "*mut FILE",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut genann"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut {unknown}",
+            "shape": "*{unknown}"
+          }
+        ],
+        "output": {
+          "ty": "*mut {unknown}",
+          "shape": "*{unknown}"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "+": 1,
+        "<": 3,
+        "||": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 19,
+        "nodes": 141,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 6,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "genann_copy",
+      "line": 203,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "&genann",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut genann"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&{unknown}",
+            "shape": "&{unknown}"
+          }
+        ],
+        "output": {
+          "ty": "*mut {unknown}",
+          "shape": "*{unknown}"
+        }
+      },
+      "ops": {
+        "*": 1,
+        "+": 3,
+        "-": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 9,
+        "nodes": 95,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 5,
+        "allocs": 1,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "genann_randomize",
+      "line": 222,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "*mut genann",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut {unknown}",
+            "shape": "*{unknown}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "-": 1,
+        "/": 1,
+        "<": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 41,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 3,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "genann_free",
+      "line": 235,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "*mut genann",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut {unknown}",
+            "shape": "*{unknown}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "genann_run",
+      "line": 244,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "*const genann",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "inputs",
+            "ty": "*const std::os::raw::c_double",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const std::os::raw::c_double"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*const {unknown}",
+            "shape": "*{unknown}"
+          },
+          {
+            "ty": "*const f64",
+            "shape": "*f64"
+          }
+        ],
+        "output": {
+          "ty": "*const f64",
+          "shape": "*f64"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "!=": 3,
+        "*": 4,
+        "+": 7,
+        "<": 5,
+        "==": 4,
+        "neg": 2
+      },
+      "consts": [],
+      "strings": [
+        "non-null function pointer"
+      ],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 44,
+        "nodes": 379,
+        "loops": 5,
+        "max_loop_depth": 3,
+        "derefs": 32,
+        "allocs": 0,
+        "method_calls": 17
+      }
+    },
+    {
+      "name": "genann_train",
+      "line": 336,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "*const genann",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "inputs",
+            "ty": "*const std::os::raw::c_double",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "desired_outputs",
+            "ty": "*const std::os::raw::c_double",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "learning_rate",
+            "ty": "std::os::raw::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*const {unknown}",
+            "shape": "*{unknown}"
+          },
+          {
+            "ty": "*const f64",
+            "shape": "*f64"
+          },
+          {
+            "ty": "*const f64",
+            "shape": "*f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "!=": 6,
+        "*": 32,
+        "+": 29,
+        "-": 15,
+        "<": 8,
+        "==": 6,
+        ">=": 2,
+        "neg": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 22,
+        "stmts": 70,
+        "nodes": 881,
+        "loops": 10,
+        "max_loop_depth": 3,
+        "derefs": 87,
+        "allocs": 0,
+        "method_calls": 35
+      }
+    },
+    {
+      "name": "genann_write",
+      "line": 538,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "&genann",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "out",
+            "ty": "&mut std::fs::File",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&{unknown}",
+            "shape": "&{unknown}"
+          },
+          {
+            "ty": "&mut File",
+            "shape": "&{<rec>}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 2,
+        "nodes": 15,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "genann_act_sigmoid",
+      "to": "exp"
+    },
+    {
+      "from": "genann_act_sigmoid_cached",
+      "to": "genann_act_sigmoid"
+    },
+    {
+      "from": "genann_init",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "genann_init",
+      "to": "size_of"
+    },
+    {
+      "from": "genann_init",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "genann_init",
+      "to": "size_of"
+    },
+    {
+      "from": "genann_init",
+      "to": "malloc"
+    },
+    {
+      "from": "genann_init",
+      "to": "is_null"
+    },
+    {
+      "from": "genann_init",
+      "to": "offset"
+    },
+    {
+      "from": "genann_init",
+      "to": "size_of"
+    },
+    {
+      "from": "genann_init",
+      "to": "genann_randomize"
+    },
+    {
+      "from": "genann_read",
+      "to": "__error"
+    },
+    {
+      "from": "genann_read",
+      "to": "fscanf"
+    },
+    {
+      "from": "genann_read",
+      "to": "__error"
+    },
+    {
+      "from": "genann_read",
+      "to": "perror"
+    },
+    {
+      "from": "genann_read",
+      "to": "genann_init"
+    },
+    {
+      "from": "genann_read",
+      "to": "__error"
+    },
+    {
+      "from": "genann_read",
+      "to": "fscanf"
+    },
+    {
+      "from": "genann_read",
+      "to": "__error"
+    },
+    {
+      "from": "genann_read",
+      "to": "perror"
+    },
+    {
+      "from": "genann_read",
+      "to": "genann_free"
+    },
+    {
+      "from": "genann_copy",
+      "to": "size_of"
+    },
+    {
+      "from": "genann_copy",
+      "to": "size_of"
+    },
+    {
+      "from": "genann_copy",
+      "to": "alloc"
+    },
+    {
+      "from": "genann_copy",
+      "to": "Result::unwrap"
+    },
+    {
+      "from": "genann_copy",
+      "to": "Layout::from_size_align"
+    },
+    {
+      "from": "genann_copy",
+      "to": "align_of"
+    },
+    {
+      "from": "genann_copy",
+      "to": "is_null"
+    },
+    {
+      "from": "genann_copy",
+      "to": "null_mut"
+    },
+    {
+      "from": "genann_copy",
+      "to": "copy_nonoverlapping"
+    },
+    {
+      "from": "genann_copy",
+      "to": "add"
+    },
+    {
+      "from": "genann_copy",
+      "to": "size_of"
+    },
+    {
+      "from": "genann_randomize",
+      "to": "rand"
+    },
+    {
+      "from": "genann_free",
+      "to": "Box::from_raw"
+    },
+    {
+      "from": "genann_run",
+      "to": "memcpy"
+    },
+    {
+      "from": "genann_run",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "genann_run",
+      "to": "size_of"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset_from"
+    },
+    {
+      "from": "genann_run",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "genann_run",
+      "to": "as_ptr"
+    },
+    {
+      "from": "genann_run",
+      "to": "transmute"
+    },
+    {
+      "from": "genann_run",
+      "to": "offset_from"
+    },
+    {
+      "from": "genann_run",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "genann_run",
+      "to": "as_ptr"
+    },
+    {
+      "from": "genann_run",
+      "to": "transmute"
+    },
+    {
+      "from": "genann_train",
+      "to": "genann_run"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset_from"
+    },
+    {
+      "from": "genann_train",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "genann_train",
+      "to": "as_ptr"
+    },
+    {
+      "from": "genann_train",
+      "to": "transmute"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_train",
+      "to": "offset"
+    },
+    {
+      "from": "genann_write",
+      "to": "Result::unwrap"
+    },
+    {
+      "from": "genann_write",
+      "to": "Result::unwrap"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "genann_init",
+      "line": 155,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_init",
+      "line": 156,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_init",
+      "line": 159,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "genann_init",
+      "line": 162,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "genann_read",
+      "line": 192,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_copy",
+      "line": 215,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_copy",
+      "line": 216,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_randomize",
+      "line": 230,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_run",
+      "line": 249,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_run",
+      "line": 281,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "genann_run",
+      "line": 281,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_run",
+      "line": 309,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "genann_run",
+      "line": 309,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 348,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 348,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 353,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 358,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 390,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 390,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 394,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 397,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 401,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 401,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 435,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 438,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 447,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 494,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 497,
+      "kind": "method_unresolved"
+    },
+    {
+      "from": "genann_train",
+      "line": 504,
+      "kind": "method_unresolved"
+    }
+  ],
+  "excluded_scaffolding": []
+}

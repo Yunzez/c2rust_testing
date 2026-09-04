@@ -1,0 +1,266 @@
+{
+ "case": "ptrtrans_bzip2",
+ "sheet_fingerprint": "d93d43403b9a797a",
+ "labeler": "Claude subagent (claude-fable-5-1), session 6278f822; spot-checked by the main session (blocksort.rs:384-412 stub bodies, 16 'stub/placeholder' comment hits across src/)",
+ "method": "manual code reading of the C body against every candidate Rust body plus grep of the crate for unmatched functions; STUB:x = signature-only placeholder body (52 of 61 Rust fns in this crate are such placeholders; the crate is not a translation of bzip2's logic, git log shows one 'Initial translation' commit per C function with the body never filled)",
+ "date": "2026-09-01",
+ "reviewed_by_user": false,
+ "labels": {
+  "fallbackSimpleSort": {
+   "truth": "fallback_simple_sort",
+   "note": "IMPL: C blocksort.c:32 -> Rust src/blocksort.rs:46. Body matches: early `if lo == hi return`, `if hi - lo > 3` stride-4 insertion pass (`i = hi-4 .. lo`, `j += 4`, `fmap[j-4] = fmap[j]`, `fmap[j-4] = tmp`), then stride-1 pass; comparisons `ec_tmp > eclass[fmap[j]]`. Rust adds bounds guards and uses i32 slices (type drift from UInt32) but is unmistakably this function. Only candidate (tool_claim); confirmed."
+  },
+  "fallbackQSort3": {
+   "truth": "STUB:fallback_q_sort3",
+   "note": "STUB: C blocksort.c:93 -> Rust src/blocksort.rs:384. Rust body is `// Default / placeholder implementation` (empty). Signature matches C exactly (fmap, eclass, lo_st, hi_st). No other Rust fn contains the fallback-qsort body (searched for FALLBACK_QSORT/stackLo/fpush/med-of-3 logic on eclass: nothing). tool_claim candidate accepted as the declared slot."
+  },
+  "fallbackSort": {
+   "truth": "STUB:fallback_sort",
+   "note": "STUB: C blocksort.c:212 -> Rust src/blocksort.rs:408. Empty placeholder body; signature (fmap, eclass, bhtab, nblock, verb) matches C. Searched crate for bhtab/SET_BH/ftab bucket logic: nothing else. tool_claim accepted as declared slot."
+  },
+  "mainGtU": {
+   "truth": "main_gt_u",
+   "note": "IMPL: C blocksort.c:347 -> Rust src/blocksort.rs:184. Body matches: sequence of `c1 = block[i1]; c2 = block[i2]; if c1 != c2 return c1 > c2; i1++; i2++`, then `k = nblock + 8` do-loop that also compares quadrant[] (s1/s2), wraps `if i1 >= nblock i1 -= nblock`, `k -= 8`, `(*budget)--`, returns False. Fidelity defect (not a matching issue): Rust unrolls only 10 pre-loop steps (C: 12) and 7 in-loop steps (C: 8); AssertD dropped; returns u8 0/1. Only candidate (tool_claim); confirmed."
+  },
+  "mainSimpleSort": {
+   "truth": "STUB:main_simple_sort",
+   "note": "STUB: C blocksort.c:485 -> Rust src/blocksort.rs:396. Body is `// Default/no-op stub implementation`; doc comment quotes the C signature `static void mainSimpleSort ( UInt32* ptr, ... Int32 lo, Int32 hi, Int32 d, Int32* budget )`; params (ptr, block, quadrant, nblock, lo, hi, d, budget) match. Rejected matcher_forced=main_q_sort3 [blocksort.rs:421]: that stub's doc comment names mainQSort3 and its params are lo_st/hi_st/d_st. No Rust fn contains the INCS/shell-sort body (INCS static exists at blocksort.rs:14 but is unused)."
+  },
+  "mmed3": {
+   "truth": "mmed3",
+   "note": "IMPL: C blocksort.c:583 -> Rust src/blocksort.rs:30. Exact body: `if a > b swap; if b > c { b = c; if a > b b = a }; return b`. same_name confirmed by body."
+  },
+  "mainQSort3": {
+   "truth": "STUB:main_q_sort3",
+   "note": "STUB: C blocksort.c:621 -> Rust src/blocksort.rs:421. Body is no-op; doc comment quotes `static void mainQSort3 ( ... Int32 loSt, Int32 hiSt, Int32 dSt, Int32* budget )`; params match. Rejected matcher_forced=main_simple_sort [blocksort.rs:396]: doc names mainSimpleSort, params lo/hi/d. Searched for MAIN_QSORT_SMALL_THRESH/mmed3 callers/stackD: none (mmed3 is defined but never called)."
+  },
+  "mainSort": {
+   "truth": "STUB:main_sort",
+   "note": "STUB: C blocksort.c:751 -> Rust src/blocksort.rs:436. Body is no-op; doc comment quotes `static void mainSort ( UInt32* ptr, UChar* block, UInt16* quadrant, UInt32* ftab, Int32 nblock, Int32 verb, Int32* budget )`; 7 params match. Rejected matcher_forced=BZ2_bzBuffToBuffCompress [bzlib.rs:431]: unrelated stub (dest/dest_len/source/... params, returns i32). Searched for ftab/copyStart/copyEnd/bigDone/runningOrder: nothing."
+  },
+  "BZ2_blockSort": {
+   "truth": "STUB:BZ2_blockSort",
+   "note": "STUB: C blocksort.c:1031 -> Rust src/blocksort.rs:451. Body is `// Default stub: no-op`; doc says `Stub for translated BZ2_blockSort from C`; param `s: Option<&mut EState>` matches. Searched for 'wfact'/'budgetInit'/'origPtr'/fallback_sort or main_sort call sites: none. same_name accepted as declared slot."
+  },
+  "BZ2_bz__AssertH__fail": {
+   "truth": "BZ2_bz__AssertH__fail",
+   "note": "IMPL: C bzlib.c:41 -> Rust src/bzlib.rs:95. Verbatim message strings ('bzip2/libbzip2: internal error number', 'bzip2-devel@sourceware.org', 'A special note about internal error number 1007', 'Memtest86'), `if errcode == 1007` branch, calls BZ2_bzlibVersion(), `process::exit(3)` = `exit(3)`. same_name confirmed."
+  },
+  "bz_config_ok": {
+   "truth": "bz_config_ok",
+   "note": "IMPL: C bzlib.c:91 -> Rust src/bzlib.rs:60. Body: size_of::<i32>() != 4 / i16 != 2 / i8 != 1 -> return 0, else 1 = sizeof(int)/short/char checks. same_name confirmed."
+  },
+  "default_bzalloc": {
+   "truth": "default_bzalloc",
+   "note": "IMPL: C bzlib.c:102 -> Rust src/bzlib.rs:150. `malloc(items * size)` rendered as checked_mul + Layout::from_size_align(total,1) + alloc(); opaque unused as in C; returns Option<Box<[u8]>> (None on failure = NULL). Rejected matcher_forced=BZ2_bzDecompressInit [bzlib.rs:228]: a `return 0` stub with (strm, verbosity, small) params, no allocation."
+  },
+  "default_bzfree": {
+   "truth": "NONE",
+   "note": "ELIDED: C bzlib.c:109 (`if (addr != NULL) free(addr)`). No Rust fn in the inventory or crate frees memory: grepped src/ for free(/dealloc/drop/bzfree \u2014 only default_bzalloc exists. Rejected matcher_forced=BZ2_compressBlock [compress.rs:58]: no-op stub whose doc names `void BZ2_compressBlock ( EState* s, Bool is_last_block )`."
+  },
+  "prepare_new_block": {
+   "truth": "STUB:prepare_new_block",
+   "note": "STUB: C bzlib.c:117 -> Rust src/bzlib.rs:204. Body `// Default stub: no-op`; signature (s: EState) matches. Searched for nblock = 0/numZ/state_out_pos/inUse/blockNo: nothing in crate. Rejected matcher_forced=isempty_RL [bzlib.rs:212]: `false` stub whose doc quotes `static Bool isempty_RL ( EState* s )`."
+  },
+  "init_RL": {
+   "truth": "STUB:init_RL",
+   "note": "STUB: C bzlib.c:131 -> Rust src/bzlib.rs:207. Body `// default stub: no-op`. Searched for state_in_ch/256/state_in_len: nothing. Rejected matcher_forced=makeMaps_e [compress.rs:29]: no-op stub declared for compress.c makeMaps_e."
+  },
+  "isempty_RL": {
+   "truth": "STUB:isempty_RL",
+   "note": "STUB: C bzlib.c:139 -> Rust src/bzlib.rs:212. Body is constant `false`; doc quotes `static Bool isempty_RL ( EState* s )`. Rejected matcher_forced=un_rle_obuf_to_output_fast [bzlib.rs:225]: stub declared (doc) for unRLE_obuf_to_output_FAST, takes DState."
+  },
+  "BZ2_bzCompressInit": {
+   "truth": "STUB:BZ2_bzCompressInit",
+   "note": "STUB: C bzlib.c:148 -> Rust src/bzlib.rs:258. Body `0`; doc says `Stub for: int BZ2_bzCompressInit ( bz_stream* strm, int blockSize100k, int verbosity, int workFactor )`; params match. Searched for bz_config_ok()/default_bzalloc call sites, BZ_CONFIG_ERROR, 100000, arr1/arr2/ftab allocation: none. Rejected matcher_forced=bz2_bz_read_get_unused [bzlib.rs:231]: no-op stub with (bzerror, b, unused, n_unused)."
+  },
+  "add_pair_to_block": {
+   "truth": "STUB:add_pair_to_block",
+   "note": "STUB: C bzlib.c:216 -> Rust src/bzlib.rs:218. Body `// Default stub: no-op`; signature matches. Searched for BZ_UPDATE_CRC/blockCRC/state_in_len switch (1,2,3,default) run-length emission: nothing."
+  },
+  "flush_RL": {
+   "truth": "STUB:flush_RL",
+   "note": "STUB: C bzlib.c:252 -> Rust src/bzlib.rs:267. Body no-op; signature matches. Rejected matcher_forced=BZ2_bzWriteClose64 [bzlib.rs:419]: no-op stub whose doc quotes the C BZ2_bzWriteClose64 7-param signature."
+  },
+  "copy_input_until_stop": {
+   "truth": "STUB:copy_input_until_stop",
+   "note": "STUB: C bzlib.c:289 -> Rust src/bzlib.rs:272. Body constant `false`; doc quotes `static Bool copy_input_until_stop ( EState* s )`. Rejected matcher_forced=handle_compress [bzlib.rs:371]: `false` stub whose doc quotes `static Bool handle_compress ( bz_stream* strm )`, takes bz_stream not EState. Searched for ADD_CHAR_TO_BLOCK/avail_in/total_in_lo32: nothing."
+  },
+  "copy_output_until_stop": {
+   "truth": "STUB:copy_output_until_stop",
+   "note": "STUB: C bzlib.c:334 -> Rust src/bzlib.rs:215. Body constant `false`; signature matches. Searched for zbits/avail_out/total_out_lo32/state_out_pos: nothing."
+  },
+  "handle_compress": {
+   "truth": "STUB:handle_compress",
+   "note": "STUB: C bzlib.c:361 -> Rust src/bzlib.rs:371. Body constant `false`; doc quotes `static Bool handle_compress ( bz_stream* strm )`; param strm: bz_stream matches. Rejected matcher_forced=myfeof [bzlib.rs:249]: `0` stub, doc `static Bool myfeof ( FILE* f )`, takes File."
+  },
+  "BZ2_bzCompress": {
+   "truth": "STUB:BZ2_bzCompress",
+   "note": "STUB: C bzlib.c:407 -> Rust src/bzlib.rs:376. Body `0`; doc quotes `int BZ2_bzCompress ( bz_stream *strm, int action );`; params match. Searched for BZ_RUN/BZ_FLUSH/BZ_FINISH/BZ_M_RUNNING/BZ_SEQUENCE_ERROR: nothing. Rejected matcher_forced=bsPutUInt32 [compress.rs:33]: no-op stub declared for compress.c bsPutUInt32 (s, u)."
+  },
+  "BZ2_bzCompressEnd": {
+   "truth": "NONE",
+   "note": "ELIDED: C bzlib.c:468 (frees s->arr1/arr2/ftab, BZFREE(strm->state), strm->state = NULL, returns BZ_OK/BZ_PARAM_ERROR). No Rust fn in the crate references arr1/arr2/ftab-free, state = None, PARAM_ERROR, or any deallocation (grep of src/ found only the BZERRORSTRINGS table entry 'PARAM_ERROR'). Rejected matcher_forced=bz2_bz_decompress [bzlib.rs:310]: `0` stub whose doc says `Translated stub for BZ2_bzDecompress`, and is aliased `use crate::bz2_bz_decompress as BZ2_bzDecompress` at bzlib.rs:22."
+  },
+  "BZ2_bzDecompressInit": {
+   "truth": "STUB:BZ2_bzDecompressInit",
+   "note": "STUB: C bzlib.c:492 -> Rust src/bzlib.rs:228. Body `0`; signature (strm, verbosity, small) matches C. Searched for BZ_X_MAGIC_1/tt/ll16/ll4/currBlockNo: nothing. Rejected matcher_forced=bz2_bzread [bzlib.rs:358]: `0` stub with (b, buf, len) = C BZ2_bzread."
+  },
+  "unRLE_obuf_to_output_FAST": {
+   "truth": "STUB:un_rle_obuf_to_output_fast",
+   "note": "STUB: C bzlib.c:536 -> Rust src/bzlib.rs:225. Body constant `false`; doc says `Translated stub for unRLE_obuf_to_output_FAST from C`, param s: DState matches. Searched for BZ_GET_FAST/c_state_out_len/blockRandomised/BZ_RAND_UPD_MASK/nblock_used: nothing. tool_claim accepted as declared slot."
+  },
+  "BZ2_indexIntoF": {
+   "truth": "STUB:bz2_index_into_f",
+   "note": "STUB: C bzlib.c:687 -> Rust src/bzlib.rs:201. Body constant `0` (C: binary search nb=0,na=256 over cftab). Signature (indx: i32, cftab: Option<&[i32; 257]>) matches the 257-entry cftab. No other fn does a binary search (searched `>> 1`, `na - nb`). tool_claim accepted as declared slot."
+  },
+  "unRLE_obuf_to_output_SMALL": {
+   "truth": "STUB:un_rle_obuf_to_output_small",
+   "note": "STUB: C bzlib.c:706 -> Rust src/bzlib.rs:253. Body constant `false`; doc `Translated from static Bool unRLE_obuf_to_output_SMALL ( DState* s )`. Searched for BZ_GET_SMALL/bz2_index_into_f call sites: none. tool_claim accepted as declared slot."
+  },
+  "BZ2_bzDecompress": {
+   "truth": "STUB:bz2_bz_decompress",
+   "note": "STUB: C bzlib.c:808 -> Rust src/bzlib.rs:310. Body `0`; doc `Translated stub for BZ2_bzDecompress from C`, param strm: bz_stream matches; also re-exported under the C name via `use crate::bz2_bz_decompress as BZ2_bzDecompress` (bzlib.rs:22) \u2014 an import alias, not a second function. Rejected matcher_forced=bsFinishWrite [compress.rs:22]: no-op stub for compress.c bsFinishWrite (s: EState). Note distinct from bz2_decompress [decompress.rs:6] which is the slot for decompress.c BZ2_decompress (takes DState)."
+  },
+  "BZ2_bzDecompressEnd": {
+   "truth": "NONE",
+   "note": "ELIDED: C bzlib.c:862 (frees s->tt/ll16/ll4, BZFREE(strm->state), strm->state = NULL). Grepped src/ for tt/ll16/ll4/state = None/dealloc: nothing. Rejected matcher_forced=bz2_decompress [decompress.rs:6]: `0` stub with signature (s: Option<&mut DState>) -> i32 = decompress.c BZ2_decompress, not the bzlib.c End function."
+  },
+  "myfeof": {
+   "truth": "STUB:myfeof",
+   "note": "STUB: C bzlib.c:906 -> Rust src/bzlib.rs:249. Body constant `0`; doc `Translated from: static Bool myfeof ( FILE* f )`; param f: Option<&File> matches. Searched for fgetc/ungetc/EOF: nothing. Rejected matcher_forced=copy_input_until_stop [bzlib.rs:272]: `false` stub declared (doc) for copy_input_until_stop, takes EState."
+  },
+  "BZ2_bzWriteOpen": {
+   "truth": "STUB:BZ2_bzWriteOpen",
+   "note": "STUB: C bzlib.c:916 -> Rust src/bzlib.rs:297. Body constant `None`; params (bzerror, f, blockSize100k, verbosity, workFactor) match C exactly. Searched for ferror/BZ_IO_ERROR/BZ_SETERR/initialisedOk = True/BZ2_bzCompressInit call: nothing. same_name accepted as declared slot."
+  },
+  "BZ2_bzWrite": {
+   "truth": "STUB:BZ2_bzWrite",
+   "note": "STUB: C bzlib.c:964 -> Rust src/bzlib.rs:384. Body `// Default stub: no-op` (returns ()); comment `Forward declaration for BZ2_bzWrite translated from C`; params (bzerror, b, buf, len) and void return match C `void BZ2_bzWrite(int* bzerror, BZFILE* b, void* buf, int len)`. Rejected normalized_name=BZ2_bzwrite [bzlib.rs:444]: that is the slot for C BZ2_bzwrite (bzlib.c:1492) \u2014 3 params (b, buf, len), returns i32, doc quotes `int BZ2_bzwrite (BZFILE* b, void* buf, int len);`. Rejected tool_claim=UChar: a `pub type UChar = u8` alias, not a function. Rejected matcher_forced=BZ2_hbMakeCodeLengths [huffman.rs:19]: no-op stub declared for huffman.c BZ2_hbMakeCodeLengths."
+  },
+  "BZ2_bzWriteClose": {
+   "truth": "STUB:BZ2_bzWriteClose",
+   "note": "STUB: C bzlib.c:1009 -> Rust src/bzlib.rs:462. Body no-op; doc quotes the C 5-param signature (bzerror, b, abandon, nbytes_in, nbytes_out); matches. C body is a one-line forward to BZ2_bzWriteClose64; no Rust fn calls BZ2_bzWriteClose64. Rejected matcher_forced=bsW [compress.rs:25]: no-op stub for compress.c bsW (s, n, v)."
+  },
+  "BZ2_bzWriteClose64": {
+   "truth": "STUB:BZ2_bzWriteClose64",
+   "note": "STUB: C bzlib.c:1021 -> Rust src/bzlib.rs:419. Body no-op; doc quotes the C 7-param signature; params match. Searched for BZ_FINISH/BZ_STREAM_END/fflush/total_in_lo32: nothing. Rejected tool_claims BzFile/Bool/UChar/Int32: these are a struct and type aliases, not functions."
+  },
+  "BZ2_bzReadOpen": {
+   "truth": "STUB:BZ2_bzReadOpen",
+   "note": "STUB: C bzlib.c:1087 -> Rust src/bzlib.rs:277. Body constant `None`; doc quotes `BZFILE* BZ2_bzReadOpen (int* bzerror, FILE* f, int verbosity, int small, void* unused, int nUnused)`; 6 params match. Searched for BZ_MAX_UNUSED/5000 copy loop/bufN/BZ2_bzDecompressInit call: only the BzFile struct has buf[5000]. same_name accepted as declared slot."
+  },
+  "BZ2_bzReadClose": {
+   "truth": "STUB:bz2_bz_read_close",
+   "note": "STUB: C bzlib.c:1143 -> Rust src/bzlib.rs:291. Body no-op; doc `Stub translation of BZ2_bzReadClose from C to Rust`; params (bzerror, b) match. Searched for BZ2_bzDecompressEnd call/initialisedOk check/free(b): nothing. Rejected matcher_forced=BZ2_bzCompress [bzlib.rs:376]: `0` stub declared for BZ2_bzCompress (strm, action)."
+  },
+  "BZ2_bzRead": {
+   "truth": "STUB:bz2_bz_read",
+   "note": "STUB: C bzlib.c:1161 -> Rust src/bzlib.rs:332. Body `0`; doc quotes `int BZ2_bzRead ( int* bzerror, BZFILE* b, void* buf, int len )`; 4 params (bzerror, b, buf, len) -> Int32 match. Rejected normalized_name=bz2_bzread [bzlib.rs:358]: 3-param (b, buf, len) slot for C BZ2_bzread (bzlib.c:1478). Rejected matcher_forced=fallback_q_sort3 [blocksort.rs:384]: empty stub for blocksort.c fallbackQSort3. Searched for fread/BZ_UNEXPECTED_EOF/myfeof call: none."
+  },
+  "BZ2_bzReadGetUnused": {
+   "truth": "STUB:bz2_bz_read_get_unused",
+   "note": "STUB: C bzlib.c:1221 -> Rust src/bzlib.rs:231. Body `// Stub: no implementation`; params (bzerror, b, unused, n_unused) match C. Searched for avail_in/next_in/BZ_SEQUENCE_ERROR: nothing. Rejected matcher_forced=BZ2_bzCompressInit [bzlib.rs:258]: `0` stub declared (doc) for BZ2_bzCompressInit."
+  },
+  "BZ2_bzBuffToBuffCompress": {
+   "truth": "STUB:BZ2_bzBuffToBuffCompress",
+   "note": "STUB: C bzlib.c:1247 -> Rust src/bzlib.rs:431. Body `0`; 7 params (dest, dest_len, source, source_len, blockSize100k, verbosity, workFactor) match C. Searched for BZ_OUTBUFF_FULL/BZ_FINISH/BZ2_bzCompressInit call: none. Rejected matcher_forced=main_sort [blocksort.rs:436]: no-op stub declared for blocksort.c mainSort."
+  },
+  "BZ2_bzBuffToBuffDecompress": {
+   "truth": "STUB:BZ2_bzBuffToBuffDecompress",
+   "note": "STUB: C bzlib.c:1299 -> Rust src/bzlib.rs:340. Body `0`; 6 params (dest, dest_len, source, source_len, small, verbosity) match C. Searched for BZ_UNEXPECTED_EOF/BZ2_bzDecompressInit call: none. same_name accepted as declared slot."
+  },
+  "BZ2_bzlibVersion": {
+   "truth": "BZ2_bzlibVersion",
+   "note": "IMPL: C bzlib.c:1366 -> Rust src/bzlib.rs:90. Returns Some(\"1.0.8, 13-Jul-2019\") which is exactly BZ_VERSION from bzlib_private.h:39. Also called from BZ2_bz__AssertH__fail as in C. same_name confirmed."
+  },
+  "bzopen_or_bzdopen": {
+   "truth": "STUB:bzopen_or_bzdopen",
+   "note": "STUB: C bzlib.c:1383 -> Rust src/bzlib.rs:315. Body constant `None`; doc quotes `static BZFILE * bzopen_or_bzdopen ( const char *path, int fd, const char *mode, int open_mode)`; 4 params match. Searched for 'r'/'w'/'b'/'s' mode parsing, fopen/fdopen, \"rb\"/\"wb\", BZ2_bzWriteOpen/BZ2_bzReadOpen call: nothing. same_name accepted as declared slot."
+  },
+  "BZ2_bzopen": {
+   "truth": "STUB:BZ2_bzopen",
+   "note": "STUB: C bzlib.c:1460 (`return bzopen_or_bzdopen(path,-1,mode,0)`) -> Rust src/bzlib.rs:351. Body constant `None`; no call to bzopen_or_bzdopen anywhere in crate; params (path, mode) match. same_name accepted as declared slot."
+  },
+  "BZ2_bzdopen": {
+   "truth": "STUB:BZ2_bzdopen",
+   "note": "STUB: C bzlib.c:1469 (`return bzopen_or_bzdopen(NULL,fd,mode,1)`) -> Rust src/bzlib.rs:355. Body constant `None`; params (fd, mode) match. same_name accepted as declared slot."
+  },
+  "BZ2_bzread": {
+   "truth": "STUB:bz2_bzread",
+   "note": "STUB: C bzlib.c:1478 -> Rust src/bzlib.rs:358. Body `0`; 3 params (b, buf, len) -> Int32 match C `int BZ2_bzread (BZFILE* b, void* buf, int len)`. Rejected normalized_name=bz2_bz_read [bzlib.rs:332]: 4-param slot with bzerror whose doc quotes `int BZ2_bzRead ( int* bzerror, ... )` = C BZ2_bzRead (bzlib.c:1161). Rejected matcher_forced=bz2_hb_assign_codes [huffman.rs:3]: empty stub for huffman.c BZ2_hbAssignCodes. Searched for BZ_STREAM_END/lastErr check/bz2_bz_read call: none."
+  },
+  "BZ2_bzwrite": {
+   "truth": "STUB:BZ2_bzwrite",
+   "note": "STUB: C bzlib.c:1492 -> Rust src/bzlib.rs:444. Body `0`; doc quotes `int BZ2_bzwrite (BZFILE* b, void* buf, int len);`; 3 params -> i32 match. Rejected normalized_name=BZ2_bzWrite [bzlib.rs:384]: 4-param (bzerror, b, buf, len) void slot = C BZ2_bzWrite (bzlib.c:964). Rejected matcher_forced=BZ2_bzWriteOpen [bzlib.rs:297]: `None` stub for BZ2_bzWriteOpen. Searched for BZ2_bzWrite call site: none."
+  },
+  "BZ2_bzflush": {
+   "truth": "BZ2_bzflush",
+   "note": "IMPL: C bzlib.c:1506 (`/* do nothing now... */ return 0;`) -> Rust src/bzlib.rs:145 (`let _ = b; 0` with comment 'Parameter is unused in the original C code'). Trivial body but faithful and complete; same_name confirmed. Rejected tool_claim=BZFILE: a unit struct `pub struct BZFILE;` at bzlib.rs:143, not a function."
+  },
+  "BZ2_bzclose": {
+   "truth": "STUB:BZ2_bzclose",
+   "note": "STUB: C bzlib.c:1514 -> Rust src/bzlib.rs:476. Body no-op; doc `Stub translation of: void BZ2_bzclose (BZFILE* b)`; param matches. (This fn is the only uncommitted working-tree addition; last commit 'Initial translation for BZ2_bzclose'.) Searched for fclose/writing branch/BZ2_bzWriteClose or bz2_bz_read_close call: imported at bzlib.rs:4-5 but never called. Rejected matcher_forced=bsPutUChar [compress.rs:36]: real one-line translation of compress.c bsPutUChar (`bsW(s, 8, c as u32)`)."
+  },
+  "BZ2_bzerror": {
+   "truth": "STUB:bz2_bzerror",
+   "note": "STUB: C bzlib.c:1559 -> Rust src/bzlib.rs:241. Body constant `None`; doc `Translation of: const char * BZ2_bzerror (BZFILE *b, int *errnum)`; params (b, errnum) match. BZERRORSTRINGS table exists at bzlib.rs:72 but is never indexed by any fn. Rejected matcher_forced=default_bzalloc [bzlib.rs:150]: real translation of default_bzalloc (malloc emulation via Layout/alloc)."
+  },
+  "BZ2_bsInitWrite": {
+   "truth": "STUB:BZ2_bsInitWrite",
+   "note": "STUB: C compress.c:37 (`s->bsLive = 0; s->bsBuff = 0;`) -> Rust src/compress.rs:14 (`if let Some(_s) = s { // default stub: do nothing }`). Signature matches. Searched for bsLive/bsBuff: nothing in crate. Rejected matcher_forced=sendMTFValues [compress.rs:47]: no-op stub whose doc quotes `static void sendMTFValues ( EState* s )`."
+  },
+  "bsFinishWrite": {
+   "truth": "STUB:bsFinishWrite",
+   "note": "STUB: C compress.c:46 -> Rust src/compress.rs:22. Body `// Default / no-op implementation for stub`; signature matches. Searched for bsLive > 0 loop / zbits / numZ: nothing. Rejected tool_claim=EState: a struct (compress.rs:19), not a function. Rejected matcher_forced=BZ2_bzclose [bzlib.rs:476]: no-op stub declared for BZ2_bzclose."
+  },
+  "bsW": {
+   "truth": "STUB:bsW",
+   "note": "STUB: C compress.c:73 -> Rust src/compress.rs:25. Body `// Default stub: no-op; let _ = (s, n, v);`; params (s, n, v) match. Called by bsPutUChar (compress.rs:37) as in C, but no fn implements the bsBuff shift/bsLive logic (searched `bsBuff`, `<< (32 -`). Rejected matcher_forced=BZ2_bzwrite [bzlib.rs:444]: `0` stub declared for C BZ2_bzwrite."
+  },
+  "bsPutUInt32": {
+   "truth": "STUB:bsPutUInt32",
+   "note": "STUB: C compress.c:83 (four bsW(s,8,(u>>24)&0xff...) calls) -> Rust src/compress.rs:33 (`// default (no-op) body for stub`). Params (s, u) match. Searched for `>> 24`/`0xff`/`>> 16`: nothing. Rejected matcher_forced=bz2_bzerror [bzlib.rs:241]: `None` stub declared for BZ2_bzerror."
+  },
+  "bsPutUChar": {
+   "truth": "bsPutUChar",
+   "note": "IMPL: C compress.c:94 (`bsW( s, 8, (UInt32)c );`) -> Rust src/compress.rs:36 (`bsW(s, 8, c as u32);`). Exact one-line translation; the callee bsW is itself a stub but this function's body is complete. Rejected matcher_forced=BZ2_bzWrite [bzlib.rs:384]: no-op stub for bzlib.c BZ2_bzWrite (4 params)."
+  },
+  "makeMaps_e": {
+   "truth": "STUB:makeMaps_e",
+   "note": "STUB: C compress.c:106 -> Rust src/compress.rs:29. Body `// Default stub: no-op`; signature matches. Searched for nInUse/unseqToSeq/inUse[i]: nothing. Rejected matcher_forced=bz2_bz_read [bzlib.rs:332]: `0` stub whose doc quotes the C BZ2_bzRead signature."
+  },
+  "generateMTFValues": {
+   "truth": "STUB:generateMTFValues",
+   "note": "STUB: C compress.c:120 -> Rust src/compress.rs:41. Body `// Default/no-op stub implementation`; doc quotes `static void generateMTFValues ( EState* s )`. Searched for yy[256]/zPend/BZ_RUNA/BZ_RUNB/mtfFreq/EOB: nothing. same_name accepted as declared slot."
+  },
+  "sendMTFValues": {
+   "truth": "STUB:sendMTFValues",
+   "note": "STUB: C compress.c:239 -> Rust src/compress.rs:47. Body `// Default stub: no-op`; doc quotes `static void sendMTFValues ( EState* s )`. Searched for BZ_N_GROUPS/BZ_N_ITERS/nSelectors/selectorMtf/rfreq/BZ2_hbMakeCodeLengths call: the huffman fns are imported (compress.rs:4,6) but never called. same_name accepted as declared slot."
+  },
+  "BZ2_compressBlock": {
+   "truth": "STUB:BZ2_compressBlock",
+   "note": "STUB: C compress.c:602 -> Rust src/compress.rs:58. Body `// Default stub: no-op`; doc quotes `void BZ2_compressBlock ( EState* s, Bool is_last_block )`; params match. Searched for BZ_HDR_B/0x42/0x5a/0x68/0x31/'1'+blockSize100k/0x31 0x41 0x59 (block magic)/0x17 0x72 0x45 (eos magic)/BZ2_blockSort call: nothing. Rejected matcher_forced=bz2_bz_read_close [bzlib.rs:291]: no-op stub declared for BZ2_bzReadClose."
+  },
+  "makeMaps_d": {
+   "truth": "STUB:makeMaps_d",
+   "note": "STUB: C decompress.c:27 -> Rust src/decompress.rs:3. Body `// default/no-op body for stub`; signature (s: DState) matches. Searched for seqToUnseq/nInUse: nothing. Rejected matcher_forced=BZ2_bsInitWrite [compress.rs:14]: no-op stub for compress.c BZ2_bsInitWrite (s: EState)."
+  },
+  "BZ2_decompress": {
+   "truth": "STUB:bz2_decompress",
+   "note": "STUB: C decompress.c:106 -> Rust src/decompress.rs:6. Body constant `0`; signature (s: Option<&mut DState>) -> i32 matches C `Int32 BZ2_decompress ( DState* s )`. Searched for BZ_X_MAGIC/BZ_X_BLKHDR/GET_BITS/0x31/0x41/0x59/0x17/0x72/0x45/BZ_DATA_ERROR/bz2_hb_create_decode_tables call: nothing (huffman fns never called). tool_claim accepted as declared slot. Distinct from bz2_bz_decompress [bzlib.rs:310] = bzlib.c BZ2_bzDecompress (takes bz_stream)."
+  },
+  "BZ2_hbMakeCodeLengths": {
+   "truth": "STUB:BZ2_hbMakeCodeLengths",
+   "note": "STUB: C huffman.c:63 -> Rust src/huffman.rs:19. Body `// Default stub: no-op`; doc quotes `void BZ2_hbMakeCodeLengths ( UChar *len, Int32 *freq, Int32 alphaSize, Int32 maxLen )`; 4 params (len, freq, alphaSize, maxLen) match by name/position, although the stub mistypes len/freq as EState references (signature defect, not a matching issue). Searched for heap/weight/parent/UPHEAP/DOWNHEAP/ADDWEIGHTS/`BZ_MAX_ALPHA_SIZE`: nothing. Rejected matcher_forced=BZ2_bzReadOpen [bzlib.rs:277]: `None` stub for bzlib.c BZ2_bzReadOpen."
+  },
+  "BZ2_hbAssignCodes": {
+   "truth": "STUB:bz2_hb_assign_codes",
+   "note": "STUB: C huffman.c:152 -> Rust src/huffman.rs:3. Body `// Stub only: behavior not yet implemented`; 5 params (code, length, min_len, max_len, alpha_size) match C (code, length, minLen, maxLen, alphaSize). Searched for `vec <<= 1`/`if length[i] == n`: nothing. Rejected matcher_forced=BZ2_bzWriteClose [bzlib.rs:462]: no-op stub for bzlib.c BZ2_bzWriteClose."
+  },
+  "BZ2_hbCreateDecodeTables": {
+   "truth": "STUB:bz2_hb_create_decode_tables",
+   "note": "STUB: C huffman.c:170 -> Rust src/huffman.rs:27. Body `// Default stub: no-op`; 7 params (limit, base, perm, length, min_len, max_len, alpha_size) match C. Searched for `limit[i] = vec - 1`/`base[i] = ((limit[i-1] + 1) << 1)`/pp counter: nothing. tool_claim accepted as declared slot."
+  }
+ }
+}

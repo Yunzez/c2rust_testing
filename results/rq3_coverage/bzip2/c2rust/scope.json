@@ -1,0 +1,18 @@
+{
+  "cell": "bzip2__c2rust",
+  "library": "bzip2", "tool": "c2rust",
+  "measured_on": "the flattened single-file crate raw/../bzip2_c2rust.rs, used IDENTICALLY by both sides; raw/bzip2_c2rust.rs.linemap.json maps each flattened line back to (original library file, original line)",
+  "include_files": ["blocksort.rs","bzlib.rs","compress.rs","crctable.rs","decompress.rs","huffman.rs","randtable.rs"],
+  "include_rule": "path whitelist over the translated bzip2 LIBRARY sources — the transpilation of the .c files the shipped Makefile links into libbz2.a",
+  "exclude": {
+    "bzip2.rs": "translated CLI *program*; inlined only because bzlib.rs takes eleven type aliases from it (crate::bzip2::BZFILE, Char, the darwin _Rune* types)",
+    "bzip2recover.rs": "second translated program; not part of the library, not linked here",
+    "src/bin/bzip2cli.rs": "three-line test adapter",
+    "fuzz_targets/bzip2_c2rust_ft.rs": "generated differential harness",
+    "libfuzzer-sys, arbitrary, std": "not translated code — note that matching lib.rs by BASENAME also matches dependencies' src/lib.rs, which is why the filter checks the full path"
+  },
+  "notes": [
+    "crctable.rs and randtable.rs are in scope but hold only static tables (0 functions), so they add nothing to either denominator; llvm-cov omits them for that reason.",
+    "Both sides use this identical scope and the identical denominator."
+  ]
+}

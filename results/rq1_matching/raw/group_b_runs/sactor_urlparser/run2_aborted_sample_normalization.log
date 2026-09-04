@@ -1,0 +1,2528 @@
+2026-09-02 02:12:24 | INFO     | sactor.translator.batch_runner:174 | Translating (unidiomatic) /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c (result dir: ./result/driver.c__585b2fa3)
+2026-09-02 02:12:25 | INFO     | sactor.sactor:210 | -------------SACTOR Configuration-------------
+2026-09-02 02:12:25 | INFO     | sactor.sactor:211 | Input file: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c
+2026-09-02 02:12:25 | INFO     | sactor.sactor:212 | Test command: ./test_task.json
+2026-09-02 02:12:25 | INFO     | sactor.sactor:213 | Is executable: True
+2026-09-02 02:12:25 | INFO     | sactor.sactor:216 | Build directory: /tmp/sactor/tmps5cynfet/build
+2026-09-02 02:12:25 | INFO     | sactor.sactor:217 | Result directory: ./result/driver.c__585b2fa3
+2026-09-02 02:12:25 | INFO     | sactor.sactor:218 | Config file: /home/yunzez/c2rust_testing/tools/frameworks/sactor/sactor.toml
+2026-09-02 02:12:25 | INFO     | sactor.sactor:219 | No verify: False
+2026-09-02 02:12:25 | INFO     | sactor.sactor:220 | Unidiomatic only: True
+2026-09-02 02:12:25 | INFO     | sactor.sactor:221 | LLM statistics base path: ./result/driver.c__585b2fa3/llm_stat.json
+2026-09-02 02:12:25 | INFO     | sactor.sactor:222 | Extra compile command: None
+2026-09-02 02:12:25 | INFO     | sactor.sactor:223 | Compile commands file: ./compile_commands.json
+2026-09-02 02:12:25 | INFO     | sactor.sactor:224 | Link args: []
+2026-09-02 02:12:25 | INFO     | sactor.sactor:225 | Idiomatic only: False
+2026-09-02 02:12:25 | INFO     | sactor.sactor:226 | Continue run when incomplete: True
+2026-09-02 02:12:25 | INFO     | sactor.sactor:227 | -------------End of Configuration-------------
+2026-09-02 02:12:25 | INFO     | sactor.c_parser.c_parser:135 | Backfill non-function refs complete: structs=0, enums=0, globals=0, unresolved=0
+2026-09-02 02:12:25 | INFO     | sactor.sactor:264 | Project link closure size: 1
+2026-09-02 02:12:25 | DEBUG    | sactor.sactor:285 | Total structs: 1; order groups: 1
+2026-09-02 02:12:25 | DEBUG    | sactor.sactor:287 | Total functions: 22; order groups: 22
+2026-09-02 02:12:25 | DEBUG    | sactor.sactor:289 | Struct order: [[StructInfo(url_data)]]
+2026-09-02 02:12:25 | DEBUG    | sactor.sactor:290 | Function order: [[FunctionInfo(char * strdup ( const char * str ))], [FunctionInfo(bool url_is_protocol ( char * str ))], [FunctionInfo(void url_data_inspect ( struct url_data * data ))], [FunctionInfo(void url_free ( struct url_data * data ))], [FunctionInfo(static void show ( const char * label , char * v ))], [FunctionInfo(static char * strff ( char * ptr , int n ))], [FunctionInfo(static char * strrwd ( char * ptr , int n ))], [FunctionInfo(bool url_is_ssh ( char * str ))], [FunctionInfo(char * url_get_protocol ( char * url ))], [FunctionInfo(static char * get_part ( char * url , const char * format , int l ))], [FunctionInfo(struct url_data * url_parse ( char * url ))], [FunctionInfo(char * url_get_auth ( char * url ))], [FunctionInfo(char * url_get_hostname ( char * url ))], [FunctionInfo(void url_inspect ( char * url ))], [FunctionInfo(char * url_get_host ( char * url ))], [FunctionInfo(char * url_get_path ( char * url ))], [FunctionInfo(char * url_get_pathname ( char * url ))], [FunctionInfo(char * url_get_port ( char * url ))], [FunctionInfo(char * url_get_search ( char * url ))], [FunctionInfo(char * url_get_query ( char * url ))], [FunctionInfo(char * url_get_hash ( char * url ))], [FunctionInfo(int main ( int argc , char * * argv ))]]
+2026-09-02 02:12:26 | DEBUG    | sactor.llm.llm:38 | Default model: 'gpt-5.1'
+2026-09-02 02:12:26 | DEBUG    | sactor.llm.llm:40 | Found 1 models in config
+2026-09-02 02:12:26 | DEBUG    | sactor.llm.llm:46 | Model mapping 0: 'gpt-5.1' -> 'openai/gpt-5.1': {'model': 'openai/gpt-5.1', 'api_key': '***REDACTED***'}
+2026-09-02 02:12:26 | DEBUG    | sactor.thirdparty.c2rust:48 | Running c2rust command: ['c2rust', 'transpile', '/tmp/sactor/tmpbfeku9qb/c2rust/unfolded_typedefs.c', '--', '-I/usr/lib/llvm-21/lib/clang/21/include', '-I/usr/local/include', '-I/usr/include/x86_64-linux-gnu', '-I/usr/include', '-I/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser', '-U_FORTIFY_SOURCE', '-Og', '-g']
+2026-09-02 02:12:26 | DEBUG    | sactor.sactor:419 | Checking function strdup: struct_ready=True, struct_blockers=[]
+2026-09-02 02:12:26 | INFO     | sactor.translator.unidiomatic_translator:1048 | Translating function: strdup (attempts: 0)
+2026-09-02 02:12:26 | PROMPT   | sactor.llm:155 | 
+Translate the following C function to Rust. Try to keep the **equivalence** as much as possible.
+`libc` will be included as the **only** dependency you can use. To keep the equivalence, you can use `unsafe` if you want.
+Your solution should only have **one** function, if you need to create help function, define the help function inside the function you translate.
+The function is:
+```c
+char *
+strdup (const char *str) {
+  int n = strlen(str) + 1;
+  char *dup = malloc(n);
+  if (dup) strcpy(dup, str);
+  return dup;
+}
+```
+
+Output the translated function into this format (wrap with the following tags):
+----FUNCTION----
+```rust
+// Your translated function here
+```
+----END FUNCTION----
+
+2026-09-02 02:12:28 | RESPONSE | sactor.llm:160 | ----FUNCTION----
+```rust
+pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    let n = libc::strlen(str_ptr).wrapping_add(1);
+    let dup = libc::malloc(n) as *mut libc::c_char;
+    if !dup.is_null() {
+        libc::strcpy(dup, str_ptr);
+    }
+    dup
+}
+```
+----END FUNCTION
+2026-09-02 02:12:28 | DEBUG    | sactor.utils:257 | Generated function:
+2026-09-02 02:12:28 | DEBUG    | sactor.utils:258 | pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    let n = libc::strlen(str_ptr).wrapping_add(1);
+    let dup = libc::malloc(n) as *mut libc::c_char;
+    if !dup.is_null() {
+        libc::strcpy(dup, str_ptr);
+    }
+    dup
+}
+
+2026-09-02 02:12:28 | DEBUG    | sactor.translator.unidiomatic_translator:1358 | Translated function strdup:
+2026-09-02 02:12:28 | DEBUG    | sactor.translator.unidiomatic_translator:1359 | pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    let n = libc::strlen(str_ptr).wrapping_add(1);
+    let dup = libc::malloc(n) as *mut libc::c_char;
+    if !dup.is_null() {
+        libc::strcpy(dup, str_ptr);
+    }
+    dup
+}
+
+2026-09-02 02:12:28 | DEBUG    | sactor.verifier.verifier:278 | Compiling Rust project: cargo build --manifest-path /tmp/sactor/tmps5cynfet/build/build_attempt/Cargo.toml
+2026-09-02 02:12:29 | INFO     | sactor.verifier.verifier:286 | Rust code compiled successfully
+2026-09-02 02:12:29 | DEBUG    | sactor.verifier.verifier:567 | Compiling embedded Rust crate: cargo build --manifest-path /tmp/sactor/tmps5cynfet/build/embed_test_rust/Cargo.toml
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+   Compiling libc v0.2.189
+   Compiling strdup v0.1.0 (/tmp/sactor/tmps5cynfet/build/embed_test_rust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.02s
+2026-09-02 02:12:31 | DEBUG    | sactor.verifier.verifier:635 | Running compile command: ['gcc', '-I/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser', '-U_FORTIFY_SOURCE', '-c', '-o', '/tmp/sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c', '-Og', '-g']
+2026-09-02 02:12:31 | DEBUG    | sactor.verifier.verifier:658 | Project-level objects: ['../../../../../sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o']
+2026-09-02 02:12:31 | DEBUG    | sactor.verifier.verifier:659 | Project-level cmake libs: []
+2026-09-02 02:12:31 | DEBUG    | sactor.verifier.verifier:660 | Linking project-level harness: ['clang', '/tmp/sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '-o', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '-L/tmp/sactor/tmps5cynfet/build/embed_test_rust/target/debug', '-lm', '-lstrdup']
+2026-09-02 02:12:31 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '0', '--feed-as-args']
+2026-09-02 02:12:33 | DEBUG    | sactor.verifier.verifier:362 | Test stderr: ❌ Test 0 failed!
+Diff (-actual +expected):
+  is_protocol(http): 1
+  is_ssh(http): 0
+  protocol: http
+  auth: user:pass
+  hostname: subdomain.host.com:8080
+  host: subdomain.host.com
+  pathname: /p/a/t/h
+  path: /p/a/t/h?query=string#hash
+  search: ?query=string
+  query: query=string
+  hash: #hash
+  port: 8080
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+
+2026-09-02 02:12:33 | ERROR    | sactor.verifier.verifier:742 | Failed to run tests for function strdup, rerunning with feedback
+2026-09-02 02:12:36 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '0', '--feed-as-args']
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:13:27 | DEBUG    | sactor.verifier.verifier:362 | Test stderr: ==617281== Memcheck, a memory error detector
+==617281== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==617281== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==617281== Command: /home/yunzez/c2rust_testing/tools/frameworks/sactor/.venv/bin/sactor run-tests --type bin ./test_samples.json /tmp/sactor/tmps5cynfet/build/embed_test_c/strdup 0 --feed-as-args
+==617281== 
+❌ Test 0 failed!
+Diff (-actual +expected):
+  is_protocol(http): 1
+  is_ssh(http): 0
+  protocol: http
+  auth: user:pass
+  hostname: subdomain.host.com:8080
+  host: subdomain.host.com
+  pathname: /p/a/t/h
+  path: /p/a/t/h?query=string#hash
+  search: ?query=string
+  query: query=string
+  hash: #hash
+  port: 8080
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+- ==618743== Memcheck, a memory error detector
+- ==618743== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+- ==618743== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+- ==618743== Command: /tmp/sactor/tmps5cynfet/build/embed_test_c/strdup http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash http
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x40023C2: get_part (url.h:208)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x40023C2: get_part (url.h:208)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==  Address 0x4c43179 is 8 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x40022B9: strdup (url.h:160)
+- ==618743==    by 0x4002416: get_part (url.h:212)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==618743==    by 0x40022D7: strdup (url.h:162)
+- ==618743==    by 0x4002416: get_part (url.h:212)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C166: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x40022B9: strdup (url.h:160)
+- ==618743==    by 0x40022FF: strrwd (url.h:185)
+- ==618743==    by 0x40023DC: get_part (url.h:217)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==  Address 0x4c43329 is 7 bytes before a block of size 60 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40022C4: strdup (url.h:161)
+- ==618743==    by 0x400231F: strff (url.h:175)
+- ==618743==    by 0x40023AA: get_part (url.h:206)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C2B4: strcpy (vg_replace_strmem.c:565)
+- ==618743==    by 0x40022D7: strdup (url.h:162)
+- ==618743==    by 0x40022FF: strrwd (url.h:185)
+- ==618743==    by 0x40023DC: get_part (url.h:217)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==  Address 0x4c43329 is 7 bytes before a block of size 60 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40022C4: strdup (url.h:161)
+- ==618743==    by 0x400231F: strff (url.h:175)
+- ==618743==    by 0x40023AA: get_part (url.h:206)
+- ==618743==    by 0x400291C: url_get_auth (url.h:366)
+- ==618743==    by 0x400303D: main (driver.c:20)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x40023C2: get_part (url.h:208)
+- ==618743==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==618743==    by 0x4003054: main (driver.c:21)
+- ==618743==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==618743==    by 0x4003054: main (driver.c:21)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x40023C2: get_part (url.h:208)
+- ==618743==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==618743==    by 0x4003054: main (driver.c:21)
+- ==618743==  Address 0x4c43887 is 22 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==618743==    by 0x4003054: main (driver.c:21)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x40022B9: strdup (url.h:160)
+- ==618743==    by 0x4002416: get_part (url.h:212)
+- ==618743==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==618743==    by 0x4003054: main (driver.c:21)
+- ==618743==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==618743==    by 0x4003054: main (driver.c:21)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==618743==    by 0x40022D7: strdup (url.h:162)
+- ==618743==    by 0x4002416: get_part (url.h:212)
+- ==618743==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==618743==    by 0x4003054: main (driver.c:21)
+- ==618743==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==618743==    by 0x4003054: main (driver.c:21)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002A1C: url_get_host (url.h:398)
+- ==618743==    by 0x400306B: main (driver.c:22)
+- ==618743==  Address 0x4c43b61 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40029E7: url_get_host (url.h:393)
+- ==618743==    by 0x400306B: main (driver.c:22)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002A1C: url_get_host (url.h:398)
+- ==618743==    by 0x400306B: main (driver.c:22)
+- ==618743==  Address 0x4c43b72 is 17 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40029E7: url_get_host (url.h:393)
+- ==618743==    by 0x400306B: main (driver.c:22)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4A5DBC7: __printf_buffer (vfprintf-process-arg.c:443)
+- ==618743==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==618743==    by 0x4A523B2: printf (printf.c:33)
+- ==618743==    by 0x400228F: show (driver.c:9)
+- ==618743==    by 0x400307A: main (driver.c:22)
+- ==618743==  Address 0x4c43b61 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40029E7: url_get_host (url.h:393)
+- ==618743==    by 0x400306B: main (driver.c:22)
+- ==618743==
+- ==618743== Invalid read of size 2
+- ==618743==    at 0x4860B80: memmove (vg_replace_strmem.c:1415)
+- ==618743==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==618743==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==618743==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==618743==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==618743==    by 0x4A523B2: printf (printf.c:33)
+- ==618743==    by 0x400228F: show (driver.c:9)
+- ==618743==    by 0x400307A: main (driver.c:22)
+- ==618743==  Address 0x4c43b60 is 0 bytes inside a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40029E7: url_get_host (url.h:393)
+- ==618743==    by 0x400306B: main (driver.c:22)
+- ==618743==
+- ==618743== Invalid read of size 2
+- ==618743==    at 0x4860B8F: memmove (vg_replace_strmem.c:1415)
+- ==618743==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==618743==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==618743==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==618743==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==618743==    by 0x4A523B2: printf (printf.c:33)
+- ==618743==    by 0x400228F: show (driver.c:9)
+- ==618743==    by 0x400307A: main (driver.c:22)
+- ==618743==  Address 0x4c43b64 is 3 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40029E7: url_get_host (url.h:393)
+- ==618743==    by 0x400306B: main (driver.c:22)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A663D1: __vfscanf_internal (vfscanf-internal.c:1161)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x40023C2: get_part (url.h:208)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A66406: __vfscanf_internal (vfscanf-internal.c:1246)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x40023C2: get_part (url.h:208)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c44db9 is 9 bytes after a block of size 16 in arena "client"
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x40022B9: strdup (url.h:160)
+- ==618743==    by 0x4002416: get_part (url.h:212)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==618743==    by 0x40022D7: strdup (url.h:162)
+- ==618743==    by 0x4002416: get_part (url.h:212)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002347: get_part (url.h:191)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x40022B9: strdup (url.h:160)
+- ==618743==    by 0x40022FF: strrwd (url.h:185)
+- ==618743==    by 0x40023DC: get_part (url.h:217)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c44f39 is 25 bytes after a block of size 16 in arena "client"
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==618743==    by 0x40022D7: strdup (url.h:162)
+- ==618743==    by 0x40022FF: strrwd (url.h:185)
+- ==618743==    by 0x40023DC: get_part (url.h:217)
+- ==618743==    by 0x4002B46: url_get_path (url.h:440)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c44f39 is 25 bytes after a block of size 16 in arena "client"
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4860BB3: memmove (vg_replace_strmem.c:1415)
+- ==618743==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==618743==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==618743==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==618743==    by 0x4A7D9EB: __vsprintf_internal (iovsprintf.c:62)
+- ==618743==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==618743==    by 0x4002AFD: url_get_path (url.h:444)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c45089 is 0 bytes after a block of size 25 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002AE7: url_get_path (url.h:443)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A7D9F0: __vsprintf_internal (iovsprintf.c:68)
+- ==618743==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==618743==    by 0x4002AFD: url_get_path (url.h:444)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c4508a is 1 bytes after a block of size 25 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002AE7: url_get_path (url.h:443)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4A8D234: _IO_str_init_static_internal (strops.c:41)
+- ==618743==    by 0x4A51E08: _IO_strfile_read (strfile.h:90)
+- ==618743==    by 0x4A51E08: __isoc23_sscanf (isoc23_sscanf.c:28)
+- ==618743==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c45089 is 0 bytes after a block of size 25 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002AE7: url_get_path (url.h:443)
+- ==618743==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c450d1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==  Address 0x4c450d8 is 7 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x4860BB0: memmove (vg_replace_strmem.c:1415)
+- ==618743==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==618743==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==618743==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==618743==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==618743==    by 0x4A523B2: printf (printf.c:33)
+- ==618743==    by 0x400228F: show (driver.c:9)
+- ==618743==    by 0x4003091: main (driver.c:23)
+- ==618743==  Address 0x4c450d1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x4860BBD: memmove (vg_replace_strmem.c:1415)
+- ==618743==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==618743==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==618743==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==618743==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==618743==    by 0x4A523B2: printf (printf.c:33)
+- ==618743==    by 0x400228F: show (driver.c:9)
+- ==618743==    by 0x4003091: main (driver.c:23)
+- ==618743==  Address 0x4c450d2 is 1 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4003082: main (driver.c:23)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A7D9F0: __vsprintf_internal (iovsprintf.c:68)
+- ==618743==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==618743==    by 0x4002AFD: url_get_path (url.h:444)
+- ==618743==    by 0x4003099: main (driver.c:24)
+- ==618743==  Address 0x4c45eea is 1 bytes after a block of size 25 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002AE7: url_get_path (url.h:443)
+- ==618743==    by 0x4003099: main (driver.c:24)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A7D9F0: __vsprintf_internal (iovsprintf.c:68)
+- ==618743==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==618743==    by 0x4002AFD: url_get_path (url.h:444)
+- ==618743==    by 0x4002BD1: url_get_search (url.h:457)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c46cfa is 1 bytes after a block of size 25 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002AE7: url_get_path (url.h:443)
+- ==618743==    by 0x4002BD1: url_get_search (url.h:457)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c47b51 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c47b58 is 7 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4002C04: url_get_search (url.h:463)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c47b51 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x40022B9: strdup (url.h:160)
+- ==618743==    by 0x400231F: strff (url.h:175)
+- ==618743==    by 0x4002C0E: url_get_search (url.h:463)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c46cf9 is 0 bytes after a block of size 25 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002AE7: url_get_path (url.h:443)
+- ==618743==    by 0x4002BD1: url_get_search (url.h:457)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==618743==    by 0x40022D7: strdup (url.h:162)
+- ==618743==    by 0x400231F: strff (url.h:175)
+- ==618743==    by 0x4002C0E: url_get_search (url.h:463)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c46cf9 is 0 bytes after a block of size 25 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002AE7: url_get_path (url.h:443)
+- ==618743==    by 0x4002BD1: url_get_search (url.h:457)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C28: url_get_search (url.h:465)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c47ba1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C28: url_get_search (url.h:465)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c47bad is 12 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4002C30: url_get_search (url.h:467)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c47b51 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C166: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x40022B9: strdup (url.h:160)
+- ==618743==    by 0x40022FF: strrwd (url.h:185)
+- ==618743==    by 0x4002C3A: url_get_search (url.h:467)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c47be8 is 8 bytes before a block of size 19 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40022C4: strdup (url.h:161)
+- ==618743==    by 0x400231F: strff (url.h:175)
+- ==618743==    by 0x4002C0E: url_get_search (url.h:463)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C2B4: strcpy (vg_replace_strmem.c:565)
+- ==618743==    by 0x40022D7: strdup (url.h:162)
+- ==618743==    by 0x40022FF: strrwd (url.h:185)
+- ==618743==    by 0x4002C3A: url_get_search (url.h:467)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==  Address 0x4c47be8 is 8 bytes before a block of size 19 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x40022C4: strdup (url.h:161)
+- ==618743==    by 0x400231F: strff (url.h:175)
+- ==618743==    by 0x4002C0E: url_get_search (url.h:463)
+- ==618743==    by 0x40030B0: main (driver.c:25)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4002C04: url_get_search (url.h:463)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c498c1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C28: url_get_search (url.h:465)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C28: url_get_search (url.h:465)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c4991d is 12 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4002C30: url_get_search (url.h:467)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c498c1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4A8D234: _IO_str_init_static_internal (strops.c:41)
+- ==618743==    by 0x4A51E08: _IO_strfile_read (strfile.h:90)
+- ==618743==    by 0x4A51E08: __isoc23_sscanf (isoc23_sscanf.c:28)
+- ==618743==    by 0x4002C9A: url_get_query (url.h:480)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x4A5F408: __vfscanf_internal (vfscanf-internal.c:685)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C9A: url_get_query (url.h:480)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x4A8BD90: _IO_sputbackc (genops.c:666)
+- ==618743==    by 0x4A5FADA: __vfscanf_internal (vfscanf-internal.c:690)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C9A: url_get_query (url.h:480)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x4A6621E: __vfscanf_internal (vfscanf-internal.c:1081)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C9A: url_get_query (url.h:480)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x4A6636C: __vfscanf_internal (vfscanf-internal.c:1204)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C9A: url_get_query (url.h:480)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49912 is 1 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A663D1: __vfscanf_internal (vfscanf-internal.c:1161)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C9A: url_get_query (url.h:480)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49a11 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002C7B: url_get_query (url.h:478)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x4A663AA: __vfscanf_internal (vfscanf-internal.c:1204)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C9A: url_get_query (url.h:480)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49913 is 2 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002C6E: url_get_query (url.h:477)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A66406: __vfscanf_internal (vfscanf-internal.c:1246)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C9A: url_get_query (url.h:480)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==  Address 0x4c49a1c is 11 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002C7B: url_get_query (url.h:478)
+- ==618743==    by 0x40030C7: main (driver.c:26)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A7D9F0: __vsprintf_internal (iovsprintf.c:68)
+- ==618743==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==618743==    by 0x4002AFD: url_get_path (url.h:444)
+- ==618743==    by 0x4002CE4: url_get_hash (url.h:490)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==  Address 0x4c4a87a is 1 bytes after a block of size 25 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002AE7: url_get_path (url.h:443)
+- ==618743==    by 0x4002CE4: url_get_hash (url.h:490)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==618743==    by 0x4002CF8: url_get_hash (url.h:493)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==  Address 0x4c4b6d1 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002CF8: url_get_hash (url.h:493)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==618743==    by 0x4002CF8: url_get_hash (url.h:493)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==  Address 0x4c4b6d8 is 7 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002CF8: url_get_hash (url.h:493)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4002C04: url_get_search (url.h:463)
+- ==618743==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==  Address 0x4c4d341 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==618743==    by 0x4002BDC: url_get_search (url.h:458)
+- ==618743==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C28: url_get_search (url.h:465)
+- ==618743==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==  Address 0x4c4d391 is 0 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==
+- ==618743== Invalid write of size 1
+- ==618743==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==618743==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==618743==    by 0x4002C28: url_get_search (url.h:465)
+- ==618743==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==  Address 0x4c4d39d is 12 bytes after a block of size 1 alloc'd
+- ==618743==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==618743==    by 0x4002BE9: url_get_search (url.h:459)
+- ==618743==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==
+- ==618743== Invalid read of size 1
+- ==618743==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==618743==    by 0x4002C30: url_get_search (url.h:467)
+- ==618743==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==618743==    by 0x40030DE: main (driver.c:27)
+- ==618743==  Address 0x4c4d341 is 0
+2026-09-02 02:13:27 | ERROR    | sactor.verifier.unidiomatic_verifier:89 | Failed to run tests for function strdup
+2026-09-02 02:13:27 | INFO     | sactor.translator.unidiomatic_translator:1048 | Translating function: strdup (attempts: 1)
+2026-09-02 02:13:27 | PROMPT   | sactor.llm:155 | 
+Translate the following C function to Rust. Try to keep the **equivalence** as much as possible.
+`libc` will be included as the **only** dependency you can use. To keep the equivalence, you can use `unsafe` if you want.
+Your solution should only have **one** function, if you need to create help function, define the help function inside the function you translate.
+The function is:
+```c
+char *
+strdup (const char *str) {
+  int n = strlen(str) + 1;
+  char *dup = malloc(n);
+  if (dup) strcpy(dup, str);
+  return dup;
+}
+```
+
+Output the translated function into this format (wrap with the following tags):
+----FUNCTION----
+```rust
+// Your translated function here
+```
+----END FUNCTION----
+
+The last time, the function is translated as:
+```rust
+pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    let n = libc::strlen(str_ptr).wrapping_add(1);
+    let dup = libc::malloc(n) as *mut libc::c_char;
+    if !dup.is_null() {
+        libc::strcpy(dup, str_ptr);
+    }
+    dup
+}
+
+```
+When running the test, it failed with the following error message:
+```
+❌ Test 0 failed!
+Diff (-actual +expected):
+  is_protocol(http): 1
+  is_ssh(http): 0
+  protocol: http
+  auth: user:pass
+  hostname: subdomain.host.com:8080
+  host: subdomain.host.com
+  pathname: /p/a/t/h
+  path: /p/a/t/h?query=string#hash
+  search: ?query=string
+  query: query=string
+  hash: #hash
+  port: 8080
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+
+```
+Analyze the error messages, think about the possible reasons, and try to avoid this error.
+
+2026-09-02 02:13:29 | RESPONSE | sactor.llm:160 | ----FUNCTION----
+```rust
+pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    // Preserve C semantics as closely as possible:
+    // n is an `int`, and malloc is called with an `int`-sized value.
+    let n: libc::c_int = libc::strlen(str_ptr)
+        .wrapping_add(1)           // strlen + 1
+        as libc::c_int;            // cast to int like in C
+
+    // In C: malloc(n) where n is int; here we cast to size_t explicitly.
+    let dup = libc::malloc(n as libc::size_t) as *mut libc::c_char;
+
+    if !dup.is_null() {
+        libc::strcpy(dup, str_ptr);
+    }
+
+    dup
+}
+```
+----END FUNCTION
+2026-09-02 02:13:29 | DEBUG    | sactor.utils:257 | Generated function:
+2026-09-02 02:13:29 | DEBUG    | sactor.utils:258 | pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    // Preserve C semantics as closely as possible:
+    // n is an `int`, and malloc is called with an `int`-sized value.
+    let n: libc::c_int = libc::strlen(str_ptr)
+        .wrapping_add(1)           // strlen + 1
+        as libc::c_int;            // cast to int like in C
+
+    // In C: malloc(n) where n is int; here we cast to size_t explicitly.
+    let dup = libc::malloc(n as libc::size_t) as *mut libc::c_char;
+
+    if !dup.is_null() {
+        libc::strcpy(dup, str_ptr);
+    }
+
+    dup
+}
+
+2026-09-02 02:13:29 | DEBUG    | sactor.translator.unidiomatic_translator:1358 | Translated function strdup:
+2026-09-02 02:13:29 | DEBUG    | sactor.translator.unidiomatic_translator:1359 | pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    let n: libc::c_int = libc::strlen(str_ptr).wrapping_add(1) as libc::c_int;
+    let dup = libc::malloc(n as libc::size_t) as *mut libc::c_char;
+    if !dup.is_null() {
+        libc::strcpy(dup, str_ptr);
+    }
+    dup
+}
+
+2026-09-02 02:13:29 | DEBUG    | sactor.verifier.verifier:278 | Compiling Rust project: cargo build --manifest-path /tmp/sactor/tmps5cynfet/build/build_attempt/Cargo.toml
+2026-09-02 02:13:30 | INFO     | sactor.verifier.verifier:286 | Rust code compiled successfully
+2026-09-02 02:13:30 | DEBUG    | sactor.verifier.verifier:567 | Compiling embedded Rust crate: cargo build --manifest-path /tmp/sactor/tmps5cynfet/build/embed_test_rust/Cargo.toml
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+   Compiling libc v0.2.189
+   Compiling strdup v0.1.0 (/tmp/sactor/tmps5cynfet/build/embed_test_rust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.02s
+2026-09-02 02:13:32 | DEBUG    | sactor.verifier.verifier:635 | Running compile command: ['gcc', '-I/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser', '-U_FORTIFY_SOURCE', '-c', '-o', '/tmp/sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c', '-Og', '-g']
+2026-09-02 02:13:32 | DEBUG    | sactor.verifier.verifier:658 | Project-level objects: ['../../../../../sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o']
+2026-09-02 02:13:32 | DEBUG    | sactor.verifier.verifier:659 | Project-level cmake libs: []
+2026-09-02 02:13:32 | DEBUG    | sactor.verifier.verifier:660 | Linking project-level harness: ['clang', '/tmp/sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '-o', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '-L/tmp/sactor/tmps5cynfet/build/embed_test_rust/target/debug', '-lm', '-lstrdup']
+2026-09-02 02:13:32 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '0', '--feed-as-args']
+2026-09-02 02:13:34 | DEBUG    | sactor.verifier.verifier:362 | Test stderr: ❌ Test 0 failed!
+Diff (-actual +expected):
+  is_protocol(http): 1
+  is_ssh(http): 0
+  protocol: http
+  auth: user:pass
+  hostname: subdomain.host.com:8080
+  host: subdomain.host.com
+  pathname: /p/a/t/h
+  path: /p/a/t/h?query=string#hash
+  search: ?query=string
+  query: query=string
+  hash: #hash
+  port: 8080
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+
+2026-09-02 02:13:34 | ERROR    | sactor.verifier.verifier:742 | Failed to run tests for function strdup, rerunning with feedback
+2026-09-02 02:13:37 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '0', '--feed-as-args']
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | WARNING  | sactor.utils:966 | Stderr byte limit reached (40000 bytes); terminating process
+2026-09-02 02:14:28 | DEBUG    | sactor.verifier.verifier:362 | Test stderr: ==619582== Memcheck, a memory error detector
+==619582== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==619582== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==619582== Command: /home/yunzez/c2rust_testing/tools/frameworks/sactor/.venv/bin/sactor run-tests --type bin ./test_samples.json /tmp/sactor/tmps5cynfet/build/embed_test_c/strdup 0 --feed-as-args
+==619582== 
+❌ Test 0 failed!
+Diff (-actual +expected):
+  is_protocol(http): 1
+  is_ssh(http): 0
+  protocol: http
+  auth: user:pass
+  hostname: subdomain.host.com:8080
+  host: subdomain.host.com
+  pathname: /p/a/t/h
+  path: /p/a/t/h?query=string#hash
+  search: ?query=string
+  query: query=string
+  hash: #hash
+  port: 8080
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+- ==620811== Memcheck, a memory error detector
+- ==620811== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+- ==620811== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+- ==620811== Command: /tmp/sactor/tmps5cynfet/build/embed_test_c/strdup http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash http
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x40023C2: get_part (url.h:208)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x40023C2: get_part (url.h:208)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==  Address 0x4c43179 is 8 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x40022B9: strdup (url.h:160)
+- ==620811==    by 0x4002416: get_part (url.h:212)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==620811==    by 0x40022D7: strdup (url.h:162)
+- ==620811==    by 0x4002416: get_part (url.h:212)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C166: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x40022B9: strdup (url.h:160)
+- ==620811==    by 0x40022FF: strrwd (url.h:185)
+- ==620811==    by 0x40023DC: get_part (url.h:217)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==  Address 0x4c43329 is 7 bytes before a block of size 60 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40022C4: strdup (url.h:161)
+- ==620811==    by 0x400231F: strff (url.h:175)
+- ==620811==    by 0x40023AA: get_part (url.h:206)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C2B4: strcpy (vg_replace_strmem.c:565)
+- ==620811==    by 0x40022D7: strdup (url.h:162)
+- ==620811==    by 0x40022FF: strrwd (url.h:185)
+- ==620811==    by 0x40023DC: get_part (url.h:217)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==  Address 0x4c43329 is 7 bytes before a block of size 60 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40022C4: strdup (url.h:161)
+- ==620811==    by 0x400231F: strff (url.h:175)
+- ==620811==    by 0x40023AA: get_part (url.h:206)
+- ==620811==    by 0x400291C: url_get_auth (url.h:366)
+- ==620811==    by 0x400303D: main (driver.c:20)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x40023C2: get_part (url.h:208)
+- ==620811==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==620811==    by 0x4003054: main (driver.c:21)
+- ==620811==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==620811==    by 0x4003054: main (driver.c:21)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x40023C2: get_part (url.h:208)
+- ==620811==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==620811==    by 0x4003054: main (driver.c:21)
+- ==620811==  Address 0x4c43887 is 22 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==620811==    by 0x4003054: main (driver.c:21)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x40022B9: strdup (url.h:160)
+- ==620811==    by 0x4002416: get_part (url.h:212)
+- ==620811==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==620811==    by 0x4003054: main (driver.c:21)
+- ==620811==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==620811==    by 0x4003054: main (driver.c:21)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==620811==    by 0x40022D7: strdup (url.h:162)
+- ==620811==    by 0x4002416: get_part (url.h:212)
+- ==620811==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==620811==    by 0x4003054: main (driver.c:21)
+- ==620811==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x40029CB: url_get_hostname (url.h:386)
+- ==620811==    by 0x4003054: main (driver.c:21)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002A1C: url_get_host (url.h:398)
+- ==620811==    by 0x400306B: main (driver.c:22)
+- ==620811==  Address 0x4c43b61 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40029E7: url_get_host (url.h:393)
+- ==620811==    by 0x400306B: main (driver.c:22)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002A1C: url_get_host (url.h:398)
+- ==620811==    by 0x400306B: main (driver.c:22)
+- ==620811==  Address 0x4c43b72 is 17 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40029E7: url_get_host (url.h:393)
+- ==620811==    by 0x400306B: main (driver.c:22)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4A5DBC7: __printf_buffer (vfprintf-process-arg.c:443)
+- ==620811==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==620811==    by 0x4A523B2: printf (printf.c:33)
+- ==620811==    by 0x400228F: show (driver.c:9)
+- ==620811==    by 0x400307A: main (driver.c:22)
+- ==620811==  Address 0x4c43b61 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40029E7: url_get_host (url.h:393)
+- ==620811==    by 0x400306B: main (driver.c:22)
+- ==620811==
+- ==620811== Invalid read of size 2
+- ==620811==    at 0x4860B80: memmove (vg_replace_strmem.c:1415)
+- ==620811==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==620811==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==620811==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==620811==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==620811==    by 0x4A523B2: printf (printf.c:33)
+- ==620811==    by 0x400228F: show (driver.c:9)
+- ==620811==    by 0x400307A: main (driver.c:22)
+- ==620811==  Address 0x4c43b60 is 0 bytes inside a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40029E7: url_get_host (url.h:393)
+- ==620811==    by 0x400306B: main (driver.c:22)
+- ==620811==
+- ==620811== Invalid read of size 2
+- ==620811==    at 0x4860B8F: memmove (vg_replace_strmem.c:1415)
+- ==620811==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==620811==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==620811==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==620811==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==620811==    by 0x4A523B2: printf (printf.c:33)
+- ==620811==    by 0x400228F: show (driver.c:9)
+- ==620811==    by 0x400307A: main (driver.c:22)
+- ==620811==  Address 0x4c43b64 is 3 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40029E7: url_get_host (url.h:393)
+- ==620811==    by 0x400306B: main (driver.c:22)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A663D1: __vfscanf_internal (vfscanf-internal.c:1161)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x40023C2: get_part (url.h:208)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A66406: __vfscanf_internal (vfscanf-internal.c:1246)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x40023C2: get_part (url.h:208)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c44db9 is 9 bytes after a block of size 16 in arena "client"
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x40022B9: strdup (url.h:160)
+- ==620811==    by 0x4002416: get_part (url.h:212)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==620811==    by 0x40022D7: strdup (url.h:162)
+- ==620811==    by 0x4002416: get_part (url.h:212)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002347: get_part (url.h:191)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x40022B9: strdup (url.h:160)
+- ==620811==    by 0x40022FF: strrwd (url.h:185)
+- ==620811==    by 0x40023DC: get_part (url.h:217)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c44f39 is 25 bytes after a block of size 16 in arena "client"
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==620811==    by 0x40022D7: strdup (url.h:162)
+- ==620811==    by 0x40022FF: strrwd (url.h:185)
+- ==620811==    by 0x40023DC: get_part (url.h:217)
+- ==620811==    by 0x4002B46: url_get_path (url.h:440)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c44f39 is 25 bytes after a block of size 16 in arena "client"
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4860BB3: memmove (vg_replace_strmem.c:1415)
+- ==620811==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==620811==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==620811==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==620811==    by 0x4A7D9EB: __vsprintf_internal (iovsprintf.c:62)
+- ==620811==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==620811==    by 0x4002AFD: url_get_path (url.h:444)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c45089 is 0 bytes after a block of size 25 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002AE7: url_get_path (url.h:443)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A7D9F0: __vsprintf_internal (iovsprintf.c:68)
+- ==620811==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==620811==    by 0x4002AFD: url_get_path (url.h:444)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c4508a is 1 bytes after a block of size 25 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002AE7: url_get_path (url.h:443)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4A8D234: _IO_str_init_static_internal (strops.c:41)
+- ==620811==    by 0x4A51E08: _IO_strfile_read (strfile.h:90)
+- ==620811==    by 0x4A51E08: __isoc23_sscanf (isoc23_sscanf.c:28)
+- ==620811==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c45089 is 0 bytes after a block of size 25 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002AE7: url_get_path (url.h:443)
+- ==620811==    by 0x4002B6B: url_get_pathname (url.h:407)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c450d1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==  Address 0x4c450d8 is 7 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x4860BB0: memmove (vg_replace_strmem.c:1415)
+- ==620811==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==620811==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==620811==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==620811==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==620811==    by 0x4A523B2: printf (printf.c:33)
+- ==620811==    by 0x400228F: show (driver.c:9)
+- ==620811==    by 0x4003091: main (driver.c:23)
+- ==620811==  Address 0x4c450d1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x4860BBD: memmove (vg_replace_strmem.c:1415)
+- ==620811==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==620811==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==620811==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==620811==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==620811==    by 0x4A523B2: printf (printf.c:33)
+- ==620811==    by 0x400228F: show (driver.c:9)
+- ==620811==    by 0x4003091: main (driver.c:23)
+- ==620811==  Address 0x4c450d2 is 1 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4003082: main (driver.c:23)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A7D9F0: __vsprintf_internal (iovsprintf.c:68)
+- ==620811==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==620811==    by 0x4002AFD: url_get_path (url.h:444)
+- ==620811==    by 0x4003099: main (driver.c:24)
+- ==620811==  Address 0x4c45eea is 1 bytes after a block of size 25 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002AE7: url_get_path (url.h:443)
+- ==620811==    by 0x4003099: main (driver.c:24)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A7D9F0: __vsprintf_internal (iovsprintf.c:68)
+- ==620811==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==620811==    by 0x4002AFD: url_get_path (url.h:444)
+- ==620811==    by 0x4002BD1: url_get_search (url.h:457)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c46cfa is 1 bytes after a block of size 25 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002AE7: url_get_path (url.h:443)
+- ==620811==    by 0x4002BD1: url_get_search (url.h:457)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c47b51 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c47b58 is 7 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4002C04: url_get_search (url.h:463)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c47b51 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x40022B9: strdup (url.h:160)
+- ==620811==    by 0x400231F: strff (url.h:175)
+- ==620811==    by 0x4002C0E: url_get_search (url.h:463)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c46cf9 is 0 bytes after a block of size 25 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002AE7: url_get_path (url.h:443)
+- ==620811==    by 0x4002BD1: url_get_search (url.h:457)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C2EA: strcpy (vg_replace_strmem.c:565)
+- ==620811==    by 0x40022D7: strdup (url.h:162)
+- ==620811==    by 0x400231F: strff (url.h:175)
+- ==620811==    by 0x4002C0E: url_get_search (url.h:463)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c46cf9 is 0 bytes after a block of size 25 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002AE7: url_get_path (url.h:443)
+- ==620811==    by 0x4002BD1: url_get_search (url.h:457)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C28: url_get_search (url.h:465)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c47ba1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C28: url_get_search (url.h:465)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c47bad is 12 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4002C30: url_get_search (url.h:467)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c47b51 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C166: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x40022B9: strdup (url.h:160)
+- ==620811==    by 0x40022FF: strrwd (url.h:185)
+- ==620811==    by 0x4002C3A: url_get_search (url.h:467)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c47be8 is 8 bytes before a block of size 19 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40022C4: strdup (url.h:161)
+- ==620811==    by 0x400231F: strff (url.h:175)
+- ==620811==    by 0x4002C0E: url_get_search (url.h:463)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C2B4: strcpy (vg_replace_strmem.c:565)
+- ==620811==    by 0x40022D7: strdup (url.h:162)
+- ==620811==    by 0x40022FF: strrwd (url.h:185)
+- ==620811==    by 0x4002C3A: url_get_search (url.h:467)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==  Address 0x4c47be8 is 8 bytes before a block of size 19 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x40022C4: strdup (url.h:161)
+- ==620811==    by 0x400231F: strff (url.h:175)
+- ==620811==    by 0x4002C0E: url_get_search (url.h:463)
+- ==620811==    by 0x40030B0: main (driver.c:25)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4002C04: url_get_search (url.h:463)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c498c1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C28: url_get_search (url.h:465)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C28: url_get_search (url.h:465)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c4991d is 12 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4002C30: url_get_search (url.h:467)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c498c1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4A8D234: _IO_str_init_static_internal (strops.c:41)
+- ==620811==    by 0x4A51E08: _IO_strfile_read (strfile.h:90)
+- ==620811==    by 0x4A51E08: __isoc23_sscanf (isoc23_sscanf.c:28)
+- ==620811==    by 0x4002C9A: url_get_query (url.h:480)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x4A5F408: __vfscanf_internal (vfscanf-internal.c:685)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C9A: url_get_query (url.h:480)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x4A8BD90: _IO_sputbackc (genops.c:666)
+- ==620811==    by 0x4A5FADA: __vfscanf_internal (vfscanf-internal.c:690)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C9A: url_get_query (url.h:480)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x4A6621E: __vfscanf_internal (vfscanf-internal.c:1081)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C9A: url_get_query (url.h:480)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49911 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x4A6636C: __vfscanf_internal (vfscanf-internal.c:1204)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C9A: url_get_query (url.h:480)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49912 is 1 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A663D1: __vfscanf_internal (vfscanf-internal.c:1161)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C9A: url_get_query (url.h:480)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49a11 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002C7B: url_get_query (url.h:478)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x4A663AA: __vfscanf_internal (vfscanf-internal.c:1204)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C9A: url_get_query (url.h:480)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49913 is 2 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002C6E: url_get_query (url.h:477)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A66406: __vfscanf_internal (vfscanf-internal.c:1246)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C9A: url_get_query (url.h:480)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==  Address 0x4c49a1c is 11 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002C7B: url_get_query (url.h:478)
+- ==620811==    by 0x40030C7: main (driver.c:26)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A7D9F0: __vsprintf_internal (iovsprintf.c:68)
+- ==620811==    by 0x4A58B06: sprintf (sprintf.c:30)
+- ==620811==    by 0x4002AFD: url_get_path (url.h:444)
+- ==620811==    by 0x4002CE4: url_get_hash (url.h:490)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==  Address 0x4c4a87a is 1 bytes after a block of size 25 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002AE7: url_get_path (url.h:443)
+- ==620811==    by 0x4002CE4: url_get_hash (url.h:490)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==620811==    by 0x4002CF8: url_get_hash (url.h:493)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==  Address 0x4c4b6d1 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002CF8: url_get_hash (url.h:493)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002BA2: url_get_pathname (url.h:413)
+- ==620811==    by 0x4002CF8: url_get_hash (url.h:493)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==  Address 0x4c4b6d8 is 7 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002CF8: url_get_hash (url.h:493)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4002C04: url_get_search (url.h:463)
+- ==620811==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==  Address 0x4c4d341 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002B78: url_get_pathname (url.h:408)
+- ==620811==    by 0x4002BDC: url_get_search (url.h:458)
+- ==620811==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C28: url_get_search (url.h:465)
+- ==620811==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==  Address 0x4c4d391 is 0 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==
+- ==620811== Invalid write of size 1
+- ==620811==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==620811==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==620811==    by 0x4002C28: url_get_search (url.h:465)
+- ==620811==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==  Address 0x4c4d39d is 12 bytes after a block of size 1 alloc'd
+- ==620811==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==620811==    by 0x4002BE9: url_get_search (url.h:459)
+- ==620811==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==
+- ==620811== Invalid read of size 1
+- ==620811==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==620811==    by 0x4002C30: url_get_search (url.h:467)
+- ==620811==    by 0x4002D0C: url_get_hash (url.h:495)
+- ==620811==    by 0x40030DE: main (driver.c:27)
+- ==620811==  Address 0x4c4d341 is 0
+2026-09-02 02:14:28 | ERROR    | sactor.verifier.unidiomatic_verifier:89 | Failed to run tests for function strdup
+2026-09-02 02:14:28 | INFO     | sactor.translator.unidiomatic_translator:1048 | Translating function: strdup (attempts: 2)
+2026-09-02 02:14:28 | PROMPT   | sactor.llm:155 | 
+Translate the following C function to Rust. Try to keep the **equivalence** as much as possible.
+`libc` will be included as the **only** dependency you can use. To keep the equivalence, you can use `unsafe` if you want.
+Your solution should only have **one** function, if you need to create help function, define the help function inside the function you translate.
+The function is:
+```c
+char *
+strdup (const char *str) {
+  int n = strlen(str) + 1;
+  char *dup = malloc(n);
+  if (dup) strcpy(dup, str);
+  return dup;
+}
+```
+
+Output the translated function into this format (wrap with the following tags):
+----FUNCTION----
+```rust
+// Your translated function here
+```
+----END FUNCTION----
+
+The last time, the function is translated as:
+```rust
+pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    let n: libc::c_int = libc::strlen(str_ptr).wrapping_add(1) as libc::c_int;
+    let dup = libc::malloc(n as libc::size_t) as *mut libc::c_char;
+    if !dup.is_null() {
+        libc::strcpy(dup, str_ptr);
+    }
+    dup
+}
+
+```
+When running the test, it failed with the following error message:
+```
+❌ Test 0 failed!
+Diff (-actual +expected):
+  is_protocol(http): 1
+  is_ssh(http): 0
+  protocol: http
+  auth: user:pass
+  hostname: subdomain.host.com:8080
+  host: subdomain.host.com
+  pathname: /p/a/t/h
+  path: /p/a/t/h?query=string#hash
+  search: ?query=string
+  query: query=string
+  hash: #hash
+  port: 8080
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+
+```
+Analyze the error messages, think about the possible reasons, and try to avoid this error.
+
+2026-09-02 02:14:31 | RESPONSE | sactor.llm:160 | ----FUNCTION----
+```rust
+pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    // Helper function defined inside, as requested
+    unsafe fn strlen_c(s: *const libc::c_char) -> libc::size_t {
+        let mut p = s;
+        while *p != 0 {
+            p = p.add(1);
+        }
+        p.offset_from(s) as libc::size_t
+    }
+
+    if str_ptr.is_null() {
+        return std::ptr::null_mut();
+    }
+
+    let len = strlen_c(str_ptr); // length without the null terminator
+    let n = len + 1;             // include space for terminating '\0'
+
+    let dup = libc::malloc(n) as *mut libc::c_char;
+    if dup.is_null() {
+        return std::ptr::null_mut();
+    }
+
+    // Manual memcpy equivalent to strcpy but without relying on libc::strcpy
+    let mut i = 0;
+    while i < n {
+        *dup.add(i as usize) = *str_ptr.add(i as usize);
+        if *str_ptr.add(i as usize) == 0 {
+            break;
+        }
+        i += 1;
+    }
+
+    dup
+}
+```
+----END FUNCTION
+2026-09-02 02:14:31 | DEBUG    | sactor.utils:257 | Generated function:
+2026-09-02 02:14:31 | DEBUG    | sactor.utils:258 | pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    // Helper function defined inside, as requested
+    unsafe fn strlen_c(s: *const libc::c_char) -> libc::size_t {
+        let mut p = s;
+        while *p != 0 {
+            p = p.add(1);
+        }
+        p.offset_from(s) as libc::size_t
+    }
+
+    if str_ptr.is_null() {
+        return std::ptr::null_mut();
+    }
+
+    let len = strlen_c(str_ptr); // length without the null terminator
+    let n = len + 1;             // include space for terminating '\0'
+
+    let dup = libc::malloc(n) as *mut libc::c_char;
+    if dup.is_null() {
+        return std::ptr::null_mut();
+    }
+
+    // Manual memcpy equivalent to strcpy but without relying on libc::strcpy
+    let mut i = 0;
+    while i < n {
+        *dup.add(i as usize) = *str_ptr.add(i as usize);
+        if *str_ptr.add(i as usize) == 0 {
+            break;
+        }
+        i += 1;
+    }
+
+    dup
+}
+
+2026-09-02 02:14:31 | DEBUG    | sactor.translator.unidiomatic_translator:1358 | Translated function strdup:
+2026-09-02 02:14:31 | DEBUG    | sactor.translator.unidiomatic_translator:1359 | pub unsafe fn strdup(str_ptr: *const libc::c_char) -> *mut libc::c_char {
+    unsafe fn strlen_c(s: *const libc::c_char) -> libc::size_t {
+        let mut p = s;
+        while *p != 0 {
+            p = p.add(1);
+        }
+        p.offset_from(s) as libc::size_t
+    }
+    if str_ptr.is_null() {
+        return std::ptr::null_mut();
+    }
+    let len = strlen_c(str_ptr);
+    let n = len + 1;
+    let dup = libc::malloc(n) as *mut libc::c_char;
+    if dup.is_null() {
+        return std::ptr::null_mut();
+    }
+    let mut i = 0;
+    while i < n {
+        *dup.add(i as usize) = *str_ptr.add(i as usize);
+        if *str_ptr.add(i as usize) == 0 {
+            break;
+        }
+        i += 1;
+    }
+    dup
+}
+
+2026-09-02 02:14:31 | DEBUG    | sactor.verifier.verifier:278 | Compiling Rust project: cargo build --manifest-path /tmp/sactor/tmps5cynfet/build/build_attempt/Cargo.toml
+2026-09-02 02:14:32 | INFO     | sactor.verifier.verifier:286 | Rust code compiled successfully
+2026-09-02 02:14:32 | DEBUG    | sactor.verifier.verifier:567 | Compiling embedded Rust crate: cargo build --manifest-path /tmp/sactor/tmps5cynfet/build/embed_test_rust/Cargo.toml
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+   Compiling libc v0.2.189
+   Compiling strdup v0.1.0 (/tmp/sactor/tmps5cynfet/build/embed_test_rust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.03s
+2026-09-02 02:14:34 | DEBUG    | sactor.verifier.verifier:635 | Running compile command: ['gcc', '-I/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser', '-U_FORTIFY_SOURCE', '-c', '-o', '/tmp/sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c', '-Og', '-g']
+2026-09-02 02:14:34 | DEBUG    | sactor.verifier.verifier:658 | Project-level objects: ['../../../../../sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o']
+2026-09-02 02:14:34 | DEBUG    | sactor.verifier.verifier:659 | Project-level cmake libs: []
+2026-09-02 02:14:34 | DEBUG    | sactor.verifier.verifier:660 | Linking project-level harness: ['clang', '/tmp/sactor/tmps5cynfet/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '-o', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '-L/tmp/sactor/tmps5cynfet/build/embed_test_rust/target/debug', '-lm', '-lstrdup']
+2026-09-02 02:14:34 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '0', '--feed-as-args']
+2026-09-02 02:14:36 | DEBUG    | sactor.verifier.verifier:362 | Test stderr: ❌ Test 0 failed!
+Diff (-actual +expected):
+  is_protocol(http): 1
+  is_ssh(http): 0
+  protocol: http
+  auth: user:pass
+  hostname: subdomain.host.com:8080
+  host: subdomain.host.com
+  pathname: /p/a/t/h
+  path: /p/a/t/h?query=string#hash
+  search: ?query=string
+  query: query=string
+  hash: #hash
+  port: 8080
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+  #url =>
+- .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
+? ++++
+
+- .protocol: "http"
++     .protocol: "http"
+? ++++
+
+- .host: "subdomain.host.com"
++     .host: "subdomain.host.com"
+? ++++
+
+- .auth: "user:pass"
++     .auth: "user:pass"
+? ++++
+
+- .hostname: "subdomain.host.com:8080"
++     .hostname: "subdomain.host.com:8080"
+? ++++
+
+- .pathname: "/p/a/t/h"
++     .pathname: "/p/a/t/h"
+? ++++
+
+- .search: "?query=string"
++     .search: "?query=string"
+? ++++
+
+- .path: "/p/a/t/h?query=string#hash"
++     .path: "/p/a/t/h?query=string#hash"
+? ++++
+
+- .hash: "#hash"
++     .hash: "#hash"
+? ++++
+
+- .query: "query=string"
++     .query: "query=string"
+? ++++
+
+- .port: "8080"
++     .port: "8080"
+? ++++
+
+
+2026-09-02 02:14:36 | ERROR    | sactor.verifier.verifier:742 | Failed to run tests for function strdup, rerunning with feedback
+2026-09-02 02:14:40 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmps5cynfet/build/embed_test_c/strdup', '0', '--feed-as-args']

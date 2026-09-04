@@ -1,0 +1,817 @@
+{
+  "functions": [
+    {
+      "name": "genann_act_sigmoid",
+      "line": 37,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "double"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "double",
+          "shape": "f64"
+        }
+      },
+      "ops": {
+        "<": 1,
+        "neg": 2,
+        ">": 1,
+        "/": 1,
+        "+": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 6,
+        "nodes": 24,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "genann_act_sigmoid_cached",
+      "line": 44,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "double"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "double",
+          "shape": "f64"
+        }
+      },
+      "ops": {
+        "neg": 1,
+        "!": 1,
+        "/": 2,
+        "-": 3,
+        "<": 1,
+        "+": 2,
+        "*": 1,
+        "<=": 1,
+        ">=": 1
+      },
+      "consts": [
+        "size"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 17,
+        "nodes": 83,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "genann_act_threshold",
+      "line": 74,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "double"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "double",
+          "shape": "f64"
+        }
+      },
+      "ops": {
+        ">": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "genann_act_linear",
+      "line": 79,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "double"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "double",
+          "shape": "f64"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 3,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "genann_init",
+      "line": 84,
+      "signature": {
+        "params": [
+          {
+            "name": "inputs",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hidden_layers",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hidden",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "outputs",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "genann *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "genann *",
+          "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+        }
+      },
+      "ops": {
+        "<": 4,
+        "&&": 1,
+        ">": 1,
+        "+": 14,
+        "*": 6,
+        "-": 2,
+        "!": 1
+      },
+      "consts": [
+        "genann"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 7,
+        "stmts": 18,
+        "nodes": 164,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 4,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 15
+      }
+    },
+    {
+      "name": "genann_read",
+      "line": 124,
+      "signature": {
+        "params": [
+          {
+            "name": "in",
+            "ty": "FILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "genann *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "FILE *",
+            "shape": "*{i32,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*{},*<rec>,i32,i32,[i8;1],i64,unsigned short,i8,[i8;1],*(),i64,*{},*{},*<rec>,*(),**<rec>,i32,i32,u64,[i8;8]}"
+          }
+        ],
+        "output": {
+          "ty": "genann *",
+          "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+        }
+      },
+      "ops": {
+        "||": 2,
+        "<": 3,
+        "+": 1
+      },
+      "consts": [
+        "errno",
+        "file",
+        "genann"
+      ],
+      "strings": [
+        " %le",
+        "%d %d %d %d",
+        "fscanf"
+      ],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 14,
+        "nodes": 101,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "genann_copy",
+      "line": 153,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "const genann *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "genann *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const genann *",
+            "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+          }
+        ],
+        "output": {
+          "ty": "genann *",
+          "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+        }
+      },
+      "ops": {
+        "+": 6,
+        "*": 1,
+        "-": 1,
+        "!": 1
+      },
+      "consts": [
+        "genann"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 6,
+        "nodes": 60,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 11
+      }
+    },
+    {
+      "name": "genann_randomize",
+      "line": 169,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "genann *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "genann *",
+            "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1,
+        "-": 1
+      },
+      "consts": [
+        "genann",
+        "random"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 29,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "genann_free",
+      "line": 179,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "genann *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "genann *",
+            "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "genann"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 4,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "genann_run",
+      "line": 185,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "const genann *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "inputs",
+            "ty": "const double *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "const double *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const genann *",
+            "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+          },
+          {
+            "ty": "const double *",
+            "shape": "*f64"
+          }
+        ],
+        "output": {
+          "ty": "const double *",
+          "shape": "*f64"
+        }
+      },
+      "ops": {
+        "+": 4,
+        "*": 5,
+        "<": 5,
+        "neg": 2,
+        "==": 2
+      },
+      "consts": [
+        "actfun",
+        "assert",
+        "genann"
+      ],
+      "strings": [
+        "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/genann/genann.c",
+        "const double *genann_run(const genann *, const double *)",
+        "o - ann->output == ann->total_neurons",
+        "w - ann->weight == ann->total_weights"
+      ],
+      "metrics": {
+        "cyclomatic": 8,
+        "stmts": 27,
+        "nodes": 228,
+        "loops": 5,
+        "max_loop_depth": 3,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 34
+      }
+    },
+    {
+      "name": "genann_train",
+      "line": 232,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "const genann *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "inputs",
+            "ty": "const double *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "desired_outputs",
+            "ty": "const double *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "learning_rate",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const genann *",
+            "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+          },
+          {
+            "ty": "const double *",
+            "shape": "*f64"
+          },
+          {
+            "ty": "const double *",
+            "shape": "*f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 36,
+        "*": 32,
+        "==": 5,
+        "<": 8,
+        "-": 13,
+        ">=": 2,
+        "neg": 2
+      },
+      "consts": [
+        "assert",
+        "genann"
+      ],
+      "strings": [
+        "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/genann/genann.c",
+        "void genann_train(const genann *, const double *, const double *, double)",
+        "w - ann->weight == ann->total_weights"
+      ],
+      "metrics": {
+        "cyclomatic": 15,
+        "stmts": 53,
+        "nodes": 543,
+        "loops": 10,
+        "max_loop_depth": 3,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 88
+      }
+    },
+    {
+      "name": "genann_write",
+      "line": 355,
+      "signature": {
+        "params": [
+          {
+            "name": "ann",
+            "ty": "const genann *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "out",
+            "ty": "FILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const genann *",
+            "shape": "*{i32,i32,i32,i32,*fn,*fn,i32,i32,*f64,*f64,*f64}"
+          },
+          {
+            "ty": "FILE *",
+            "shape": "*{i32,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*{},*<rec>,i32,i32,[i8;1],i64,unsigned short,i8,[i8;1],*(),i64,*{},*{},*<rec>,*(),**<rec>,i32,i32,u64,[i8;8]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [
+        "file",
+        "genann"
+      ],
+      "strings": [
+        " %.20e",
+        "%d %d %d %d"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 33,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 7
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "genann_act_sigmoid",
+      "to": "exp"
+    },
+    {
+      "from": "genann_act_sigmoid_cached",
+      "to": "genann_act_sigmoid"
+    },
+    {
+      "from": "genann_copy",
+      "to": "malloc"
+    },
+    {
+      "from": "genann_copy",
+      "to": "memcpy"
+    },
+    {
+      "from": "genann_free",
+      "to": "free"
+    },
+    {
+      "from": "genann_init",
+      "to": "genann_randomize"
+    },
+    {
+      "from": "genann_init",
+      "to": "malloc"
+    },
+    {
+      "from": "genann_randomize",
+      "to": "rand"
+    },
+    {
+      "from": "genann_read",
+      "to": "__errno_location"
+    },
+    {
+      "from": "genann_read",
+      "to": "fscanf"
+    },
+    {
+      "from": "genann_read",
+      "to": "genann_free"
+    },
+    {
+      "from": "genann_read",
+      "to": "genann_init"
+    },
+    {
+      "from": "genann_read",
+      "to": "perror"
+    },
+    {
+      "from": "genann_run",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "genann_run",
+      "to": "memcpy"
+    },
+    {
+      "from": "genann_train",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "genann_train",
+      "to": "genann_run"
+    },
+    {
+      "from": "genann_write",
+      "to": "fprintf"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "genann_run",
+      "line": 206,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "genann_run",
+      "line": 221,
+      "kind": "call_unresolved"
+    }
+  ]
+}

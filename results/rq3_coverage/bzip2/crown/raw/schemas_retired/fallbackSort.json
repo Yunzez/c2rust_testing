@@ -1,0 +1,54 @@
+{
+ "schema_version": 1,
+ "program": "bzip2_crown",
+ "entry": "fallbackSort",
+ "params": [
+  {
+   "name": "fmap",
+   "elem": "u32",
+   "elem_width": 4,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 4096
+  },
+  {
+   "name": "eclass",
+   "elem": "u32",
+   "elem_width": 4,
+   "role": "inout_buffer",
+   "decode": "vector",
+   "length_param": "nblock",
+   "max_len": 4096
+  },
+  {
+   "name": "bhtab",
+   "elem": "u32",
+   "elem_width": 4,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 4096
+  },
+  {
+   "name": "nblock",
+   "rust": "i32",
+   "width": 4,
+   "role": "length",
+   "decode": "derived_from_buffer",
+   "of_buffer": "eclass"
+  },
+  {
+   "name": "verb",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 0,
+   "max_value": 4
+  }
+ ],
+ "return": {
+  "rust": "void"
+ },
+ "decode_scalars_first": true,
+ "provenance": "hand-authored for the RQ4 coverage experiment; every bound is a documented bzip2 1.0.8 requirement, see make_schemas.py"
+}

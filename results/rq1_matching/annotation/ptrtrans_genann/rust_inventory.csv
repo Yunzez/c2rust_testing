@@ -1,0 +1,15 @@
+rust_function,file,line,signature,same_name_in_c,duplicate_leaf,tool_claimed_by,matcher_proposed_for
+genann_act_threshold,src/common/genann_mod.rs,18,"(ann: Option<&Genann>, a: f64) -> f64",yes,,,genann_act_linear
+genann_act_linear,src/common/genann_mod.rs,21,"(ann: Option<&Genann>, a: f64) -> f64",yes,,,genann_act_threshold
+genann_randomize,src/genann.rs,12,(ann: Option<&mut Genann>) -> (),yes,,genann_randomize,genann_act_hidden_indirect
+genann_copy,src/genann.rs,16,(ann: Option<&Genann>) -> Option<Genann>,yes,,genann_copy,genann_copy
+genann_write,src/genann.rs,61,"(ann: Option<&Genann>, out: Option<&mut dyn Write>) -> ()",yes,,genann_write,genann_act_sigmoid_cached
+genann_act_sigmoid,src/genann.rs,93,"(ann: Option<&Genann>, a: f64) -> f64",yes,,genann_act_sigmoid,genann_act_sigmoid
+genann_act_sigmoid_cached,src/genann.rs,105,"(ann: Option<&Genann>, a: f64) -> f64",yes,,genann_act_sigmoid_cached,genann_randomize
+genann_act_hidden_indirect,src/genann.rs,134,"(ann: Option<&Genann>, a: f64) -> f64",yes,,genann_act_hidden_indirect,genann_act_output_indirect
+genann_act_output_indirect,src/genann.rs,140,"(ann: Option<&Genann>, a: f64) -> f64",yes,,genann_act_output_indirect,genann_write
+genann_init_sigmoid_lookup,src/genann.rs,149,(ann: Option<&Genann>) -> (),yes,,genann_init_sigmoid_lookup,genann_init_sigmoid_lookup
+genann_run,src/genann.rs,161,"(ann: Option<&'a Genann>, inputs: Option<&[f64]>) -> Option<&'a [f64]>",yes,,genann_run,genann_free
+genann_init,src/genann.rs,301,"(inputs: i32, hidden_layers: i32, hidden: i32, outputs: i32) -> Option<Box<Genann>>",yes,,genann_init,genann_init
+genann_train,src/genann.rs,355,"(ann: Option<&Genann>, inputs: Option<&[f64]>, desired_outputs: Option<&[f64]>, learning_rate: f64) -> ()",yes,,genann_train,genann_train
+genann_read,src/genann.rs,528,(input: Option<&mut R>) -> Option<Box<Genann>>,yes,,genann_read,genann_read

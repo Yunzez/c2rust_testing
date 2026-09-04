@@ -1,0 +1,109 @@
+rust_function,file,line,signature,same_name_in_c,duplicate_leaf,tool_claimed_by,matcher_proposed_for
+minify_string,src/cjson.rs,11,"(input: &mut &[u8], output: &mut [u8]) -> ()",yes,,,print_object
+skip_oneline_comment,src/cjson.rs,63,(input: Option<&mut &[u8]>) -> (),yes,,,cJSON_InitHooks
+skip_multiline_comment,src/cjson.rs,82,(input: &mut Option<&mut &[u8]>) -> (),yes,,,cJSON_free
+get_decimal_point,src/cjson.rs,92,() -> u8,yes,,,get_decimal_point
+parse_hex4,src/cjson.rs,95,(input: Option<&[u8]>) -> u32,yes,,,parse_hex4
+cJSON_Version,src/cjson.rs,126,() -> Option<&'static str>,yes,,,cJSON_Version
+cJSON_Minify,src/cjson.rs,147,(json: Option<&mut [u8]>) -> (),yes,,,cJSON_malloc
+utf16_literal_to_utf8,src/cjson.rs,150,"(input_pointer: Option<&[u8]>, input_end: Option<&[u8]>, output: Option<&mut Vec<u8>>) -> u8",yes,,,utf16_literal_to_utf8
+cJSON_GetArraySize,src/cjson.rs,291,(array: Option<&'a cJSON<'a>>) -> i32,yes,,,cJSON_GetArraySize
+cJSON_IsInvalid,src/cjson.rs,304,(item: Option<&cJSON<'a>>) -> i32,yes,,,cJSON_IsFalse
+cJSON_IsFalse,src/cjson.rs,310,(item: Option<&cJSON<'a>>) -> i32,yes,,,cJSON_IsRaw
+cJSON_IsTrue,src/cjson.rs,320,(item: Option<&cJSON<'a>>) -> i32,yes,,,cJSON_IsInvalid
+cJSON_IsBool,src/cjson.rs,333,(item: Option<&cJSON<'_>>) -> i32,yes,,,cJSON_IsBool
+cJSON_IsNull,src/cjson.rs,346,(item: Option<&cJSON>) -> i32,yes,,,cJSON_IsArray
+cJSON_IsNumber,src/cjson.rs,356,(item: Option<&cJSON<'a>>) -> i32,yes,,,cJSON_IsString
+cJSON_IsString,src/cjson.rs,369,(item: Option<&cJSON<'a>>) -> i32,yes,,,cJSON_IsNumber
+cJSON_IsArray,src/cjson.rs,382,(item: Option<&cJSON<'a>>) -> i32,yes,,,cJSON_IsTrue
+cJSON_IsObject,src/cjson.rs,394,(item: Option<&cJSON<'a>>) -> i32,yes,,,cJSON_IsObject
+cJSON_IsRaw,src/cjson.rs,406,(item: Option<&'a cJSON<'a>>) -> i32,yes,,,cJSON_IsNull
+cJSON_SetNumberHelper,src/cjson.rs,418,"(object: Option<&'a mut cJSON<'a>>, number: f64) -> f64",yes,,,cJSON_SetNumberHelper
+case_insensitive_strcmp,src/cjson.rs,442,"(string1: Option<&'a str>, string2: Option<&'a crate::cJSON<'a>>) -> i32",yes,,,case_insensitive_strcmp
+compare_double,src/cjson.rs,519,"(a: f64, b: f64) -> bool",yes,,,compare_double
+get_array_item,src/cjson.rs,525,"(array: Option<&'a mut cJSON<'a>>, index: usize) -> Option<&'a mut cJSON<'a>>",yes,,,print_number
+suffix_object,src/cjson.rs,546,"(prev: Option<&'a mut cJSON<'a>>, item: Option<&'a mut cJSON<'a>>) -> ()",yes,,,cJSON_AddArrayToObject
+cast_away_const,src/cjson.rs,574,(string: Option<&'a T>) -> Option<&'a mut T>,yes,,,cast_away_const
+parse_number,src/cjson.rs,588,"(item: Option<&'a mut cJSON<'a>>, input_buffer: Option<&'a mut ParseBuffer<'a>>) -> i32",yes,,,parse_number
+parse_string,src/cjson.rs,696,"(item: Option<&'a mut cJSON<'a>>, input_buffer: Option<&'a mut ParseBuffer<'a>>) -> i32",yes,,,parse_string
+skip_utf8_bom,src/cjson.rs,873,(buffer: Option<&'a mut ParseBuffer<'a>>) -> Option<&'a mut ParseBuffer<'a>>,yes,,,skip_utf8_bom
+ensure,src/cjson.rs,908,"(p: Option<&'a mut PrintBuffer<'a>>, needed: usize) -> Option<&'a mut [u8]>",yes,,,ensure
+update_offset,src/cjson.rs,994,(buffer: Option<&mut PrintBuffer<'a>>) -> (),yes,,,update_offset
+cJSON_InitHooks,src/cjson.rs,1028,(hooks: Option<&cJSON_Hooks>) -> (),yes,,,cJSON_Delete
+cJSON_malloc,src/cjson.rs,1079,"(_size: usize, _hooks: &'no_depends InternalHooks<'no_depends>) -> Option<&'no_depends core::ffi::c_void>",yes,,,cJSON_ParseWithLength
+cjson_strdup,src/cjson.rs,1085,"(string: Option<&str>, hooks: Option<&'h InternalHooks<'h>>) -> Option<&'static mut [u8]>",,,,cJSON_strdup
+cJSON_New_Item,src/cjson.rs,1120,(hooks: Option<&InternalHooks<'_>>) -> Option<&'a mut cJSON<'a>>,yes,,,cJSON_New_Item
+cJSON_GetErrorPtr,src/cjson.rs,1135,() -> Option<&'static [u8]>,yes,,,cJSON_GetErrorPtr
+cJSON_GetNumberValue,src/cjson.rs,1150,(item: Option<&cJSON<'a>>) -> f64,yes,,,cJSON_GetNumberValue
+cJSON_GetStringValue,src/cjson.rs,1159,(item: Option<&'a cJSON<'a>>) -> Option<&'a str>,yes,,,cJSON_GetStringValue
+get_object_item,src/cjson.rs,1170,"(object: Option<&'a cJSON<'a>>, name: Option<&'a str>, case_sensitive: i32) -> Option<&'a mut cJSON<'a>>",yes,,,get_object_item
+cJSON_GetArrayItem,src/cjson.rs,1243,"(array: Option<&'a cJSON<'a>>, index: i32) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_DetachItemFromArray
+cJSON_DetachItemViaPointer,src/cjson.rs,1246,"(parent: Option<&'a mut cJSON<'a>>, item: Option<&'a mut cJSON<'a>>) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_PrintBuffered
+buffer_skip_whitespace,src/cjson.rs,1373,(buffer: Option<&'a mut ParseBuffer<'a>>) -> Option<&'a mut ParseBuffer<'a>>,yes,,,buffer_skip_whitespace
+print_number,src/cjson.rs,1400,"(item: Option<&'a cJSON<'a>>, output_buffer: Option<&'a mut PrintBuffer<'a>>) -> i32",yes,,,print_value
+print_string_ptr,src/cjson.rs,1407,"(input: Option<&'a [u8]>, output_buffer: Option<&'a mut PrintBuffer<'a>>) -> i32",yes,,,print_string_ptr
+cjson_set_valuestring,src/cjson.rs,1539,"(object: Option<&'a mut cJSON<'a>>, valuestring: Option<&'a str>, _hooks: Option<&'h InternalHooks<'h>>) -> Option<&'a mut str>",,,,cJSON_ParseWithOpts
+cJSON_CreateNull,src/cjson.rs,1546,() -> Option<&'static mut cJSON<'static>>,yes,,,cJSON_CreateTrue
+cJSON_CreateTrue,src/cjson.rs,1556,() -> Option<&'static mut cJSON<'static>>,yes,,,cJSON_CreateNull
+cJSON_CreateFalse,src/cjson.rs,1568,() -> Option<&'static mut cJSON<'static>>,yes,,,suffix_object
+cJSON_CreateBool,src/cjson.rs,1572,(boolean: i32) -> Option<&'static mut cJSON<'static>>,yes,,,cJSON_CreateBool
+cJSON_CreateNumber,src/cjson.rs,1590,(num: f64) -> Option<&'static mut cJSON<'static>>,yes,,,cJSON_CreateNumber
+cJSON_CreateArray,src/cjson.rs,1608,() -> Option<&'static mut cJSON<'static>>,yes,,,cJSON_CreateArray
+cJSON_CreateObject,src/cjson.rs,1625,() -> Option<&'static mut cJSON<'static>>,yes,,,cJSON_CreateFalse
+cJSON_CreateStringReference,src/cjson.rs,1638,(string: Option<&'a str>) -> Option<&'static mut cJSON<'static>>,yes,,,cJSON_CreateStringReference
+cJSON_CreateObjectReference,src/cjson.rs,1666,(child: Option<&'a cJSON<'a>>) -> Option<&'a mut cJSON<'a>>,yes,,,cJSON_CreateArrayReference
+cJSON_CreateArrayReference,src/cjson.rs,1686,(child: Option<&'a cJSON<'a>>) -> Option<&'a mut cJSON<'a>>,yes,,,cJSON_CreateObjectReference
+create_reference,src/cjson.rs,1700,"(item: Option<&'a cJSON<'a>>, hooks: Option<&InternalHooks<'_>>) -> Option<&'a mut cJSON<'a>>",yes,,,create_reference
+cJSON_GetObjectItem,src/cjson.rs,1741,"(object: Option<&'a cJSON<'a>>, string: Option<&'a str>) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_GetObjectItem
+cJSON_GetObjectItemCaseSensitive,src/cjson.rs,1747,"(object: Option<&'a cJSON<'a>>, string: Option<&'a str>) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_Duplicate
+cJSON_Compare,src/cjson.rs,1753,"(a: Option<&'a cJSON<'a>>, b: Option<&'a cJSON<'a>>, case_sensitive: i32) -> i32",yes,,,cJSON_Compare
+cJSON_DetachItemFromArray,src/cjson.rs,1869,"(array: Option<&'a mut cJSON<'a>>, which: i32) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_AddItemToArray
+print_string,src/cjson.rs,1875,"(item: Option<&'a cJSON<'a>>, p: Option<&'a PrintBuffer<'a>>) -> i32",yes,,,cJSON_DeleteItemFromArray
+add_item_to_array,src/cjson.rs,1893,"(array: Option<&'a mut cJSON<'a>>, item: Option<Box<cJSON<'a>>>) -> i32",yes,,,add_item_to_array
+cJSON_HasObjectItem,src/cjson.rs,1956,"(object: Option<&'a cJSON<'a>>, string: Option<&'a str>) -> i32",yes,,,cJSON_HasObjectItem
+cJSON_DetachItemFromObject,src/cjson.rs,1966,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_DetachItemFromObjectCaseSensitive
+cJSON_DetachItemFromObjectCaseSensitive,src/cjson.rs,1973,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_AddFalseToObject
+print_value,src/cjson.rs,1982,"(item: Option<&cJSON>, output_buffer: Option<&mut PrintBuffer>) -> i32",yes,,,get_array_item
+print_array,src/cjson.rs,1991,"(item: Option<&cJSON>, output_buffer: Option<&mut PrintBuffer>) -> i32",yes,,,print_string
+print_object,src/cjson.rs,2000,"(item: Option<&cJSON>, output_buffer: Option<&mut PrintBuffer>) -> i32",yes,,,print_array
+cJSON_AddItemToArray,src/cjson.rs,2006,"(array: Option<&'a mut cJSON<'a>>, item: Option<Box<cJSON<'a>>>) -> i32",yes,,,cJSON_GetObjectItemCaseSensitive
+cJSON_AddItemReferenceToArray,src/cjson.rs,2013,"(array: Option<&'a mut cJSON<'a>>, item: Option<&'a cJSON<'a>>) -> i32",yes,,,cJSON_AddItemReferenceToArray
+cJSON_InsertItemInArray,src/cjson.rs,2035,"(array: Option<&'a mut cJSON<'a>>, which: i32, newitem: Option<Box<cJSON<'a>>>) -> i32",yes,,,cJSON_ReplaceItemInObjectCaseSensitive
+add_item_to_object,src/cjson.rs,2043,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>, item: Option<Box<cJSON<'a>>>, hooks: Option<&'h InternalHooks<'h>>, constant_key: i32) -> i32",yes,,,add_item_to_object
+cJSON_PrintBuffered,src/cjson.rs,2146,"(item: Option<&'a cJSON<'a>>, prebuffer: i32, fmt: i32) -> Option<&'a str>",yes,,,cJSON_GetArrayItem
+cJSON_PrintPreallocated,src/cjson.rs,2225,"(item: Option<&'a cJSON<'a>>, buffer: Option<&'a mut [u8]>, length: i32, format: i32) -> i32",yes,,,cJSON_PrintPreallocated
+print,src/cjson.rs,2243,"(item: Option<&cJSON>, format: i32, hooks: Option<&InternalHooks>) -> Option<&'static [u8]>",yes,,,print
+cJSON_AddItemToObject,src/cjson.rs,2351,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>, item: Option<Box<cJSON<'a>>>) -> i32",yes,,,cJSON_AddStringToObject
+cJSON_AddItemToObjectCS,src/cjson.rs,2362,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>, item: Option<Box<cJSON<'a>>>, hooks: Option<&'h InternalHooks<'h>>) -> i32",yes,,,cJSON_AddItemToObject
+cJSON_AddItemReferenceToObject,src/cjson.rs,2378,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>, item: Option<&'a cJSON<'a>>) -> i32",yes,,,cJSON_AddItemReferenceToObject
+cJSON_CreateString,src/cjson.rs,2432,(string: Option<&'a str>) -> Option<&'a mut cJSON<'a>>,yes,,,cJSON_CreateString
+cJSON_CreateRaw,src/cjson.rs,2457,(raw: Option<&str>) -> Option<&'a mut cJSON<'a>>,yes,,,cJSON_CreateRaw
+cJSON_CreateIntArray,src/cjson.rs,2486,"(numbers: Option<&[i32]>, count: i32) -> Option<&'static mut cJSON<'static>>",yes,,,cJSON_CreateIntArray
+cJSON_CreateFloatArray,src/cjson.rs,2530,"(numbers: Option<&[f32]>, count: i32) -> Option<&'static mut cJSON<'static>>",yes,,,cJSON_CreateFloatArray
+cJSON_CreateDoubleArray,src/cjson.rs,2533,"(numbers: Option<&'a [f64]>, count: i32) -> Option<&'static mut cJSON<'static>>",yes,,,cJSON_DetachItemFromObject
+cJSON_ReplaceItemViaPointer,src/cjson.rs,2536,"(parent: Option<&'a mut cJSON<'a>>, item: Option<&'a mut cJSON<'a>>, replacement: Option<cJSON<'a>>) -> i32",yes,,,cJSON_ReplaceItemViaPointer
+cJSON_AddNullToObject,src/cjson.rs,2544,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>, hooks: Option<&'h InternalHooks<'h>>) -> Option<&'static mut cJSON<'static>>",yes,,,cJSON_AddItemToObjectCS
+cJSON_AddTrueToObject,src/cjson.rs,2592,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>) -> Option<&'static mut cJSON<'static>>",yes,,,cJSON_AddObjectToObject
+cJSON_AddFalseToObject,src/cjson.rs,2626,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>) -> Option<&'static mut cJSON<'static>>",yes,,,cJSON_CreateDoubleArray
+cJSON_AddBoolToObject,src/cjson.rs,2652,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>, boolean: i32) -> Option<Box<cJSON<'a>>>",yes,,,cJSON_AddBoolToObject
+cJSON_AddNumberToObject,src/cjson.rs,2709,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>, number: f64) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_AddNumberToObject
+cJSON_AddObjectToObject,src/cjson.rs,2772,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>) -> Option<&'static mut cJSON<'static>>",yes,,,cJSON_AddNullToObject
+cJSON_AddArrayToObject,src/cjson.rs,2801,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>, hooks: Option<&'h InternalHooks<'h>>) -> Option<Box<cJSON<'a>>>",yes,,,cJSON_InsertItemInArray
+parse_value,src/cjson.rs,2869,"(item: Option<&'a mut cJSON<'a>>, input_buffer: Option<&'a mut ParseBuffer<'a>>) -> i32",yes,,,parse_value
+parse_array,src/cjson.rs,2878,"(item: Option<&'a mut cJSON<'a>>, input_buffer: Option<&'a mut ParseBuffer<'a>>) -> i32",yes,,,parse_array
+parse_object,src/cjson.rs,2887,"(item: Option<&'a mut cJSON<'a>>, input_buffer: Option<&'a mut ParseBuffer<'a>>) -> i32",yes,,,parse_object
+cJSON_Duplicate_rec,src/cjson.rs,2894,"(item: Option<&'a cJSON<'a>>, depth: usize, recurse: i32) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_Duplicate_rec
+cJSON_Print,src/cjson.rs,2921,(item: Option<&cJSON>) -> Option<&'static [u8]>,yes,,,cJSON_PrintUnformatted
+cJSON_PrintUnformatted,src/cjson.rs,2940,(item: Option<&cJSON>) -> Option<&'static mut [u8]>,yes,,,cJSON_Print
+cJSON_CreateStringArray,src/cjson.rs,2943,"(strings: Option<&'a [&'a str]>, count: i32) -> Option<&'static mut cJSON<'static>>",yes,,,cJSON_CreateStringArray
+cJSON_AddStringToObject,src/cjson.rs,2996,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>, string: Option<&'a str>) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_AddRawToObject
+cJSON_AddRawToObject,src/cjson.rs,3033,"(object: Option<&'a mut cJSON<'a>>, name: Option<&'a str>, raw: Option<&'a str>, hooks: Option<&'h InternalHooks<'h>>) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_AddTrueToObject
+cJSON_ReplaceItemInArray,src/cjson.rs,3073,"(array: Option<&'a mut cJSON<'a>>, which: i32, newitem: Option<cJSON<'a>>) -> i32",yes,,,cJSON_ReplaceItemInArray
+replace_item_in_object,src/cjson.rs,3083,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>, replacement: Option<cJSON<'a>>, case_sensitive: i32) -> i32",yes,,,replace_item_in_object
+cJSON_ParseWithLengthOpts,src/cjson.rs,3095,"(value: Option<&'a [u8]>, buffer_length: usize, return_parse_end: Option<&'a mut Option<&'a [u8]>>, require_null_terminated: i32) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_DetachItemViaPointer
+cJSON_Duplicate,src/cjson.rs,3109,"(item: Option<&'a cJSON<'a>>, recurse: i32) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_DeleteItemFromObjectCaseSensitive
+cJSON_ReplaceItemInObject,src/cjson.rs,3114,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>, newitem: Option<cJSON<'a>>) -> i32",yes,,,cJSON_ReplaceItemInObject
+cJSON_ReplaceItemInObjectCaseSensitive,src/cjson.rs,3125,"(object: Option<&'a mut cJSON<'a>>, string: Option<&'a str>, newitem: Option<cJSON<'a>>) -> i32",yes,,,cJSON_DeleteItemFromObject
+cJSON_ParseWithLength,src/cjson.rs,3136,"(value: Option<&'a [u8]>, buffer_length: usize) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_SetValuestring
+cJSON_ParseWithOpts,src/cjson.rs,3147,"(value: Option<&'a [u8]>, return_parse_end: Option<&'a mut Option<&'a [u8]>>, require_null_terminated: i32) -> Option<&'a mut cJSON<'a>>",yes,,,cJSON_CreateObject
+cJSON_Parse,src/cjson.rs,3184,(value: Option<&'a [u8]>) -> Option<&'a mut cJSON<'a>>,yes,,,cJSON_Parse

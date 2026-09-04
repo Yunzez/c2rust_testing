@@ -1,0 +1,48 @@
+{
+ "schema_version": 1,
+ "program": "bzip2_c2saferrust",
+ "entry": "fallbackQSort3",
+ "params": [
+  {
+   "name": "fmap",
+   "elem": "u32",
+   "elem_width": 4,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 1024
+  },
+  {
+   "name": "eclass",
+   "elem": "u32",
+   "elem_width": 4,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 1024
+  },
+  {
+   "name": "loSt",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 0,
+   "max_value": 1023
+  },
+  {
+   "name": "hiSt",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 0,
+   "max_value": 1023,
+   "min_var": "loSt"
+  }
+ ],
+ "return": {
+  "rust": "void"
+ },
+ "decode_scalars_first": true,
+ "provenance": "hand-authored for the RQ4 coverage experiment; every bound is a documented bzip2 1.0.8 requirement, see make_schemas.py",
+ "note": "fmap/eclass have no length parameter, so they are zeroed fixed-cap arrays and lo/hi are bounded to their capacity. Memory-safe; the real coverage of this function comes transitively from the fallbackSort harness."
+}

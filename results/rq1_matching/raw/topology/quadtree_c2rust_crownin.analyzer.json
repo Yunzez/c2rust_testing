@@ -1,0 +1,2300 @@
+{
+  "functions": [
+    {
+      "name": "main",
+      "line": 2,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "descent",
+      "line": 85,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "ascent",
+      "line": 98,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "test_node",
+      "line": 101,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "==": 2
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "test_bounds",
+      "line": 140,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "==": 10,
+        "neg": 1
+      },
+      "consts": [
+        "infinity"
+      ],
+      "strings": []
+    },
+    {
+      "name": "test_tree",
+      "line": 278,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "==": 15
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "test_points",
+      "line": 559,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "==": 2
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "main_0",
+      "line": 590,
+      "signature": {
+        "params": [
+          {
+            "name": "argc",
+            "ty": "libc::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "argv",
+            "ty": "*mut *const libc::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "libc::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "*mut *const i8",
+            "shape": "**i8"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "node_contains_",
+      "line": 60,
+      "signature": {
+        "params": [
+          {
+            "name": "outer",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "it",
+            "ty": "*mut quadtree_point_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "libc::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          },
+          {
+            "ty": "*mut quadtree_point",
+            "shape": "*{f64,f64}"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "&&": 4,
+        "<": 2,
+        ">": 2
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "elision_",
+      "line": 68,
+      "signature": {
+        "params": [
+          {
+            "name": "key",
+            "ty": "*mut libc::c_void",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut c_void",
+            "shape": "*enum"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "reset_node_",
+      "line": 69,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "*mut quadtree_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{_,_,_,_},*{_,_},*enum},Option<unsafe fn(*mut c_void)>,u32}"
+          },
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "get_quadrant_",
+      "line": 82,
+      "signature": {
+        "params": [
+          {
+            "name": "root",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "point",
+            "ty": "*mut quadtree_point_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut quadtree_node_t"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          },
+          {
+            "ty": "*mut quadtree_point",
+            "shape": "*{f64,f64}"
+          }
+        ],
+        "output": {
+          "ty": "*mut quadtree_node",
+          "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+        }
+      },
+      "ops": {
+        "!=": 4
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "split_node_",
+      "line": 100,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "*mut quadtree_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "libc::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{_,_,_,_},*{_,_},*enum},Option<unsafe fn(*mut c_void)>,u32}"
+          },
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "*": 4,
+        "+": 6,
+        "-": 6,
+        "/": 2
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "find_",
+      "line": 159,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "x",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut quadtree_point_t"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "*mut quadtree_point",
+          "shape": "*{f64,f64}"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "&&": 1,
+        "==": 2
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "insert_",
+      "line": 176,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "*mut quadtree_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "root",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "point",
+            "ty": "*mut quadtree_point_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "key",
+            "ty": "*mut libc::c_void",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "libc::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{_,_,_,_},*{_,_},*enum},Option<unsafe fn(*mut c_void)>,u32}"
+          },
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          },
+          {
+            "ty": "*mut quadtree_point",
+            "shape": "*{f64,f64}"
+          },
+          {
+            "ty": "*mut c_void",
+            "shape": "*enum"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!=": 3,
+        "&&": 1,
+        "==": 3
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_new",
+      "line": 217,
+      "signature": {
+        "params": [
+          {
+            "name": "minx",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "miny",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxx",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxy",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut quadtree_t"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "*mut quadtree",
+          "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{_,_,_,_},*{_,_},*enum},Option<unsafe fn(*mut c_void)>,u32}"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_insert",
+      "line": 241,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "*mut quadtree_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "x",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "key",
+            "ty": "*mut libc::c_void",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "libc::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{_,_,_,_},*{_,_},*enum},Option<unsafe fn(*mut c_void)>,u32}"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "*mut c_void",
+            "shape": "*enum"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "==": 2
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_search",
+      "line": 263,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "*mut quadtree_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "x",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut quadtree_point_t"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{_,_,_,_},*{_,_},*enum},Option<unsafe fn(*mut c_void)>,u32}"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "*mut quadtree_point",
+          "shape": "*{f64,f64}"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_free",
+      "line": 271,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "*mut quadtree_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{_,_,_,_},*{_,_},*enum},Option<unsafe fn(*mut c_void)>,u32}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_walk",
+      "line": 283,
+      "signature": {
+        "params": [
+          {
+            "name": "root",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "descent",
+            "ty": "Option::<unsafe extern \"C\" fn(*mut quadtree_node_t) -> ()>",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "ascent",
+            "ty": "Option::<unsafe extern \"C\" fn(*mut quadtree_node_t) -> ()>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          },
+          {
+            "ty": "Option<unsafe fn(*mut quadtree_node)>",
+            "shape": "Option<unsafe fn(*mut quadtree_node)>"
+          },
+          {
+            "ty": "Option<unsafe fn(*mut quadtree_node)>",
+            "shape": "Option<unsafe fn(*mut quadtree_node)>"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 4
+      },
+      "consts": [],
+      "strings": [
+        "non-null function pointer"
+      ]
+    },
+    {
+      "name": "quadtree_point_new",
+      "line": 14,
+      "signature": {
+        "params": [
+          {
+            "name": "x",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut quadtree_point_t"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "*mut quadtree_point",
+          "shape": "*{f64,f64}"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_point_free",
+      "line": 29,
+      "signature": {
+        "params": [
+          {
+            "name": "point",
+            "ty": "*mut quadtree_point_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_point",
+            "shape": "*{f64,f64}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_node_ispointer",
+      "line": 43,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "libc::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 4,
+        "&&": 4,
+        "==": 1
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_node_isempty",
+      "line": 50,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "libc::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "&&": 4,
+        "==": 1
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_node_isleaf",
+      "line": 57,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "libc::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_node_reset",
+      "line": 64,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "key_free",
+            "ty": "Option::<unsafe extern \"C\" fn(*mut libc::c_void) -> ()>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          },
+          {
+            "ty": "Option<unsafe fn(*mut c_void)>",
+            "shape": "Option<unsafe fn(*mut c_void)>"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [
+        "non-null function pointer"
+      ]
+    },
+    {
+      "name": "quadtree_node_new",
+      "line": 73,
+      "signature": {
+        "params": [],
+        "ret": "*mut quadtree_node_t"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "*mut quadtree_node",
+          "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_node_with_bounds",
+      "line": 97,
+      "signature": {
+        "params": [
+          {
+            "name": "minx",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "miny",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxx",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxy",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut quadtree_node_t"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "*mut quadtree_node",
+          "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_node_free",
+      "line": 118,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "*mut quadtree_node_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "key_free",
+            "ty": "Option::<unsafe extern \"C\" fn(*mut libc::c_void) -> ()>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_node",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{_,_},*{_,_},f64,f64},*{f64,f64},*enum}"
+          },
+          {
+            "ty": "Option<unsafe fn(*mut c_void)>",
+            "shape": "Option<unsafe fn(*mut c_void)>"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 4
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_bounds_extend",
+      "line": 28,
+      "signature": {
+        "params": [
+          {
+            "name": "bounds",
+            "ty": "*mut quadtree_bounds_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "x",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "libc::c_double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_bounds",
+            "shape": "*{*{f64,f64},*{f64,f64},f64,f64}"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          },
+          {
+            "ty": "f64",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "-": 2
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_bounds_free",
+      "line": 41,
+      "signature": {
+        "params": [
+          {
+            "name": "bounds",
+            "ty": "*mut quadtree_bounds_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut quadtree_bounds",
+            "shape": "*{*{f64,f64},*{f64,f64},f64,f64}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quadtree_bounds_new",
+      "line": 47,
+      "signature": {
+        "params": [],
+        "ret": "*mut quadtree_bounds_t"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "*mut quadtree_bounds",
+          "shape": "*{*{f64,f64},*{f64,f64},f64,f64}"
+        }
+      },
+      "ops": {
+        "neg": 2
+      },
+      "consts": [
+        "infinity"
+      ],
+      "strings": []
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "descent",
+      "to": "is_null"
+    },
+    {
+      "from": "descent",
+      "to": "printf"
+    },
+    {
+      "from": "ascent",
+      "to": "printf"
+    },
+    {
+      "from": "test_node",
+      "to": "quadtree_node_new"
+    },
+    {
+      "from": "test_node",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "test_node",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_node",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_node",
+      "to": "transmute"
+    },
+    {
+      "from": "test_node",
+      "to": "quadtree_node_isempty"
+    },
+    {
+      "from": "test_node",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_node",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_node",
+      "to": "transmute"
+    },
+    {
+      "from": "test_node",
+      "to": "quadtree_node_ispointer"
+    },
+    {
+      "from": "test_node",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_node",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_node",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "quadtree_bounds_new"
+    },
+    {
+      "from": "test_bounds",
+      "to": "is_null"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "quadtree_bounds_extend"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "quadtree_bounds_extend"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_bounds",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_bounds",
+      "to": "transmute"
+    },
+    {
+      "from": "test_bounds",
+      "to": "quadtree_bounds_free"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_new"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_insert"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_insert"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_insert"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_insert"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_insert"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_insert"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "is_null"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_insert"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_search"
+    },
+    {
+      "from": "test_tree",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_tree",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_tree",
+      "to": "transmute"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_walk"
+    },
+    {
+      "from": "test_tree",
+      "to": "quadtree_free"
+    },
+    {
+      "from": "test_points",
+      "to": "quadtree_point_new"
+    },
+    {
+      "from": "test_points",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_points",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_points",
+      "to": "transmute"
+    },
+    {
+      "from": "test_points",
+      "to": "__assert_fail"
+    },
+    {
+      "from": "test_points",
+      "to": "as_ptr"
+    },
+    {
+      "from": "test_points",
+      "to": "transmute"
+    },
+    {
+      "from": "test_points",
+      "to": "quadtree_point_free"
+    },
+    {
+      "from": "main_0",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "size_of"
+    },
+    {
+      "from": "main_0",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "size_of"
+    },
+    {
+      "from": "main_0",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "size_of"
+    },
+    {
+      "from": "main_0",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "size_of"
+    },
+    {
+      "from": "main_0",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "test_tree"
+    },
+    {
+      "from": "main_0",
+      "to": "puts"
+    },
+    {
+      "from": "main_0",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "test_node"
+    },
+    {
+      "from": "main_0",
+      "to": "puts"
+    },
+    {
+      "from": "main_0",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "test_bounds"
+    },
+    {
+      "from": "main_0",
+      "to": "puts"
+    },
+    {
+      "from": "main_0",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "test_points"
+    },
+    {
+      "from": "main_0",
+      "to": "puts"
+    },
+    {
+      "from": "node_contains_",
+      "to": "is_null"
+    },
+    {
+      "from": "reset_node_",
+      "to": "Option::is_some"
+    },
+    {
+      "from": "reset_node_",
+      "to": "quadtree_node_reset"
+    },
+    {
+      "from": "reset_node_",
+      "to": "quadtree_node_reset"
+    },
+    {
+      "from": "get_quadrant_",
+      "to": "node_contains_"
+    },
+    {
+      "from": "get_quadrant_",
+      "to": "node_contains_"
+    },
+    {
+      "from": "get_quadrant_",
+      "to": "node_contains_"
+    },
+    {
+      "from": "get_quadrant_",
+      "to": "node_contains_"
+    },
+    {
+      "from": "split_node_",
+      "to": "quadtree_node_with_bounds"
+    },
+    {
+      "from": "split_node_",
+      "to": "is_null"
+    },
+    {
+      "from": "split_node_",
+      "to": "quadtree_node_with_bounds"
+    },
+    {
+      "from": "split_node_",
+      "to": "is_null"
+    },
+    {
+      "from": "split_node_",
+      "to": "quadtree_node_with_bounds"
+    },
+    {
+      "from": "split_node_",
+      "to": "is_null"
+    },
+    {
+      "from": "split_node_",
+      "to": "quadtree_node_with_bounds"
+    },
+    {
+      "from": "split_node_",
+      "to": "is_null"
+    },
+    {
+      "from": "split_node_",
+      "to": "insert_"
+    },
+    {
+      "from": "find_",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "find_",
+      "to": "find_"
+    },
+    {
+      "from": "find_",
+      "to": "get_quadrant_"
+    },
+    {
+      "from": "insert_",
+      "to": "quadtree_node_isempty"
+    },
+    {
+      "from": "insert_",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "insert_",
+      "to": "reset_node_"
+    },
+    {
+      "from": "insert_",
+      "to": "split_node_"
+    },
+    {
+      "from": "insert_",
+      "to": "insert_"
+    },
+    {
+      "from": "insert_",
+      "to": "quadtree_node_ispointer"
+    },
+    {
+      "from": "insert_",
+      "to": "get_quadrant_"
+    },
+    {
+      "from": "insert_",
+      "to": "is_null"
+    },
+    {
+      "from": "insert_",
+      "to": "insert_"
+    },
+    {
+      "from": "quadtree_new",
+      "to": "malloc"
+    },
+    {
+      "from": "quadtree_new",
+      "to": "size_of"
+    },
+    {
+      "from": "quadtree_new",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_new",
+      "to": "quadtree_node_with_bounds"
+    },
+    {
+      "from": "quadtree_new",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_new",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_insert",
+      "to": "quadtree_point_new"
+    },
+    {
+      "from": "quadtree_insert",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_insert",
+      "to": "node_contains_"
+    },
+    {
+      "from": "quadtree_insert",
+      "to": "insert_"
+    },
+    {
+      "from": "quadtree_insert",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "quadtree_search",
+      "to": "find_"
+    },
+    {
+      "from": "quadtree_free",
+      "to": "Option::is_some"
+    },
+    {
+      "from": "quadtree_free",
+      "to": "quadtree_node_free"
+    },
+    {
+      "from": "quadtree_free",
+      "to": "quadtree_node_free"
+    },
+    {
+      "from": "quadtree_free",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "Option::expect"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "Option::expect"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "quadtree_walk"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "quadtree_walk"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "quadtree_walk"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "quadtree_walk"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "Option::expect"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "Option::expect"
+    },
+    {
+      "from": "quadtree_point_new",
+      "to": "malloc"
+    },
+    {
+      "from": "quadtree_point_new",
+      "to": "size_of"
+    },
+    {
+      "from": "quadtree_point_new",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_point_free",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_node_ispointer",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_ispointer",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_ispointer",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_ispointer",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_ispointer",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "quadtree_node_isempty",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_isempty",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_isempty",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_isempty",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_isempty",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "quadtree_node_reset",
+      "to": "quadtree_point_free"
+    },
+    {
+      "from": "quadtree_node_reset",
+      "to": "Option::expect"
+    },
+    {
+      "from": "quadtree_node_reset",
+      "to": "Option::expect"
+    },
+    {
+      "from": "quadtree_node_new",
+      "to": "malloc"
+    },
+    {
+      "from": "quadtree_node_new",
+      "to": "size_of"
+    },
+    {
+      "from": "quadtree_node_new",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "quadtree_node_new"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "quadtree_bounds_new"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "quadtree_bounds_extend"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "quadtree_bounds_extend"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_node_free"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_node_free"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_node_free"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_node_free"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_bounds_free"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_node_reset"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fmin"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fmax"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fmax"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fmin"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fabs"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fabs"
+    },
+    {
+      "from": "quadtree_bounds_free",
+      "to": "quadtree_point_free"
+    },
+    {
+      "from": "quadtree_bounds_free",
+      "to": "quadtree_point_free"
+    },
+    {
+      "from": "quadtree_bounds_free",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_bounds_new",
+      "to": "malloc"
+    },
+    {
+      "from": "quadtree_bounds_new",
+      "to": "size_of"
+    },
+    {
+      "from": "quadtree_bounds_new",
+      "to": "is_null"
+    },
+    {
+      "from": "quadtree_bounds_new",
+      "to": "quadtree_point_new"
+    },
+    {
+      "from": "quadtree_bounds_new",
+      "to": "quadtree_point_new"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "test_tree",
+      "line": 554,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "test_tree",
+      "line": 555,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "reset_node_",
+      "line": 78,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_free",
+      "line": 277,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_walk",
+      "line": 288,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_walk",
+      "line": 288,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_walk",
+      "line": 302,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_walk",
+      "line": 302,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_node_reset",
+      "line": 69,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_node_reset",
+      "line": 69,
+      "kind": "call_unresolved"
+    }
+  ],
+  "excluded_scaffolding": []
+}

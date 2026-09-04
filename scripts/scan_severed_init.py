@@ -17,7 +17,7 @@ It is only *fatal* if no consumer lazily rebuilds the value. This script
 separates those cases so the result is a ranked worklist, not an overclaim.
 
 Usage: scan_severed_init.py [laertes_benchmarks_dir]
-Writes results/severed_init_scan.json
+Writes results/rq4_effectiveness/severed_init_scan.json
 """
 import json
 import os
@@ -189,8 +189,8 @@ for d in sorted(os.listdir(ROOT)):
         "entries": entries,
     }
 
-os.makedirs("results", exist_ok=True)
-json.dump(report, open("results/severed_init_scan.json", "w"), indent=1)
+os.makedirs("results/rq4_effectiveness", exist_ok=True)
+json.dump(report, open("results/rq4_effectiveness/severed_init_scan.json", "w"), indent=1)
 
 print(f"{'crate':28} {'init_fns':>9} {'calls':>6} {'poisoned':>9} {'lib-only':>9}")
 print("-" * 66)

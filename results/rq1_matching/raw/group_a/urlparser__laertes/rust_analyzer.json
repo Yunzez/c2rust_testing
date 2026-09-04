@@ -1,0 +1,6244 @@
+{
+  "functions": [
+    {
+      "name": "url_data::new",
+      "line": 55,
+      "signature": {
+        "params": [],
+        "ret": "Self"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "url_data",
+          "shape": "{*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8}"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 35,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "strdup",
+      "line": 78,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "* const std::os::raw::c_char",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*const i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 30,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 1,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "laertes_init_URL_SCHEMES",
+      "line": 90,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "schemes"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 713,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "url_parse",
+      "line": 292,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Option<Box<crate::url_data>>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "Option<Box<url_data, Global>>",
+          "shape": "Option<Box<{*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8},{}>>"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "!=": 4,
+        "+": 10
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 16,
+        "stmts": 70,
+        "nodes": 586,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 11,
+        "allocs": 12,
+        "method_calls": 25
+      }
+    },
+    {
+      "name": "strff",
+      "line": 413,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "n",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 7,
+        "nodes": 35,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "url_get_protocol",
+      "line": 426,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 41,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 1,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_is_protocol",
+      "line": 439,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "+": 1,
+        "<": 1,
+        "==": 1
+      },
+      "consts": [
+        "schemes"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 48,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_part",
+      "line": 453,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "format",
+            "ty": "* const std::os::raw::c_char",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "l",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          },
+          {
+            "ty": "*const i8",
+            "shape": "*i8"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!=": 4,
+        "||": 3
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 17,
+        "nodes": 128,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 5,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "strrwd",
+      "line": 483,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "n",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<": 1,
+        "neg": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 7,
+        "nodes": 36,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "url_is_ssh",
+      "line": 496,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "==": 2,
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 45,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 1,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "url_get_auth",
+      "line": 508,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "+": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 30,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "url_get_hostname",
+      "line": 517,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "!=": 1,
+        "+": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 13,
+        "nodes": 100,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 3,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "url_get_host",
+      "line": 546,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 6,
+        "nodes": 39,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 2,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_get_pathname",
+      "line": 558,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 7,
+        "nodes": 46,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 2,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_get_path",
+      "line": 571,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "!=": 2,
+        "+": 4,
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 19,
+        "nodes": 146,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 5,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "url_get_search",
+      "line": 607,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 11,
+        "nodes": 73,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 3,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_get_query",
+      "line": 626,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 6,
+        "nodes": 36,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 2,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "url_get_hash",
+      "line": 638,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "+": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 19,
+        "nodes": 114,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 5,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "url_get_port",
+      "line": 663,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "* mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 9,
+        "nodes": 60,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 3,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "url_free",
+      "line": 681,
+      "signature": {
+        "params": [
+          {
+            "name": "data",
+            "ty": "Option<&'a1 mut crate::url_data>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<&'a1 mut url_data>",
+            "shape": "Option<&{*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8}>"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 9
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 19,
+        "nodes": 253,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 18,
+        "allocs": 9,
+        "method_calls": 28
+      }
+    },
+    {
+      "name": "url_inspect",
+      "line": 702,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "* mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "url_data_inspect",
+      "line": 706,
+      "signature": {
+        "params": [
+          {
+            "name": "data",
+            "ty": "Option<&'a1 mut crate::url_data>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<&'a1 mut url_data>",
+            "shape": "Option<&{*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8}>"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 12,
+        "nodes": 172,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 11,
+        "allocs": 0,
+        "method_calls": 11
+      }
+    },
+    {
+      "name": "main_0",
+      "line": 731,
+      "signature": {
+        "params": [],
+        "ret": "std::os::raw::c_int"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 23,
+        "!=": 43,
+        "==": 16
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 44,
+        "stmts": 94,
+        "nodes": 1652,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 61,
+        "allocs": 0,
+        "method_calls": 81
+      }
+    },
+    {
+      "name": "main",
+      "line": 1097,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "get_add",
+      "line": 1112,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_sub",
+      "line": 1116,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_offset",
+      "line": 1120,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_add_mut",
+      "line": 1128,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_sub_mut",
+      "line": 1132,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_offset_mut",
+      "line": 1136,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "into_slice_add",
+      "line": 1144,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "into_slice_sub",
+      "line": 1148,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "into_slice_offset",
+      "line": 1152,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_add",
+      "line": 1160,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_sub",
+      "line": 1164,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_offset",
+      "line": 1168,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_add_mut",
+      "line": 1176,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_sub_mut",
+      "line": 1180,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_offset_mut",
+      "line": 1184,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "SliceIndex::apply",
+      "line": 1197,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "offset",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "usize"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "usize",
+          "shape": "u64"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 0,
+        "nodes": 26,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 6
+      }
+    },
+    {
+      "name": "CustomSlice::new",
+      "line": 1221,
+      "signature": {
+        "params": [
+          {
+            "name": "slice",
+            "ty": "S",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'a, T, S>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "S",
+            "shape": "S"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'a, T, S>",
+          "shape": "CustomSlice<T,S>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice",
+        "phantomdata"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "CustomSlice::boxed_from_vec",
+      "line": 1231,
+      "signature": {
+        "params": [
+          {
+            "name": "vec",
+            "ty": "Vec<T>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'a, T, Box<[T]>>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Vec<T, Global>",
+            "shape": "Vec<T,{}>"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'a, T, Box<[T], Global>>",
+          "shape": "CustomSlice<T,Box<[T],{}>>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "CustomSlice::from_vec",
+      "line": 1241,
+      "signature": {
+        "params": [
+          {
+            "name": "vec",
+            "ty": "Vec<T>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'a, T, S>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Vec<T, Global>",
+            "shape": "Vec<T,{}>"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'a, T, S>",
+          "shape": "CustomSlice<T,S>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 16,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "CustomSlice::into_slice",
+      "line": 1253,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'a, T, S>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'a, T, S>",
+          "shape": "CustomSlice<T,S>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "CustomSlice::slice",
+      "line": 1267,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'s, T, &'s [T]>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'s, T, &'s [T]>",
+          "shape": "CustomSlice<T,&[T]>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "CustomSlice::slice_mut",
+      "line": 1303,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'s, T, &'s mut [T]>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'s, T, &'s mut [T]>",
+          "shape": "CustomSlice<T,&[T]>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "CustomSlice::get",
+      "line": 1319,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "&'g T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "&'g T",
+          "shape": "&T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "CustomSlice::get_mut",
+      "line": 1325,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "&'g mut T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "&'g mut T",
+          "shape": "&T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "get_ptr",
+      "line": 1347,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const ()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "*const ()",
+          "shape": "*()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "Box::get_ptr",
+      "line": 1371,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const ()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "*const ()",
+          "shape": "*()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "offset_from",
+      "line": 1382,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "isize"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "isize",
+          "shape": "i64"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "-": 1,
+        "==": 1
+      },
+      "consts": [],
+      "strings": [
+        "tried to compare non-null and null pointers"
+      ],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 3,
+        "nodes": 44,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 9
+      }
+    },
+    {
+      "name": "partial_cmp",
+      "line": 1403,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<Ordering>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<Ordering>",
+          "shape": "Option<enum>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 0,
+        "nodes": 30,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 7
+      }
+    },
+    {
+      "name": "partial_lt",
+      "line": 1418,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<bool>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<bool>",
+          "shape": "Option<bool>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [
+        "less"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "partial_gt",
+      "line": 1424,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<bool>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<bool>",
+          "shape": "Option<bool>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [
+        "greater"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "partial_le",
+      "line": 1430,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<bool>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<bool>",
+          "shape": "Option<bool>"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [
+        "greater"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "partial_ge",
+      "line": 1436,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<bool>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<bool>",
+          "shape": "Option<bool>"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [
+        "less"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_eq",
+      "line": 1443,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [
+        "equal",
+        "false"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_ne",
+      "line": 1449,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "compare_lt",
+      "line": 1456,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_gt",
+      "line": 1462,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_le",
+      "line": 1468,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_ge",
+      "line": 1474,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "borrow",
+      "line": 1481,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&'b Option<S>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<T>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'b Option<S>",
+            "shape": "&Option<S>"
+          }
+        ],
+        "output": {
+          "ty": "Option<T>",
+          "shape": "Option<T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "borrow_mut",
+      "line": 1484,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&'b mut Option<S>",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Option<T>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'b mut Option<S>",
+            "shape": "&Option<S>"
+          }
+        ],
+        "output": {
+          "ty": "Option<T>",
+          "shape": "Option<T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "Option::borrow",
+      "line": 1506,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'a self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a T>"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "Option<&'a T>",
+          "shape": "Option<&T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "Option::borrow_mut",
+      "line": 1515,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'a mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a mut T>"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "Option<&'a mut T>",
+          "shape": "Option<&T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "owned_as_ref",
+      "line": 1551,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "&'a Option<Box<T>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a T>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'a Option<Box<T, Global>>",
+            "shape": "&Option<Box<T,{}>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<&'a T>",
+          "shape": "Option<&T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "owned_as_mut",
+      "line": 1555,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "&'a mut Option<Box<T>>",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Option<&'a mut T>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'a mut Option<Box<T, Global>>",
+            "shape": "&Option<Box<T,{}>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<&'a mut T>",
+          "shape": "Option<&T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "option_to_raw",
+      "line": 1559,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "&Option<P>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const ()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<P>",
+            "shape": "&Option<P>"
+          }
+        ],
+        "output": {
+          "ty": "*const ()",
+          "shape": "*()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "_ref_eq",
+      "line": 1564,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "Option<L>",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "q",
+            "ty": "Option<R>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<L>",
+            "shape": "Option<L>"
+          },
+          {
+            "ty": "Option<R>",
+            "shape": "Option<R>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "_ref_ne",
+      "line": 1568,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "Option<L>",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "q",
+            "ty": "Option<R>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<L>",
+            "shape": "Option<L>"
+          },
+          {
+            "ty": "Option<R>",
+            "shape": "Option<R>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "_as_ptr",
+      "line": 1573,
+      "signature": {
+        "params": [
+          {
+            "name": "r",
+            "ty": "&Option<P>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<P>",
+            "shape": "&Option<P>"
+          }
+        ],
+        "output": {
+          "ty": "*const T",
+          "shape": "*T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "_as_mut_ptr",
+      "line": 1577,
+      "signature": {
+        "params": [
+          {
+            "name": "r",
+            "ty": "&mut Option<P>",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut Option<P>",
+            "shape": "&Option<P>"
+          }
+        ],
+        "output": {
+          "ty": "*mut T",
+          "shape": "*T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "_move_to_ptr",
+      "line": 1581,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "Option<Box<T>>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<Box<T, Global>>",
+            "shape": "Option<Box<T,{}>>"
+          }
+        ],
+        "output": {
+          "ty": "*mut T",
+          "shape": "*T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "trans",
+      "line": 1585,
+      "signature": {
+        "params": [
+          {
+            "name": "_",
+            "ty": "T",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "U"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "T",
+            "shape": "T"
+          }
+        ],
+        "output": {
+          "ty": "U",
+          "shape": "U"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 0,
+        "nodes": 3,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "strdup",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "strdup",
+      "to": "strlen"
+    },
+    {
+      "from": "strdup",
+      "to": "malloc"
+    },
+    {
+      "from": "strdup",
+      "to": "is_null"
+    },
+    {
+      "from": "strdup",
+      "to": "strcpy"
+    },
+    {
+      "from": "url_parse",
+      "to": "Box::new"
+    },
+    {
+      "from": "url_parse",
+      "to": "url_data::new"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_ref"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "strdup"
+    },
+    {
+      "from": "url_parse",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "url_is_ssh"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "strstr"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "strdup"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "sprintf"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "free"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strcat"
+    },
+    {
+      "from": "url_parse",
+      "to": "strdup"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strff"
+    },
+    {
+      "from": "url_parse",
+      "to": "strcat"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "free"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strff"
+    },
+    {
+      "from": "url_parse",
+      "to": "strcat"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "free"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strff"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_parse",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_parse",
+      "to": "free"
+    },
+    {
+      "from": "strff",
+      "to": "offset"
+    },
+    {
+      "from": "strff",
+      "to": "strdup"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "url_is_protocol",
+      "to": "wrapping_div"
+    },
+    {
+      "from": "url_is_protocol",
+      "to": "size_of"
+    },
+    {
+      "from": "url_is_protocol",
+      "to": "size_of"
+    },
+    {
+      "from": "url_is_protocol",
+      "to": "strcmp"
+    },
+    {
+      "from": "get_part",
+      "to": "malloc"
+    },
+    {
+      "from": "get_part",
+      "to": "size_of"
+    },
+    {
+      "from": "get_part",
+      "to": "strdup"
+    },
+    {
+      "from": "get_part",
+      "to": "strdup"
+    },
+    {
+      "from": "get_part",
+      "to": "malloc"
+    },
+    {
+      "from": "get_part",
+      "to": "size_of"
+    },
+    {
+      "from": "get_part",
+      "to": "is_null"
+    },
+    {
+      "from": "get_part",
+      "to": "is_null"
+    },
+    {
+      "from": "get_part",
+      "to": "is_null"
+    },
+    {
+      "from": "get_part",
+      "to": "is_null"
+    },
+    {
+      "from": "get_part",
+      "to": "strcpy"
+    },
+    {
+      "from": "get_part",
+      "to": "strcpy"
+    },
+    {
+      "from": "get_part",
+      "to": "strff"
+    },
+    {
+      "from": "get_part",
+      "to": "sscanf"
+    },
+    {
+      "from": "get_part",
+      "to": "strcmp"
+    },
+    {
+      "from": "get_part",
+      "to": "strdup"
+    },
+    {
+      "from": "get_part",
+      "to": "strrwd"
+    },
+    {
+      "from": "get_part",
+      "to": "free"
+    },
+    {
+      "from": "get_part",
+      "to": "free"
+    },
+    {
+      "from": "get_part",
+      "to": "free"
+    },
+    {
+      "from": "strrwd",
+      "to": "offset"
+    },
+    {
+      "from": "strrwd",
+      "to": "strdup"
+    },
+    {
+      "from": "url_is_ssh",
+      "to": "strdup"
+    },
+    {
+      "from": "url_is_ssh",
+      "to": "strcmp"
+    },
+    {
+      "from": "url_is_ssh",
+      "to": "strcmp"
+    },
+    {
+      "from": "url_is_ssh",
+      "to": "free"
+    },
+    {
+      "from": "url_get_auth",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "url_get_auth",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_auth",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_auth",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "strdup"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "url_get_auth"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "url_is_ssh"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "free"
+    },
+    {
+      "from": "url_get_host",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_host",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_host",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "url_get_host",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_host",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_host",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_host",
+      "to": "free"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "url_get_path"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "strcat"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "free"
+    },
+    {
+      "from": "url_get_path",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "url_get_path",
+      "to": "url_get_auth"
+    },
+    {
+      "from": "url_get_path",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "url_get_path",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_path",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_path",
+      "to": "url_is_ssh"
+    },
+    {
+      "from": "url_get_path",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_path",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_path",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_path",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_path",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_path",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_path",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_path",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "url_get_path",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_path",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_path",
+      "to": "sprintf"
+    },
+    {
+      "from": "url_get_path",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_path",
+      "to": "free"
+    },
+    {
+      "from": "url_get_path",
+      "to": "free"
+    },
+    {
+      "from": "url_get_path",
+      "to": "free"
+    },
+    {
+      "from": "url_get_path",
+      "to": "free"
+    },
+    {
+      "from": "url_get_search",
+      "to": "url_get_path"
+    },
+    {
+      "from": "url_get_search",
+      "to": "url_get_pathname"
+    },
+    {
+      "from": "url_get_search",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_search",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_search",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_search",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strff"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strcat"
+    },
+    {
+      "from": "url_get_search",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strrwd"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_search",
+      "to": "free"
+    },
+    {
+      "from": "url_get_search",
+      "to": "free"
+    },
+    {
+      "from": "url_get_query",
+      "to": "url_get_search"
+    },
+    {
+      "from": "url_get_query",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_query",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_query",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_query",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_query",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "url_get_path"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "url_get_pathname"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "url_get_search"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strff"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strcat"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strrwd"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "free"
+    },
+    {
+      "from": "url_get_port",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_port",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_port",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "url_get_port",
+      "to": "url_get_host"
+    },
+    {
+      "from": "url_get_port",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_port",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_port",
+      "to": "strff"
+    },
+    {
+      "from": "url_get_port",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "url_get_port",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_port",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_port",
+      "to": "free"
+    },
+    {
+      "from": "url_get_port",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_free",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "url_inspect",
+      "to": "url_data_inspect"
+    },
+    {
+      "from": "url_inspect",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "url_inspect",
+      "to": "url_parse"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "borrow"
+    },
+    {
+      "from": "main_0",
+      "to": "url_parse"
+    },
+    {
+      "from": "main_0",
+      "to": "url_parse"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_ref"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_ref"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_data_inspect"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "url_data_inspect"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_auth"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_host"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_pathname"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_path"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_search"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_query"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_hash"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_port"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_host"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_auth"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_pathname"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_path"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_free"
+    },
+    {
+      "from": "main_0",
+      "to": "owned_as_mut"
+    },
+    {
+      "from": "main",
+      "to": "exit"
+    },
+    {
+      "from": "main",
+      "to": "main_0"
+    },
+    {
+      "from": "get_add",
+      "to": "get"
+    },
+    {
+      "from": "get_sub",
+      "to": "get"
+    },
+    {
+      "from": "get_offset",
+      "to": "get"
+    },
+    {
+      "from": "get_add_mut",
+      "to": "get_mut"
+    },
+    {
+      "from": "get_sub_mut",
+      "to": "get_mut"
+    },
+    {
+      "from": "get_offset_mut",
+      "to": "get_mut"
+    },
+    {
+      "from": "into_slice_add",
+      "to": "into_slice"
+    },
+    {
+      "from": "into_slice_sub",
+      "to": "into_slice"
+    },
+    {
+      "from": "into_slice_offset",
+      "to": "into_slice"
+    },
+    {
+      "from": "slice_add",
+      "to": "slice"
+    },
+    {
+      "from": "slice_sub",
+      "to": "slice"
+    },
+    {
+      "from": "slice_offset",
+      "to": "slice"
+    },
+    {
+      "from": "slice_add_mut",
+      "to": "slice_mut"
+    },
+    {
+      "from": "slice_sub_mut",
+      "to": "slice_mut"
+    },
+    {
+      "from": "slice_offset_mut",
+      "to": "slice_mut"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "checked_add"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "checked_sub"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "checked_sub"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "wrapping_abs"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "checked_add"
+    },
+    {
+      "from": "CustomSlice::boxed_from_vec",
+      "to": "Vec::into_boxed_slice"
+    },
+    {
+      "from": "CustomSlice::boxed_from_vec",
+      "to": "default"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "CustomSlice::new"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "Result::unwrap_or_else"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "try_into"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "collect"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "map"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "Vec::into_iter"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "RefCell::new"
+    },
+    {
+      "from": "CustomSlice::into_slice",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::slice",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::slice",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::slice",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::slice",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::slice_mut",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::slice_mut",
+      "to": "as_mut"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::get_mut",
+      "to": "as_mut"
+    },
+    {
+      "from": "CustomSlice::get_mut",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "RefCell::borrow"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "RefCell::borrow_mut"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "get_ptr",
+      "to": "as_ptr"
+    },
+    {
+      "from": "get_ptr",
+      "to": "as_ptr"
+    },
+    {
+      "from": "Box::get_ptr",
+      "to": "as_ptr"
+    },
+    {
+      "from": "Box::get_ptr",
+      "to": "Box::as_ref"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::expect"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::and_then"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::map"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "offset_from",
+      "to": "get_ptr"
+    },
+    {
+      "from": "offset_from",
+      "to": "get_ptr"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "Option::and_then"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "Option::and_then"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "get_ptr"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "get_ptr"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "cmp"
+    },
+    {
+      "from": "partial_lt",
+      "to": "Option::map"
+    },
+    {
+      "from": "partial_lt",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "partial_gt",
+      "to": "Option::map"
+    },
+    {
+      "from": "partial_gt",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "partial_le",
+      "to": "Option::map"
+    },
+    {
+      "from": "partial_le",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "partial_ge",
+      "to": "Option::map"
+    },
+    {
+      "from": "partial_ge",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "compare_eq",
+      "to": "Option::map_or"
+    },
+    {
+      "from": "compare_eq",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "compare_ne",
+      "to": "compare_eq"
+    },
+    {
+      "from": "compare_lt",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compare_lt",
+      "to": "partial_lt"
+    },
+    {
+      "from": "compare_gt",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compare_gt",
+      "to": "partial_gt"
+    },
+    {
+      "from": "compare_le",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compare_le",
+      "to": "partial_le"
+    },
+    {
+      "from": "compare_ge",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compare_ge",
+      "to": "partial_ge"
+    },
+    {
+      "from": "borrow",
+      "to": "Option::map"
+    },
+    {
+      "from": "borrow",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "borrow",
+      "to": "slice_add"
+    },
+    {
+      "from": "borrow_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "borrow_mut",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "borrow_mut",
+      "to": "slice_add_mut"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Option::map"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Option::map"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Box::as_ref"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Box::as_mut"
+    },
+    {
+      "from": "borrow",
+      "to": "borrow"
+    },
+    {
+      "from": "borrow_mut",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "owned_as_ref",
+      "to": "Option::map"
+    },
+    {
+      "from": "owned_as_ref",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "owned_as_ref",
+      "to": "Box::as_ref"
+    },
+    {
+      "from": "owned_as_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "owned_as_mut",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "owned_as_mut",
+      "to": "Box::as_mut"
+    },
+    {
+      "from": "option_to_raw",
+      "to": "Option::map_or"
+    },
+    {
+      "from": "option_to_raw",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "option_to_raw",
+      "to": "null"
+    },
+    {
+      "from": "option_to_raw",
+      "to": "get_ptr"
+    },
+    {
+      "from": "_ref_eq",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_ref_eq",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_ref_ne",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_ref_ne",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_as_ptr",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_as_mut_ptr",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_move_to_ptr",
+      "to": "Option::map_or"
+    },
+    {
+      "from": "_move_to_ptr",
+      "to": "null_mut"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "url_parse",
+      "line": 295,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_add",
+      "line": 1113,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_sub",
+      "line": 1117,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_offset",
+      "line": 1121,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_add_mut",
+      "line": 1129,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_sub_mut",
+      "line": 1133,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_offset_mut",
+      "line": 1137,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "into_slice_add",
+      "line": 1145,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "into_slice_sub",
+      "line": 1149,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "into_slice_offset",
+      "line": 1153,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_add",
+      "line": 1161,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_sub",
+      "line": 1165,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_offset",
+      "line": 1169,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_add_mut",
+      "line": 1177,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_sub_mut",
+      "line": 1181,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_offset_mut",
+      "line": 1185,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "partial_cmp",
+      "line": 1410,
+      "kind": "call_unresolved"
+    }
+  ],
+  "excluded_scaffolding": [
+    {
+      "name": "default",
+      "reason": "trait_boilerplate:Default"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+ "case": "sactor_genann",
+ "sheet_fingerprint": "d5122fb19359e89e",
+ "labeler": "Claude (claude-fable-5-1), session 6278f822",
+ "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+ "date": "2026-09-01",
+ "reviewed_by_user": false,
+ "labels": {
+  "genann_act_hidden_indirect": {
+   "truth": "genann_act_hidden_indirect",
+   "note": "genann.c:45 -> assembled_translation.rs:28, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_act_output_indirect": {
+   "truth": "genann_act_output_indirect",
+   "note": "genann.c:49 -> assembled_translation.rs:38, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_act_sigmoid": {
+   "truth": "genann_act_sigmoid",
+   "note": "genann.c:70 -> assembled_translation.rs:49, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_init_sigmoid_lookup": {
+   "truth": "genann_init_sigmoid_lookup",
+   "note": "genann.c:76 -> assembled_translation.rs:59, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_act_sigmoid_cached": {
+   "truth": "genann_act_sigmoid_cached",
+   "note": "genann.c:86 -> assembled_translation.rs:70, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_act_linear": {
+   "truth": "genann_act_linear",
+   "note": "genann.c:100 -> assembled_translation.rs:110, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_act_threshold": {
+   "truth": "genann_act_threshold",
+   "note": "genann.c:104 -> assembled_translation.rs:114, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_init": {
+   "truth": "genann_init",
+   "note": "genann.c:108 -> assembled_translation.rs:119, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_read": {
+   "truth": "genann_read",
+   "note": "genann.c:150 -> assembled_translation.rs:173, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_copy": {
+   "truth": "genann_copy",
+   "note": "genann.c:179 -> assembled_translation.rs:215, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_randomize": {
+   "truth": "genann_randomize",
+   "note": "genann.c:195 -> assembled_translation.rs:241, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_free": {
+   "truth": "genann_free",
+   "note": "genann.c:205 -> assembled_translation.rs:262, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_run": {
+   "truth": "genann_run",
+   "note": "genann.c:211 -> assembled_translation.rs:265, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_train": {
+   "truth": "genann_train",
+   "note": "genann.c:278 -> assembled_translation.rs:400, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  "genann_write": {
+   "truth": "genann_write",
+   "note": "genann.c:396 -> assembled_translation.rs:573, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  }
+ }
+}

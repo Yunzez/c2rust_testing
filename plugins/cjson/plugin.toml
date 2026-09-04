@@ -1,0 +1,40 @@
+# Comparator plugin manifest — cJSON.
+#
+# A plugin extends OUTPUT comparison only. It never touches the InputPlan, and it is not a
+# hand-written harness: it supplies CODE behind a stable ABI, not a declaration the generator
+# interprets. See docs/harness_oracle_plan.md section 5.
+#
+# Pass it with:  gen_diff_harness.py --plugins plugins/cjson/plugin.toml
+# A boundary whose return type matches `c_type` then gets oracle_strength = full instead of
+# partial(nullness).
+
+[plugin]
+library = "cjson"
+
+# The C type this comparator canonicalizes. Matched against the pointee of the boundary's return
+# type, cv-qualifiers and the `struct` keyword stripped.
+c_type = "cJSON"
+
+# The C header the canonicalizer needs. Copied next to it in the generated harness.
+header = "cJSON.h"
+
+# C half: must define `size_t c2r_canon(const void *obj, char *out, size_t cap)`.
+c_source = "canon.c"
+
+# Rust half: must define `pub unsafe fn c2r_canon_rust(obj: *const core::ffi::c_void) -> Vec<u8>`.
+# The translated crate is in scope as `translated`, so the file names no crate. It is NOT
+# translator-independent, though: it reads the translated struct's fields BY NAME, so it is
+# reusable only across translations whose layout and field names are compatible with the C
+# header's. A translator that reshapes cJSON into an enum needs its own comparator.
+rust_source = "canon.rs"
+
+# Largest canonical form the harness will buffer. A form longer than this is reported as an
+# extraction failure, never silently truncated into a false "equal".
+max_bytes = 1048576
+
+# Optional. Releasing what the boundary allocated is part of the CONTRACT, not the comparison, and
+# without it a long campaign is dominated by RSS growth. Named on each side; the C name is the
+# ORIGINAL one (the generator's renaming is applied automatically).
+[plugin.free]
+c = "cJSON_Delete"
+rust = "cJSON_Delete"

@@ -1,0 +1,87 @@
+{
+ "boundary": "cJSON_CreateDoubleArray",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "numbers",
+   "c_decoder": "input_buffer",
+   "detail": {
+    "elem": "f64",
+    "elem_width": 8,
+    "extent": {
+     "k": "param",
+     "p": "count",
+     "mul": 1,
+     "div": 1,
+     "add": 0
+    },
+    "extent_source": "proven_index_bound",
+    "length_param": "count",
+    "fills_from_fuzz": true,
+    "max_elems": 131072,
+    "max_elems_evidence": {
+     "rule": "policy_buffer_bound",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+     "note": "numbers's element count is fuzz-decoded and capped by the global policy; it defines count"
+    }
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "cJSON.c",
+     "line": 704,
+     "col": 158,
+     "snippet": "cJSON *cJSON_CreateDoubleArray(const double *numbers,int count)\t{int i;cJSON *n=0,*p=0,*a=cJSON_CreateArray();for(i=0;a && i<count;i++){n=cJSON_CreateNumber(num",
+     "note": "numbers[count-1] read"
+    }
+   ],
+   "rust_type": "*const ::core::ffi::c_double",
+   "rust_bridge": "c_abi"
+  },
+  {
+   "param": "count",
+   "c_decoder": "length",
+   "detail": {
+    "of_buffer": "numbers"
+   },
+   "evidence": [
+    {
+     "rule": "length_of_buffer_not_decoded_independently",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "count is the element count of numbers"
+    }
+   ],
+   "rust_type": "::core::ffi::c_int",
+   "rust_bridge": "scalar_copy"
+  }
+ ],
+ "liveness": [
+  {
+   "param": "count",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "cJSON.c",
+    "line": 704,
+    "col": 111,
+    "snippet": "cJSON *cJSON_CreateDoubleArray(const double *numbers,int count)\t{int i;cJSON *n=0,*p=0,*a=cJSON_CreateArray();for(i=0;a && i<count;i++){n=cJSON_CreateNumber(num",
+    "note": "count appears in this loop's control expressions"
+   }
+  }
+ ],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024,
+  "max_table_rows": 16
+ },
+ "plan_version": 1
+}

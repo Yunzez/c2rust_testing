@@ -1,0 +1,37 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 891009888
+INFO: Loaded 1 modules   (1238 inline 8-bit counters): 1238 [0x5566e6c61a10, 0x5566e6c61ee6), 
+INFO: Loaded 1 PC tables (1238 PCs): 1238 [0x5566e6c61ee8,0x5566e6c66c48), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/BZ2_hbMakeCodeLengths
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 55 ft: 56 corp: 1/1b exec/s: 0 rss: 32Mb
+#9	NEW    cov: 57 ft: 58 corp: 2/3b lim: 4 exec/s: 0 rss: 33Mb L: 2/2 MS: 2 ChangeByte-CrossOver-
+#13	NEW    cov: 59 ft: 60 corp: 3/6b lim: 4 exec/s: 0 rss: 33Mb L: 3/3 MS: 4 CopyPart-InsertByte-ChangeByte-InsertByte-
+#15	NEW    cov: 60 ft: 61 corp: 4/10b lim: 4 exec/s: 0 rss: 33Mb L: 4/4 MS: 2 CopyPart-CrossOver-
+	NEW_FUNC[1/2]: 0x5566e6bb0ab0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/BZ2_hbMakeCodeLengths+0x126ab0) (BuildId: b3517002a4df0c6be9ffc2c7aa299cb29c163be3)
+	NEW_FUNC[2/2]: 0x5566e6bb1000  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/BZ2_hbMakeCodeLengths+0x127000) (BuildId: b3517002a4df0c6be9ffc2c7aa299cb29c163be3)
+#267	NEW    cov: 113 ft: 115 corp: 5/15b lim: 6 exec/s: 0 rss: 36Mb L: 5/5 MS: 2 CrossOver-CopyPart-
+#270	NEW    cov: 114 ft: 116 corp: 6/21b lim: 6 exec/s: 0 rss: 36Mb L: 6/6 MS: 3 ChangeByte-ChangeByte-CopyPart-
+==1661035== libFuzzer: run interrupted; exiting
+stat::number_of_executed_units: 276
+stat::average_exec_per_sec:     3
+stat::new_units_added:          5
+stat::slowest_unit_time_sec:    0
+
+### sanitizer / crash report
+
+### tail
+#267	NEW    cov: 113 ft: 115 corp: 5/15b lim: 6 exec/s: 0 rss: 36Mb L: 5/5 MS: 2 CrossOver-CopyPart-
+#270	NEW    cov: 114 ft: 116 corp: 6/21b lim: 6 exec/s: 0 rss: 36Mb L: 6/6 MS: 3 ChangeByte-ChangeByte-CopyPart-
+==1661035== libFuzzer: run interrupted; exiting
+stat::number_of_executed_units: 276
+stat::average_exec_per_sec:     3
+stat::new_units_added:          5
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              36
+==1661035== libFuzzer: run interrupted; exiting
+stat::number_of_executed_units: 276
+stat::average_exec_per_sec:     3
+stat::new_units_added:          5

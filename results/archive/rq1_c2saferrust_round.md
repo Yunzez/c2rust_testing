@@ -49,7 +49,7 @@ value-boundary selection. The one clean value program (tulipindicators) was left
 | Program | Boundaries | Result | Evidence |
 |---|---|---|---|
 | tulipindicators | 104 (all indicators) | CLEAN — but *unrewritten* (uninformative) | 17533 execs, 0 div; base==WIP |
-| qsort | quickSort/partition | **BUG_CANDIDATE (confirmed)** | `results/rq1_bugs/qsort_c2saferrust/` (bug #1) |
+| qsort | quickSort/partition | **BUG_CANDIDATE (confirmed)** | `results/rq4_effectiveness/bugs/qsort_c2saferrust/` (bug #1) |
 | optipng | (rewritten, not harnessed) | not run — complex pointer-graph codec | rewrite delta +2495 |
 | snudown | (rewritten, not harnessed) | not run — complex string/pointer-graph | rewrite delta +529 |
 | urlparser | url_is_*/url_get_* | not run — available (string→bool/substring) | rewrite delta +12 |
@@ -77,7 +77,7 @@ over 12 url_* functions) vs C2SaferRust WIP fuzz target, same source.
 - **BUG #2 CONFIRMED — url_is_ssh**: C2SaferRust rewrote it to `to_str().unwrap()`, panicking on
   non-UTF-8 where C (`strcmp`) returns false. Differential fuzz trigger `31 72 8e`.
 - Static + standalone-differential extended this to a **systematic bug class** (see
-  `results/rq1_bugs/utf8_panic_c2saferrust/`): **BUG #3 CONFIRMED — bzip2 endsInBz2** (same class,
+  `results/rq4_effectiveness/bugs/utf8_panic_c2saferrust/`): **BUG #3 CONFIRMED — bzip2 endsInBz2** (same class,
   non-UTF-8 filename crashes bzip2recover; base returns 1). ~27 `to_str/from_utf8().unwrap()` sites
   across 6 programs (optipng 12, tulipindicators 7, genann 4, bzip2 2, lil 1, urlparser 1).
 

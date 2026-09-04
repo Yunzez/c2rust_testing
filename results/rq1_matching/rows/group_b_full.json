@@ -1,0 +1,1920 @@
+{
+ "_meta": {
+  "scorer": "scripts/rq1_group_b_score.py",
+  "annotation_dir": "results/rq1_matching/annotation",
+  "labels_unreviewed_by_user": [
+   "ptrtrans_bzip2",
+   "ptrtrans_cjson",
+   "ptrtrans_genann",
+   "ptrtrans_lil",
+   "ptrtrans_lodepng",
+   "ptrtrans_qsort",
+   "ptrtrans_quadtree",
+   "ptrtrans_urlparser",
+   "sactor_bzip2",
+   "sactor_genann",
+   "sactor_lodepng",
+   "sactor_qsort",
+   "sactor_quadtree",
+   "sactor_tulip",
+   "sactor_urlparser"
+  ],
+  "partial_artifacts": [
+   "ptrtrans_lil",
+   "sactor_bzip2",
+   "sactor_lodepng",
+   "sactor_quadtree",
+   "sactor_tulip",
+   "sactor_urlparser"
+  ],
+  "scoring": "see docstring of scripts/rq1_group_b_score.py"
+ },
+ "rows": {
+  "ptrtrans_bzip2": {
+   "case": "ptrtrans_bzip2",
+   "tool": "ptrtrans",
+   "lib": "bzip2",
+   "split": "eval",
+   "builds": false,
+   "artifact_status": "COMPLETE",
+   "c_functions": 64,
+   "rust_functions": 61,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 9,
+    "STUB": 52,
+    "NONE": 3
+   },
+   "scorable": 9,
+   "labels_meta": {
+    "case": "ptrtrans_bzip2",
+    "sheet_fingerprint": "d93d43403b9a797a",
+    "labeler": "Claude subagent (claude-fable-5-1), session 6278f822; spot-checked by the main session (blocksort.rs:384-412 stub bodies, 16 'stub/placeholder' comment hits across src/)",
+    "method": "manual code reading of the C body against every candidate Rust body plus grep of the crate for unmatched functions; STUB:x = signature-only placeholder body (52 of 61 Rust fns in this crate are such placeholders; the crate is not a translation of bzip2's logic, git log shows one 'Initial translation' commit per C function with the body never filled)",
+    "date": "2026-09-01",
+    "reviewed_by_user": false
+   },
+   "forced": {
+    "matched": 54,
+    "correct": 7,
+    "precision": 0.12962962962962962,
+    "recall": 0.7777777777777778
+   },
+   "deployment": {
+    "matched": 6,
+    "correct": 5,
+    "accepted_on_truth": 5,
+    "ambiguous": 4,
+    "precision": 0.8333333333333334,
+    "recall": 0.5555555555555556,
+    "coverage": 0.5555555555555556,
+    "abstention_rate": 0.4444444444444444
+   },
+   "name_eq_baseline": {
+    "correct": 7,
+    "recall": 0.7777777777777778
+   },
+   "real_renamed": {
+    "pairs": 2,
+    "forced_correct": 2,
+    "forced_recall": 1.0,
+    "deploy_correct": 1,
+    "deploy_accepted": 1,
+    "deploy_precision": 1.0,
+    "coverage": 0.5,
+    "name_eq_recall": 0.0
+   },
+   "same_name": {
+    "pairs": 7,
+    "forced_correct": 5,
+    "forced_recall": 0.7142857142857143,
+    "deploy_correct": 4,
+    "deploy_accepted": 4,
+    "deploy_precision": 1.0,
+    "coverage": 0.5714285714285714,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 61,
+    "claimed_on_pairs": 9,
+    "claim_equals_truth": 9,
+    "claim_precision": 1.0
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "47b810a537cee272",
+    "c_sources_sha256": "6154498d70af63fe",
+    "tool_map_sha256": "8763eb1d57c2008e",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/blocksort.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/huffman.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/crctable.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/randtable.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/compress.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/decompress.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/bzlib.c"
+     ]
+    },
+    "id": "d93d43403b9a797a"
+   },
+   "lenient_with_stubs": {
+    "scorable": 61,
+    "forced": {
+     "matched": 54,
+     "correct": 16,
+     "precision": 0.2962962962962963,
+     "recall": 0.26229508196721313
+    },
+    "deployment": {
+     "matched": 6,
+     "correct": 5,
+     "accepted_on_truth": 6,
+     "ambiguous": 45,
+     "precision": 0.8333333333333334,
+     "recall": 0.08196721311475409,
+     "coverage": 0.09836065573770492,
+     "abstention_rate": 0.7377049180327869
+    },
+    "name_eq_baseline": {
+     "correct": 42,
+     "recall": 0.6885245901639344
+    },
+    "real_renamed": {
+     "pairs": 19,
+     "forced_correct": 6,
+     "forced_recall": 0.3157894736842105,
+     "deploy_correct": 1,
+     "deploy_accepted": 1,
+     "deploy_precision": 1.0,
+     "coverage": 0.05263157894736842,
+     "name_eq_recall": 0.0
+    },
+    "same_name": {
+     "pairs": 42,
+     "forced_correct": 10,
+     "forced_recall": 0.23809523809523808,
+     "deploy_correct": 4,
+     "deploy_accepted": 5,
+     "deploy_precision": 0.8,
+     "coverage": 0.11904761904761904,
+     "name_eq_recall": 1.0
+    },
+    "tool_map_audit": {
+     "claimed_total": 61,
+     "claimed_on_pairs": 61,
+     "claim_equals_truth": 61,
+     "claim_precision": 1.0
+    },
+    "note": "STUB:x read as truth x (signature-only placeholders count as pairs); NOT the primary number"
+   }
+  },
+  "ptrtrans_cjson": {
+   "case": "ptrtrans_cjson",
+   "tool": "ptrtrans",
+   "lib": "cjson",
+   "split": "dev",
+   "builds": true,
+   "artifact_status": "COMPLETE",
+   "c_functions": 113,
+   "rust_functions": 108,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 77,
+    "STUB": 31,
+    "NONE": 5
+   },
+   "scorable": 77,
+   "labels_meta": {
+    "case": "ptrtrans_cjson",
+    "sheet_fingerprint": "bbd05c6dbe84e6a7",
+    "labeler": "Claude subagent (claude-fable-5-1), session 6278f822; STUB partition applied by the main session from the subagent's stub list (31 rows: 29 placeholder bodies + suffix_object/cast_away_const no-op bodies)",
+    "method": "manual code reading of the C body against every candidate Rust body plus grep of the crate for unmatched functions; STUB:x = placeholder body (returns 0/None/empty) whose correspondence rests on name, parameters and the tool's doc comment only",
+    "date": "2026-09-01",
+    "reviewed_by_user": false
+   },
+   "forced": {
+    "matched": 108,
+    "correct": 43,
+    "precision": 0.39814814814814814,
+    "recall": 0.5584415584415584
+   },
+   "deployment": {
+    "matched": 25,
+    "correct": 22,
+    "accepted_on_truth": 23,
+    "ambiguous": 52,
+    "precision": 0.88,
+    "recall": 0.2857142857142857,
+    "coverage": 0.2987012987012987,
+    "abstention_rate": 0.6753246753246753
+   },
+   "name_eq_baseline": {
+    "correct": 76,
+    "recall": 0.987012987012987
+   },
+   "real_renamed": {
+    "pairs": 1,
+    "forced_correct": 1,
+    "forced_recall": 1.0,
+    "deploy_correct": 0,
+    "deploy_accepted": 0,
+    "deploy_precision": null,
+    "coverage": 0.0,
+    "name_eq_recall": 0.0
+   },
+   "same_name": {
+    "pairs": 76,
+    "forced_correct": 42,
+    "forced_recall": 0.5526315789473685,
+    "deploy_correct": 22,
+    "deploy_accepted": 23,
+    "deploy_precision": 0.9565217391304348,
+    "coverage": 0.3026315789473684,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 0,
+    "claimed_on_pairs": 0,
+    "claim_equals_truth": 0,
+    "claim_precision": null
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "5c8f5425ad62b6e4",
+    "c_sources_sha256": "ed9f9bf6d49b5059",
+    "tool_map_sha256": null,
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [
+      "src/bin"
+     ],
+     "c_sources": [
+      "results/rq4_effectiveness/bugs/cjson_ptrtrans/c_reference/cJSON.c"
+     ]
+    },
+    "id": "bbd05c6dbe84e6a7"
+   },
+   "lenient_with_stubs": {
+    "scorable": 108,
+    "forced": {
+     "matched": 108,
+     "correct": 54,
+     "precision": 0.5,
+     "recall": 0.5
+    },
+    "deployment": {
+     "matched": 25,
+     "correct": 24,
+     "accepted_on_truth": 25,
+     "ambiguous": 78,
+     "precision": 0.96,
+     "recall": 0.2222222222222222,
+     "coverage": 0.23148148148148148,
+     "abstention_rate": 0.7222222222222222
+    },
+    "name_eq_baseline": {
+     "correct": 106,
+     "recall": 0.9814814814814815
+    },
+    "real_renamed": {
+     "pairs": 2,
+     "forced_correct": 1,
+     "forced_recall": 0.5,
+     "deploy_correct": 0,
+     "deploy_accepted": 0,
+     "deploy_precision": null,
+     "coverage": 0.0,
+     "name_eq_recall": 0.0
+    },
+    "same_name": {
+     "pairs": 106,
+     "forced_correct": 53,
+     "forced_recall": 0.5,
+     "deploy_correct": 24,
+     "deploy_accepted": 25,
+     "deploy_precision": 0.96,
+     "coverage": 0.2358490566037736,
+     "name_eq_recall": 1.0
+    },
+    "tool_map_audit": {
+     "claimed_total": 0,
+     "claimed_on_pairs": 0,
+     "claim_equals_truth": 0,
+     "claim_precision": null
+    },
+    "note": "STUB:x read as truth x (signature-only placeholders count as pairs); NOT the primary number"
+   }
+  },
+  "ptrtrans_genann": {
+   "case": "ptrtrans_genann",
+   "tool": "ptrtrans",
+   "lib": "genann",
+   "split": "eval",
+   "builds": true,
+   "artifact_status": "COMPLETE",
+   "c_functions": 15,
+   "rust_functions": 14,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 11,
+    "STUB": 3,
+    "NONE": 1
+   },
+   "scorable": 11,
+   "labels_meta": {
+    "case": "ptrtrans_genann",
+    "sheet_fingerprint": "e5afacc8ae057a20",
+    "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+    "method": "manual code reading of each C function body (input/genann/genann.c) against every candidate Rust function (same name, tool claim, matcher forced proposal) in src/genann.rs and src/common/genann_mod.rs, cross-checked with RUN.md and the PtrTrans metadata jsonl (stub reverts, header-declaration units, Free_Function elision), plus a grep of the whole crate for Drop impls / free functions.",
+    "date": "2026-09-02",
+    "reviewed_by_user": false
+   },
+   "forced": {
+    "matched": 14,
+    "correct": 6,
+    "precision": 0.42857142857142855,
+    "recall": 0.5454545454545454
+   },
+   "deployment": {
+    "matched": 7,
+    "correct": 5,
+    "accepted_on_truth": 6,
+    "ambiguous": 4,
+    "precision": 0.7142857142857143,
+    "recall": 0.45454545454545453,
+    "coverage": 0.5454545454545454,
+    "abstention_rate": 0.36363636363636365
+   },
+   "name_eq_baseline": {
+    "correct": 11,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 11,
+    "forced_correct": 6,
+    "forced_recall": 0.5454545454545454,
+    "deploy_correct": 5,
+    "deploy_accepted": 6,
+    "deploy_precision": 0.8333333333333334,
+    "coverage": 0.5454545454545454,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 12,
+    "claimed_on_pairs": 11,
+    "claim_equals_truth": 11,
+    "claim_precision": 1.0
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "d7dececfbfb16502",
+    "c_sources_sha256": "6b2dfab402056f62",
+    "tool_map_sha256": "caf3ca56cca7631c",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "results/rq1_matching/raw/group_b_runs/ptrtrans_genann/input/genann/genann.c"
+     ]
+    },
+    "id": "e5afacc8ae057a20"
+   },
+   "lenient_with_stubs": {
+    "scorable": 14,
+    "forced": {
+     "matched": 14,
+     "correct": 6,
+     "precision": 0.42857142857142855,
+     "recall": 0.42857142857142855
+    },
+    "deployment": {
+     "matched": 7,
+     "correct": 5,
+     "accepted_on_truth": 7,
+     "ambiguous": 6,
+     "precision": 0.7142857142857143,
+     "recall": 0.35714285714285715,
+     "coverage": 0.5,
+     "abstention_rate": 0.42857142857142855
+    },
+    "name_eq_baseline": {
+     "correct": 14,
+     "recall": 1.0
+    },
+    "real_renamed": {
+     "pairs": 0
+    },
+    "same_name": {
+     "pairs": 14,
+     "forced_correct": 6,
+     "forced_recall": 0.42857142857142855,
+     "deploy_correct": 5,
+     "deploy_accepted": 7,
+     "deploy_precision": 0.7142857142857143,
+     "coverage": 0.5,
+     "name_eq_recall": 1.0
+    },
+    "tool_map_audit": {
+     "claimed_total": 12,
+     "claimed_on_pairs": 12,
+     "claim_equals_truth": 12,
+     "claim_precision": 1.0
+    },
+    "note": "STUB:x read as truth x (signature-only placeholders count as pairs); NOT the primary number"
+   }
+  },
+  "ptrtrans_lil": {
+   "case": "ptrtrans_lil",
+   "tool": "ptrtrans",
+   "lib": "lil",
+   "split": "eval",
+   "builds": true,
+   "artifact_status": "PARTIAL",
+   "c_functions": 128,
+   "rust_functions": 90,
+   "rust_functions_dropped": [
+    "do_exit",
+    "do_system",
+    "fnc_readline",
+    "fnc_system",
+    "fnc_writechar"
+   ],
+   "truth_kinds": {
+    "single": 76,
+    "STUB": 14,
+    "NONE": 38
+   },
+   "scorable": 76,
+   "labels_meta": {
+    "case": "ptrtrans_lil",
+    "sheet_fingerprint": "b6c9687765c9ee3a",
+    "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+    "method": "manual code reading of each C function body (input/lil/lil.c) against every candidate Rust function (same name, tool claim, matcher forced proposal) in PA_trans_projects/lil/src/common/lil_mod.rs (all 90 fns read; src/main_mod.rs is out of scope), cross-checked with RUN.md and the PtrTrans metadata jsonl (Verfi_Tag: the two Fixed_5_Compile_Failed stub reverts, the Free_Function elision, the ee_expr and lil_parse_value multi-name units), plus greps of the crate for Drop impls / free functions / _lil_t constructors. STUB decided from the Rust body, not the tag: two No_Fix_Compile_Success units (lil_to_string, lil_list_get) are constant-None placeholders and are labelled STUB; find_cmd and lil_find_local_var also return None on every path but port the search logic and are kept as counterparts (flagged for review).",
+    "date": "2026-09-02",
+    "reviewed_by_user": false,
+    "artifact_status": "PARTIAL",
+    "artifact_status_note": "PtrTrans crashed at unit 95 of 131 (fnc_write#lil.c#3484; 807,401-token prompt rejected by OpenAI, RUN.md 'Completion state'); 36 units were never attempted (-> NONE rows here), 12 functions are signature-only stub reverts (fnc_store + the 11-function lil_parse_value SCC, Verfi_Tag Fixed_5_Compile_Failed), lil_free is elided (Free_Function). The archived partial crate passes cargo check. Scored on the separate PARTIAL line, never in the primary table (RUN.md)."
+   },
+   "forced": {
+    "matched": 90,
+    "correct": 59,
+    "precision": 0.6555555555555556,
+    "recall": 0.7763157894736842
+   },
+   "deployment": {
+    "matched": 34,
+    "correct": 33,
+    "accepted_on_truth": 34,
+    "ambiguous": 38,
+    "precision": 0.9705882352941176,
+    "recall": 0.4342105263157895,
+    "coverage": 0.4473684210526316,
+    "abstention_rate": 0.5
+   },
+   "name_eq_baseline": {
+    "correct": 76,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 76,
+    "forced_correct": 59,
+    "forced_recall": 0.7763157894736842,
+    "deploy_correct": 33,
+    "deploy_accepted": 34,
+    "deploy_precision": 0.9705882352941176,
+    "coverage": 0.4473684210526316,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 69,
+    "claimed_on_pairs": 65,
+    "claim_equals_truth": 65,
+    "claim_precision": 1.0
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "0660976c6b023c89",
+    "c_sources_sha256": "8cbc1881a6640273",
+    "tool_map_sha256": "360b9180391dfd7d",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [
+      "do_exit",
+      "do_system",
+      "fnc_readline",
+      "fnc_system",
+      "fnc_writechar"
+     ],
+     "drop_dirs": [],
+     "c_sources": [
+      "results/rq1_matching/raw/group_b_runs/ptrtrans_lil/input/lil/lil.c"
+     ]
+    },
+    "id": "b6c9687765c9ee3a"
+   },
+   "lenient_with_stubs": {
+    "scorable": 90,
+    "forced": {
+     "matched": 90,
+     "correct": 61,
+     "precision": 0.6777777777777778,
+     "recall": 0.6777777777777778
+    },
+    "deployment": {
+     "matched": 34,
+     "correct": 33,
+     "accepted_on_truth": 34,
+     "ambiguous": 44,
+     "precision": 0.9705882352941176,
+     "recall": 0.36666666666666664,
+     "coverage": 0.37777777777777777,
+     "abstention_rate": 0.4888888888888889
+    },
+    "name_eq_baseline": {
+     "correct": 90,
+     "recall": 1.0
+    },
+    "real_renamed": {
+     "pairs": 0
+    },
+    "same_name": {
+     "pairs": 90,
+     "forced_correct": 61,
+     "forced_recall": 0.6777777777777778,
+     "deploy_correct": 33,
+     "deploy_accepted": 34,
+     "deploy_precision": 0.9705882352941176,
+     "coverage": 0.37777777777777777,
+     "name_eq_recall": 1.0
+    },
+    "tool_map_audit": {
+     "claimed_total": 69,
+     "claimed_on_pairs": 69,
+     "claim_equals_truth": 69,
+     "claim_precision": 1.0
+    },
+    "note": "STUB:x read as truth x (signature-only placeholders count as pairs); NOT the primary number"
+   }
+  },
+  "ptrtrans_lodepng": {
+   "case": "ptrtrans_lodepng",
+   "tool": "ptrtrans",
+   "lib": "lodepng",
+   "split": "eval",
+   "builds": false,
+   "artifact_status": "COMPLETE",
+   "c_functions": 235,
+   "rust_functions": 252,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "STUB": 214,
+    "NONE": 6,
+    "AMBIGUOUS": 6,
+    "single": 8,
+    "SPLIT": 1
+   },
+   "scorable": 8,
+   "labels_meta": {
+    "case": "ptrtrans_lodepng",
+    "sheet_fingerprint": "dfbdc9c3007a6e5f",
+    "labeler": "claude (main session + 3 subagents, one per 79/79/77-row slice of the C function list)",
+    "method": "per C function: read C body (lodepng.c), inspect every candidate Rust fn (same-name, tool_claim, matcher_forced/deploy, grep of distinctive constants/strings/loops over dataset/Trans_C-Rust-KG/lodepng/src/**); truth=Rust fn only when a body implementing the C logic exists; STUB:x when the crate contains only a signature-only placeholder x for the C fn; AMBIGUOUS when two duplicate empty stubs (CamelCase + snake_case) claim the same C fn; NONE when no counterpart or the counterpart is absent from the rust-analyzer inventory",
+    "date": "2026-09-01",
+    "reviewed_by_user": false,
+    "crate_note": "shipped PtrTrans lodepng crate is a stub shell: ~8 functions with real logic, the rest signature-only placeholders; many duplicate same-name definitions (crate cannot compile)"
+   },
+   "forced": {
+    "matched": 235,
+    "correct": 5,
+    "precision": 0.02127659574468085,
+    "recall": 0.625
+   },
+   "deployment": {
+    "matched": 1,
+    "correct": 0,
+    "accepted_on_truth": 0,
+    "ambiguous": 8,
+    "precision": 0.0,
+    "recall": 0.0,
+    "coverage": 0.0,
+    "abstention_rate": 1.0
+   },
+   "name_eq_baseline": {
+    "correct": 4,
+    "recall": 0.5
+   },
+   "real_renamed": {
+    "pairs": 4,
+    "forced_correct": 3,
+    "forced_recall": 0.75,
+    "deploy_correct": 0,
+    "deploy_accepted": 0,
+    "deploy_precision": null,
+    "coverage": 0.0,
+    "name_eq_recall": 0.0
+   },
+   "same_name": {
+    "pairs": 4,
+    "forced_correct": 2,
+    "forced_recall": 0.5,
+    "deploy_correct": 0,
+    "deploy_accepted": 0,
+    "deploy_precision": null,
+    "coverage": 0.0,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 226,
+    "claimed_on_pairs": 7,
+    "claim_equals_truth": 1,
+    "claim_precision": 0.14285714285714285
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "424f04d80bd8fec9",
+    "c_sources_sha256": "e803e7b315756deb",
+    "tool_map_sha256": "5cad466b3284b289",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/lodepng/lodepng.c"
+     ]
+    },
+    "id": "dfbdc9c3007a6e5f"
+   },
+   "lenient_with_stubs": {
+    "scorable": 222,
+    "forced": {
+     "matched": 235,
+     "correct": 67,
+     "precision": 0.2851063829787234,
+     "recall": 0.30180180180180183
+    },
+    "deployment": {
+     "matched": 1,
+     "correct": 1,
+     "accepted_on_truth": 1,
+     "ambiguous": 221,
+     "precision": 1.0,
+     "recall": 0.0045045045045045045,
+     "coverage": 0.0045045045045045045,
+     "abstention_rate": 0.9954954954954955
+    },
+    "name_eq_baseline": {
+     "correct": 191,
+     "recall": 0.8603603603603603
+    },
+    "real_renamed": {
+     "pairs": 31,
+     "forced_correct": 8,
+     "forced_recall": 0.25806451612903225,
+     "deploy_correct": 0,
+     "deploy_accepted": 0,
+     "deploy_precision": null,
+     "coverage": 0.0,
+     "name_eq_recall": 0.0
+    },
+    "same_name": {
+     "pairs": 191,
+     "forced_correct": 59,
+     "forced_recall": 0.3089005235602094,
+     "deploy_correct": 1,
+     "deploy_accepted": 1,
+     "deploy_precision": 1.0,
+     "coverage": 0.005235602094240838,
+     "name_eq_recall": 1.0
+    },
+    "tool_map_audit": {
+     "claimed_total": 226,
+     "claimed_on_pairs": 215,
+     "claim_equals_truth": 103,
+     "claim_precision": 0.4790697674418605
+    },
+    "note": "STUB:x read as truth x (signature-only placeholders count as pairs); NOT the primary number"
+   }
+  },
+  "ptrtrans_qsort": {
+   "case": "ptrtrans_qsort",
+   "tool": "ptrtrans",
+   "lib": "qsort",
+   "split": "eval",
+   "builds": true,
+   "artifact_status": "COMPLETE",
+   "c_functions": 3,
+   "rust_functions": 3,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 3
+   },
+   "scorable": 3,
+   "labels_meta": {
+    "case": "ptrtrans_qsort",
+    "sheet_fingerprint": "1bf04d8c6acdeb40",
+    "labeler": "Claude (claude-fable-5-1), session 6278f822",
+    "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+    "date": "2026-09-01",
+    "reviewed_by_user": false
+   },
+   "forced": {
+    "matched": 3,
+    "correct": 3,
+    "precision": 1.0,
+    "recall": 1.0
+   },
+   "deployment": {
+    "matched": 2,
+    "correct": 2,
+    "accepted_on_truth": 2,
+    "ambiguous": 1,
+    "precision": 1.0,
+    "recall": 0.6666666666666666,
+    "coverage": 0.6666666666666666,
+    "abstention_rate": 0.3333333333333333
+   },
+   "name_eq_baseline": {
+    "correct": 2,
+    "recall": 0.6666666666666666
+   },
+   "real_renamed": {
+    "pairs": 1,
+    "forced_correct": 1,
+    "forced_recall": 1.0,
+    "deploy_correct": 1,
+    "deploy_accepted": 1,
+    "deploy_precision": 1.0,
+    "coverage": 1.0,
+    "name_eq_recall": 0.0
+   },
+   "same_name": {
+    "pairs": 2,
+    "forced_correct": 2,
+    "forced_recall": 1.0,
+    "deploy_correct": 1,
+    "deploy_accepted": 1,
+    "deploy_precision": 1.0,
+    "coverage": 0.5,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 3,
+    "claimed_on_pairs": 3,
+    "claim_equals_truth": 3,
+    "claim_precision": 1.0
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "76e0e2c710179cca",
+    "c_sources_sha256": "0d3e7c07c314e9a7",
+    "tool_map_sha256": "6d14e4dc48906760",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/qsort/qsort.c"
+     ]
+    },
+    "id": "1bf04d8c6acdeb40"
+   }
+  },
+  "ptrtrans_quadtree": {
+   "case": "ptrtrans_quadtree",
+   "tool": "ptrtrans",
+   "lib": "quadtree",
+   "split": "eval",
+   "builds": true,
+   "artifact_status": "COMPLETE",
+   "c_functions": 24,
+   "rust_functions": 17,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 17,
+    "NONE": 7
+   },
+   "scorable": 17,
+   "labels_meta": {
+    "case": "ptrtrans_quadtree",
+    "sheet_fingerprint": "eaa3207cdb42cbe2",
+    "labeler": "Claude (claude-fable-5-1), session 6278f822",
+    "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+    "date": "2026-09-01",
+    "reviewed_by_user": false
+   },
+   "forced": {
+    "matched": 17,
+    "correct": 15,
+    "precision": 0.8823529411764706,
+    "recall": 0.8823529411764706
+   },
+   "deployment": {
+    "matched": 11,
+    "correct": 11,
+    "accepted_on_truth": 11,
+    "ambiguous": 6,
+    "precision": 1.0,
+    "recall": 0.6470588235294118,
+    "coverage": 0.6470588235294118,
+    "abstention_rate": 0.35294117647058826
+   },
+   "name_eq_baseline": {
+    "correct": 17,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 17,
+    "forced_correct": 15,
+    "forced_recall": 0.8823529411764706,
+    "deploy_correct": 11,
+    "deploy_accepted": 11,
+    "deploy_precision": 1.0,
+    "coverage": 0.6470588235294118,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 16,
+    "claimed_on_pairs": 16,
+    "claim_equals_truth": 16,
+    "claim_precision": 1.0
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "333d2d80faf7c15e",
+    "c_sources_sha256": "ab002bf5b9fd5dfe",
+    "tool_map_sha256": "145fb0b1655ad1a1",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/quadtree/src/bounds.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/quadtree/src/node.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/quadtree/src/point.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/quadtree/src/quadtree.c"
+     ]
+    },
+    "id": "eaa3207cdb42cbe2"
+   }
+  },
+  "ptrtrans_urlparser": {
+   "case": "ptrtrans_urlparser",
+   "tool": "ptrtrans",
+   "lib": "urlparser",
+   "split": "eval",
+   "builds": true,
+   "artifact_status": "COMPLETE",
+   "c_functions": 21,
+   "rust_functions": 20,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 18,
+    "NONE": 1,
+    "STUB": 2
+   },
+   "scorable": 18,
+   "labels_meta": {
+    "case": "ptrtrans_urlparser",
+    "sheet_fingerprint": "80129631d6fc4a14",
+    "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+    "method": "manual code reading of each C function body (url.h / test.c) against every candidate Rust function (same name, tool claim, matcher forced proposal, and every other function in the 20-entry Rust inventory) plus a grep of the whole crate for url_free / Drop impls and a check of the PtrTrans metadata Verfi_Tag / trans_rust_code for the reverted and elided units",
+    "date": "2026-09-02",
+    "reviewed_by_user": false
+   },
+   "forced": {
+    "matched": 20,
+    "correct": 16,
+    "precision": 0.8,
+    "recall": 0.8888888888888888
+   },
+   "deployment": {
+    "matched": 7,
+    "correct": 7,
+    "accepted_on_truth": 7,
+    "ambiguous": 11,
+    "precision": 1.0,
+    "recall": 0.3888888888888889,
+    "coverage": 0.3888888888888889,
+    "abstention_rate": 0.6111111111111112
+   },
+   "name_eq_baseline": {
+    "correct": 18,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 18,
+    "forced_correct": 16,
+    "forced_recall": 0.8888888888888888,
+    "deploy_correct": 7,
+    "deploy_accepted": 7,
+    "deploy_precision": 1.0,
+    "coverage": 0.3888888888888889,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 20,
+    "claimed_on_pairs": 18,
+    "claim_equals_truth": 18,
+    "claim_precision": 1.0
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "b8c8250747eaf9b2",
+    "c_sources_sha256": "cbd5840e415350d4",
+    "tool_map_sha256": "025dac26c70f0465",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "results/rq1_matching/raw/group_b_runs/ptrtrans_urlparser/input/urlparser/test.c"
+     ]
+    },
+    "id": "80129631d6fc4a14"
+   },
+   "lenient_with_stubs": {
+    "scorable": 20,
+    "forced": {
+     "matched": 20,
+     "correct": 17,
+     "precision": 0.85,
+     "recall": 0.85
+    },
+    "deployment": {
+     "matched": 7,
+     "correct": 7,
+     "accepted_on_truth": 7,
+     "ambiguous": 13,
+     "precision": 1.0,
+     "recall": 0.35,
+     "coverage": 0.35,
+     "abstention_rate": 0.65
+    },
+    "name_eq_baseline": {
+     "correct": 20,
+     "recall": 1.0
+    },
+    "real_renamed": {
+     "pairs": 0
+    },
+    "same_name": {
+     "pairs": 20,
+     "forced_correct": 17,
+     "forced_recall": 0.85,
+     "deploy_correct": 7,
+     "deploy_accepted": 7,
+     "deploy_precision": 1.0,
+     "coverage": 0.35,
+     "name_eq_recall": 1.0
+    },
+    "tool_map_audit": {
+     "claimed_total": 20,
+     "claimed_on_pairs": 20,
+     "claim_equals_truth": 20,
+     "claim_precision": 1.0
+    },
+    "note": "STUB:x read as truth x (signature-only placeholders count as pairs); NOT the primary number"
+   }
+  },
+  "sactor_bzip2": {
+   "case": "sactor_bzip2",
+   "tool": "sactor",
+   "lib": "bzip2",
+   "split": "eval",
+   "builds": false,
+   "artifact_status": "PARTIAL",
+   "c_functions": 64,
+   "rust_functions": 32,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 32,
+    "NONE": 32
+   },
+   "scorable": 32,
+   "labels_meta": {
+    "case": "sactor_bzip2",
+    "sheet_fingerprint": "1ff270a37827d776",
+    "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+    "method": "manual reading of each of the 32 Rust bodies in assembled_unidiomatic.rs (27 SACTOR-verified files from run2_result/<tu>/translated_code_unidiomatic/functions/, 5 log-extracted last attempts from run2_extracted_rust/) against the C body at the sheet's c_line in the crown_dataset bzip2 sources (blocksort.c, bzlib.c, compress.c, decompress.c, huffman.c; the run input differs only by the neutral relocation of crctable.c/randtable.c into bzlib.c, so the crown_dataset line numbers are used); SACTOR provenance per function taken from unidiomatic_failure_info.json (status/attempts/last rustc error), run2_extracted_rust/index.json, run2.log and relink_evidence/; the 32 absent functions were confirmed absent from rust_inventory.csv, from every unidiomatic_failure_info.json and from run2_extracted_rust/, and located in the per-TU `Function order` lists in run2.log (lines 38, 1359, 20374, 22140) after the unit at which each TU aborted. Labels decided by body reading, not by SACTOR's verdict: every Rust fn keeps its C name and every body carries that C function's logic (no silent swap, no placeholder), so none is a STUB; BZ2_bzflush is a constant `0` because the C body is `return 0`, counted as genuine. Added null guards in init_RL, isempty_RL, BZ2_bsInitWrite, flush_RL, makeMaps_e/d and the size_t wrapping multiply in default_bzalloc were noted as benign deviations. Notes assembled by scratchpad gen_sactor_bzip2_labels.py from hand-written per-function findings.",
+    "date": "2026-09-02",
+    "reviewed_by_user": false,
+    "artifact_status": "PARTIAL",
+    "artifact_status_note": "32 of 64 library C functions have Rust; all from the UNIDIOMATIC phase (the idiomatic phase was reached only for huffman.c and died immediately on the same cross-TU order error, so there is no function_name_map.json / tool map; every Rust fn keeps its C name). Of the 32: 27 SACTOR-verified (23 on attempt 1; 4 on 2-4 attempts: copy_output_until_stop 2, unRLE_obuf_to_output_FAST 2, BZ2_indexIntoF 2, BZ2_hbMakeCodeLengths 4; unidiomatic_failure_info.json status success; each compiled, linked and passed the 4 driver samples), 3 failed 6 of 6 attempts (status failure) on tool-side scaffold conflicts -- BZ2_bzReadGetUnused: every attempt E0277 `bz_stream doesn't implement Debug` (SACTOR's harness derives/prints the struct it scaffolded); BZ2_bzerror: the same plus E0277 `*const i8 cannot be shared between threads safely`; BZ2_bzCompressInit: E0255 `the name size_t is defined multiple times` (scaffold `use libc::size_t` vs the LLM's typedef) -- their attempt-6 bodies are real translations and are labeled by body as genuine pairs; and 2 (flush_RL in bzlib.c, bsPutUInt32 in compress.c; status untranslated) compiled but failed SACTOR's per-function link step because the cdylib references add_pair_to_block/init_RL and bsW, which are `static` in the C files and not exported from the C objects SACTOR links against (run2.log:20351, :22117; relink_evidence/run2__*_relink.txt); SACTOR treats a link failure as fatal for the TU, so bzlib.c stopped at unit 20 of 41 and compress.c at unit 5 of 9. The remaining 32 library functions were never attempted: 21 in bzlib.c (units 21-41) and 4 in compress.c (units 6-9) after those aborts, 6 in blocksort.c (units 4-9, incl. BZ2_blockSort) and 1 in decompress.c (unit 2, BZ2_decompress) because SACTOR's cross-TU dependency check rejected a callee that lived in a TU not yet translated (BZ2_bz__AssertH__fail in bzlib.c, BZ2_hbCreateDecodeTables in huffman.c; run2.log:1334, :22646); huffman.c itself verified all 3 of its functions. driver.c (`main`) was never reached (batch_summary.json: dependency BZ2_bzBuffToBuffCompress untranslated). The crate does not build (non-building artifact); scored on a separate PARTIAL line, never pooled with complete artifacts (RUN.md 'Cell status'). Sources: RUN.md, run2_result/batch_summary.json, run2_result/*/unidiomatic_failure_info.json, run2_extracted_rust/index.json, run2.log, relink_evidence/, assembled_unidiomatic.rs header."
+   },
+   "forced": {
+    "matched": 32,
+    "correct": 28,
+    "precision": 0.875,
+    "recall": 0.875
+   },
+   "deployment": {
+    "matched": 14,
+    "correct": 14,
+    "accepted_on_truth": 14,
+    "ambiguous": 14,
+    "precision": 1.0,
+    "recall": 0.4375,
+    "coverage": 0.4375,
+    "abstention_rate": 0.4375
+   },
+   "name_eq_baseline": {
+    "correct": 32,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 32,
+    "forced_correct": 28,
+    "forced_recall": 0.875,
+    "deploy_correct": 14,
+    "deploy_accepted": 14,
+    "deploy_precision": 1.0,
+    "coverage": 0.4375,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 0,
+    "claimed_on_pairs": 0,
+    "claim_equals_truth": 0,
+    "claim_precision": null
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "10c96a3417d35a2c",
+    "c_sources_sha256": "6154498d70af63fe",
+    "tool_map_sha256": null,
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/blocksort.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/huffman.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/crctable.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/randtable.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/compress.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/decompress.c",
+      "tools/frameworks/ptrtrans_rebuild/PtrTrans-C2Rust/dataset/crown_dataset/bzip2/bzlib.c"
+     ]
+    },
+    "id": "1ff270a37827d776"
+   }
+  },
+  "sactor_genann": {
+   "case": "sactor_genann",
+   "tool": "sactor",
+   "lib": "genann",
+   "split": "eval",
+   "builds": true,
+   "artifact_status": "COMPLETE",
+   "c_functions": 15,
+   "rust_functions": 15,
+   "rust_functions_dropped": [
+    "main"
+   ],
+   "truth_kinds": {
+    "single": 15
+   },
+   "scorable": 15,
+   "labels_meta": {
+    "case": "sactor_genann",
+    "sheet_fingerprint": "d5122fb19359e89e",
+    "labeler": "Claude (claude-fable-5-1), session 6278f822",
+    "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+    "date": "2026-09-01",
+    "reviewed_by_user": false
+   },
+   "forced": {
+    "matched": 15,
+    "correct": 15,
+    "precision": 1.0,
+    "recall": 1.0
+   },
+   "deployment": {
+    "matched": 13,
+    "correct": 13,
+    "accepted_on_truth": 13,
+    "ambiguous": 2,
+    "precision": 1.0,
+    "recall": 0.8666666666666667,
+    "coverage": 0.8666666666666667,
+    "abstention_rate": 0.13333333333333333
+   },
+   "name_eq_baseline": {
+    "correct": 15,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 15,
+    "forced_correct": 15,
+    "forced_recall": 1.0,
+    "deploy_correct": 13,
+    "deploy_accepted": 13,
+    "deploy_precision": 1.0,
+    "coverage": 0.8666666666666667,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 0,
+    "claimed_on_pairs": 0,
+    "claim_equals_truth": 0,
+    "claim_precision": null
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "afc90451ccfde28b",
+    "c_sources_sha256": "e57b4a33b2326b40",
+    "tool_map_sha256": null,
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [
+      "main"
+     ],
+     "drop_dirs": [],
+     "c_sources": [
+      "tools/frameworks/crown/c-code/genann-1.0.0/c/genann.c"
+     ]
+    },
+    "id": "d5122fb19359e89e"
+   }
+  },
+  "sactor_lodepng": {
+   "case": "sactor_lodepng",
+   "tool": "sactor",
+   "lib": "lodepng",
+   "split": "eval",
+   "builds": false,
+   "artifact_status": "PARTIAL",
+   "c_functions": 235,
+   "rust_functions": 74,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 74,
+    "NONE": 161
+   },
+   "scorable": 74,
+   "labels_meta": {
+    "case": "sactor_lodepng",
+    "sheet_fingerprint": "add00c972a8f1234",
+    "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+    "method": "manual reading of each of the 74 Rust bodies in assembled_unidiomatic.rs (53 SACTOR-verified files from run1_result/lodepng.c__06d02e56/translated_code_unidiomatic/functions/, 21 log-extracted last attempts from run1_extracted_rust/) against the C body at the sheet's c_line in input/lodepng.c; SACTOR provenance per function taken from unidiomatic_failure_info.json (status/attempts/last rustc error) and run1_extracted_rust/index.json; the 161 absent functions were confirmed absent from rust_inventory.csv, from unidiomatic_failure_info.json and from run1_extracted_rust/, and located after lodepng_gtofl (unit 74) in the 235-entry `Function order` list at run1.log:23; lodepng_error_text's 102 strings were compared programmatically. Labels decided by body reading, not by SACTOR's verdict: every log-extracted last attempt carries the C function's real logic, so none is a STUB. NONE-row notes were templated from a hand-written one-line C description plus the run facts (scratchpad gen_sactor_lodepng_labels.py).",
+    "date": "2026-09-02",
+    "reviewed_by_user": false,
+    "artifact_status": "PARTIAL",
+    "artifact_status_note": "74 of 235 C functions have Rust; all from the UNIDIOMATIC phase (the idiomatic phase was never reached, so there is no function_name_map.json / tool map; every Rust fn keeps its C name). Of the 74: 53 SACTOR-verified (42 on attempt 1, 11 on attempt 2; unidiomatic_failure_info.json status success; each compiled, linked and passed the 4 encode->decode samples), 20 failed 6 of 6 attempts (status failure) on a tool-side scaffold conflict -- every attempt died in SACTOR's embedding crate with E0428 `the name LodePNGColorType is defined multiple times` (+E0117, E0599) because the harness emits both `pub type LodePNGColorType = c_uint` and the translated `enum LodePNGColorType` (the same duplicate is visible inside assembled_unidiomatic.rs at lines 14 and 560); their attempt-6 bodies are real translations and are labeled as genuine pairs -- and 1 (lodepng_gtofl, status untranslated) compiled but failed SACTOR's per-function link step (`undefined reference to lodepng_addofl`, a `static` C helper not exported from the linked C object; run1.log:60143), which SACTOR treats as fatal for the TU. The remaining 161 functions (units 75-235 of SACTOR's dependency order, run1.log:23) were never attempted and are NONE. Count note: RUN.md says '75th function' / '160 never attempted'; the log's order list puts lodepng_gtofl at position 74 and 235 - 74 = 161 rows have no Rust (rust_inventory.csv has exactly 74 entries), so 161 is the number used here. driver.c was never reached (batch_summary.json: dependency lodepng_encode32 untranslated). The crate does not build (non-building artifact); scored on a separate PARTIAL line, never pooled with complete artifacts (RUN.md 'Cell status'). Sources: RUN.md, run1_result/batch_summary.json, run1_result/lodepng.c__06d02e56/unidiomatic_failure_info.json, run1_extracted_rust/index.json, assembled_unidiomatic.rs header."
+   },
+   "forced": {
+    "matched": 74,
+    "correct": 60,
+    "precision": 0.8108108108108109,
+    "recall": 0.8108108108108109
+   },
+   "deployment": {
+    "matched": 12,
+    "correct": 12,
+    "accepted_on_truth": 12,
+    "ambiguous": 54,
+    "precision": 1.0,
+    "recall": 0.16216216216216217,
+    "coverage": 0.16216216216216217,
+    "abstention_rate": 0.7297297297297297
+   },
+   "name_eq_baseline": {
+    "correct": 74,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 74,
+    "forced_correct": 60,
+    "forced_recall": 0.8108108108108109,
+    "deploy_correct": 12,
+    "deploy_accepted": 12,
+    "deploy_precision": 1.0,
+    "coverage": 0.16216216216216217,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 0,
+    "claimed_on_pairs": 0,
+    "claim_equals_truth": 0,
+    "claim_precision": null
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "542dadeb0cc37512",
+    "c_sources_sha256": "6e1627e71900b433",
+    "tool_map_sha256": null,
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "results/rq1_matching/raw/group_b_runs/sactor_lodepng/input/lodepng.c"
+     ]
+    },
+    "id": "add00c972a8f1234"
+   }
+  },
+  "sactor_qsort": {
+   "case": "sactor_qsort",
+   "tool": "sactor",
+   "lib": "qsort",
+   "split": "eval",
+   "builds": true,
+   "artifact_status": "COMPLETE",
+   "c_functions": 3,
+   "rust_functions": 3,
+   "rust_functions_dropped": [
+    "main"
+   ],
+   "truth_kinds": {
+    "single": 3
+   },
+   "scorable": 3,
+   "labels_meta": {
+    "case": "sactor_qsort",
+    "sheet_fingerprint": "fda2c8e04711c9d9",
+    "labeler": "Claude (claude-fable-5-1), session 6278f822",
+    "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+    "date": "2026-09-01",
+    "reviewed_by_user": false
+   },
+   "forced": {
+    "matched": 3,
+    "correct": 1,
+    "precision": 0.3333333333333333,
+    "recall": 0.3333333333333333
+   },
+   "deployment": {
+    "matched": 1,
+    "correct": 0,
+    "accepted_on_truth": 1,
+    "ambiguous": 2,
+    "precision": 0.0,
+    "recall": 0.0,
+    "coverage": 0.3333333333333333,
+    "abstention_rate": 0.6666666666666666
+   },
+   "name_eq_baseline": {
+    "correct": 2,
+    "recall": 0.6666666666666666
+   },
+   "real_renamed": {
+    "pairs": 1,
+    "forced_correct": 0,
+    "forced_recall": 0.0,
+    "deploy_correct": 0,
+    "deploy_accepted": 0,
+    "deploy_precision": null,
+    "coverage": 0.0,
+    "name_eq_recall": 0.0
+   },
+   "same_name": {
+    "pairs": 2,
+    "forced_correct": 1,
+    "forced_recall": 0.5,
+    "deploy_correct": 0,
+    "deploy_accepted": 1,
+    "deploy_precision": 0.0,
+    "coverage": 0.5,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 3,
+    "claimed_on_pairs": 3,
+    "claim_equals_truth": 3,
+    "claim_precision": 1.0
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "88463e1dc8171f8d",
+    "c_sources_sha256": "97546baea37f09b9",
+    "tool_map_sha256": "6f8824e0540a9aa3",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [
+      "main"
+     ],
+     "drop_dirs": [],
+     "c_sources": [
+      "tools/frameworks/c2saferrust/laertes_benchmarks/qsort/qsort.c"
+     ]
+    },
+    "id": "fda2c8e04711c9d9"
+   }
+  },
+  "sactor_quadtree": {
+   "case": "sactor_quadtree",
+   "tool": "sactor",
+   "lib": "quadtree",
+   "split": "eval",
+   "builds": false,
+   "artifact_status": "PARTIAL",
+   "c_functions": 24,
+   "rust_functions": 12,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 12,
+    "NONE": 12
+   },
+   "scorable": 12,
+   "labels_meta": {
+    "case": "sactor_quadtree",
+    "sheet_fingerprint": "65599c773a2bfe45",
+    "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+    "method": "manual reading of each C body (input/{point,bounds,node,quadtree}.c + quadtree.h) against every Rust function in assembled_unidiomatic.rs (same name, matcher proposal; no tool map exists), cross-checked with RUN.md, run1_result/batch_summary.json, per-TU {unidiomatic,idiomatic}_failure_info.json and run1.log (refusal at :2670/:2680, driver link failure at :2835) to decide which C functions SACTOR never emitted; verified that each of the 12 translated_code_unidiomatic/functions/*.rs files appears verbatim in assembled_unidiomatic.rs and that every translated function passed SACTOR's 12-sample harness (run1.log 'Test 0..11 passed successfully')",
+    "date": "2026-09-02",
+    "reviewed_by_user": false,
+    "artifact_status": "PARTIAL",
+    "artifact_status_note": "12 of 24 C functions have Rust; all 12 come from the UNIDIOMATIC phase, which is the scored phase (RUN.md 'Cell status'). Per run1_result/batch_summary.json: point.c success (2 fns, also reached the idiomatic phase \u2014 not scored), bounds.c success in the unidiomatic phase (3 fns; idiomatic phase blocked: struct quadtree_bounds failed 6/6, bounds.c__ea3019ab/idiomatic_failure_info.json), node.c 'failed' only in the idiomatic phase (unidiomatic 7/7 fns success in node.c__baf530fc/unidiomatic_failure_info.json; idiomatic died with `Dependency 'quadtree_bounds_new' of type 'function' should have been translated before use`), quadtree.c REFUSED before any LLM call (`Circular dependencies for functions is not supported yet`, run1.log:2670/2680 \u2014 insert_ <-> split_node_ mutual recursion, quadtree.c:76/109; result dir quadtree.c__047ce83c holds only config.json), driver.c failed (`Failed to link project-level harness for function lcg_next`, run1.log:2835; harness needs quadtree_new/insert/search/free from the refused TU). So the 12 quadtree.c functions have no Rust at all and are NONE; the crate does not build (libc paths unresolved). Scored on a separate PARTIAL line, never pooled with complete artifacts (RUN.md)."
+   },
+   "forced": {
+    "matched": 12,
+    "correct": 12,
+    "precision": 1.0,
+    "recall": 1.0
+   },
+   "deployment": {
+    "matched": 9,
+    "correct": 9,
+    "accepted_on_truth": 9,
+    "ambiguous": 3,
+    "precision": 1.0,
+    "recall": 0.75,
+    "coverage": 0.75,
+    "abstention_rate": 0.25
+   },
+   "name_eq_baseline": {
+    "correct": 12,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 12,
+    "forced_correct": 12,
+    "forced_recall": 1.0,
+    "deploy_correct": 9,
+    "deploy_accepted": 9,
+    "deploy_precision": 1.0,
+    "coverage": 0.75,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 0,
+    "claimed_on_pairs": 0,
+    "claim_equals_truth": 0,
+    "claim_precision": null
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "3d54dc68a8911de0",
+    "c_sources_sha256": "ada7cb6f1c7d77ee",
+    "tool_map_sha256": null,
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "results/rq1_matching/raw/group_b_runs/sactor_quadtree/input/point.c",
+      "results/rq1_matching/raw/group_b_runs/sactor_quadtree/input/bounds.c",
+      "results/rq1_matching/raw/group_b_runs/sactor_quadtree/input/node.c",
+      "results/rq1_matching/raw/group_b_runs/sactor_quadtree/input/quadtree.c"
+     ]
+    },
+    "id": "65599c773a2bfe45"
+   }
+  },
+  "sactor_tulip": {
+   "case": "sactor_tulip",
+   "tool": "sactor",
+   "lib": "tulip",
+   "split": "eval",
+   "builds": false,
+   "artifact_status": "PARTIAL",
+   "c_functions": 269,
+   "rust_functions": 69,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 69,
+    "NONE": 200
+   },
+   "scorable": 69,
+   "labels_meta": {
+    "case": "sactor_tulip",
+    "sheet_fingerprint": "ccaa893d072a2908",
+    "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+    "method": "manual reading of each of the 69 emitted Rust bodies (assembled_unidiomatic.rs, verbatim from the run-1 log) against the C body at the sheet's c_file:c_line (tools/frameworks/tulipindicators/{indicators.c,utils/buffer.c,indicators/*.c}; SIMPLE1/SIMPLE2 macro expansions read from indicators/simple1.h, simple2.h); the 200 absent functions were confirmed absent from rust_inventory.csv and attributed to their TU's failure class in run1_result/batch_summary.json / RUN.md by a script (scratchpad gen_sactor_tulip_labels.py). Truth for an emitted function is its own translation (provenance: SACTOR emitted it under that name from that TU, index.json), even though many _start bodies are behaviourally identical clones (13x `return 0`, 8x `return 1`, 12x `options[0]`, 18x `options[0]-1`, ...) \u2014 see reviewer note in the final report.",
+    "date": "2026-09-02",
+    "reviewed_by_user": false,
+    "artifact_status": "PARTIAL",
+    "artifact_status_note": "69 of 269 C functions emitted (70 LLM translations, one per TU = the first function in SACTOR's dependency order: 67 ti_X_start + ti_version + ti_buffer_new), 0 verified: every TU that reached the LLM died at \"Failed to link project-level harness\" because sample.c reaches the indicators through the ti_indicators[] function-pointer table, which lies outside SACTOR's per-function link closure (RUN.md, 69 TUs). 37 TUs (the SIMPLE1/dx.h family) never reached the LLM (gcc cannot find simple1.h in SACTOR's relocated expanded TU), candles.c died at parse (Struct 'tc_result' not found), sample.c on an untranslated dependency. Rust exists only as log-extracted unidiomatic bodies (run1_extracted_rust/, assembled_unidiomatic.rs); no tool name map. Scored on the PARTIAL line only."
+   },
+   "forced": {
+    "matched": 69,
+    "correct": 1,
+    "precision": 0.014492753623188406,
+    "recall": 0.014492753623188406
+   },
+   "deployment": {
+    "matched": 0,
+    "correct": 0,
+    "accepted_on_truth": 0,
+    "ambiguous": 14,
+    "precision": null,
+    "recall": 0.0,
+    "coverage": 0.0,
+    "abstention_rate": 0.2028985507246377
+   },
+   "name_eq_baseline": {
+    "correct": 69,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 69,
+    "forced_correct": 1,
+    "forced_recall": 0.014492753623188406,
+    "deploy_correct": 0,
+    "deploy_accepted": 0,
+    "deploy_precision": null,
+    "coverage": 0.0,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 0,
+    "claimed_on_pairs": 0,
+    "claim_equals_truth": 0,
+    "claim_precision": null
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "54053527a578bf9b",
+    "c_sources_sha256": "be62d5ad790054df",
+    "tool_map_sha256": null,
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "tools/frameworks/tulipindicators/indicators.c",
+      "tools/frameworks/tulipindicators/utils/buffer.c",
+      "tools/frameworks/tulipindicators/candles.c",
+      "tools/frameworks/tulipindicators/indicators/abs.c",
+      "tools/frameworks/tulipindicators/indicators/acos.c",
+      "tools/frameworks/tulipindicators/indicators/ad.c",
+      "tools/frameworks/tulipindicators/indicators/add.c",
+      "tools/frameworks/tulipindicators/indicators/adosc.c",
+      "tools/frameworks/tulipindicators/indicators/adx.c",
+      "tools/frameworks/tulipindicators/indicators/adxr.c",
+      "tools/frameworks/tulipindicators/indicators/ao.c",
+      "tools/frameworks/tulipindicators/indicators/apo.c",
+      "tools/frameworks/tulipindicators/indicators/aroon.c",
+      "tools/frameworks/tulipindicators/indicators/aroonosc.c",
+      "tools/frameworks/tulipindicators/indicators/asin.c",
+      "tools/frameworks/tulipindicators/indicators/atan.c",
+      "tools/frameworks/tulipindicators/indicators/atr.c",
+      "tools/frameworks/tulipindicators/indicators/avgprice.c",
+      "tools/frameworks/tulipindicators/indicators/bbands.c",
+      "tools/frameworks/tulipindicators/indicators/bop.c",
+      "tools/frameworks/tulipindicators/indicators/cci.c",
+      "tools/frameworks/tulipindicators/indicators/ceil.c",
+      "tools/frameworks/tulipindicators/indicators/cmo.c",
+      "tools/frameworks/tulipindicators/indicators/cos.c",
+      "tools/frameworks/tulipindicators/indicators/cosh.c",
+      "tools/frameworks/tulipindicators/indicators/crossany.c",
+      "tools/frameworks/tulipindicators/indicators/crossover.c",
+      "tools/frameworks/tulipindicators/indicators/cvi.c",
+      "tools/frameworks/tulipindicators/indicators/decay.c",
+      "tools/frameworks/tulipindicators/indicators/dema.c",
+      "tools/frameworks/tulipindicators/indicators/di.c",
+      "tools/frameworks/tulipindicators/indicators/div.c",
+      "tools/frameworks/tulipindicators/indicators/dm.c",
+      "tools/frameworks/tulipindicators/indicators/dpo.c",
+      "tools/frameworks/tulipindicators/indicators/dx.c",
+      "tools/frameworks/tulipindicators/indicators/edecay.c",
+      "tools/frameworks/tulipindicators/indicators/ema.c",
+      "tools/frameworks/tulipindicators/indicators/emv.c",
+      "tools/frameworks/tulipindicators/indicators/exp.c",
+      "tools/frameworks/tulipindicators/indicators/fisher.c",
+      "tools/frameworks/tulipindicators/indicators/floor.c",
+      "tools/frameworks/tulipindicators/indicators/fosc.c",
+      "tools/frameworks/tulipindicators/indicators/hma.c",
+      "tools/frameworks/tulipindicators/indicators/kama.c",
+      "tools/frameworks/tulipindicators/indicators/kvo.c",
+      "tools/frameworks/tulipindicators/indicators/lag.c",
+      "tools/frameworks/tulipindicators/indicators/linreg.c",
+      "tools/frameworks/tulipindicators/indicators/linregintercept.c",
+      "tools/frameworks/tulipindicators/indicators/linregslope.c",
+      "tools/frameworks/tulipindicators/indicators/ln.c",
+      "tools/frameworks/tulipindicators/indicators/log10.c",
+      "tools/frameworks/tulipindicators/indicators/macd.c",
+      "tools/frameworks/tulipindicators/indicators/marketfi.c",
+      "tools/frameworks/tulipindicators/indicators/mass.c",
+      "tools/frameworks/tulipindicators/indicators/max.c",
+      "tools/frameworks/tulipindicators/indicators/md.c",
+      "tools/frameworks/tulipindicators/indicators/medprice.c",
+      "tools/frameworks/tulipindicators/indicators/mfi.c",
+      "tools/frameworks/tulipindicators/indicators/min.c",
+      "tools/frameworks/tulipindicators/indicators/mom.c",
+      "tools/frameworks/tulipindicators/indicators/msw.c",
+      "tools/frameworks/tulipindicators/indicators/mul.c",
+      "tools/frameworks/tulipindicators/indicators/natr.c",
+      "tools/frameworks/tulipindicators/indicators/nvi.c",
+      "tools/frameworks/tulipindicators/indicators/obv.c",
+      "tools/frameworks/tulipindicators/indicators/ppo.c",
+      "tools/frameworks/tulipindicators/indicators/psar.c",
+      "tools/frameworks/tulipindicators/indicators/pvi.c",
+      "tools/frameworks/tulipindicators/indicators/qstick.c",
+      "tools/frameworks/tulipindicators/indicators/roc.c",
+      "tools/frameworks/tulipindicators/indicators/rocr.c",
+      "tools/frameworks/tulipindicators/indicators/round.c",
+      "tools/frameworks/tulipindicators/indicators/rsi.c",
+      "tools/frameworks/tulipindicators/indicators/sin.c",
+      "tools/frameworks/tulipindicators/indicators/sinh.c",
+      "tools/frameworks/tulipindicators/indicators/sma.c",
+      "tools/frameworks/tulipindicators/indicators/sqrt.c",
+      "tools/frameworks/tulipindicators/indicators/stddev.c",
+      "tools/frameworks/tulipindicators/indicators/stderr.c",
+      "tools/frameworks/tulipindicators/indicators/stoch.c",
+      "tools/frameworks/tulipindicators/indicators/stochrsi.c",
+      "tools/frameworks/tulipindicators/indicators/sub.c",
+      "tools/frameworks/tulipindicators/indicators/sum.c",
+      "tools/frameworks/tulipindicators/indicators/tan.c",
+      "tools/frameworks/tulipindicators/indicators/tanh.c",
+      "tools/frameworks/tulipindicators/indicators/tema.c",
+      "tools/frameworks/tulipindicators/indicators/todeg.c",
+      "tools/frameworks/tulipindicators/indicators/torad.c",
+      "tools/frameworks/tulipindicators/indicators/tr.c",
+      "tools/frameworks/tulipindicators/indicators/trima.c",
+      "tools/frameworks/tulipindicators/indicators/trix.c",
+      "tools/frameworks/tulipindicators/indicators/trunc.c",
+      "tools/frameworks/tulipindicators/indicators/tsf.c",
+      "tools/frameworks/tulipindicators/indicators/typprice.c",
+      "tools/frameworks/tulipindicators/indicators/ultosc.c",
+      "tools/frameworks/tulipindicators/indicators/var.c",
+      "tools/frameworks/tulipindicators/indicators/vhf.c",
+      "tools/frameworks/tulipindicators/indicators/vidya.c",
+      "tools/frameworks/tulipindicators/indicators/volatility.c",
+      "tools/frameworks/tulipindicators/indicators/vosc.c",
+      "tools/frameworks/tulipindicators/indicators/vwma.c",
+      "tools/frameworks/tulipindicators/indicators/wad.c",
+      "tools/frameworks/tulipindicators/indicators/wcprice.c",
+      "tools/frameworks/tulipindicators/indicators/wilders.c",
+      "tools/frameworks/tulipindicators/indicators/willr.c",
+      "tools/frameworks/tulipindicators/indicators/wma.c",
+      "tools/frameworks/tulipindicators/indicators/zlema.c"
+     ]
+    },
+    "id": "ccaa893d072a2908"
+   }
+  },
+  "sactor_urlparser": {
+   "case": "sactor_urlparser",
+   "tool": "sactor",
+   "lib": "urlparser",
+   "split": "eval",
+   "builds": false,
+   "artifact_status": "PARTIAL",
+   "c_functions": 22,
+   "rust_functions": 7,
+   "rust_functions_dropped": [],
+   "truth_kinds": {
+    "single": 7,
+    "NONE": 15
+   },
+   "scorable": 7,
+   "labels_meta": {
+    "case": "sactor_urlparser",
+    "sheet_fingerprint": "a65cda2cc442bcde",
+    "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+    "method": "manual reading of each C body (run4_input/driver.c + url.h) against every Rust function in assembled_idiomatic.rs (same name, tool map, matcher proposal), cross-checked with RUN.md and run4_result/driver.c__585b2fa3/{unidiomatic,idiomatic}_failure_info.json to decide which C functions SACTOR never emitted",
+    "date": "2026-09-02",
+    "reviewed_by_user": false,
+    "artifact_status": "PARTIAL",
+    "artifact_status_note": "7 of 22 C functions were emitted in the scored (idiomatic) phase; SACTOR failed 5x on the global URL_SCHEMES / url_is_protocol and never attempted the 13 dependents, and get_part only reached the unidiomatic phase (RUN.md)."
+   },
+   "forced": {
+    "matched": 7,
+    "correct": 1,
+    "precision": 0.14285714285714285,
+    "recall": 0.14285714285714285
+   },
+   "deployment": {
+    "matched": 3,
+    "correct": 1,
+    "accepted_on_truth": 2,
+    "ambiguous": 2,
+    "precision": 0.3333333333333333,
+    "recall": 0.14285714285714285,
+    "coverage": 0.2857142857142857,
+    "abstention_rate": 0.2857142857142857
+   },
+   "name_eq_baseline": {
+    "correct": 7,
+    "recall": 1.0
+   },
+   "real_renamed": {
+    "pairs": 0
+   },
+   "same_name": {
+    "pairs": 7,
+    "forced_correct": 1,
+    "forced_recall": 0.14285714285714285,
+    "deploy_correct": 1,
+    "deploy_accepted": 2,
+    "deploy_precision": 0.5,
+    "coverage": 0.2857142857142857,
+    "name_eq_recall": 1.0
+   },
+   "tool_map_audit": {
+    "claimed_total": 7,
+    "claimed_on_pairs": 7,
+    "claim_equals_truth": 7,
+    "claim_precision": 1.0
+   },
+   "fingerprint": {
+    "repo_head": "b647a44",
+    "matcher_commit": "509751d",
+    "analyzer_src_commit": "509751d",
+    "matcher_sha256": "fe49e5bb76996922",
+    "c_analyzer_sha256": "b771a6b013b22779",
+    "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+    "stu_selector_dirty": false,
+    "rust_artifact_sha256": "2c6f89a5b1b915e5",
+    "c_sources_sha256": "9f5364af1ad333c7",
+    "tool_map_sha256": "5aa3ee7078a8d677",
+    "params": {
+     "eps": 0.01,
+     "topo": true,
+     "rust_exclude_fns": [],
+     "drop_dirs": [],
+     "c_sources": [
+      "results/rq1_matching/raw/group_b_runs/sactor_urlparser/run4_input/driver.c"
+     ]
+    },
+    "id": "a65cda2cc442bcde"
+   }
+  }
+ },
+ "paper_rule": {
+  "per_library": {
+   "qsort": {
+    "tools": 2,
+    "tool_list": [
+     "ptrtrans",
+     "sactor"
+    ],
+    "provenance": "eval",
+    "pairs": 6,
+    "renamed_pairs": 2,
+    "renamed_correct": 1,
+    "precision": 0.6666666666666666,
+    "recall": 0.6666666666666666,
+    "name_eq_recall": 0.6666666666666666,
+    "artifact_keys": [
+     "ptrtrans_qsort",
+     "sactor_qsort"
+    ]
+   },
+   "urlparser": {
+    "tools": 1,
+    "tool_list": [
+     "ptrtrans"
+    ],
+    "provenance": "eval",
+    "pairs": 18,
+    "renamed_pairs": 0,
+    "renamed_correct": 0,
+    "precision": 0.8,
+    "recall": 0.8888888888888888,
+    "name_eq_recall": 1.0,
+    "artifact_keys": [
+     "ptrtrans_urlparser"
+    ]
+   },
+   "quadtree": {
+    "tools": 1,
+    "tool_list": [
+     "ptrtrans"
+    ],
+    "provenance": "eval",
+    "pairs": 17,
+    "renamed_pairs": 0,
+    "renamed_correct": 0,
+    "precision": 0.8823529411764706,
+    "recall": 0.8823529411764706,
+    "name_eq_recall": 1.0,
+    "artifact_keys": [
+     "ptrtrans_quadtree"
+    ]
+   },
+   "genann": {
+    "tools": 2,
+    "tool_list": [
+     "ptrtrans",
+     "sactor"
+    ],
+    "provenance": "eval",
+    "pairs": 26,
+    "renamed_pairs": 0,
+    "renamed_correct": 0,
+    "precision": 0.7142857142857143,
+    "recall": 0.7727272727272727,
+    "name_eq_recall": 1.0,
+    "artifact_keys": [
+     "ptrtrans_genann",
+     "sactor_genann"
+    ]
+   },
+   "cjson": {
+    "tools": 1,
+    "tool_list": [
+     "ptrtrans"
+    ],
+    "provenance": "dev",
+    "pairs": 77,
+    "renamed_pairs": 1,
+    "renamed_correct": 1,
+    "precision": 0.39814814814814814,
+    "recall": 0.5584415584415584,
+    "name_eq_recall": 0.987012987012987,
+    "artifact_keys": [
+     "ptrtrans_cjson"
+    ]
+   },
+   "lodepng": {
+    "tools": 1,
+    "tool_list": [
+     "ptrtrans"
+    ],
+    "provenance": "eval",
+    "pairs": 8,
+    "renamed_pairs": 4,
+    "renamed_correct": 3,
+    "precision": 0.02127659574468085,
+    "recall": 0.625,
+    "name_eq_recall": 0.5,
+    "artifact_keys": [
+     "ptrtrans_lodepng"
+    ]
+   },
+   "bzip2": {
+    "tools": 1,
+    "tool_list": [
+     "ptrtrans"
+    ],
+    "provenance": "eval",
+    "pairs": 9,
+    "renamed_pairs": 2,
+    "renamed_correct": 2,
+    "precision": 0.12962962962962962,
+    "recall": 0.7777777777777778,
+    "name_eq_recall": 0.7777777777777778,
+    "artifact_keys": [
+     "ptrtrans_bzip2"
+    ]
+   }
+  },
+  "overall": {
+   "libraries_with_group_b_data": 7,
+   "libraries_in_corpus": 10,
+   "denominator_note": "equal-weight mean over the 7 of 10 libraries with >=1 complete labeled group-B output: ['bzip2', 'cjson', 'genann', 'lodepng', 'qsort', 'quadtree', 'urlparser']; partial artifacts excluded: ['ptrtrans_lil', 'sactor_bzip2', 'sactor_lodepng', 'sactor_quadtree', 'sactor_tulip', 'sactor_urlparser']",
+   "tool_outputs": 9,
+   "pairs": 161,
+   "renamed_pairs": 9,
+   "renamed_correct": 7,
+   "precision": 0.5160513850930443,
+   "recall": 0.7388364436683764,
+   "name_eq_recall": 0.847351061636776
+  },
+  "rule": "mean over complete group-B tool outputs within a library, then equal weight over libraries with data; pairs are evidence volume only; renamed_correct is a count ratio (forced configuration)"
+ }
+}

@@ -16,7 +16,7 @@ res={"cell":label,"library":library,"tool":tool,"metric":metric,"theirs":0,
      "n_functions":len(vals),"n_reached":len(reached),
      "median_hits":statistics.median(reached) if reached else 0,
      "min_hits":min(reached) if reached else 0,"max_hits":max(reached) if reached else 0}
-json.dump(res,open(f"/home/yunzez/c2rust_testing/results/rq3_cells/{label}.json","w"),indent=1)
+json.dump(res,open(f"/home/yunzez/c2rust_testing/results/rq4_effectiveness/reach_cells/{label}.json","w"),indent=1)
 def leaf(nm):
     m=re.findall(r'\d+([a-zA-Z_][a-zA-Z0-9_]*)',nm); return (m[-1] if m else nm)[:36]
 top=sorted(rows.items(),key=lambda x:-x[1])[:6]

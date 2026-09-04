@@ -1,0 +1,108 @@
+{
+ "case": "sactor_quadtree",
+ "sheet_fingerprint": "65599c773a2bfe45",
+ "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+ "method": "manual reading of each C body (input/{point,bounds,node,quadtree}.c + quadtree.h) against every Rust function in assembled_unidiomatic.rs (same name, matcher proposal; no tool map exists), cross-checked with RUN.md, run1_result/batch_summary.json, per-TU {unidiomatic,idiomatic}_failure_info.json and run1.log (refusal at :2670/:2680, driver link failure at :2835) to decide which C functions SACTOR never emitted; verified that each of the 12 translated_code_unidiomatic/functions/*.rs files appears verbatim in assembled_unidiomatic.rs and that every translated function passed SACTOR's 12-sample harness (run1.log 'Test 0..11 passed successfully')",
+ "date": "2026-09-02",
+ "reviewed_by_user": false,
+ "artifact_status": "PARTIAL",
+ "artifact_status_note": "12 of 24 C functions have Rust; all 12 come from the UNIDIOMATIC phase, which is the scored phase (RUN.md 'Cell status'). Per run1_result/batch_summary.json: point.c success (2 fns, also reached the idiomatic phase — not scored), bounds.c success in the unidiomatic phase (3 fns; idiomatic phase blocked: struct quadtree_bounds failed 6/6, bounds.c__ea3019ab/idiomatic_failure_info.json), node.c 'failed' only in the idiomatic phase (unidiomatic 7/7 fns success in node.c__baf530fc/unidiomatic_failure_info.json; idiomatic died with `Dependency 'quadtree_bounds_new' of type 'function' should have been translated before use`), quadtree.c REFUSED before any LLM call (`Circular dependencies for functions is not supported yet`, run1.log:2670/2680 — insert_ <-> split_node_ mutual recursion, quadtree.c:76/109; result dir quadtree.c__047ce83c holds only config.json), driver.c failed (`Failed to link project-level harness for function lcg_next`, run1.log:2835; harness needs quadtree_new/insert/search/free from the refused TU). So the 12 quadtree.c functions have no Rust at all and are NONE; the crate does not build (libc paths unresolved). Scored on a separate PARTIAL line, never pooled with complete artifacts (RUN.md).",
+ "labels": {
+  "quadtree_point_new": {
+   "truth": "quadtree_point_new",
+   "note": "point.c:3-11 quadtree_point_new(x, y): malloc(sizeof point) or return NULL; point->x = x; point->y = y; return point -> assembled_unidiomatic.rs:41-49 quadtree_point_new(x: f64, y: f64) -> *mut quadtree_point: libc::malloc(size_of::<quadtree_point>()), null check returns null_mut, writes (*point).x/(*point).y, returns point. Same allocation, same NULL-on-failure, same two field stores; genuine translation, not a stub. Name-eq, forced and deploy matcher all say quadtree_point_new: correct. SACTOR-verified 1st attempt against 12 samples (point.c__9ec7d037/unidiomatic_failure_info.json)."
+  },
+  "quadtree_point_free": {
+   "truth": "quadtree_point_free",
+   "note": "point.c:13-16 quadtree_point_free(point): free(point) -> assembled_unidiomatic.rs:36-38 quadtree_point_free(point: *mut quadtree_point): libc::free(point.cast()). One-line identical behaviour (free(NULL) is a no-op in both). Genuine translation. Name-eq, forced and deploy matcher all say quadtree_point_free: correct (forced score 0.832 is the highest in the sheet)."
+  },
+  "quadtree_bounds_extend": {
+   "truth": "quadtree_bounds_extend",
+   "note": "bounds.c:3-10 quadtree_bounds_extend(bounds, x, y): nw->x = fmin(x, nw->x); nw->y = fmax(y, nw->y); se->x = fmax(x, se->x); se->y = fmin(y, se->y); width = fabs(nw->x - se->x); height = fabs(nw->y - se->y) -> assembled_unidiomatic.rs:52-83 quadtree_bounds_extend(bounds: *mut quadtree_bounds, x: f64, y: f64): same six assignments in the same order (rs:77-82) via nested helpers fmin/fmax/fabs (rs:54-70). Genuine translation. Deviations noticed (RQ4, not RQ1): (a) rs:71-73 adds `if bounds.is_null() { return; }` — C would dereference NULL (UB), so this only widens the defined domain; (b) the nested fmin/fmax are plain `<`/`>` comparators, not math.h fmin/fmax: with a NaN in the SECOND operand (e.g. nw.x already NaN) Rust returns NaN where C fmin/fmax return the non-NaN operand; with NaN in the first operand both return the stored value. Unreachable from the harness (finite coordinates), so SACTOR's 12-sample check could not see it. The first LLM attempt used `use libc::{fabs, fmax, fmin}` and failed E0432 (no such items in the libc crate), the 2nd attempt inlined the helpers (bounds.c__ea3019ab/unidiomatic_failure_info.json, attempts=2). Name-eq, forced and deploy matcher all say quadtree_bounds_extend: correct."
+  },
+  "quadtree_bounds_free": {
+   "truth": "quadtree_bounds_free",
+   "note": "bounds.c:12-16 quadtree_bounds_free(bounds): quadtree_point_free(bounds->nw); quadtree_point_free(bounds->se); free(bounds) -> assembled_unidiomatic.rs:86-96 quadtree_bounds_free(bounds: *mut quadtree_bounds): same two quadtree_point_free calls on (*bounds).nw / (*bounds).se (rs:93-94) then free(bounds) through a local `extern \"C\" { fn free }` declaration (rs:87-89, 95). Genuine translation. Deviation (RQ4): rs:90-92 adds a NULL guard that C lacks (C derefs NULL at bounds.c:13 -> UB), defensive widening only. Name-eq, forced and deploy matcher all say quadtree_bounds_free: correct."
+  },
+  "quadtree_bounds_new": {
+   "truth": "quadtree_bounds_new",
+   "note": "bounds.c:19-28 quadtree_bounds_new(): malloc or return NULL; nw = quadtree_point_new(1e308, -1e308); se = quadtree_point_new(-1e308, 1e308); width = height = 0; return bounds -> assembled_unidiomatic.rs:99-110 quadtree_bounds_new() -> *mut quadtree_bounds: libc::malloc(size_of::<Bounds>()), null check, (*bounds).nw = quadtree_point_new(1e308f64, -1e308f64), (*bounds).se = quadtree_point_new(-1e308f64, 1e308f64), width/height = 0.0 (rs:105-108), returns bounds. Same constants (the 1e308 literals are the harness's INFINITY adaptation, RUN.md 'Source version', present in the C reference too), same calls, same field order; neither side checks that the two point_new calls succeeded. Genuine translation. Name-eq, forced and deploy matcher all say quadtree_bounds_new: correct."
+  },
+  "quadtree_node_ispointer": {
+   "truth": "quadtree_node_ispointer",
+   "note": "node.c:5-12 quadtree_node_ispointer(node): nw != NULL && ne != NULL && sw != NULL && se != NULL && !quadtree_node_isleaf(node) -> assembled_unidiomatic.rs:157-168 quadtree_node_ispointer(node: *mut quadtree_node) -> c_int: !(*node).nw.is_null() && !ne.is_null() && !sw.is_null() && !se.is_null() && quadtree_node_isleaf(node) == 0 -> 1 else 0. Same predicate, same four children in the same order, same isleaf call. Genuine translation; distinct from quadtree_node_isempty (rs:138-149) only by the negation of the four null tests, which is exactly the C difference (node.c:7-10 `!= NULL` vs node.c:16-19 `== NULL`). Name-eq and forced matcher say quadtree_node_ispointer: correct. Deploy matcher ABSTAINS (forced score 0.439, conf -0.008): a coverage loss, not an error; the low confidence is plausibly the near-duplicate isempty/ispointer pair."
+  },
+  "quadtree_node_isempty": {
+   "truth": "quadtree_node_isempty",
+   "note": "node.c:14-21 quadtree_node_isempty(node): nw == NULL && ne == NULL && sw == NULL && se == NULL && !quadtree_node_isleaf(node) -> assembled_unidiomatic.rs:138-149 quadtree_node_isempty(node: *mut quadtree_node) -> c_int: (*node).nw.is_null() && ne.is_null() && sw.is_null() && se.is_null() && quadtree_node_isleaf(node) == 0 -> 1 else 0. Same predicate, same order. Genuine translation (its mirror image quadtree_node_ispointer at rs:157 negates the four null tests, matching node.c:7-10). Name-eq and forced matcher say quadtree_node_isempty: correct. Deploy matcher ABSTAINS (forced 0.455, conf 0.008): coverage loss only."
+  },
+  "quadtree_node_isleaf": {
+   "truth": "quadtree_node_isleaf",
+   "note": "node.c:23-26 quadtree_node_isleaf(node): return node->point != NULL -> assembled_unidiomatic.rs:152-154 quadtree_node_isleaf(node: *mut quadtree_node) -> c_int: ((*node).point != null_mut()) as c_int. Identical one-line predicate. Genuine translation. Name-eq, forced and deploy matcher all say quadtree_node_isleaf: correct."
+  },
+  "quadtree_node_reset": {
+   "truth": "quadtree_node_reset",
+   "note": "node.c:28-32 quadtree_node_reset(node, key_free): quadtree_point_free(node->point); key_free(node->key) -> assembled_unidiomatic.rs:189-195 quadtree_node_reset(node: *mut quadtree_node, key_free: unsafe extern \"C\" fn(*mut c_void)): quadtree_point_free((*node).point); key_free((*node).key). Same two calls in the same order. Genuine translation. Type note (no reachable divergence): the Rust key_free is a non-nullable fn item whereas the C pointer could be NULL, but every C caller passes a real function (quadtree.c:31-35 reset_node_ substitutes elision_ when tree->key_free is NULL; node.c:69 forwards its own argument). Name-eq, forced and deploy matcher all say quadtree_node_reset: correct."
+  },
+  "quadtree_node_new": {
+   "truth": "quadtree_node_new",
+   "note": "node.c:35-48 quadtree_node_new(): malloc or return NULL; ne = nw = se = sw = NULL; point = bounds = key = NULL; return node -> assembled_unidiomatic.rs:171-186 quadtree_node_new() -> *mut quadtree_node: malloc(size_of::<quadtree_node>()), null check -> null_mut, seven null_mut() stores in the same field order (ne, nw, se, sw, point, bounds, key; rs:178-184), returns node. Genuine translation. Name-eq, forced and deploy matcher all say quadtree_node_new: correct (forced score 0.386 is the lowest accepted score in the sheet, but deploy still committed)."
+  },
+  "quadtree_node_with_bounds": {
+   "truth": "quadtree_node_with_bounds",
+   "note": "node.c:50-57 quadtree_node_with_bounds(minx, miny, maxx, maxy): node = quadtree_node_new() or return NULL; node->bounds = quadtree_bounds_new() or return NULL; quadtree_bounds_extend(node->bounds, maxx, maxy); quadtree_bounds_extend(node->bounds, minx, miny); return node -> assembled_unidiomatic.rs:198-216 quadtree_node_with_bounds(minx, miny, maxx, maxy: f64) -> *mut quadtree_node: same two constructor calls with the same two early null returns (rs:205-212, including the C leak of `node` when bounds_new fails), same two bounds_extend calls with (maxx, maxy) then (minx, miny) (rs:213-214), returns node. Genuine translation. Name-eq and forced matcher say quadtree_node_with_bounds: correct. Deploy matcher ABSTAINS (forced 0.411, conf -0.085, the most negative confidence in the sheet): coverage loss only."
+  },
+  "quadtree_node_free": {
+   "truth": "quadtree_node_free",
+   "note": "node.c:61-71 quadtree_node_free(node, key_free): recurse into nw, ne, sw, se when non-NULL; quadtree_bounds_free(node->bounds); quadtree_node_reset(node, key_free); free(node) -> assembled_unidiomatic.rs:113-135 quadtree_node_free(node: *mut quadtree_node, key_free: unsafe extern \"C\" fn(*mut c_void)): same four guarded recursive calls in the same order nw, ne, sw, se (rs:120-131), then quadtree_bounds_free((*node).bounds), quadtree_node_reset(node, key_free), libc::free(node.cast()) (rs:132-134). Genuine translation. Deviation (RQ4): rs:117-119 adds `if node.is_null() { return; }` which C lacks (node.c:63 derefs NULL -> UB), defensive widening only. Name-eq, forced and deploy matcher all say quadtree_node_free: correct."
+  },
+  "node_contains_": {
+   "truth": "NONE",
+   "note": "quadtree.c:17-24 static node_contains_(outer, it): outer->bounds != NULL && bounds->nw->x < it->x && nw->y > it->y && se->x > it->x && se->y < it->y. Never emitted: the whole quadtree.c TU was refused at dependency analysis before any LLM call (`ValueError: Circular dependencies for functions is not supported yet`, run1.log:2670/2680; batch_summary.json quadtree.c__047ce83c status failed; result dir contains only config.json, no translated_code_* and no failure_info). No Rust function in assembled_unidiomatic.rs performs a bounds-containment test. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "elision_": {
+   "truth": "NONE",
+   "note": "quadtree.c:26-27 static elision_(key): empty body (no-op key_free used when tree->key_free is NULL). Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). This is an empty C function, not a Rust placeholder, so the STUB vocabulary does not apply; there is no Rust no-op fn(*mut c_void) anywhere in assembled_unidiomatic.rs. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "reset_node_": {
+   "truth": "NONE",
+   "note": "quadtree.c:29-36 static reset_node_(tree, node): quadtree_node_reset(node, tree->key_free ? tree->key_free : elision_). Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). Not to be confused with quadtree_node_reset (node.c:28, Rust rs:189), which is its callee and takes an explicit key_free instead of a quadtree_t; no Rust function takes a tree or substitutes an elision callback. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "get_quadrant_": {
+   "truth": "NONE",
+   "note": "quadtree.c:38-45 static get_quadrant_(root, point): returns the first of root->nw/ne/sw/se whose node_contains_ holds, else NULL. Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). No Rust counterpart (node_contains_ has none either). Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "split_node_": {
+   "truth": "NONE",
+   "note": "quadtree.c:48-77 static split_node_(tree, node): builds four quadtree_node_with_bounds children from bounds->nw and width/height halves, attaches them, detaches the old point/key and re-inserts via insert_ (quadtree.c:76). This is one half of the mutual recursion (insert_ -> split_node_ at quadtree.c:109, split_node_ -> insert_ at :76) that made SACTOR refuse the TU: `Circular dependencies for functions is not supported yet` (run1.log:2670/2680; batch_summary.json quadtree.c__047ce83c failed; RUN.md). No Rust counterpart. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "find_": {
+   "truth": "NONE",
+   "note": "quadtree.c:80-93 static find_(node, x, y): if isleaf, return node->point on exact (x, y) match; else recurse into get_quadrant_(node, &test); return NULL. Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). No Rust function searches a node. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "insert_": {
+   "truth": "NONE",
+   "note": "quadtree.c:96-118 static insert_(tree, root, point, key): isempty -> store point/key, return 1; isleaf -> same coordinates: reset_node_ and overwrite, return 0, else split_node_ then recurse; ispointer -> recurse into get_quadrant_ or return 0. The other half of the insert_ <-> split_node_ cycle (quadtree.c:109 / :76) that triggered SACTOR's refusal (`Circular dependencies for functions is not supported yet`, run1.log:2670/2680; batch_summary.json). No Rust counterpart. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "quadtree_new": {
+   "truth": "NONE",
+   "note": "quadtree.c:122-133 quadtree_new(minx, miny, maxx, maxy): malloc quadtree_t, root = quadtree_node_with_bounds(...), key_free = NULL, length = 0. Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). Only the leaf constructor it calls (quadtree_node_with_bounds, rs:198) exists; no Rust function allocates a quadtree_t (the struct itself was translated only inside the driver.c attempt, driver.c__585b2fa3/unidiomatic_failure_info.json, and is not in assembled_unidiomatic.rs). Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "quadtree_insert": {
+   "truth": "NONE",
+   "note": "quadtree.c:135-143 quadtree_insert(tree, x, y, key): quadtree_point_new, node_contains_(tree->root) check, insert_, tree->length++. Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). No Rust counterpart. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "quadtree_search": {
+   "truth": "NONE",
+   "note": "quadtree.c:145-148 quadtree_search(tree, x, y): return find_(tree->root, x, y). Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). No Rust counterpart. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "quadtree_free": {
+   "truth": "NONE",
+   "note": "quadtree.c:150-158 quadtree_free(tree): quadtree_node_free(tree->root, tree->key_free ? tree->key_free : elision_); free(tree). Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). Not to be confused with its callee quadtree_node_free (node.c:61, rs:113), which takes a node and an explicit key_free; no Rust function takes a quadtree_t. Matcher deploy NONE, no forced proposal: consistent."
+  },
+  "quadtree_walk": {
+   "truth": "NONE",
+   "note": "quadtree.c:160-169 quadtree_walk(root, descent, ascent): descent(root); recurse into nw, ne, sw, se when non-NULL; ascent(root). Never emitted: quadtree.c refused wholesale (Circular dependencies, run1.log:2670/2680, batch_summary.json). The only Rust function with the same four-child recursion is quadtree_node_free (rs:113-135), which frees rather than invoking callbacks and is the translation of node.c:61, not of this function. Matcher deploy NONE, no forced proposal: consistent."
+  }
+ }
+}

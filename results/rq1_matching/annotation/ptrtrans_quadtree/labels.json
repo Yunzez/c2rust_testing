@@ -1,0 +1,106 @@
+{
+ "case": "ptrtrans_quadtree",
+ "sheet_fingerprint": "eaa3207cdb42cbe2",
+ "labeler": "Claude (claude-fable-5-1), session 6278f822",
+ "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+ "date": "2026-09-01",
+ "reviewed_by_user": false,
+ "labels": {
+  "quadtree_bounds_extend": {
+   "truth": "quadtree_bounds_extend",
+   "note": "bounds.c:3 -> src/bounds.rs:14, same fmin/fmax/fabs updates on nw/se + width/height"
+  },
+  "quadtree_bounds_new": {
+   "truth": "quadtree_bounds_new",
+   "note": "bounds.c:19 -> src/bounds.rs:3, allocates bounds with nw=(INF,-INF) se=(-INF,INF) width=height=0"
+  },
+  "quadtree_node_ispointer": {
+   "truth": "quadtree_node_ispointer",
+   "note": "node.c:6 -> src/node.rs:33: nw&&ne&&sw&&se all Some && !isleaf. Matcher forced proposal quadtree_node_isempty is WRONG (isempty tests is_none)"
+  },
+  "quadtree_node_isempty": {
+   "truth": "quadtree_node_isempty",
+   "note": "node.c:15 -> src/node.rs:44: all four children None && !isleaf. Matcher forced proposal quadtree_node_ispointer is WRONG"
+  },
+  "quadtree_node_isleaf": {
+   "truth": "quadtree_node_isleaf",
+   "note": "node.c:24 -> src/node.rs:14: point.is_some()"
+  },
+  "quadtree_node_new": {
+   "truth": "quadtree_node_new",
+   "note": "node.c:36 -> src/node.rs:2: Box::new(QuadtreeNode{all None})"
+  },
+  "quadtree_node_with_bounds": {
+   "truth": "quadtree_node_with_bounds",
+   "note": "node.c:50 -> src/node.rs:20: node_new + bounds_new + two bounds_extend calls"
+  },
+  "quadtree_point_new": {
+   "truth": "quadtree_point_new",
+   "note": "point.c:4 -> src/point.rs:3"
+  },
+  "node_contains_": {
+   "truth": "node_contains_",
+   "note": "quadtree.c:18 -> src/quadtree.rs:29, same four bound comparisons on bounds.nw/se"
+  },
+  "get_quadrant_": {
+   "truth": "get_quadrant_",
+   "note": "quadtree.c:39 -> src/quadtree.rs:39, node_contains_ over nw/ne/sw/se"
+  },
+  "split_node_": {
+   "truth": "split_node_",
+   "note": "quadtree.c:49 -> src/quadtree.rs:131 (no map record for this C fn; PtrTrans lists it under insert_'s record): four quadtree_node_with_bounds calls with the same x/y/hw/hh arithmetic, then re-insert of old point/key"
+  },
+  "find_": {
+   "truth": "find_",
+   "note": "quadtree.c:81 -> src/quadtree.rs:74: isleaf -> compare point, else get_quadrant_ + recurse"
+  },
+  "insert_": {
+   "truth": "insert_",
+   "note": "quadtree.c:97 -> src/quadtree.rs:95: isempty/isleaf/ispointer branches; PtrTrans record lists 'insert_;split_node_' but split_node_ is a separate Rust fn (quadtree.rs:131), so insert_ maps 1:1 to insert_, not SPLIT"
+  },
+  "quadtree_new": {
+   "truth": "quadtree_new",
+   "note": "quadtree.c:123 -> src/quadtree.rs:59"
+  },
+  "quadtree_insert": {
+   "truth": "quadtree_insert",
+   "note": "quadtree.c:136 -> src/quadtree.rs:163: point new, node_contains_ check, insert_, length+=1"
+  },
+  "quadtree_search": {
+   "truth": "quadtree_search",
+   "note": "quadtree.c:146 -> src/quadtree.rs:160: find_(tree.root,x,y)"
+  },
+  "quadtree_walk": {
+   "truth": "quadtree_walk",
+   "note": "quadtree.c:161 -> src/quadtree.rs:3: descent, recurse nw/ne/sw/se, ascent"
+  },
+  "quadtree_bounds_free": {
+   "truth": "NONE",
+   "note": "bounds.c:12 free of nw/se/bounds; PtrTrans elided it (Box ownership, no impl Drop anywhere in the crate); no Rust fn frees bounds"
+  },
+  "quadtree_node_reset": {
+   "truth": "NONE",
+   "note": "node.c:29 (point_free + key_free callback); elided; Rust insert_ (quadtree.rs:107-113) overwrites point/key without any reset call"
+  },
+  "quadtree_node_free": {
+   "truth": "NONE",
+   "note": "node.c:62 recursive free; elided, no Drop impl"
+  },
+  "quadtree_point_free": {
+   "truth": "NONE",
+   "note": "point.c:14 free(point); elided"
+  },
+  "elision_": {
+   "truth": "NONE",
+   "note": "quadtree.c:27 empty static key_free stub; elided (no caller survives in Rust)"
+  },
+  "reset_node_": {
+   "truth": "NONE",
+   "note": "quadtree.c:30 static wrapper around quadtree_node_reset; elided, its only call site (insert_ C line 104) has no Rust counterpart"
+  },
+  "quadtree_free": {
+   "truth": "NONE",
+   "note": "quadtree.c:151 free tree; elided, no Drop impl"
+  }
+ }
+}

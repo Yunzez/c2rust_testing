@@ -1,0 +1,378 @@
+SVF Struct Analysis Start
+Initializing SVF...
+Building SVFIR...
+Collecting struct information...
+Struct information collection completed, found 7 structs
+Executing Context-Sensitive Pointer Analysis...
+
+*********General Stats***************
+################ (program : linked_program.ll)###############
+AddrsNum            1118
+BBWith2Succ         571
+BBWith3Succ         65
+CallsNum            1016
+ConstArrayObj       1
+ConstStructObj      0
+ConstantObj         0
+CopysNum            364
+FIObjNum            25
+FSObjNum            886
+FunctionObjs        175
+GepsNum             1674
+GlobalObjs          5
+HeapObjs            40
+IndCallSites        11
+LoadsNum            3826
+MaxStructSize       21
+NonPtrObj           427
+ReturnsNum          482
+StackObjs           690
+StoresNum           1380
+TotalCallSite       846
+TotalFieldObjects   63
+TotalObjects        912
+TotalPTASVFStmts    7497
+TotalPointers       13476
+TotalSVFStmts       12615
+VarArrayObj         7
+VarStructObj        10
+----------------Time and memory stats--------------------
+LLVMIRTime          0.103
+SVFIRTime           0.079
+SymbolTableTime     0.016
+#######################################################
+
+*********CallGraph Stats (Andersen analysis)***************
+################ (program : linked_program.ll)###############
+----------------Numbers stats----------------------------
+CalRetPairInCycle   128
+MaxNodeInCycle      32
+NodeInCycle         45
+TotalCycle          3
+TotalEdge           899
+TotalNode           175
+#######################################################
+
+*********Andersen Pointer Analysis Stats***************
+################ (program : linked_program.ll)###############
+----------------Time and memory stats--------------------
+AvgIn/OutAddrEdge   0.139252
+AvgIn/OutCopyEdge   0.921136
+AvgIn/OutEdge       1.55115
+AvgIn/OutLoadEdge   0.385008
+AvgIn/OutStoreEdge  0.105753
+AvgPtsSetSize       0.699011
+AvgTopLvlPtsSize    1.52509
+CollapseTime        0
+CopyGepTime         0
+LoadStoreTime       0
+MemoryUsageVmrss    17312
+MemoryUsageVmsize   16668
+SCCDetectTime       0
+SCCMergeTime        0
+TotalTime           0.102
+UpdateCGTime        0
+----------------Numbers stats----------------------------
+AddrProcessed       1025
+CopyProcessed       5607
+DummyFieldPtrs      11
+FieldObjs           63
+GepProcessed        1776
+IndCallSites        11
+IndEdgeSolved       64
+LoadProcessed       2745
+LocalVarInRecur     77
+MaxInAddrEdge       1
+MaxInCopyEdge       90
+MaxInLoadEdge       41
+MaxInStoreEdge      19
+MaxNodesInSCC       135
+MaxOutAddrEdge      115
+MaxOutCopyEdge      563
+MaxOutLoadEdge      122
+MaxOutStoreEdge     76
+MaxPtsSetSize       58
+MemObjects          912
+NodesInCycles       390
+NullPointer         18
+NumOfAddrs          927
+NumOfCGEdge         9399
+NumOfCGNode         6831
+NumOfCopys          4458
+NumOfFieldExpand    0
+NumOfGeps           1674
+NumOfLoads          2563
+NumOfSCCDetect      10
+NumOfSFRs           0
+NumOfStores         704
+NumOfValidNode      6657
+NumOfValidObjNode   848
+Pointers            13465
+PointsToBlkPtr      0
+PointsToConstPtr    122
+SolveIterations     10
+StoreProcessed      727
+TotalCycleNum       10
+TotalObjects        975
+TotalPWCCycleNum    0
+TotalPointers       13476
+#######################################################
+
+****Persistent Points-To Cache Statistics: Andersen's analysis bitvector****
+################ (program : linked_program.ll)###############
+UniquePointsToSets       1106
+TotalUnions              9127
+PropertyUnions           7747
+UniqueUnions             136
+LookupUnions             978
+PreemptiveUnions         266
+TotalComplements         69753
+PropertyComplements      69024
+UniqueComplements        37
+LookupComplements        655
+PreemptiveComplements    37
+TotalIntersections       4064
+PropertyIntersections    3984
+UniqueIntersections      2
+LookupIntersections      2
+PreemptiveIntersections  76
+#######################################################
+
+*********Memory SSA Statistics***************
+################ (program : linked_program.ll)###############
+----------------Time and memory stats--------------------
+AverageRegSize      2.18377
+GenMUCHITime        0.013
+GenRegionTime       0.04
+InsertPHITime       0
+SSARenameTime       0.004
+TotalMSSATime       0.057
+----------------Numbers stats----------------------------
+BBHasMSSAPhi        245
+CSChiNode           1595
+CSHasChi            403
+CSHasMu             691
+CSMuNode            2682
+FunEntryChi         1334
+FunHasEntryChi      139
+FunHasRetMu         140
+FunRetMu            1334
+LoadHasMu           2631
+LoadMuNode          2647
+MSSAPhi             1605
+MaxRegSize          33
+MemRegions          653
+StoreChiNode        735
+StoreHasChi         729
+#######################################################
+
+*********SVFG Statistics***************
+################ (program : linked_program.ll)###############
+----------------Time and memory stats--------------------
+ATNodeTime          0.01
+AvgWeight           1.80663
+ConnDirEdgeTime     0
+ConnIndEdgeTime     0.018
+OptTime             0
+TLNodeTime          0
+TotalTime           0.028
+----------------Numbers stats----------------------------
+ActualIn            2682
+ActualOut           1595
+ActualParam         1122
+ActualRet           353
+Addr                1025
+AvgInDegree         1
+AvgIndInDeg         1
+AvgIndOutDeg        1
+AvgOutDegree        1
+Copy                50
+DirectCallEdge      885
+DirectEdge          8477
+DirectRetEdge       349
+FormalIn            1334
+FormalOut           1334
+FormalParam         231
+FormalRet           102
+Gep                 1674
+IndCallEdge         3064
+IndRetEdge          1919
+IndirectEdge        15892
+IndirectEdgeLabels  28711
+Load                2631
+MSSAPhi             1605
+MaxInDegree         281
+MaxIndInDeg         281
+MaxIndOutDeg        131
+MaxOutDegree        154
+PHI                 132
+Store               751
+TotalEdge           24369
+TotalNode           16622
+#######################################################
+
+*********Memory SSA Statistics***************
+################ (program : linked_program.ll)###############
+----------------Time and memory stats--------------------
+AverageRegSize      2.18377
+GenMUCHITime        0.027
+GenRegionTime       0.041
+InsertPHITime       0.002
+SSARenameTime       0.007
+TotalMSSATime       0.061
+----------------Numbers stats----------------------------
+BBHasMSSAPhi        245
+CSChiNode           1595
+CSHasChi            403
+CSHasMu             691
+CSMuNode            2682
+FunEntryChi         1334
+FunHasEntryChi      139
+FunHasRetMu         140
+FunRetMu            1334
+LoadHasMu           2631
+LoadMuNode          2647
+MSSAPhi             1605
+MaxRegSize          33
+MemRegions          653
+StoreChiNode        735
+StoreHasChi         729
+#######################################################
+
+*********SVFG Statistics***************
+################ (program : linked_program.ll)###############
+----------------Time and memory stats--------------------
+ATNodeTime          0.008
+AvgWeight           1.80663
+ConnDirEdgeTime     0
+ConnIndEdgeTime     0.016
+OptTime             0
+TLNodeTime          0
+TotalTime           0.024
+----------------Numbers stats----------------------------
+ActualIn            2682
+ActualOut           1595
+ActualParam         1122
+ActualRet           353
+Addr                1025
+AvgInDegree         1
+AvgIndInDeg         1
+AvgIndOutDeg        1
+AvgOutDegree        1
+Copy                50
+DirectCallEdge      885
+DirectEdge          8477
+DirectRetEdge       349
+FormalIn            1334
+FormalOut           1334
+FormalParam         231
+FormalRet           102
+Gep                 1674
+IndCallEdge         3064
+IndRetEdge          1919
+IndirectEdge        15892
+IndirectEdgeLabels  28711
+Load                2631
+MSSAPhi             1605
+MaxInDegree         281
+MaxIndInDeg         281
+MaxIndOutDeg        131
+MaxOutDegree        154
+PHI                 132
+Store               751
+TotalEdge           24369
+TotalNode           16622
+#######################################################
+Analyzing structs with pointer fields...
+Analyzing structs with pointer fields...
+Collecting struct information...
+Struct information collection completed, found 7 structs
+Analyzing struct: struct._lil_value_t
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+Analyzing struct: struct._lil_list_t
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+Analyzing struct: struct._lil_env_t
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+Analyzing struct: struct._lil_func_t
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Analyzing the mutability of the field...
+Analyzing struct: struct._lil_var_t
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+Analyzing struct: struct._lil_t
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+  Analyzing the mutability of the field...
+Analyzing struct: struct._expreval_t
+  Getting the usage scenario of the structure...
+  fieldNodeGroups...
+  Analyzing the mutability of the field...
+Struct Analysis Completed.

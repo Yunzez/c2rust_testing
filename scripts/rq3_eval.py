@@ -14,7 +14,7 @@ Usage:
       --truth-dir experiments/llm_transpiler/truth \
       --c-pairs   benchmark/pairs \
       --rust-out  experiments/llm_transpiler/out \
-      [--json results/rq3_rows/rawllm.json]
+      [--json results/rq1_matching/rows/rawllm.json]
 """
 from __future__ import annotations
 import argparse, json, re, subprocess, sys, tempfile

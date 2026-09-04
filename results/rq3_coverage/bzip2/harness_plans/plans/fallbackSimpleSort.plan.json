@@ -1,0 +1,222 @@
+{
+ "boundary": "fallbackSimpleSort",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "fmap",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "i is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 44,
+     "col": 16,
+     "snippet": "tmp = fmap[i];",
+     "note": "fmap[unknown(i is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 46,
+     "col": 52,
+     "snippet": "for ( j = i+4; j <= hi && ec_tmp > eclass[fmap[j]]; j += 4 )",
+     "note": "fmap[hi] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 47,
+     "col": 13,
+     "snippet": "fmap[j-4] = fmap[j];",
+     "note": "fmap[hi-4] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 47,
+     "col": 25,
+     "snippet": "fmap[j-4] = fmap[j];",
+     "note": "fmap[hi] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 48,
+     "col": 10,
+     "snippet": "fmap[j-4] = tmp;",
+     "note": "fmap[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 53,
+     "col": 13,
+     "snippet": "tmp = fmap[i];",
+     "note": "fmap[unknown(i is not a loop induction variable in scope)] read"
+    }
+   ]
+  },
+  {
+   "param": "eclass",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "tmp is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 45,
+     "col": 19,
+     "snippet": "ec_tmp = eclass[tmp];",
+     "note": "eclass[unknown(tmp is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 46,
+     "col": 45,
+     "snippet": "for ( j = i+4; j <= hi && ec_tmp > eclass[fmap[j]]; j += 4 )",
+     "note": "eclass[4294967295] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 54,
+     "col": 16,
+     "snippet": "ec_tmp = eclass[tmp];",
+     "note": "eclass[unknown(tmp is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 55,
+     "col": 42,
+     "snippet": "for ( j = i+1; j <= hi && ec_tmp > eclass[fmap[j]]; j++ )",
+     "note": "eclass[4294967295] read"
+    }
+   ]
+  },
+  {
+   "param": "lo",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 1024,
+    "derivation": [
+     "policy_trip_clamp"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "blocksort.c",
+     "line": 43,
+     "col": 7,
+     "snippet": "for ( i = hi-4; i >= lo; i-- ) {",
+     "note": "lo appears in this loop's control expressions"
+    },
+    {
+     "rule": "policy_trip_clamp",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_trip = 1024",
+     "note": "lo controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+    }
+   ]
+  },
+  {
+   "param": "hi",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 1024,
+    "derivation": [
+     "policy_trip_clamp",
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "blocksort.c",
+     "line": 43,
+     "col": 7,
+     "snippet": "for ( i = hi-4; i >= lo; i-- ) {",
+     "note": "hi appears in this loop's control expressions"
+    },
+    {
+     "rule": "policy_trip_clamp",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_trip = 1024",
+     "note": "hi controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+    },
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "hi can influence an index into fmap; the harness allocates 4096 elements, so hi <= 4095"
+    }
+   ]
+  }
+ ],
+ "liveness": [
+  {
+   "param": "hi",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "blocksort.c",
+    "line": 43,
+    "col": 7,
+    "snippet": "for ( i = hi-4; i >= lo; i-- ) {",
+    "note": "hi appears in this loop's control expressions"
+   }
+  },
+  {
+   "param": "lo",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "blocksort.c",
+    "line": 43,
+    "col": 7,
+    "snippet": "for ( i = hi-4; i >= lo; i-- ) {",
+    "note": "lo appears in this loop's control expressions"
+   }
+  }
+ ],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

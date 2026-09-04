@@ -6,7 +6,7 @@ micro/macro-aggregated: matched / extra_accepted / ambiguous / correct and
 precision / recall / coverage, across FIVE methods (the ablation ladder) + the headline
 main config.
 
-Methods (see results/rq3_eval_plan.md Table 2):
+Methods (see results/archive/rq3_eval_plan.md Table 2):
   name_eq      identity c->c from truth (no matcher) — recall only (what name-based oracles get)
   shape_only   io-SHAPE-ONLY node sim, forced (--shape-only): "are signatures enough?" baseline
   node_only    full per-function sim, NO topology, forced (--no-topo)
@@ -26,7 +26,7 @@ Usage:
   eval_rq3_matcher.py --source "raw-LLM (gpt-5-mini)" \
       --truth-dir experiments/llm_transpiler/truth \
       --c-pairs   benchmark/pairs --rust-out experiments/llm_transpiler/out \
-      --json results/rq3_rows/rawllm_gpt5mini.v2.json
+      --json results/rq1_matching/rows/rawllm_gpt5mini.v2.json
 """
 from __future__ import annotations
 import argparse, json, subprocess, sys, tempfile

@@ -1,0 +1,380 @@
+[
+ {
+  "artifact": "crash-00a965fa11946f98d9863d55bc66ba70ef27fa96",
+  "size": 100,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 c_parse_string cJSON.c:205",
+    "#1 c_cJSON_ParseWithOpts cJSON.c:330",
+    "#2 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:145",
+    "#3 rust_fuzzer_test_input lib.rs:276"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13d956) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7bd18d1dfd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bd18d1dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bd18d1dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bd18d1dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bd18d1dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x7bd18d1e0000: fa fa 00 00 00 00 00 00[fa]fa fa fa fa fa fa fa\n  0x7bd18d1e0080: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bd18d1e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bd18d1e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bd18d1e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bd18d1e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910696==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:470",
+    "#1 cjson_c2rust::parse_value lib.rs:914",
+    "#2 cJSON_ParseWithOpts lib.rs:817",
+    "#3 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:150"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b432) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7b5da17dfd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b5da17dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b5da17dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b5da17dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b5da17dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x7b5da17e0000: fa fa 00 00 00 00 00 00[fa]fa fa fa fa fa fa fa\n  0x7b5da17e0080: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b5da17e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b5da17e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b5da17e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b5da17e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910699==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:470",
+    "#1 cjson_c2rust::parse_value lib.rs:914",
+    "#2 cJSON_ParseWithOpts lib.rs:817",
+    "#3 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:159"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b632) (BuildId: a5140d51dbf31d7f88c9908acb6a3d052b9ce406) \nShadow bytes around the buggy address:\n  0x7b44f85dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b44f85dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b44f85dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b44f85dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b44f85e0000: fa fa 00 00 00 00 00 00 fa fa 00 00 00 00 00 00\n=>0x7b44f85e0080: fa fa 00 00 00 00 00 00[fa]fa fa fa fa fa fa fa\n  0x7b44f85e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b44f85e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b44f85e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b44f85e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b44f85e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910702==ABORTING\n"
+  }
+ },
+ {
+  "artifact": "crash-02a471dc40efefb3f175def8ade99608b247e16d",
+  "size": 33,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 c_parse_string cJSON.c:197",
+    "#1 c_parse_object cJSON.c:525",
+    "#2 c_parse_object cJSON.c:529",
+    "#3 c_cJSON_ParseWithOpts cJSON.c:330"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13d189) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7b83ac3dfd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b83ac3dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b83ac3dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b83ac3dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b83ac3dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x7b83ac3e0000: fa fa fa fa 00 00 00 00 00 00 00 00[fa]fa fa fa\n  0x7b83ac3e0080: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n  0x7b83ac3e0100: 00 00 00 00 fa fa fa fa 00 00 00 00 00 00 00 00\n  0x7b83ac3e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b83ac3e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b83ac3e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910777==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:446",
+    "#1 cjson_c2rust::parse_object lib.rs:1243",
+    "#2 cjson_c2rust::parse_value lib.rs:925",
+    "#3 cjson_c2rust::parse_object lib.rs:1253"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b3b0) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7bde829dfd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bde829dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bde829dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bde829dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bde829dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x7bde829e0000: fa fa fa fa 00 00 00 00 00 00 00 00[fa]fa fa fa\n  0x7bde829e0080: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n  0x7bde829e0100: 00 00 00 00 fa fa fa fa 00 00 00 00 00 00 00 00\n  0x7bde829e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bde829e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bde829e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910780==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:446",
+    "#1 cjson_c2rust::parse_object lib.rs:1243",
+    "#2 cjson_c2rust::parse_value lib.rs:925",
+    "#3 cjson_c2rust::parse_object lib.rs:1253"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b5b0) (BuildId: a5140d51dbf31d7f88c9908acb6a3d052b9ce406) \nShadow bytes around the buggy address:\n  0x7c2e535dfd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c2e535dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c2e535dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c2e535dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c2e535dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x7c2e535e0000: fa fa fa fa 00 00 00 00 00 00 00 00[fa]fa fa fa\n  0x7c2e535e0080: fd fd fd fd fd fd fd fd fa fa fa fa fd fd fd fd\n  0x7c2e535e0100: fd fd fd fd fa fa fa fa fd fd fd fd fd fd fd fd\n  0x7c2e535e0180: fa fa fa fa 00 00 00 00 00 00 00 00 fa fa fa fa\n  0x7c2e535e0200: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n  0x7c2e535e0280: 00 00 00 00 fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910783==ABORTING\n"
+  }
+ },
+ {
+  "artifact": "crash-03a228c644fa6b6c81996838072fa2b558e342a9",
+  "size": 63,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 c_parse_string cJSON.c:203",
+    "#1 c_cJSON_ParseWithOpts cJSON.c:330",
+    "#2 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:145",
+    "#3 rust_fuzzer_test_input lib.rs:276"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13d8ef) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7b7ef0ddfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b7ef0ddff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b7ef0ddff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b7ef0de0000: fa fa fa fa 00 00 00 00 00 00 00 07 fa fa fa fa\n  0x7b7ef0de0080: 00 00 00 00 00 00 00 07 fa fa fa fa 00 00 00 00\n=>0x7b7ef0de0100: 00 00 00 00[fa]fa fa fa 00 00 00 00 00 00 00 00\n  0x7b7ef0de0180: fa fa fa fa 00 00 00 00 00 00 00 04 fa fa fa fa\n  0x7b7ef0de0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b7ef0de0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b7ef0de0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b7ef0de0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910827==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:464",
+    "#1 cjson_c2rust::parse_value lib.rs:914",
+    "#2 cJSON_ParseWithOpts lib.rs:817",
+    "#3 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:150"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b402) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7c070a5dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c070a5dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c070a5dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c070a5e0000: fa fa fa fa 00 00 00 00 00 00 00 07 fa fa fa fa\n  0x7c070a5e0080: 00 00 00 00 00 00 00 07 fa fa fa fa 00 00 00 00\n=>0x7c070a5e0100: 00 00 00 00[fa]fa fa fa 00 00 00 00 00 00 00 00\n  0x7c070a5e0180: fa fa fa fa 00 00 00 00 00 00 00 04 fa fa fa fa\n  0x7c070a5e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c070a5e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c070a5e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c070a5e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910830==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:464",
+    "#1 cjson_c2rust::parse_value lib.rs:914",
+    "#2 cJSON_ParseWithOpts lib.rs:817",
+    "#3 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:159"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b602) (BuildId: a5140d51dbf31d7f88c9908acb6a3d052b9ce406) \nShadow bytes around the buggy address:\n  0x7be8b31dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7be8b31dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7be8b31dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7be8b31e0000: fa fa fa fa 00 00 00 00 00 00 00 07 fa fa fa fa\n  0x7be8b31e0080: 00 00 00 00 00 00 00 07 fa fa fa fa 00 00 00 00\n=>0x7be8b31e0100: 00 00 00 00[fa]fa fa fa 00 00 00 00 00 00 00 00\n  0x7be8b31e0180: fa fa fa fa 00 00 00 00 00 00 00 04 fa fa fa fa\n  0x7be8b31e0200: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n  0x7be8b31e0280: 00 00 00 04 fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7be8b31e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7be8b31e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1910833==ABORTING\n"
+  }
+ },
+ {
+  "artifact": "crash-119739c4e20d4bfd395e24e333ac0a06eb425f71",
+  "size": 97,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 c_parse_string cJSON.c:244",
+    "#1 c_parse_object cJSON.c:525",
+    "#2 c_parse_object cJSON.c:529",
+    "#3 c_cJSON_ParseWithOpts cJSON.c:330"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13d8bd) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7b4c101dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b4c101dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b4c101dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b4c101e0000: fa fa 00 00 00 fa fa fa 00 00 00 fa fa fa 00 00\n  0x7b4c101e0080: 00 00 fa fa 00 00 00 fa fa fa 00 00 00 00 fa fa\n=>0x7b4c101e0100: 00 00 00 00 fa fa fd fd fd fd fa fa 00 00[03]fa\n  0x7b4c101e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b4c101e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b4c101e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b4c101e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b4c101e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1911190==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:617",
+    "#1 cjson_c2rust::parse_object lib.rs:1243",
+    "#2 cjson_c2rust::parse_value lib.rs:925",
+    "#3 cjson_c2rust::parse_object lib.rs:1253"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b688) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7b39ac9dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b39ac9dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b39ac9dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b39ac9e0000: fa fa 00 00 00 fa fa fa 00 00 00 fa fa fa 00 00\n  0x7b39ac9e0080: 00 00 fa fa 00 00 00 fa fa fa 00 00 00 00 fa fa\n=>0x7b39ac9e0100: 00 00 00 00 fa fa fd fd fd fd fa fa 00 00[03]fa\n  0x7b39ac9e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b39ac9e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b39ac9e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b39ac9e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b39ac9e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1911193==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:617",
+    "#1 cjson_c2rust::parse_object lib.rs:1243",
+    "#2 cjson_c2rust::parse_value lib.rs:925",
+    "#3 cjson_c2rust::parse_object lib.rs:1253"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b888) (BuildId: a5140d51dbf31d7f88c9908acb6a3d052b9ce406) \nShadow bytes around the buggy address:\n  0x7bf2defdfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bf2defdff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bf2defdff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bf2defe0000: fa fa 00 00 00 fa fa fa 00 00 00 00 fa fa 00 00\n  0x7bf2defe0080: 00 fa fa fa 00 00 00 00 fa fa 00 00 00 00 fa fa\n=>0x7bf2defe0100: fd fd fd fd fa fa fd fd fd fa fa fa 00 00[03]fa\n  0x7bf2defe0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf2defe0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf2defe0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf2defe0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf2defe0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1911196==ABORTING\n"
+  }
+ },
+ {
+  "artifact": "crash-3017f7c2f0221c70317554f39dcfc90ee9701eec",
+  "size": 79,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 c_parse_string cJSON.c:233",
+    "#1 c_parse_object cJSON.c:525",
+    "#2 c_cJSON_ParseWithOpts cJSON.c:330",
+    "#3 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:145"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13d949) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7c5a451dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c5a451dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c5a451dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c5a451e0000: fa fa fa fa fd fd fd fd fd fd fd fd fa fa fa fa\n  0x7c5a451e0080: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n=>0x7c5a451e0100: 00 00 00 00 fa fa fa fa 00 00 00 00 00 00[04]fa\n  0x7c5a451e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c5a451e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c5a451e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c5a451e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c5a451e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1911933==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:575",
+    "#1 cjson_c2rust::parse_object lib.rs:1243",
+    "#2 cjson_c2rust::parse_value lib.rs:925",
+    "#3 cJSON_ParseWithOpts lib.rs:817"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b4a2) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7c330addfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c330addff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c330addff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c330ade0000: fa fa fa fa fd fd fd fd fd fd fd fd fa fa fa fa\n  0x7c330ade0080: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n=>0x7c330ade0100: 00 00 00 00 fa fa fa fa 00 00 00 00 00 00[04]fa\n  0x7c330ade0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c330ade0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c330ade0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c330ade0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c330ade0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1911936==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:575",
+    "#1 cjson_c2rust::parse_object lib.rs:1243",
+    "#2 cjson_c2rust::parse_value lib.rs:925",
+    "#3 cJSON_ParseWithOpts lib.rs:817"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b6a2) (BuildId: a5140d51dbf31d7f88c9908acb6a3d052b9ce406) \nShadow bytes around the buggy address:\n  0x7b95d2de0000: fa fa fa fa fd fd fd fd fd fd fd fd fa fa fa fa\n  0x7b95d2de0080: fd fd fd fd fd fd fd fd fa fa fa fa fd fd fd fd\n  0x7b95d2de0100: fd fd fd fd fa fa fa fa fd fd fd fd fd fd fd fa\n  0x7b95d2de0180: fa fa fa fa 00 00 00 00 00 00 00 00 fa fa fa fa\n  0x7b95d2de0200: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n=>0x7b95d2de0280: 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b95d2de0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b95d2de0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b95d2de0400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b95d2de0480: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b95d2de0500: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1911939==ABORTING\n"
+  }
+ },
+ {
+  "artifact": "crash-52f1f4c5dbde499644d65e600063d63393728c78",
+  "size": 31,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 c_parse_string cJSON.c:239",
+    "#1 c_parse_object cJSON.c:525",
+    "#2 c_cJSON_ParseWithOpts cJSON.c:330",
+    "#3 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:145"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13d90f) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7bb438ddfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bb438ddfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bb438ddff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bb438ddff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bb438de0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n=>0x7bb438de0080: fa fa fd fa fa fa 00[fa]fa fa fa fa fa fa fa fa\n  0x7bb438de0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bb438de0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bb438de0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bb438de0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bb438de0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1912936==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:611",
+    "#1 cjson_c2rust::parse_object lib.rs:1243",
+    "#2 cjson_c2rust::parse_value lib.rs:925",
+    "#3 cJSON_ParseWithOpts lib.rs:817"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b412) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7bca169dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bca169dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bca169dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bca169dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bca169e0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n=>0x7bca169e0080: fa fa fd fd fa fa 00[fa]fa fa fa fa fa fa fa fa\n  0x7bca169e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bca169e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bca169e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bca169e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bca169e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1912939==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:611",
+    "#1 cjson_c2rust::parse_object lib.rs:1243",
+    "#2 cjson_c2rust::parse_value lib.rs:925",
+    "#3 cJSON_ParseWithOpts lib.rs:817"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b612) (BuildId: a5140d51dbf31d7f88c9908acb6a3d052b9ce406) \nShadow bytes around the buggy address:\n  0x7b9b097dfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9b097dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9b097dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9b097dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9b097e0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n=>0x7b9b097e0080: fa fa fd fa fa fa fd fa fa fa 00[fa]fa fa fa fa\n  0x7b9b097e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9b097e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9b097e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9b097e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9b097e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1912942==ABORTING\n"
+  }
+ },
+ {
+  "artifact": "crash-79c991c95c2d8e3278533033e9cad349ce05f101",
+  "size": 111,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 c_parse_string cJSON.c:213",
+    "#1 c_cJSON_ParseWithOpts cJSON.c:330",
+    "#2 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:145",
+    "#3 rust_fuzzer_test_input lib.rs:276"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13d8ff) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7c2f217dfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c2f217dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c2f217dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c2f217e0000: fa fa fa fa fd fd fd fd fd fd fd fd fa fa fa fa\n  0x7c2f217e0080: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n=>0x7c2f217e0100: 00 00 00[03]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c2f217e0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c2f217e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c2f217e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c2f217e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c2f217e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1913916==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:488",
+    "#1 cjson_c2rust::parse_value lib.rs:914",
+    "#2 cJSON_ParseWithOpts lib.rs:817",
+    "#3 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:150"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b3c0) (BuildId: 4670465681e76ee5fce19d21fdb48d76719c27f9) \nShadow bytes around the buggy address:\n  0x7b9308ddfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9308ddff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9308ddff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9308de0000: fa fa fa fa fd fd fd fd fd fd fd fd fa fa fa fa\n  0x7b9308de0080: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n=>0x7b9308de0100: 00 00 00[03]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9308de0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9308de0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9308de0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9308de0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9308de0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1913919==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "top_frames": [
+    "#0 cjson_c2rust::parse_string lib.rs:488",
+    "#1 cjson_c2rust::parse_value lib.rs:914",
+    "#2 cJSON_ParseWithOpts lib.rs:817",
+    "#3 cjson_c2rust_ft::_::__libfuzzer_sys_run cjson_c2rust_ft.rs:159"
+   ],
+   "stderr_tail": "gnu/release/cjson_c2rust_ft+0x13b5c0) (BuildId: a5140d51dbf31d7f88c9908acb6a3d052b9ce406) \nShadow bytes around the buggy address:\n  0x7b88427dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b88427dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b88427e0000: fa fa fa fa fd fd fd fd fd fd fd fd fa fa fa fa\n  0x7b88427e0080: 00 00 00 00 00 00 00 00 fa fa fa fa 00 00 00 00\n  0x7b88427e0100: 00 00 00 03 fa fa fa fa 00 00 00 00 00 00 00 00\n=>0x7b88427e0180: fa fa fa fa 00 00 00 00 00 00 00[03]fa fa fa fa\n  0x7b88427e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b88427e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b88427e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b88427e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b88427e0400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1913922==ABORTING\n"
+  }
+ }
+]

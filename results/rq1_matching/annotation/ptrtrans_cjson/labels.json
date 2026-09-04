@@ -1,0 +1,462 @@
+{
+ "case": "ptrtrans_cjson",
+ "sheet_fingerprint": "bbd05c6dbe84e6a7",
+ "labeler": "Claude subagent (claude-fable-5-1), session 6278f822; STUB partition applied by the main session from the subagent's stub list (31 rows: 29 placeholder bodies + suffix_object/cast_away_const no-op bodies)",
+ "method": "manual code reading of the C body against every candidate Rust body plus grep of the crate for unmatched functions; STUB:x = placeholder body (returns 0/None/empty) whose correspondence rests on name, parameters and the tool's doc comment only",
+ "date": "2026-09-01",
+ "reviewed_by_user": false,
+ "labels": {
+  "cJSON_GetErrorPtr": {
+   "truth": "cJSON_GetErrorPtr",
+   "note": "C cJSON.c:94 returns global_error.json + global_error.position. Rust src/cjson.rs:1135 reads GLOBAL_ERROR.json/position and returns &json[position..] (adds a bounds check). Body match."
+  },
+  "cJSON_GetStringValue": {
+   "truth": "cJSON_GetStringValue",
+   "note": "C cJSON.c:99 (!cJSON_IsString -> NULL; return item->valuestring). Rust src/cjson.rs:1159 calls cJSON_IsString, returns valuestring.as_deref(). Body match."
+  },
+  "cJSON_GetNumberValue": {
+   "truth": "cJSON_GetNumberValue",
+   "note": "C cJSON.c:109 (!cJSON_IsNumber -> NAN; return valuedouble). Rust src/cjson.rs:1150 calls cJSON_IsNumber, returns f64::NAN / valuedouble. Body match."
+  },
+  "cJSON_Version": {
+   "truth": "cJSON_Version",
+   "note": "C cJSON.c:124 sprintf(\"%i.%i.%i\", 1,7,19) into static buffer. Rust src/cjson.rs:126 returns Some(\"1.7.19\") (constant-folded; comment cites 'static char version[15]'). Body match."
+  },
+  "case_insensitive_strcmp": {
+   "truth": "case_insensitive_strcmp",
+   "note": "C cJSON.c:133 (NULL -> 1; ptr-equal -> 0; tolower loop; return tolower diff). Rust src/cjson.rs:442 has the same three-stage shape: None -> 1, equal -> 0, byte-wise to_ascii_lowercase loop returning c1-c2. Signature is odd (string2 is Option<&cJSON> and it compares against .string) but the body is unmistakably this function."
+  },
+  "cJSON_strdup": {
+   "truth": "cjson_strdup",
+   "note": "C cJSON.c:188 (NULL -> NULL; length = strlen+1; hooks->allocate(length); memcpy). Rust src/cjson.rs:1085 cjson_strdup: None -> None, length = s.len()+1, calls hooks.allocate(length), null check, then copies bytes + NUL into a leaked Vec. Body match (renamed to snake_case)."
+  },
+  "cJSON_InitHooks": {
+   "truth": "cJSON_InitHooks",
+   "note": "C cJSON.c:209 (hooks NULL -> reset to malloc/free/realloc; else allocate=malloc_fn if set, deallocate=free_fn if set, reallocate=NULL unless both default). Rust src/cjson.rs:1028 matches on hooks None/Some, builds default_malloc/default_realloc, checks h.malloc_fn.is_some()/h.free_fn.is_some(), sets reallocate=None, comments quote the C lines. Effect is discarded (global never written) but this is the translation. Rejected matcher_forced=skip_oneline_comment (src/cjson.rs:63): its body skips 2 bytes then scans to '\\n' - that is C skip_oneline_comment."
+  },
+  "cJSON_New_Item": {
+   "truth": "STUB:cJSON_New_Item",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:241 (hooks->allocate(sizeof cJSON); memset 0). Rust src/cjson.rs:1120 cJSON_New_Item(hooks) is a degenerate translation that returns None unconditionally ('We still do not perform any allocation in safe Rust and simply return None'), but it keeps the name, the hooks parameter, and is the constructor called by every cJSON_Create* and create_reference exactly where C calls cJSON_New_Item. No other Rust fn allocates a node. STUB-like."
+  },
+  "cJSON_Delete": {
+   "truth": "NONE",
+   "note": "C cJSON.c:253 (walk next chain, recursive delete of child, deallocate valuestring/string/item). No candidate other than matcher_forced=cJSON_InitHooks (src/cjson.rs:1028), rejected: its body is the hook-installation logic (malloc_fn/free_fn checks), nothing about next/child/valuestring/deallocate. Searched crate (grep -i 'delete', 'impl Drop', 'deallocate(', 'free') for any function walking item.next/child and freeing: none. Every Rust caller that in C calls cJSON_Delete (AddNullToObject, AddTrueToObject, ..., CreateString failure path) simply drops the call. Functionality elided -> NONE."
+  },
+  "get_decimal_point": {
+   "truth": "get_decimal_point",
+   "note": "C cJSON.c:279 returns '.' (non-locale build). Rust src/cjson.rs:92 returns b'.'. Body match."
+  },
+  "parse_number": {
+   "truth": "parse_number",
+   "note": "C cJSON.c:307. Rust src/cjson.rs:588: null checks on input_buffer/content, get_decimal_point(), loop over '0'..'9','+','-','e','E' and '.' (sets has_decimal_point), hooks.allocate(number_string_length+1), '.'->decimal_point replacement, strtod emulation, INT_MAX/INT_MIN saturation, item.type_ = 1<<3, offset += parsed length. Body match."
+  },
+  "cJSON_SetNumberHelper": {
+   "truth": "cJSON_SetNumberHelper",
+   "note": "C cJSON.c:411 (saturate valueint to INT_MAX/INT_MIN; return valuedouble = number). Rust src/cjson.rs:418 has identical saturation constants 2_147_483_647 / -2_147_483_647-1 and sets valuedouble, returns number (adds None -> NAN). Body match."
+  },
+  "cJSON_SetValuestring": {
+   "truth": "STUB:cjson_set_valuestring",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:430. Rust src/cjson.rs:1539 cjson_set_valuestring(object, valuestring, _hooks) -> Option<&mut str> is a STUB returning None; correspondence rests on name (snake_case of C name), parameter names object/valuestring, and the comment 'To mirror use of global_hooks / cJSON_strdup context'. No other Rust fn implements the strlen/overlap/strcpy/strdup logic (searched for 'v1_len', 'strcpy', 'valuestring =' assignments: only parse_string/CreateString/CreateRaw/CreateStringReference). Rejected matcher_forced=cJSON_ParseWithLength (src/cjson.rs:3136): one-line delegate to cJSON_ParseWithLengthOpts, = C cJSON_ParseWithLength."
+  },
+  "ensure": {
+   "truth": "ensure",
+   "note": "C cJSON.c:485. Rust src/cjson.rs:908: p/buffer null checks, (length>0 && offset>=length) -> None, needed > INT_MAX -> None, needed += offset+1, needed <= length branch, noalloc check, INT_MAX/2 overflow logic with newsize = needed*2, reallocate-else-allocate via hooks with p.length=0/p.buffer=None on failure, p.length = newsize. Body match (returns None in the end because it cannot produce &mut [u8])."
+  },
+  "update_offset": {
+   "truth": "update_offset",
+   "note": "C cJSON.c:571 (buffer->offset += strlen(buffer->buffer + offset)). Rust src/cjson.rs:994: null checks, slice from offset, position of first 0 byte, offset += len. Body match."
+  },
+  "compare_double": {
+   "truth": "compare_double",
+   "note": "C cJSON.c:584 (maxVal = max(|a|,|b|); |a-b| <= maxVal*DBL_EPSILON). Rust src/cjson.rs:519 identical with f64::EPSILON. Body match."
+  },
+  "print_number": {
+   "truth": "STUB:print_number",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:591 (sprintf null/%d/%1.15g/%1.17g, ensure, decimal-point replacement). Rust src/cjson.rs:1400 print_number(item, output_buffer) -> i32 is a STUB returning 0; doc comment at 1398 says 'Translated stub for the C function: static cJSON_bool print_number(...)'. No other Rust fn formats numbers (searched '%1.15', 'number_buffer', 'is_nan', 'format!' -> only print_string_ptr's u%04x). Rejected matcher_forced=get_array_item (src/cjson.rs:525): its body walks array.child/next by index = C get_array_item."
+  },
+  "parse_hex4": {
+   "truth": "parse_hex4",
+   "note": "C cJSON.c:661. Rust src/cjson.rs:95: 4-iteration loop over '0'-'9'/'A'-'F'/'a'-'f', invalid -> 0, h <<= 4 when i<3. Body match."
+  },
+  "utf16_literal_to_utf8": {
+   "truth": "utf16_literal_to_utf8",
+   "note": "C cJSON.c:698. Rust src/cjson.rs:150: <6 check, parse_hex4(first_sequence+2), 0xDC00..=0xDFFF reject, 0xD800..=0xDBFF surrogate pair with second_sequence[0]=='\\\\' && [1]=='u', codepoint = 0x10000 + (((first&0x3FF)<<10)|(second&0x3FF)), utf8 length/first_byte_mark 0xC0/0xE0/0xF0, (cp|0x80)&0xBF trailing bytes, returns sequence_length 6/12. Body match."
+  },
+  "parse_string": {
+   "truth": "parse_string",
+   "note": "C cJSON.c:819. Rust src/cjson.rs:696: checks content[offset]=='\"', counts skipped_bytes for backslashes with the 'last char is backslash' guard, allocation_length = (end - offset) - skipped, decode loop with escapes b/f/n/r/t/\"/\\\\///u calling utf16_literal_to_utf8, item.type_ = 1<<4, offset = end+1, fail paths set offset from input_pointer. Body match (valuestring is set to None - known data-loss bug, still the translation)."
+  },
+  "print_string_ptr": {
+   "truth": "print_string_ptr",
+   "note": "C cJSON.c:949. Rust src/cjson.rs:1407: input None -> ensure(3) + \"\\\"\\\"\"; escape counting (+1 for \\\" \\\\ \\b \\f \\n \\r \\t, +5 for <32), output_length = idx + escape_characters, ensure(output_length+3), fast path memcpy, slow path with '\\\\' + b/f/n/r/t and 'u{:04x}' + 4 advance. Body match."
+  },
+  "print_string": {
+   "truth": "print_string",
+   "note": "C cJSON.c:1071 (return print_string_ptr(item->valuestring, p)). Rust src/cjson.rs:1875 maps item.valuestring to bytes and calls print_string_ptr(bytes, ...) (passes None for the buffer, degenerate but the same call). Body match. Rejected matcher_forced=print_array (src/cjson.rs:1991): a stub returning 0 whose doc comment names print_array."
+  },
+  "buffer_skip_whitespace": {
+   "truth": "buffer_skip_whitespace",
+   "note": "C cJSON.c:1085. Rust src/cjson.rs:1373: null checks, offset>=length -> return buffer, while content[offset] <= 32 offset++, if offset==length offset--. Body match."
+  },
+  "skip_utf8_bom": {
+   "truth": "skip_utf8_bom",
+   "note": "C cJSON.c:1111 (offset != 0 -> NULL; can_access_at_index(4) && strncmp EF BB BF -> offset += 3). Rust src/cjson.rs:873: same checks, compares slice to [0xEF,0xBB,0xBF], offset += 3. Body match."
+  },
+  "cJSON_ParseWithOpts": {
+   "truth": "cJSON_ParseWithOpts",
+   "note": "C cJSON.c:1126 (NULL -> NULL; buffer_length = strlen+1; call cJSON_ParseWithLengthOpts). Rust src/cjson.rs:3147: None -> None, buffer_length = value.len(), calls cJSON_ParseWithLengthOpts(value, buffer_length, return_parse_end, require_null_terminated). Body match. Rejected matcher_forced=cjson_set_valuestring (src/cjson.rs:1539): stub for cJSON_SetValuestring, different params."
+  },
+  "cJSON_ParseWithLengthOpts": {
+   "truth": "STUB:cJSON_ParseWithLengthOpts",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1142 (the real parser driver: global_error reset, New_Item, parse_value(buffer_skip_whitespace(skip_utf8_bom)), require_null_terminated check, error position). Rust src/cjson.rs:3095 is a STUB returning None; doc comment at 3091 'Translated from: cJSON * cJSON_ParseWithLengthOpts(...)', identical parameter list. No other Rust fn calls parse_value/skip_utf8_bom or writes GLOBAL_ERROR (grep: GLOBAL_ERROR only read in cJSON_GetErrorPtr; skip_utf8_bom has no callers). Both cJSON_ParseWithOpts and cJSON_ParseWithLength delegate to it, as in C."
+  },
+  "cJSON_Parse": {
+   "truth": "cJSON_Parse",
+   "note": "C cJSON.c:1222 (return cJSON_ParseWithOpts(value, 0, 0)). Rust src/cjson.rs:3184 returns cJSON_ParseWithOpts(value, None, 0). Body match."
+  },
+  "cJSON_ParseWithLength": {
+   "truth": "cJSON_ParseWithLength",
+   "note": "C cJSON.c:1227 (return cJSON_ParseWithLengthOpts(value, buffer_length, 0, 0)). Rust src/cjson.rs:3136 returns cJSON_ParseWithLengthOpts(value, buffer_length, None, 0). Body match. Rejected matcher_forced=cJSON_malloc (src/cjson.rs:1079): returns None, takes (_size, _hooks)."
+  },
+  "print": {
+   "truth": "print",
+   "note": "C cJSON.c:1234. Rust src/cjson.rs:2243: DEFAULT_BUFFER_SIZE = 256, builds PrintBuffer with format and *hooks, hooks.allocate(256) null check, print_value(item, buffer), update_offset(buffer), reallocate-vs-allocate+copy branch commented verbatim, returns leaked buffer. Body match."
+  },
+  "cJSON_Print": {
+   "truth": "cJSON_Print",
+   "note": "C cJSON.c:1302 (return print(item, true, &global_hooks)). Rust src/cjson.rs:2921 copies global_hooks into local_hooks and calls print(item, 1_i32, Some(&local_hooks)) - format=1=true. Body match. Rejected matcher_forced=cJSON_PrintUnformatted (src/cjson.rs:2940): stub returning None, does not call print."
+  },
+  "cJSON_PrintUnformatted": {
+   "truth": "STUB:cJSON_PrintUnformatted",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1307 (return print(item, false, &global_hooks)). Rust src/cjson.rs:2940 cJSON_PrintUnformatted(item) is a STUB returning None; correspondence by exact name and (item) signature. No other Rust fn calls print(..., 0, ...) (only cJSON_Print calls print, with format 1). Rejected matcher_forced=cJSON_Print (src/cjson.rs:2921): passes format=1_i32 (true), which is C cJSON_Print, not the unformatted variant."
+  },
+  "cJSON_PrintBuffered": {
+   "truth": "cJSON_PrintBuffered",
+   "note": "C cJSON.c:1312. Rust src/cjson.rs:2146: prebuffer < 0 -> None, PrintBuffer p zero-init, allocate(prebuffer) modelled, p.length = prebuffer, p.offset=0, p.noalloc=0, p.format=fmt, p.hooks = local_hooks, print_value(item, &mut p) failure -> None, return p.buffer (as None). Body match. Rejected matcher_forced=cJSON_DetachItemViaPointer (src/cjson.rs:1246): linked-list unlink logic."
+  },
+  "cJSON_PrintPreallocated": {
+   "truth": "STUB:cJSON_PrintPreallocated",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1343 (length<0||buffer NULL -> false; p.noalloc = true; return print_value). Rust src/cjson.rs:2225 cJSON_PrintPreallocated(item, buffer, length, format) -> i32 is a STUB returning 0 ('Default return value as per stub requirements'); correspondence by exact name and 4-parameter signature. No other Rust fn sets noalloc = 1 (grep 'noalloc' -> only field decl, ensure read, PrintBuffered noalloc=0)."
+  },
+  "parse_value": {
+   "truth": "STUB:parse_value",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1363 (dispatch on null/false/true/\"/digit/[/{ to parse_string/parse_number/parse_array/parse_object). Rust src/cjson.rs:2869 is a STUB returning 0; doc comment at 2867 'Translated from: static cJSON_bool parse_value(...)'. No other Rust fn compares against \"null\"/\"false\"/\"true\" or dispatches to parse_string/parse_number (grep: parse_string and parse_number have no callers)."
+  },
+  "print_value": {
+   "truth": "STUB:print_value",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1418 (switch on type & 0xFF, ensure+strcpy null/false/true, print_number/print_string/print_array/print_object, raw memcpy). Rust src/cjson.rs:1982 is a STUB returning 0; doc comment at 1979 'Translated stub for the C function: static cJSON_bool print_value(...)'. It is called from print, cJSON_PrintBuffered exactly where C calls print_value. Rejected matcher_forced=print_number (src/cjson.rs:1400): also a stub, but its doc names print_number and its params/role differ (leaf number formatter, not the dispatcher)."
+  },
+  "parse_array": {
+   "truth": "STUB:parse_array",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1492 (depth limit, '[', loop New_Item/parse_value/',' , ']', head->prev = current). Rust src/cjson.rs:2878 is a STUB returning 0; doc comment at 2876 names parse_array. No other Rust fn checks b'[' / b']' (grep found none)."
+  },
+  "print_array": {
+   "truth": "STUB:print_array",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1590 (ensure(1) '[', loop print_value + ',' [+ ' '], ']'). Rust src/cjson.rs:1991 is a STUB returning 0; doc comment at 1988 names print_array. No other Rust fn writes b'[' (grep found none). Rejected matcher_forced=print_object (src/cjson.rs:2000): a stub whose doc names print_object."
+  },
+  "parse_object": {
+   "truth": "STUB:parse_object",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1652 ('{', parse_string for key, swap valuestring->string, ':', parse_value, '}'). Rust src/cjson.rs:2887 is a STUB returning 0; doc comment at 2885 names parse_object. No other Rust fn checks b'{' / b':' / swaps valuestring into string (grep found none)."
+  },
+  "print_object": {
+   "truth": "STUB:print_object",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1770 ('{' [+'\\n'], depth tabs, print_string_ptr(key), ':' [+'\\t'], print_value, ',' , '}'). Rust src/cjson.rs:2000 is a STUB returning 0; doc comment at 1997 names print_object. No other Rust fn writes b'{' or b'\\t' indentation (grep found none). Rejected matcher_forced=minify_string (src/cjson.rs:11): its body copies a quoted string verbatim handling '\"' and '\\\\\"' = C minify_string."
+  },
+  "cJSON_GetArraySize": {
+   "truth": "cJSON_GetArraySize",
+   "note": "C cJSON.c:1884 (NULL -> 0; count child->next chain). Rust src/cjson.rs:291: None -> 0, while let Some(child) size += 1, child.next. Body match."
+  },
+  "get_array_item": {
+   "truth": "get_array_item",
+   "note": "C cJSON.c:1907 (NULL -> NULL; walk child while index > 0). Rust src/cjson.rs:525: same, with doc 'Translated from: static cJSON* get_array_item'. Body match. Rejected matcher_forced=print_value (src/cjson.rs:1982): stub for print_value."
+  },
+  "cJSON_GetArrayItem": {
+   "truth": "STUB:cJSON_GetArrayItem",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1926 (index < 0 -> NULL; return get_array_item(array, index)). Rust src/cjson.rs:1243 cJSON_GetArrayItem(array, index: i32) is a one-line STUB returning None (no index check, no get_array_item call); correspondence by exact name and (array, i32 index) signature. No other Rust fn wraps get_array_item (grep: get_array_item has zero callers). Rejected matcher_forced=cJSON_PrintBuffered (src/cjson.rs:2146): print-buffer setup + print_value."
+  },
+  "get_object_item": {
+   "truth": "get_object_item",
+   "note": "C cJSON.c:1936. Rust src/cjson.rs:1170: (object None || name None) -> None; then (after an unconditional early return None, degenerate) the retained code walks object.child with case_sensitive branch comparing name != elem.string, else case_insensitive_strcmp(name, elem) != 0, returning the element. Body match; called from cJSON_GetObjectItem/CaseSensitive and cJSON_Compare exactly as in C."
+  },
+  "cJSON_GetObjectItem": {
+   "truth": "cJSON_GetObjectItem",
+   "note": "C cJSON.c:1968 (get_object_item(object, string, false)). Rust src/cjson.rs:1741 get_object_item(object, string, 0). Body match."
+  },
+  "cJSON_GetObjectItemCaseSensitive": {
+   "truth": "cJSON_GetObjectItemCaseSensitive",
+   "note": "C cJSON.c:1973 (get_object_item(object, string, true)). Rust src/cjson.rs:1747 get_object_item(object, string, 1). Body match. Rejected matcher_forced=cJSON_AddItemToArray (src/cjson.rs:2006): stub returning 0."
+  },
+  "cJSON_HasObjectItem": {
+   "truth": "cJSON_HasObjectItem",
+   "note": "C cJSON.c:1978 (cJSON_GetObjectItem(...) ? 1 : 0). Rust src/cjson.rs:1956: if cJSON_GetObjectItem(object, string).is_some() {1} else {0}. Body match."
+  },
+  "suffix_object": {
+   "truth": "STUB:suffix_object",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:1984 (prev->next = item; item->prev = prev). Rust src/cjson.rs:546 suffix_object(prev, item): matches (Some,Some) and comments 'prev->next = item; item->prev = prev' but deliberately performs no link writes (degenerate no-op). Name, params and the quoted C body establish correspondence; no other Rust fn writes both prev.next and item.prev. Rejected matcher_forced=cJSON_CreateFalse (src/cjson.rs:1568): stub returning None."
+  },
+  "create_reference": {
+   "truth": "create_reference",
+   "note": "C cJSON.c:1991 (NULL -> NULL; New_Item(hooks); memcpy; string = NULL; type |= cJSON_IsReference; next = prev = NULL). Rust src/cjson.rs:1700: None -> None, cJSON_New_Item(hooks), field-by-field copy, reference.string = None, type_ |= 256, next/prev = None. Body match."
+  },
+  "add_item_to_array": {
+   "truth": "add_item_to_array",
+   "note": "C cJSON.c:2012. Rust src/cjson.rs:1893: (item None || array None) -> 0, ptr-eq(array,item) -> 0, if array.child is None branch ('array->child = item; item->prev = item; item->next = NULL' quoted) else if child.prev.is_some() branch (suffix_object quoted), returns 1. Body match (degenerate: drops the Box instead of linking)."
+  },
+  "cJSON_AddItemToArray": {
+   "truth": "STUB:cJSON_AddItemToArray",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2046 (return add_item_to_array(array, item)). Rust src/cjson.rs:2006 cJSON_AddItemToArray(array, item: Option<Box<cJSON>>) is a STUB returning 0 ('Default return as required for stubs'); correspondence by exact name and signature. No other Rust fn is a thin wrapper over add_item_to_array (its callers are add_item_to_object only). Rejected matcher_forced=cJSON_DetachItemFromArray (src/cjson.rs:1869): stub returning None, named for DetachItemFromArray."
+  },
+  "cast_away_const": {
+   "truth": "STUB:cast_away_const",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2058 ((void*)string). Rust src/cjson.rs:574 generic Option<&T> -> Option<&mut T> that always returns None (cannot cast in safe Rust); called from CreateObjectReference/CreateArrayReference/add_item_to_object exactly where C calls cast_away_const. Body/role match (degenerate)."
+  },
+  "add_item_to_object": {
+   "truth": "add_item_to_object",
+   "note": "C cJSON.c:2067. Rust src/cjson.rs:2043: null checks, constant_key branch calling cast_away_const and new_type = type | 512, else cjson_strdup(string, hooks) with None -> 0 and new_type = type & !512, the '(type & 512)==0 && string != NULL' block, item.string = new_key, item.type_ = new_type, return add_item_to_array(object, item). Body match."
+  },
+  "cJSON_AddItemToObject": {
+   "truth": "STUB:cJSON_AddItemToObject",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2104 (add_item_to_object(object, string, item, &global_hooks, false)). Rust src/cjson.rs:2351 cJSON_AddItemToObject(object, string, item) is a STUB returning 0 ('Default return value for cJSON_bool'); correspondence by exact name and 3-param signature. Rejected matcher_forced=cJSON_AddItemToObjectCS (src/cjson.rs:2362): it calls add_item_to_object(..., 1_i32) i.e. constant_key=true, which is C cJSON_AddItemToObjectCS; the C non-CS variant passes false."
+  },
+  "cJSON_AddItemToObjectCS": {
+   "truth": "cJSON_AddItemToObjectCS",
+   "note": "C cJSON.c:2110 (add_item_to_object(..., &global_hooks, true)). Rust src/cjson.rs:2362 calls add_item_to_object(object, string, item, hooks, 1_i32). Body match (extra hooks param models &global_hooks). Rejected matcher_forced=cJSON_AddNullToObject (src/cjson.rs:2544): calls cJSON_CreateNull then add_item_to_object(..., 0)."
+  },
+  "cJSON_AddItemReferenceToArray": {
+   "truth": "cJSON_AddItemReferenceToArray",
+   "note": "C cJSON.c:2115 (array NULL -> false; add_item_to_array(array, create_reference(item, &global_hooks))). Rust src/cjson.rs:2013: array None -> 0, create_reference(item, hooks), returns 1 if reference created (add_item_to_array call replaced by is_some check, explained in comment). Body match."
+  },
+  "cJSON_AddItemReferenceToObject": {
+   "truth": "cJSON_AddItemReferenceToObject",
+   "note": "C cJSON.c:2125 ((object||string NULL) -> false; add_item_to_object(object, string, create_reference(item,&global_hooks), &global_hooks, false)). Rust src/cjson.rs:2378: same null checks, create_reference(item, Some(&global_hooks)), add_item_to_object(object_ref, string, boxed_item, Some(&global_hooks), 0). Body match."
+  },
+  "cJSON_AddNullToObject": {
+   "truth": "cJSON_AddNullToObject",
+   "note": "C cJSON.c:2135 (null = cJSON_CreateNull(); if add_item_to_object(...false) return null; cJSON_Delete; NULL). Rust src/cjson.rs:2544: let null = cJSON_CreateNull(); add_item_to_object(object, name, None, hooks, 0); if added return null else None (cJSON_Delete dropped; extra hooks param). Body match. Rejected matcher_forced=cJSON_AddObjectToObject (src/cjson.rs:2772): creates via cJSON_CreateObject."
+  },
+  "cJSON_AddTrueToObject": {
+   "truth": "cJSON_AddTrueToObject",
+   "note": "C cJSON.c:2147. Rust src/cjson.rs:2592: true_item = cJSON_CreateTrue(); add_item_to_object(object, name, None, hooks, 0); return true_item on success. Body match (the C body is quoted verbatim in the comment at 2584-2591). Rejected matcher_forced=cJSON_AddRawToObject (src/cjson.rs:3033): creates via cJSON_CreateRaw(raw)."
+  },
+  "cJSON_AddFalseToObject": {
+   "truth": "cJSON_AddFalseToObject",
+   "note": "C cJSON.c:2159. Rust src/cjson.rs:2626: false_item = cJSON_CreateFalse(); add_item_to_object(..., 0); return false_item on success. Body match. Rejected matcher_forced=cJSON_DetachItemFromObjectCaseSensitive (src/cjson.rs:1973): stub returning None."
+  },
+  "cJSON_AddBoolToObject": {
+   "truth": "cJSON_AddBoolToObject",
+   "note": "C cJSON.c:2171. Rust src/cjson.rs:2652: bool_item = cJSON_CreateBool(boolean); then add_item_to_object(object, name, None, local_hooks, 0) with the C body quoted; degenerate (returns None on every path) but the calls and parameter (boolean) match. Body match."
+  },
+  "cJSON_AddNumberToObject": {
+   "truth": "cJSON_AddNumberToObject",
+   "note": "C cJSON.c:2183. Rust src/cjson.rs:2709: number_item = cJSON_CreateNumber(number); copies its fields into an owned cJSON; add_item_to_object(object, name, Some(Box::new(owned)), hooks, 0). Body match (returns None on both paths)."
+  },
+  "cJSON_AddStringToObject": {
+   "truth": "cJSON_AddStringToObject",
+   "note": "C cJSON.c:2195 (string_item = cJSON_CreateString(string); add_item_to_object; return string_item). Rust src/cjson.rs:2996: string_item = cJSON_CreateString(string); None -> None; the add_item_to_object call is DROPPED (comment explains) and the created item is returned unconditionally. Still the translation of this function (name, params object/name/string, CreateString call). Rejected matcher_forced=cJSON_AddItemToObject (src/cjson.rs:2351): stub returning 0."
+  },
+  "cJSON_AddRawToObject": {
+   "truth": "cJSON_AddRawToObject",
+   "note": "C cJSON.c:2207. Rust src/cjson.rs:3033: raw_item = cJSON_CreateRaw(raw); None -> None; add_item_to_object(object, name, None, hooks, 0); return raw_item on success. Body match. Rejected matcher_forced=cJSON_AddStringToObject (src/cjson.rs:2996): creates via cJSON_CreateString."
+  },
+  "cJSON_AddObjectToObject": {
+   "truth": "cJSON_AddObjectToObject",
+   "note": "C cJSON.c:2219. Rust src/cjson.rs:2772: object_item = cJSON_CreateObject(); add_item_to_object(object, name, None, Some(&global_hooks), 0) != 0 -> return object_item; else None. Body match. Rejected matcher_forced=cJSON_AddTrueToObject (src/cjson.rs:2592): creates via cJSON_CreateTrue."
+  },
+  "cJSON_AddArrayToObject": {
+   "truth": "cJSON_AddArrayToObject",
+   "note": "C cJSON.c:2231. Rust src/cjson.rs:2801: array = cJSON_CreateArray(); boxes a copy; add_item_to_object(object, name, item, hooks, 0); returns a reconstructed Box on success else None. Body match (extra hooks param). Rejected matcher_forced=suffix_object (src/cjson.rs:546): two-node link helper."
+  },
+  "cJSON_DetachItemViaPointer": {
+   "truth": "cJSON_DetachItemViaPointer",
+   "note": "C cJSON.c:2243. Rust src/cjson.rs:1246: early check quoted '(parent == NULL) || (item == NULL) || (item != parent->child && item->prev == NULL)', then item->prev->next = item->next, item->next->prev = item->prev, parent->child = item->next if first, else parent->child->prev = item->prev if last, item.prev = item.next = None, return item. Body match. Rejected matcher_forced=cJSON_ParseWithLengthOpts (src/cjson.rs:3095): stub returning None."
+  },
+  "cJSON_DetachItemFromArray": {
+   "truth": "STUB:cJSON_DetachItemFromArray",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2279 (which < 0 -> NULL; DetachItemViaPointer(array, get_array_item(array, which))). Rust src/cjson.rs:1869 cJSON_DetachItemFromArray(array, which: i32) is a STUB returning None; correspondence by exact name and signature. No other Rust fn combines get_array_item + cJSON_DetachItemViaPointer (grep: DetachItemViaPointer has zero callers). Rejected matcher_forced=cJSON_GetArrayItem (src/cjson.rs:1243): also a stub, but it is the slot for C cJSON_GetArrayItem (name + (array, index) signature)."
+  },
+  "cJSON_DeleteItemFromArray": {
+   "truth": "NONE",
+   "note": "C cJSON.c:2289 (cJSON_Delete(cJSON_DetachItemFromArray(array, which))). No same-name Rust fn; grep 'DeleteItem' / 'Delete' over src/ returns nothing; no Rust fn calls cJSON_DetachItemFromArray. Rejected matcher_forced=print_string (src/cjson.rs:1875): calls print_string_ptr on item.valuestring = C print_string. Functionality dropped -> NONE."
+  },
+  "cJSON_DetachItemFromObject": {
+   "truth": "STUB:cJSON_DetachItemFromObject",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2294 (to_detach = cJSON_GetObjectItem; DetachItemViaPointer). Rust src/cjson.rs:1966 cJSON_DetachItemFromObject(object, string) is a STUB returning None ('Default stubbed return'); correspondence by exact name and signature. Rejected matcher_forced=cJSON_CreateDoubleArray (src/cjson.rs:2533): stub returning None, numbers/count signature."
+  },
+  "cJSON_DetachItemFromObjectCaseSensitive": {
+   "truth": "STUB:cJSON_DetachItemFromObjectCaseSensitive",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2301 (to_detach = cJSON_GetObjectItemCaseSensitive; DetachItemViaPointer). Rust src/cjson.rs:1973 is a STUB returning None; correspondence by exact name and signature. Rejected matcher_forced=cJSON_DetachItemFromObject (src/cjson.rs:1966): that stub is the slot for the case-insensitive C variant (different exact name)."
+  },
+  "cJSON_DeleteItemFromObject": {
+   "truth": "NONE",
+   "note": "C cJSON.c:2308 (cJSON_Delete(cJSON_DetachItemFromObject(object, string))). No same-name Rust fn; grep 'DeleteItem'/'Delete' finds nothing; nothing calls cJSON_DetachItemFromObject. Rejected matcher_forced=cJSON_ReplaceItemInObjectCaseSensitive (src/cjson.rs:3125): calls replace_item_in_object(..., 1_i32) = C ReplaceItemInObjectCaseSensitive. -> NONE."
+  },
+  "cJSON_DeleteItemFromObjectCaseSensitive": {
+   "truth": "NONE",
+   "note": "C cJSON.c:2313 (cJSON_Delete(cJSON_DetachItemFromObjectCaseSensitive(...))). No same-name Rust fn; grep finds no Delete anywhere; nothing calls cJSON_DetachItemFromObjectCaseSensitive. Rejected matcher_forced=cJSON_Duplicate (src/cjson.rs:3109): calls cJSON_Duplicate_rec(item, 0, recurse) = C cJSON_Duplicate. -> NONE."
+  },
+  "cJSON_InsertItemInArray": {
+   "truth": "STUB:cJSON_InsertItemInArray",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2319 (which<0||newitem NULL -> false; get_array_item; add_item_to_array fallback; relink prev/next). Rust src/cjson.rs:2035 cJSON_InsertItemInArray(array, which, newitem) is a STUB returning 0; correspondence by exact name and (array, which, newitem) signature. No other Rust fn implements 'after_inserted' relinking (grep found none). Rejected matcher_forced=cJSON_AddArrayToObject (src/cjson.rs:2801): CreateArray + add_item_to_object."
+  },
+  "cJSON_ReplaceItemViaPointer": {
+   "truth": "STUB:cJSON_ReplaceItemViaPointer",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2353. Rust src/cjson.rs:2536 cJSON_ReplaceItemViaPointer(parent, item, replacement) is a STUB returning 0; correspondence by exact name and 3-param signature; it is what cJSON_ReplaceItemInArray/replace_item_in_object would call. No other Rust fn implements replacement->next/prev splicing (grep found none)."
+  },
+  "cJSON_ReplaceItemInArray": {
+   "truth": "STUB:cJSON_ReplaceItemInArray",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2402 (which<0 -> false; ReplaceItemViaPointer(array, get_array_item(array, which), newitem)). Rust src/cjson.rs:3073 cJSON_ReplaceItemInArray(array, which, newitem) is a STUB returning 0; correspondence by exact name and signature."
+  },
+  "replace_item_in_object": {
+   "truth": "STUB:replace_item_in_object",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2412 (strdup key into replacement, clear StringIsConst, ReplaceItemViaPointer(object, get_object_item(...), replacement)). Rust src/cjson.rs:3083 is a STUB returning 0; doc comment at 3080 'Translated stub for: static cJSON_bool replace_item_in_object(...)', same 4 params; called from cJSON_ReplaceItemInObject/CaseSensitive as in C."
+  },
+  "cJSON_ReplaceItemInObject": {
+   "truth": "cJSON_ReplaceItemInObject",
+   "note": "C cJSON.c:2435 (replace_item_in_object(object, string, newitem, false)). Rust src/cjson.rs:3114 returns replace_item_in_object(object, string, newitem, 0). Body match."
+  },
+  "cJSON_ReplaceItemInObjectCaseSensitive": {
+   "truth": "cJSON_ReplaceItemInObjectCaseSensitive",
+   "note": "C cJSON.c:2440 (replace_item_in_object(..., true)). Rust src/cjson.rs:3125 returns replace_item_in_object(object, string, newitem, 1_i32). Body match. Rejected matcher_forced=cJSON_InsertItemInArray (src/cjson.rs:2035): stub returning 0."
+  },
+  "cJSON_CreateNull": {
+   "truth": "cJSON_CreateNull",
+   "note": "C cJSON.c:2446 (New_Item; type = cJSON_NULL (1<<2)). Rust src/cjson.rs:1546: cJSON_New_Item(None); type_ = 1 << 2. Body match. Rejected matcher_forced=cJSON_CreateTrue (src/cjson.rs:1556): sets type_ = 1 << 1 (cJSON_True)."
+  },
+  "cJSON_CreateTrue": {
+   "truth": "cJSON_CreateTrue",
+   "note": "C cJSON.c:2457 (type = cJSON_True (1<<1)). Rust src/cjson.rs:1556: cJSON_New_Item(None); type_ = 1 << 1. Body match. Rejected matcher_forced=cJSON_CreateNull (src/cjson.rs:1546): sets 1 << 2."
+  },
+  "cJSON_CreateFalse": {
+   "truth": "STUB:cJSON_CreateFalse",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2468 (New_Item; type = cJSON_False (1<<0)). Rust src/cjson.rs:1568 cJSON_CreateFalse() is a STUB returning None ('Default stub: no allocation/logic'); correspondence by exact name and () signature, and it is called from cJSON_AddFalseToObject where C calls cJSON_CreateFalse. No other Rust fn sets type_ = 1 << 0 alone (cJSON_CreateBool does so only in its else-branch and is CreateBool). Rejected matcher_forced=cJSON_CreateObject (src/cjson.rs:1625): sets 1 << 6."
+  },
+  "cJSON_CreateBool": {
+   "truth": "cJSON_CreateBool",
+   "note": "C cJSON.c:2479 (type = boolean ? cJSON_True : cJSON_False). Rust src/cjson.rs:1572: cJSON_New_Item(Some(&local_hooks)); type_ = if boolean != 0 {1<<1} else {1<<0}. Body match."
+  },
+  "cJSON_CreateNumber": {
+   "truth": "cJSON_CreateNumber",
+   "note": "C cJSON.c:2490 (type = cJSON_Number; valuedouble = num; INT_MAX/INT_MIN saturation). Rust src/cjson.rs:1590: type_ = 1<<3, valuedouble = num, same saturation constants. Body match."
+  },
+  "cJSON_CreateString": {
+   "truth": "cJSON_CreateString",
+   "note": "C cJSON.c:2516 (type = cJSON_String; valuestring = cJSON_strdup(string); NULL -> Delete+NULL). Rust src/cjson.rs:2432: cJSON_New_Item(GLOBAL_HOOKS); type_ = 1<<4; dup = cjson_strdup(string, GLOBAL_HOOKS); None -> return None; valuestring = from_utf8_mut(dup). Body match (cJSON_Delete dropped)."
+  },
+  "cJSON_CreateStringReference": {
+   "truth": "cJSON_CreateStringReference",
+   "note": "C cJSON.c:2533 (type = cJSON_String | cJSON_IsReference; valuestring = cast_away_const(string)). Rust src/cjson.rs:1638: type_ = (1 << 4) | 256; valuestring = None with comment explaining cast_away_const. Body match."
+  },
+  "cJSON_CreateObjectReference": {
+   "truth": "cJSON_CreateObjectReference",
+   "note": "C cJSON.c:2545 (type = cJSON_Object | cJSON_IsReference; child = cast_away_const(child)). Rust src/cjson.rs:1666: type_ = (1 << 6) | 256; child = cast_away_const(child). Body match. Rejected matcher_forced=cJSON_CreateArrayReference (src/cjson.rs:1686): sets (1 << 5) | 256."
+  },
+  "cJSON_CreateArrayReference": {
+   "truth": "cJSON_CreateArrayReference",
+   "note": "C cJSON.c:2556 (type = cJSON_Array | cJSON_IsReference; child = cast_away_const). Rust src/cjson.rs:1686: type_ = (1 << 5) | 256; child = cast_away_const(child). Body match. Rejected matcher_forced=cJSON_CreateObjectReference (src/cjson.rs:1666): sets (1 << 6) | 256."
+  },
+  "cJSON_CreateRaw": {
+   "truth": "cJSON_CreateRaw",
+   "note": "C cJSON.c:2566 (type = cJSON_Raw; valuestring = strdup(raw); NULL -> NULL). Rust src/cjson.rs:2457: type_ = 1 << 7; cjson_strdup(raw, None); valuestring None -> return None. Body match."
+  },
+  "cJSON_CreateArray": {
+   "truth": "cJSON_CreateArray",
+   "note": "C cJSON.c:2583 (type = cJSON_Array (1<<5)). Rust src/cjson.rs:1608: cJSON_New_Item(None); type_ = 1 << 5. Body match."
+  },
+  "cJSON_CreateObject": {
+   "truth": "cJSON_CreateObject",
+   "note": "C cJSON.c:2594 (type = cJSON_Object (1<<6)). Rust src/cjson.rs:1625: cJSON_New_Item(Some(&global_hooks)); type_ = 1 << 6. Body match. Rejected matcher_forced=cJSON_ParseWithOpts (src/cjson.rs:3147): strlen + ParseWithLengthOpts delegate."
+  },
+  "cJSON_CreateIntArray": {
+   "truth": "cJSON_CreateIntArray",
+   "note": "C cJSON.c:2606 (count<0||numbers NULL -> NULL; CreateArray; loop CreateNumber(numbers[i]); suffix_object; a->child->prev = n). Rust src/cjson.rs:2486: same guard, cJSON_CreateArray(), loop cJSON_CreateNumber(numbers[i] as f64) with None -> None, then first_child.prev = last_child; a.child = first_child (mirrors a->child->prev = n). Body match; element type i32 matches C int."
+  },
+  "cJSON_CreateFloatArray": {
+   "truth": "STUB:cJSON_CreateFloatArray",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2646. Rust src/cjson.rs:2530 cJSON_CreateFloatArray(numbers: Option<&[f32]>, count) is a one-line STUB returning None; correspondence by exact name and f32 element type. Not implemented elsewhere (only IntArray and StringArray have loop bodies)."
+  },
+  "cJSON_CreateDoubleArray": {
+   "truth": "STUB:cJSON_CreateDoubleArray",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2686. Rust src/cjson.rs:2533 cJSON_CreateDoubleArray(numbers: Option<&[f64]>, count) is a one-line STUB returning None; correspondence by exact name and f64 element type. Rejected matcher_forced=cJSON_AddFalseToObject (src/cjson.rs:2626): CreateFalse + add_item_to_object."
+  },
+  "cJSON_CreateStringArray": {
+   "truth": "cJSON_CreateStringArray",
+   "note": "C cJSON.c:2726 (guard; CreateArray; loop CreateString(strings[i]); suffix_object; a->child->prev = n). Rust src/cjson.rs:2943: same guard, cJSON_CreateArray(), loop cJSON_CreateString(Some(strings[i])) with None -> None; linking deliberately dropped (comment). Body match."
+  },
+  "cJSON_Duplicate": {
+   "truth": "cJSON_Duplicate",
+   "note": "C cJSON.c:2769 (return cJSON_Duplicate_rec(item, 0, recurse)). Rust src/cjson.rs:3109 returns cJSON_Duplicate_rec(item, 0, recurse). Body match. Rejected matcher_forced=cJSON_GetObjectItemCaseSensitive (src/cjson.rs:1747): get_object_item(..., 1)."
+  },
+  "cJSON_Duplicate_rec": {
+   "truth": "STUB:cJSON_Duplicate_rec",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2774 (New_Item, copy type & ~IsReference, valueint/valuedouble, strdup valuestring/string, recursive child walk with CJSON_CIRCULAR_LIMIT). Rust src/cjson.rs:2894 cJSON_Duplicate_rec(item, depth, recurse) is a STUB returning None; the comment explains it cannot allocate ('The provided cJSON_New_Item implementation already returns None'). Correspondence by exact name, 3-param signature, and being the callee of cJSON_Duplicate. No other Rust fn copies valueint/valuedouble/strdup into a new node (create_reference copies but sets |= 256 and is C create_reference)."
+  },
+  "skip_oneline_comment": {
+   "truth": "skip_oneline_comment",
+   "note": "C cJSON.c:2860 (*input += 2; scan to '\\0'; on '\\n' advance 1 and return). Rust src/cjson.rs:63: i = 2 (or len), while inner[i] != 0 { if '\\n' { i += 1; break } i += 1 }, *inner = &inner[i..]. Body match."
+  },
+  "skip_multiline_comment": {
+   "truth": "STUB:skip_multiline_comment",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2873 (*input += 2; scan for '*' '/' then advance 2). Rust src/cjson.rs:82 skip_multiline_comment(input: &mut Option<&mut &[u8]>) has an EMPTY body; its comment says the C it saw was 'sizeof(\"\") - sizeof(\"\")' (i.e. the tool saw a macro-mangled version) and treats it as a no-op. Correspondence by exact name and the input: char** parameter; no other Rust fn searches for \"*/\" (grep found none). Degenerate no-op STUB."
+  },
+  "minify_string": {
+   "truth": "minify_string",
+   "note": "C cJSON.c:2887 (copy opening quote; loop copying bytes; on '\"' copy and return; on '\\\\' followed by '\"' copy both and skip). Rust src/cjson.rs:11: output[0] = input[0]; advance; loop until '\\0'; if b'\"' write and return; else if b'\\\\' && input[1] == b'\"' copy input[1] and advance. Body match (C lines quoted in comments)."
+  },
+  "cJSON_Minify": {
+   "truth": "STUB:cJSON_Minify",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:2909 (in-place whitespace/comment stripping dispatching to skip_oneline_comment / skip_multiline_comment / minify_string). Rust src/cjson.rs:147 cJSON_Minify(json: Option<&mut [u8]>) is a STUB ('Stub only, per requirements: no implementation'); correspondence by exact name and single json parameter. No other Rust fn calls skip_oneline_comment/skip_multiline_comment/minify_string (grep: zero callers for all three)."
+  },
+  "cJSON_IsInvalid": {
+   "truth": "cJSON_IsInvalid",
+   "note": "C cJSON.c:2957 ((type & 0xFF) == cJSON_Invalid (0)). Rust src/cjson.rs:304: ((it.type_ & 0xFF) == 0) as i32. Body match. Rejected matcher_forced=cJSON_IsTrue (src/cjson.rs:320): compares == 1 << 1."
+  },
+  "cJSON_IsFalse": {
+   "truth": "cJSON_IsFalse",
+   "note": "C cJSON.c:2967 ((type & 0xFF) == cJSON_False (1<<0)). Rust src/cjson.rs:310: type_low_byte == 1 << 0. Body match. Rejected matcher_forced=cJSON_IsInvalid (src/cjson.rs:304): compares == 0."
+  },
+  "cJSON_IsTrue": {
+   "truth": "cJSON_IsTrue",
+   "note": "C cJSON.c:2977 ((type & 0xff) == cJSON_True (1<<1)). Rust src/cjson.rs:320: (it.type_ & 0xff) == (1 << 1) with the C expression quoted. Body match. Rejected matcher_forced=cJSON_IsArray (src/cjson.rs:382): compares == 1 << 5."
+  },
+  "cJSON_IsBool": {
+   "truth": "cJSON_IsBool",
+   "note": "C cJSON.c:2988 ((type & (cJSON_True | cJSON_False)) != 0). Rust src/cjson.rs:333: mask = (1<<1)|(1<<0); (type_ & mask) != 0. Body match."
+  },
+  "cJSON_IsNull": {
+   "truth": "cJSON_IsNull",
+   "note": "C cJSON.c:2997 ((type & 0xFF) == cJSON_NULL (1<<2)). Rust src/cjson.rs:346: type_low_byte == 1 << 2. Body match. Rejected matcher_forced=cJSON_IsRaw (src/cjson.rs:406): compares == 1 << 7."
+  },
+  "cJSON_IsNumber": {
+   "truth": "cJSON_IsNumber",
+   "note": "C cJSON.c:3007 ((type & 0xFF) == cJSON_Number (1<<3)). Rust src/cjson.rs:356: masked == (1 << 3). Body match. Rejected matcher_forced=cJSON_IsString (src/cjson.rs:369): compares == 1 << 4."
+  },
+  "cJSON_IsString": {
+   "truth": "cJSON_IsString",
+   "note": "C cJSON.c:3017 ((type & 0xFF) == cJSON_String (1<<4)). Rust src/cjson.rs:369: (it.type_ & 0xFF) == (1 << 4). Body match. Rejected matcher_forced=cJSON_IsNumber (src/cjson.rs:356): compares == 1 << 3."
+  },
+  "cJSON_IsArray": {
+   "truth": "cJSON_IsArray",
+   "note": "C cJSON.c:3027 ((type & 0xFF) == cJSON_Array (1<<5)). Rust src/cjson.rs:382: == (1 << 5). Body match. Rejected matcher_forced=cJSON_IsNull (src/cjson.rs:346): compares == 1 << 2."
+  },
+  "cJSON_IsObject": {
+   "truth": "cJSON_IsObject",
+   "note": "C cJSON.c:3037 ((type & 0xFF) == cJSON_Object (1<<6)). Rust src/cjson.rs:394: == (1 << 6). Body match."
+  },
+  "cJSON_IsRaw": {
+   "truth": "cJSON_IsRaw",
+   "note": "C cJSON.c:3047 ((type & 0xFF) == cJSON_Raw (1<<7)). Rust src/cjson.rs:406: == (1 << 7). Body match. Rejected matcher_forced=cJSON_IsFalse (src/cjson.rs:310): compares == 1 << 0."
+  },
+  "cJSON_Compare": {
+   "truth": "cJSON_Compare",
+   "note": "C cJSON.c:3057. Rust src/cjson.rs:1753: (a||b NULL || type mismatch) -> 0, type-validity switch, ptr::eq(a,b) -> 1, then per-type: trivially-true group, compare_double on valuedouble, valuestring string equality, array element-wise recursive cJSON_Compare with length check, object two-way get_object_item + recursive compare. Body match. (Note: the Rust local constants are mis-numbered - CJSON_NULL = 1<<3, CJSON_NUMBER = 1<<4, CJSON_STRING = 1<<7 - so number/string/null arms are swapped vs. C; a semantic bug, not an identity problem.)"
+  },
+  "cJSON_malloc": {
+   "truth": "STUB:cJSON_malloc",
+   "note": "STUB (placeholder body, correspondence by name/signature/doc only): C cJSON.c:3182 (return global_hooks.allocate(size)). Rust src/cjson.rs:1079 cJSON_malloc(_size, _hooks) -> Option<&c_void> is a STUB returning None; doc comment 'Translation of: void * cJSON_malloc(size_t size)'. Correspondence by exact name and size parameter. Rejected matcher_forced=cJSON_Minify (src/cjson.rs:147): that is the stub slot for C cJSON_Minify (json parameter)."
+  },
+  "cJSON_free": {
+   "truth": "NONE",
+   "note": "C cJSON.c:3187 (global_hooks.deallocate(object)). No same-name or normalized-name Rust fn; grep -i 'free' over src/ finds only the cJSON_Hooks.free_fn field and InitHooks's free_fn check; no Rust fn calls a deallocate hook at all. Rejected matcher_forced=skip_multiline_comment (src/cjson.rs:82): empty-body fn named and parameterised (input: char**) for C skip_multiline_comment. Functionality elided -> NONE."
+  }
+ }
+}

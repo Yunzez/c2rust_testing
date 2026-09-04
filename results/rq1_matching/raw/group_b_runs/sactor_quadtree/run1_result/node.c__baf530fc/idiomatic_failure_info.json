@@ -1,0 +1,142 @@
+{
+    "quadtree_point": {
+        "type": "struct",
+        "errors": [],
+        "status": "success",
+        "attempts": [
+            1
+        ]
+    },
+    "quadtree_bounds": {
+        "type": "struct",
+        "errors": [
+            {
+                "type": "TEST_ERROR",
+                "message": "Spec-driven harness exhausted 6 attempts for struct quadtree_bounds.\nLast error (COMPILE_ERROR):\n    Updating crates.io index\n     Locking 1 package to latest compatible version\n   Compiling libc v0.2.189\n   Compiling build_attempt v0.1.0 (/tmp/sactor/tmpyx5_owy3/build/build_attempt)\nwarning: unused import: `core::ptr`\n --> src/lib.rs:1:5\n  |\n1 | use core::ptr;\n  |     ^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unused import: `std::ffi`\n --> src/lib.rs:2:5\n  |\n2 | use std::ffi;\n  |     ^^^^^^^^\n\nwarning: type `quadtree_point` should have an upper camel case name\n --> src/lib.rs:4:12\n  |\n4 | pub struct quadtree_point {\n  |            ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreePoint`\n  |\n  = note: `#[warn(non_camel_case_types)]` (part of `#[warn(nonstandard_style)]`) on by default\n\nwarning: type `size_t` should have an upper camel case name\n --> src/lib.rs:8:10\n  |\n8 | pub type size_t = usize;\n  |          ^^^^^^ help: convert the identifier to upper camel case: `SizeT`\n\nwarning: type `quadtree_bounds` should have an upper camel case name\n  --> src/lib.rs:35:12\n   |\n35 | pub struct quadtree_bounds {\n   |            ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreeBounds`\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:80:56\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.nw) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.nw) };\n   |                                                        ++++\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:82:56\n   |\n82 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.se) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n82 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.se) };\n   |                                                        ++++\n\nFor more information about this error, try `rustc --explain E0308`.\nwarning: `build_attempt` (lib) generated 5 warnings\nerror: could not compile `build_attempt` (lib) due to 2 previous errors; 5 warnings emitted\n",
+                "translation": "#[derive(Clone, Debug, PartialEq)]\npub struct quadtree_bounds {\n    /// North\u2011west corner of the bounds.\n    pub nw: quadtree_point,\n    /// South\u2011east corner of the bounds.\n    pub se: quadtree_point,\n    pub width: f64,\n    pub height: f64,\n}\n"
+            },
+            {
+                "type": "TEST_ERROR",
+                "message": "Spec-driven harness exhausted 6 attempts for struct quadtree_bounds.\nLast error (COMPILE_ERROR):\n    Updating crates.io index\n     Locking 1 package to latest compatible version\n   Compiling libc v0.2.189\n   Compiling build_attempt v0.1.0 (/tmp/sactor/tmpyx5_owy3/build/build_attempt)\nwarning: unused import: `core::ptr`\n --> src/lib.rs:1:5\n  |\n1 | use core::ptr;\n  |     ^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unused import: `std::ffi`\n --> src/lib.rs:2:5\n  |\n2 | use std::ffi;\n  |     ^^^^^^^^\n\nwarning: type `quadtree_point` should have an upper camel case name\n --> src/lib.rs:4:12\n  |\n4 | pub struct quadtree_point {\n  |            ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreePoint`\n  |\n  = note: `#[warn(non_camel_case_types)]` (part of `#[warn(nonstandard_style)]`) on by default\n\nwarning: type `size_t` should have an upper camel case name\n --> src/lib.rs:8:10\n  |\n8 | pub type size_t = usize;\n  |          ^^^^^^ help: convert the identifier to upper camel case: `SizeT`\n\nwarning: type `quadtree_bounds` should have an upper camel case name\n  --> src/lib.rs:35:12\n   |\n35 | pub struct quadtree_bounds {\n   |            ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreeBounds`\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:78:56\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.nw) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.nw) };\n   |                                                        ++++\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:80:56\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.se) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.se) };\n   |                                                        ++++\n\nFor more information about this error, try `rustc --explain E0308`.\nwarning: `build_attempt` (lib) generated 5 warnings\nerror: could not compile `build_attempt` (lib) due to 2 previous errors; 5 warnings emitted\n",
+                "translation": "#[derive(Clone, Debug, PartialEq)]\npub struct quadtree_bounds {\n    /// North\u2011west corner of the bounds.\n    pub nw: quadtree_point,\n    /// South\u2011east corner of the bounds.\n    pub se: quadtree_point,\n    pub width: f64,\n    pub height: f64,\n}\n"
+            },
+            {
+                "type": "TEST_ERROR",
+                "message": "Spec-driven harness exhausted 6 attempts for struct quadtree_bounds.\nLast error (COMPILE_ERROR):\n    Updating crates.io index\n     Locking 1 package to latest compatible version\n   Compiling libc v0.2.189\n   Compiling build_attempt v0.1.0 (/tmp/sactor/tmpyx5_owy3/build/build_attempt)\nwarning: unused import: `core::ptr`\n --> src/lib.rs:1:5\n  |\n1 | use core::ptr;\n  |     ^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unused import: `std::ffi`\n --> src/lib.rs:2:5\n  |\n2 | use std::ffi;\n  |     ^^^^^^^^\n\nwarning: type `quadtree_point` should have an upper camel case name\n --> src/lib.rs:4:12\n  |\n4 | pub struct quadtree_point {\n  |            ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreePoint`\n  |\n  = note: `#[warn(non_camel_case_types)]` (part of `#[warn(nonstandard_style)]`) on by default\n\nwarning: type `size_t` should have an upper camel case name\n --> src/lib.rs:8:10\n  |\n8 | pub type size_t = usize;\n  |          ^^^^^^ help: convert the identifier to upper camel case: `SizeT`\n\nwarning: type `quadtree_bounds` should have an upper camel case name\n  --> src/lib.rs:35:12\n   |\n35 | pub struct quadtree_bounds {\n   |            ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreeBounds`\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:78:56\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.nw) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.nw) };\n   |                                                        ++++\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:80:56\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.se) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.se) };\n   |                                                        ++++\n\nFor more information about this error, try `rustc --explain E0308`.\nwarning: `build_attempt` (lib) generated 5 warnings\nerror: could not compile `build_attempt` (lib) due to 2 previous errors; 5 warnings emitted\n",
+                "translation": "#[derive(Clone, Debug, PartialEq)]\npub struct quadtree_bounds {\n    /// North\u2011west corner of the bounds.\n    pub nw: quadtree_point,\n    /// South\u2011east corner of the bounds.\n    pub se: quadtree_point,\n    pub width: f64,\n    pub height: f64,\n}\n"
+            },
+            {
+                "type": "TEST_ERROR",
+                "message": "Spec-driven harness exhausted 6 attempts for struct quadtree_bounds.\nLast error (COMPILE_ERROR):\n    Updating crates.io index\n     Locking 1 package to latest compatible version\n   Compiling libc v0.2.189\n   Compiling build_attempt v0.1.0 (/tmp/sactor/tmpyx5_owy3/build/build_attempt)\nwarning: unused import: `core::ptr`\n --> src/lib.rs:1:5\n  |\n1 | use core::ptr;\n  |     ^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unused import: `std::ffi`\n --> src/lib.rs:2:5\n  |\n2 | use std::ffi;\n  |     ^^^^^^^^\n\nwarning: type `quadtree_point` should have an upper camel case name\n --> src/lib.rs:4:12\n  |\n4 | pub struct quadtree_point {\n  |            ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreePoint`\n  |\n  = note: `#[warn(non_camel_case_types)]` (part of `#[warn(nonstandard_style)]`) on by default\n\nwarning: type `size_t` should have an upper camel case name\n --> src/lib.rs:8:10\n  |\n8 | pub type size_t = usize;\n  |          ^^^^^^ help: convert the identifier to upper camel case: `SizeT`\n\nwarning: type `quadtree_bounds` should have an upper camel case name\n  --> src/lib.rs:35:12\n   |\n35 | pub struct quadtree_bounds {\n   |            ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreeBounds`\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:78:56\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.nw) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.nw) };\n   |                                                        ++++\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:80:56\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.se) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.se) };\n   |                                                        ++++\n\nFor more information about this error, try `rustc --explain E0308`.\nwarning: `build_attempt` (lib) generated 5 warnings\nerror: could not compile `build_attempt` (lib) due to 2 previous errors; 5 warnings emitted\n",
+                "translation": "#[derive(Clone, Debug, PartialEq)]\npub struct quadtree_bounds {\n    /// North\u2011west corner of the bounds.\n    pub nw: quadtree_point,\n    /// South\u2011east corner of the bounds.\n    pub se: quadtree_point,\n    pub width: f64,\n    pub height: f64,\n}\n"
+            },
+            {
+                "type": "TEST_ERROR",
+                "message": "Spec-driven harness exhausted 6 attempts for struct quadtree_bounds.\nLast error (COMPILE_ERROR):\n    Updating crates.io index\n     Locking 1 package to latest compatible version\n   Compiling libc v0.2.189\n   Compiling build_attempt v0.1.0 (/tmp/sactor/tmpyx5_owy3/build/build_attempt)\nwarning: unused import: `core::ptr`\n --> src/lib.rs:1:5\n  |\n1 | use core::ptr;\n  |     ^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unused import: `std::ffi`\n --> src/lib.rs:2:5\n  |\n2 | use std::ffi;\n  |     ^^^^^^^^\n\nwarning: type `quadtree_point` should have an upper camel case name\n --> src/lib.rs:4:12\n  |\n4 | pub struct quadtree_point {\n  |            ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreePoint`\n  |\n  = note: `#[warn(non_camel_case_types)]` (part of `#[warn(nonstandard_style)]`) on by default\n\nwarning: type `size_t` should have an upper camel case name\n --> src/lib.rs:8:10\n  |\n8 | pub type size_t = usize;\n  |          ^^^^^^ help: convert the identifier to upper camel case: `SizeT`\n\nwarning: type `quadtree_bounds` should have an upper camel case name\n  --> src/lib.rs:35:12\n   |\n35 | pub struct quadtree_bounds {\n   |            ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreeBounds`\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:78:56\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.nw) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.nw) };\n   |                                                        ++++\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:80:56\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.se) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.se) };\n   |                                                        ++++\n\nFor more information about this error, try `rustc --explain E0308`.\nwarning: `build_attempt` (lib) generated 5 warnings\nerror: could not compile `build_attempt` (lib) due to 2 previous errors; 5 warnings emitted\n",
+                "translation": "#[derive(Clone, Debug, PartialEq)]\npub struct quadtree_bounds {\n    /// North\u2011west corner of the bounds.\n    pub nw: quadtree_point,\n    /// South\u2011east corner of the bounds.\n    pub se: quadtree_point,\n    pub width: f64,\n    pub height: f64,\n}\n"
+            },
+            {
+                "type": "TEST_ERROR",
+                "message": "Spec-driven harness exhausted 6 attempts for struct quadtree_bounds.\nLast error (COMPILE_ERROR):\n    Updating crates.io index\n     Locking 1 package to latest compatible version\n   Compiling libc v0.2.189\n   Compiling build_attempt v0.1.0 (/tmp/sactor/tmpyx5_owy3/build/build_attempt)\nwarning: unused import: `core::ptr`\n --> src/lib.rs:1:5\n  |\n1 | use core::ptr;\n  |     ^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unused import: `std::ffi`\n --> src/lib.rs:2:5\n  |\n2 | use std::ffi;\n  |     ^^^^^^^^\n\nwarning: type `quadtree_point` should have an upper camel case name\n --> src/lib.rs:4:12\n  |\n4 | pub struct quadtree_point {\n  |            ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreePoint`\n  |\n  = note: `#[warn(non_camel_case_types)]` (part of `#[warn(nonstandard_style)]`) on by default\n\nwarning: type `size_t` should have an upper camel case name\n --> src/lib.rs:8:10\n  |\n8 | pub type size_t = usize;\n  |          ^^^^^^ help: convert the identifier to upper camel case: `SizeT`\n\nwarning: type `quadtree_bounds` should have an upper camel case name\n  --> src/lib.rs:35:12\n   |\n35 | pub struct quadtree_bounds {\n   |            ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `QuadtreeBounds`\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:78:56\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.nw) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n78 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.nw) };\n   |                                                        ++++\n\nerror[E0308]: mismatched types\n  --> src/lib.rs:80:56\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(idiom_struct.se) };\n   |                  ------------------------------------- ^^^^^^^^^^^^^^^ expected `&mut quadtree_point`, found `quadtree_point`\n   |                  |\n   |                  arguments to this function are incorrect\n   |\nnote: function defined here\n  --> src/lib.rs:26:11\n   |\n26 | unsafe fn quadtree_point_to_Cquadtree_point_mut(\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n27 |     idiom_struct: &mut quadtree_point,\n   |     ---------------------------------\nhelp: consider mutably borrowing here\n   |\n80 |         unsafe { quadtree_point_to_Cquadtree_point_mut(&mut idiom_struct.se) };\n   |                                                        ++++\n\nFor more information about this error, try `rustc --explain E0308`.\nwarning: `build_attempt` (lib) generated 5 warnings\nerror: could not compile `build_attempt` (lib) due to 2 previous errors; 5 warnings emitted\n",
+                "translation": "#[derive(Clone, Debug, PartialEq)]\npub struct quadtree_bounds {\n    /// North\u2011west corner of the bounds.\n    pub nw: quadtree_point,\n    /// South\u2011east corner of the bounds.\n    pub se: quadtree_point,\n    pub width: f64,\n    pub height: f64,\n}\n"
+            }
+        ],
+        "status": "failure",
+        "attempts": [
+            6
+        ]
+    },
+    "quadtree_node": {
+        "type": "struct",
+        "errors": [],
+        "status": "blocked_by_failed_dependency",
+        "attempts": [
+            0
+        ],
+        "blockers": [
+            {
+                "type": "struct",
+                "name": "quadtree_bounds",
+                "status": "failure"
+            }
+        ]
+    },
+    "quadtree_node_isleaf": {
+        "type": "function",
+        "errors": [],
+        "status": "blocked_by_failed_dependency",
+        "attempts": [
+            0
+        ],
+        "blockers": [
+            {
+                "type": "struct",
+                "name": "quadtree_node",
+                "status": "blocked_by_failed_dependency"
+            }
+        ]
+    },
+    "quadtree_node_reset": {
+        "type": "function",
+        "errors": [],
+        "status": "blocked_by_failed_dependency",
+        "attempts": [
+            0
+        ],
+        "blockers": [
+            {
+                "type": "struct",
+                "name": "quadtree_node",
+                "status": "blocked_by_failed_dependency"
+            }
+        ]
+    },
+    "quadtree_node_new": {
+        "type": "function",
+        "errors": [],
+        "status": "blocked_by_failed_dependency",
+        "attempts": [
+            0
+        ],
+        "blockers": [
+            {
+                "type": "struct",
+                "name": "quadtree_node",
+                "status": "blocked_by_failed_dependency"
+            }
+        ]
+    },
+    "quadtree_node_ispointer": {
+        "type": "function",
+        "errors": [],
+        "status": "blocked_by_failed_dependency",
+        "attempts": [
+            0
+        ],
+        "blockers": [
+            {
+                "type": "struct",
+                "name": "quadtree_node",
+                "status": "blocked_by_failed_dependency"
+            },
+            {
+                "type": "function",
+                "name": "quadtree_node_isleaf",
+                "status": "blocked_by_failed_dependency"
+            },
+            {
+                "type": "function",
+                "name": "quadtree_node_isleaf",
+                "status": "blocked_by_failed_dependency"
+            }
+        ]
+    },
+    "quadtree_node_isempty": {
+        "type": "function",
+        "errors": [],
+        "status": "untranslated",
+        "attempts": [
+            0
+        ]
+    }
+}

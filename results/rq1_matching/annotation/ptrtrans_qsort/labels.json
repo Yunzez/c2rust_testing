@@ -1,0 +1,22 @@
+{
+ "case": "ptrtrans_qsort",
+ "sheet_fingerprint": "1bf04d8c6acdeb40",
+ "labeler": "Claude (claude-fable-5-1), session 6278f822",
+ "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+ "date": "2026-09-01",
+ "reviewed_by_user": false,
+ "labels": {
+  "swap": {
+   "truth": "swap",
+   "note": "qsort.c:1 swap(int*,int*) -> src/qsort.rs:3 swap(Option<&mut i32>,Option<&mut i32>): std::mem::swap; PtrTrans map claims swap"
+  },
+  "partition": {
+   "truth": "partition",
+   "note": "qsort.c:8 -> src/qsort.rs:16 partition(Option<&mut [i32]>,low,high)->i32, pivot=arr[high], i/j loop, returns i+1; map claims partition"
+  },
+  "quickSort": {
+   "truth": "quick_sort",
+   "note": "qsort.c:23 -> src/qsort.rs:81 quick_sort: if low<high { i=partition(..); recurse (low,i-1),(i+1,high) }; map claims quick_sort (real rename camel->snake)"
+  }
+ }
+}

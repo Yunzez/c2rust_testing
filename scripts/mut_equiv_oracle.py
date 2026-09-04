@@ -15,7 +15,7 @@ comparison. Output per mutation:
   equivalent = divergences == 0 over the whole grid
   density = divergences / sampled  (high -> easily fuzzable; ~0 -> boundary-only; explains misses)
 
-Usage: mut_equiv_oracle.py --muts scripts/mut_m2.json --json results/mut_rows/m2_oracle.json
+Usage: mut_equiv_oracle.py --muts scripts/mut_m2.json --json results/ablations/attribution/mut_rows/m2_oracle.json
 """
 from __future__ import annotations
 import argparse, json, re, subprocess, shutil

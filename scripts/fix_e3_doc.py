@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply the 2026-08-09 honesty corrections to results/rq3_master_table.md.
+"""Apply the 2026-08-09 honesty corrections to results/rq4_effectiveness/reach_census.md.
 
 Run against the committed (HEAD) version of the doc. Splits the file at the
 results-table heading BY POSITION FIRST, then edits the prose half, then appends
@@ -10,7 +10,7 @@ import glob
 import json
 import sys
 
-P = "results/rq3_master_table.md"
+P = "results/rq4_effectiveness/reach_census.md"
 SPLIT = "## E3 results table (COMPLETE 2026-07-18)"
 
 s = open(P).read()
@@ -110,7 +110,7 @@ HDR = {"c2rust": "c2rust", "laertes": "Laertes", "c2saferrust": "C2SaferRust",
        "crown": "CROWN", "sactor": "SACTOR", "ptrtrans": "PtrTrans"}
 
 cells = {}
-for f in glob.glob("results/rq3_cells/*.json"):
+for f in glob.glob("results/rq4_effectiveness/reach_cells/*.json"):
     d = json.load(open(f))
     cells[(d.get("library"), d.get("tool"))] = d
 

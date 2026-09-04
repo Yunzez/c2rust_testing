@@ -1,5 +1,10 @@
 # Research index — settled survey results (don't re-research these)
 
+> This file preserves literature findings, not the current contribution or RQ
+> framing. Statements below about “our differentiators,” STU/frontier selection,
+> or old RQ numbers are historical. Use `results/EVALUATION_PLAN.md` for the
+> current evaluation.
+
 One-stop index of the web-research / survey work done for this project. Each item is a SETTLED
 conclusion with a pointer to the full write-up. Before launching a new research agent, check here.
 

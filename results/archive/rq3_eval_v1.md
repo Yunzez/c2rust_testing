@@ -1,6 +1,6 @@
 # RQ3 — name-independent matcher precision/recall under renaming (v1)
 
-> **SUPERSEDED by `results/rq3_matcher_v1.md`** (full ablation ladder: name-eq / shape-only / node-only /
+> **SUPERSEDED by `results/rq1_matching/matcher_ablation_v1.md`** (full ablation ladder: name-eq / shape-only / node-only /
 > full / full+abstain, micro+macro, matched/extra/ambiguous breakout). This v1 doc is the earlier
 > 2-column (recall + name-eq) cut; kept for history.
 
@@ -68,4 +68,4 @@ idiomatic `combined.rs` wrapped in a minimal crate. Then `scripts/rq3_eval.py --
 
 Reproduce: `python3 scripts/rq3_eval.py --source "raw-LLM (gpt-5-mini)" --truth-dir
 experiments/llm_transpiler/truth --c-pairs benchmark/pairs --rust-out experiments/llm_transpiler/out
---json results/rq3_rows/rawllm_gpt5mini.json`
+--json results/rq1_matching/rows/rawllm_gpt5mini.json`

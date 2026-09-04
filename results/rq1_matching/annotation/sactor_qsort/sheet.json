@@ -1,0 +1,180 @@
+{
+ "case": "sactor_qsort",
+ "tool": "SACTOR",
+ "lib": "qsort",
+ "builds": true,
+ "split": "eval",
+ "eps": 0.01,
+ "fingerprint": {
+  "repo_head": "b647a44",
+  "matcher_commit": "509751d",
+  "analyzer_src_commit": "509751d",
+  "matcher_sha256": "fe49e5bb76996922",
+  "c_analyzer_sha256": "b771a6b013b22779",
+  "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+  "stu_selector_dirty": false,
+  "rust_artifact_sha256": "88463e1dc8171f8d",
+  "c_sources_sha256": "97546baea37f09b9",
+  "tool_map_sha256": "6f8824e0540a9aa3",
+  "params": {
+   "eps": 0.01,
+   "topo": true,
+   "rust_exclude_fns": [
+    "main"
+   ],
+   "drop_dirs": [],
+   "c_sources": [
+    "tools/frameworks/c2saferrust/laertes_benchmarks/qsort/qsort.c"
+   ]
+  },
+  "id": "fda2c8e04711c9d9"
+ },
+ "rust_functions_dropped": [
+  "main"
+ ],
+ "duplicate_leafs": {},
+ "rows": [
+  {
+   "c_function": "swap",
+   "c_file": "qsort.c",
+   "c_line": 1,
+   "c_signature": "(a: int *, b: int *) -> void",
+   "tool_claim": "swap",
+   "tool_claim_resolved": "swap",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "",
+   "name_eq": "swap",
+   "matcher_forced": "swap",
+   "matcher_forced_score": 0.384,
+   "matcher_forced_conf": -0.043,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "swap",
+   "truth_note": "qsort.c:1 -> combined.rs:1 swap(&mut i32,&mut i32) delegating to nested fn inner (combined.rs:2, std::mem::swap); nested fns are not separate inventory entries"
+  },
+  {
+   "c_function": "partition",
+   "c_file": "qsort.c",
+   "c_line": 8,
+   "c_signature": "(arr: int[], low: int, high: int) -> int",
+   "tool_claim": "partition",
+   "tool_claim_resolved": "partition",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "",
+   "name_eq": "partition",
+   "matcher_forced": "quick_sort",
+   "matcher_forced_score": 0.497,
+   "matcher_forced_conf": 0.047,
+   "matcher_deploy": "quick_sort",
+   "prior": "CONFLICT",
+   "truth": "partition",
+   "truth_note": "qsort.c:8 -> combined.rs:7 partition(&mut [i32],low,high)->i32: pivot=arr[high], i=low-1, j-loop with swap via nested do_swap (split_at_mut), final swap arr[i+1]<->arr[high], returns i+1. The matcher's forced proposal quick_sort is WRONG"
+  },
+  {
+   "c_function": "quickSort",
+   "c_file": "qsort.c",
+   "c_line": 23,
+   "c_signature": "(arr: int[], low: int, high: int) -> void",
+   "tool_claim": "quick_sort",
+   "tool_claim_resolved": "quick_sort",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "",
+   "name_eq": "",
+   "matcher_forced": "partition",
+   "matcher_forced_score": 0.291,
+   "matcher_forced_conf": -0.158,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "quick_sort",
+   "truth_note": "qsort.c:23 -> combined.rs:54 quick_sort: body moved into nested inner_quick_sort (combined.rs:55) which calls partition and recurses; real rename camel->snake. Matcher forced proposal partition is WRONG"
+  }
+ ],
+ "rust_inventory": [
+  {
+   "rust_function": "swap",
+   "file": "src/lib.rs",
+   "line": 1,
+   "signature": "(a: &mut i32, b: &mut i32) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "swap",
+   "matcher_proposed_for": "swap"
+  },
+  {
+   "rust_function": "partition",
+   "file": "src/lib.rs",
+   "line": 7,
+   "signature": "(arr: &mut [i32], low: i32, high: i32) -> i32",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "partition",
+   "matcher_proposed_for": "quickSort"
+  },
+  {
+   "rust_function": "quick_sort",
+   "file": "src/lib.rs",
+   "line": 54,
+   "signature": "(arr: &mut [i32], low: i32, high: i32) -> ()",
+   "same_name_in_c": "",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "quickSort",
+   "matcher_proposed_for": "partition"
+  }
+ ],
+ "verifi_tags": {
+  "-": 4
+ },
+ "matcher_forced_raw": [
+  [
+   "swap",
+   "swap",
+   0.38429675435939314,
+   -0.04324517208777506
+  ],
+  [
+   "partition",
+   "quick_sort",
+   0.49658137287255955,
+   0.04725708243170179
+  ],
+  [
+   "quickSort",
+   "partition",
+   0.29107865072279276,
+   -0.158245639718065
+  ]
+ ],
+ "matcher_deploy_raw": [
+  [
+   "partition",
+   "quick_sort",
+   0.49658137287255955,
+   0.04725708243170179
+  ]
+ ],
+ "matcher_deploy_ambiguous": [
+  [
+   "swap",
+   "swap",
+   0.38429675435939314,
+   -0.04324517208777506
+  ],
+  [
+   "quickSort",
+   "partition",
+   0.29107865072279276,
+   -0.158245639718065
+  ]
+ ],
+ "labels_meta": {
+  "case": "sactor_qsort",
+  "sheet_fingerprint": "fda2c8e04711c9d9",
+  "labeler": "Claude (claude-fable-5-1), session 6278f822",
+  "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+  "date": "2026-09-01",
+  "reviewed_by_user": false
+ }
+}

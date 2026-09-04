@@ -1,0 +1,861 @@
+2026-09-02 02:09:56 | INFO     | sactor.translator.batch_runner:174 | Translating (unidiomatic) /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c (result dir: ./result/driver.c__585b2fa3)
+2026-09-02 02:09:57 | INFO     | sactor.sactor:210 | -------------SACTOR Configuration-------------
+2026-09-02 02:09:57 | INFO     | sactor.sactor:211 | Input file: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c
+2026-09-02 02:09:57 | INFO     | sactor.sactor:212 | Test command: ./test_task.json
+2026-09-02 02:09:57 | INFO     | sactor.sactor:213 | Is executable: True
+2026-09-02 02:09:57 | INFO     | sactor.sactor:216 | Build directory: /tmp/sactor/tmph8eyiqv9/build
+2026-09-02 02:09:57 | INFO     | sactor.sactor:217 | Result directory: ./result/driver.c__585b2fa3
+2026-09-02 02:09:57 | INFO     | sactor.sactor:218 | Config file: /home/yunzez/c2rust_testing/tools/frameworks/sactor/sactor.toml
+2026-09-02 02:09:57 | INFO     | sactor.sactor:219 | No verify: False
+2026-09-02 02:09:57 | INFO     | sactor.sactor:220 | Unidiomatic only: True
+2026-09-02 02:09:57 | INFO     | sactor.sactor:221 | LLM statistics base path: ./result/driver.c__585b2fa3/llm_stat.json
+2026-09-02 02:09:57 | INFO     | sactor.sactor:222 | Extra compile command: None
+2026-09-02 02:09:57 | INFO     | sactor.sactor:223 | Compile commands file: ./compile_commands.json
+2026-09-02 02:09:57 | INFO     | sactor.sactor:224 | Link args: []
+2026-09-02 02:09:57 | INFO     | sactor.sactor:225 | Idiomatic only: False
+2026-09-02 02:09:57 | INFO     | sactor.sactor:226 | Continue run when incomplete: True
+2026-09-02 02:09:57 | INFO     | sactor.sactor:227 | -------------End of Configuration-------------
+2026-09-02 02:09:57 | INFO     | sactor.c_parser.c_parser:135 | Backfill non-function refs complete: structs=0, enums=0, globals=0, unresolved=0
+2026-09-02 02:09:58 | INFO     | sactor.sactor:264 | Project link closure size: 1
+2026-09-02 02:09:58 | DEBUG    | sactor.sactor:285 | Total structs: 1; order groups: 1
+2026-09-02 02:09:58 | DEBUG    | sactor.sactor:287 | Total functions: 22; order groups: 22
+2026-09-02 02:09:58 | DEBUG    | sactor.sactor:289 | Struct order: [[StructInfo(url_data)]]
+2026-09-02 02:09:58 | DEBUG    | sactor.sactor:290 | Function order: [[FunctionInfo(char * strdup ( const char * str ))], [FunctionInfo(bool url_is_protocol ( char * str ))], [FunctionInfo(void url_data_inspect ( struct url_data * data ))], [FunctionInfo(void url_free ( struct url_data * data ))], [FunctionInfo(static void show ( const char * label , char * v ))], [FunctionInfo(static char * strff ( char * ptr , int n ))], [FunctionInfo(static char * strrwd ( char * ptr , int n ))], [FunctionInfo(bool url_is_ssh ( char * str ))], [FunctionInfo(char * url_get_protocol ( char * url ))], [FunctionInfo(static char * get_part ( char * url , const char * format , int l ))], [FunctionInfo(struct url_data * url_parse ( char * url ))], [FunctionInfo(char * url_get_auth ( char * url ))], [FunctionInfo(char * url_get_hostname ( char * url ))], [FunctionInfo(void url_inspect ( char * url ))], [FunctionInfo(char * url_get_host ( char * url ))], [FunctionInfo(char * url_get_path ( char * url ))], [FunctionInfo(char * url_get_pathname ( char * url ))], [FunctionInfo(char * url_get_port ( char * url ))], [FunctionInfo(char * url_get_search ( char * url ))], [FunctionInfo(char * url_get_query ( char * url ))], [FunctionInfo(char * url_get_hash ( char * url ))], [FunctionInfo(int main ( int argc , char * * argv ))]]
+2026-09-02 02:09:58 | DEBUG    | sactor.llm.llm:38 | Default model: 'gpt-5.1'
+2026-09-02 02:09:58 | DEBUG    | sactor.llm.llm:40 | Found 1 models in config
+2026-09-02 02:09:58 | DEBUG    | sactor.llm.llm:46 | Model mapping 0: 'gpt-5.1' -> 'openai/gpt-5.1': {'model': 'openai/gpt-5.1', 'api_key': '***REDACTED***'}
+2026-09-02 02:09:58 | DEBUG    | sactor.thirdparty.c2rust:48 | Running c2rust command: ['c2rust', 'transpile', '/tmp/sactor/tmptqzlokrc/c2rust/unfolded_typedefs.c', '--', '-I/usr/lib/llvm-21/lib/clang/21/include', '-I/usr/local/include', '-I/usr/include/x86_64-linux-gnu', '-I/usr/include', '-I/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser', '-Og', '-g']
+2026-09-02 02:09:58 | DEBUG    | sactor.sactor:419 | Checking function strdup: struct_ready=True, struct_blockers=[]
+2026-09-02 02:09:59 | INFO     | sactor.translator.unidiomatic_translator:1048 | Translating function: strdup (attempts: 0)
+2026-09-02 02:09:59 | PROMPT   | sactor.llm:155 | 
+Translate the following C function to Rust. Try to keep the **equivalence** as much as possible.
+`libc` will be included as the **only** dependency you can use. To keep the equivalence, you can use `unsafe` if you want.
+Your solution should only have **one** function, if you need to create help function, define the help function inside the function you translate.
+The function is:
+```c
+char *
+strdup (const char *str) {
+  int n = strlen(str) + 1;
+  char *dup = malloc(n);
+  if (dup) strcpy(dup, str);
+  return dup;
+}
+```
+
+Output the translated function into this format (wrap with the following tags):
+----FUNCTION----
+```rust
+// Your translated function here
+```
+----END FUNCTION----
+
+2026-09-02 02:10:01 | RESPONSE | sactor.llm:160 | ----FUNCTION----
+```rust
+use libc::{c_char, c_int, size_t, malloc};
+
+pub unsafe fn strdup(str_ptr: *const c_char) -> *mut c_char {
+    // Local helper function defined inside to compute strlen
+    unsafe fn strlen_local(s: *const c_char) -> size_t {
+        let mut len: size_t = 0;
+        let mut p = s;
+        while *p != 0 {
+            len += 1;
+            p = p.add(1);
+        }
+        len
+    }
+
+    // Local helper function defined inside to copy string including null terminator
+    unsafe fn strcpy_local(dst: *mut c_char, src: *const c_char) -> *mut c_char {
+        let mut d = dst;
+        let mut s = src;
+        loop {
+            let c = *s;
+            *d = c;
+            if c == 0 {
+                break;
+            }
+            d = d.add(1);
+            s = s.add(1);
+        }
+        dst
+    }
+
+    let n: c_int = (strlen_local(str_ptr) + 1) as c_int;
+    let dup = malloc(n as size_t) as *mut c_char;
+    if !dup.is_null() {
+        strcpy_local(dup, str_ptr);
+    }
+    dup
+}
+```
+----END FUNCTION----
+2026-09-02 02:10:01 | DEBUG    | sactor.utils:257 | Generated function:
+2026-09-02 02:10:01 | DEBUG    | sactor.utils:258 | use libc::{c_char, c_int, size_t, malloc};
+
+pub unsafe fn strdup(str_ptr: *const c_char) -> *mut c_char {
+    // Local helper function defined inside to compute strlen
+    unsafe fn strlen_local(s: *const c_char) -> size_t {
+        let mut len: size_t = 0;
+        let mut p = s;
+        while *p != 0 {
+            len += 1;
+            p = p.add(1);
+        }
+        len
+    }
+
+    // Local helper function defined inside to copy string including null terminator
+    unsafe fn strcpy_local(dst: *mut c_char, src: *const c_char) -> *mut c_char {
+        let mut d = dst;
+        let mut s = src;
+        loop {
+            let c = *s;
+            *d = c;
+            if c == 0 {
+                break;
+            }
+            d = d.add(1);
+            s = s.add(1);
+        }
+        dst
+    }
+
+    let n: c_int = (strlen_local(str_ptr) + 1) as c_int;
+    let dup = malloc(n as size_t) as *mut c_char;
+    if !dup.is_null() {
+        strcpy_local(dup, str_ptr);
+    }
+    dup
+}
+
+2026-09-02 02:10:01 | DEBUG    | sactor.translator.unidiomatic_translator:1358 | Translated function strdup:
+2026-09-02 02:10:01 | DEBUG    | sactor.translator.unidiomatic_translator:1359 | use libc::{c_char, c_int, size_t, malloc};
+pub unsafe fn strdup(str_ptr: *const c_char) -> *mut c_char {
+    unsafe fn strlen_local(s: *const c_char) -> size_t {
+        let mut len: size_t = 0;
+        let mut p = s;
+        while *p != 0 {
+            len += 1;
+            p = p.add(1);
+        }
+        len
+    }
+    unsafe fn strcpy_local(dst: *mut c_char, src: *const c_char) -> *mut c_char {
+        let mut d = dst;
+        let mut s = src;
+        loop {
+            let c = *s;
+            *d = c;
+            if c == 0 {
+                break;
+            }
+            d = d.add(1);
+            s = s.add(1);
+        }
+        dst
+    }
+    let n: c_int = (strlen_local(str_ptr) + 1) as c_int;
+    let dup = malloc(n as size_t) as *mut c_char;
+    if !dup.is_null() {
+        strcpy_local(dup, str_ptr);
+    }
+    dup
+}
+
+2026-09-02 02:10:01 | DEBUG    | sactor.verifier.verifier:278 | Compiling Rust project: cargo build --manifest-path /tmp/sactor/tmph8eyiqv9/build/build_attempt/Cargo.toml
+2026-09-02 02:10:02 | INFO     | sactor.verifier.verifier:286 | Rust code compiled successfully
+2026-09-02 02:10:02 | DEBUG    | sactor.verifier.verifier:567 | Compiling embedded Rust crate: cargo build --manifest-path /tmp/sactor/tmph8eyiqv9/build/embed_test_rust/Cargo.toml
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+   Compiling libc v0.2.189
+   Compiling strdup v0.1.0 (/tmp/sactor/tmph8eyiqv9/build/embed_test_rust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.03s
+2026-09-02 02:10:04 | DEBUG    | sactor.verifier.verifier:635 | Running compile command: ['gcc', '-I/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser', '-c', '-o', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c', '-Og', '-g']
+2026-09-02 02:10:04 | DEBUG    | sactor.verifier.verifier:658 | Project-level objects: ['../../../../../sactor/tmph8eyiqv9/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o']
+2026-09-02 02:10:04 | DEBUG    | sactor.verifier.verifier:659 | Project-level cmake libs: []
+2026-09-02 02:10:04 | DEBUG    | sactor.verifier.verifier:660 | Linking project-level harness: ['clang', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '-o', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/strdup', '-L/tmp/sactor/tmph8eyiqv9/build/embed_test_rust/target/debug', '-lm', '-lstrdup']
+2026-09-02 02:10:04 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/strdup', '0', '--feed-as-args']
+2026-09-02 02:10:07 | DEBUG    | sactor.verifier.verifier:362 | Test stderr: ❌ Test 0 failed!
+Diff (-actual +expected):
+- *** buffer overflow detected ***: terminated
++ is_protocol(http): 1
++ is_ssh(http): 0
++ protocol: http
++ auth: user:pass
++ hostname: subdomain.host.com:8080
++ host: subdomain.host.com
++ pathname: /p/a/t/h
++ path: /p/a/t/h?query=string#hash
++ search: ?query=string
++ query: query=string
++ hash: #hash
++ port: 8080
++ #url =>
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .protocol: "http"
++     .host: "subdomain.host.com"
++     .auth: "user:pass"
++     .hostname: "subdomain.host.com:8080"
++     .pathname: "/p/a/t/h"
++     .search: "?query=string"
++     .path: "/p/a/t/h?query=string#hash"
++     .hash: "#hash"
++     .query: "query=string"
++     .port: "8080"
++ #url =>
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .protocol: "http"
++     .host: "subdomain.host.com"
++     .auth: "user:pass"
++     .hostname: "subdomain.host.com:8080"
++     .pathname: "/p/a/t/h"
++     .search: "?query=string"
++     .path: "/p/a/t/h?query=string#hash"
++     .hash: "#hash"
++     .query: "query=string"
++     .port: "8080"
+
+2026-09-02 02:10:07 | ERROR    | sactor.verifier.verifier:742 | Failed to run tests for function strdup, rerunning with feedback
+2026-09-02 02:10:11 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/strdup', '0', '--feed-as-args']
+2026-09-02 02:11:07 | DEBUG    | sactor.verifier.verifier:362 | Test stderr: ==611434== Memcheck, a memory error detector
+==611434== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==611434== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==611434== Command: /home/yunzez/c2rust_testing/tools/frameworks/sactor/.venv/bin/sactor run-tests --type bin ./test_samples.json /tmp/sactor/tmph8eyiqv9/build/embed_test_c/strdup 0 --feed-as-args
+==611434== 
+❌ Test 0 failed!
+Diff (-actual +expected):
++ is_protocol(http): 1
++ is_ssh(http): 0
++ protocol: http
++ auth: user:pass
++ hostname: subdomain.host.com:8080
++ host: subdomain.host.com
++ pathname: /p/a/t/h
++ path: /p/a/t/h?query=string#hash
++ search: ?query=string
++ query: query=string
++ hash: #hash
++ port: 8080
++ #url =>
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .protocol: "http"
++     .host: "subdomain.host.com"
++     .auth: "user:pass"
++     .hostname: "subdomain.host.com:8080"
++     .pathname: "/p/a/t/h"
++     .search: "?query=string"
++     .path: "/p/a/t/h?query=string#hash"
++     .hash: "#hash"
++     .query: "query=string"
++     .port: "8080"
++ #url =>
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .protocol: "http"
++     .host: "subdomain.host.com"
++     .auth: "user:pass"
++     .hostname: "subdomain.host.com:8080"
++     .pathname: "/p/a/t/h"
++     .search: "?query=string"
++     .path: "/p/a/t/h?query=string#hash"
++     .hash: "#hash"
++     .query: "query=string"
++     .port: "8080"
+- ==613031== Memcheck, a memory error detector
+- ==613031== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+- ==613031== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+- ==613031== Command: /tmp/sactor/tmph8eyiqv9/build/embed_test_c/strdup http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash http
+- ==613031==
+- ==613031== Invalid write of size 1
+- ==613031==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==613031==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==613031==    by 0x4002412: get_part (url.h:208)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==
+- ==613031== Invalid write of size 1
+- ==613031==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==613031==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==613031==    by 0x4002412: get_part (url.h:208)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==  Address 0x4c43179 is 8 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==613031==    by 0x40022DC: strdup (url.h:160)
+- ==613031==    by 0x4002467: get_part (url.h:212)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x4861969: __strcpy_chk (vg_replace_strmem.c:1620)
+- ==613031==    by 0x4002300: strcpy (string_fortified.h:93)
+- ==613031==    by 0x4002300: strdup (url.h:162)
+- ==613031==    by 0x4002467: get_part (url.h:212)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==  Address 0x4c43171 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x485C166: strlen (vg_replace_strmem.c:506)
+- ==613031==    by 0x40022DC: strdup (url.h:160)
+- ==613031==    by 0x400232F: strrwd (url.h:185)
+- ==613031==    by 0x400242D: get_part (url.h:217)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==  Address 0x4c43329 is 7 bytes before a block of size 60 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x40022EA: strdup (url.h:161)
+- ==613031==    by 0x400234F: strff (url.h:175)
+- ==613031==    by 0x40023FA: get_part (url.h:206)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x486194E: __strcpy_chk (vg_replace_strmem.c:1620)
+- ==613031==    by 0x4002300: strcpy (string_fortified.h:93)
+- ==613031==    by 0x4002300: strdup (url.h:162)
+- ==613031==    by 0x400232F: strrwd (url.h:185)
+- ==613031==    by 0x400242D: get_part (url.h:217)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==  Address 0x4c43329 is 7 bytes before a block of size 60 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x40022EA: strdup (url.h:161)
+- ==613031==    by 0x400234F: strff (url.h:175)
+- ==613031==    by 0x40023FA: get_part (url.h:206)
+- ==613031==    by 0x4002978: url_get_auth (url.h:366)
+- ==613031==    by 0x40030FF: main (driver.c:20)
+- ==613031==
+- ==613031== Invalid write of size 1
+- ==613031==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==613031==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==613031==    by 0x4002412: get_part (url.h:208)
+- ==613031==    by 0x4002A27: url_get_hostname (url.h:386)
+- ==613031==    by 0x4003116: main (driver.c:21)
+- ==613031==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002A27: url_get_hostname (url.h:386)
+- ==613031==    by 0x4003116: main (driver.c:21)
+- ==613031==
+- ==613031== Invalid write of size 1
+- ==613031==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==613031==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==613031==    by 0x4002412: get_part (url.h:208)
+- ==613031==    by 0x4002A27: url_get_hostname (url.h:386)
+- ==613031==    by 0x4003116: main (driver.c:21)
+- ==613031==  Address 0x4c43887 is 22 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002A27: url_get_hostname (url.h:386)
+- ==613031==    by 0x4003116: main (driver.c:21)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==613031==    by 0x40022DC: strdup (url.h:160)
+- ==613031==    by 0x4002467: get_part (url.h:212)
+- ==613031==    by 0x4002A27: url_get_hostname (url.h:386)
+- ==613031==    by 0x4003116: main (driver.c:21)
+- ==613031==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002A27: url_get_hostname (url.h:386)
+- ==613031==    by 0x4003116: main (driver.c:21)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x4861969: __strcpy_chk (vg_replace_strmem.c:1620)
+- ==613031==    by 0x4002300: strcpy (string_fortified.h:93)
+- ==613031==    by 0x4002300: strdup (url.h:162)
+- ==613031==    by 0x4002467: get_part (url.h:212)
+- ==613031==    by 0x4002A27: url_get_hostname (url.h:386)
+- ==613031==    by 0x4003116: main (driver.c:21)
+- ==613031==  Address 0x4c43871 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002A27: url_get_hostname (url.h:386)
+- ==613031==    by 0x4003116: main (driver.c:21)
+- ==613031==
+- ==613031== Invalid write of size 1
+- ==613031==    at 0x4A62C14: __vfscanf_internal (vfscanf-internal.c:3056)
+- ==613031==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==613031==    by 0x4002A78: url_get_host (url.h:398)
+- ==613031==    by 0x400312D: main (driver.c:22)
+- ==613031==  Address 0x4c43b61 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002A43: url_get_host (url.h:393)
+- ==613031==    by 0x400312D: main (driver.c:22)
+- ==613031==
+- ==613031== Invalid write of size 1
+- ==613031==    at 0x4A62C7B: __vfscanf_internal (vfscanf-internal.c:3143)
+- ==613031==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==613031==    by 0x4002A78: url_get_host (url.h:398)
+- ==613031==    by 0x400312D: main (driver.c:22)
+- ==613031==  Address 0x4c43b72 is 17 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002A43: url_get_host (url.h:393)
+- ==613031==    by 0x400312D: main (driver.c:22)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==613031==    by 0x4A5DBC7: __printf_buffer (vfprintf-process-arg.c:443)
+- ==613031==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==613031==    by 0x4B32EBC: __printf_chk (printf_chk.c:33)
+- ==613031==    by 0x40022B4: printf (stdio2.h:118)
+- ==613031==    by 0x40022B4: show (driver.c:9)
+- ==613031==    by 0x400313C: main (driver.c:22)
+- ==613031==  Address 0x4c43b61 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002A43: url_get_host (url.h:393)
+- ==613031==    by 0x400312D: main (driver.c:22)
+- ==613031==
+- ==613031== Invalid read of size 2
+- ==613031==    at 0x4860B80: memmove (vg_replace_strmem.c:1415)
+- ==613031==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==613031==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==613031==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==613031==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==613031==    by 0x4B32EBC: __printf_chk (printf_chk.c:33)
+- ==613031==    by 0x40022B4: printf (stdio2.h:118)
+- ==613031==    by 0x40022B4: show (driver.c:9)
+- ==613031==    by 0x400313C: main (driver.c:22)
+- ==613031==  Address 0x4c43b60 is 0 bytes inside a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002A43: url_get_host (url.h:393)
+- ==613031==    by 0x400312D: main (driver.c:22)
+- ==613031==
+- ==613031== Invalid read of size 2
+- ==613031==    at 0x4860B8F: memmove (vg_replace_strmem.c:1415)
+- ==613031==    by 0x4A52FE7: memcpy (string_fortified.h:29)
+- ==613031==    by 0x4A52FE7: __printf_buffer_write (Xprintf_buffer_write.c:39)
+- ==613031==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==613031==    by 0x4A5E9E7: __vfprintf_internal (vfprintf-internal.c:1548)
+- ==613031==    by 0x4B32EBC: __printf_chk (printf_chk.c:33)
+- ==613031==    by 0x40022B4: printf (stdio2.h:118)
+- ==613031==    by 0x40022B4: show (driver.c:9)
+- ==613031==    by 0x400313C: main (driver.c:22)
+- ==613031==  Address 0x4c43b64 is 3 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002A43: url_get_host (url.h:393)
+- ==613031==    by 0x400312D: main (driver.c:22)
+- ==613031==
+- ==613031== Invalid write of size 1
+- ==613031==    at 0x4A663D1: __vfscanf_internal (vfscanf-internal.c:1161)
+- ==613031==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==613031==    by 0x4002412: get_part (url.h:208)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==
+- ==613031== Invalid write of size 1
+- ==613031==    at 0x4A66406: __vfscanf_internal (vfscanf-internal.c:1246)
+- ==613031==    by 0x4A51E50: __isoc23_sscanf (isoc23_sscanf.c:31)
+- ==613031==    by 0x4002412: get_part (url.h:208)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==  Address 0x4c44db9 is 9 bytes after a block of size 16 in arena "client"
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==613031==    by 0x40022DC: strdup (url.h:160)
+- ==613031==    by 0x4002467: get_part (url.h:212)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x4861969: __strcpy_chk (vg_replace_strmem.c:1620)
+- ==613031==    by 0x4002300: strcpy (string_fortified.h:93)
+- ==613031==    by 0x4002300: strdup (url.h:162)
+- ==613031==    by 0x4002467: get_part (url.h:212)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==  Address 0x4c44da1 is 0 bytes after a block of size 1 alloc'd
+- ==613031==    at 0x4852858: malloc (vg_replace_malloc.c:447)
+- ==613031==    by 0x4002378: get_part (url.h:191)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x485C174: strlen (vg_replace_strmem.c:506)
+- ==613031==    by 0x40022DC: strdup (url.h:160)
+- ==613031==    by 0x400232F: strrwd (url.h:185)
+- ==613031==    by 0x400242D: get_part (url.h:217)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==  Address 0x4c44f39 is 25 bytes after a block of size 16 in arena "client"
+- ==613031==
+- ==613031== Invalid read of size 1
+- ==613031==    at 0x4861969: __strcpy_chk (vg_replace_strmem.c:1620)
+- ==613031==    by 0x4002300: strcpy (string_fortified.h:93)
+- ==613031==    by 0x4002300: strdup (url.h:162)
+- ==613031==    by 0x400232F: strrwd (url.h:185)
+- ==613031==    by 0x400242D: get_part (url.h:217)
+- ==613031==    by 0x4002BBC: url_get_path (url.h:440)
+- ==613031==    by 0x4002BEC: url_get_pathname (url.h:407)
+- ==613031==    by 0x4003144: main (driver.c:23)
+- ==613031==  Address 0x4c44f39 is 25 bytes after a block of size 16 in arena "client"
+- ==613031==
+- *** buffer overflow detected ***: terminated
+- ==613031==
+- ==613031== Process terminating with default action of signal 6 (SIGABRT)
+- ==613031==    at 0x4A9442C: __pthread_kill_implementation (pthread_kill.c:44)
+- ==613031==    by 0x4A9442C: __pthread_kill_internal (pthread_kill.c:89)
+- ==613031==    by 0x4A9442C: pthread_kill@@GLIBC_2.34 (pthread_kill.c:100)
+- ==613031==    by 0x4A33B7D: raise (raise.c:26)
+- ==613031==    by 0x4A168EB: abort (abort.c:77)
+- ==613031==    by 0x4A17978: __libc_message_impl.cold (libc_fatal.c:138)
+- ==613031==    by 0x4B3200F: __libc_message_wrapper (stdio.h:203)
+- ==613031==    by 0x4B3200F: __fortify_fail (fortify_fail.c:24)
+- ==613031==    by 0x4B31983: __chk_fail (chk_fail.c:28)
+- ==613031==    by 0x4A52A71: __printf_buffer_do_flush (printf_buffer_flush.c:50)
+- ==613031==    by 0x4A52A71: __printf_buffer_flush (Xprintf_buffer_flush.c:65)
+- ==613031==    by 0x4A53008: __printf_buffer_write (Xprintf_buffer_write.c:33)
+- ==613031==    by 0x4A5C21D: __printf_buffer (vfprintf-process-arg.c:471)
+- ==613031==    by 0x4A7DA49: __vsprintf_internal (iovsprintf.c:62)
+- ==613031==    by 0x4B3337A: __sprintf_chk (sprintf_chk.c:40)
+- ==613031==    by 0x4002B73: sprintf (stdio2.h:30)
+- ==613031==    by 0x4002B73: url_get_path (url.h:444)
+- ==613031==
+- ==613031== HEAP SUMMARY:
+- ==613031==     in use at exit: 5,391 bytes in 43 blocks
+- ==613031==   total heap usage: 84 allocs, 41 frees, 6,181 bytes allocated
+- ==613031==
+- ==613031== For a detailed leak analysis, rerun with: --leak-check=full
+- ==613031==
+- ==613031== For lists of detected and suppressed errors, rerun with: -s
+- ==613031== ERROR SUMMARY: 482 errors from 21 contexts (suppressed: 0 from 0)
+==611434== 
+==611434== HEAP SUMMARY:
+==611434==     in use at exit: 11,780,308 bytes in 28,388 blocks
+==611434==   total heap usage: 768,036 allocs, 739,648 frees, 397,791,523 bytes allocated
+==611434== 
+==611434== For a detailed leak analysis, rerun with: --leak-check=full
+==611434== 
+==611434== For lists of detected and suppressed errors, rerun with: -s
+==611434== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+2026-09-02 02:11:07 | ERROR    | sactor.verifier.unidiomatic_verifier:89 | Failed to run tests for function strdup
+2026-09-02 02:11:07 | INFO     | sactor.translator.unidiomatic_translator:1048 | Translating function: strdup (attempts: 1)
+2026-09-02 02:11:07 | PROMPT   | sactor.llm:155 | 
+Translate the following C function to Rust. Try to keep the **equivalence** as much as possible.
+`libc` will be included as the **only** dependency you can use. To keep the equivalence, you can use `unsafe` if you want.
+Your solution should only have **one** function, if you need to create help function, define the help function inside the function you translate.
+The function is:
+```c
+char *
+strdup (const char *str) {
+  int n = strlen(str) + 1;
+  char *dup = malloc(n);
+  if (dup) strcpy(dup, str);
+  return dup;
+}
+```
+
+Output the translated function into this format (wrap with the following tags):
+----FUNCTION----
+```rust
+// Your translated function here
+```
+----END FUNCTION----
+
+The last time, the function is translated as:
+```rust
+use libc::{c_char, c_int, size_t, malloc};
+pub unsafe fn strdup(str_ptr: *const c_char) -> *mut c_char {
+    unsafe fn strlen_local(s: *const c_char) -> size_t {
+        let mut len: size_t = 0;
+        let mut p = s;
+        while *p != 0 {
+            len += 1;
+            p = p.add(1);
+        }
+        len
+    }
+    unsafe fn strcpy_local(dst: *mut c_char, src: *const c_char) -> *mut c_char {
+        let mut d = dst;
+        let mut s = src;
+        loop {
+            let c = *s;
+            *d = c;
+            if c == 0 {
+                break;
+            }
+            d = d.add(1);
+            s = s.add(1);
+        }
+        dst
+    }
+    let n: c_int = (strlen_local(str_ptr) + 1) as c_int;
+    let dup = malloc(n as size_t) as *mut c_char;
+    if !dup.is_null() {
+        strcpy_local(dup, str_ptr);
+    }
+    dup
+}
+
+```
+When running the test, it failed with the following error message:
+```
+❌ Test 0 failed!
+Diff (-actual +expected):
+- *** buffer overflow detected ***: terminated
++ is_protocol(http): 1
++ is_ssh(http): 0
++ protocol: http
++ auth: user:pass
++ hostname: subdomain.host.com:8080
++ host: subdomain.host.com
++ pathname: /p/a/t/h
++ path: /p/a/t/h?query=string#hash
++ search: ?query=string
++ query: query=string
++ hash: #hash
++ port: 8080
++ #url =>
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .protocol: "http"
++     .host: "subdomain.host.com"
++     .auth: "user:pass"
++     .hostname: "subdomain.host.com:8080"
++     .pathname: "/p/a/t/h"
++     .search: "?query=string"
++     .path: "/p/a/t/h?query=string#hash"
++     .hash: "#hash"
++     .query: "query=string"
++     .port: "8080"
++ #url =>
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .protocol: "http"
++     .host: "subdomain.host.com"
++     .auth: "user:pass"
++     .hostname: "subdomain.host.com:8080"
++     .pathname: "/p/a/t/h"
++     .search: "?query=string"
++     .path: "/p/a/t/h?query=string#hash"
++     .hash: "#hash"
++     .query: "query=string"
++     .port: "8080"
+
+```
+Analyze the error messages, think about the possible reasons, and try to avoid this error.
+
+2026-09-02 02:11:11 | RESPONSE | sactor.llm:160 | ----FUNCTION----
+```rust
+use libc::{c_char, c_ulong, malloc};
+
+pub unsafe fn strdup(str_ptr: *const c_char) -> *mut c_char {
+    // Local helper: strlen
+    unsafe fn strlen_local(s: *const c_char) -> c_ulong {
+        let mut len: c_ulong = 0;
+        // Walk the pointer until we hit the null terminator.
+        // We rely on the caller passing a valid C string, as in the original C code.
+        let mut p = s;
+        while *p != 0 {
+            len = len.wrapping_add(1);
+            p = p.add(1);
+        }
+        len
+    }
+
+    // Local helper: strcpy
+    unsafe fn strcpy_local(dst: *mut c_char, src: *const c_char) -> *mut c_char {
+        let mut d = dst;
+        let mut s = src;
+        loop {
+            let c = *s;
+            *d = c;
+            if c == 0 {
+                break;
+            }
+            d = d.add(1);
+            s = s.add(1);
+        }
+        dst
+    }
+
+    // Use size_t-like type (c_ulong here) consistently to avoid truncation.
+    let len: c_ulong = strlen_local(str_ptr);
+    // Add 1 for the terminating null byte.
+    let n: c_ulong = len.wrapping_add(1);
+
+    // Allocate exactly n bytes, as in the C version.
+    let dup = malloc(n as usize) as *mut c_char;
+    if !dup.is_null() {
+        strcpy_local(dup, str_ptr);
+    }
+    dup
+}
+```
+----END FUNCTION
+2026-09-02 02:11:11 | DEBUG    | sactor.utils:257 | Generated function:
+2026-09-02 02:11:11 | DEBUG    | sactor.utils:258 | use libc::{c_char, c_ulong, malloc};
+
+pub unsafe fn strdup(str_ptr: *const c_char) -> *mut c_char {
+    // Local helper: strlen
+    unsafe fn strlen_local(s: *const c_char) -> c_ulong {
+        let mut len: c_ulong = 0;
+        // Walk the pointer until we hit the null terminator.
+        // We rely on the caller passing a valid C string, as in the original C code.
+        let mut p = s;
+        while *p != 0 {
+            len = len.wrapping_add(1);
+            p = p.add(1);
+        }
+        len
+    }
+
+    // Local helper: strcpy
+    unsafe fn strcpy_local(dst: *mut c_char, src: *const c_char) -> *mut c_char {
+        let mut d = dst;
+        let mut s = src;
+        loop {
+            let c = *s;
+            *d = c;
+            if c == 0 {
+                break;
+            }
+            d = d.add(1);
+            s = s.add(1);
+        }
+        dst
+    }
+
+    // Use size_t-like type (c_ulong here) consistently to avoid truncation.
+    let len: c_ulong = strlen_local(str_ptr);
+    // Add 1 for the terminating null byte.
+    let n: c_ulong = len.wrapping_add(1);
+
+    // Allocate exactly n bytes, as in the C version.
+    let dup = malloc(n as usize) as *mut c_char;
+    if !dup.is_null() {
+        strcpy_local(dup, str_ptr);
+    }
+    dup
+}
+
+2026-09-02 02:11:11 | DEBUG    | sactor.translator.unidiomatic_translator:1358 | Translated function strdup:
+2026-09-02 02:11:11 | DEBUG    | sactor.translator.unidiomatic_translator:1359 | use libc::{c_char, c_ulong, malloc};
+pub unsafe fn strdup(str_ptr: *const c_char) -> *mut c_char {
+    unsafe fn strlen_local(s: *const c_char) -> c_ulong {
+        let mut len: c_ulong = 0;
+        let mut p = s;
+        while *p != 0 {
+            len = len.wrapping_add(1);
+            p = p.add(1);
+        }
+        len
+    }
+    unsafe fn strcpy_local(dst: *mut c_char, src: *const c_char) -> *mut c_char {
+        let mut d = dst;
+        let mut s = src;
+        loop {
+            let c = *s;
+            *d = c;
+            if c == 0 {
+                break;
+            }
+            d = d.add(1);
+            s = s.add(1);
+        }
+        dst
+    }
+    let len: c_ulong = strlen_local(str_ptr);
+    let n: c_ulong = len.wrapping_add(1);
+    let dup = malloc(n as usize) as *mut c_char;
+    if !dup.is_null() {
+        strcpy_local(dup, str_ptr);
+    }
+    dup
+}
+
+2026-09-02 02:11:11 | DEBUG    | sactor.verifier.verifier:278 | Compiling Rust project: cargo build --manifest-path /tmp/sactor/tmph8eyiqv9/build/build_attempt/Cargo.toml
+2026-09-02 02:11:12 | INFO     | sactor.verifier.verifier:286 | Rust code compiled successfully
+2026-09-02 02:11:12 | DEBUG    | sactor.verifier.verifier:567 | Compiling embedded Rust crate: cargo build --manifest-path /tmp/sactor/tmph8eyiqv9/build/embed_test_rust/Cargo.toml
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+   Compiling libc v0.2.189
+   Compiling strdup v0.1.0 (/tmp/sactor/tmph8eyiqv9/build/embed_test_rust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.11s
+2026-09-02 02:11:13 | DEBUG    | sactor.verifier.verifier:635 | Running compile command: ['gcc', '-I/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser', '-c', '-o', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/sactor_urlparser/driver.c', '-Og', '-g']
+2026-09-02 02:11:13 | DEBUG    | sactor.verifier.verifier:658 | Project-level objects: ['../../../../../sactor/tmph8eyiqv9/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o']
+2026-09-02 02:11:13 | DEBUG    | sactor.verifier.verifier:659 | Project-level cmake libs: []
+2026-09-02 02:11:13 | DEBUG    | sactor.verifier.verifier:660 | Linking project-level harness: ['clang', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/objs/driver.c.dd24c8a2570e81cb.o', '-o', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/strdup', '-L/tmp/sactor/tmph8eyiqv9/build/embed_test_rust/target/debug', '-lm', '-lstrdup']
+2026-09-02 02:11:14 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/strdup', '0', '--feed-as-args']
+2026-09-02 02:11:17 | DEBUG    | sactor.verifier.verifier:362 | Test stderr: ❌ Test 0 failed!
+Diff (-actual +expected):
+- *** buffer overflow detected ***: terminated
++ is_protocol(http): 1
++ is_ssh(http): 0
++ protocol: http
++ auth: user:pass
++ hostname: subdomain.host.com:8080
++ host: subdomain.host.com
++ pathname: /p/a/t/h
++ path: /p/a/t/h?query=string#hash
++ search: ?query=string
++ query: query=string
++ hash: #hash
++ port: 8080
++ #url =>
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .protocol: "http"
++     .host: "subdomain.host.com"
++     .auth: "user:pass"
++     .hostname: "subdomain.host.com:8080"
++     .pathname: "/p/a/t/h"
++     .search: "?query=string"
++     .path: "/p/a/t/h?query=string#hash"
++     .hash: "#hash"
++     .query: "query=string"
++     .port: "8080"
++ #url =>
++     .href: "http://user:pass@subdomain.host.com:8080/p/a/t/h?query=string#hash"
++     .protocol: "http"
++     .host: "subdomain.host.com"
++     .auth: "user:pass"
++     .hostname: "subdomain.host.com:8080"
++     .pathname: "/p/a/t/h"
++     .search: "?query=string"
++     .path: "/p/a/t/h?query=string#hash"
++     .hash: "#hash"
++     .query: "query=string"
++     .port: "8080"
+
+2026-09-02 02:11:17 | ERROR    | sactor.verifier.verifier:742 | Failed to run tests for function strdup, rerunning with feedback
+2026-09-02 02:11:20 | DEBUG    | sactor.verifier.verifier:344 | Running test command: ['sactor', 'run-tests', '--type', 'bin', './test_samples.json', '/tmp/sactor/tmph8eyiqv9/build/embed_test_c/strdup', '0', '--feed-as-args']

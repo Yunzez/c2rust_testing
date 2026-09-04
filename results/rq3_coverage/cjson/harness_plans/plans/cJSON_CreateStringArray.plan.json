@@ -1,0 +1,78 @@
+{
+ "boundary": "cJSON_CreateStringArray",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "strings",
+   "c_decoder": "input_string_pointer_table",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "length_param": "count",
+    "count_max": 16
+   },
+   "evidence": [
+    {
+     "rule": "t_star_star_indexed_with_a_count_is_a_string_table",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "strings is indexed in the body and count is its adjacent count; each row is an independent NUL-terminated string"
+    },
+    {
+     "rule": "policy_table_rows",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_table_rows = 16",
+     "note": "strings's row count is bounded by the global policy"
+    }
+   ],
+   "rust_type": "*mut *const ::core::ffi::c_char",
+   "rust_bridge": "c_abi"
+  },
+  {
+   "param": "count",
+   "c_decoder": "length",
+   "detail": {
+    "of_buffer": "strings"
+   },
+   "evidence": [
+    {
+     "rule": "length_of_buffer_not_decoded_independently",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "count is the element count of strings"
+    }
+   ],
+   "rust_type": "::core::ffi::c_int",
+   "rust_bridge": "scalar_copy"
+  }
+ ],
+ "liveness": [
+  {
+   "param": "count",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "cJSON.c",
+    "line": 705,
+    "col": 110,
+    "snippet": "cJSON *cJSON_CreateStringArray(const char **strings,int count)\t{int i;cJSON *n=0,*p=0,*a=cJSON_CreateArray();for(i=0;a && i<count;i++){n=cJSON_CreateString(stri",
+    "note": "count appears in this loop's control expressions"
+   }
+  }
+ ],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024,
+  "max_table_rows": 16
+ },
+ "plan_version": 1
+}

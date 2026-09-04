@@ -1,0 +1,37 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3704579743
+INFO: Loaded 1 modules   (813 inline 8-bit counters): 813 [0x557eab6909d0, 0x557eab690cfd), 
+INFO: Loaded 1 PC tables (813 PCs): 813 [0x557eab690d00,0x557eab693fd0), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/BZ2_indexIntoF
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 59 ft: 60 corp: 1/1b exec/s: 0 rss: 32Mb
+#3	NEW    cov: 61 ft: 62 corp: 2/3b lim: 4 exec/s: 0 rss: 33Mb L: 2/2 MS: 1 InsertByte-
+#10	NEW    cov: 63 ft: 64 corp: 3/6b lim: 4 exec/s: 0 rss: 33Mb L: 3/3 MS: 2 ChangeByte-InsertByte-
+#12	NEW    cov: 64 ft: 65 corp: 4/10b lim: 4 exec/s: 0 rss: 33Mb L: 4/4 MS: 2 ChangeBit-InsertByte-
+#218	NEW    cov: 66 ft: 67 corp: 5/15b lim: 6 exec/s: 0 rss: 43Mb L: 5/5 MS: 1 InsertByte-
+#228	NEW    cov: 68 ft: 69 corp: 6/21b lim: 6 exec/s: 0 rss: 44Mb L: 6/6 MS: 5 ChangeByte-ShuffleBytes-ChangeBinInt-InsertRepeatedBytes-CMP- DE: "2\012"-
+#443	NEW    cov: 70 ft: 71 corp: 7/28b lim: 8 exec/s: 0 rss: 54Mb L: 7/7 MS: 5 ChangeByte-PersAutoDict-ShuffleBytes-ChangeBit-CrossOver- DE: "2\012"-
+#487	NEW    cov: 79 ft: 80 corp: 8/36b lim: 8 exec/s: 0 rss: 57Mb L: 8/8 MS: 4 ChangeBinInt-EraseBytes-CrossOver-CrossOver-
+#1105	NEW    cov: 80 ft: 81 corp: 9/48b lim: 14 exec/s: 0 rss: 85Mb L: 12/12 MS: 3 CopyPart-InsertByte-PersAutoDict- DE: "2\012"-
+#1110	NEW    cov: 80 ft: 82 corp: 10/61b lim: 14 exec/s: 0 rss: 85Mb L: 13/13 MS: 5 InsertByte-ChangeByte-EraseBytes-ChangeBit-InsertRepeatedBytes-
+#1139	NEW    cov: 80 ft: 83 corp: 11/75b lim: 14 exec/s: 0 rss: 87Mb L: 14/14 MS: 4 CMP-CopyPart-ShuffleBytes-CopyPart- DE: "\377\377\377\377"-
+#1465	NEW    cov: 80 ft: 87 corp: 12/91b lim: 17 exec/s: 0 rss: 101Mb L: 16/16 MS: 1 InsertRepeatedBytes-
+#1494	NEW    cov: 80 ft: 88 corp: 13/106b lim: 17 exec/s: 0 rss: 102Mb L: 15/16 MS: 4 InsertRepeatedBytes-CrossOver-EraseBytes-CrossOver-
+
+### sanitizer / crash report
+
+### tail
+"\212\377&\212" # Uses: 3365
+"\367\000\000\000" # Uses: 3146
+"\302\000\000\000" # Uses: 2817
+"\377\315\036.E\202\377\377" # Uses: 2507
+"\203.&u" # Uses: 2464
+###### End of recommended dictionary. ######
+Done 385831 runs in 46 second(s)
+stat::number_of_executed_units: 385831
+stat::average_exec_per_sec:     8387
+stat::new_units_added:          46
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              401

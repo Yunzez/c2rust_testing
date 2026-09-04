@@ -1,0 +1,40 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2832144040
+INFO: Loaded 1 modules   (1207 inline 8-bit counters): 1207 [0x55ae71d36190, 0x55ae71d36647), 
+INFO: Loaded 1 PC tables (1207 PCs): 1207 [0x55ae71d36648,0x55ae71d3b1b8), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/mainGtU
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 177 ft: 178 corp: 1/1b exec/s: 0 rss: 33Mb
+#7	NEW    cov: 179 ft: 180 corp: 2/3b lim: 4 exec/s: 0 rss: 33Mb L: 2/2 MS: 5 CrossOver-ChangeByte-ChangeByte-ChangeByte-CopyPart-
+=================================================================
+==1665091==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7e04fd411d00 at pc 0x55ae71c8a449 bp 0x7ffe5e50f150 sp 0x7ffe5e50f148
+READ of size 1 at 0x7e04fd411d00 thread T0
+    #0 0x55ae71c8a448  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x12c448) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d)
+    #1 0x55ae71c80f9f  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x122f9f) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d)
+    #2 0x55ae71c86691  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x128691) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d)
+    #3 0x55ae71c8c805  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x12e805) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d)
+    #4 0x55ae71c8dab8  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x12fab8) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d)
+    #5 0x55ae71c8b87d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x12d87d) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d)
+    #6 0x55ae71c94b7c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x136b7c) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d)
+    #7 0x55ae71c996d5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x13b6d5) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d)
+
+### sanitizer / crash report
+11:==1665091==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7e04fd411d00 at pc 0x55ae71c8a449 bp 0x7ffe5e50f150 sp 0x7ffe5e50f148
+12:READ of size 1 at 0x7e04fd411d00 thread T0
+47:SUMMARY: AddressSanitizer: heap-buffer-overflow (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainGtU+0x12c448) (BuildId: ce2f1997b0236ce1e7ae1e6880191f275bca1c4d) 
+
+### tail
+  Right alloca redzone:    cb
+==1665091==ABORTING
+MS: 2 InsertByte-ChangeBinInt-; base unit: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+0xf6,0xbf,
+\366\277
+artifact_prefix='./'; Test unit written to ./crash-d986b2313aa9e47234a36b2673d19b38f690d167
+Base64: 9r8=
+stat::number_of_executed_units: 19
+stat::average_exec_per_sec:     0
+stat::new_units_added:          1
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              34

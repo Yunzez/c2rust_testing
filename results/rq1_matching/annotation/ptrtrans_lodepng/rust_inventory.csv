@@ -1,0 +1,253 @@
+rust_function,file,line,signature,same_name_in_c,duplicate_leaf,tool_claimed_by,matcher_proposed_for
+lodepng_encoder_settings_init,src/common/lodepng_mod.rs,233,(settings: Option<&mut LodePNGEncoderSettings>) -> (),yes,,,lodepng_encoder_settings_init
+lodepng_chunk_private,src/lodepng.rs,321,(_chunk: Option<&u8>) -> u8,yes,,lodepng_chunk_data,lodepng_chunk_private
+lodepng_chunk_ancillary,src/lodepng.rs,326,(chunk: Option<&u8>) -> u8,yes,,lodepng_chunk_safetocopy,lodepng_chunk_data
+lodepng_chunk_type_equals,src/lodepng.rs,331,"(chunk: Option<&[u8]>, r#type: &str) -> u8",yes,,lodepng_chunk_private,lodepng_chunk_safetocopy
+set_bit_of_reversed_stream,src/lodepng.rs,338,"(bitpointer: &mut usize, bitstream: &mut [u8], bit: u8) -> ()",,,lodepng_chunk_type,setBitOfReversedStream
+lodepng_error_text,src/lodepng.rs,354,(code: u32) -> Option<&'static str>,yes,,lodepng_error_text,lodepng_error_text
+lodepng_load_file,src/lodepng.rs,357,"(out: &mut Option<Vec<u8>>, outsize: &mut usize, filename: Option<&str>) -> u32",yes,,lodepng_load_file;lodepng_save_file;lodepng_decode24_file,lodepng_inspect_chunk
+lodepng_filesize,src/lodepng.rs,405,(_filename: Option<&str>) -> Option<i64>,yes,,,getNumColorChannels
+lodepng_buffer_file,src/lodepng.rs,408,"(_out: &mut [u8], _size: usize, _filename: Option<&str>) -> u32",yes,,,readChunk_tRNS
+inchunk_function_stub,src/lodepng.rs,415,() -> i32,,,isRGBICCProfile,
+add_unknown_chunks,src/lodepng.rs,422,"(out: &mut Vec<u8>, data: &mut [u8], datasize: usize) -> u32",,,isGrayICCProfile,addUnknownChunks
+translated_segment,src/lodepng.rs,428,"(out: &mut [u8], scanline: &[u8], bytewidth: usize, length: usize, some_mode: u8) -> ()",,,ilog2,addPaddingBits
+alloc_string,src/lodepng.rs,459,(input: Option<&str>) -> Option<String>,yes,,lodepng_set32bitInt,
+reverse_bits,src/lodepng.rs,466,"(bits: u32, num: u32) -> u32",,,searchCodeIndex,reverseBits
+search_code_index,src/lodepng.rs,470,"(array: Option<&[i32]>, array_size: usize, value: usize) -> usize",,,,rgba8ToPixel
+translated_function,src/lodepng.rs,474,(file: &mut File) -> i64,,,lodepng_buffer_file,color_tree_init
+lodepng_get32bit_int,src/lodepng.rs,494,(buffer: &[u8]) -> u32,,,lodepng_filesize,lodepng_read32bitInt
+lodepng_set32bit_int,src/lodepng.rs,508,"(buffer: &mut [u8], value: u32) -> ()",,,,lodepng_set32bitInt
+lodepng_chunk_safetocopy,src/lodepng.rs,515,(chunk: Option<&'a i8>) -> Option<&'a i8>,yes,,lodepng_chunk_data_const,alloc_string
+lodepng_get_raw_size_lct,src/lodepng.rs,518,"(w: u32, h: u32, colortype: LodePNGColorType, bitdepth: u32) -> usize",yes,,lodepng_get_raw_size_idat,lodepng_get_raw_size_lct
+read_bits_from_reversed_stream,src/lodepng.rs,526,"(bitpointer: Option<&mut i64>, bitstream: Option<&mut i8>, nbits: usize) -> u32",,,setBitOfReversedStream,readChunk_tEXt
+lodepng_copy_type_from_chunk,src/lodepng.rs,533,"(chunk: Option<&i8>, type_buf: &mut [u8; 5]) -> ()",,,lodepng_chunk_ancillary,lodepng_chunk_type
+lodepng_memcpy,src/lodepng.rs,541,"(out: Option<&mut [u8]>, input: Option<&[u8]>, insize: usize) -> ()",yes,,lodepng_strlen;lodepng_read32bitInt,readBitsFromReversedStream
+lodepng_copy_and_terminate,src/lodepng.rs,553,"(out: Option<&mut [u8]>, input: Option<&[u8]>, insize: usize) -> ()",,,,countZeros
+lodepng_strlen,src/lodepng.rs,559,(a: Option<&c_char>) -> usize,yes,,lodepng_mulofl,lodepng_strlen
+unnamed_loop_function,src/lodepng.rs,568,"(_dst: Option<&mut c_void>, _num: usize, _value: i32) -> ()",,,lodepng_addofl,getHash
+read_bits,src/lodepng.rs,571,"(reader: &mut LodePngBitReader, nbits: usize) -> u32",,,reverseBits,uivector_push_back
+deflate,src/lodepng.rs,574,"(out: Option<&mut Option<&mut [u8]>>, outsize: Option<&mut usize>, r#in: Option<&[u8]>, insize: usize, settings: Option<&LodePNGCompressSettings>) -> u32",yes,,update_adler32,deflate
+update_adler32,src/lodepng.rs,583,"(adler: u32, data: Option<&[i8]>, len: u32) -> u32",yes,,,lodepng_encode24_file
+atof,src/lodepng.rs,590,(nptr: Option<&str>) -> f64,,,lodepng_realloc,
+lodepng_memset,src/lodepng.rs,601,"(dst: Option<&mut c_void>, value: i32, num: usize) -> ()",yes,,,lodepng_memset
+lodepng_realloc,src/lodepng.rs,611,"(_ptr: Option<&mut c_void>, _new_size: usize) -> Option<&mut c_void>",yes,,lodepng_memcpy,ensureBits9
+lodepng_text_copy,src/lodepng.rs,614,"(dest: Option<&mut ()>, source: Option<&()>) -> u32",,,addColorBits,
+lodepng_i_text_copy,src/lodepng.rs,617,"(dest: Option<&mut ()>, source: Option<&()>) -> u32",,,,
+lodepng_assign_icc,src/lodepng.rs,620,"(dest: Option<&mut ()>, iccp_name: Option<&i8>, iccp_profile: Option<&i8>, iccp_profile_size: usize) -> u32",yes,,lodepng_set_icc,lodepng_chunk_init
+lodepng_unknown_chunks_init,src/lodepng.rs,628,(dest: Option<&mut ()>) -> (),,,,uivector_cleanup
+lodepng_unknown_chunks_copy,src/lodepng.rs,630,"(dest: Option<&mut ()>, source: Option<&()>) -> u32",,,,
+lodepng_crc32,src/lodepng.rs,635,"(data: Option<&[c_uchar]>, length: usize) -> u32",yes,,lodepng_crc32;readBitFromReversedStream,lodepng_crc32
+mbstowcs,src/lodepng.rs,642,"(pwcs: Option<&mut [u32]>, s: Option<&[c_char]>, n: c_ulong) -> c_ulong",,,lodepng_malloc,readChunk_bKGD
+wcstombs,src/lodepng.rs,653,"(s: Option<&mut [c_char]>, pwcs: Option<&[u32]>, n: c_ulong) -> c_ulong",,,,readChunk_cHRM
+lodepng_malloc,src/lodepng.rs,661,(size: usize) -> Option<&mut u8>,yes,,lodepng_free,lodepng_malloc
+lodepng_gtofl,src/lodepng.rs,664,"(a: usize, b: usize, c: usize) -> i32",yes,,,lodepng_gtofl
+uivector_push_back,src/lodepng.rs,667,"(p: Option<&mut crate::uivector::Uivector>, c: u32) -> u32",yes,,uivector_push_back,isGrayICCProfile
+write_bits_reversed,src/lodepng.rs,676,"(writer: Option<&mut LodePNGBitWriter>, value: u32, nbits: usize) -> ()",,,,searchCodeIndex
+translated_bit_manipulation,src/lodepng.rs,688,"(bits: u32, index: u32, input: u32) -> u32",,,,update_adler32
+huffman_tree_make_from_lengths,src/lodepng.rs,706,"(tree: Option<&'a mut HuffmanTree>, bitlen: Option<&'a [u32]>, numcodes: usize, maxbitlen: u32) -> u32",,,,getPixelColorsRGB8
+ilog2,src/lodepng.rs,716,(i: usize) -> usize,yes,,ilog2i,ilog2i
+unfilterScanline,src/lodepng.rs,720,"(recon: Option<&mut [c_uchar]>, scanline: Option<&[c_uchar]>, precon: Option<&[c_uchar]>, bytewidth: c_ulong, filter_type: c_uchar, length: c_ulong) -> u32",yes,,unfilterScanline,unfilterScanline
+filter_scanline,src/lodepng.rs,737,"(out: Option<&mut [u8]>, scanline: Option<&[u8]>, prevline: Option<&[u8]>, length: usize, bytewidth: usize, filter_type: u8) -> ()",,,filterScanline,filterScanline
+lodepng_chunk_length,src/lodepng.rs,748,(chunk: Option<&[i8]>) -> u32,yes,,lodepng_chunk_length;lodepng_chunk_type_equals,lodepng_chunk_find_const
+lodepng_addofl,src/lodepng.rs,751,"(a: usize, b: usize, result: Option<&mut usize>) -> i32",yes,,lodepng_gtofl,lodepng_addofl
+adler32,src/lodepng.rs,757,"(data: Option<&[i8]>, amount: usize) -> u32",yes,,adler32,addChunk_sBIT
+readBitFromReversedStream,src/lodepng.rs,769,"(bitpointer: Option<&mut i64>, bitstream: Option<&[i8]>) -> c_uchar",yes,,readBitsFromReversedStream,
+remove_padding_bits,src/lodepng.rs,778,"(out: Option<&mut [i8]>, input: Option<&[i8]>, olinebits: usize, ilinebits: usize, h: u32) -> ()",,,removePaddingBits,postProcessScanlines
+addPaddingBits,src/lodepng.rs,790,"(mut_out: Option<&mut [c_uchar]>, in_data: Option<&[c_uchar]>, olinebits: usize, ilinebits: usize, h: u32) -> ()",yes,,addPaddingBits,removePaddingBits
+string_cleanup,src/lodepng.rs,822,(out: Option<&mut Option<&mut c_char>>) -> (),yes,,alloc_string_sized,string_cleanup
+ucvector_reserve,src/lodepng.rs,825,"(p: Option<&mut u8>, size: usize) -> usize",yes,,ucvector_reserve;string_cleanup,ucvector_init
+ucvector_init,src/lodepng.rs,828,"(buffer: Option<&mut u8>, size: usize) -> u8",yes,,,readBitFromReversedStream
+paethPredictor,src/lodepng.rs,831,"(a: i16, b: i16, c: i16) -> u8",yes,,Adam7_getpassvalues,paethPredictor
+Adam7_getpassvalues,src/lodepng.rs,834,"(passw: Option<&mut [u32; 7]>, passh: Option<&mut [u32; 7]>, filter_passstart: Option<&mut [u64; 8]>, padded_passstart: Option<&mut [u64; 8]>, passstart: Option<&mut [u64; 8]>, w: u32, h: u32, bpp: u32) -> ()",yes,,,Adam7_getpassvalues
+count_zeros,src/lodepng.rs,865,"(data: Option<&c_char>, size: usize, pos: usize, error: bool) -> u32",,,countZeros;updateHashChain,lodepng_chunk_createv
+uivector_cleanup,src/lodepng.rs,871,(p: Option<&uivector>) -> (),yes,,uivector_cleanup;uivector_resize,
+uivector_resize,src/lodepng.rs,877,"(p: Option<&mut c_void>, size: usize) -> u32",yes,,,ucvector_reserve
+uivector_init,src/lodepng.rs,880,(p: Option<&mut ()>) -> (),yes,,uivector_init,lodepng_free
+lodepng_decompress_settings_init,src/lodepng.rs,893,(settings: Option<&mut LodePNGDecoderSettings>) -> (),yes,,lodepng_decompress_settings_init,lodepng_color_stats_init
+zlib_compress,src/lodepng.rs,898,"(out: &mut Option<&'a mut [u8]>, outsize: &mut usize, input: &'a [u8], insize: usize, settings: Option<&'a LodePNGCompressSettings<'a>>) -> u32",yes,,zlib_compress;lodepng_compress_settings_init;addChunk_IEND,lodepng_palette_add
+lodepng_compress_settings_init,src/lodepng.rs,907,(settings: Option<&mut LodePNGCompressSettings>) -> (),yes,,,HuffmanTree_makeFromLengths2
+lodepng_color_stats_init,src/lodepng.rs,911,(stats: Option<&mut LodePNGColorStats>) -> (),yes,,lodepng_color_stats_init,lodepng_is_palette_type
+lodepng_chunk_create,src/lodepng.rs,918,"(out: Option<&mut Option<&mut u8>>, outsize: Option<&mut usize>, length: u32, r#type: Option<&i8>, data: Option<&u8>) -> u32",yes,,checkColorValidity,lodepng_chunk_create
+checkColorValidity,src/lodepng.rs,929,"(colortype: LodePNGColorType, bd: u32) -> u32",yes,,,checkColorValidity
+getNumColorChannels,src/lodepng.rs,937,(colortype: LodePNGColorType) -> u32,yes,,getNumColorChannels;lodepng_color_mode_init,uivector_init
+lodepng_save_file,src/lodepng.rs,940,"(buffer: Option<&[u8]>, buffersize: usize, filename: Option<&CStr>) -> u32",yes,,LodePNGBitWriter_init,lodepng_save_file
+ucvector_resize,src/lodepng.rs,955,"(p: Option<&mut Ucvector>, size: usize) -> u32",yes,,ucvector_resize;ucvector_init,ucvector_resize
+ensureBits9,src/lodepng.rs,967,"(reader: Option<&mut LodePNGBitReader>, nbits: usize) -> ()",yes,,ensureBits9,addChunk_pHYs
+ensure_bits17,src/lodepng.rs,973,"(reader: Option<&mut LodePNGBitReader>, nbits: usize) -> ()",,,ensureBits17,LodePNGText_copy
+ensureBits25,src/lodepng.rs,979,"(reader: Option<&mut LodePNGBitReader>, nbits: usize) -> ()",yes,,ensureBits25,addChunk_cHRM
+ensureBits32,src/lodepng.rs,985,"(reader: Option<&mut LodePNGBitReader>, nbits: usize) -> ()",yes,,ensureBits32,addChunk_bKGD
+peek_bits,src/lodepng.rs,992,"(reader: Option<&LodePNGBitReader>, start: usize, size: usize) -> u32",,,peekBits;readBits,readChunk_tIME
+advance_bits,src/lodepng.rs,1001,"(reader: Option<&mut LodePNGBitReader>, nbits: usize) -> ()",,,advanceBits,addChunk_gAMA
+HuffmanTree_init,src/lodepng.rs,1005,(tree: Option<&mut HuffmanTree>) -> (),yes,,HuffmanTree_cleanup,HuffmanTree_makeTable
+HuffmanTree_cleanup,src/lodepng.rs,1016,(tree: Option<&mut HuffmanTree>) -> (),yes,,HuffmanTree_makeTable,generateFixedLitLenTree
+HuffmanTree_makeTable,src/lodepng.rs,1021,(tree: Option<&mut HuffmanTree>) -> u32,yes,,,lodepng_color_mode_alloc_palette
+hash_init,src/lodepng.rs,1041,"(hash: Option<&mut Hash>, windowsize: c_uint) -> c_uint",yes,,hash_init,
+hash_cleanup,src/lodepng.rs,1048,(hash: Option<&Hash>) -> i32,yes,,hash_cleanup,hash_cleanup
+color_tree_init,src/lodepng.rs,1055,(tree: Option<&mut ColorTree>) -> (),yes,,color_tree_init;color_tree_cleanup,
+color_tree_cleanup,src/lodepng.rs,1065,(tree: Option<&mut ColorTree>) -> (),yes,,color_tree_get,
+huffman_tree_make_from_lengths2,src/lodepng.rs,1073,(tree: Option<&mut HuffmanTree>) -> u32,,,,HuffmanTree_init
+bpmnode_sort,src/lodepng.rs,1097,"(leaves: Option<&mut [BPMNode]>, num: usize) -> ()",yes,,bpmnode_sort,lodepng_realloc
+unfilter,src/lodepng.rs,1100,"(out: Option<&mut [c_uchar]>, r#in: Option<&[c_uchar]>, w: c_uint, h: c_uint, bpp: c_uint) -> c_uint",yes,,unfilter,unfilter
+lodepng_chunk_generate_crc,src/lodepng.rs,1109,(chunk: Option<&[i8]>) -> (),yes,,lodepng_chunk_next,lodepng_filesize
+lodepng_chunk_next,src/lodepng.rs,1112,"(chunk: Option<&'a [i8]>, end: Option<&'a [i8]>) -> Option<&'a mut [i8]>",yes,,,lodepng_chunk_type_equals
+lodepng_chunk_next_const,src/lodepng.rs,1118,"(_chunk: Option<&'a [i8]>, _end: Option<&'a [i8]>) -> Option<&'a mut [i8]>",yes,,lodepng_chunk_next_const,LodePNGIText_copy
+lodepng_chunk_find_const,src/lodepng.rs,1128,"(_chunk: Option<&[u8]>, _end: Option<&[u8]>, _type_: Option<&[u8; 5]>) -> Option<&[u8]>",yes,,lodepng_chunk_append,lodepng_chunk_next_const
+lodepng_chunk_append,src/lodepng.rs,1143,"(_out: Option<&mut [u8]>, _outsize: Option<&mut usize>, _chunk: Option<&[u8]>) -> u32",yes,,,lodepng_chunk_append
+alloc_string_sized,src/lodepng.rs,1154,"(in_ptr: Option<&c_char>, insize: usize) -> Option<&mut c_char>",yes,,alloc_string,alloc_string_sized
+Adam7_deinterlace,src/lodepng.rs,1160,"(out: Option<&mut [c_uchar]>, in_buf: Option<&[c_uchar]>, w: u32, h: u32, bpp: u32) -> ()",yes,,Adam7_deinterlace,Adam7_interlace
+Adam7_interlace,src/lodepng.rs,1171,"(out: Option<&mut [c_uchar]>, in_buf: Option<&[c_uchar]>, w: u32, h: u32, bpp: u32) -> ()",yes,,Adam7_interlace,Adam7_deinterlace
+lodepng_chunk_data,src/lodepng.rs,1181,(chunk: Option<&[u8]>) -> Option<&[u8]>,yes,,lodepng_chunk_check_crc,lodepng_chunk_ancillary
+lodepng_chunk_data_const,src/lodepng.rs,1186,(chunk: Option<&[u8]>) -> Option<&[u8]>,yes,,,lodepng_chunk_data_const
+lodepng_chunk_check_crc,src/lodepng.rs,1198,(chunk: Option<&[i8]>) -> u32,yes,,lodepng_chunk_generate_crc,lodepng_chunk_find
+add_length_distance,src/lodepng.rs,1204,"(values: Option<&mut c_void>, length: usize, distance: usize) -> ()",,,addLengthDistance,lodepng_memcpy
+lodepng_decode32_file,src/lodepng.rs,1209,"(out: Option<&mut Option<&mut [u8]>>, w: Option<&mut u32>, h: Option<&mut u32>, filename: Option<&str>) -> u32",yes,,lodepng_decode32_file;lodepng_decoder_settings_init,lodepng_decode24_file
+lodepng_decode24_file,src/lodepng.rs,1219,"(out: Option<&mut Option<&mut [u8]>>, w: Option<&mut u32>, h: Option<&mut u32>, filename: Option<&str>) -> u32",yes,,,lodepng_decode32_file
+lodepng_decoder_settings_init,src/lodepng.rs,1231,(settings: Option<&mut LodePNGDecoderSettings>) -> (),yes,,,lodepng_is_greyscale_type
+lodepng_encode32_file,src/lodepng.rs,1235,"(filename: Option<&str>, image: Option<&[u8]>, w: u32, h: u32) -> u32",yes,,lodepng_encoder_settings_init,lodepng_encode32_file
+lodepng_encode24_file,src/lodepng.rs,1243,"(filename: Option<&str>, image: Option<&[u8]>, w: u32, h: u32) -> u32",yes,,lodepng_encode24_file,addColorBits
+lodepng_get_bpp_lct,src/lodepng.rs,1262,"(_colortype: LodePNGColorType, _bitdepth: u32) -> u32",yes,,,lodepng_get_bpp_lct
+lodepng_palette_clear,src/lodepng.rs,1269,(info: Option<&mut LodePNGColorMode>) -> (),yes,,lodepng_palette_clear;lodepng_palette_add,
+lodepng_get_bpp,src/lodepng.rs,1276,(info: Option<&LodePNGColorMode>) -> u32,yes,,lodepng_get_bpp;lodepng_is_greyscale_type,lodepng_get_channels
+lodepng_get_channels,src/lodepng.rs,1283,(info: Option<&LodePNGColorMode>) -> u32,yes,,lodepng_is_alpha_type,lodepng_get_bpp
+lodepng_is_greyscale_type,src/lodepng.rs,1290,(info: Option<&LodePNGColorMode>) -> u32,yes,,lodepng_is_palette_type,lodepng_color_mode_init
+lodepng_is_alpha_type,src/lodepng.rs,1296,(info: Option<&LodePNGColorMode>) -> u32,yes,,lodepng_has_palette_alpha,lodepng_palette_clear
+lodepng_is_palette_type,src/lodepng.rs,1302,(info: Option<&LodePNGColorMode>) -> u32,yes,,,lodepng_color_mode_cleanup
+lodepng_color_mode_init,src/lodepng.rs,1308,(info: Option<&mut LodePNGColorMode>) -> (),yes,,lodepng_color_mode_alloc_palette,
+lodepng_color_mode_alloc_palette,src/lodepng.rs,1315,(info: Option<&mut LodePNGColorMode>) -> (),yes,,,
+lodepng_color_mode_make,src/lodepng.rs,1318,"(colortype: LodePNGColorType, bitdepth: u32) -> LodePNGColorMode",yes,,lodepng_color_mode_make;lodepng_color_mode_equal,lodepng_color_mode_make
+lodepng_color_mode_equal,src/lodepng.rs,1326,"(a: Option<&LodePNGColorMode>, b: Option<&LodePNGColorMode>) -> i32",yes,,,
+rgba16ToPixel,src/lodepng.rs,1336,"(out: Option<&mut i8>, i: usize, mode: Option<&LodePNGColorMode>, r: u16, g: u16, b: u16, a: u16) -> ()",yes,,rgba16ToPixel,rgba16ToPixel
+getPixelColorRGBA8,src/lodepng.rs,1352,"(r: Option<&mut i8>, g: Option<&mut i8>, b: Option<&mut i8>, a: Option<&mut i8>, input: Option<&[i8]>, i: usize, mode: Option<&LodePNGColorMode>) -> ()",yes,,getPixelColorRGBA8,addChunk_iTXt
+getPixelColorsRGBA8,src/lodepng.rs,1372,"(buffer: Option<&mut [i8]>, numpixels: usize, in_buf: Option<&[i8]>, mode: Option<&LodePNGColorMode>) -> ()",yes,,getPixelColorsRGBA8,readChunk_iTXt
+getPixelColorsRGB8,src/lodepng.rs,1388,"(buffer: Option<&mut [i8]>, numpixels: usize, input: Option<&[i8]>, mode: Option<&LodePNGColorMode>) -> ()",yes,,getPixelColorsRGB8,lodepng_add_text_sized
+getPixelColorRGBA16,src/lodepng.rs,1400,"(r: Option<&mut i16>, g: Option<&mut i16>, b: Option<&mut i16>, a: Option<&mut i16>, input: Option<&i8>, i: usize, mode: Option<&LodePNGColorMode>) -> ()",yes,,getPixelColorRGBA16,preProcessScanlines
+lodepng_convert_rgb,src/lodepng.rs,1419,"(r_out: Option<&mut u32>, g_out: Option<&mut u32>, b_out: Option<&mut u32>, r_in: u32, g_in: u32, b_in: u32, mode_out: Option<&LodePNGColorMode>, mode_in: Option<&LodePNGColorMode>) -> u32",yes,,lodepng_convert_rgb,lodepng_convert_rgb
+readChunk_tRNS,src/lodepng.rs,1437,"(color: Option<&mut LodePNGColorMode>, data: Option<&[i8]>, chunk_length: usize) -> u32",yes,,readChunk_tRNS,lodepng_buffer_file
+get_num_color_channels_stub,src/lodepng.rs,1461,(colortype: LodePNGColorType) -> u32,,,lodepng_get_bpp_lct,lodepng_chunk_length
+generate_fixed_distance_tree,src/lodepng.rs,1493,(tree: Option<&mut HuffmanTree>) -> u32,,,huffmanDecodeSymbol,HuffmanTree_cleanup
+huffman_decode_symbol,src/lodepng.rs,1499,"(reader: Option<&mut LodePNGBitReader>, codetree: Option<&HuffmanTree>) -> u32",,,,addChunk_sRGB
+HuffmanTree_makeFromLengths2,src/lodepng.rs,1509,(tree: Option<&mut HuffmanTree>) -> u32,yes,,HuffmanTree_makeFromLengths2,lodepng_compress_settings_init
+color_tree_has,src/lodepng.rs,1516,"(tree: Option<&mut ColorTree>, r: u8, g: u8, b: u8, a: u8) -> i32",yes,,color_tree_add,color_tree_has
+color_tree_add,src/lodepng.rs,1529,"(tree: Option<&mut ColorTree>, r: u8, g: u8, b: u8, a: u8, index: u32) -> u32",yes,,,color_tree_add
+color_tree_get,src/lodepng.rs,1539,"(tree: Option<&ColorTree>, r: u8, g: u8, b: u8, a: u8) -> i32",yes,,color_tree_has,lodepng_chunk_next
+rgba8ToPixel,src/lodepng.rs,1547,"(out: Option<&mut i8>, i: usize, mode: Option<&LodePNGColorMode>, tree: Option<&ColorTree>, r: u8, g: u8, b: u8, a: u8) -> u32",yes,,rgba8ToPixel,lodepng_info_cleanup
+bpmnode_create,src/lodepng.rs,1577,"(lists: Option<&'a mut crate::BPMLists>, weight: i32, index: u32, tail: Option<Box<BPMNode>>) -> Option<&'a BPMNode>",yes,,bpmnode_create,bpmnode_create
+lodepng_chunk_find,src/lodepng.rs,1585,"(chunk: Option<&'a [u8]>, end: Option<&'a [u8]>, r#type: Option<&'a [u8]>) -> Option<&'a [u8]>",yes,,lodepng_chunk_find;lodepng_chunk_find_const,lodepng_chunk_generate_crc
+unknown_function_name,src/lodepng.rs,1608,"(out: Option<&mut Ucvector>, data: Option<&LodePNGInfo>) -> u32",,,addUnknownChunks,addChunk_tRNS
+update_hash_chain,src/lodepng.rs,1632,"(hash: Option<&mut Hash>, wpos: usize, hashval: u32, numzeros: u16) -> ()",,,encodeLZ77,getPixelColorsRGBA8
+encode_lz77,src/lodepng.rs,1649,"(out: Option<&mut uivector>, hash: Option<&mut Hash>, input: Option<&c_char>, inpos: usize, insize: usize, windowsize: u32, minmatch: u32, nicematch: u32, lazymatching: u32) -> u32",,,,encodeLZ77
+lodepng_set_icc,src/lodepng.rs,1664,"(info: Option<&mut LodePNGInfo>, name: Option<&str>, profile: Option<&[u8]>, profile_size: u32) -> u32",yes,,lodepng_clear_icc,lodepng_pixel_overflow
+lodepng_clear_icc,src/lodepng.rs,1676,(info: Option<&mut LodePNGInfo>) -> (),yes,,,LodePNGIText_init
+lodepng_mulofl,src/lodepng.rs,1678,"(a: usize, b: usize, out: Option<&mut usize>) -> u32",yes,,LodePNGUnknownChunks_init;LodePNGUnknownChunks_cleanup,lodepng_mulofl
+LodePNGUnknownChunks_cleanup,src/lodepng.rs,1689,(info: Option<&LodePNGInfo>) -> (),yes,,,LodePNGIText_cleanup
+LodePNGText_init,src/lodepng.rs,1698,(info: Option<&mut LodePNGInfo>) -> (),yes,,LodePNGText_init;LodePNGText_cleanup,LodePNGUnknownChunks_init
+lodepng_add_text_sized,src/lodepng.rs,1710,"(info: Option<&mut LodePNGInfo>, key: Option<&c_char>, str_ptr: Option<&c_char>, size: usize) -> u32",yes,,lodepng_add_text_sized,LodePNGText_init
+lodepng_add_text,src/lodepng.rs,1723,"(info: Option<&mut LodePNGInfo>, key: &str, str_: &str) -> u32",yes,,lodepng_add_text;LodePNGIText_init,readChunk_PLTE
+lodepng_clear_text,src/lodepng.rs,1730,(info: Option<&mut LodePNGInfo>) -> (),yes,,,LodePNGText_cleanup
+LodePNGIText_init,src/lodepng.rs,1733,(info: Option<&mut LodePNGInfo>) -> (),yes,,LodePNGIText_cleanup,lodepng_is_alpha_type
+LodePNGIText_cleanup,src/lodepng.rs,1736,(info: Option<&mut LodePNGInfo>) -> (),yes,,,lodepng_has_palette_alpha
+lodepng_clear_itext,src/lodepng.rs,1741,(info: Option<&mut LodePNGInfo>) -> (),yes,,lodepng_clear_itext;lodepng_add_itext_sized,lodepng_clear_text
+lodepng_add_itext_sized,src/lodepng.rs,1748,"(info: Option<&mut LodePNGInfo>, key: Option<&c_char>, langtag: Option<&c_char>, transkey: Option<&c_char>, str_ptr: Option<&c_char>, size: usize) -> u32",yes,,,lodepng_add_itext_sized
+lodepng_add_itext,src/lodepng.rs,1764,"(info: Option<&mut LodePNGInfo>, key: Option<&c_char>, langtag: Option<&c_char>, transkey: Option<&c_char>, str_ptr: Option<&c_char>) -> u32",yes,,lodepng_add_itext;lodepng_assign_icc,lodepng_add_itext
+readChunk_bKGD,src/lodepng.rs,1781,"(info: Option<&mut LodePNGInfo>, data: Option<&[i8]>, chunkLength: usize) -> u32",yes,,readChunk_bKGD,readChunk_sBIT
+readChunk_tIME,src/lodepng.rs,1793,"(info: Option<&mut LodePNGState<'_>>, data: Option<&i8>, chunk_length: usize) -> u32",yes,,readChunk_tIME,lodepng_state_cleanup
+read_chunk_time,src/lodepng.rs,1805,"(info: Option<&mut LodePNGState>, data: Option<&[i8]>) -> u32",,,readChunk_pHYs,LodePNGUnknownChunks_copy
+readChunk_pHYs,src/lodepng.rs,1817,"(info: Option<&mut LodePNGState<'a>>, data: Option<&[i8]>, chunkLength: usize) -> u32",yes,,readChunk_gAMA,addChunk_iCCP
+readChunk_gAMA,src/lodepng.rs,1831,"(info: Option<&mut LodePNGInfo>, data: Option<&[u8]>, chunkLength: usize) -> u32",yes,,readChunk_cHRM,auto_choose_color
+readChunk_cHRM,src/lodepng.rs,1844,"(info: Option<&mut LodePNGState<'_>>, data: Option<&[i8]>, chunkLength: usize) -> u32",yes,,,lodepng_state_init
+readChunk_sRGB,src/lodepng.rs,1860,"(info: Option<&mut LodePNGState>, data: Option<&[i8]>) -> ()",yes,,readChunk_sRGB,lodepng_info_copy
+read_chunk_sbit,src/lodepng.rs,1865,"(info: Option<&mut LodePNGInfo>, data: Option<&[u8]>, chunk_length: usize) -> u32",,,readChunk_sBIT,getTreeInflateDynamic
+lodepng_color_mode_cleanup,src/lodepng.rs,1886,(info: Option<&mut LodePNGColorMode>) -> (),yes,,lodepng_color_mode_cleanup;lodepng_color_mode_copy,
+lodepng_has_palette_alpha,src/lodepng.rs,1893,(info: Option<&LodePNGColorMode>) -> u32,yes,,lodepng_can_have_alpha,lodepng_clear_itext
+lodepng_palette_add,src/lodepng.rs,1906,"(info: Option<&mut LodePNGColorMode>, r: u8, g: u8, b: u8, a: u8) -> u32",yes,,,lodepng_chunk_check_crc
+readChunk_PLTE,src/lodepng.rs,1923,"(color: Option<&mut LodePNGColorMode>, data: Option<&[u8]>, chunkLength: usize) -> u32",yes,,readChunk_PLTE,deflateNoCompression
+has_palette_alpha_stub,src/lodepng.rs,1951,(info: Option<&LodePNGInfo>) -> u32,,,lodepng_get_raw_size_lct,LodePNGUnknownChunks_cleanup
+LodePNGBitWriter_init,src/lodepng.rs,1958,"(writer: Option<&mut LodePNGBitWriter>, data: Option<&mut Ucvector>) -> ()",yes,,writeBits,LodePNGBitWriter_init
+writeBitsReversed,src/lodepng.rs,1972,"(writer: Option<&mut crate::lodepng::LodePNGBitWriter>, value: u32, nbits: usize) -> ()",yes,,writeBitsReversed,addLengthDistance
+inflateNoCompression,src/lodepng.rs,1979,"(out: Option<&mut Ucvector>, reader: Option<&mut LodePNGBitReader>, settings: Option<&LodePNGDecompressSettings>) -> u32",yes,,inflateNoCompression,readChunk_pHYs
+deflateNoCompression,src/lodepng.rs,2000,"(out: Option<&mut Ucvector>, data: Option<&i8>, datasize: usize) -> u32",yes,,deflateNoCompression,lodepng_load_file
+lodepng_state_copy,src/lodepng.rs,2026,"(dest: Option<&mut LodePNGState>, source: Option<&LodePNGState>) -> ()",yes,,writeSignature,uivector_resize
+HuffmanTree_makeFromLengths,src/lodepng.rs,2035,"(tree: Option<&mut HuffmanTree>, bitlen: Option<&[i32]>) -> u32",yes,,HuffmanTree_makeFromLengths,hash_init
+boundary_pm,src/lodepng.rs,2051,"(lists: Option<&mut BPMLists>, leaves: Option<&[BPMNode]>, numpresent: usize, c: i32, num: i32) -> ()",,,boundaryPM,color_tree_get
+LodePNGUnknownChunks_copy,src/lodepng.rs,2065,"(dest: Option<&LodePNGInfo>, src: Option<&LodePNGInfo>) -> u32",yes,,LodePNGUnknownChunks_copy,lodepng_state_copy
+lodepng_add_text_entry,src/lodepng.rs,2071,"(info: Option<&mut LodePNGInfo>, key: &str, str_val: &str, size: usize) -> u32",,,lodepng_clear_text,writeLZ77data
+lodepng_info_init,src/lodepng.rs,2097,(info: Option<&mut LodePNGInfo>) -> (),yes,,lodepng_info_init,lodepng_info_init
+lodepng_info_cleanup,src/lodepng.rs,2158,(info: Option<&mut LodePNGInfo>) -> (),yes,,lodepng_info_cleanup;lodepng_info_copy,lodepng_can_have_alpha
+getValueRequiredBits,src/lodepng.rs,2165,(value: u8) -> u32,yes,,lodepng_compute_color_stats,getValueRequiredBits
+lodepng_compute_color_stats,src/lodepng.rs,2172,"(stats: Option<&'a mut LodePNGColorStats>, image: Option<&'a [u8]>, w: u32, h: u32, mode_in: Option<&'a LodePNGColorMode>) -> u32",yes,,,lodepng_compute_color_stats
+lodepng_get_raw_size,src/lodepng.rs,2185,"(w: u32, h: u32, color: Option<&LodePNGColorMode>) -> usize",yes,,lodepng_pixel_overflow,LodePNGBitReader_init
+lodepng_get_raw_size_idat,src/lodepng.rs,2190,"(w: u32, h: u32, bpp: u32) -> usize",yes,,,lodepng_get_raw_size_idat
+lodepng_pixel_overflow,src/lodepng.rs,2203,"(w: u32, h: u32, pngcolor: Option<&LodePNGColorMode>, rawcolor: Option<&LodePNGColorMode>) -> i32",yes,,,inflateHuffmanBlock
+post_process_scanlines,src/lodepng.rs,2214,"(out: Option<&mut [c_uchar]>, r#in: Option<&mut [c_uchar]>, w: c_uint, h: c_uint, info_png: Option<&LodePNGInfo>) -> c_uint",,,postProcessScanlines,HuffmanTree_makeFromFrequencies
+lodepng_can_have_alpha,src/lodepng.rs,2230,(info: Option<&LodePNGColorMode>) -> u32,yes,,lodepng_get_raw_size,
+writeLZ77data,src/lodepng.rs,2238,"(writer: Option<&mut LodePNGBitWriter>, lz77_encoded: Option<&Uivector>, tree_ll: Option<&HuffmanTree>, tree_d: Option<&HuffmanTree>) -> ()",yes,,writeLZ77data,lodepng_huffman_code_lengths
+lodepng_chunk_createv,src/lodepng.rs,2264,"(out: Option<&Ucvector>, type_: Option<&i8>, data: Option<&i8>, length: usize, chunk: Option<&mut Option<&mut i8>>) -> u32",yes,,lodepng_chunk_createv;lodepng_chunk_create,lodepng_inflate
+writeSignature,src/lodepng.rs,2273,(out: Option<&mut Ucvector>) -> u32,yes,,addChunk_IHDR,writeSignature
+addChunk_IHDR,src/lodepng.rs,2276,"(out: Option<&Ucvector>, w: u32, h: u32, colortype: LodePNGColorType, bitdepth: u32, interlace_method: u32) -> u32",yes,,,addChunk_IHDR
+addChunk_PLTE,src/lodepng.rs,2292,"(out: Option<&Ucvector>, info: Option<&LodePNGInfo>) -> u32",yes,,addChunk_PLTE,huffmanDecodeSymbol
+addChunk_tRNS,src/lodepng.rs,2300,"(out: Option<&Ucvector>, info: Option<&LodePNGInfo>) -> u32",yes,,addChunk_tRNS,ensureBits32
+wctomb,src/lodepng.rs,2306,"(s: Option<&mut i8>, wchar: i32) -> i32",,,addChunk_tEXt,color_tree_cleanup
+addChunk_IEND,src/lodepng.rs,2312,(out: Option<&mut Ucvector>) -> u32,yes,,,addChunk_IEND
+addChunk_tEXt,src/lodepng.rs,2323,"(out: Option<&Ucvector>, keyword: Option<&i8>, textstring: Option<&i8>) -> u32",yes,,,addChunk_tEXt
+addChunk_bKGD,src/lodepng.rs,2337,"(out: Option<&Ucvector>, info: Option<&LodePNGInfo>) -> u32",yes,,addChunk_bKGD,ensureBits17
+addChunk_tIME,src/lodepng.rs,2346,"(out: Option<&Ucvector>, time: Option<&LodePNGTime>) -> u32",yes,,addChunk_tIME,addChunk_tIME
+addChunk_pHYs,src/lodepng.rs,2357,"(out: Option<&mut Ucvector>, info: Option<&LodePNGInfo>) -> u32",yes,,addChunk_pHYs;addChunk_gAMA,readBits
+addChunk_gAMA,src/lodepng.rs,2365,"(out: Option<&mut Ucvector>, info: Option<&LodePNGInfo>) -> u32",yes,,addChunk_cHRM,lodepng_color_mode_copy
+addChunk_cHRM,src/lodepng.rs,2368,"(out: Option<&mut Ucvector>, info: Option<&LodePNGInfo>) -> u32",yes,,,lodepng_color_mode_equal
+addChunk_sBIT,src/lodepng.rs,2376,"(out: Option<&Ucvector>, info: Option<&LodePNGInfo>) -> u32",yes,,addChunk_sBIT,addChunk_PLTE
+generateFixedLitLenTree,src/lodepng.rs,2384,(tree: Option<&mut HuffmanTree>) -> u32,yes,,generateFixedLitLenTree,generateFixedDistanceTree
+generateFixedDistanceTree,src/lodepng.rs,2394,"(tree: Option<&mut HuffmanTree>, bitlen: Option<&mut [i32]>) -> u32",yes,,generateFixedDistanceTree,bpmnode_sort
+get_tree_inflate_fixed,src/lodepng.rs,2402,"(tree_ll: Option<&mut HuffmanTree>, tree_d: Option<&mut HuffmanTree>) -> u32",,,getTreeInflateDynamic,getTreeInflateFixed
+get_tree_inflate_dynamic,src/lodepng.rs,2416,"(tree_ll: Option<&mut HuffmanTree>, tree_d: Option<&mut HuffmanTree>, reader: Option<&mut LodePNGBitReader>) -> u32",,,,lodepng_add_text
+lodepng_huffman_code_lengths,src/lodepng.rs,2432,"(lengths: Option<&mut HuffmanTree>, frequencies: Option<&[i32]>, numcodes: usize, maxbitlen: c_uint) -> c_uint",yes,,lodepng_huffman_code_lengths,updateHashChain
+LodePNGText_cleanup,src/lodepng.rs,2446,(info: Option<&mut LodePNGInfo>) -> (),yes,,LodePNGText_copy,lodepng_clear_icc
+readChunk_tEXt,src/lodepng.rs,2456,"(info: Option<&mut LodePNGInfo>, data: Option<&[u8]>, chunkLength: usize) -> u32",yes,,readChunk_tEXt,writeBitsReversed
+lodepng_state_init,src/lodepng.rs,2467,(state: Option<&mut LodePNGState<'_>>) -> (),yes,,lodepng_state_init;lodepng_state_cleanup,lodepng_decoder_settings_init
+LodePNGIText_copy,src/lodepng.rs,2475,"(dest: Option<&mut LodePNGInfo>, source: Option<&LodePNGInfo>) -> u32",yes,,LodePNGIText_copy,peekBits
+auto_choose_color,src/lodepng.rs,2490,"(mode_out: Option<&mut LodePNGColorMode>, mode_in: Option<&LodePNGState<'a>>, stats: Option<&LodePNGColorStats>) -> u32",yes,,auto_choose_color,inflateNoCompression
+lodepng_inspect,src/lodepng.rs,2521,"(w: Option<&mut i32>, h: Option<&mut i32>, state: Option<&mut LodePNGState>, input: Option<&[i8]>, insize: usize) -> u32",yes,,lodepng_inspect,lodepng_inspect
+lodepng_color_stats_add,src/lodepng.rs,2534,"(stats: Option<&mut LodePNGColorStats>, r: u32, g: u32, b: u32, a: u32) -> u32",yes,,lodepng_color_stats_add,lodepng_color_stats_add
+lodepng_convert,src/lodepng.rs,2551,"(out: Option<&mut [u8]>, input: Option<&[u8]>, mode_out: Option<&LodePNGColorMode>, mode_in: Option<&LodePNGColorMode>, w: u32, h: u32) -> u32",yes,,lodepng_convert,lodepng_convert
+addChunk_sRGB,src/lodepng.rs,2615,"(out: Option<&Ucvector>, info: Option<&LodePNGInfo>) -> u32",yes,,addChunk_sRGB;addChunk_iCCP,ensureBits25
+deflateFixed,src/lodepng.rs,2621,"(writer: Option<&mut LodePNGBitWriter>, hash: Option<&mut Hash>, data: Option<&c_char>, datapos: usize, dataend: usize, settings: Option<&LodePNGCompressSettings<'_>>, final_block: u32) -> u32",yes,,deflateFixed;lodepng_deflate,deflateDynamic
+HuffmanTree_makeFromFrequencies,src/lodepng.rs,2640,"(tree: Option<&mut HuffmanTree>, frequencies: Option<&[i32]>, mincodes: usize, numcodes: usize, maxbitlen: c_uint) -> c_uint",yes,,HuffmanTree_makeFromFrequencies,boundaryPM
+lodepng_info_copy,src/lodepng.rs,2671,"(dest: Option<&mut LodePNGInfo>, source: Option<&LodePNGInfo>) -> u32",yes,,,advanceBits
+inflate_huffman_block,src/lodepng.rs,2677,"(out: Option<&mut Ucvector>, reader: Option<&mut LodePNGBitReader>, btype: u32, max_output_size: usize) -> u32",,,inflateHuffmanBlock,addChunk_zTXt
+deflateDynamic,src/lodepng.rs,2700,"(writer: Option<&mut LodePNGBitWriter>, hash: Option<&mut Hash>, data: Option<&[i8]>, datapos: usize, dataend: usize, settings: Option<&LodePNGCompressSettings>, final_flag: u32) -> u32",yes,,deflateDynamic,deflateFixed
+lodepng_inflatev,src/lodepng.rs,2713,"(out: Option<&mut Ucvector>, input: Option<&i8>, insize: usize, settings: Option<&LodePNGDecompressSettings>) -> u32",yes,,lodepng_inflatev,lodepng_set_icc
+lodepng_deflatev,src/lodepng.rs,2743,"(out: Option<&mut Ucvector>, input: Option<&c_char>, insize: usize, settings: Option<&LodePNGCompressSettings<'_>>) -> u32",yes,,lodepng_deflatev,readChunk_zTXt
+lodepng_inflate_block_logic,src/lodepng.rs,2753,"(out: Option<&mut Ucvector>, reader: Option<&mut LodePNGBitReader>, settings: Option<&LodePNGDecompressSettings>) -> u32",,,lodepng_inflate,readChunk_sRGB
+inflate_no_compression,src/lodepng.rs,2764,"(out: Option<&mut Ucvector>, reader: Option<&mut LodePNGBitReader>, settings: Option<&LodePNGDecompressSettings>) -> u32",,,,readChunk_gAMA
+lodepng_inflate,src/lodepng.rs,2782,"(out: &mut Option<&'a mut &mut [u8]>, outsize: &mut usize, input: Option<&[u8]>, insize: usize, settings: Option<&'a LodePNGDecompressSettings<'a>>) -> u32",yes,,inflatev,lodepng_deflate
+inflatev,src/lodepng.rs,2798,"(out: Option<&mut Ucvector>, input: Option<&[u8]>, insize: usize, settings: Option<&'a LodePNGDecompressSettings<'a>>) -> u32",yes,,,inflatev
+lodepng_zlib_decompressv,src/lodepng.rs,2855,"(out: Option<&'a mut Ucvector>, input: Option<&[i8]>, insize: usize, settings: Option<&'a LodePNGDecompressSettings<'a>>) -> u32",yes,,lodepng_zlib_decompressv,lodepng_assign_icc
+lodepng_deflate,src/lodepng.rs,2883,"(out: &mut Option<&'a mut [u8]>, outsize: Option<&mut usize>, input: Option<&'a [u8]>, insize: usize, settings: Option<&'a LodePNGCompressSettings<'a>>) -> u32",yes,,deflate,lodepng_zlib_compress
+lodepng_zlib_decompress,src/lodepng.rs,2897,"(out: Option<&'a mut Ucvector>, outsize: Option<&'a mut usize>, input: Option<&'a [u8]>, insize: usize, settings: Option<&'a LodePNGDecompressSettings<'a>>) -> u32",yes,,lodepng_zlib_decompress;zlib_decompress,lodepng_zlib_decompress
+zlib_decompress,src/lodepng.rs,2942,"(out: Option<&'a mut Option<&'a mut [u8]>>, outsize: Option<&'a mut usize>, expected_size: usize, input: Option<&'a [u8]>, insize: usize, settings: Option<&'a LodePNGDecompressSettings<'a>>) -> u32",yes,,,zlib_decompress
+lodepng_zlib_compress,src/lodepng.rs,2976,"(out: &mut Option<&'a mut [u8]>, outsize: Option<&mut usize>, input: Option<&'a [u8]>, insize: usize, settings: Option<&'a LodePNGCompressSettings<'a>>) -> u32",yes,,lodepng_zlib_compress,zlib_compress
+read_chunk_ztxt,src/lodepng.rs,2997,"(info: Option<&'a mut LodePNGState<'a>>, decoder: Option<&'a LodePNGState<'a>>, data: Option<&'a [u8]>, chunk_length: usize) -> u32",,,readChunk_zTXt,lodepng_deflatev
+readChunk_iTXt,src/lodepng.rs,3015,"(info: Option<&'a mut LodePNGState<'a>>, decoder: Option<&'a LodePNGState<'a>>, data: Option<&'a [u8]>, chunk_length: usize) -> u32",yes,,readChunk_iTXt,lodepng_inflatev
+read_chunk_srgb,src/lodepng.rs,3026,"(info: Option<&mut LodePNGInfo>, data: Option<&[u8]>, chunk_length: usize) -> u32",,,readChunk_iCCP,lodepng_get_raw_size
+read_chunk_iccp,src/lodepng.rs,3043,"(info: Option<&'a mut LodePNGState<'a>>, decoder: Option<&'a LodePNGState<'a>>, data: Option<&'a [u8]>, chunk_length: usize) -> u32",,,,HuffmanTree_makeFromLengths
+lodepng_inspect_chunk,src/lodepng.rs,3073,"(state: Option<&'a mut LodePNGState<'a>>, pos: usize, input: Option<&'a [u8]>, insize: usize) -> u32",yes,,lodepng_inspect_chunk,addChunk_IDAT
+decodeGeneric,src/lodepng.rs,3099,"(out: Option<&'a mut Option<&'a mut [u8]>>, w: Option<&'a mut i32>, h: Option<&'a mut i32>, state: Option<&'a mut LodePNGState<'a>>, input: Option<&'a [u8]>, insize: usize) -> ()",yes,,decodeGeneric,lodepng_encode
+addChunk_IDAT,src/lodepng.rs,3122,"(out: Option<&Ucvector>, data: Option<&i8>, datasize: usize, zlibsettings: Option<&LodePNGState>) -> u32",yes,,addChunk_IDAT,readChunk_iCCP
+addChunk_zTXt,src/lodepng.rs,3136,"(out: Option<&Ucvector>, keyword: Option<&LodePNGInfo>, textstring: Option<&LodePNGInfo>, zlibsettings: Option<&LodePNGState>) -> u32",yes,,addChunk_zTXt,lodepng_zlib_decompressv
+addChunk_iTXt,src/lodepng.rs,3150,"(out: Option<&'a Ucvector>, compress: u32, keyword: Option<&'a LodePNGInfo>, langtag: Option<&'a LodePNGInfo>, transkey: Option<&'a LodePNGInfo>, textstring: Option<&'a LodePNGInfo>, zlibsettings: Option<&'a LodePNGCompressSettings<'a>>) -> u32",yes,,addChunk_iTXt,getPixelColorRGBA16
+addChunk_iCCP,src/lodepng.rs,3171,"(out: Option<&Ucvector>, info: Option<&LodePNGInfo>, zlibsettings: Option<&LodePNGCompressSettings<'_>>) -> u32",yes,,,writeBits
+ilog2i,src/lodepng.rs,3180,(i: usize) -> usize,yes,,filter,ilog2
+filter,src/lodepng.rs,3196,"(out: Option<&'a mut [u8]>, input: Option<&'a [u8]>, w: u32, h: u32, color: Option<&'a LodePNGColorMode>, settings: Option<&'a LodePNGEncoderSettings<'a>>) -> u32",yes,,,filter
+lodepng_decode,src/lodepng.rs,3221,"(out: Option<&'a mut Option<&'a mut [u8]>>, w: Option<&'a mut u32>, h: Option<&'a mut u32>, state: Option<&'a mut LodePNGState<'a>>, input: Option<&'a [u8]>, insize: usize) -> u32",yes,,lodepng_decode;lodepng_decode24,lodepng_decode
+preProcessScanlines,src/lodepng.rs,3245,"(out: Option<&'a mut Option<&'a mut [c_uchar]>>, outsize: Option<&'a mut usize>, input: Option<&'a [c_uchar]>, w: u32, h: u32, info_png: Option<&'a LodePNGInfo>, settings: Option<&'a LodePNGEncoderSettings<'a>>) -> u32",yes,,preProcessScanlines,getPixelColorRGBA8
+lodepng_decode_memory,src/lodepng.rs,3267,"(out: Option<&'a mut Option<&'a mut [u8]>>, w: Option<&'a mut u32>, h: Option<&'a mut u32>, input: Option<&'a [u8]>, insize: usize, colortype: LodePNGColorType, bitdepth: u32) -> u32",yes,,lodepng_decode_memory,lodepng_decode_memory
+isGrayICCProfile,src/lodepng.rs,3281,"(profile: Option<&[u8]>, size: u32) -> u32",yes,,lodepng_encode,adler32
+isRGBICCProfile,src/lodepng.rs,3287,"(profile: Option<&[u8]>, size: u32) -> u32",yes,,,isRGBICCProfile
+lodepng_encode,src/lodepng.rs,3301,"(out: Option<&'a mut Option<&'a mut [u8]>>, outsize: Option<&'a mut usize>, image: Option<&'a [u8]>, w: u32, h: u32, state: Option<&'a mut LodePNGState<'a>>) -> u32",yes,,lodepng_encode24,decodeGeneric
+lodepng_decode32,src/lodepng.rs,3321,"(out: Option<&'a mut Option<&'a mut [u8]>>, w: Option<&'a u32>, h: Option<&'a u32>, input: Option<&'a [u8]>, insize: usize) -> u32",yes,,lodepng_decode32;lodepng_decode_file,lodepng_decode24
+lodepng_state_cleanup,src/lodepng.rs,3348,(state: Option<&mut LodePNGState>) -> (),yes,,,lodepng_decompress_settings_init
+lodepng_decode24,src/lodepng.rs,3366,"(out: Option<&'a mut Option<&'a mut [u8]>>, w: Option<&'a mut u32>, h: Option<&'a mut u32>, input: Option<&'a [u8]>, insize: usize) -> u32",yes,,,lodepng_decode32
+lodepng_decode_file,src/lodepng.rs,3385,"(out: Option<&'a mut Option<&'a mut [u8]>>, w: Option<&'a mut u32>, h: Option<&'a mut u32>, filename: Option<&'a [c_char]>, colortype: LodePNGColorType, bitdepth: u32) -> u32",yes,,,lodepng_decode_file
+lodepng_encode_memory,src/lodepng.rs,3408,"(out: Option<&mut Option<&mut [u8]>>, outsize: Option<&mut usize>, image: Option<&[u8]>, w: u32, h: u32, colortype: LodePNGColorType, bitdepth: u32) -> u32",yes,,lodepng_encode_memory,lodepng_encode_memory
+lodepng_encode32,src/lodepng.rs,3516,"(out: Option<&mut Option<&mut [u8]>>, outsize: Option<&mut usize>, image: Option<&[u8]>, w: u32, h: u32) -> u32",yes,,lodepng_encode_file,lodepng_encode32
+lodepng_encode24,src/lodepng.rs,3525,"(out: Option<&mut Option<&mut [u8]>>, outsize: Option<&mut usize>, image: Option<&[u8]>, w: u32, h: u32) -> u32",yes,,,lodepng_encode24
+lodepng_encode_file,src/lodepng.rs,3534,"(filename: Option<&str>, image: Option<&[u8]>, w: u32, h: u32, colortype: LodePNGColorType, bitdepth: u32) -> u32",yes,,lodepng_encode32_file,lodepng_encode_file

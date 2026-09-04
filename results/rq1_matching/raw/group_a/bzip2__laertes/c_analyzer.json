@@ -1,0 +1,5523 @@
+{
+  "functions": [
+    {
+      "name": "fallbackSimpleSort",
+      "line": 32,
+      "signature": {
+        "params": [
+          {
+            "name": "fmap",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "eclass",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "lo",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hi",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "==": 1,
+        ">": 3,
+        "-": 7,
+        ">=": 2,
+        "+": 3,
+        "&&": 2,
+        "<=": 2
+      },
+      "consts": [
+        "int32",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 9,
+        "stmts": 13,
+        "nodes": 130,
+        "loops": 4,
+        "max_loop_depth": 2,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 14
+      }
+    },
+    {
+      "name": "fallbackQSort3",
+      "line": 93,
+      "signature": {
+        "params": [
+          {
+            "name": "fmap",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "eclass",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "loSt",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hiSt",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        ">": 6,
+        "<": 3,
+        "-": 9,
+        "%": 2,
+        "+": 4,
+        "*": 1,
+        "==": 4,
+        ">>": 1
+      },
+      "consts": [
+        "assertd",
+        "asserth",
+        "fmin",
+        "fpop",
+        "fpush",
+        "fswap",
+        "fvswap",
+        "int32",
+        "size",
+        "thresh",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 20,
+        "stmts": 87,
+        "nodes": 493,
+        "loops": 6,
+        "max_loop_depth": 3,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 42
+      }
+    },
+    {
+      "name": "fallbackSort",
+      "line": 212,
+      "signature": {
+        "params": [
+          {
+            "name": "fmap",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "eclass",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "bhtab",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nblock",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "verb",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        ">=": 6,
+        "<": 11,
+        "+": 8,
+        "-": 6,
+        "/": 1,
+        "!": 4,
+        "neg": 2,
+        "&&": 2,
+        "==": 4,
+        ">": 2,
+        "<=": 1,
+        "!=": 1,
+        "*": 1,
+        "||": 1
+      },
+      "consts": [
+        "asserth",
+        "bh",
+        "int32",
+        "uchar",
+        "uint32",
+        "vprintf0",
+        "vprintf1"
+      ],
+      "strings": [
+        "        bucket sorting ...\\n",
+        "        depth %6d has ",
+        "        reconstructing block ...\\n",
+        "%6d unresolved strings\\n"
+      ],
+      "metrics": {
+        "cyclomatic": 38,
+        "stmts": 58,
+        "nodes": 626,
+        "loops": 20,
+        "max_loop_depth": 3,
+        "allocs": 0,
+        "n_params": 5,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 35
+      }
+    },
+    {
+      "name": "mainGtU",
+      "line": 347,
+      "signature": {
+        "params": [
+          {
+            "name": "i1",
+            "ty": "UInt32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "i2",
+            "ty": "UInt32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "block",
+            "ty": "UChar *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "quadrant",
+            "ty": "UInt16 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nblock",
+            "ty": "UInt32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "budget",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UInt32",
+            "shape": "u32"
+          },
+          {
+            "ty": "UInt32",
+            "shape": "u32"
+          },
+          {
+            "ty": "UChar *",
+            "shape": "*u8"
+          },
+          {
+            "ty": "UInt16 *",
+            "shape": "*UInt16"
+          },
+          {
+            "ty": "UInt32",
+            "shape": "u32"
+          },
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "Bool",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        "!=": 28,
+        ">": 28,
+        "+": 1,
+        ">=": 3,
+        "-": 3
+      },
+      "consts": [
+        "assertd",
+        "bool",
+        "false",
+        "int32",
+        "uchar",
+        "uint16",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 32,
+        "stmts": 66,
+        "nodes": 652,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 6,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 57
+      }
+    },
+    {
+      "name": "mainSimpleSort",
+      "line": 485,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "block",
+            "ty": "UChar *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "quadrant",
+            "ty": "UInt16 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nblock",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "lo",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hi",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "d",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "budget",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "UChar *",
+            "shape": "*u8"
+          },
+          {
+            "ty": "UInt16 *",
+            "shape": "*UInt16"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 11,
+        "-": 13,
+        "<": 3,
+        ">=": 1,
+        ">": 3,
+        "<=": 3
+      },
+      "consts": [
+        "int32",
+        "true",
+        "uchar",
+        "uint16",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 15,
+        "stmts": 30,
+        "nodes": 242,
+        "loops": 6,
+        "max_loop_depth": 3,
+        "allocs": 0,
+        "n_params": 8,
+        "n_pointer_params": 4,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.4,
+        "norm_burden": 0.8,
+        "derefs": 18
+      }
+    },
+    {
+      "name": "mmed3",
+      "line": 583,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "UChar",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "b",
+            "ty": "UChar",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "c",
+            "ty": "UChar",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "UChar"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UChar",
+            "shape": "u8"
+          },
+          {
+            "ty": "UChar",
+            "shape": "u8"
+          },
+          {
+            "ty": "UChar",
+            "shape": "u8"
+          }
+        ],
+        "output": {
+          "ty": "UChar",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        ">": 3
+      },
+      "consts": [
+        "uchar"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 9,
+        "nodes": 34,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "mainQSort3",
+      "line": 621,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "block",
+            "ty": "UChar *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "quadrant",
+            "ty": "UInt16 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nblock",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "loSt",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hiSt",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "dSt",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "budget",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "UChar *",
+            "shape": "*u8"
+          },
+          {
+            "ty": "UInt16 *",
+            "shape": "*UInt16"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        ">": 6,
+        "||": 1,
+        "<": 7,
+        "-": 8,
+        "+": 10,
+        ">>": 1,
+        "==": 2
+      },
+      "consts": [
+        "assertd",
+        "asserth",
+        "int32",
+        "mmin",
+        "mnextsize",
+        "mnextswap",
+        "mpop",
+        "mpush",
+        "mswap",
+        "mvswap",
+        "size",
+        "thresh",
+        "true",
+        "uchar",
+        "uint16",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 22,
+        "stmts": 102,
+        "nodes": 815,
+        "loops": 6,
+        "max_loop_depth": 3,
+        "allocs": 0,
+        "n_params": 8,
+        "n_pointer_params": 4,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.4,
+        "norm_burden": 0.8,
+        "derefs": 115
+      }
+    },
+    {
+      "name": "mainSort",
+      "line": 751,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "block",
+            "ty": "UChar *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "quadrant",
+            "ty": "UInt16 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "ftab",
+            "ty": "UInt32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nblock",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "verb",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "budget",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "UChar *",
+            "shape": "*u8"
+          },
+          {
+            "ty": "UInt16 *",
+            "shape": "*UInt16"
+          },
+          {
+            "ty": "UInt32 *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        ">=": 10,
+        "<<": 20,
+        "-": 33,
+        "|": 12,
+        ">>": 12,
+        "<": 7,
+        "+": 18,
+        "<=": 9,
+        "*": 1,
+        "/": 1,
+        ">": 4,
+        "!=": 2,
+        "!": 12,
+        "&": 9
+      },
+      "consts": [
+        "asserth",
+        "bigfreq",
+        "bool",
+        "clearmask",
+        "false",
+        "int32",
+        "overshoot",
+        "radix",
+        "setmask",
+        "true",
+        "uchar",
+        "uint16",
+        "uint32",
+        "vprintf0",
+        "vprintf3",
+        "vprintf4",
+        "zero"
+      ],
+      "strings": [
+        "        %d pointers, %d sorted, %d scanned\\n",
+        "        bucket sorting ...\\n",
+        "        main sort initialise ...\\n",
+        "        qsort [0x%x, 0x%x]   done %d   this %d\\n"
+      ],
+      "metrics": {
+        "cyclomatic": 41,
+        "stmts": 85,
+        "nodes": 1089,
+        "loops": 20,
+        "max_loop_depth": 3,
+        "allocs": 0,
+        "n_params": 7,
+        "n_pointer_params": 5,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.25,
+        "norm_burden": 1.0,
+        "derefs": 91
+      }
+    },
+    {
+      "name": "BZ2_blockSort",
+      "line": 1031,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 4,
+        "+": 1,
+        "&": 1,
+        ">": 1,
+        "*": 1,
+        "/": 1,
+        "-": 1,
+        ">=": 2,
+        "neg": 2,
+        "==": 1
+      },
+      "consts": [
+        "asserth",
+        "estate",
+        "int32",
+        "overshoot",
+        "uchar",
+        "uint16",
+        "uint32",
+        "vprintf0",
+        "vprintf3"
+      ],
+      "strings": [
+        "      %d work, %d block, ratio %5.2f\\n",
+        "    too repetitive; using fallback sorting algorithm\\n"
+      ],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 29,
+        "nodes": 192,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 16
+      }
+    },
+    {
+      "name": "BZ2_hbMakeCodeLengths",
+      "line": 63,
+      "signature": {
+        "params": [
+          {
+            "name": "len",
+            "ty": "UChar *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "freq",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "alphaSize",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxLen",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "UChar *",
+            "shape": "*u8"
+          },
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1,
+        "+": 2,
+        "<<": 2,
+        "==": 1,
+        "neg": 3,
+        "<=": 3,
+        ">": 2,
+        ">=": 1,
+        "-": 1,
+        "!": 1,
+        ">>": 1,
+        "/": 1
+      },
+      "consts": [
+        "addweights",
+        "asserth",
+        "bool",
+        "downheap",
+        "false",
+        "int32",
+        "size",
+        "true",
+        "uchar",
+        "upheap"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 22,
+        "stmts": 58,
+        "nodes": 550,
+        "loops": 11,
+        "max_loop_depth": 3,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 66
+      }
+    },
+    {
+      "name": "BZ2_hbAssignCodes",
+      "line": 152,
+      "signature": {
+        "params": [
+          {
+            "name": "code",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "length",
+            "ty": "UChar *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "minLen",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxLen",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "alphaSize",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "UChar *",
+            "shape": "*u8"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<=": 1,
+        "<": 1,
+        "==": 1,
+        "<<": 1
+      },
+      "consts": [
+        "int32",
+        "uchar"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 8,
+        "nodes": 42,
+        "loops": 2,
+        "max_loop_depth": 2,
+        "allocs": 0,
+        "n_params": 5,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "BZ2_hbCreateDecodeTables",
+      "line": 170,
+      "signature": {
+        "params": [
+          {
+            "name": "limit",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "base",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "perm",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "length",
+            "ty": "UChar *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "minLen",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxLen",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "alphaSize",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "UChar *",
+            "shape": "*u8"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<=": 3,
+        "<": 5,
+        "==": 1,
+        "+": 6,
+        "-": 5,
+        "<<": 2
+      },
+      "consts": [
+        "int32",
+        "len",
+        "uchar"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 10,
+        "stmts": 14,
+        "nodes": 166,
+        "loops": 8,
+        "max_loop_depth": 2,
+        "allocs": 0,
+        "n_params": 7,
+        "n_pointer_params": 4,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.4,
+        "norm_burden": 0.8,
+        "derefs": 14
+      }
+    },
+    {
+      "name": "BZ2_bsInitWrite",
+      "line": 37,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "estate"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "bsFinishWrite",
+      "line": 46,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        ">": 1,
+        ">>": 1,
+        "<<": 1,
+        "-": 1
+      },
+      "consts": [
+        "estate",
+        "uchar"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 3,
+        "nodes": 30,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 8
+      }
+    },
+    {
+      "name": "bsW",
+      "line": 73,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "n",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "v",
+            "ty": "UInt32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "UInt32",
+            "shape": "u32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "|": 1,
+        "<<": 1,
+        "-": 2,
+        "+": 1
+      },
+      "consts": [
+        "bsneedw",
+        "estate",
+        "int32",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 49,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 11
+      }
+    },
+    {
+      "name": "bsPutUInt32",
+      "line": 83,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "u",
+            "ty": "UInt32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          },
+          {
+            "ty": "UInt32",
+            "shape": "u32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "&": 4,
+        ">>": 3
+      },
+      "consts": [
+        "estate",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 38,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "bsPutUChar",
+      "line": 94,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "c",
+            "ty": "UChar",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          },
+          {
+            "ty": "UChar",
+            "shape": "u8"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "estate",
+        "uchar",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "makeMaps_e",
+      "line": 106,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [
+        "estate",
+        "int32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 31,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 7
+      }
+    },
+    {
+      "name": "generateMTFValues",
+      "line": 120,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 4,
+        "<=": 1,
+        "<": 5,
+        "-": 4,
+        "==": 1,
+        ">": 2,
+        "&": 2,
+        "/": 2,
+        "!=": 1
+      },
+      "consts": [
+        "assertd",
+        "estate",
+        "int32",
+        "runa",
+        "runb",
+        "true",
+        "uchar",
+        "uint16",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 15,
+        "stmts": 48,
+        "nodes": 319,
+        "loops": 6,
+        "max_loop_depth": 2,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 42
+      }
+    },
+    {
+      "name": "sendMTFValues",
+      "line": 239,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        ">=": 12,
+        "+": 14,
+        "<": 35,
+        ">": 4,
+        "/": 1,
+        "-": 14,
+        "&&": 8,
+        "!=": 3,
+        "==": 8,
+        "%": 1,
+        "<=": 4,
+        "|": 3,
+        "<<": 3,
+        "&": 3,
+        ">>": 3,
+        "neg": 1,
+        "!": 2,
+        "*": 2
+      },
+      "consts": [
+        "asserth",
+        "bool",
+        "define",
+        "estate",
+        "false",
+        "groups",
+        "icost",
+        "int32",
+        "itah",
+        "iter",
+        "iters",
+        "itur",
+        "nn",
+        "selectors",
+        "size",
+        "true",
+        "uchar",
+        "uint16",
+        "uint32",
+        "undef",
+        "vprintf0",
+        "vprintf1",
+        "vprintf2",
+        "vprintf3",
+        "vprintf5"
+      ],
+      "strings": [
+        "      %d in block, %d after MTF & 1-2 coding, %d+2 syms in use\\n",
+        "      bytes: mapping %d, ",
+        "      initial group %d, [%d .. %d], has %d syms (%4.1f%%)\\n",
+        "      pass %d: size is %d, grp uses are ",
+        "%d ",
+        "\\n",
+        "code lengths %d, ",
+        "codes %d\\n",
+        "selectors %d, "
+      ],
+      "metrics": {
+        "cyclomatic": 81,
+        "stmts": 191,
+        "nodes": 4435,
+        "loops": 36,
+        "max_loop_depth": 4,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 1025
+      }
+    },
+    {
+      "name": "BZ2_compressBlock",
+      "line": 602,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "is_last_block",
+            "ty": "Bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          },
+          {
+            "ty": "Bool",
+            "shape": "u8"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        ">": 3,
+        "|": 1,
+        "<<": 1,
+        ">>": 1,
+        "^": 1,
+        ">=": 2,
+        "==": 1
+      },
+      "consts": [
+        "0",
+        "b",
+        "bool",
+        "crc",
+        "estate",
+        "h",
+        "uchar",
+        "vprintf1",
+        "vprintf4",
+        "z"
+      ],
+      "strings": [
+        "    block %d: crc = 0x%08x, combined CRC = 0x%08x, size = %d\\n",
+        "    final combined CRC = 0x%08x\\n   "
+      ],
+      "metrics": {
+        "cyclomatic": 8,
+        "stmts": 14,
+        "nodes": 205,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 27
+      }
+    },
+    {
+      "name": "makeMaps_d",
+      "line": 27,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "DState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "DState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,u8,i32,u8,i32,i32,u32,i32,i32,u8,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],*u32,*UInt16,*u8,u32,u32,u32,u32,i32,[u8;256],[u8;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[i32;258];6],[i32;6],i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,*i32,*i32,*i32}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [
+        "dstate",
+        "int32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 31,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 7
+      }
+    },
+    {
+      "name": "BZ2_decompress",
+      "line": 106,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "DState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Int32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "DState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,u8,i32,u8,i32,i32,u32,i32,i32,u8,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],*u32,*UInt16,*u8,u32,u32,u32,u32,i32,[u8;256],[u8;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[i32;258];6],[i32;6],i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,*i32,*i32,*i32}"
+          }
+        ],
+        "output": {
+          "ty": "Int32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "==": 19,
+        "!=": 15,
+        "neg": 43,
+        "||": 9,
+        "<": 24,
+        ">": 16,
+        "-": 20,
+        ">=": 12,
+        "|": 12,
+        "<<": 12,
+        "+": 20,
+        "*": 9,
+        "<=": 7,
+        "/": 3,
+        "%": 1,
+        "^": 2,
+        "&": 1,
+        ">>": 1
+      },
+      "consts": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "asserth",
+        "b",
+        "bit",
+        "bits",
+        "bzalloc",
+        "crc",
+        "dstate",
+        "end",
+        "error",
+        "false",
+        "fast",
+        "groups",
+        "h",
+        "idle",
+        "int32",
+        "ll",
+        "magic",
+        "mask",
+        "ok",
+        "output",
+        "randbit",
+        "return",
+        "runa",
+        "runb",
+        "selectors",
+        "size",
+        "small",
+        "stream",
+        "true",
+        "uchar",
+        "uint16",
+        "uint32",
+        "val",
+        "vprintf0",
+        "vprintf1",
+        "z"
+      ],
+      "strings": [
+        "\\n    [%d: huff+mtf ",
+        "rt+rld"
+      ],
+      "metrics": {
+        "cyclomatic": 339,
+        "stmts": 1010,
+        "nodes": 7476,
+        "loops": 80,
+        "max_loop_depth": 4,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 1371
+      }
+    },
+    {
+      "name": "BZ2_bz__AssertH__fail",
+      "line": 41,
+      "signature": {
+        "params": [
+          {
+            "name": "errcode",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "strings": [
+        "\\n*** A special note about internal error number 1007 ***\\n\\nExperience suggests that a common cause of i.e. 1007\\nis unreliable memory or other hardware.  The 1007 assertion\\njust happens to cross-check the results of huge numbers of\\nmemory reads/writes, and so acts (unintendedly) as a stress\\ntest of your memory system.\\n\\nI suggest the following: try compressing the file again,\\npossibly monitoring progress in detail with the -vv flag.\\n\\n* If the error cannot be reproduced, and/or happens at different\\n  points in compression, you may have a flaky memory system.\\n  Try a memory-test program.  I have used Memtest86\\n  (www.memtest86.com).  At the time of writing it is free (GPLd).\\n  Memtest86 tests memory much more thorougly than your BIOSs\\n  power-on test, and may find failures that the BIOS doesn't.\\n\\n* If the error can be repeatably reproduced, this is a bug in\\n  bzip2, and I would very much like to hear about it.  Please\\n  let me know, and, ideally, save a copy of the file causing the\\n  problem -- without which I will be unable to investigate it.\\n\\n",
+        "\\n\\nbzip2/libbzip2: internal error number %d.\\nThis is a bug in bzip2/libbzip2, %s.\\nPlease report it to: bzip2-devel@sourceware.org.  If this happened\\nwhen you were using some program which uses libbzip2 as a\\ncomponent, you should also report this bug to the author(s)\\nof that program.  Please make an effort to report this bug;\\ntimely and accurate bug reports eventually lead to higher\\nquality software.  Thanks.\\n\\n"
+      ],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 3,
+        "nodes": 20,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "bz_config_ok",
+      "line": 91,
+      "signature": {
+        "params": [],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!=": 3
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 8,
+        "nodes": 21,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 1.0,
+        "norm_burden": 0.0,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "default_bzalloc",
+      "line": 102,
+      "signature": {
+        "params": [
+          {
+            "name": "opaque",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "items",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "size",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "void *",
+            "shape": "*()"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void *",
+          "shape": "*()"
+        }
+      },
+      "ops": {
+        "*": 1
+      },
+      "consts": [
+        "int32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 3,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 3,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "default_bzfree",
+      "line": 109,
+      "signature": {
+        "params": [
+          {
+            "name": "opaque",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "addr",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "void *",
+            "shape": "*()"
+          },
+          {
+            "ty": "void *",
+            "shape": "*()"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 2,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "prepare_new_block",
+      "line": 117,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [
+        "crc",
+        "estate",
+        "false",
+        "int32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 40,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 7
+      }
+    },
+    {
+      "name": "init_RL",
+      "line": 131,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "estate"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "isempty_RL",
+      "line": 139,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "Bool",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "<": 1,
+        ">": 1
+      },
+      "consts": [
+        "bool",
+        "estate",
+        "false",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 4,
+        "nodes": 19,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "BZ2_bzCompressInit",
+      "line": 148,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "bz_stream *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "blockSize100k",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "verbosity",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "workFactor",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bz_stream *",
+            "shape": "*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "||": 6,
+        "==": 8,
+        "<": 2,
+        ">": 2,
+        "*": 2,
+        "!=": 4,
+        "-": 1
+      },
+      "consts": [
+        "api",
+        "bzalloc",
+        "bzfree",
+        "error",
+        "estate",
+        "input",
+        "int32",
+        "ok",
+        "overshoot",
+        "running",
+        "stream",
+        "uchar",
+        "uint16",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 18,
+        "stmts": 20,
+        "nodes": 342,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 40
+      }
+    },
+    {
+      "name": "add_pair_to_block",
+      "line": 216,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1,
+        "-": 2
+      },
+      "consts": [
+        "crc",
+        "estate",
+        "int32",
+        "true",
+        "uchar"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 17,
+        "nodes": 201,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 58
+      }
+    },
+    {
+      "name": "flush_RL",
+      "line": 252,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [
+        "estate"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 2,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "copy_input_until_stop",
+      "line": 289,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "Bool",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        "==": 6,
+        ">=": 2
+      },
+      "consts": [
+        "block",
+        "bool",
+        "estate",
+        "false",
+        "running",
+        "true",
+        "uchar",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 17,
+        "stmts": 46,
+        "nodes": 329,
+        "loops": 2,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 73
+      }
+    },
+    {
+      "name": "copy_output_until_stop",
+      "line": 334,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "EState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "EState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,i32,u32,*u32,*u32,*u32,i32,*u32,*u8,*UInt16,*u8,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[u8;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "Bool",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        "==": 2,
+        ">=": 1
+      },
+      "consts": [
+        "bool",
+        "estate",
+        "false",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 10,
+        "nodes": 67,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 21
+      }
+    },
+    {
+      "name": "handle_compress",
+      "line": 361,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "bz_stream *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bz_stream *",
+            "shape": "*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()}"
+          }
+        ],
+        "output": {
+          "ty": "Bool",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        "==": 9,
+        "|": 2,
+        "<": 1,
+        "&&": 5,
+        "!=": 1,
+        ">=": 1,
+        "||": 1
+      },
+      "consts": [
+        "bool",
+        "estate",
+        "false",
+        "finishing",
+        "flushing",
+        "input",
+        "output",
+        "running",
+        "stream",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 16,
+        "stmts": 24,
+        "nodes": 139,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 19
+      }
+    },
+    {
+      "name": "BZ2_bzCompress",
+      "line": 407,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "bz_stream *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "action",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bz_stream *",
+            "shape": "*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "==": 5,
+        "!=": 5,
+        "||": 4,
+        ">": 2,
+        "!": 3,
+        "<": 2
+      },
+      "consts": [
+        "api",
+        "bool",
+        "end",
+        "error",
+        "estate",
+        "finish",
+        "finishing",
+        "flush",
+        "flushing",
+        "idle",
+        "ok",
+        "preswitch",
+        "run",
+        "running",
+        "stream"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 22,
+        "stmts": 44,
+        "nodes": 209,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 23
+      }
+    },
+    {
+      "name": "BZ2_bzCompressEnd",
+      "line": 468,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "bz_stream *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bz_stream *",
+            "shape": "*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "==": 2,
+        "!=": 4
+      },
+      "consts": [
+        "api",
+        "bzfree",
+        "error",
+        "estate",
+        "ok",
+        "stream"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 7,
+        "stmts": 12,
+        "nodes": 100,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 10
+      }
+    },
+    {
+      "name": "BZ2_bzDecompressInit",
+      "line": 492,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "bz_stream *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "verbosity",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "small",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bz_stream *",
+            "shape": "*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "==": 4,
+        "&&": 1,
+        "!=": 2,
+        "||": 1,
+        "<": 1,
+        ">": 1
+      },
+      "consts": [
+        "1",
+        "api",
+        "bool",
+        "bzalloc",
+        "dstate",
+        "error",
+        "ok",
+        "stream"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 10,
+        "stmts": 15,
+        "nodes": 160,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 20
+      }
+    },
+    {
+      "name": "unRLE_obuf_to_output_FAST",
+      "line": 536,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "DState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "DState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,u8,i32,u8,i32,i32,u32,i32,i32,u8,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],*u32,*UInt16,*u8,u32,u32,u32,u32,i32,[u8;256],[u8;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[i32;258];6],[i32;6],i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,*i32,*i32,*i32}"
+          }
+        ],
+        "output": {
+          "ty": "Bool",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        "==": 14,
+        "+": 9,
+        ">": 3,
+        "^": 5,
+        "!=": 6,
+        "-": 1,
+        "<": 1
+      },
+      "consts": [
+        "bool",
+        "c",
+        "crc",
+        "dstate",
+        "false",
+        "fast",
+        "int32",
+        "mask",
+        "notr",
+        "one",
+        "true",
+        "uchar",
+        "uint32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 50,
+        "stmts": 148,
+        "nodes": 1029,
+        "loops": 4,
+        "max_loop_depth": 2,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 104
+      }
+    },
+    {
+      "name": "BZ2_indexIntoF",
+      "line": 687,
+      "signature": {
+        "params": [
+          {
+            "name": "indx",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "cftab",
+            "ty": "Int32 *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Int32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Int32",
+            "shape": "i32"
+          },
+          {
+            "ty": "Int32 *",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "Int32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        ">>": 1,
+        "+": 1,
+        ">=": 1,
+        "!=": 1,
+        "-": 1
+      },
+      "consts": [
+        "int32"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 6,
+        "nodes": 37,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "unRLE_obuf_to_output_SMALL",
+      "line": 706,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "DState *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "DState *",
+            "shape": "*{*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()},i32,u8,i32,u8,i32,i32,u32,i32,i32,u8,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],*u32,*UInt16,*u8,u32,u32,u32,u32,i32,[u8;256],[u8;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[i32;258];6],[i32;6],i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,*i32,*i32,*i32}"
+          }
+        ],
+        "output": {
+          "ty": "Bool",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        "==": 14,
+        "+": 12,
+        ">": 2,
+        "^": 5,
+        "!=": 6
+      },
+      "consts": [
+        "bool",
+        "crc",
+        "dstate",
+        "false",
+        "int32",
+        "mask",
+        "small",
+        "true",
+        "uchar"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 48,
+        "stmts": 121,
+        "nodes": 1262,
+        "loops": 4,
+        "max_loop_depth": 2,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 159
+      }
+    },
+    {
+      "name": "BZ2_bzDecompress",
+      "line": 808,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "bz_stream *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bz_stream *",
+            "shape": "*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "==": 7,
+        "!=": 4,
+        "&&": 1,
+        "+": 1,
+        ">=": 4,
+        "|": 1,
+        "<<": 1,
+        ">>": 1,
+        "^": 1
+      },
+      "consts": [
+        "1",
+        "api",
+        "asserth",
+        "bool",
+        "crc",
+        "dstate",
+        "end",
+        "error",
+        "idle",
+        "int32",
+        "ok",
+        "output",
+        "stream",
+        "true",
+        "vprintf0",
+        "vprintf2"
+      ],
+      "strings": [
+        " {0x%08x, 0x%08x}",
+        "\\n    combined CRCs: stored = 0x%08x, computed = 0x%08x"
+      ],
+      "metrics": {
+        "cyclomatic": 20,
+        "stmts": 43,
+        "nodes": 214,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 29
+      }
+    },
+    {
+      "name": "BZ2_bzDecompressEnd",
+      "line": 862,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "bz_stream *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bz_stream *",
+            "shape": "*{*i8,u32,u32,u32,*i8,u32,u32,u32,*(),*fn,*fn,*()}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "==": 2,
+        "!=": 4
+      },
+      "consts": [
+        "api",
+        "bzfree",
+        "dstate",
+        "error",
+        "ok",
+        "stream"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 7,
+        "stmts": 12,
+        "nodes": 100,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 10
+      }
+    },
+    {
+      "name": "myfeof",
+      "line": 906,
+      "signature": {
+        "params": [
+          {
+            "name": "f",
+            "ty": "FILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "FILE *",
+            "shape": "*{i32,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*{},*<rec>,i32,i32,[i8;1],i64,unsigned short,i8,[i8;1],*(),i64,*{},*{},*<rec>,*(),**<rec>,i32,i32,u64,[i8;8]}"
+          }
+        ],
+        "output": {
+          "ty": "Bool",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [
+        "bool",
+        "eof",
+        "false",
+        "file",
+        "int32",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 23,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "BZ2_bzWriteOpen",
+      "line": 916,
+      "signature": {
+        "params": [
+          {
+            "name": "bzerror",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "f",
+            "ty": "FILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "blockSize100k",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "verbosity",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "workFactor",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "BZFILE *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "FILE *",
+            "shape": "*{i32,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*{},*<rec>,i32,i32,[i8;1],i64,unsigned short,i8,[i8;1],*(),i64,*{},*{},*<rec>,*(),**<rec>,i32,i32,u64,[i8;8]}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "BZFILE *",
+          "shape": "*()"
+        }
+      },
+      "ops": {
+        "||": 6,
+        "==": 3,
+        "<": 3,
+        ">": 3,
+        "neg": 6,
+        "!=": 1
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "error",
+        "false",
+        "file",
+        "int32",
+        "ok",
+        "seterr",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 24,
+        "stmts": 45,
+        "nodes": 301,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 2,
+        "n_params": 5,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 26
+      }
+    },
+    {
+      "name": "BZ2_bzWrite",
+      "line": 964,
+      "signature": {
+        "params": [
+          {
+            "name": "bzerror",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "buf",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "len",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          },
+          {
+            "ty": "void *",
+            "shape": "*()"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "||": 3,
+        "==": 4,
+        "<": 2,
+        "neg": 8,
+        "!": 1,
+        "!=": 2
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "error",
+        "int32",
+        "ok",
+        "run",
+        "seterr",
+        "true",
+        "uchar",
+        "unused"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 29,
+        "stmts": 67,
+        "nodes": 328,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 37
+      }
+    },
+    {
+      "name": "BZ2_bzWriteClose",
+      "line": 1009,
+      "signature": {
+        "params": [
+          {
+            "name": "bzerror",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "abandon",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "nbytes_in",
+            "ty": "unsigned int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nbytes_out",
+            "ty": "unsigned int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "unsigned int *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "unsigned int *",
+            "shape": "*u32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "api",
+        "bzfile"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 14,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 5,
+        "n_pointer_params": 4,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.4,
+        "norm_burden": 0.8,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "BZ2_bzWriteClose64",
+      "line": 1021,
+      "signature": {
+        "params": [
+          {
+            "name": "bzerror",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "abandon",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "nbytes_in_lo32",
+            "ty": "unsigned int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nbytes_in_hi32",
+            "ty": "unsigned int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nbytes_out_lo32",
+            "ty": "unsigned int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nbytes_out_hi32",
+            "ty": "unsigned int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "unsigned int *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "unsigned int *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "unsigned int *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "unsigned int *",
+            "shape": "*u32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "==": 3,
+        "!": 4,
+        "neg": 8,
+        "!=": 11,
+        "&&": 3,
+        "<": 1,
+        "||": 1
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "end",
+        "error",
+        "finish",
+        "int32",
+        "ok",
+        "seterr",
+        "true",
+        "uchar",
+        "unused"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 38,
+        "stmts": 73,
+        "nodes": 408,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 1,
+        "n_params": 7,
+        "n_pointer_params": 6,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.1,
+        "norm_burden": 1.2,
+        "derefs": 50
+      }
+    },
+    {
+      "name": "BZ2_bzReadOpen",
+      "line": 1087,
+      "signature": {
+        "params": [
+          {
+            "name": "bzerror",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "f",
+            "ty": "FILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "verbosity",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "small",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "unused",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nUnused",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "BZFILE *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "FILE *",
+            "shape": "*{i32,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*{},*<rec>,i32,i32,[i8;1],i64,unsigned short,i8,[i8;1],*(),i64,*{},*{},*<rec>,*(),**<rec>,i32,i32,u64,[i8;8]}"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "void *",
+            "shape": "*()"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "BZFILE *",
+          "shape": "*()"
+        }
+      },
+      "ops": {
+        "||": 6,
+        "==": 3,
+        "&&": 3,
+        "!=": 5,
+        "<": 2,
+        ">": 3,
+        "neg": 6,
+        "+": 1
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "error",
+        "false",
+        "file",
+        "ok",
+        "seterr",
+        "true",
+        "uchar",
+        "unused"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 27,
+        "stmts": 46,
+        "nodes": 350,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 2,
+        "n_params": 6,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.55,
+        "norm_burden": 1.1,
+        "derefs": 35
+      }
+    },
+    {
+      "name": "BZ2_bzReadClose",
+      "line": 1143,
+      "signature": {
+        "params": [
+          {
+            "name": "bzerror",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "==": 1,
+        "neg": 2
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "error",
+        "ok",
+        "seterr"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 10,
+        "stmts": 23,
+        "nodes": 102,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 9
+      }
+    },
+    {
+      "name": "BZ2_bzRead",
+      "line": 1161,
+      "signature": {
+        "params": [
+          {
+            "name": "bzerror",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "buf",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "len",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          },
+          {
+            "ty": "void *",
+            "shape": "*()"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "||": 2,
+        "==": 8,
+        "<": 1,
+        "neg": 10,
+        "&&": 5,
+        "!": 1,
+        "!=": 2,
+        ">": 1,
+        "-": 1
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "end",
+        "eof",
+        "error",
+        "int32",
+        "ok",
+        "seterr",
+        "true",
+        "uchar",
+        "unused"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 39,
+        "stmts": 84,
+        "nodes": 421,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 49
+      }
+    },
+    {
+      "name": "BZ2_bzReadGetUnused",
+      "line": 1221,
+      "signature": {
+        "params": [
+          {
+            "name": "bzerror",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "unused",
+            "ty": "void **",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "nUnused",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          },
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          },
+          {
+            "ty": "void **",
+            "shape": "**()"
+          },
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "==": 3,
+        "neg": 6,
+        "!=": 1,
+        "||": 1
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "end",
+        "error",
+        "ok",
+        "seterr"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 13,
+        "stmts": 30,
+        "nodes": 148,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 4,
+        "n_nested_pointer_params": 1,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.0,
+        "norm_burden": 0.8,
+        "derefs": 15
+      }
+    },
+    {
+      "name": "BZ2_bzBuffToBuffCompress",
+      "line": 1247,
+      "signature": {
+        "params": [
+          {
+            "name": "dest",
+            "ty": "char *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "destLen",
+            "ty": "unsigned int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "source",
+            "ty": "char *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "sourceLen",
+            "ty": "unsigned int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "blockSize100k",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "verbosity",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "workFactor",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "unsigned int *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "unsigned int",
+            "shape": "u32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "||": 8,
+        "==": 5,
+        "<": 3,
+        ">": 3,
+        "!=": 2,
+        "-": 1
+      },
+      "consts": [
+        "api",
+        "end",
+        "errhandler",
+        "error",
+        "finish",
+        "full",
+        "ok",
+        "overflow",
+        "stream"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 14,
+        "stmts": 17,
+        "nodes": 150,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 7,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "BZ2_bzBuffToBuffDecompress",
+      "line": 1299,
+      "signature": {
+        "params": [
+          {
+            "name": "dest",
+            "ty": "char *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "destLen",
+            "ty": "unsigned int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "source",
+            "ty": "char *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "sourceLen",
+            "ty": "unsigned int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "small",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "verbosity",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "unsigned int *",
+            "shape": "*u32"
+          },
+          {
+            "ty": "char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "unsigned int",
+            "shape": "u32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "||": 5,
+        "==": 4,
+        "&&": 1,
+        "!=": 4,
+        "<": 1,
+        ">": 2,
+        "-": 1
+      },
+      "consts": [
+        "api",
+        "end",
+        "eof",
+        "errhandler",
+        "error",
+        "full",
+        "ok",
+        "stream"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 12,
+        "stmts": 21,
+        "nodes": 150,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 6,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.55,
+        "norm_burden": 0.6,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "BZ2_bzlibVersion",
+      "line": 1366,
+      "signature": {
+        "params": [],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "api",
+        "version"
+      ],
+      "strings": [
+        "1.0.8, 13-Jul-2019"
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 3,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "bzopen_or_bzdopen",
+      "line": 1383,
+      "signature": {
+        "params": [
+          {
+            "name": "path",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "fd",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "mode",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "open_mode",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "BZFILE *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "BZFILE *",
+          "shape": "*()"
+        }
+      },
+      "ops": {
+        "==": 6,
+        "-": 1,
+        "||": 1,
+        "<": 1,
+        ">": 1,
+        "&&": 1,
+        "!=": 2
+      },
+      "consts": [
+        "0",
+        "ansi",
+        "bzfile",
+        "endif",
+        "file",
+        "ifdef",
+        "isdigit",
+        "mode",
+        "unused"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 17,
+        "stmts": 46,
+        "nodes": 215,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 5
+      }
+    },
+    {
+      "name": "BZ2_bzopen",
+      "line": 1460,
+      "signature": {
+        "params": [
+          {
+            "name": "path",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "mode",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "BZFILE *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "BZFILE *",
+          "shape": "*()"
+        }
+      },
+      "ops": {
+        "neg": 1
+      },
+      "consts": [
+        "api",
+        "bzfile"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "BZ2_bzdopen",
+      "line": 1469,
+      "signature": {
+        "params": [
+          {
+            "name": "fd",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "mode",
+            "ty": "const char *",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "BZFILE *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "int",
+            "shape": "i32"
+          },
+          {
+            "ty": "const char *",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "BZFILE *",
+          "shape": "*()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "api",
+        "bzfile"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "BZ2_bzread",
+      "line": 1478,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "buf",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "len",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          },
+          {
+            "ty": "void *",
+            "shape": "*()"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "==": 3,
+        "||": 1,
+        "neg": 1
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "end",
+        "ok"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 9,
+        "nodes": 35,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "BZ2_bzwrite",
+      "line": 1492,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "buf",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "len",
+            "ty": "int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          },
+          {
+            "ty": "void *",
+            "shape": "*()"
+          },
+          {
+            "ty": "int",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "==": 1,
+        "neg": 1
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "ok"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 7,
+        "nodes": 20,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "BZ2_bzflush",
+      "line": 1506,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "api",
+        "bzfile"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 3,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "BZ2_bzclose",
+      "line": 1514,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "==": 1,
+        "!=": 3,
+        "&&": 1
+      },
+      "consts": [
+        "api",
+        "bzfile",
+        "file",
+        "ok"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 13,
+        "nodes": 71,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "BZ2_bzerror",
+      "line": 1559,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "BZFILE *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "errnum",
+            "ty": "int *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "const char *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "BZFILE *",
+            "shape": "*()"
+          },
+          {
+            "ty": "int *",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "const char *",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        ">": 1,
+        "*": 1,
+        "neg": 1
+      },
+      "consts": [
+        "api",
+        "bzfile"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 24,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 3
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "BZ2_blockSort",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "BZ2_blockSort",
+      "to": "fallbackSort"
+    },
+    {
+      "from": "BZ2_blockSort",
+      "to": "fprintf"
+    },
+    {
+      "from": "BZ2_blockSort",
+      "to": "mainSort"
+    },
+    {
+      "from": "BZ2_bzBuffToBuffCompress",
+      "to": "BZ2_bzCompress"
+    },
+    {
+      "from": "BZ2_bzBuffToBuffCompress",
+      "to": "BZ2_bzCompressEnd"
+    },
+    {
+      "from": "BZ2_bzBuffToBuffCompress",
+      "to": "BZ2_bzCompressInit"
+    },
+    {
+      "from": "BZ2_bzBuffToBuffDecompress",
+      "to": "BZ2_bzDecompress"
+    },
+    {
+      "from": "BZ2_bzBuffToBuffDecompress",
+      "to": "BZ2_bzDecompressEnd"
+    },
+    {
+      "from": "BZ2_bzBuffToBuffDecompress",
+      "to": "BZ2_bzDecompressInit"
+    },
+    {
+      "from": "BZ2_bzCompress",
+      "to": "handle_compress"
+    },
+    {
+      "from": "BZ2_bzCompress",
+      "to": "isempty_RL"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "to": "bz_config_ok"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "to": "init_RL"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "to": "prepare_new_block"
+    },
+    {
+      "from": "BZ2_bzDecompress",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "BZ2_bzDecompress",
+      "to": "BZ2_decompress"
+    },
+    {
+      "from": "BZ2_bzDecompress",
+      "to": "fprintf"
+    },
+    {
+      "from": "BZ2_bzDecompress",
+      "to": "unRLE_obuf_to_output_FAST"
+    },
+    {
+      "from": "BZ2_bzDecompress",
+      "to": "unRLE_obuf_to_output_SMALL"
+    },
+    {
+      "from": "BZ2_bzDecompressInit",
+      "to": "bz_config_ok"
+    },
+    {
+      "from": "BZ2_bzRead",
+      "to": "BZ2_bzDecompress"
+    },
+    {
+      "from": "BZ2_bzRead",
+      "to": "ferror"
+    },
+    {
+      "from": "BZ2_bzRead",
+      "to": "fread"
+    },
+    {
+      "from": "BZ2_bzRead",
+      "to": "myfeof"
+    },
+    {
+      "from": "BZ2_bzReadClose",
+      "to": "BZ2_bzDecompressEnd"
+    },
+    {
+      "from": "BZ2_bzReadClose",
+      "to": "free"
+    },
+    {
+      "from": "BZ2_bzReadOpen",
+      "to": "BZ2_bzDecompressInit"
+    },
+    {
+      "from": "BZ2_bzReadOpen",
+      "to": "ferror"
+    },
+    {
+      "from": "BZ2_bzReadOpen",
+      "to": "free"
+    },
+    {
+      "from": "BZ2_bzReadOpen",
+      "to": "malloc"
+    },
+    {
+      "from": "BZ2_bzWrite",
+      "to": "BZ2_bzCompress"
+    },
+    {
+      "from": "BZ2_bzWrite",
+      "to": "ferror"
+    },
+    {
+      "from": "BZ2_bzWrite",
+      "to": "fwrite"
+    },
+    {
+      "from": "BZ2_bzWriteClose",
+      "to": "BZ2_bzWriteClose64"
+    },
+    {
+      "from": "BZ2_bzWriteClose64",
+      "to": "BZ2_bzCompress"
+    },
+    {
+      "from": "BZ2_bzWriteClose64",
+      "to": "BZ2_bzCompressEnd"
+    },
+    {
+      "from": "BZ2_bzWriteClose64",
+      "to": "ferror"
+    },
+    {
+      "from": "BZ2_bzWriteClose64",
+      "to": "fflush"
+    },
+    {
+      "from": "BZ2_bzWriteClose64",
+      "to": "free"
+    },
+    {
+      "from": "BZ2_bzWriteClose64",
+      "to": "fwrite"
+    },
+    {
+      "from": "BZ2_bzWriteOpen",
+      "to": "BZ2_bzCompressInit"
+    },
+    {
+      "from": "BZ2_bzWriteOpen",
+      "to": "ferror"
+    },
+    {
+      "from": "BZ2_bzWriteOpen",
+      "to": "free"
+    },
+    {
+      "from": "BZ2_bzWriteOpen",
+      "to": "malloc"
+    },
+    {
+      "from": "BZ2_bz__AssertH__fail",
+      "to": "BZ2_bzlibVersion"
+    },
+    {
+      "from": "BZ2_bz__AssertH__fail",
+      "to": "exit"
+    },
+    {
+      "from": "BZ2_bz__AssertH__fail",
+      "to": "fprintf"
+    },
+    {
+      "from": "BZ2_bzclose",
+      "to": "BZ2_bzReadClose"
+    },
+    {
+      "from": "BZ2_bzclose",
+      "to": "BZ2_bzWriteClose"
+    },
+    {
+      "from": "BZ2_bzclose",
+      "to": "fclose"
+    },
+    {
+      "from": "BZ2_bzdopen",
+      "to": "bzopen_or_bzdopen"
+    },
+    {
+      "from": "BZ2_bzopen",
+      "to": "bzopen_or_bzdopen"
+    },
+    {
+      "from": "BZ2_bzread",
+      "to": "BZ2_bzRead"
+    },
+    {
+      "from": "BZ2_bzwrite",
+      "to": "BZ2_bzWrite"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "BZ2_blockSort"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "BZ2_bsInitWrite"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "bsFinishWrite"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "bsPutUChar"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "bsPutUInt32"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "bsW"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "fprintf"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "generateMTFValues"
+    },
+    {
+      "from": "BZ2_compressBlock",
+      "to": "sendMTFValues"
+    },
+    {
+      "from": "BZ2_decompress",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "BZ2_decompress",
+      "to": "BZ2_hbCreateDecodeTables"
+    },
+    {
+      "from": "BZ2_decompress",
+      "to": "BZ2_indexIntoF"
+    },
+    {
+      "from": "BZ2_decompress",
+      "to": "fprintf"
+    },
+    {
+      "from": "BZ2_decompress",
+      "to": "makeMaps_d"
+    },
+    {
+      "from": "BZ2_hbMakeCodeLengths",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "bsPutUChar",
+      "to": "bsW"
+    },
+    {
+      "from": "bsPutUInt32",
+      "to": "bsW"
+    },
+    {
+      "from": "bzopen_or_bzdopen",
+      "to": "BZ2_bzReadOpen"
+    },
+    {
+      "from": "bzopen_or_bzdopen",
+      "to": "BZ2_bzWriteOpen"
+    },
+    {
+      "from": "bzopen_or_bzdopen",
+      "to": "__ctype_b_loc"
+    },
+    {
+      "from": "bzopen_or_bzdopen",
+      "to": "fclose"
+    },
+    {
+      "from": "bzopen_or_bzdopen",
+      "to": "fdopen"
+    },
+    {
+      "from": "bzopen_or_bzdopen",
+      "to": "fopen"
+    },
+    {
+      "from": "bzopen_or_bzdopen",
+      "to": "strcat"
+    },
+    {
+      "from": "bzopen_or_bzdopen",
+      "to": "strcmp"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "add_pair_to_block"
+    },
+    {
+      "from": "default_bzalloc",
+      "to": "malloc"
+    },
+    {
+      "from": "default_bzfree",
+      "to": "free"
+    },
+    {
+      "from": "fallbackQSort3",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "fallbackQSort3",
+      "to": "fallbackSimpleSort"
+    },
+    {
+      "from": "fallbackSort",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "fallbackSort",
+      "to": "fallbackQSort3"
+    },
+    {
+      "from": "fallbackSort",
+      "to": "fprintf"
+    },
+    {
+      "from": "flush_RL",
+      "to": "add_pair_to_block"
+    },
+    {
+      "from": "flush_RL",
+      "to": "init_RL"
+    },
+    {
+      "from": "generateMTFValues",
+      "to": "makeMaps_e"
+    },
+    {
+      "from": "handle_compress",
+      "to": "BZ2_compressBlock"
+    },
+    {
+      "from": "handle_compress",
+      "to": "copy_input_until_stop"
+    },
+    {
+      "from": "handle_compress",
+      "to": "copy_output_until_stop"
+    },
+    {
+      "from": "handle_compress",
+      "to": "flush_RL"
+    },
+    {
+      "from": "handle_compress",
+      "to": "isempty_RL"
+    },
+    {
+      "from": "handle_compress",
+      "to": "prepare_new_block"
+    },
+    {
+      "from": "mainQSort3",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "mainQSort3",
+      "to": "mainSimpleSort"
+    },
+    {
+      "from": "mainQSort3",
+      "to": "mmed3"
+    },
+    {
+      "from": "mainSimpleSort",
+      "to": "mainGtU"
+    },
+    {
+      "from": "mainSort",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "mainSort",
+      "to": "fprintf"
+    },
+    {
+      "from": "mainSort",
+      "to": "mainQSort3"
+    },
+    {
+      "from": "myfeof",
+      "to": "fgetc"
+    },
+    {
+      "from": "myfeof",
+      "to": "ungetc"
+    },
+    {
+      "from": "sendMTFValues",
+      "to": "BZ2_bz__AssertH__fail"
+    },
+    {
+      "from": "sendMTFValues",
+      "to": "BZ2_hbAssignCodes"
+    },
+    {
+      "from": "sendMTFValues",
+      "to": "BZ2_hbMakeCodeLengths"
+    },
+    {
+      "from": "sendMTFValues",
+      "to": "bsW"
+    },
+    {
+      "from": "sendMTFValues",
+      "to": "fprintf"
+    },
+    {
+      "from": "unRLE_obuf_to_output_SMALL",
+      "to": "BZ2_indexIntoF"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "BZ2_decompress",
+      "line": 212,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_decompress",
+      "line": 213,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_decompress",
+      "line": 218,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "line": 168,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "line": 177,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "line": 178,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "line": 179,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "line": 182,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "line": 183,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "line": 184,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressInit",
+      "line": 185,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressEnd",
+      "line": 476,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressEnd",
+      "line": 477,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressEnd",
+      "line": 478,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzCompressEnd",
+      "line": 479,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzDecompressInit",
+      "line": 508,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzDecompressEnd",
+      "line": 870,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzDecompressEnd",
+      "line": 871,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzDecompressEnd",
+      "line": 872,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "BZ2_bzDecompressEnd",
+      "line": 874,
+      "kind": "call_unresolved"
+    }
+  ]
+}

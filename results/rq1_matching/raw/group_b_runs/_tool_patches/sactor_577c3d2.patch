@@ -1,0 +1,133 @@
+diff --git a/sactor/translator/idiomatic_translator.py b/sactor/translator/idiomatic_translator.py
+index 3314b97..15508f2 100644
+--- a/sactor/translator/idiomatic_translator.py
++++ b/sactor/translator/idiomatic_translator.py
+@@ -1810,6 +1810,8 @@ Error: Failed to parse the result from LLM, result is not wrapped by the tags as
+                 dep_name_to_usr[dep_name] = dep_usr
+ 
+         for dep_name in all_dependency_functions:
++            if dep_name == function.name:
++                continue  # self-recursive function: it is its own dependency, skip
+             dep_usr = dep_name_to_usr.get(dep_name)
+             dep_path = _resolve_project_artifact_path(
+                 "function",
+diff --git a/sactor/translator/translator.py b/sactor/translator/translator.py
+index bd54b54..413e8e5 100644
+--- a/sactor/translator/translator.py
++++ b/sactor/translator/translator.py
+@@ -164,10 +164,15 @@ class Translator(ABC):
+     def check_dependencies(self, cursor, dependencies_mapping) -> tuple[bool, list[dict]]:
+         blockers: List[dict] = []
+         deps = dependencies_mapping(cursor)
++        # Self-recursive functions list themselves as a dependency; they can never be "translated
++        # before use", so skip self-references (mirrors idiomatic_verifier's self-ref skip).
++        cur_name = getattr(cursor, "name", None) or getattr(cursor, "spelling", None)
+         for dep in deps:
+             dep_name = getattr(dep, "name", None)
+             if not dep_name:
+                 continue
++            if dep_name == cur_name:
++                continue
+             dep_type = self._resolve_dependency_type(dep)
+ 
+             def _get_dep_usr(obj) -> Optional[str]:
+diff --git a/sactor/translator/unidiomatic_translator.py b/sactor/translator/unidiomatic_translator.py
+index 294ccc1..710ab17 100644
+--- a/sactor/translator/unidiomatic_translator.py
++++ b/sactor/translator/unidiomatic_translator.py
+@@ -596,6 +596,12 @@ Error: Failed to parse the result from LLM, result is not wrapped by the tags as
+         rust_s_u = rust_ast_parser.add_derive_to_struct_union(
+             rust_s_u, struct_union.name, "Debug")
+         rust_s_u = rust_ast_parser.unidiomatic_types_cleanup(rust_s_u)
++        # Close the typedef closure: get_struct_definition pulls only one level of type
++        # aliases from the c2rust output (e.g. `pub type FILE = _IO_FILE;` without the
++        # `_IO_FILE` struct, or a fn-pointer typedef used in a field but never defined),
++        # leaving every downstream function build_attempt with dangling E0425s. Pull the
++        # missing definitions transitively from the c2rust translation.
++        rust_s_u = self._close_type_closure(rust_s_u)
+ 
+         self.mark_translation_success("struct", struct_union.name)
+         # Save the translated struct/union
+@@ -604,6 +610,60 @@ Error: Failed to parse the result from LLM, result is not wrapped by the tags as
+ 
+         return TranslateResult.SUCCESS
+ 
++    def _close_type_closure(self, code: str) -> str:
++        """Append missing type definitions (aliases / structs / unions / enums) that `code`
++        references but does not define, resolving them from the c2rust translation.
++        Fixes the dangling-typedef scaffold bug (FILE = _IO_FILE, fn-ptr typedefs)."""
++        import re
++        c2r = self.c2rust_translation
++        # FILE: map to libc::FILE instead of dragging glibc's _IO_FILE struct chain
++        # (BitfieldStruct derive + _IO_marker extern types) into the scaffold.
++        code = re.sub(r'(?m)^\s*pub type FILE = _IO_FILE;\s*$',
++                      'pub type FILE = libc::FILE;', code)
++        RUST_BUILTINS = {
++            'u8', 'u16', 'u32', 'u64', 'usize', 'i8', 'i16', 'i32', 'i64', 'isize',
++            'f32', 'f64', 'bool', 'char', 'str', 'Option', 'Some', 'None', 'Copy',
++            'Clone', 'Debug', 'unsafe', 'extern', 'fn', 'pub', 'type', 'struct',
++            'union', 'enum', 'mut', 'const', 'core', 'std', 'ffi', 'libc',
++            'c_int', 'c_uint', 'c_long', 'c_ulong', 'c_char', 'c_uchar', 'c_schar',
++            'c_short', 'c_ushort', 'c_double', 'c_float', 'c_void', 'c_longlong',
++            'c_ulonglong', 'FILE',
++        }
++
++        def find_def(name):
++            # type alias in the c2rust output
++            m = re.search(rf'(?m)^pub type {re.escape(name)}\b[^;]*;', c2r)
++            if m:
++                return m.group(0)
++            # struct/union/enum definition (with attribute lines above it)
++            m = re.search(
++                rf'(?m)^((?:#\[[^\n]*\]\n)*)pub (?:struct|union|enum) {re.escape(name)}\b.*?^\}}',
++                c2r, re.S)
++            if m:
++                return m.group(0)
++            return None
++
++        for _ in range(10):  # transitive closure, bounded
++            defined = set(re.findall(
++                r'(?m)^\s*pub (?:type|struct|union|enum) (\w+)', code))
++            used = set()
++            # right-hand sides of type aliases
++            for m in re.finditer(r'(?m)^\s*pub type \w+ = ([^;]+);', code):
++                used |= set(re.findall(r'\b([A-Za-z_]\w*)\b', m.group(1)))
++            # struct/union field types
++            for m in re.finditer(r'(?m)^\s*pub \w+\s*:\s*(.+?),?\s*$', code):
++                used |= set(re.findall(r'\b([A-Za-z_]\w*)\b', m.group(1)))
++            missing = sorted(
++                u for u in used - defined - RUST_BUILTINS if find_def(u))
++            if not missing:
++                break
++            for name in missing:
++                definition = find_def(name)
++                logger.info(
++                    "Type-closure fix: appending missing definition of %s to struct code", name)
++                code = definition + '\n' + code
++        return code
++
+     def _prepare_function_context(
+         self, function: FunctionInfo
+     ) -> tuple[TranslateResult, Optional[dict[str, Any]]]:
+diff --git a/sactor/verifier/spec/spec_types.py b/sactor/verifier/spec/spec_types.py
+index d5f3776..8e57407 100644
+--- a/sactor/verifier/spec/spec_types.py
++++ b/sactor/verifier/spec/spec_types.py
+@@ -17,12 +17,15 @@ def extract_spec_block(text: str) -> Optional[str]:
+     """Extract the JSON spec block between ----SPEC---- and ----END SPEC----.
+     Returns the raw JSON text or None if not found.
+     """
++    # Tolerate model-format variation: optional trailing dashes after "END SPEC"
++    # (e.g. gpt-5.x emits "----END SPEC" without a trailing dash run) and stray
++    # surrounding whitespace around the markers/code fences.
+     pattern = re.compile(
+-        r"-+SPEC-+\n```(?:json)?\n(.*?)\n```\n-+END SPEC-+", re.S)
++        r"-+\s*SPEC\s*-+\s*\n```(?:json)?\n(.*?)\n```\s*\n-+\s*END SPEC\s*-*", re.S)
+     m = pattern.search(text)
+     if not m:
+         # fallback: tolerate missing code fences
+-        alt = re.compile(r"-+SPEC-+\n(.*?)\n-+END SPEC-+", re.S)
++        alt = re.compile(r"-+\s*SPEC\s*-+\s*\n(.*?)\n-+\s*END SPEC\s*-*", re.S)
+         m = alt.search(text)
+         if not m:
+             return None

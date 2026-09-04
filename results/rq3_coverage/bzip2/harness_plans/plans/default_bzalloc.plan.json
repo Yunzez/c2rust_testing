@@ -1,0 +1,44 @@
+{
+ "boundary": "default_bzalloc",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "opaque",
+   "adapter": "null_pointer",
+   "detail": {
+    "input_strength": "complete",
+    "reason": "the entry never uses opaque, so NULL is the whole input"
+   },
+   "evidence": [
+    {
+     "rule": "void_pointer_has_no_shape",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "void* carries no shape, so NULL is the only constructible value"
+    }
+   ]
+  },
+  {
+   "param": "items",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  },
+  {
+   "param": "size",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

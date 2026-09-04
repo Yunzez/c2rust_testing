@@ -1,0 +1,524 @@
+{
+ "case": "ptrtrans_lil",
+ "sheet_fingerprint": "b6c9687765c9ee3a",
+ "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+ "method": "manual code reading of each C function body (input/lil/lil.c) against every candidate Rust function (same name, tool claim, matcher forced proposal) in PA_trans_projects/lil/src/common/lil_mod.rs (all 90 fns read; src/main_mod.rs is out of scope), cross-checked with RUN.md and the PtrTrans metadata jsonl (Verfi_Tag: the two Fixed_5_Compile_Failed stub reverts, the Free_Function elision, the ee_expr and lil_parse_value multi-name units), plus greps of the crate for Drop impls / free functions / _lil_t constructors. STUB decided from the Rust body, not the tag: two No_Fix_Compile_Success units (lil_to_string, lil_list_get) are constant-None placeholders and are labelled STUB; find_cmd and lil_find_local_var also return None on every path but port the search logic and are kept as counterparts (flagged for review).",
+ "date": "2026-09-02",
+ "reviewed_by_user": false,
+ "artifact_status": "PARTIAL",
+ "artifact_status_note": "PtrTrans crashed at unit 95 of 131 (fnc_write#lil.c#3484; 807,401-token prompt rejected by OpenAI, RUN.md 'Completion state'); 36 units were never attempted (-> NONE rows here), 12 functions are signature-only stub reverts (fnc_store + the 11-function lil_parse_value SCC, Verfi_Tag Fixed_5_Compile_Failed), lil_free is elided (Free_Function). The archived partial crate passes cargo check. Scored on the separate PARTIAL line, never in the primary table (RUN.md).",
+ "labels": {
+  "strclone": {
+   "truth": "strclone",
+   "note": "lil.c:123 (malloc+memcpy copy of s) -> src/common/lil_mod.rs:1839: Some(src.to_owned()), None passthrough for the C NULL case. Forced proposal correct."
+  },
+  "alloc_value": {
+   "truth": "alloc_value",
+   "note": "lil.c:132 -> src/common/lil_mod.rs:475: Box<_lil_value_t> with l=strlen/d=copy when str given, else l=0,d=None (C lines 136-147). Forced proposal correct."
+  },
+  "lil_clone_value": {
+   "truth": "lil_clone_value",
+   "note": "lil.c:151 -> src/common/lil_mod.rs:2909: NULL->None guard, l copied, d cloned only when src->l != 0 else None (C 157-165). Forced proposal correct."
+  },
+  "lil_append_char": {
+   "truth": "lil_append_char",
+   "note": "lil.c:169 -> src/common/lil_mod.rs:420: pushes ch onto d (realloc(NULL) case -> new String) and resyncs l (C 171-176). Forced proposal correct."
+  },
+  "lil_append_string": {
+   "truth": "lil_append_string",
+   "note": "lil.c:179 -> src/common/lil_mod.rs:69: same early-return 1 on NULL/empty s (C 183), then push_str and l update. Forced proposal correct."
+  },
+  "lil_append_val": {
+   "truth": "lil_append_val",
+   "note": "lil.c:193 -> src/common/lil_mod.rs:124: return 1 if v NULL or v->l==0 (C 196), then byte-level concat modelled on the realloc+memcpy (C 197-201), val.l += v.l. Forced proposal correct."
+  },
+  "lil_free_value": {
+   "truth": "STUB:lil_free_value",
+   "note": "lil.c:205 (free val->d and val) -> src/common/lil_mod.rs:3055: body is the single comment '// default body' -- an empty no-op with the corresponding (owning Option<Box<_lil_value_t>>) parameter. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal is (none) -- WRONG: the Rust fn lil_free_value exists at src/common/lil_mod.rs:3055; the forced run assigned it to lil_to_double instead."
+  },
+  "lil_alloc_list": {
+   "truth": "lil_alloc_list",
+   "note": "lil.c:212 -> src/common/lil_mod.rs:353: allocates _lil_list_t with v=None,c=0. Forced proposal correct."
+  },
+  "lil_free_list": {
+   "truth": "STUB:lil_free_list",
+   "note": "lil.c:220 (free each element then v and list) -> src/common/lil_mod.rs:3060: body is '// default body', empty no-op. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal lil_list_size is WRONG: lil_list_size (src/common/lil_mod.rs:360) is the live getter returning l.c; C lil_free_list deallocates and returns void."
+  },
+  "lil_list_append": {
+   "truth": "lil_list_append",
+   "note": "lil.c:229 -> src/common/lil_mod.rs:2935: lazily creates the Vec (realloc from NULL, C 231), push(val), c += 1 (C 234). Forced proposal correct."
+  },
+  "lil_list_size": {
+   "truth": "lil_list_size",
+   "note": "lil.c:237 (return list->c) -> src/common/lil_mod.rs:360: returns l.c (0 for None). Forced proposal lil_set_var is WRONG: lil_set_var (src/common/lil_mod.rs:3081) is a 4-parameter stub-reverted placeholder returning None (SCC revert), nothing in common with a size getter."
+  },
+  "lil_list_get": {
+   "truth": "STUB:lil_list_get",
+   "note": "lil.c:242 (index >= list->c ? NULL : list->v[index]) -> src/common/lil_mod.rs:366: after the index>=c guard (C 244 first half) the body returns None unconditionally with the comment (376-384) that it cannot mint &mut from the immutable list; the element access list->v[index] is never attempted and the result is constant None. Judgment call: labelled STUB (constant placeholder) rather than defective counterpart; reviewer may flip to lil_list_get. Forced proposal names the same function (correct by name)."
+  },
+  "needs_escape": {
+   "truth": "needs_escape",
+   "note": "lil.c:247 -> src/common/lil_mod.rs:1848: NULL/empty -> 1 (C 250), any punctuation or whitespace byte -> 1, else 0 (C 251-253). Forced proposal correct."
+  },
+  "lil_list_to_value": {
+   "truth": "lil_list_to_value",
+   "note": "lil.c:256 -> src/common/lil_mod.rs:2354: alloc_value(None), per element escape=needs_escape(lil_to_string) when do_escape, ' ' separator, braces around escaped items, lil_append_val (C 258-267 line by line). Forced proposal correct."
+  },
+  "lil_alloc_env": {
+   "truth": "lil_alloc_env",
+   "note": "lil.c:270 -> src/common/lil_mod.rs:450: calloc-style zeroed _lil_env_t in a Box. Translation defect: PA typed the parent parameter as Option<Box<_lil_t>> and the body sets parent: None instead of the C env->parent = parent (C 273, comment at Rust 454-465) -- structural counterpart nonetheless. Forced proposal correct."
+  },
+  "lil_free_env": {
+   "truth": "STUB:lil_free_env",
+   "note": "lil.c:277 (free retval, each var name/value, var array, env) -> src/common/lil_mod.rs:3071: body is '// default body', empty no-op. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal is (none) -- WRONG: Rust lil_free_env exists at src/common/lil_mod.rs:3071; the forced run assigned it to register_stdcmds instead."
+  },
+  "lil_find_local_var": {
+   "truth": "lil_find_local_var",
+   "note": "lil.c:291 -> src/common/lil_mod.rs:1618: env->vars>0 guard (C 293) and strcmp of var->n against name (C 296) are ported, but degenerate to the single `var` field because the struct lost the array, and the hit path returns None (Rust 1647-1654, cannot mint &mut from &). Search logic present so labelled as the counterpart, not STUB; observable result is always None -- reviewer may prefer STUB. Forced proposal correct."
+  },
+  "lil_find_var": {
+   "truth": "lil_find_var",
+   "note": "lil.c:304 -> src/common/lil_mod.rs:1904: lil_find_local_var first, then env==lil->rootenv ? NULL : recurse with rootenv (C 307) via std::ptr::eq (Rust 1920-1926). Forced proposal correct."
+  },
+  "find_cmd": {
+   "truth": "find_cmd",
+   "note": "lil.c:310 -> src/common/lil_mod.rs:1869: lil->cmds>0 guard (C 312) and name strcmp (C 315) ported, degenerate to the single `cmd` field, and the hit path returns None (Rust 1890-1897). Same pattern as lil_find_local_var: search logic present, result constant None; labelled counterpart, reviewer may downgrade to STUB. Forced proposal correct."
+  },
+  "add_func": {
+   "truth": "add_func",
+   "note": "lil.c:323 -> src/common/lil_mod.rs:2403: find_cmd lookup (C 327), new _lil_func_t with name=strclone(name) (C 329-330), stored into lil.cmd and cmds += 1 (C 336-337), returned as owner. Forced proposal is (none) -- WRONG: Rust add_func exists at src/common/lil_mod.rs:2403; the forced run gave it to fnc_rename instead."
+  },
+  "lil_register": {
+   "truth": "NONE",
+   "note": "lil.c:341 (add_func then cmd->proc = proc, return 1/0). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "lil_set_var": {
+   "truth": "STUB:lil_set_var",
+   "note": "lil.c:349 (find/replace or append a variable in env/rootenv with the SETVAR callback) -> src/common/lil_mod.rs:3081: body is '// default return' + None. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal is (none) -- WRONG: Rust lil_set_var exists at src/common/lil_mod.rs:3081; the forced run assigned it to lil_list_size instead."
+  },
+  "lil_get_var": {
+   "truth": "lil_get_var",
+   "note": "lil.c:389 (lil_get_var_or(lil, name, lil->empty)) -> src/common/lil_mod.rs:2873: same one-liner with lil.empty as defvalue. Forced proposal correct."
+  },
+  "lil_get_var_or": {
+   "truth": "lil_get_var_or",
+   "note": "lil.c:394 -> src/common/lil_mod.rs:2444: lil_find_var(lil, lil->env, name), retval = var ? var->v : defvalue (C 396-397), callback[7] && (!var || var->env == rootenv) condition (C 398) ported at Rust 2461-2474; the getvar callback invocation itself (C 399-402) is elided (no-op). Forced proposal correct."
+  },
+  "lil_push_env": {
+   "truth": "lil_push_env",
+   "note": "lil.c:407 -> src/common/lil_mod.rs:1709: lil_alloc_env then lil->env = env and return env (C 409-411). Defect: passes None as parent (comment 1715-1734) and returns lil.env.take(), so lil.env ends up None. Forced proposal correct."
+  },
+  "lil_pop_env": {
+   "truth": "STUB:lil_pop_env",
+   "note": "lil.c:414 (if env->parent: free env, lil->env = parent) -> src/common/lil_mod.rs:3076: body is '// default body', empty no-op. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal lil_get_data is WRONG: lil_get_data (src/common/lil_mod.rs:1613) is the live one-line getter returning lil.data; C lil_pop_env frees the current env and rewires lil->env."
+  },
+  "lil_new": {
+   "truth": "NONE",
+   "note": "lil.c:423 (calloc the interpreter, rootenv = env = lil_alloc_env(NULL), empty = alloc_value(NULL), dollarprefix = \"set \", register_stdcmds). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Also verified by grep: no Rust code constructs a _lil_t value anywhere in the crate. Forced proposal lil_alloc_string is WRONG: lil_alloc_string (src/common/lil_mod.rs:1745) is the one-line alloc_value wrapper producing a _lil_value_t; C lil_new builds the interpreter object and registers all std commands."
+  },
+  "islilspecial": {
+   "truth": "islilspecial",
+   "note": "lil.c:433 -> src/common/lil_mod.rs:497: identical 8-character set ; $ [ ] { } \" '. Forced proposal correct."
+  },
+  "ateol": {
+   "truth": "ateol",
+   "note": "lil.c:438 -> src/common/lil_mod.rs:1661: !ignoreeol && code[head] in {\\n, \\r, ;} (Rust adds None/out-of-range -> 0). Forced proposal correct."
+  },
+  "skip_spaces": {
+   "truth": "skip_spaces",
+   "note": "lil.c:443 -> src/common/lil_mod.rs:1941: loop while head<clen and (\\\\ or # or (isspace && (ignoreeol || !eol))) (C 445), '#' skips to ateol (C 447), backslash-newline skips eol run (C 448-450), else head++ (C 451). Forced proposal correct."
+  },
+  "get_bracketpart": {
+   "truth": "STUB:get_bracketpart",
+   "note": "lil.c:455 (collect nested [..] text into cmd, lil_parse_value it) -> src/common/lil_mod.rs:3102: body is '// default return' + None. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal is (none) -- WRONG: Rust get_bracketpart exists at src/common/lil_mod.rs:3102; the forced run assigned it to lil_get_data instead."
+  },
+  "get_dollarpart": {
+   "truth": "STUB:get_dollarpart",
+   "note": "lil.c:478 (head++, name = next_word, tmp = dollarprefix + name, lil_parse_value(tmp)) -> src/common/lil_mod.rs:3096: body is '// default return' + None. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal lil_pop_env is WRONG: lil_pop_env (src/common/lil_mod.rs:3076) is another empty stub of the same unit returning (); C get_dollarpart returns a value. Both bodies are placeholders so nothing but the name/return type distinguishes them."
+  },
+  "next_word": {
+   "truth": "STUB:next_word",
+   "note": "lil.c:491 (word tokenizer: $, {}, [], quoted with escapes, bare word) -> src/common/lil_mod.rs:3090: body is '// default return' + None. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal is (none) -- WRONG: Rust next_word exists at src/common/lil_mod.rs:3090; the forced run assigned it to fnc_print instead."
+  },
+  "substitute": {
+   "truth": "STUB:substitute",
+   "note": "lil.c:557 (loop next_word into a words list until eol/error) -> src/common/lil_mod.rs:3065: body is '// default return' + None. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal is (none) -- WRONG: Rust substitute exists at src/common/lil_mod.rs:3065; the forced run assigned it to lil_subst_to_list instead."
+  },
+  "lil_subst_to_list": {
+   "truth": "lil_subst_to_list",
+   "note": "lil.c:584 -> src/common/lil_mod.rs:3108: saves code/clen/head/ignoreeol (C 586-589), sets code=lil_to_string(code), clen=code->l, head=0, ignoreeol=1 (C 591-594), calls substitute (C 595), restores all four (C 596-599). Forced proposal substitute is WRONG: Rust substitute (src/common/lil_mod.rs:3065) is the SCC stub returning None with a single lil parameter -- it is the callee, not the save/restore wrapper."
+  },
+  "lil_subst_to_value": {
+   "truth": "NONE",
+   "note": "lil.c:603 (lil_subst_to_list, NULL -> clone(code), else lil_list_to_value(words, 0)). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "lil_parse": {
+   "truth": "STUB:lil_parse",
+   "note": "lil.c:613 (the 100-line interpreter loop) -> src/common/lil_mod.rs:3046: body is '// default return' + None; parameters (owning lil, owning code String, codelen, funclevel) mirror the C signature. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. Forced proposal is (none) -- WRONG: Rust lil_parse exists at src/common/lil_mod.rs:3046; the forced run assigned it to lil_set_error instead."
+  },
+  "lil_parse_value": {
+   "truth": "STUB:lil_parse_value",
+   "note": "lil.c:721 (empty val -> alloc_value(NULL), else lil_parse(val->d, val->l, funclevel)) -> src/common/lil_mod.rs:3038: body is '// default return' + None. Part of the 11-function mutually recursive unit (lil_parse_value#lil.c unit, metadata Verfi_Tag Fixed_5_Compile_Failed) that PtrTrans reverted to signature-only placeholders after 5 repair attempts (RUN.md 'stub reverts'); the tool map records it only under lil_parse_value, hence NO_RECORD on this row. This is the row the tool map keys the whole 11-name unit on (tool_claim lists all 11). Forced proposal is (none) -- WRONG: Rust lil_parse_value exists at src/common/lil_mod.rs:3038; the forced run assigned it to lil_error instead."
+  },
+  "lil_callback": {
+   "truth": "lil_callback",
+   "note": "lil.c:727 -> src/common/lil_mod.rs:2694: cb<0||cb>8 guard (C 729, CALLBACKS=8) then callback[cb] = proc (C 730). Forced proposal correct."
+  },
+  "lil_set_error": {
+   "truth": "lil_set_error",
+   "note": "lil.c:733 -> src/common/lil_mod.rs:2224: if error return (C 735); error=2 (ERROR_FIXHEAD), err_head=0, err_msg=strclone(msg or \"\") (C 737-739). Forced proposal lil_parse is WRONG: lil_parse (src/common/lil_mod.rs:3046) is the SCC stub returning None (4 params, owning lil) and writes no error state."
+  },
+  "lil_set_error_at": {
+   "truth": "lil_set_error_at",
+   "note": "lil.c:742 -> src/common/lil_mod.rs:2241: if error return; error=1 (ERROR_DEFAULT), err_head=pos, err_msg=strclone(msg or \"\") (C 744-748). Forced proposal get_dollarpart is WRONG: get_dollarpart (src/common/lil_mod.rs:3096) is an SCC stub returning None that takes only lil."
+  },
+  "lil_error": {
+   "truth": "lil_error",
+   "note": "lil.c:751 -> src/common/lil_mod.rs:1578: return 0 when no error (C 753); *msg = err_msg, *pos = err_head, error = 0, return 1 (C 754-757) via Option<&mut ..> out-params. Forced proposal lil_parse_value is WRONG: lil_parse_value (src/common/lil_mod.rs:3038) is the SCC stub returning None (lil, val, funclevel), no out-params, no error state."
+  },
+  "ee_skip_spaces": {
+   "truth": "ee_skip_spaces",
+   "note": "lil.c:770 -> src/common/lil_mod.rs:104: while head<len && isspace(code[head]) head++. Forced proposal correct."
+  },
+  "ee_numeric_element": {
+   "truth": "ee_numeric_element",
+   "note": "lil.c:775 -> src/common/lil_mod.rs:211: type=INT, ee_skip_spaces, ival=dval=0, digit/'.' loop with fpart/fpartlen (C 782-795), dval = ival + fpart/fpartlen for FLOAT (C 796-797); Rust comments quote each C line. Forced proposal correct."
+  },
+  "ee_element": {
+   "truth": "ee_element",
+   "note": "lil.c:800 -> src/common/lil_mod.rs:389: isdigit(code[head]) -> ee_numeric_element (C 802-805), else type=0, ival=1, error=4 (EERR_INVALID_EXPRESSION, C 810-812). Forced proposal correct."
+  },
+  "ee_paren": {
+   "truth": "ee_paren",
+   "note": "lil.c:815 -> src/common/lil_mod.rs:533: '(' -> head++, ee_expr, ee_skip_spaces, expect ')' else error=1 (C 818-823), otherwise ee_element (C 824). Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_unary": {
+   "truth": "ee_unary",
+   "note": "lil.c:827 -> src/common/lil_mod.rs:567: ee_skip_spaces, then - + ~ ! prefix operators applied after recursive ee_unary with INT/FLOAT cases and error=2 on invalid type, else ee_paren. Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_muldiv": {
+   "truth": "ee_muldiv",
+   "note": "lil.c:885 -> src/common/lil_mod.rs:623: ee_unary then loop over * / \\\\ % with the odval/oival save, INT/FLOAT case matrix and error=3 on division by zero. Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_addsub": {
+   "truth": "ee_addsub",
+   "note": "lil.c:1100 -> src/common/lil_mod.rs:850: ee_muldiv then loop over + - with the INT/FLOAT case matrix (Rust 871-946). Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_shift": {
+   "truth": "ee_shift",
+   "note": "lil.c:1193 -> src/common/lil_mod.rs:951: ee_addsub then loop over << >> with INT/FLOAT cases converting to ival and type=0 (Rust 971-1046). Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_compare": {
+   "truth": "ee_compare",
+   "note": "lil.c:1287 -> src/common/lil_mod.rs:1051: ee_shift then loop over < > <= >= with INT/FLOAT cases. Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_equals": {
+   "truth": "ee_equals",
+   "note": "lil.c:1456 -> src/common/lil_mod.rs:1233: ee_compare then loop over == != (Rust 1246-1253 op select, head += 2). Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_bitand": {
+   "truth": "ee_bitand",
+   "note": "lil.c:1547 -> src/common/lil_mod.rs:1330: ee_equals then loop over single '&' with the !ispunct(next) guard emulated (Rust 1349-1353). Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_bitor": {
+   "truth": "ee_bitor",
+   "note": "lil.c:1596 -> src/common/lil_mod.rs:1398: ee_equals-chain: ee_bitand then loop over single '|' with the !ispunct(next) guard. Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_logand": {
+   "truth": "ee_logand",
+   "note": "lil.c:1645 -> src/common/lil_mod.rs:1466: ee_bitor then loop over '&&' (Rust 1478-1484, head += 2). Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_logor": {
+   "truth": "ee_logor",
+   "note": "lil.c:1694 -> src/common/lil_mod.rs:1522: ee_logand then loop over '||' (Rust 1534-1540, head += 2). Emitted inside the ee_expr unit (tool claim on ee_expr lists all 12 ee_* names; this row is NO_RECORD only because the map keys the unit by ee_expr). Forced proposal correct."
+  },
+  "ee_expr": {
+   "truth": "ee_expr",
+   "note": "lil.c:1743 -> src/common/lil_mod.rs:525: ee_logor then error==4 -> error=0, ival=1 (C 1748-1751). Forced proposal correct."
+  },
+  "lil_eval_expr": {
+   "truth": "NONE",
+   "note": "lil.c:1754 (lil_subst_to_value, set up expreval_t, ee_expr, map ee.error to lil_set_error messages, return integer or double value). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal lil_set_error is WRONG: lil_set_error (src/common/lil_mod.rs:2224) only records an error message/head on lil and returns (); C lil_eval_expr is the expression-evaluator driver returning a value (it merely calls lil_set_error on three error codes, C 1776-1784)."
+  },
+  "lil_unused_name": {
+   "truth": "lil_unused_name",
+   "note": "lil.c:1794 -> src/common/lil_mod.rs:2485: loop formatting \"!!un!%s!%09u!nu!!\" (C 1800), continue if find_cmd or lil_find_var hit (C 1801-1802), else lil_alloc_string(name) (C 1803-1805). Forced proposal correct."
+  },
+  "lil_arg": {
+   "truth": "lil_arg",
+   "note": "lil.c:1810 (argv ? argv[index] : NULL) -> src/common/lil_mod.rs:98: slice.get(index).copied() / None. Forced proposal correct."
+  },
+  "lil_to_string": {
+   "truth": "STUB:lil_to_string",
+   "note": "lil.c:1815 (return (val && val->d) ? val->d : \"\") -> src/common/lil_mod.rs:512: body is `let _ = val; None` -- a constant None regardless of input, with the comment (515-521) that the required Option<&mut String> cannot be produced from &val so it 'only ever return[s] None'. No part of the C logic (d-or-empty) is attempted, so STUB despite the No_Fix_Compile_Success tag. Consequence: every caller (lil_to_double/integer/boolean, fnc_* string ops, lil_subst_to_list) sees None. Forced proposal names the same function (correct by name)."
+  },
+  "lil_to_double": {
+   "truth": "lil_to_double",
+   "note": "lil.c:1820 (atof(lil_to_string(val))) -> src/common/lil_mod.rs:1782: lil_to_string(val).parse::<f64>() with 0.0 fallback. Forced proposal lil_free_value is WRONG: lil_free_value (src/common/lil_mod.rs:3055) is an SCC stub with an empty body taking an owned value and returning (), no numeric conversion."
+  },
+  "lil_to_integer": {
+   "truth": "lil_to_integer",
+   "note": "lil.c:1825 (atoll(lil_to_string(val))) -> src/common/lil_mod.rs:1790: lil_to_string(val).parse::<i64>() with 0 fallback. Forced proposal correct."
+  },
+  "lil_to_boolean": {
+   "truth": "lil_to_boolean",
+   "note": "lil.c:1830 -> src/common/lil_mod.rs:1806: empty -> 0 (C 1834), any char other than '0'/'.' -> 1, second '.' -> 1, else 0 (C 1835-1842). Forced proposal correct."
+  },
+  "lil_alloc_string": {
+   "truth": "lil_alloc_string",
+   "note": "lil.c:1845 (return alloc_value(str)) -> src/common/lil_mod.rs:1745: alloc_value(str). Forced proposal lil_free_list is WRONG: lil_free_list (src/common/lil_mod.rs:3060) is an SCC stub with an empty body taking an owned list and returning (); C lil_alloc_string allocates a value."
+  },
+  "lil_alloc_double": {
+   "truth": "lil_alloc_double",
+   "note": "lil.c:1850 (sprintf %f then alloc_value) -> src/common/lil_mod.rs:1748: write!(\"{}\", num) then alloc_value (format differs from %f but same structure). Forced proposal correct."
+  },
+  "lil_alloc_integer": {
+   "truth": "lil_alloc_integer",
+   "note": "lil.c:1857 (sprintf %lli then alloc_value) -> src/common/lil_mod.rs:2152: format!(\"{}\", num) then alloc_value. Forced proposal correct."
+  },
+  "lil_free": {
+   "truth": "NONE",
+   "note": "lil.c:1864 (free err_msg, empty, every env, every cmd, dollarprefix, catcher, lil). Metadata Verfi_Tag Free_Function with empty rust_definition_name: PtrTrans elides free functions by design (RUN.md). Grep of src/ finds no impl Drop and no free/destroy fn; ownership is Box-based. Sheet status ELIDED, reported separately from map errors. Forced proposal (none) correct."
+  },
+  "lil_set_data": {
+   "truth": "lil_set_data",
+   "note": "lil.c:1888 (lil->data = data) -> src/common/lil_mod.rs:1604: lil_ref.data = data. Forced proposal correct."
+  },
+  "lil_get_data": {
+   "truth": "lil_get_data",
+   "note": "lil.c:1893 (return lil->data) -> src/common/lil_mod.rs:1613: lil.and_then(|l| l.data.as_deref()). Forced proposal get_bracketpart is WRONG: get_bracketpart (src/common/lil_mod.rs:3102) is an SCC stub returning None on &mut lil; C lil_get_data is a field getter."
+  },
+  "fnc_reflect": {
+   "truth": "fnc_reflect",
+   "note": "lil.c:1898 -> src/common/lil_mod.rs:3141: same argc==0 guard and type = lil_to_string(argv[0]) (C 1904-1905), then the version/args/body/func-count/funcs/vars/globals/has-func/has-var/has-global/error/dollar-prefix/this/name string dispatch (Rust 3162-3433) with find_cmd/lil_list_to_value/lil_clone_value calls as in C. Array loops degenerate to the single cmd/var field. Forced proposal correct."
+  },
+  "fnc_func": {
+   "truth": "NONE",
+   "note": "lil.c:2008 (define a function: add_func + argnames via lil_subst_to_list + code clone, anonymous name via lil_unused_name). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_rename": {
+   "truth": "fnc_rename",
+   "note": "lil.c:2034 -> src/common/lil_mod.rs:2731: argc<2 -> None (C 2040), oldname/newname via lil_to_string (C 2041-2042), find_cmd(lil, oldname) (C 2043), on miss format \"unknown function '%s'\" and lil_set_error_at(lil, lil->head, msg) (C 2045-2049, Rust 2764-2774), else r = lil_alloc_string(func->name), func->name = strclone(newname) (C 2051-2054, Rust 2777-2788). Forced proposal add_func is WRONG: add_func (src/common/lil_mod.rs:2403) creates and registers a new _lil_func_t; it never renames or raises an error."
+  },
+  "fnc_unusedname": {
+   "truth": "fnc_unusedname",
+   "note": "lil.c:2057 -> src/common/lil_mod.rs:2883: lil_unused_name(lil, argc>0 ? lil_to_string(argv[0]) : \"unusedname\"). Forced proposal correct."
+  },
+  "fnc_quote": {
+   "truth": "fnc_quote",
+   "note": "lil.c:2062 -> src/common/lil_mod.rs:1760: argc<1 -> None, alloc_value(None), ' '-separated lil_append_val over argv (C 2066-2072). Forced proposal correct."
+  },
+  "fnc_set": {
+   "truth": "fnc_set",
+   "note": "lil.c:2075 -> src/common/lil_mod.rs:3436: i=0, access=1 (LIL_SETVAR_LOCAL), \"global\" -> i=1, access=0 (C 2081-2084), loop: argc==i+1 -> clone(lil_get_var) else var = lil_set_var(name, argv[i+1], access), i += 2 (C 2085-2089), return clone(var->v) or None (C 2090). Forced proposal correct."
+  },
+  "fnc_local": {
+   "truth": "fnc_local",
+   "note": "lil.c:2093 -> src/common/lil_mod.rs:3489: for each argv[i]: varname = lil_to_string, if !lil_find_local_var(lil, lil->env, varname) then lil_set_var(lil, varname, lil->empty, 2 = LIL_SETVAR_LOCAL_NEW) (C 2096-2100), return None. Forced proposal correct."
+  },
+  "fnc_write": {
+   "truth": "NONE",
+   "note": "lil.c:2104 (join argv with ' ', emit via WRITE callback or printf). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. This is exactly the unit (fnc_write#lil.c#3484) on which the translator crashed, so it was reached but never emitted. Forced proposal (none) correct."
+  },
+  "fnc_print": {
+   "truth": "NONE",
+   "note": "lil.c:2120 (fnc_write then emit \"\\n\" via WRITE callback or printf). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal next_word is WRONG: next_word (src/common/lil_mod.rs:3090) is an SCC stub returning None whose C original is the word tokenizer; C fnc_print is an output command with argc/argv."
+  },
+  "fnc_eval": {
+   "truth": "NONE",
+   "note": "lil.c:2130 (argc==1 -> lil_parse_value(argv[0]); else join argv with ' ' and parse). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_topeval": {
+   "truth": "NONE",
+   "note": "lil.c:2147 (swap lil->env to rootenv (saving downenv), fnc_eval, restore). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal fnc_store is WRONG: fnc_store (src/common/lil_mod.rs:2962) is the stub-reverted file-store command (body None); C fnc_topeval evaluates code in the root environment."
+  },
+  "fnc_upeval": {
+   "truth": "NONE",
+   "note": "lil.c:2160 (if at rootenv -> fnc_eval, else env = env->parent, fnc_eval, restore). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal lil_error is WRONG: lil_error (src/common/lil_mod.rs:1578) reads out and clears the pending error (msg/pos out-params); C fnc_upeval evaluates code in the parent environment."
+  },
+  "fnc_downeval": {
+   "truth": "NONE",
+   "note": "lil.c:2174 (if no downenv -> fnc_eval, else evaluate in downenv and restore). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_enveval": {
+   "truth": "NONE",
+   "note": "lil.c:2188 (evaluate code in a fresh pushed env, optionally importing/exporting listed variables). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_jaileval": {
+   "truth": "NONE",
+   "note": "lil.c:2248 (evaluate code in a fresh interpreter with only the std commands). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_count": {
+   "truth": "NONE",
+   "note": "lil.c:2272 (lil_subst_to_list then lil_alloc_integer(list->c)). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_index": {
+   "truth": "NONE",
+   "note": "lil.c:2283 (lil_subst_to_list(argv[0]), index = lil_to_integer(argv[1]), clone list->v[index] or NULL). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal fnc_codeat is WRONG: fnc_codeat (src/common/lil_mod.rs:2522) indexes a string and returns the byte as an integer; C fnc_index indexes a list (lil_subst_to_list + list->v[index], C 2289-2294) and returns the element value."
+  },
+  "fnc_indexof": {
+   "truth": "NONE",
+   "note": "lil.c:2299 (lil_subst_to_list(argv[0]), find element equal to argv[1], return its index or -1). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_append": {
+   "truth": "NONE",
+   "note": "lil.c:2315 (get list var, append cloned args, set var back). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_slice": {
+   "truth": "NONE",
+   "note": "lil.c:2339 (lil_subst_to_list, clamp from/to, build sublist value). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_filter": {
+   "truth": "NONE",
+   "note": "lil.c:2362 (lil_subst_to_list, for each element set var x and lil_eval_expr the filter, keep truthy elements). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal fnc_ltrim is WRONG: fnc_ltrim (src/common/lil_mod.rs:2819) strips leading characters from a string via real_trim; C fnc_filter evaluates an expression per list element."
+  },
+  "fnc_list": {
+   "truth": "NONE",
+   "note": "lil.c:2390 (lil_alloc_list, append clones of argv, lil_list_to_value(list, 1)). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal fnc_rtrim is WRONG: fnc_rtrim (src/common/lil_mod.rs:2847) strips trailing characters from a string via real_trim; C fnc_list builds a list value from its arguments (C 2392-2399)."
+  },
+  "fnc_subst": {
+   "truth": "NONE",
+   "note": "lil.c:2402 (lil_subst_to_value over each arg). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_concat": {
+   "truth": "NONE",
+   "note": "lil.c:2408 (lil_subst_to_list each arg, join into one value). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_foreach": {
+   "truth": "NONE",
+   "note": "lil.c:2425 (optional varname, lil_subst_to_list, per element set var and lil_parse_value the body, collect results). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal fnc_rename is WRONG: fnc_rename (src/common/lil_mod.rs:2731) renames a registered command via find_cmd/strclone; C fnc_foreach is a loop construct over a list (C 2425-2451)."
+  },
+  "fnc_return": {
+   "truth": "NONE",
+   "note": "lil.c:2453 (set env->retval, retval_set, breakrun). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_result": {
+   "truth": "NONE",
+   "note": "lil.c:2462 (get/set env->retval). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_expr": {
+   "truth": "NONE",
+   "note": "lil.c:2472 (join args and lil_eval_expr). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "real_inc": {
+   "truth": "NONE",
+   "note": "lil.c:2489 (get var, add v, alloc double or integer depending on fmod, lil_set_var, return value). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal lil_set_error_at is WRONG: lil_set_error_at (src/common/lil_mod.rs:2241) records error=1/err_head=pos/err_msg on lil; C real_inc (C 2491-2498) is the numeric increment helper for inc/dec."
+  },
+  "fnc_inc": {
+   "truth": "NONE",
+   "note": "lil.c:2501 (real_inc(lil, argv[0], argc>1 ? argv[1] : 1)). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_dec": {
+   "truth": "NONE",
+   "note": "lil.c:2507 (real_inc(lil, argv[0], -(argc>1 ? argv[1] : 1))). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_read": {
+   "truth": "fnc_read",
+   "note": "lil.c:2513 -> src/common/lil_mod.rs:2008: argc<1 -> None (C 2519); the callback[LIL_CALLBACK_READ] branch (C 2520-2522) is dropped (comment Rust 2026-2031), the file branch is ported: open \"rb\", seek end/ftell/seek start, read size bytes, lil_alloc_string(buffer) (C 2524-2534, Rust 2033-2056). Forced proposal correct."
+  },
+  "fnc_store": {
+   "truth": "STUB:fnc_store",
+   "note": "lil.c:2539 (argc<2 -> NULL; STORE callback or fopen \"wb\" + fwrite argv[1]; return clone(argv[1])) -> src/common/lil_mod.rs:2962: body is the single expression None, all three parameters unused; metadata Verfi_Tag Fixed_5_Compile_Failed = stub revert after 5 repairs (last error: File::write_all unresolved). Forced proposal lil_subst_to_list is WRONG: lil_subst_to_list (src/common/lil_mod.rs:3108) is the live save/substitute/restore wrapper returning a list; C fnc_store writes a file and returns a value."
+  },
+  "fnc_if": {
+   "truth": "NONE",
+   "note": "lil.c:2557 (optional 'not', lil_eval_expr the condition, lil_parse_value then/else branch). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_while": {
+   "truth": "NONE",
+   "note": "lil.c:2577 (loop lil_eval_expr condition and lil_parse_value body until false/breakrun). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_for": {
+   "truth": "NONE",
+   "note": "lil.c:2600 (init, loop condition/body/step). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_char": {
+   "truth": "fnc_char",
+   "note": "lil.c:2621 -> src/common/lil_mod.rs:2162: argc==0 -> None (C 2624), s[0] = (char)lil_to_integer(argv[0]) (C 2625, Rust 2179 as u8 as char), lil_alloc_string of the 1-char string (C 2627). Forced proposal fnc_catcher is WRONG: fnc_catcher (src/common/lil_mod.rs:2325) reads or replaces lil.catcher; C fnc_char is an integer-to-character conversion."
+  },
+  "fnc_charat": {
+   "truth": "fnc_charat",
+   "note": "lil.c:2630 -> src/common/lil_mod.rs:2185: argc<2 -> None, str = lil_to_string(argv[0]), index = lil_to_integer(argv[1]), index >= strlen -> None, 1-char string of str[index] (C 2635-2641). Forced proposal correct."
+  },
+  "fnc_codeat": {
+   "truth": "fnc_codeat",
+   "note": "lil.c:2644 -> src/common/lil_mod.rs:2522: argc<2 -> None, str/index as in charat, index >= strlen -> None, lil_alloc_integer(str[index]) (C 2648-2652, Rust 2548-2549). Forced proposal fnc_strcmp is WRONG: fnc_strcmp (src/common/lil_mod.rs:2638) compares two argument strings and returns the ordering as an integer; it takes no index and never indexes a string."
+  },
+  "fnc_substr": {
+   "truth": "fnc_substr",
+   "note": "lil.c:2655 -> src/common/lil_mod.rs:2058: argc<2 -> None, empty str -> None, slen, start=atoll(argv[1]), end = argc>2 ? atoll(argv[2]) : slen, clamp end, start>=end -> None, lil_alloc_string(\"\") + per-byte lil_append_char (C 2660-2671 in order). Forced proposal correct."
+  },
+  "fnc_strpos": {
+   "truth": "fnc_strpos",
+   "note": "lil.c:2674 -> src/common/lil_mod.rs:2551: argc<2 -> integer -1, hay, optional min from argv[2] with min>=strlen(hay) -> -1 (C 2681-2684), strstr(hay+min, argv[1]) -> position or -1 (C 2685-2687). Forced proposal correct."
+  },
+  "fnc_length": {
+   "truth": "fnc_length",
+   "note": "lil.c:2690 -> src/common/lil_mod.rs:2614: total = sum strlen(lil_to_string(argv[i])) plus one separator per i>0, lil_alloc_integer(total) (C 2693-2697). Forced proposal correct."
+  },
+  "real_trim": {
+   "truth": "real_trim",
+   "note": "lil.c:2700 -> src/common/lil_mod.rs:2258: left: advance base while str[base] in chars (C 2705), if !right r = lil_alloc_string(str+base or NULL) (C 2706); right: s = strclone(str+base), strip trailing chars, r = lil_alloc_string(s) (C 2711-2715). Forced proposal correct."
+  },
+  "fnc_trim": {
+   "truth": "fnc_trim",
+   "note": "lil.c:2721 -> src/common/lil_mod.rs:2790: argc==0 -> None, real_trim(lil_to_string(argv[0]), argc<2 ? \" \\f\\n\\r\\t\\v\" : lil_to_string(argv[1]), 1, 1) (C 2723-2724, Rust 2807-2817). Forced proposal is (none) -- WRONG: Rust fnc_trim exists at src/common/lil_mod.rs:2790; the forced run assigned it to fnc_split instead."
+  },
+  "fnc_ltrim": {
+   "truth": "fnc_ltrim",
+   "note": "lil.c:2727 -> src/common/lil_mod.rs:2819: same shape as fnc_trim with real_trim(..., 1, 0) (C 2730, Rust 2845). Forced proposal is (none) -- WRONG: Rust fnc_ltrim exists at src/common/lil_mod.rs:2819; the forced run assigned it to fnc_filter instead."
+  },
+  "fnc_rtrim": {
+   "truth": "fnc_rtrim",
+   "note": "lil.c:2733 -> src/common/lil_mod.rs:2847: same shape with real_trim(..., 0, 1) (C 2736, Rust 2871). Forced proposal is (none) -- WRONG: Rust fnc_rtrim exists at src/common/lil_mod.rs:2847; the forced run assigned it to fnc_list instead."
+  },
+  "fnc_strcmp": {
+   "truth": "fnc_strcmp",
+   "note": "lil.c:2739 -> src/common/lil_mod.rs:2638: argc<2 -> None, lil_alloc_integer(strcmp(lil_to_string(argv[0]), lil_to_string(argv[1]))) via str::cmp as i32 (C 2741-2742, Rust 2651-2661). Forced proposal lil_to_double is WRONG: lil_to_double (src/common/lil_mod.rs:1782) parses a single value as f64 and returns a double, no comparison, no argv."
+  },
+  "fnc_streq": {
+   "truth": "fnc_streq",
+   "note": "lil.c:2745 -> src/common/lil_mod.rs:2663: argc<2 -> None, lil_alloc_integer(strcmp(...) ? 0 : 1) as s0 == s1 (C 2747-2748). Forced proposal correct."
+  },
+  "fnc_repstr": {
+   "truth": "fnc_repstr",
+   "note": "lil.c:2751 -> src/common/lil_mod.rs:2969: argc<1 -> None, argc<3 -> clone(argv[0]) (C 2762-2763), from/to, empty from -> None (C 2766), src = strclone(argv[0]), strstr replace loop building newsrc (C 2771-2781, Rust 3017-3032), lil_alloc_string(src). Forced proposal correct."
+  },
+  "fnc_split": {
+   "truth": "NONE",
+   "note": "lil.c:2787 (split argv[0] on separator chars into a list value). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal fnc_trim is WRONG: fnc_trim (src/common/lil_mod.rs:2790) strips characters from both ends of a single string; C fnc_split (C 2787-2814) produces a list by separator."
+  },
+  "fnc_try": {
+   "truth": "NONE",
+   "note": "lil.c:2816 (lil_parse_value(argv[0]); on error clear it and parse argv[1] instead). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_error": {
+   "truth": "fnc_error",
+   "note": "lil.c:2831 -> src/common/lil_mod.rs:2705: lil_set_error(lil, argc>0 ? lil_to_string(argv[0]) : NULL) then None (C 2833-2834). Forced proposal correct."
+  },
+  "fnc_exit": {
+   "truth": "fnc_exit",
+   "note": "lil.c:2837 -> src/common/lil_mod.rs:1688: if callback[0] (LIL_CALLBACK_EXIT) call proc(lil, argc>0 ? argv[0] : NULL), return None (C 2839-2843). Forced proposal correct."
+  },
+  "fnc_source": {
+   "truth": "NONE",
+   "note": "lil.c:2846 (SOURCE/READ callback or fopen+fread the file, then lil_parse(buffer)). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_lmap": {
+   "truth": "NONE",
+   "note": "lil.c:2875 (lil_subst_to_list(argv[0]) then lil_set_var each following name to the i-th element). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal (none) correct."
+  },
+  "fnc_rand": {
+   "truth": "fnc_rand",
+   "note": "lil.c:2887 (lil_alloc_double(rand()/(double)RAND_MAX)) -> src/common/lil_mod.rs:2124: lil_alloc_double(value/2147483647) where the rand() call is replaced by a time-derived 31-bit integer (Rust 2134-2143). Same shape; RNG source is a translation liberty. Forced proposal correct."
+  },
+  "fnc_catcher": {
+   "truth": "fnc_catcher",
+   "note": "lil.c:2892 -> src/common/lil_mod.rs:2325: argc==0 -> lil_alloc_string(lil->catcher) (C 2894-2895), else catcher = lil_to_string(argv[0]); lil->catcher = catcher[0] ? strclone(catcher) : NULL (C 2897-2899, Rust 2341-2350), return None. Forced proposal fnc_char is WRONG: fnc_char (src/common/lil_mod.rs:2162) builds a 1-character string from an integer argument and never touches lil.catcher."
+  },
+  "register_stdcmds": {
+   "truth": "NONE",
+   "note": "lil.c:2904 (50+ lil_register calls binding the fnc_* commands). Never-attempted unit: PtrTrans crashed at unit 95/131 (fnc_write) with the 807k-token prompt rejection (RUN.md 'Completion state'), so no Rust definition of this name (or any other counterpart) exists; rust_inventory.csv has no same-name entry and no other Rust fn implements this behaviour. Forced proposal lil_free_env is WRONG: lil_free_env (src/common/lil_mod.rs:3071) is an SCC stub with an empty body taking an owned env; C register_stdcmds registers every std command (C 2906-2955)."
+  }
+ }
+}

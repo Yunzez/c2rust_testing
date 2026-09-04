@@ -1,0 +1,39 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3172355059
+INFO: Loaded 1 modules   (1541 inline 8-bit counters): 1541 [0x563e024eaad0, 0x563e024eb0d5), 
+INFO: Loaded 1 PC tables (1541 PCs): 1541 [0x563e024eb0d8,0x563e024f1128), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/mainSimpleSort
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 61 ft: 62 corp: 1/1b exec/s: 0 rss: 33Mb
+#3	NEW    cov: 63 ft: 64 corp: 2/3b lim: 4 exec/s: 0 rss: 33Mb L: 2/2 MS: 1 InsertByte-
+#7	NEW    cov: 65 ft: 66 corp: 3/6b lim: 4 exec/s: 0 rss: 33Mb L: 3/3 MS: 4 InsertByte-ChangeBit-ShuffleBytes-CrossOver-
+#9	NEW    cov: 67 ft: 68 corp: 4/10b lim: 4 exec/s: 0 rss: 34Mb L: 4/4 MS: 2 ChangeByte-InsertByte-
+#215	NEW    cov: 69 ft: 70 corp: 5/15b lim: 6 exec/s: 0 rss: 52Mb L: 5/5 MS: 1 InsertByte-
+#234	NEW    cov: 71 ft: 72 corp: 6/21b lim: 6 exec/s: 0 rss: 54Mb L: 6/6 MS: 4 ChangeBit-CopyPart-CopyPart-CrossOver-
+#449	NEW    cov: 77 ft: 78 corp: 7/29b lim: 8 exec/s: 0 rss: 72Mb L: 8/8 MS: 5 EraseBytes-ShuffleBytes-EraseBytes-InsertRepeatedBytes-InsertByte-
+==1665141== ERROR: libFuzzer: deadly signal
+    #0 0x563e024091c1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSimpleSort+0xff1c1) (BuildId: 7c6cf32ee1b3b9fb005a87bc0157d392703aff2c)
+    #1 0x563e024527eb  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSimpleSort+0x1487eb) (BuildId: 7c6cf32ee1b3b9fb005a87bc0157d392703aff2c)
+    #2 0x563e02447cc9  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSimpleSort+0x13dcc9) (BuildId: 7c6cf32ee1b3b9fb005a87bc0157d392703aff2c)
+    #3 0x7f7192445caf  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45caf) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #4 0x563e0243db17  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSimpleSort+0x133b17) (BuildId: 7c6cf32ee1b3b9fb005a87bc0157d392703aff2c)
+
+### sanitizer / crash report
+15:==1665141== ERROR: libFuzzer: deadly signal
+38:SUMMARY: libFuzzer: deadly signal
+
+### tail
+      Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+SUMMARY: libFuzzer: deadly signal
+MS: 1 InsertRepeatedBytes-; base unit: e24082303780c00755b3dc1b17592e5ab0ff71c7
+0xa,0x60,0x72,0xb3,0xb3,0xb3,0xb3,0xb3,0xb3,0xb3,0x42,
+\012`r\263\263\263\263\263\263\263B
+artifact_prefix='./'; Test unit written to ./crash-b97a8e604da23269994a0c1da70713efa2cafad6
+Base64: CmBys7Ozs7Ozs0I=
+stat::number_of_executed_units: 765
+stat::average_exec_per_sec:     0
+stat::new_units_added:          6
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              97

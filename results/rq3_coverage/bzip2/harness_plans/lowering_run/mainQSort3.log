@@ -1,0 +1,39 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2951512363
+INFO: Loaded 1 modules   (1916 inline 8-bit counters): 1916 [0x556f25bed4b0, 0x556f25bedc2c), 
+INFO: Loaded 1 PC tables (1916 PCs): 1916 [0x556f25bedc30,0x556f25bf53f0), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/mainQSort3
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 73 ft: 74 corp: 1/1b exec/s: 0 rss: 33Mb
+#3	NEW    cov: 75 ft: 76 corp: 2/3b lim: 4 exec/s: 0 rss: 33Mb L: 2/2 MS: 1 CrossOver-
+#6	NEW    cov: 77 ft: 78 corp: 3/6b lim: 4 exec/s: 0 rss: 33Mb L: 3/3 MS: 3 ChangeBit-ChangeByte-InsertByte-
+#14	NEW    cov: 79 ft: 80 corp: 4/10b lim: 4 exec/s: 0 rss: 34Mb L: 4/4 MS: 3 ShuffleBytes-CrossOver-InsertByte-
+#222	NEW    cov: 81 ft: 82 corp: 5/15b lim: 6 exec/s: 0 rss: 53Mb L: 5/5 MS: 3 ChangeBit-CopyPart-InsertByte-
+#231	NEW    cov: 83 ft: 84 corp: 6/21b lim: 6 exec/s: 0 rss: 54Mb L: 6/6 MS: 4 CrossOver-ShuffleBytes-CopyPart-CopyPart-
+#451	NEW    cov: 89 ft: 90 corp: 7/29b lim: 8 exec/s: 0 rss: 72Mb L: 8/8 MS: 5 ChangeBit-CrossOver-ShuffleBytes-InsertByte-InsertRepeatedBytes-
+#766	NEW    cov: 91 ft: 92 corp: 8/38b lim: 11 exec/s: 0 rss: 97Mb L: 9/9 MS: 5 CopyPart-ChangeByte-ShuffleBytes-ChangeByte-CrossOver-
+#774	NEW    cov: 93 ft: 94 corp: 9/48b lim: 11 exec/s: 0 rss: 98Mb L: 10/10 MS: 3 ChangeBinInt-InsertRepeatedBytes-InsertByte-
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==1665130==ERROR: AddressSanitizer: SEGV on unknown address 0x7d85a83a0000 (pc 0x556f25b3eebf bp 0x7ffe7d8334d0 sp 0x7ffe7d833470 T0)
+==1665130==The signal is caused by a READ memory access.
+
+### sanitizer / crash report
+19:==1665130==ERROR: AddressSanitizer: SEGV on unknown address 0x7d85a83a0000 (pc 0x556f25b3eebf bp 0x7ffe7d8334d0 sp 0x7ffe7d833470 T0)
+44:SUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainQSort3+0x13debf) (BuildId: b8151716b42fb12bdbc455d7515ab22ee3ba3808) 
+
+### tail
+SUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainQSort3+0x13debf) (BuildId: b8151716b42fb12bdbc455d7515ab22ee3ba3808) 
+==1665130==ABORTING
+MS: 3 InsertByte-ShuffleBytes-InsertRepeatedBytes-; base unit: 780a82f44e6b3a6fda54f4146572fa90a27a7309
+0xa,0xa,0x14,0x14,0x14,0x14,0x8a,0xa,0x8a,0x8a,0x91,
+\012\012\024\024\024\024\212\012\212\212\221
+artifact_prefix='./'; Test unit written to ./crash-922b6da6a0a793d1b2761ddd254df04168b458f4
+Base64: CgoUFBQUigqKipE=
+stat::number_of_executed_units: 802
+stat::average_exec_per_sec:     0
+stat::new_units_added:          8
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              100

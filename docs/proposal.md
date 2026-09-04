@@ -1,11 +1,12 @@
-# Research Proposal
+# ARCHIVED — Initial Research Proposal
+
+> The MTU/STU research questions below are historical and no longer define the
+> study. See `results/EVALUATION_PLAN.md` for the current four RQs.
 
 Title: Characterizing Semantic Divergence in C to Rust Translation via STU-Guided Differential Fuzzing
 
-> **Terminology note.** This proposal predates the current design. What it calls **MTU (Minimum
-> Testing Unit)** is the earlier name for what is now the **STU**, redefined as the
-> *differential-testing / verifiable frontier* in [`stu_selection.md`](./stu_selection.md). Where
-> this document says "MTU", read "STU"; `stu_selection.md` is the authoritative definition.
+> **Historical terminology note.** This proposal used MTU and later STU/frontier
+> terminology. Neither defines the current contribution or evaluation.
 
 ## 1. Research Questions
 

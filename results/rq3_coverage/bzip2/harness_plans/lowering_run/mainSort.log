@@ -1,0 +1,40 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3393818155
+INFO: Loaded 1 modules   (2757 inline 8-bit counters): 2757 [0x5598883ad1b0, 0x5598883adc75), 
+INFO: Loaded 1 PC tables (2757 PCs): 2757 [0x5598883adc78,0x5598883b88c8), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/mainSort
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==1665158==ERROR: AddressSanitizer: SEGV on unknown address 0x7e330102a200 (pc 0x5598882f7fb6 bp 0x7ffcc83b5f40 sp 0x7ffcc83b4c60 T0)
+==1665158==The signal is caused by a WRITE memory access.
+    #0 0x5598882f7fb6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x14dfb6) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #1 0x5598882dfdf3  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x135df3) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #2 0x5598882e63f1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x13c3f1) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #3 0x5598882fd8b5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x1538b5) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #4 0x5598882feb68  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x154b68) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #5 0x5598882fc92d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x15292d) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #6 0x559888305c3c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x15bc3c) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #7 0x55988830e328  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x164328) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #8 0x55988830e9c7  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x1649c7) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+    #9 0x559888332a11  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x188a11) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9)
+
+### sanitizer / crash report
+9:==1665158==ERROR: AddressSanitizer: SEGV on unknown address 0x7e330102a200 (pc 0x5598882f7fb6 bp 0x7ffcc83b5f40 sp 0x7ffcc83b4c60 T0)
+10:==1665158==The signal is caused by a WRITE memory access.
+32:SUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x14dfb6) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9) 
+
+### tail
+SUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/mainSort+0x14dfb6) (BuildId: d812272b2e5ca9151319f76489b717e71984caf9) 
+==1665158==ABORTING
+MS: 0 ; base unit: 0000000000000000000000000000000000000000
+
+
+artifact_prefix='./'; Test unit written to ./crash-da39a3ee5e6b4b0d3255bfef95601890afd80709
+Base64: 
+stat::number_of_executed_units: 1
+stat::average_exec_per_sec:     0
+stat::new_units_added:          0
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              32

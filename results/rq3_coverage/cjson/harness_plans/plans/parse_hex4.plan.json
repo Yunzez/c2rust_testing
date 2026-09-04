@@ -1,0 +1,42 @@
+{
+ "boundary": "parse_hex4",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "str",
+   "c_decoder": "input_array",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "extent": {
+     "k": "const",
+     "v": 1
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "cJSON.c",
+     "line": 180,
+     "col": 6,
+     "snippet": "if (*str>='0' && *str<='9') h+=(*str)-'0'; else if (*str>='A' && *str<='F') h+=10+(*str)-'A'; else if (*str>='a' && *str<='f') h+=10+(*str)-'a'; else return 0;",
+     "note": "*str is read"
+    }
+   ],
+   "rust_type": "*const ::core::ffi::c_char",
+   "rust_bridge": "c_abi"
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024,
+  "max_table_rows": 16
+ },
+ "plan_version": 1
+}

@@ -1,0 +1,247 @@
+{
+ "boundary": "mainGtU",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "i1",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "extent_fits_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "extent_fits_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "i1 appears in the proven required extent of block; the harness allocates 4096 elements, so i1 <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "i2",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "extent_fits_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "extent_fits_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "i2 appears in the proven required extent of block; the harness allocates 4096 elements, so i2 <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "block",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "u8",
+    "elem_width": 1,
+    "extent": {
+     "k": "max",
+     "of": [
+      {
+       "k": "param",
+       "p": "i1",
+       "mul": 1,
+       "div": 1,
+       "add": 1
+      },
+      {
+       "k": "param",
+       "p": "i2",
+       "mul": 1,
+       "div": 1,
+       "add": 1
+      }
+     ]
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 360,
+     "col": 9,
+     "snippet": "c1 = block[i1]; c2 = block[i2];",
+     "note": "block[i1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 360,
+     "col": 25,
+     "snippet": "c1 = block[i1]; c2 = block[i2];",
+     "note": "block[i2] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 364,
+     "col": 9,
+     "snippet": "c1 = block[i1]; c2 = block[i2];",
+     "note": "block[i1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 364,
+     "col": 25,
+     "snippet": "c1 = block[i1]; c2 = block[i2];",
+     "note": "block[i2] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 368,
+     "col": 9,
+     "snippet": "c1 = block[i1]; c2 = block[i2];",
+     "note": "block[i1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 368,
+     "col": 25,
+     "snippet": "c1 = block[i1]; c2 = block[i2];",
+     "note": "block[i2] read"
+    }
+   ]
+  },
+  {
+   "param": "quadrant",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "u16",
+    "elem_width": 2,
+    "extent": {
+     "k": "max",
+     "of": [
+      {
+       "k": "param",
+       "p": "i1",
+       "mul": 1,
+       "div": 1,
+       "add": 1
+      },
+      {
+       "k": "param",
+       "p": "i2",
+       "mul": 1,
+       "div": 1,
+       "add": 1
+      }
+     ]
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 414,
+     "col": 12,
+     "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+     "note": "quadrant[i1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 414,
+     "col": 31,
+     "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+     "note": "quadrant[i2] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 420,
+     "col": 12,
+     "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+     "note": "quadrant[i1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 420,
+     "col": 31,
+     "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+     "note": "quadrant[i2] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 426,
+     "col": 12,
+     "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+     "note": "quadrant[i1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 426,
+     "col": 31,
+     "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+     "note": "quadrant[i2] read"
+    }
+   ]
+  },
+  {
+   "param": "nblock",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  },
+  {
+   "param": "budget",
+   "adapter": "output_array",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "const",
+     "v": 1
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1,
+    "fills_from_fuzz": false
+   },
+   "evidence": [
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "blocksort.c",
+     "line": 464,
+     "col": 8,
+     "snippet": "(*budget)--;",
+     "note": "*budget is written"
+    }
+   ]
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

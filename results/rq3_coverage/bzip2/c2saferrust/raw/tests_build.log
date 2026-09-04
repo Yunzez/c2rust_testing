@@ -1,0 +1,1619 @@
+   Compiling bzip2_c2saferrust v0.1.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rq4_cov/tests_c2saferrust)
+warning: unnecessary parentheses around assigned value
+    --> src/lib.rs:1298:23
+     |
+1298 |             *fresh |= (1 << 21);
+     |                       ^       ^
+     |
+     = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+     |
+1298 -             *fresh |= (1 << 21);
+1298 +             *fresh |= 1 << 21;
+     |
+
+warning: unnecessary parentheses around assigned value
+    --> src/lib.rs:1352:19
+     |
+1352 |         *fresh |= (1 << 21);
+     |                   ^       ^
+     |
+help: remove these parentheses
+     |
+1352 -         *fresh |= (1 << 21);
+1352 +         *fresh |= 1 << 21;
+     |
+
+warning: unused label
+    --> src/lib.rs:2526:9
+     |
+2526 |         's_569:
+     |         ^^^^^^
+     |
+     = note: `#[warn(unused_labels)]` (part of `#[warn(unused)]`) on by default
+
+warning: denote infinite loops with `loop { ... }`
+    --> src/lib.rs:4976:1
+     |
+4976 | while true {
+     | ^^^^^^^^^^ help: use `loop`
+     |
+     = note: `#[warn(while_true)]` on by default
+
+warning: denote infinite loops with `loop { ... }`
+    --> src/lib.rs:7385:10
+     |
+7385 |          while true {
+     |          ^^^^^^^^^^ help: use `loop`
+
+warning: `#[inline]` is ignored on externally exported functions
+    --> src/lib.rs:1738:1
+     |
+1738 | #[inline]
+     | ^^^^^^^^^
+     |
+     = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`
+     = note: `#[warn(unused_attributes)]` (part of `#[warn(unused)]`) on by default
+
+warning: `#[inline]` is ignored on externally exported functions
+    --> src/lib.rs:2681:1
+     |
+2681 | #[inline]
+     | ^^^^^^^^^
+     |
+     = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`
+
+warning: `#[inline]` is ignored on externally exported functions
+    --> src/lib.rs:9250:1
+     |
+9250 | #[inline]
+     | ^^^^^^^^^
+     |
+     = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`
+
+warning: unreachable statement
+    --> src/lib.rs:3138:5
+     |
+3091 | /     loop {
+3092 | |         if s.state == 1 {
+3093 | |             return -(1 as c_int);
+...    |
+3137 | |     }
+     | |_____- any code following this expression is unreachable
+3138 |       unreachable!();
+     |       ^^^^^^^^^^^^^^ unreachable statement
+     |
+     = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: unreachable call
+     --> src/lib.rs:10718:16
+      |
+10718 |         return Err(ioError());
+      |                ^^^ --------- any code following this expression is unreachable
+      |                |
+      |                unreachable call
+
+warning: unreachable expression
+     --> src/lib.rs:11441:9
+      |
+11440 |         outOfMemory();
+      |         ------------- any code following this expression is unreachable
+11441 |         std::ptr::null_mut()
+      |         ^^^^^^^^^^^^^^^^^^^^ unreachable expression
+
+warning: unused variable: `l`
+   --> src/lib.rs:367:13
+    |
+367 |     let mut l: Int32 = 0;
+    |             ^ help: if this is intentional, prefix it with an underscore: `_l`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r`
+   --> src/lib.rs:368:13
+    |
+368 |     let mut r: Int32 = 0;
+    |             ^ help: if this is intentional, prefix it with an underscore: `_r`
+
+warning: unused variable: `cc`
+   --> src/lib.rs:369:13
+    |
+369 |     let mut cc: Int32 = 0;
+    |             ^^ help: if this is intentional, prefix it with an underscore: `_cc`
+
+warning: unused variable: `cc1`
+   --> src/lib.rs:370:13
+    |
+370 |     let mut cc1: Int32 = 0;
+    |             ^^^ help: if this is intentional, prefix it with an underscore: `_cc1`
+
+warning: unused variable: `nNotDone`
+   --> src/lib.rs:371:13
+    |
+371 |     let mut nNotDone: Int32 = 0;
+    |             ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_nNotDone`
+
+warning: unused variable: `s1`
+   --> src/lib.rs:553:13
+    |
+553 |     let mut s1: UInt16 = 0;
+    |             ^^ help: if this is intentional, prefix it with an underscore: `_s1`
+
+warning: unused variable: `s2`
+   --> src/lib.rs:554:13
+    |
+554 |     let mut s2: UInt16 = 0;
+    |             ^^ help: if this is intentional, prefix it with an underscore: `_s2`
+
+warning: unused variable: `med`
+   --> src/lib.rs:860:13
+    |
+860 |     let mut med: Int32 = 0;
+    |             ^^^ help: if this is intentional, prefix it with an underscore: `_med`
+
+warning: unused variable: `k`
+    --> src/lib.rs:1044:13
+     |
+1044 |     let mut k: Int32 = 0;
+     |             ^ help: if this is intentional, prefix it with an underscore: `_k`
+
+warning: unused variable: `ss`
+    --> src/lib.rs:1045:13
+     |
+1045 |     let mut ss: Int32 = 0;
+     |             ^^ help: if this is intentional, prefix it with an underscore: `_ss`
+
+warning: unused variable: `sb`
+    --> src/lib.rs:1046:13
+     |
+1046 |     let mut sb: Int32 = 0;
+     |             ^^ help: if this is intentional, prefix it with an underscore: `_sb`
+
+warning: unused variable: `c1`
+    --> src/lib.rs:1051:13
+     |
+1051 |     let mut c1: UChar = 0;
+     |             ^^ help: if this is intentional, prefix it with an underscore: `_c1`
+
+warning: unused variable: `opaque`
+    --> src/lib.rs:1805:38
+     |
+1805 | unsafe extern "C" fn default_bzalloc(opaque: *mut std::ffi::c_void, items: i32, size: i32) -> *mut std::ffi::c_void {
+     |                                      ^^^^^^ help: if this is intentional, prefix it with an underscore: `_opaque`
+
+warning: unused variable: `opaque`
+    --> src/lib.rs:1811:37
+     |
+1811 | unsafe extern "C" fn default_bzfree(opaque: *mut std::ffi::c_void, addr: *mut std::ffi::c_void) {
+     |                                     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_opaque`
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2420:42
+     |
+2420 |     unsafe { (*s).tPos = *(*s).tt.offset(unsafe { (*s).tPos as isize }); }
+     |     ------                               ^^^^^^ unnecessary `unsafe` block
+     |     |
+     |     because it's nested under this `unsafe` block
+     |
+     = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2425:42
+     |
+2425 |         unsafe { (*s).rNToGo = BZ2_rNums[unsafe { (*s).rTPos as usize }]; }
+     |         ------                           ^^^^^^ unnecessary `unsafe` block
+     |         |
+     |         because it's nested under this `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2446:46
+     |
+2446 |         unsafe { (*s).tPos = *(*s).tt.offset(unsafe { (*s).tPos as isize }); }
+     |         ------                               ^^^^^^ unnecessary `unsafe` block
+     |         |
+     |         because it's nested under this `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2451:46
+     |
+2451 |             unsafe { (*s).rNToGo = BZ2_rNums[unsafe { (*s).rTPos as usize }]; }
+     |             ------                           ^^^^^^ unnecessary `unsafe` block
+     |             |
+     |             because it's nested under this `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2471:50
+     |
+2471 |             unsafe { (*s).tPos = *(*s).tt.offset(unsafe { (*s).tPos as isize }); }
+     |             ------                               ^^^^^^ unnecessary `unsafe` block
+     |             |
+     |             because it's nested under this `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2476:50
+     |
+2476 |                 unsafe { (*s).rNToGo = BZ2_rNums[unsafe { (*s).rTPos as usize }]; }
+     |                 ------                           ^^^^^^ unnecessary `unsafe` block
+     |                 |
+     |                 because it's nested under this `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2490:50
+     |
+2490 |             unsafe { (*s).tPos = *(*s).tt.offset(unsafe { (*s).tPos as isize }); }
+     |             ------                               ^^^^^^ unnecessary `unsafe` block
+     |             |
+     |             because it's nested under this `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2491:33
+     |
+2491 |             unsafe { (*s).k0 = (unsafe { (*s).tPos } & 0xff) as u8 as i32; }
+     |             ------              ^^^^^^ unnecessary `unsafe` block
+     |             |
+     |             because it's nested under this `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2495:50
+     |
+2495 |                 unsafe { (*s).rNToGo = BZ2_rNums[unsafe { (*s).rTPos as usize }]; }
+     |                 ------                           ^^^^^^ unnecessary `unsafe` block
+     |                 |
+     |                 because it's nested under this `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:2502:36
+     |
+2502 |             unsafe { (*s).k0 ^= if unsafe { (*s).rNToGo } == 1 { 1 } else { 0 }; }
+     |             ------                 ^^^^^^ unnecessary `unsafe` block
+     |             |
+     |             because it's nested under this `unsafe` block
+
+warning: unused variable: `ret`
+    --> src/lib.rs:3411:13
+     |
+3411 |     let mut ret: std::os::raw::c_int = 0;
+     |             ^^^ help: if this is intentional, prefix it with an underscore: `_ret`
+
+warning: unused variable: `b`
+    --> src/lib.rs:3863:20
+     |
+3863 | pub fn BZ2_bzflush(b: &mut dyn std::io::Write) -> c_int {
+     |                    ^ help: if this is intentional, prefix it with an underscore: `_b`
+
+warning: unused variable: `totc`
+    --> src/lib.rs:4211:13
+     |
+4211 |     let mut totc: Int32 = 0;
+     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_totc`
+
+warning: unused variable: `i`
+    --> src/lib.rs:4524:5
+     |
+4524 | for i in 0..5 {
+     |     ^ help: if this is intentional, prefix it with an underscore: `_i`
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:5786:36
+     |
+5785 |                 unsafe {
+     |                 ------ because it's nested under this `unsafe` block
+5786 |                     (*s).bsBuff = (unsafe { (*s).bsBuff } << 8) | (*(*(*s).strm).next_in as u32);
+     |                                    ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:6955:56
+     |
+6942 |             unsafe {
+     |             ------ because it's nested under this `unsafe` block
+...
+6955 |                     (*s).bsBuff = ((*s).bsBuff << 8) | unsafe { *next_in as u32 };
+     |                                                        ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:6999:56
+     |
+6986 |             unsafe {
+     |             ------ because it's nested under this `unsafe` block
+...
+6999 |                     (*s).bsBuff = ((*s).bsBuff << 8) | unsafe { *next_in as u32 };
+     |                                                        ^^^^^^ unnecessary `unsafe` block
+
+warning: unused variable: `i`
+    --> src/lib.rs:9355:13
+     |
+9355 |     let mut i: i32 = 0;
+     |             ^ help: if this is intentional, prefix it with an underscore: `_i`
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9365:12
+     |
+9365 |         if unsafe { uInt64_isZero(&mut n_copy) } != 0 {
+     |            ^^^^^^ unnecessary `unsafe` block
+
+warning: unused variable: `bzf`
+    --> src/lib.rs:9391:13
+     |
+9391 |     let mut bzf: *mut std::os::raw::c_void = 0 as *mut std::os::raw::c_void;
+     |             ^^^ help: if this is intentional, prefix it with an underscore: `_bzf`
+
+warning: unused variable: `bzerr`
+    --> src/lib.rs:9398:13
+     |
+9398 |     let mut bzerr: Int32 = 0;
+     |             ^^^^^ help: if this is intentional, prefix it with an underscore: `_bzerr`
+
+warning: unused variable: `current_block`
+    --> src/lib.rs:9583:18
+     |
+9583 |          let mut current_block: u64;
+     |                  ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_current_block`
+
+warning: unused variable: `ret`
+    --> src/lib.rs:9587:13
+     |
+9587 |     let mut ret: Int32 = 0;
+     |             ^^^ help: if this is intentional, prefix it with an underscore: `_ret`
+
+warning: unused variable: `i`
+    --> src/lib.rs:9590:13
+     |
+9590 |     let mut i: Int32 = 0;
+     |             ^ help: if this is intentional, prefix it with an underscore: `_i`
+
+warning: unused variable: `unusedTmp`
+    --> src/lib.rs:9595:13
+     |
+9595 |     let mut unusedTmp: *mut UChar = 0 as *mut UChar;
+     |             ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unusedTmp`
+
+warning: unused variable: `result`
+    --> src/lib.rs:9700:5
+     |
+9700 | let result = BZ2_bzReadClose(&mut bzerr_dummy, Some(Box::from_raw(bzf as *mut std::ffi::c_void)));
+     |     ^^^^^^ help: if this is intentional, prefix it with an underscore: `_result`
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9633:24
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9633 |     let unused_slice = unsafe { std::slice::from_raw_parts(unusedTmpV as *const u8, nUnused as usize) };
+     |                        ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9722:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9722 |             unsafe { fclose(zStream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9725:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9725 |             unsafe { fclose(stream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9733:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9733 |                     unsafe { CStr::from_ptr(progName).to_string_lossy() },
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9734:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9734 |                     unsafe { CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9765:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9765 |             unsafe { fclose(zStream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9768:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9768 |             unsafe { fclose(stream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9776:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9776 |                     unsafe { std::ffi::CStr::from_ptr(progName).to_string_lossy() },
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9777:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9777 |                     unsafe { std::ffi::CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9818:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9818 |                     unsafe { std::ffi::CStr::from_ptr(progName).to_string_lossy() },
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9819:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9819 |                     unsafe { std::ffi::CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9850:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9850 |             unsafe { fclose(zStream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9853:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9853 |             unsafe { fclose(stream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9861:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9861 |                     unsafe { CStr::from_ptr(progName).to_string_lossy() }, // Convert C string to Rust string
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9862:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9862 |                     unsafe { CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() } // Convert C string to Rust string
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9892:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9892 |             unsafe { fclose(zStream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9895:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9895 |             unsafe { fclose(stream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9903:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9903 |                     unsafe { std::ffi::CStr::from_ptr(progName).to_string_lossy() },
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9904:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9904 |                     unsafe { std::ffi::CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9935:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9935 |             unsafe { fclose(zStream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9938:13
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9938 |             unsafe { fclose(stream); }
+     |             ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9946:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9946 |                     unsafe { std::ffi::CStr::from_ptr(progName).to_string_lossy() },
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unnecessary `unsafe` block
+    --> src/lib.rs:9947:21
+     |
+9582 |     unsafe {
+     |     ------ because it's nested under this `unsafe` block
+...
+9947 |                     unsafe { std::ffi::CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                     ^^^^^^ unnecessary `unsafe` block
+
+warning: unused variable: `bzerr_dummy`
+     --> src/lib.rs:10017:13
+      |
+10017 |     let mut bzerr_dummy: Int32 = 0;
+      |             ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_bzerr_dummy`
+
+warning: unused variable: `i`
+     --> src/lib.rs:10020:13
+      |
+10020 |     let mut i: Int32 = 0;
+      |             ^ help: if this is intentional, prefix it with an underscore: `_i`
+
+warning: unused variable: `unusedTmp`
+     --> src/lib.rs:10025:13
+      |
+10025 |     let mut unusedTmp: *mut UChar = 0 as *mut UChar;
+      |             ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unusedTmp`
+
+warning: unused variable: `n`
+     --> src/lib.rs:10442:38
+      |
+10442 | unsafe extern "C" fn mySignalCatcher(n: i32) {
+      |                                      ^ help: if this is intentional, prefix it with an underscore: `_n`
+
+warning: unused variable: `n`
+     --> src/lib.rs:10448:51
+      |
+10448 | unsafe extern "C" fn mySIGSEGVorSIGBUScatcher(mut n: IntNative) {
+      |                                                   ^ help: if this is intentional, prefix it with an underscore: `_n`
+
+warning: unused variable: `name`
+     --> src/lib.rs:10748:26
+      |
+10748 |  fn containsDubiousChars(name: *mut i8) -> bool {
+      |                          ^^^^ help: if this is intentional, prefix it with an underscore: `_name`
+
+warning: unnecessary `unsafe` block
+     --> src/lib.rs:11013:56
+      |
+10790 |    unsafe {
+      |    ------ because it's nested under this `unsafe` block
+...
+11013 |         if let Err(e) = applySavedTimeInfoToOutputFile(unsafe { CStr::from_ptr(outName.as_mut_ptr()) }) {
+      |                                                        ^^^^^^ unnecessary `unsafe` block
+
+warning: unused variable: `magicNumberOK`
+     --> src/lib.rs:11034:13
+      |
+11034 |     let mut magicNumberOK: Bool = 0;
+      |             ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_magicNumberOK`
+
+warning: creating a mutable reference to mutable static
+    --> src/lib.rs:9734:45
+     |
+9734 |                     unsafe { CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                                             ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+     |
+     = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+     = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+     = note: `#[warn(static_mut_refs)]` (part of `#[warn(rust_2024_compatibility)]`) on by default
+
+warning: creating a mutable reference to mutable static
+    --> src/lib.rs:9777:55
+     |
+9777 |                     unsafe { std::ffi::CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                                                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+     |
+     = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+     = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+    --> src/lib.rs:9819:55
+     |
+9819 |                     unsafe { std::ffi::CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                                                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+     |
+     = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+     = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+    --> src/lib.rs:9862:45
+     |
+9862 |                     unsafe { CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() } // Convert C string to Rust string
+     |                                             ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+     |
+     = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+     = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+    --> src/lib.rs:9904:55
+     |
+9904 |                     unsafe { std::ffi::CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                                                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+     |
+     = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+     = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+    --> src/lib.rs:9947:55
+     |
+9947 |                     unsafe { std::ffi::CStr::from_ptr(inName.as_mut_ptr()).to_string_lossy() }
+     |                                                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+     |
+     = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+     = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10093:29
+      |
+10093 | ...                   inName.as_mut_ptr());
+      |                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+     --> src/lib.rs:10330:57
+      |
+10330 |         let in_name = unsafe { std::ffi::CStr::from_ptr(inName.as_ptr()) };
+      |                                                         ^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+     --> src/lib.rs:10331:58
+      |
+10331 |         let out_name = unsafe { std::ffi::CStr::from_ptr(outName.as_ptr()) };
+      |                                                          ^^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10365:23
+      |
+10365 |         retVal = stat(inName.as_mut_ptr(), &mut statBuf);
+      |                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10371:25
+      |
+10371 |                         outName.as_mut_ptr());
+      |                         ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10376:29
+      |
+10376 |             retVal = remove(outName.as_mut_ptr());
+      |                             ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10391:64
+      |
+10391 |                         *const std::os::raw::c_char, progName, outName.as_mut_ptr());
+      |                                                                ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10467:37
+      |
+10467 |     write(2 as std::os::raw::c_int, inName.as_mut_ptr() as *const std::os::raw::c_void,
+      |                                     ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10468:18
+      |
+10468 |           strlen(inName.as_mut_ptr()));
+      |                  ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10474:37
+      |
+10474 |     write(2 as std::os::raw::c_int, outName.as_mut_ptr() as *const std::os::raw::c_void,
+      |                                     ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10475:18
+      |
+10475 |           strlen(outName.as_mut_ptr()));
+      |                  ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+     --> src/lib.rs:10725:39
+      |
+10725 |         let file_meta_info = unsafe { &fileMetaInfo };
+      |                                       ^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+help: use `&raw const` instead to create a raw pointer
+      |
+10725 |         let file_meta_info = unsafe { &raw const fileMetaInfo };
+      |                                        +++++++++
+
+warning: creating a shared reference to mutable static
+     --> src/lib.rs:10736:39
+      |
+10736 |         let file_meta_info = unsafe { &fileMetaInfo };
+      |                                       ^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+help: use `&raw const` instead to create a raw pointer
+      |
+10736 |         let file_meta_info = unsafe { &raw const fileMetaInfo };
+      |                                        +++++++++
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10820:26
+      |
+10820 |             copyFileName(inName.as_mut_ptr(),
+      |                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10823:26
+      |
+10823 |             copyFileName(outName.as_mut_ptr(),
+      |                          ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10828:26
+      |
+10828 |             copyFileName(inName.as_mut_ptr(), name);
+      |                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10829:26
+      |
+10829 |             copyFileName(outName.as_mut_ptr(), name);
+      |                          ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10830:20
+      |
+10830 |             strcat(outName.as_mut_ptr(),
+      |                    ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10834:26
+      |
+10834 |             copyFileName(inName.as_mut_ptr(), name);
+      |                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10835:26
+      |
+10835 |             copyFileName(outName.as_mut_ptr(),
+      |                          ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10842:33
+      |
+10842 |            containsDubiousChars(inName.as_mut_ptr()) as std::os::raw::c_int != 0 {
+      |                                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10847:21
+      |
+10847 |                     inName.as_mut_ptr());
+      |                     ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10852:58
+      |
+10852 |     if srcMode != 1 as std::os::raw::c_int && fileExists(inName.as_mut_ptr()) == 0 {
+      |                                                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10855:60
+      |
+10855 |                     *const std::os::raw::c_char, progName, inName.as_mut_ptr(),
+      |                                                            ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10862:22
+      |
+10862 |         if hasSuffix(inName.as_mut_ptr(), zSuffix[i as usize]) != 0 {
+      |                      ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10867:25
+      |
+10867 |                         inName.as_mut_ptr(), zSuffix[i as usize]);
+      |                         ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10875:14
+      |
+10875 |         stat(inName.as_mut_ptr(), &mut statBuf);
+      |              ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10880:64
+      |
+10880 |                         *const std::os::raw::c_char, progName, inName.as_mut_ptr());
+      |                                                                ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10886:29
+      |
+10886 |            notAStandardFile(inName.as_mut_ptr()) as std::os::raw::c_int != 0 {
+      |                             ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10891:21
+      |
+10891 |                     inName.as_mut_ptr());
+      |                     ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10897:23
+      |
+10897 |            fileExists(outName.as_mut_ptr()) as std::os::raw::c_int != 0 {
+      |                       ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10899:20
+      |
+10899 |             remove(outName.as_mut_ptr());
+      |                    ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10904:21
+      |
+10904 |                     outName.as_mut_ptr());
+      |                     ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10910:33
+      |
+10910 |            { n = countHardLinks(inName.as_mut_ptr()); (n) > 0 as std::os::raw::c_int }
+      |                                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10914:63
+      |
+10914 |                     as *const std::os::raw::c_char, progName, inName.as_mut_ptr(), n,
+      |                                                               ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+     --> src/lib.rs:10924:31
+      |
+10924 |         saveInputFileMetaInfo(inName.as_ptr());
+      |                               ^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10945:23
+      |
+10945 |                 fopen(inName.as_mut_ptr(),
+      |                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10964:25
+      |
+10964 |                         inName.as_mut_ptr(), strerror(*__error()));
+      |                         ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10971:23
+      |
+10971 |                 fopen(inName.as_mut_ptr(),
+      |                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10974:37
+      |
+10974 |                 fopen_output_safely(outName.as_mut_ptr(),
+      |                                     ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10981:25
+      |
+10981 |                         outName.as_mut_ptr(), strerror(*__error()));
+      |                         ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:10990:25
+      |
+10990 |                         inName.as_mut_ptr(), strerror(*__error()));
+      |                         ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11002:17
+      |
+11002 |                 inName.as_mut_ptr());
+      |                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11003:13
+      |
+11003 |         pad(&mut inName, longestFileName);
+      |             ^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+help: use `&raw mut` instead to create a raw pointer
+      |
+11003 |         pad(&raw mut inName, longestFileName);
+      |              +++
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11013:80
+      |
+11013 |         if let Err(e) = applySavedTimeInfoToOutputFile(unsafe { CStr::from_ptr(outName.as_mut_ptr()) }) {
+      |                                                                                ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11018:48
+      |
+11018 |             let mut retVal: IntNative = remove(inName.as_mut_ptr());
+      |                                                ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11062:26
+      |
+11062 |             copyFileName(inName.as_mut_ptr(),
+      |                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11065:26
+      |
+11065 |             copyFileName(outName.as_mut_ptr(),
+      |                          ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11070:26
+      |
+11070 |             copyFileName(inName.as_mut_ptr(), name);
+      |                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11071:26
+      |
+11071 |             copyFileName(outName.as_mut_ptr(), name);
+      |                          ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11078:30
+      |
+11078 |                 if mapSuffix(outName.as_mut_ptr(), zSuffix[i as usize],
+      |                              ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11089:28
+      |
+11089 |                     strcat(outName.as_mut_ptr(),
+      |                            ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11095:26
+      |
+11095 |             copyFileName(inName.as_mut_ptr(), name);
+      |                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11096:26
+      |
+11096 |             copyFileName(outName.as_mut_ptr(),
+      |                          ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11103:33
+      |
+11103 |            containsDubiousChars(inName.as_mut_ptr()) as std::os::raw::c_int != 0 {
+      |                                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11108:21
+      |
+11108 |                     inName.as_mut_ptr());
+      |                     ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11113:58
+      |
+11113 |     if srcMode != 1 as std::os::raw::c_int && fileExists(inName.as_mut_ptr()) == 0 {
+      |                                                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11116:60
+      |
+11116 |                     *const std::os::raw::c_char, progName, inName.as_mut_ptr(),
+      |                                                            ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11122:14
+      |
+11122 |         stat(inName.as_mut_ptr(), &mut statBuf);
+      |              ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11127:64
+      |
+11127 |                         *const std::os::raw::c_char, progName, inName.as_mut_ptr());
+      |                                                                ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11133:29
+      |
+11133 |            notAStandardFile(inName.as_mut_ptr()) as std::os::raw::c_int != 0 {
+      |                             ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11138:21
+      |
+11138 |                     inName.as_mut_ptr());
+      |                     ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11148:21
+      |
+11148 |                     inName.as_mut_ptr(), outName.as_mut_ptr());
+      |                     ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11148:42
+      |
+11148 |                     inName.as_mut_ptr(), outName.as_mut_ptr());
+      |                                          ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11153:23
+      |
+11153 |            fileExists(outName.as_mut_ptr()) as std::os::raw::c_int != 0 {
+      |                       ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11155:20
+      |
+11155 |             remove(outName.as_mut_ptr());
+      |                    ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11160:21
+      |
+11160 |                     outName.as_mut_ptr());
+      |                     ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11166:33
+      |
+11166 |            { n = countHardLinks(inName.as_mut_ptr()); (n) > 0 as std::os::raw::c_int }
+      |                                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11170:63
+      |
+11170 |                     as *const std::os::raw::c_char, progName, inName.as_mut_ptr(), n,
+      |                                                               ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+     --> src/lib.rs:11180:31
+      |
+11180 |         saveInputFileMetaInfo(inName.as_ptr());
+      |                               ^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11200:23
+      |
+11200 |                 fopen(inName.as_mut_ptr(),
+      |                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11207:25
+      |
+11207 |                         inName.as_mut_ptr(), strerror(*__error()));
+      |                         ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11215:23
+      |
+11215 |                 fopen(inName.as_mut_ptr(),
+      |                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11218:37
+      |
+11218 |                 fopen_output_safely(outName.as_mut_ptr(),
+      |                                     ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11225:25
+      |
+11225 |                         outName.as_mut_ptr(), strerror(*__error()));
+      |                         ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11234:25
+      |
+11234 |                         inName.as_mut_ptr(), strerror(*__error()));
+      |                         ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11246:17
+      |
+11246 |                 inName.as_mut_ptr());
+      |                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11247:13
+      |
+11247 |         pad(&mut inName, longestFileName);
+      |             ^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+help: use `&raw mut` instead to create a raw pointer
+      |
+11247 |         pad(&raw mut inName, longestFileName);
+      |              +++
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11258:84
+      |
+11258 |             if let Err(e) = applySavedTimeInfoToOutputFile(unsafe { CStr::from_ptr(outName.as_mut_ptr()) }) {
+      |                                                                                    ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11263:52
+      |
+11263 |                 let mut retVal: IntNative = remove(inName.as_mut_ptr());
+      |                                                    ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11271:50
+      |
+11271 |             let mut retVal_0: IntNative = remove(outName.as_mut_ptr());
+      |                                                  ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11290:64
+      |
+11290 |                         *const std::os::raw::c_char, progName, inName.as_mut_ptr());
+      |                                                                ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11321:18
+      |
+11321 |     copyFileName(outName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11326:26
+      |
+11326 |             copyFileName(inName.as_mut_ptr(),
+      |                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11330:29
+      |
+11330 |         3 => { copyFileName(inName.as_mut_ptr(), name); }
+      |                             ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11331:29
+      |
+11331 |         2 => { copyFileName(inName.as_mut_ptr(), name); }
+      |                             ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11335:33
+      |
+11335 |            containsDubiousChars(inName.as_mut_ptr()) as std::os::raw::c_int != 0 {
+      |                                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11340:21
+      |
+11340 |                     inName.as_mut_ptr());
+      |                     ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11345:58
+      |
+11345 |     if srcMode != 1 as std::os::raw::c_int && fileExists(inName.as_mut_ptr()) == 0 {
+      |                                                          ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11348:60
+      |
+11348 |                     *const std::os::raw::c_char, progName, inName.as_mut_ptr(),
+      |                                                            ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11354:14
+      |
+11354 |         stat(inName.as_mut_ptr(), &mut statBuf);
+      |              ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11359:64
+      |
+11359 |                         *const std::os::raw::c_char, progName, inName.as_mut_ptr());
+      |                                                                ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11381:23
+      |
+11381 |                 fopen(inName.as_mut_ptr(),
+      |                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11387:25
+      |
+11387 |                         inName.as_mut_ptr(), strerror(*__error()));
+      |                         ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11398:17
+      |
+11398 |                 inName.as_mut_ptr());
+      |                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11399:13
+      |
+11399 |         pad(&mut inName, longestFileName);
+      |             ^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+help: use `&raw mut` instead to create a raw pointer
+      |
+11399 |         pad(&raw mut inName, longestFileName);
+      |              +++
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11539:18
+      |
+11539 |     copyFileName(inName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11542:18
+      |
+11542 |     copyFileName(outName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11545:18
+      |
+11545 |     copyFileName(progNameReally.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11548:15
+      |
+11548 |         &mut *progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize) as
+      |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> src/lib.rs:11551:15
+      |
+11551 |         &mut *progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize) as
+      |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: `bzip2_c2saferrust` (lib) generated 189 warnings (run `cargo fix --lib -p bzip2_c2saferrust` to apply 4 suggestions)
+    Finished `release` profile [optimized] target(s) in 3.45s

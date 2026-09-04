@@ -1,0 +1,37 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3985735421
+INFO: Loaded 1 modules   (11559 inline 8-bit counters): 11559 [0x55f269cca750, 0x55f269ccd477), 
+INFO: Loaded 1 PC tables (11559 PCs): 11559 [0x55f269ccd478,0x55f269cfa6e8), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/BZ2_bzBuffToBuffDecompress
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 149 ft: 150 corp: 1/1b exec/s: 0 rss: 34Mb
+#205	NEW    cov: 152 ft: 153 corp: 2/7b lim: 6 exec/s: 0 rss: 75Mb L: 6/6 MS: 3 CMP-CopyPart-CopyPart- DE: "\000 "-
+#222	NEW    cov: 153 ft: 154 corp: 3/12b lim: 6 exec/s: 0 rss: 75Mb L: 5/6 MS: 2 PersAutoDict-EraseBytes- DE: "\000 "-
+#434	NEW    cov: 155 ft: 156 corp: 4/19b lim: 8 exec/s: 0 rss: 76Mb L: 7/7 MS: 2 ChangeBit-InsertByte-
+#439	NEW    cov: 160 ft: 161 corp: 5/27b lim: 8 exec/s: 0 rss: 76Mb L: 8/8 MS: 5 InsertByte-ShuffleBytes-EraseBytes-PersAutoDict-CopyPart- DE: "\000 "-
+	NEW_FUNC[1/2]: 0x55f269ba33a0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/BZ2_bzBuffToBuffDecompress+0x1803a0) (BuildId: a28cd0e315f069892e6e38cd9129f21e09e45e75)
+	NEW_FUNC[2/2]: 0x55f269ba38f0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_bin/BZ2_bzBuffToBuffDecompress+0x1808f0) (BuildId: a28cd0e315f069892e6e38cd9129f21e09e45e75)
+#745	NEW    cov: 207 ft: 208 corp: 6/36b lim: 11 exec/s: 0 rss: 76Mb L: 9/9 MS: 1 InsertRepeatedBytes-
+#749	NEW    cov: 209 ft: 212 corp: 7/46b lim: 11 exec/s: 0 rss: 76Mb L: 10/10 MS: 4 ChangeBit-EraseBytes-CrossOver-InsertRepeatedBytes-
+#759	NEW    cov: 209 ft: 216 corp: 8/57b lim: 11 exec/s: 0 rss: 76Mb L: 11/11 MS: 5 ChangeBit-EraseBytes-CopyPart-PersAutoDict-InsertRepeatedBytes- DE: "\000 "-
+#1069	NEW    cov: 209 ft: 220 corp: 9/71b lim: 14 exec/s: 0 rss: 77Mb L: 14/14 MS: 5 CopyPart-ShuffleBytes-EraseBytes-ChangeBinInt-InsertRepeatedBytes-
+#1071	NEW    cov: 209 ft: 222 corp: 10/83b lim: 14 exec/s: 0 rss: 77Mb L: 12/14 MS: 2 CMP-CopyPart- DE: "\377\377\377\012"-
+#1415	NEW    cov: 211 ft: 225 corp: 11/99b lim: 17 exec/s: 0 rss: 78Mb L: 16/16 MS: 4 ShuffleBytes-InsertByte-ChangeBit-CopyPart-
+
+### sanitizer / crash report
+
+### tail
+"\001\000\000B" # Uses: 1402
+"\037\000\000\000\000\000\000\000" # Uses: 1255
+"\000\000\000\000\000\000\000\200" # Uses: 1046
+"\000v" # Uses: 956
+"\377\377" # Uses: 194
+###### End of recommended dictionary. ######
+Done 87959 runs in 46 second(s)
+stat::number_of_executed_units: 87959
+stat::average_exec_per_sec:     1912
+stat::new_units_added:          34
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              80

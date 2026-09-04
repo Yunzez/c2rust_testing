@@ -1,0 +1,896 @@
+{
+ "case": "ptrtrans_urlparser",
+ "tool": "PtrTrans",
+ "lib": "urlparser",
+ "builds": true,
+ "split": "eval",
+ "eps": 0.01,
+ "fingerprint": {
+  "repo_head": "b647a44",
+  "matcher_commit": "509751d",
+  "analyzer_src_commit": "509751d",
+  "matcher_sha256": "fe49e5bb76996922",
+  "c_analyzer_sha256": "b771a6b013b22779",
+  "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+  "stu_selector_dirty": false,
+  "rust_artifact_sha256": "b8c8250747eaf9b2",
+  "c_sources_sha256": "cbd5840e415350d4",
+  "tool_map_sha256": "025dac26c70f0465",
+  "params": {
+   "eps": 0.01,
+   "topo": true,
+   "rust_exclude_fns": [],
+   "drop_dirs": [],
+   "c_sources": [
+    "results/rq1_matching/raw/group_b_runs/ptrtrans_urlparser/input/urlparser/test.c"
+   ]
+  },
+  "id": "80129631d6fc4a14"
+ },
+ "rust_functions_dropped": [],
+ "duplicate_leafs": {},
+ "rows": [
+  {
+   "c_function": "main",
+   "c_file": "test.c",
+   "c_line": 6,
+   "c_signature": "() -> int",
+   "tool_claim": "main;box_i8_eq_str;box_cchar_eq_str",
+   "tool_claim_resolved": "main",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_1_Compile_Success",
+   "name_eq": "main",
+   "matcher_forced": "main",
+   "matcher_forced_score": 0.321,
+   "matcher_forced_conf": -0.017,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "main",
+   "truth_note": "test.c:6 -> src/test.rs:6: same sequence url_parse x2, url_data_inspect x2, 11+7 field asserts, 7 url_is_protocol asserts (http/https/git/ssh/sftp/ftp/javascript), then the 16 strcmp getter asserts in the same order with the same expected literals (\"user:pass\", \"subdomain.host.com:8080\", \"/p/a/t/h?query=string#hash\", \"8080\", \"jwerle/url.h.git\"...). Rust degrades the inputs: url literals truncated to \"git:\"/\"http:\" (test.rs:18-19) and url_parse is called with None (test.rs:27-28), so it panics at the first assert; still the sole translation of main. Nested helpers box_i8_eq_str (test.rs:83) and box_cchar_eq_str (test.rs:138) are translator-invented strcmp replacements listed in the tool claim; they correspond to no C function."
+  },
+  {
+   "c_function": "get_part",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *, format: const char *, l: int) -> char *",
+   "tool_claim": "get_part",
+   "tool_claim_resolved": "get_part",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_1_Compile_Success",
+   "name_eq": "get_part",
+   "matcher_forced": "get_part",
+   "matcher_forced_score": 0.514,
+   "matcher_forced_conf": 0.164,
+   "matcher_deploy": "get_part",
+   "prior": "unanimous",
+   "truth": "get_part",
+   "truth_note": "url.h:189 -> src/common/url_mod.rs:318: same skeleton tmp/tmp_url=strdup(url)/fmt_url=strdup(url)/ret, null check, strcpy(fmt_url,\"\") emulated as [0], fmt_url=strff(fmt_url,l) (line 338), has = tmp != tmp_url then ret=strdup(tmp) (354-358), fmt_url=strrwd(fmt_url,l) (365), return has?ret:NULL. Behavioural gap: the sscanf(fmt_url, format, tmp) at url.h:208 is dropped entirely (comment at 339-344), so the format argument is never used and the function returns [0] for any non-empty url."
+  },
+  {
+   "c_function": "strdup",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(str: const char *) -> char *",
+   "tool_claim": "strdup",
+   "tool_claim_resolved": "strdup",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_1_Compile_Success",
+   "name_eq": "strdup",
+   "matcher_forced": "strdup",
+   "matcher_forced_score": 0.478,
+   "matcher_forced_conf": 0.076,
+   "matcher_deploy": "strdup",
+   "prior": "unanimous",
+   "truth": "strdup",
+   "truth_note": "url.h:159 -> src/common/url_mod.rs:5: strlen loop stopping at 0 (lines 16-26), Vec::with_capacity(len+1) and copy including the NUL (28-35), None on null input. (The Rust indexes std::slice::from_ref(s)[len], which panics for len>=1 \u2014 a runtime bug, not a correspondence issue.)"
+  },
+  {
+   "c_function": "strff",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(ptr: char *, n: int) -> char *",
+   "tool_claim": "strff",
+   "tool_claim_resolved": "strff",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "strff",
+   "matcher_forced": "strff",
+   "matcher_forced_score": 0.428,
+   "matcher_forced_conf": -0.0,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "strff",
+   "truth_note": "url.h:169 -> src/common/url_mod.rs:258: for i in 0..n { y = *ptr++ } then return strdup(ptr) (line 273). Rust models ptr++ by setting ptr=None after the first iteration (267), so for n>0 it returns None instead of the suffix; structure (n-iteration loop + strdup of the advanced pointer) is the C body."
+  },
+  {
+   "c_function": "strrwd",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(ptr: char *, n: int) -> char *",
+   "tool_claim": "strrwd",
+   "tool_claim_resolved": "strrwd",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "strrwd",
+   "matcher_forced": "strrwd",
+   "matcher_forced_score": 0.426,
+   "matcher_forced_conf": -0.002,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "strrwd",
+   "truth_note": "url.h:179 -> src/common/url_mod.rs:275: for i in 0..n { y = *ptr-- } then strdup(ptr) (line 297). Rust reads *p into y (286) and leaves ptr unchanged (cannot decrement a reference) \u2014 same loop + strdup structure as C; distinguishable from strff by the read-of-*p vs pointer-to-int cast and the 'decrement' comment."
+  },
+  {
+   "c_function": "url_data_inspect",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(data: url_data_t *) -> void",
+   "tool_claim": "url_data_inspect",
+   "tool_claim_resolved": "url_data_inspect",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_data_inspect",
+   "matcher_forced": "url_data_inspect",
+   "matcher_forced_score": 0.406,
+   "matcher_forced_conf": 0.01,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "url_data_inspect",
+   "truth_note": "url.h:534 -> src/common/url_mod.rs:718: prints \"#url =>\" then the 11 fields in the identical C order .href .protocol .host .auth .hostname .pathname .search .path .hash .query .port with the same \"    .x: \\\"%s\\\"\" format (lines 719-733); adds an all-empty branch for data==None (735-747)."
+  },
+  {
+   "c_function": "url_free",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(data: url_data_t *) -> void",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "ELIDED",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "Free_Function",
+   "name_eq": "",
+   "matcher_forced": "",
+   "matcher_forced_score": "",
+   "matcher_forced_conf": "",
+   "matcher_deploy": "NONE",
+   "prior": "tool-says-elided",
+   "truth": "NONE",
+   "truth_note": "url.h:550 frees the 9 owned url_data_t fields; PtrTrans metadata marks it Free_Function (trans_rust_code = \"Free_Function\", no rust_definition_name). grep of the crate finds no url_free and no `impl Drop`; UrlData (url_mod.rs:216) holds Option<String> fields dropped implicitly, and Rust main (test.rs) has no call in place of the C url_free(parsed) at test.c:67. No Rust counterpart."
+  },
+  {
+   "c_function": "url_get_auth",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_auth",
+   "tool_claim_resolved": "url_get_auth",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_5_Compile_Failed",
+   "name_eq": "url_get_auth",
+   "matcher_forced": "url_get_auth",
+   "matcher_forced_score": 0.31,
+   "matcher_forced_conf": -0.115,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "STUB:url_get_auth",
+   "truth_note": "url.h:362 (url_get_protocol, l = strlen(protocol)+3, get_part(url, \"%[^@]\", l)) -> src/common/url_mod.rs:715-717 is `pub fn url_get_auth(url: Option<&i8>) -> Option<Box<[i8]>> { None }`: signature-only placeholder, no call to url_get_protocol or get_part, no \"%[^@]\" format. Metadata Verfi_Tag = Fixed_5_Compile_Failed; the attempted body (try_trans_error) died on a missing CString import (error_log E0433 at url_mod.rs:739) and PtrTrans reverted to the constant None. Not a translation, hence STUB."
+  },
+  {
+   "c_function": "url_get_hash",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_hash",
+   "tool_claim_resolved": "url_get_hash",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_hash",
+   "matcher_forced": "url_get_hash",
+   "matcher_forced_score": 0.398,
+   "matcher_forced_conf": -0.021,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "url_get_hash",
+   "truth_note": "url.h:486 -> src/common/url_mod.rs:1057: hash=[0] (1060), path=url_get_path(url)? (1063), pathname=url_get_pathname(url)? (1067), search=url_get_search(url)? (1069), pathname_len/search_len via strlen (1072-1079), tmp_path=strff(path, pathname_len+search_len) (1081), strrwd back (1096), return hash \u2014 identical call chain to C lines 490-509. The sscanf(tmp_path, \"%s\", hash) at url.h:502 is omitted (comment 1088-1092), so the returned hash is always the empty string."
+  },
+  {
+   "c_function": "url_get_host",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_host",
+   "tool_claim_resolved": "url_get_host",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_host",
+   "matcher_forced": "url_get_host",
+   "matcher_forced_score": 0.418,
+   "matcher_forced_conf": 0.019,
+   "matcher_deploy": "url_get_host",
+   "prior": "unanimous",
+   "truth": "url_get_host",
+   "truth_note": "url.h:392 -> src/common/url_mod.rs:816: hostname = url_get_hostname(url)? (818) then copy bytes up to the first ':' or NUL (821-827) = the C sscanf(hostname, \"%[^:]\", host) at url.h:398. Only Rust function that both calls url_get_hostname and cuts at ':'."
+  },
+  {
+   "c_function": "url_get_hostname",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_hostname",
+   "tool_claim_resolved": "url_get_hostname",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_hostname",
+   "matcher_forced": "url_get_pathname",
+   "matcher_forced_score": 0.383,
+   "matcher_forced_conf": -0.09,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "url_get_hostname",
+   "truth_note": "url.h:370 -> src/common/url_mod.rs:749: l=3 (751), protocol=url_get_protocol (756), tmp_protocol=strdup (761), auth=url_get_auth(url) (763), `if protocol.is_none() return None` (765), l += strlen(auth)+1 (773), l += strlen(protocol) (778), then url_is_ssh ? get_part(url,\"%[^:]\",l) : get_part(url,\"%[^/]\",l) (783-789) \u2014 the exact C computation of url.h:371-388 (protocol/auth/tmp_protocol/hostname degraded by passing None to url_get_protocol/strdup/url_is_ssh, but the get_part formats \"%[^:]\"/\"%[^/]\" and the l arithmetic are C's). Matcher forced proposal url_get_pathname is WRONG: Rust url_get_pathname (922) calls url_get_path and cuts at '?' (the C url_get_pathname), it never computes l or calls get_part/url_is_ssh."
+  },
+  {
+   "c_function": "url_get_path",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_path",
+   "tool_claim_resolved": "url_get_path",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_path",
+   "matcher_forced": "url_get_hostname",
+   "matcher_forced_score": 0.451,
+   "matcher_forced_conf": -0.022,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "STUB:url_get_path",
+   "truth_note": "url.h:421 (url_get_protocol + url_get_auth + url_get_hostname, l = 3+strlen(protocol)+strlen(hostname)+(auth?strlen(auth)+1), get_part(url, is_ssh?\":%s\":\"/%s\", l), sprintf(path, is_ssh?\"%s\":\"/%s\", tmp_path)) -> src/common/url_mod.rs:830-872: body is `let url_ref = url?;` + an empty block + `return None` \u2014 no call to url_get_protocol/url_get_auth/url_get_hostname/url_is_ssh/get_part, no \":%s\"/\"/%s\" format, no l arithmetic; the LLM's own comments (856-869) say it gave up and 'conservatively return None'. Constant body => signature-only placeholder => STUB under the labels.json definition, even though Verfi_Tag is No_Fix_Compile_Success (LLM-authored, not a Fixed_5 revert) \u2014 REVIEWER: flip to plain `url_get_path` if STUB is meant to cover only tool reverts. Matcher forced proposal url_get_hostname is WRONG: Rust url_get_hostname (749) computes the hostname via get_part \"%[^:]\"/\"%[^/]\" and is the counterpart of C url_get_hostname; the confusion is understandable (C url_get_path calls the same protocol/auth/hostname/is_ssh/get_part chain that Rust url_get_hostname exhibits) but it is still a different C function."
+  },
+  {
+   "c_function": "url_get_pathname",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_pathname",
+   "tool_claim_resolved": "url_get_pathname",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_pathname",
+   "matcher_forced": "url_get_path",
+   "matcher_forced_score": 0.277,
+   "matcher_forced_conf": -0.121,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "url_get_pathname",
+   "truth_note": "url.h:406 -> src/common/url_mod.rs:922: path = url_get_path(url)? (924), then take bytes up to the first '?' (934-935) = the C sscanf(path, \"%[^?]\", pathname) at url.h:413, NUL-terminate and return. Matcher forced proposal url_get_path is WRONG: Rust url_get_path (830) is a constant-None body that performs no '?' cut and no computation at all; the only Rust function that derives pathname from path by cutting at '?' is url_get_pathname."
+  },
+  {
+   "c_function": "url_get_port",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_port",
+   "tool_claim_resolved": "url_get_port",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_port",
+   "matcher_forced": "url_get_port",
+   "matcher_forced_score": 0.426,
+   "matcher_forced_conf": 0.007,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "url_get_port",
+   "truth_note": "url.h:513 -> src/common/url_mod.rs:875: hostname = url_get_hostname(url) (881), host = url_get_host(url) (883), None if hostname is None (888), tmp_hostname = strff(hostname, strlen(host)+1) (901-905) matching C line 519 (the +1 for ':'), then copy up to NUL emulating sscanf(tmp_hostname, \"%s\", port) (911-918)."
+  },
+  {
+   "c_function": "url_get_protocol",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_protocol",
+   "tool_claim_resolved": "url_get_protocol",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_protocol",
+   "matcher_forced": "url_get_protocol",
+   "matcher_forced_score": 0.418,
+   "matcher_forced_conf": 0.032,
+   "matcher_deploy": "url_get_protocol",
+   "prior": "unanimous",
+   "truth": "url_get_protocol",
+   "truth_note": "url.h:352 -> src/common/url_mod.rs:373: cut the url before the first ':' (382-383, approximating sscanf(url, \"%[^://]\", protocol) which also stops at '/'), truncate to 15 chars mirroring the URL_PROTOCOL_MAX_LENGTH=16 buffer (386-388), then gate on url_is_protocol and return None otherwise (390-394) = C lines 355-357."
+  },
+  {
+   "c_function": "url_get_query",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_query",
+   "tool_claim_resolved": "url_get_query",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_query",
+   "matcher_forced": "url_get_query",
+   "matcher_forced_score": 0.361,
+   "matcher_forced_conf": -0.068,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "url_get_query",
+   "truth_note": "url.h:476 -> src/common/url_mod.rs:1037: search = url_get_search(url) (1040), return None if search is None (1042), query = 1-byte [0] buffer (1048), return query \u2014 same call chain and null check as C lines 477-482; the sscanf(search, \"?%s\", query) at url.h:480 is deliberately omitted (doc comment 1028-1036), so query is always empty."
+  },
+  {
+   "c_function": "url_get_search",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> char *",
+   "tool_claim": "url_get_search",
+   "tool_claim_resolved": "url_get_search",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_get_search",
+   "matcher_forced": "url_get_search",
+   "matcher_forced_score": 0.358,
+   "matcher_forced_conf": -0.045,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "url_get_search",
+   "truth_note": "url.h:456 -> src/common/url_mod.rs:944: path = url_get_path (946), pathname = url_get_pathname (948), search=[0] (951), None if path is None (953), tmp_path = strff(path, strlen(pathname)) (971-978) = C line 463, copy up to the first '#' emulating sscanf(tmp_path, \"%[^#]\", search) (990-1003), strrwd(tmp_path, strlen(pathname)) with result discarded (1012-1015) = C line 467, return search. Only Rust function with the '#' cut."
+  },
+  {
+   "c_function": "url_inspect",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> void",
+   "tool_claim": "url_inspect",
+   "tool_claim_resolved": "url_inspect",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_1_Compile_Success",
+   "name_eq": "url_inspect",
+   "matcher_forced": "url_inspect",
+   "matcher_forced_score": 0.528,
+   "matcher_forced_conf": 0.099,
+   "matcher_deploy": "url_inspect",
+   "prior": "unanimous",
+   "truth": "url_inspect",
+   "truth_note": "url.h:528 `url_data_inspect(url_parse(url))` -> src/common/url_mod.rs:793: copies the input into an owned Vec (809), url_parse(owned_buf.as_deref_mut()) (810-813), url_data_inspect(parsed.as_ref()) (814)."
+  },
+  {
+   "c_function": "url_is_protocol",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(str: char *) -> _Bool",
+   "tool_claim": "url_is_protocol",
+   "tool_claim_resolved": "url_is_protocol",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_is_protocol",
+   "matcher_forced": "url_is_protocol",
+   "matcher_forced_score": 0.322,
+   "matcher_forced_conf": -0.058,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "url_is_protocol",
+   "truth_note": "url.h:326 -> src/common/url_mod.rs:306: linear scan of the URL_SCHEMES table (Rust const [&str; 177] at url_mod.rs:37, same list aaa..doi as url.h:54-74) with equality test, true on first hit, false otherwise (311-316); None -> false."
+  },
+  {
+   "c_function": "url_is_ssh",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(str: char *) -> _Bool",
+   "tool_claim": "url_is_ssh;SSH;GIT",
+   "tool_claim_resolved": "url_is_ssh",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "url_is_ssh",
+   "matcher_forced": "url_is_ssh",
+   "matcher_forced_score": 0.504,
+   "matcher_forced_conf": 0.091,
+   "matcher_deploy": "url_is_ssh",
+   "prior": "unanimous",
+   "truth": "url_is_ssh",
+   "truth_note": "url.h:339 -> src/common/url_mod.rs:231: dup = strdup(str) (233), then strcmp against \"ssh\" and \"git\" via the SSH/GIT i8 constants (245-252), true if either matches, false otherwise. Tool claim lists 'url_is_ssh;SSH;GIT': SSH and GIT are the local const arrays inside this fn, not separate functions."
+  },
+  {
+   "c_function": "url_parse",
+   "c_file": "",
+   "c_line": "",
+   "c_signature": "(url: char *) -> url_data_t *",
+   "tool_claim": "url_parse",
+   "tool_claim_resolved": "url_parse",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_3_Compile_Success",
+   "name_eq": "url_parse",
+   "matcher_forced": "url_parse",
+   "matcher_forced_score": 0.437,
+   "matcher_forced_conf": 0.029,
+   "matcher_deploy": "url_parse",
+   "prior": "unanimous",
+   "truth": "url_parse",
+   "truth_note": "url.h:227 -> src/common/url_mod.rs:396: href = url (405-446), tmp_url = strdup(url) (461-476), protocol = url_get_protocol(tmp_url) with None on failure (481-495), protocol_len = strlen+3 (497), is_ssh = url_is_ssh(protocol) (502-508), if '@' in tmp_url: auth = get_part(tmp_url, \"%[^@]\", protocol_len) and auth_len = strlen(auth)+1 (524-545), hostname = get_part(tmp_url, is_ssh?\"%[^:]\":\"%[^/]\", protocol_len+auth_len) (553-566), host = hostname split at ':' (581-585), tmp_path = get_part(tmp_url, is_ssh?\":%s\":\"/%s\", protocol_len+auth_len+hostname_len) (593-614), path = is_ssh ? tmp_path : \"/\"+tmp_path (627-631), pathname = path cut at '?' or '#' (639-648), search = path[pathname_len..] cut at '#' (659-674), query = search minus leading '?' (683-687), hash = path[pathname_len+search_len..] (693-700), port = hostname[host_len+1..] (705-711). Every step of C lines 228-322 is present in order."
+  }
+ ],
+ "rust_inventory": [
+  {
+   "rust_function": "strdup",
+   "file": "src/common/url_mod.rs",
+   "line": 5,
+   "signature": "(str_ptr: Option<&i8>) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "strdup",
+   "matcher_proposed_for": "strdup"
+  },
+  {
+   "rust_function": "url_is_ssh",
+   "file": "src/common/url_mod.rs",
+   "line": 231,
+   "signature": "(str_ptr: Option<&i8>) -> bool",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_is_ssh",
+   "matcher_proposed_for": "url_is_ssh"
+  },
+  {
+   "rust_function": "strff",
+   "file": "src/common/url_mod.rs",
+   "line": 258,
+   "signature": "(ptr: Option<&i8>, n: i32) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "strff",
+   "matcher_proposed_for": "strff"
+  },
+  {
+   "rust_function": "strrwd",
+   "file": "src/common/url_mod.rs",
+   "line": 275,
+   "signature": "(ptr: Option<&i8>, n: i32) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "strrwd",
+   "matcher_proposed_for": "strrwd"
+  },
+  {
+   "rust_function": "url_is_protocol",
+   "file": "src/common/url_mod.rs",
+   "line": 306,
+   "signature": "(str: Option<&str>) -> bool",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_is_protocol",
+   "matcher_proposed_for": "url_is_protocol"
+  },
+  {
+   "rust_function": "get_part",
+   "file": "src/common/url_mod.rs",
+   "line": 318,
+   "signature": "(url: Option<&i8>, format: Option<&i8>, l: i32) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "get_part",
+   "matcher_proposed_for": "get_part"
+  },
+  {
+   "rust_function": "url_get_protocol",
+   "file": "src/common/url_mod.rs",
+   "line": 373,
+   "signature": "(url: Option<&CStr>) -> Option<String>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_protocol",
+   "matcher_proposed_for": "url_get_protocol"
+  },
+  {
+   "rust_function": "url_parse",
+   "file": "src/common/url_mod.rs",
+   "line": 396,
+   "signature": "(url: Option<&'a mut [i8]>) -> Option<UrlData<'a>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_parse",
+   "matcher_proposed_for": "url_parse"
+  },
+  {
+   "rust_function": "url_get_auth",
+   "file": "src/common/url_mod.rs",
+   "line": 715,
+   "signature": "(url: Option<&i8>) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_auth",
+   "matcher_proposed_for": "url_get_auth"
+  },
+  {
+   "rust_function": "url_data_inspect",
+   "file": "src/common/url_mod.rs",
+   "line": 718,
+   "signature": "(data: Option<&UrlData<'a>>) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_data_inspect",
+   "matcher_proposed_for": "url_data_inspect"
+  },
+  {
+   "rust_function": "url_get_hostname",
+   "file": "src/common/url_mod.rs",
+   "line": 749,
+   "signature": "(url: Option<&i8>) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_hostname",
+   "matcher_proposed_for": "url_get_path"
+  },
+  {
+   "rust_function": "url_inspect",
+   "file": "src/common/url_mod.rs",
+   "line": 793,
+   "signature": "(url: Option<&[i8]>) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_inspect",
+   "matcher_proposed_for": "url_inspect"
+  },
+  {
+   "rust_function": "url_get_host",
+   "file": "src/common/url_mod.rs",
+   "line": 816,
+   "signature": "(url: Option<&i8>) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_host",
+   "matcher_proposed_for": "url_get_host"
+  },
+  {
+   "rust_function": "url_get_path",
+   "file": "src/common/url_mod.rs",
+   "line": 830,
+   "signature": "(url: Option<&i8>) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_path",
+   "matcher_proposed_for": "url_get_pathname"
+  },
+  {
+   "rust_function": "url_get_port",
+   "file": "src/common/url_mod.rs",
+   "line": 875,
+   "signature": "(url: Option<&i8>) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_port",
+   "matcher_proposed_for": "url_get_port"
+  },
+  {
+   "rust_function": "url_get_pathname",
+   "file": "src/common/url_mod.rs",
+   "line": 922,
+   "signature": "(url: Option<&i8>) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_pathname",
+   "matcher_proposed_for": "url_get_hostname"
+  },
+  {
+   "rust_function": "url_get_search",
+   "file": "src/common/url_mod.rs",
+   "line": 944,
+   "signature": "(url: Option<&c_char>) -> Option<Box<[c_char]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_search",
+   "matcher_proposed_for": "url_get_search"
+  },
+  {
+   "rust_function": "url_get_query",
+   "file": "src/common/url_mod.rs",
+   "line": 1037,
+   "signature": "(url: Option<&c_char>) -> Option<Box<[c_char]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_query",
+   "matcher_proposed_for": "url_get_query"
+  },
+  {
+   "rust_function": "url_get_hash",
+   "file": "src/common/url_mod.rs",
+   "line": 1057,
+   "signature": "(url: Option<&i8>) -> Option<Box<[i8]>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "url_get_hash",
+   "matcher_proposed_for": "url_get_hash"
+  },
+  {
+   "rust_function": "main",
+   "file": "src/test.rs",
+   "line": 6,
+   "signature": "() -> i32",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "main",
+   "matcher_proposed_for": "main"
+  }
+ ],
+ "verifi_tags": {
+  "Fixed_1_Compile_Success": 4,
+  "No_Fix_Compile_Success": 14,
+  "Free_Function": 1,
+  "Fixed_3_Compile_Success": 1,
+  "Fixed_5_Compile_Failed": 1
+ },
+ "matcher_forced_raw": [
+  [
+   "strdup",
+   "strdup",
+   0.47815579997925284,
+   0.07585497253198165
+  ],
+  [
+   "strff",
+   "strff",
+   0.42774282352427384,
+   -0.000474847221629382
+  ],
+  [
+   "strrwd",
+   "strrwd",
+   0.42603583768994835,
+   -0.0021818330559548738
+  ],
+  [
+   "get_part",
+   "get_part",
+   0.5137938919338274,
+   0.16438358577756196
+  ],
+  [
+   "url_parse",
+   "url_parse",
+   0.4373595747322952,
+   0.02897288533067016
+  ],
+  [
+   "url_is_protocol",
+   "url_is_protocol",
+   0.32220517696694967,
+   -0.05778906152395813
+  ],
+  [
+   "url_is_ssh",
+   "url_is_ssh",
+   0.5043119683892072,
+   0.09141318804871623
+  ],
+  [
+   "url_get_protocol",
+   "url_get_protocol",
+   0.41787482457086983,
+   0.032374334933221616
+  ],
+  [
+   "url_get_auth",
+   "url_get_auth",
+   0.3104604722411791,
+   -0.11502458036927132
+  ],
+  [
+   "url_get_hostname",
+   "url_get_pathname",
+   0.38347219573107605,
+   -0.0895120788132181
+  ],
+  [
+   "url_get_host",
+   "url_get_host",
+   0.41833507928830704,
+   0.0191979562716047
+  ],
+  [
+   "url_get_pathname",
+   "url_get_path",
+   0.2770090495208188,
+   -0.121007727745497
+  ],
+  [
+   "url_get_path",
+   "url_get_hostname",
+   0.45076965967483884,
+   -0.022214614869455307
+  ],
+  [
+   "url_get_search",
+   "url_get_search",
+   0.3577017511234153,
+   -0.04481122344235178
+  ],
+  [
+   "url_get_query",
+   "url_get_query",
+   0.36057080036556455,
+   -0.06828663890610753
+  ],
+  [
+   "url_get_hash",
+   "url_get_hash",
+   0.39797192092167744,
+   -0.021491527710323755
+  ],
+  [
+   "url_get_port",
+   "url_get_port",
+   0.4263201275938244,
+   0.006856678961823237
+  ],
+  [
+   "url_inspect",
+   "url_inspect",
+   0.5280193727008451,
+   0.09916193342917301
+  ],
+  [
+   "url_data_inspect",
+   "url_data_inspect",
+   0.4063082095523244,
+   0.009523741821327092
+  ],
+  [
+   "main",
+   "main",
+   0.32051357102769856,
+   -0.017379833361380603
+  ]
+ ],
+ "matcher_deploy_raw": [
+  [
+   "strdup",
+   "strdup",
+   0.47815579997925284,
+   0.07585497253198165
+  ],
+  [
+   "get_part",
+   "get_part",
+   0.5137938919338274,
+   0.16438358577756196
+  ],
+  [
+   "url_parse",
+   "url_parse",
+   0.4373595747322952,
+   0.02897288533067016
+  ],
+  [
+   "url_is_ssh",
+   "url_is_ssh",
+   0.5043119683892072,
+   0.09141318804871623
+  ],
+  [
+   "url_get_protocol",
+   "url_get_protocol",
+   0.41787482457086983,
+   0.032374334933221616
+  ],
+  [
+   "url_get_host",
+   "url_get_host",
+   0.41833507928830704,
+   0.0191979562716047
+  ],
+  [
+   "url_inspect",
+   "url_inspect",
+   0.5280193727008451,
+   0.09916193342917301
+  ]
+ ],
+ "matcher_deploy_ambiguous": [
+  [
+   "strff",
+   "strff",
+   0.42774282352427384,
+   -0.000474847221629382
+  ],
+  [
+   "strrwd",
+   "strrwd",
+   0.42603583768994835,
+   -0.0021818330559548738
+  ],
+  [
+   "url_is_protocol",
+   "url_is_protocol",
+   0.32220517696694967,
+   -0.05778906152395813
+  ],
+  [
+   "url_get_auth",
+   "url_get_auth",
+   0.3104604722411791,
+   -0.11502458036927132
+  ],
+  [
+   "url_get_hostname",
+   "url_get_pathname",
+   0.38347219573107605,
+   -0.0895120788132181
+  ],
+  [
+   "url_get_pathname",
+   "url_get_path",
+   0.2770090495208188,
+   -0.121007727745497
+  ],
+  [
+   "url_get_path",
+   "url_get_hostname",
+   0.45076965967483884,
+   -0.022214614869455307
+  ],
+  [
+   "url_get_search",
+   "url_get_search",
+   0.3577017511234153,
+   -0.04481122344235178
+  ],
+  [
+   "url_get_query",
+   "url_get_query",
+   0.36057080036556455,
+   -0.06828663890610753
+  ],
+  [
+   "url_get_hash",
+   "url_get_hash",
+   0.39797192092167744,
+   -0.021491527710323755
+  ],
+  [
+   "url_get_port",
+   "url_get_port",
+   0.4263201275938244,
+   0.006856678961823237
+  ],
+  [
+   "url_data_inspect",
+   "url_data_inspect",
+   0.4063082095523244,
+   0.009523741821327092
+  ],
+  [
+   "main",
+   "main",
+   0.32051357102769856,
+   -0.017379833361380603
+  ]
+ ],
+ "labels_meta": {
+  "case": "ptrtrans_urlparser",
+  "sheet_fingerprint": "80129631d6fc4a14",
+  "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+  "method": "manual code reading of each C function body (url.h / test.c) against every candidate Rust function (same name, tool claim, matcher forced proposal, and every other function in the 20-entry Rust inventory) plus a grep of the whole crate for url_free / Drop impls and a check of the PtrTrans metadata Verfi_Tag / trans_rust_code for the reverted and elided units",
+  "date": "2026-09-02",
+  "reviewed_by_user": false
+ }
+}

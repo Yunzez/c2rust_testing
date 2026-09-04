@@ -1,0 +1,670 @@
+{
+ "case": "sactor_genann",
+ "tool": "SACTOR",
+ "lib": "genann",
+ "builds": true,
+ "split": "eval",
+ "eps": 0.01,
+ "fingerprint": {
+  "repo_head": "b647a44",
+  "matcher_commit": "509751d",
+  "analyzer_src_commit": "509751d",
+  "matcher_sha256": "fe49e5bb76996922",
+  "c_analyzer_sha256": "b771a6b013b22779",
+  "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+  "stu_selector_dirty": false,
+  "rust_artifact_sha256": "afc90451ccfde28b",
+  "c_sources_sha256": "e57b4a33b2326b40",
+  "tool_map_sha256": null,
+  "params": {
+   "eps": 0.01,
+   "topo": true,
+   "rust_exclude_fns": [
+    "main"
+   ],
+   "drop_dirs": [],
+   "c_sources": [
+    "tools/frameworks/crown/c-code/genann-1.0.0/c/genann.c"
+   ]
+  },
+  "id": "d5122fb19359e89e"
+ },
+ "rust_functions_dropped": [
+  "main"
+ ],
+ "duplicate_leafs": {},
+ "rows": [
+  {
+   "c_function": "genann_act_hidden_indirect",
+   "c_file": "genann.c",
+   "c_line": 45,
+   "c_signature": "(ann: const struct genann *, a: double) -> double",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_act_hidden_indirect",
+   "matcher_forced": "genann_act_hidden_indirect",
+   "matcher_forced_score": 0.709,
+   "matcher_forced_conf": 0.0,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "single-source",
+   "truth": "genann_act_hidden_indirect",
+   "truth_note": "genann.c:45 -> assembled_translation.rs:28, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_act_output_indirect",
+   "c_file": "genann.c",
+   "c_line": 49,
+   "c_signature": "(ann: const struct genann *, a: double) -> double",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_act_output_indirect",
+   "matcher_forced": "genann_act_output_indirect",
+   "matcher_forced_score": 0.704,
+   "matcher_forced_conf": -0.005,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "single-source",
+   "truth": "genann_act_output_indirect",
+   "truth_note": "genann.c:49 -> assembled_translation.rs:38, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_act_sigmoid",
+   "c_file": "genann.c",
+   "c_line": 70,
+   "c_signature": "(ann: const genann *, a: double) -> double",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_act_sigmoid",
+   "matcher_forced": "genann_act_sigmoid",
+   "matcher_forced_score": 0.695,
+   "matcher_forced_conf": 0.266,
+   "matcher_deploy": "genann_act_sigmoid",
+   "prior": "single-source",
+   "truth": "genann_act_sigmoid",
+   "truth_note": "genann.c:70 -> assembled_translation.rs:49, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_init_sigmoid_lookup",
+   "c_file": "genann.c",
+   "c_line": 76,
+   "c_signature": "(ann: const genann *) -> void",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_init_sigmoid_lookup",
+   "matcher_forced": "genann_init_sigmoid_lookup",
+   "matcher_forced_score": 0.683,
+   "matcher_forced_conf": 0.212,
+   "matcher_deploy": "genann_init_sigmoid_lookup",
+   "prior": "single-source",
+   "truth": "genann_init_sigmoid_lookup",
+   "truth_note": "genann.c:76 -> assembled_translation.rs:59, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_act_sigmoid_cached",
+   "c_file": "genann.c",
+   "c_line": 86,
+   "c_signature": "(ann: const genann *, a: double) -> double",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_act_sigmoid_cached",
+   "matcher_forced": "genann_act_sigmoid_cached",
+   "matcher_forced_score": 0.55,
+   "matcher_forced_conf": 0.101,
+   "matcher_deploy": "genann_act_sigmoid_cached",
+   "prior": "single-source",
+   "truth": "genann_act_sigmoid_cached",
+   "truth_note": "genann.c:86 -> assembled_translation.rs:70, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_act_linear",
+   "c_file": "genann.c",
+   "c_line": 100,
+   "c_signature": "(ann: const struct genann *, a: double) -> double",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_act_linear",
+   "matcher_forced": "genann_act_linear",
+   "matcher_forced_score": 0.704,
+   "matcher_forced_conf": 0.212,
+   "matcher_deploy": "genann_act_linear",
+   "prior": "single-source",
+   "truth": "genann_act_linear",
+   "truth_note": "genann.c:100 -> assembled_translation.rs:110, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_act_threshold",
+   "c_file": "genann.c",
+   "c_line": 104,
+   "c_signature": "(ann: const struct genann *, a: double) -> double",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_act_threshold",
+   "matcher_forced": "genann_act_threshold",
+   "matcher_forced_score": 0.716,
+   "matcher_forced_conf": 0.224,
+   "matcher_deploy": "genann_act_threshold",
+   "prior": "single-source",
+   "truth": "genann_act_threshold",
+   "truth_note": "genann.c:104 -> assembled_translation.rs:114, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_init",
+   "c_file": "genann.c",
+   "c_line": 108,
+   "c_signature": "(inputs: int, hidden_layers: int, hidden: int, outputs: int) -> genann *",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_init",
+   "matcher_forced": "genann_init",
+   "matcher_forced_score": 0.602,
+   "matcher_forced_conf": 0.267,
+   "matcher_deploy": "genann_init",
+   "prior": "single-source",
+   "truth": "genann_init",
+   "truth_note": "genann.c:108 -> assembled_translation.rs:119, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_read",
+   "c_file": "genann.c",
+   "c_line": 150,
+   "c_signature": "(in: FILE *) -> genann *",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_read",
+   "matcher_forced": "genann_read",
+   "matcher_forced_score": 0.584,
+   "matcher_forced_conf": 0.28,
+   "matcher_deploy": "genann_read",
+   "prior": "single-source",
+   "truth": "genann_read",
+   "truth_note": "genann.c:150 -> assembled_translation.rs:173, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_copy",
+   "c_file": "genann.c",
+   "c_line": 179,
+   "c_signature": "(ann: const genann *) -> genann *",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_copy",
+   "matcher_forced": "genann_copy",
+   "matcher_forced_score": 0.663,
+   "matcher_forced_conf": 0.226,
+   "matcher_deploy": "genann_copy",
+   "prior": "single-source",
+   "truth": "genann_copy",
+   "truth_note": "genann.c:179 -> assembled_translation.rs:215, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_randomize",
+   "c_file": "genann.c",
+   "c_line": 195,
+   "c_signature": "(ann: genann *) -> void",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_randomize",
+   "matcher_forced": "genann_randomize",
+   "matcher_forced_score": 0.643,
+   "matcher_forced_conf": 0.172,
+   "matcher_deploy": "genann_randomize",
+   "prior": "single-source",
+   "truth": "genann_randomize",
+   "truth_note": "genann.c:195 -> assembled_translation.rs:241, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_free",
+   "c_file": "genann.c",
+   "c_line": 205,
+   "c_signature": "(ann: genann *) -> void",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_free",
+   "matcher_forced": "genann_free",
+   "matcher_forced_score": 0.659,
+   "matcher_forced_conf": 0.257,
+   "matcher_deploy": "genann_free",
+   "prior": "single-source",
+   "truth": "genann_free",
+   "truth_note": "genann.c:205 -> assembled_translation.rs:262, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_run",
+   "c_file": "genann.c",
+   "c_line": 211,
+   "c_signature": "(ann: const genann *, inputs: const double *) -> const double *",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_run",
+   "matcher_forced": "genann_run",
+   "matcher_forced_score": 0.589,
+   "matcher_forced_conf": 0.176,
+   "matcher_deploy": "genann_run",
+   "prior": "single-source",
+   "truth": "genann_run",
+   "truth_note": "genann.c:211 -> assembled_translation.rs:265, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_train",
+   "c_file": "genann.c",
+   "c_line": 278,
+   "c_signature": "(ann: const genann *, inputs: const double *, desired_outputs: const double *, learning_rate: double) -> void",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_train",
+   "matcher_forced": "genann_train",
+   "matcher_forced_score": 0.705,
+   "matcher_forced_conf": 0.401,
+   "matcher_deploy": "genann_train",
+   "prior": "single-source",
+   "truth": "genann_train",
+   "truth_note": "genann.c:278 -> assembled_translation.rs:400, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  },
+  {
+   "c_function": "genann_write",
+   "c_file": "genann.c",
+   "c_line": 396,
+   "c_signature": "(ann: const genann *, out: FILE *) -> void",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "NO_MAP",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "",
+   "name_eq": "genann_write",
+   "matcher_forced": "genann_write",
+   "matcher_forced_score": 0.427,
+   "matcher_forced_conf": 0.031,
+   "matcher_deploy": "genann_write",
+   "prior": "single-source",
+   "truth": "genann_write",
+   "truth_note": "genann.c:396 -> assembled_translation.rs:573, same name and signature; SACTOR keeps C names (unsafe extern fn), helpers nested inside (e.g. genann_random inside genann_randomize, assert_expr inside genann_run) are not inventory entries"
+  }
+ ],
+ "rust_inventory": [
+  {
+   "rust_function": "genann_act_hidden_indirect",
+   "file": "src/lib.rs",
+   "line": 28,
+   "signature": "(ann: *const genann, a: ::core::ffi::c_double) -> ::core::ffi::c_double",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_act_hidden_indirect"
+  },
+  {
+   "rust_function": "genann_act_output_indirect",
+   "file": "src/lib.rs",
+   "line": 38,
+   "signature": "(ann: *const genann, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_act_output_indirect"
+  },
+  {
+   "rust_function": "genann_act_sigmoid",
+   "file": "src/lib.rs",
+   "line": 49,
+   "signature": "(ann: *const genann, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_act_sigmoid"
+  },
+  {
+   "rust_function": "genann_init_sigmoid_lookup",
+   "file": "src/lib.rs",
+   "line": 59,
+   "signature": "(ann: *const genann) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_init_sigmoid_lookup"
+  },
+  {
+   "rust_function": "genann_act_sigmoid_cached",
+   "file": "src/lib.rs",
+   "line": 70,
+   "signature": "(ann: *const crate::genann, a: libc::c_double) -> libc::c_double",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_act_sigmoid_cached"
+  },
+  {
+   "rust_function": "genann_act_linear",
+   "file": "src/lib.rs",
+   "line": 110,
+   "signature": "(ann: *const genann, a: libc::c_double) -> libc::c_double",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_act_linear"
+  },
+  {
+   "rust_function": "genann_act_threshold",
+   "file": "src/lib.rs",
+   "line": 114,
+   "signature": "(ann: *const genann, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_act_threshold"
+  },
+  {
+   "rust_function": "genann_init",
+   "file": "src/lib.rs",
+   "line": 119,
+   "signature": "(inputs: libc::c_int, hidden_layers: libc::c_int, hidden: libc::c_int, outputs: libc::c_int) -> *mut genann",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_init"
+  },
+  {
+   "rust_function": "genann_read",
+   "file": "src/lib.rs",
+   "line": 173,
+   "signature": "(in_: *mut libc::FILE) -> *mut genann",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_read"
+  },
+  {
+   "rust_function": "genann_copy",
+   "file": "src/lib.rs",
+   "line": 215,
+   "signature": "(ann: *const genann) -> *mut genann",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_copy"
+  },
+  {
+   "rust_function": "genann_randomize",
+   "file": "src/lib.rs",
+   "line": 241,
+   "signature": "(ann: *mut genann) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_randomize"
+  },
+  {
+   "rust_function": "genann_free",
+   "file": "src/lib.rs",
+   "line": 262,
+   "signature": "(ann: *mut genann) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_free"
+  },
+  {
+   "rust_function": "genann_run",
+   "file": "src/lib.rs",
+   "line": 265,
+   "signature": "(ann: *const genann, inputs: *const f64) -> *const f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_run"
+  },
+  {
+   "rust_function": "genann_train",
+   "file": "src/lib.rs",
+   "line": 400,
+   "signature": "(ann: *const genann, inputs: *const f64, desired_outputs: *const f64, learning_rate: f64) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_train"
+  },
+  {
+   "rust_function": "genann_write",
+   "file": "src/lib.rs",
+   "line": 573,
+   "signature": "(ann: *const genann, out: *mut libc::FILE) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_write"
+  }
+ ],
+ "verifi_tags": {},
+ "matcher_forced_raw": [
+  [
+   "genann_act_hidden_indirect",
+   "genann_act_hidden_indirect",
+   0.7091340948720921,
+   0.0
+  ],
+  [
+   "genann_act_output_indirect",
+   "genann_act_output_indirect",
+   0.7036916333336306,
+   -0.005442461538461507
+  ],
+  [
+   "genann_act_sigmoid",
+   "genann_act_sigmoid",
+   0.6946536867479916,
+   0.26576968201435
+  ],
+  [
+   "genann_init_sigmoid_lookup",
+   "genann_init_sigmoid_lookup",
+   0.6829190747853859,
+   0.21207672855097426
+  ],
+  [
+   "genann_act_sigmoid_cached",
+   "genann_act_sigmoid_cached",
+   0.549859673787225,
+   0.10057286060041182
+  ],
+  [
+   "genann_act_linear",
+   "genann_act_linear",
+   0.7039428571428572,
+   0.21214285714285724
+  ],
+  [
+   "genann_act_threshold",
+   "genann_act_threshold",
+   0.7155714285714285,
+   0.22377142857142857
+  ],
+  [
+   "genann_init",
+   "genann_init",
+   0.6020867779366651,
+   0.2665026652572885
+  ],
+  [
+   "genann_read",
+   "genann_read",
+   0.5843504831529183,
+   0.279961356683174
+  ],
+  [
+   "genann_copy",
+   "genann_copy",
+   0.6628572148063936,
+   0.2260787578881192
+  ],
+  [
+   "genann_randomize",
+   "genann_randomize",
+   0.642852776468284,
+   0.1720104302338723
+  ],
+  [
+   "genann_free",
+   "genann_free",
+   0.6588080955833403,
+   0.25688304881420954
+  ],
+  [
+   "genann_run",
+   "genann_run",
+   0.5890078410921802,
+   0.17641968529061025
+  ],
+  [
+   "genann_train",
+   "genann_train",
+   0.7053928574419069,
+   0.4010037309721627
+  ],
+  [
+   "genann_write",
+   "genann_write",
+   0.4271421604787047,
+   0.03127340672595946
+  ]
+ ],
+ "matcher_deploy_raw": [
+  [
+   "genann_act_sigmoid",
+   "genann_act_sigmoid",
+   0.6946536867479916,
+   0.26576968201435
+  ],
+  [
+   "genann_init_sigmoid_lookup",
+   "genann_init_sigmoid_lookup",
+   0.6829190747853859,
+   0.21207672855097426
+  ],
+  [
+   "genann_act_sigmoid_cached",
+   "genann_act_sigmoid_cached",
+   0.549859673787225,
+   0.10057286060041182
+  ],
+  [
+   "genann_act_linear",
+   "genann_act_linear",
+   0.7039428571428572,
+   0.21214285714285724
+  ],
+  [
+   "genann_act_threshold",
+   "genann_act_threshold",
+   0.7155714285714285,
+   0.22377142857142857
+  ],
+  [
+   "genann_init",
+   "genann_init",
+   0.6020867779366651,
+   0.2665026652572885
+  ],
+  [
+   "genann_read",
+   "genann_read",
+   0.5843504831529183,
+   0.279961356683174
+  ],
+  [
+   "genann_copy",
+   "genann_copy",
+   0.6628572148063936,
+   0.2260787578881192
+  ],
+  [
+   "genann_randomize",
+   "genann_randomize",
+   0.642852776468284,
+   0.1720104302338723
+  ],
+  [
+   "genann_free",
+   "genann_free",
+   0.6588080955833403,
+   0.25688304881420954
+  ],
+  [
+   "genann_run",
+   "genann_run",
+   0.5890078410921802,
+   0.17641968529061025
+  ],
+  [
+   "genann_train",
+   "genann_train",
+   0.7053928574419069,
+   0.4010037309721627
+  ],
+  [
+   "genann_write",
+   "genann_write",
+   0.4271421604787047,
+   0.03127340672595946
+  ]
+ ],
+ "matcher_deploy_ambiguous": [
+  [
+   "genann_act_hidden_indirect",
+   "genann_act_hidden_indirect",
+   0.7091340948720921,
+   0.0
+  ],
+  [
+   "genann_act_output_indirect",
+   "genann_act_output_indirect",
+   0.7036916333336306,
+   -0.005442461538461507
+  ]
+ ],
+ "labels_meta": {
+  "case": "sactor_genann",
+  "sheet_fingerprint": "d5122fb19359e89e",
+  "labeler": "Claude (claude-fable-5-1), session 6278f822",
+  "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
+  "date": "2026-09-01",
+  "reviewed_by_user": false
+ }
+}

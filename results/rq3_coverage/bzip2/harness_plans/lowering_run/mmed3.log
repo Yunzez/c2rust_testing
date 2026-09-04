@@ -1,0 +1,37 @@
+### head
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3512195264
+INFO: Loaded 1 modules   (663 inline 8-bit counters): 663 [0x55ac15530370, 0x55ac15530607), 
+INFO: Loaded 1 PC tables (663 PCs): 663 [0x55ac15530608,0x55ac15532f78), 
+INFO:        0 files found in /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/plan_corpus/mmed3
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 35 ft: 36 corp: 1/1b exec/s: 0 rss: 32Mb
+#3	NEW    cov: 37 ft: 38 corp: 2/3b lim: 4 exec/s: 0 rss: 32Mb L: 2/2 MS: 1 InsertByte-
+#11	NEW    cov: 38 ft: 39 corp: 3/6b lim: 4 exec/s: 0 rss: 33Mb L: 3/3 MS: 3 CrossOver-ShuffleBytes-InsertByte-
+#426	NEW    cov: 41 ft: 42 corp: 4/14b lim: 8 exec/s: 0 rss: 34Mb L: 8/8 MS: 5 InsertRepeatedBytes-ChangeBinInt-EraseBytes-EraseBytes-InsertRepeatedBytes-
+#2097152	pulse  cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 699050 rss: 192Mb
+#4194304	pulse  cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 599186 rss: 347Mb
+#8388608	pulse  cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 559240 rss: 600Mb
+#16777216	pulse  cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 559240 rss: 601Mb
+#25539616	DONE   cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 555209 rss: 601Mb
+Done 25539616 runs in 46 second(s)
+stat::number_of_executed_units: 25539616
+stat::average_exec_per_sec:     555209
+stat::new_units_added:          3
+
+### sanitizer / crash report
+
+### tail
+#426	NEW    cov: 41 ft: 42 corp: 4/14b lim: 8 exec/s: 0 rss: 34Mb L: 8/8 MS: 5 InsertRepeatedBytes-ChangeBinInt-EraseBytes-EraseBytes-InsertRepeatedBytes-
+#2097152	pulse  cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 699050 rss: 192Mb
+#4194304	pulse  cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 599186 rss: 347Mb
+#8388608	pulse  cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 559240 rss: 600Mb
+#16777216	pulse  cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 559240 rss: 601Mb
+#25539616	DONE   cov: 41 ft: 42 corp: 4/14b lim: 4096 exec/s: 555209 rss: 601Mb
+Done 25539616 runs in 46 second(s)
+stat::number_of_executed_units: 25539616
+stat::average_exec_per_sec:     555209
+stat::new_units_added:          3
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              601

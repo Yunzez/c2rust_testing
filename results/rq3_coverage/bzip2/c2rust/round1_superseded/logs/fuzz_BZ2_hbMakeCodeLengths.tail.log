@@ -1,0 +1,40 @@
+   |        ^^^^^^^^^^^^
+20 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+22 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `alphaSize` should have a snake case name
+  --> fuzz_targets/bzip2_c2rust_ft.rs:41:9
+   |
+41 |     let alphaSize = freq_c.len() as i32;
+   |         ^^^^^^^^^ help: convert the identifier to snake case: `alpha_size`
+   |
+   = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `maxLen` should have a snake case name
+  --> fuzz_targets/bzip2_c2rust_ft.rs:43:9
+   |
+43 |     let maxLen = cur.take_i32();
+   |         ^^^^^^ help: convert the identifier to snake case: `max_len`
+
+warning: `bzip2_c2rust-fuzz` (bin "bzip2_c2rust_ft") generated 3 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.02s
+     Running `fuzz/target/x86_64-unknown-linux-gnu/release/bzip2_c2rust_ft -artifact_prefix=/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rq4_cov/harness/BZ2_hbMakeCodeLengths/fuzz/artifacts/bzip2_c2rust_ft/ -seed=42 -max_total_time=327 -max_len=4096 -rss_limit_mb=4096 -fork=1 -ignore_crashes=1 -artifact_prefix=/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rq4_cov/artifacts/BZ2_hbMakeCodeLengths/ /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rq4_cov/corpus/BZ2_hbMakeCodeLengths`
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 42
+INFO: Loaded 1 modules   (1195 inline 8-bit counters): 1195 [0x55eef9ebb790, 0x55eef9ebbc3b), 
+INFO: Loaded 1 PC tables (1195 PCs): 1195 [0x55eef9ebbc40,0x55eef9ec06f0), 
+INFO: -fork=1: fuzzing in separate process(s)
+INFO: -fork=1: 0 seed inputs, starting to fuzz in /tmp/libFuzzerTemp.FuzzWithFork3032216.dir
+#2: cov: 0 ft: 0 corp: 0 exec/s: 0 oom/timeout/crash: 0/0/0 time: 1202s job: 1 dft_time: 0
+INFO: fuzzed for 1202 seconds, wrapping up soon
+INFO: exiting: 70 time: 1202s
+────────────────────────────────────────────────────────────────────────────────
+
+Error: Fuzz target exited with exit status: 70

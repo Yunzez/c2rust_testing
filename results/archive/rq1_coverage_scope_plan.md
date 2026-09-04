@@ -109,7 +109,7 @@ Define by a PROPERTY, then show coverage is high on it — do NOT define it as "
 
 ## Current state / where things are
 
-- Bugs in published translations: bug #1 (qsort/C2SaferRust, fuzzer-found, `results/rq1_bugs/`).
+- Bugs in published translations: bug #1 (qsort/C2SaferRust, fuzzer-found, `results/rq4_effectiveness/bugs/`).
 - OOP harness generator: `tools/stu_selector/gen_oop_harness.py` (scalar/buffer/out_scalar/float/
   bool/static-expose; commits 1adde22, 35085b7, + bug fixes). OOP skeleton `results/rq1_oop_skeleton/`.
 - In-process generator: `tools/stu_selector/gen_diff_harness.py` (mature; has the roles to port from).

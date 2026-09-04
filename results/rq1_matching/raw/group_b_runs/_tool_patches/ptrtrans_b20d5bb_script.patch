@@ -1,0 +1,130 @@
+diff --git a/script/generator.py b/script/generator.py
+index aa638cd..b8cffcc 100755
+--- a/script/generator.py
++++ b/script/generator.py
+@@ -3,14 +3,11 @@ from datetime import datetime
+ import os
+ import time
+ import requests
+-import torch
+ from itertools import cycle
+ import handcraftPrompt
+ import pandas as pd
+ import subprocess
+ import openai
+-from transformers import LlamaForCausalLM,LlamaTokenizer,AutoModel, AutoModelForCausalLM,AutoTokenizer
+-import transformers
+ import tiktoken  
+ """initial model generator"""
+ from tenacity import (
+@@ -38,15 +35,17 @@ class Generator:
+         
+         if "gpt" in self.model_name:
+             
+-            OPENAI_API_KEY = "Set_Your_OpenAI_API_KEY"
++            OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+             openai.api_key = OPENAI_API_KEY
+-            openai.api_base = "https://openkey.cloud/v1"
++            openai.api_base = "https://api.openai.com/v1"
+ 
+         else:
+             self.model_name_or_path = args.model_path
+             self.model = self.model_load()
+     
+     def model_load(self):
++        import torch
++        from transformers import AutoModelForCausalLM, AutoTokenizer
+         self.model = AutoModelForCausalLM.from_pretrained(self.model_name_or_path,torch_dtype=torch.float16, low_cpu_mem_usage=True).to('cuda')
+         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name_or_path)
+ 
+@@ -64,13 +63,10 @@ class Generator:
+             ]
+ 
+ 
+-        response = chat_completion_with_backoff(
+-            model=self.model_name,
+-            messages=messages,
+-            temperature=0.1,
+-            max_tokens = 5214,
+-            n=num_results
+-        )
++        if self.model_name.startswith("gpt-5"):
++            response = chat_completion_with_backoff(model=self.model_name, messages=messages, max_completion_tokens=16384, n=num_results)
++        else:
++            response = chat_completion_with_backoff(model=self.model_name, messages=messages, temperature=0.1, max_tokens=5214, n=num_results)
+         if num_results == 1:
+             return response.choices[0]['message']['content']
+         else:  
+diff --git a/script/main.py b/script/main.py
+index edb18eb..7169c94 100755
+--- a/script/main.py
++++ b/script/main.py
+@@ -716,8 +716,9 @@ class Main:
+                     Mut_Own_result, field_path_result = "", ""
+                     if field['is_pointer'] and field['ownership'] == "Owning":
+                         Mut_Own_result = f"{struct_name}_{specific_name} is Nullable, and {field['ownership']} pointer"
+-                        field_usage_paths = struct_info['usage_paths'][field_name]
+-                        field_path_result = self.struct_path_result(field_usage_paths, c_path)
++                        if struct_info['usage_paths'] is not None and field_name in struct_info['usage_paths']:
++                            field_usage_paths = struct_info['usage_paths'][field_name]
++                            field_path_result = self.struct_path_result(field_usage_paths, c_path)
+                     elif field['is_pointer'] and field['ownership'] == "Borrowed": # Remind the model to express the lifetime of this struct member
+                         Mut_Own_result = f"{struct_name}_{specific_name} is Nullable, Borrowed and {field['mutability']} pointer, declared as Option<&T> or Option<&mut T>; **Requires Lifetime Annotation**"
+                         if struct_info['usage_paths'] is not None and field_name in struct_info['usage_paths']:
+@@ -969,11 +970,15 @@ class Main:
+         for nodeInfo in longest_path:
+             if ':' not in nodeInfo: continue
+             file_name, line_str = nodeInfo.rsplit(":", 1)
+-            c_code_file = os.path.join(c_path, file_name) 
+-            with open(c_code_file, 'r') as f:
+-                lines = f.readlines()
+-            if lines[int(line_str) - 1].strip() not in path_parts:
+-                path_parts.append(lines[int(line_str) - 1].strip())
++            c_code_file = os.path.join(c_path, os.path.basename(file_name))
++            try:
++                with open(c_code_file, 'r') as f:
++                    lines = f.readlines()
++                line = lines[int(line_str) - 1].strip()
++            except (FileNotFoundError, IndexError, ValueError):
++                continue
++            if line not in path_parts:
++                path_parts.append(line)
+         path_parts_str = "-->".join(path_parts)           
+             
+         return "UsagePath: " + path_parts_str
+@@ -1668,7 +1673,7 @@ edition = "2021"
+         if not os.path.exists(src_lib_path):
+             os.makedirs(os.path.dirname(src_lib_path), exist_ok=True)
+         src_dir = os.path.join(project_path, 'src')
+-        src_rs_files = [f.replace('.rs', '') for f in os.listdir(src_dir) if f.endswith('.rs')]
++        src_rs_files = [f.replace('.rs', '') for f in os.listdir(src_dir) if f.endswith('.rs') and f != 'lib.rs']
+         
+         
+         with open(src_lib_path, 'w') as f:
+@@ -1753,11 +1758,10 @@ if __name__ == '__main__':
+     project_name_list = [os.path.join("crown_dataset", project_name) for project_name in project_names]
+ 
+ 
+-    project_list = ['crown_dataset/avl','crown_dataset/buffer','crown_dataset/genann','crown_dataset/quadtree', 'crown_dataset/rgba',
+-                    'crown_dataset/urlparser','crown_dataset/ht','crown_dataset/bst','crown_dataset/json_h','crown_dataset/libtree']
++    project_list = ['crown_dataset/qsort']
+     for project_name in project_list:
+         print("Deal: ", project_name)
+-        args.source_project_path = os.path.join(args.root_dir, "dataset", project_name)
++        args.source_project_path = os.path.abspath(os.path.join(args.root_dir, "dataset", project_name))
+         args.source_project_name = os.path.basename(project_name)
+         if "LLM_only" in args.translate_mode:
+             args.trans_project_path = os.path.join(args.root_dir, "dataset/trans_projects")
+diff --git a/script/translator.py b/script/translator.py
+index ab8190f..3289654 100755
+--- a/script/translator.py
++++ b/script/translator.py
+@@ -1,5 +1,7 @@
+ # from utils.misc_utils import extract_code
+-from langchain.prompts import PromptTemplate
++class PromptTemplate:
++    def __init__(self, template, input_variables=None): self.template=template
++    def format(self, **kw): return self.template.format(**kw)
+ import re
+ import os
+ 

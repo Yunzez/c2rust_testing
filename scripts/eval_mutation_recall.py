@@ -3,7 +3,7 @@
 
 The recall half of the comparator claim (RQ2 = precision / no false positives on faithful
 c2rust; this = sensitivity / we still catch real UB-free bugs). See
-results/mutation_recall_eval_plan.md.
+results/archive/mutation_recall_eval_plan.md.
 
 Per mutation spec {id, program, pair, entry, rust_entry?, operator, find, replace}:
   1. copy the (faithful c2rust) pair to a temp dir;
@@ -21,7 +21,7 @@ Base = faithful c2rust so an injected divergence is PURELY the mutation (clean r
 decoupled). Reuses eval_rq2_ubgate so "detected" == its UB_FREE_DIVERGENCE class exactly.
 
 Usage:
-  eval_mutation_recall.py --muts scripts/mut_m1.json --secs 25 --json results/mut_rows/m1.json
+  eval_mutation_recall.py --muts scripts/mut_m1.json --secs 25 --json results/ablations/attribution/mut_rows/m1.json
 """
 from __future__ import annotations
 import argparse, json, shutil, sys

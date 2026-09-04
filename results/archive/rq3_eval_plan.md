@@ -97,7 +97,7 @@ in Table 2 — NOT to claim the full matcher is only 61%.
    `{programs:[...], micro:{}, macro:{}, by_regime:{}, ablations:{}, failures:[...]}`.
 2. Per-program fields: program, regime, scorable, matched, correct, ambiguous, precision, recall,
    name_eq_recall, shape_only_recall, node_only_recall, full_forced_recall, full_abstain_recall.
-3. Generated `results/rq3_matcher_v1.md` (the 3 tables).
+3. Generated `results/rq1_matching/matcher_ablation_v1.md` (the 3 tables).
 4. name-scramble check passes (scrambled ≈ normal; name-eq-on-scrambled ≈ 0).
 
 ## Execution order
@@ -114,6 +114,6 @@ in Table 2 — NOT to claim the full matcher is only 61%.
 
 ## Current progress (already done, 2026-06-30)
 - `scripts/rq3_eval.py` (v0 runner): raw-LLM row (precision .867 / recall .876 / name-eq .124) +
-  SACTOR-idiomatic row (.857 / 1.0 / 1.0). `results/rq3_eval_v1.md`, rows in `results/rq3_rows/`.
+  SACTOR-idiomatic row (.857 / 1.0 / 1.0). `results/rq3_eval_v1.md`, rows in `results/rq1_matching/rows/`.
 - v0 → upgrade to the DoD script: add macro, ablations (shape-only/node-only/forced/abstain),
   name-scramble, renamed-SACTOR, failure taxonomy.

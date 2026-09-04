@@ -40,7 +40,7 @@ Free-prep discovery: SACTOR ships ready `*_crust` examples WITH `test_task.json`
 | **utf8_crust** | HEAD-TO-HEAD on the bug class: does SACTOR also mishandle UTF-8/bytes? (C2SaferRust's `to_str().unwrap()` class). Best cross-tool probe. | shipped ✓ |
 | **bitset_crust** | fresh value: bit operations — bit-op, boundary-heavy | shipped ✓ |
 | **hamming_crust** | fresh value: hamming codec — bit-op/codec, round-trip | shipped ✓ |
-| **qsort** | direct HEAD-TO-HEAD: does SACTOR also break the `int→usize` sort? (C2SaferRust bug #1). C is in hand (`results/rq1_bugs/qsort_c2saferrust/`). | ~15 min prep |
+| **qsort** | direct HEAD-TO-HEAD: does SACTOR also break the `int→usize` sort? (C2SaferRust bug #1). C is in hand (`results/rq4_effectiveness/bugs/qsort_c2saferrust/`). | ~15 min prep |
 
 Dropped from phase 1 (need prep, bigger): urlparser, murmurhash, leftpad, approxidate, morton →
 phase-2 candidates. The shipped `*_crust` set + qsort covers UTF-8-class probe + bit-op + codec +

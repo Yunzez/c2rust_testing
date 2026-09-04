@@ -1,0 +1,650 @@
+{
+ "case": "ptrtrans_genann",
+ "tool": "PtrTrans",
+ "lib": "genann",
+ "builds": true,
+ "split": "eval",
+ "eps": 0.01,
+ "fingerprint": {
+  "repo_head": "b647a44",
+  "matcher_commit": "509751d",
+  "analyzer_src_commit": "509751d",
+  "matcher_sha256": "fe49e5bb76996922",
+  "c_analyzer_sha256": "b771a6b013b22779",
+  "analyzer_bin_sha256": "b2adb5ecaaeee96d",
+  "stu_selector_dirty": false,
+  "rust_artifact_sha256": "d7dececfbfb16502",
+  "c_sources_sha256": "6b2dfab402056f62",
+  "tool_map_sha256": "caf3ca56cca7631c",
+  "params": {
+   "eps": 0.01,
+   "topo": true,
+   "rust_exclude_fns": [],
+   "drop_dirs": [],
+   "c_sources": [
+    "results/rq1_matching/raw/group_b_runs/ptrtrans_genann/input/genann/genann.c"
+   ]
+  },
+  "id": "e5afacc8ae057a20"
+ },
+ "rust_functions_dropped": [],
+ "duplicate_leafs": {},
+ "rows": [
+  {
+   "c_function": "genann_act_hidden_indirect",
+   "c_file": "genann.c",
+   "c_line": 45,
+   "c_signature": "(ann: const struct genann *, a: double) -> double",
+   "tool_claim": "genann_act_hidden_indirect",
+   "tool_claim_resolved": "genann_act_hidden_indirect",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_2_Compile_Success",
+   "name_eq": "genann_act_hidden_indirect",
+   "matcher_forced": "genann_randomize",
+   "matcher_forced_score": 0.447,
+   "matcher_forced_conf": -0.023,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "genann_act_hidden_indirect",
+   "truth_note": "genann.c:45 -> src/genann.rs:134: returns (ann.activation_hidden)(ann, a), i.e. dispatches through the activation_hidden fn-pointer field exactly as C ann->activation_hidden(ann, a) (Rust adds None -> 0.0). Forced proposal genann_randomize is WRONG: genann_randomize (genann.rs:12) is a no-op stub taking Option<&mut Genann> and returning (), no fn-pointer dispatch at all."
+  },
+  {
+   "c_function": "genann_act_output_indirect",
+   "c_file": "genann.c",
+   "c_line": 49,
+   "c_signature": "(ann: const struct genann *, a: double) -> double",
+   "tool_claim": "genann_act_output_indirect",
+   "tool_claim_resolved": "genann_act_output_indirect",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_act_output_indirect",
+   "matcher_forced": "genann_act_hidden_indirect",
+   "matcher_forced_score": 0.27,
+   "matcher_forced_conf": -0.353,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "genann_act_output_indirect",
+   "truth_note": "genann.c:49 -> src/genann.rs:140: returns (ann.activation_output)(ann, a) via the activation_output field (None -> 0.0). Forced proposal genann_act_hidden_indirect is WRONG: that Rust fn (genann.rs:134) dispatches through activation_hidden, the other field; C line 50 reads activation_output."
+  },
+  {
+   "c_function": "genann_act_sigmoid",
+   "c_file": "genann.c",
+   "c_line": 70,
+   "c_signature": "(ann: const genann *, a: double) -> double",
+   "tool_claim": "genann_act_sigmoid",
+   "tool_claim_resolved": "genann_act_sigmoid",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_act_sigmoid",
+   "matcher_forced": "genann_act_sigmoid",
+   "matcher_forced_score": 0.585,
+   "matcher_forced_conf": 0.215,
+   "matcher_deploy": "genann_act_sigmoid",
+   "prior": "unanimous",
+   "truth": "genann_act_sigmoid",
+   "truth_note": "genann.c:70 -> src/genann.rs:93: same clamps a < -45 -> 0, a > 45 -> 1, else 1/(1+exp(-a)); ann unused in both. Forced proposal correct."
+  },
+  {
+   "c_function": "genann_init_sigmoid_lookup",
+   "c_file": "genann.c",
+   "c_line": 76,
+   "c_signature": "(ann: const genann *) -> void",
+   "tool_claim": "genann_init_sigmoid_lookup",
+   "tool_claim_resolved": "genann_init_sigmoid_lookup",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_init_sigmoid_lookup",
+   "matcher_forced": "genann_init_sigmoid_lookup",
+   "matcher_forced_score": 0.558,
+   "matcher_forced_conf": 0.186,
+   "matcher_deploy": "genann_init_sigmoid_lookup",
+   "prior": "unanimous",
+   "truth": "genann_init_sigmoid_lookup",
+   "truth_note": "genann.c:76 -> src/genann.rs:149: f = (15-(-15))/4096, interval = 4096/30, loop i<4096 filling lookup[i] = genann_act_sigmoid(ann, -15 + f*i) (LOOKUP_SIZE 4096 preserved). Translation defect, not a correspondence issue: the C globals lookup[]/interval became a local array/local that is dropped on return, so the Rust fn has no observable effect. Forced proposal correct."
+  },
+  {
+   "c_function": "genann_act_sigmoid_cached",
+   "c_file": "genann.c",
+   "c_line": 86,
+   "c_signature": "(ann: const genann *, a: double) -> double",
+   "tool_claim": "genann_act_sigmoid_cached",
+   "tool_claim_resolved": "genann_act_sigmoid_cached",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_act_sigmoid_cached",
+   "matcher_forced": "genann_write",
+   "matcher_forced_score": 0.436,
+   "matcher_forced_conf": 0.053,
+   "matcher_deploy": "genann_write",
+   "prior": "CONFLICT",
+   "truth": "genann_act_sigmoid_cached",
+   "truth_note": "genann.c:86 -> src/genann.rs:105: assert !isnan(a); a < -15 -> lookup[0]; a >= 15 -> lookup[4095]; j = (a+15)*interval+0.5 with j>=4096 clamp; return lookup[j] -- every C statement is present. Translation defect: lookup is a local zeroed [f64;4096] and interval = 0.0 (globals lost), so it always returns 0.0. Forced proposal genann_write is WRONG: genann_write (genann.rs:61) is the serializer writing '%d %d %d %d' + ' %.20e' per weight to a Write sink and returns (), nothing in common with a sigmoid lookup."
+  },
+  {
+   "c_function": "genann_act_linear",
+   "c_file": "genann.c",
+   "c_line": 100,
+   "c_signature": "(ann: const struct genann *, a: double) -> double",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "EMPTY",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_act_linear",
+   "matcher_forced": "genann_act_threshold",
+   "matcher_forced_score": 0.639,
+   "matcher_forced_conf": 0.0,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "STUB:genann_act_linear",
+   "truth_note": "genann.c:100 (return a) -> src/common/genann_mod.rs:21: body is the constant 0.0, parameters unused -- a signature-only placeholder. Per metadata, the genann.h#473 declaration unit was stub-reverted (Fixed_5_Compile_Failed) into genann_mod.rs and the genann.c#1632 definition unit then emitted no code (rust_definition_name []), which is why tool_claim is EMPTY. Forced proposal genann_act_threshold is WRONG (swapped with the sibling stub; C genann_act_threshold is a>0, not identity), though note both Rust stubs have identical 0.0 bodies so nothing but the name distinguishes them."
+  },
+  {
+   "c_function": "genann_act_threshold",
+   "c_file": "genann.c",
+   "c_line": 104,
+   "c_signature": "(ann: const struct genann *, a: double) -> double",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "EMPTY",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_act_threshold",
+   "matcher_forced": "genann_act_linear",
+   "matcher_forced_score": 0.415,
+   "matcher_forced_conf": -0.225,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "STUB:genann_act_threshold",
+   "truth_note": "genann.c:104 (return a > 0) -> src/common/genann_mod.rs:18: body is the constant 0.0, parameters unused -- signature-only placeholder. Same mechanism as genann_act_linear: genann.h#471 declaration unit stub-reverted, genann.c#1636 definition unit emitted nothing, hence tool_claim EMPTY. Forced proposal genann_act_linear is WRONG (swapped sibling stub; C linear is identity, threshold is a step function)."
+  },
+  {
+   "c_function": "genann_init",
+   "c_file": "genann.c",
+   "c_line": 108,
+   "c_signature": "(inputs: int, hidden_layers: int, hidden: int, outputs: int) -> genann *",
+   "tool_claim": "genann_init",
+   "tool_claim_resolved": "genann_init",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_1_Compile_Success",
+   "name_eq": "genann_init",
+   "matcher_forced": "genann_init",
+   "matcher_forced_score": 0.614,
+   "matcher_forced_conf": 0.255,
+   "matcher_deploy": "genann_init",
+   "prior": "unanimous",
+   "truth": "genann_init",
+   "truth_note": "genann.c:108 -> src/genann.rs:301: same four guards (hidden_layers<0, inputs<1, outputs<1, hidden_layers>0&&hidden<1), hidden_weights = (inputs+1)*hidden + (hidden_layers-1)*(hidden+1)*hidden, output_weights = (hidden_layers ? hidden+1 : inputs+1)*outputs, total_neurons = inputs + hidden*hidden_layers + outputs; delta len = total_neurons - inputs; sets both activations to genann_act_sigmoid_cached, then calls genann_randomize and genann_init_sigmoid_lookup (C lines 139-144). Forced proposal correct."
+  },
+  {
+   "c_function": "genann_read",
+   "c_file": "genann.c",
+   "c_line": 150,
+   "c_signature": "(in: FILE *) -> genann *",
+   "tool_claim": "genann_read",
+   "tool_claim_resolved": "genann_read",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_read",
+   "matcher_forced": "genann_read",
+   "matcher_forced_score": 0.357,
+   "matcher_forced_conf": 0.079,
+   "matcher_deploy": "genann_read",
+   "prior": "unanimous",
+   "truth": "genann_read",
+   "truth_note": "genann.c:150 -> src/genann.rs:528: reads the 4-int header (inputs hidden_layers hidden outputs), calls genann_init, then reads total_weights doubles into ann.weight[i] (C line 164-173 ' %le' loop), printing 'fscanf: ...' on failure as C perror('fscanf'). Reader is generic R: Read with read_to_string + split_whitespace instead of fscanf. Forced proposal correct."
+  },
+  {
+   "c_function": "genann_copy",
+   "c_file": "genann.c",
+   "c_line": 179,
+   "c_signature": "(ann: const genann *) -> genann *",
+   "tool_claim": "genann_copy",
+   "tool_claim_resolved": "genann_copy",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_copy",
+   "matcher_forced": "genann_copy",
+   "matcher_forced_score": 0.507,
+   "matcher_forced_conf": -0.081,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "unanimous",
+   "truth": "genann_copy",
+   "truth_note": "genann.c:179 -> src/genann.rs:16: C memcpy of the single allocation + pointer re-basing (weight/output/delta, C lines 187-189) becomes a field-by-field copy with weight (total_weights), output (total_neurons), delta (total_neurons - inputs) Vecs cloned; the Rust comment quotes the C size formula from line 180. Forced proposal correct (deploy abstained)."
+  },
+  {
+   "c_function": "genann_randomize",
+   "c_file": "genann.c",
+   "c_line": 195,
+   "c_signature": "(ann: genann *) -> void",
+   "tool_claim": "genann_randomize",
+   "tool_claim_resolved": "genann_randomize",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_5_Compile_Failed",
+   "name_eq": "genann_randomize",
+   "matcher_forced": "genann_act_sigmoid_cached",
+   "matcher_forced_score": 0.49,
+   "matcher_forced_conf": 0.02,
+   "matcher_deploy": "genann_act_sigmoid_cached",
+   "prior": "CONFLICT",
+   "truth": "STUB:genann_randomize",
+   "truth_note": "genann.c:195 (for i < total_weights: weight[i] = GENANN_RANDOM() - 0.5) -> src/genann.rs:12-15: body is 'Stub implementation: does nothing' (let _ = ann); metadata tag Fixed_5_Compile_Failed = stub revert. Signature corresponds (Option<&mut Genann>), body is a no-op -> STUB. Forced proposal genann_act_sigmoid_cached is WRONG: that fn (genann.rs:105) is a lookup-table activation returning f64 and never writes weights."
+  },
+  {
+   "c_function": "genann_free",
+   "c_file": "genann.c",
+   "c_line": 205,
+   "c_signature": "(ann: genann *) -> void",
+   "tool_claim": "",
+   "tool_claim_resolved": "",
+   "tool_claim_status": "ELIDED",
+   "tool_claim_defined_in_rust": "",
+   "tool_verifi_tag": "Free_Function",
+   "name_eq": "",
+   "matcher_forced": "genann_run",
+   "matcher_forced_score": 0.371,
+   "matcher_forced_conf": -0.03,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "tool-says-elided",
+   "truth": "NONE",
+   "truth_note": "genann.c:205 free(ann); metadata tag Free_Function, rust_definition_name empty (elided by design). Grep of src/ finds no impl Drop, no free/destroy fn; Genann is returned as Box<Genann> from genann_init/genann_read and dropped by ownership. Forced proposal genann_run is WRONG: Rust genann_run (genann.rs:161) is the forward pass (asserts on inputs/output/weight sizes), not a deallocator."
+  },
+  {
+   "c_function": "genann_run",
+   "c_file": "genann.c",
+   "c_line": 211,
+   "c_signature": "(ann: const genann *, inputs: const double *) -> const double *",
+   "tool_claim": "genann_run",
+   "tool_claim_resolved": "genann_run",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_1_Compile_Success",
+   "name_eq": "genann_run",
+   "matcher_forced": "",
+   "matcher_forced_score": "",
+   "matcher_forced_conf": "",
+   "matcher_deploy": "NONE",
+   "prior": "single-source",
+   "truth": "genann_run",
+   "truth_note": "genann.c:211 -> src/genann.rs:161: same name/params (Option<&Genann>, Option<&[f64]>) -> Option<&[f64]>, None-checks, then asserts inputs.len()>=ann.inputs, output.len()>=total_neurons, weight.len()>=total_weights. Translation defect (tool tag Fixed_1_Compile_Success): the live body then unconditionally panic!()s ('requires mutable access'); the actual forward pass (bias weight * -1.0, per-layer sums, act_hidden/act_output dispatch, the w==total_weights / o==total_neurons sanity asserts) is present only as commented-out code at genann.rs:224-299. Labeled as the correspondence (not STUB) because it is not a signature-only no-op/constant placeholder but a defective translation; reviewer may downgrade to STUB:genann_run. Forced matcher proposal is (none) -- WRONG: Rust genann_run exists at genann.rs:161 and the forced run instead gave it to genann_free."
+  },
+  {
+   "c_function": "genann_train",
+   "c_file": "genann.c",
+   "c_line": 278,
+   "c_signature": "(ann: const genann *, inputs: const double *, desired_outputs: const double *, learning_rate: double) -> void",
+   "tool_claim": "genann_train",
+   "tool_claim_resolved": "genann_train",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "Fixed_2_Compile_Success",
+   "name_eq": "genann_train",
+   "matcher_forced": "genann_train",
+   "matcher_forced_score": 0.367,
+   "matcher_forced_conf": 0.056,
+   "matcher_deploy": "genann_train",
+   "prior": "unanimous",
+   "truth": "genann_train",
+   "truth_note": "genann.c:278 -> src/genann.rs:355: calls genann_run first, output-layer delta = (t-o)*o*(1-o) unless activation_output == genann_act_linear (then t-o) (C lines 292-302 -> Rust 390-408 with std::ptr::eq), hidden deltas backwards with windex = k*(hidden+1)+(j+1) and d = o*(1-o)*sum (C 320-333 -> Rust 427-442), then output/hidden weight updates w += d*lr*-1.0 (bias) and w += d*lr*i[k-1] (C 353-389 -> Rust 466-518). Defects: works on local_delta/local_weight clones and never writes back (comment at 524-526); genann_run panics so this always panics at runtime. Forced proposal correct."
+  },
+  {
+   "c_function": "genann_write",
+   "c_file": "genann.c",
+   "c_line": 396,
+   "c_signature": "(ann: const genann *, out: FILE *) -> void",
+   "tool_claim": "genann_write",
+   "tool_claim_resolved": "genann_write",
+   "tool_claim_status": "CLAIMED",
+   "tool_claim_defined_in_rust": "yes",
+   "tool_verifi_tag": "No_Fix_Compile_Success",
+   "name_eq": "genann_write",
+   "matcher_forced": "genann_act_output_indirect",
+   "matcher_forced_score": 0.276,
+   "matcher_forced_conf": -0.352,
+   "matcher_deploy": "ABSTAIN",
+   "prior": "CONFLICT",
+   "truth": "genann_write",
+   "truth_note": "genann.c:396 -> src/genann.rs:61: writes header '{} {} {} {}' (inputs hidden_layers hidden outputs) then ' {:.20e}' per weight for i < total_weights, no trailing newline (C '%d %d %d %d' + ' %.20e'; Rust's {:e} exponent formatting differs from C's e+00 form). Forced proposal genann_act_output_indirect is WRONG: that fn (genann.rs:140) is a one-line fn-pointer dispatch returning f64, no I/O."
+  }
+ ],
+ "rust_inventory": [
+  {
+   "rust_function": "genann_act_threshold",
+   "file": "src/common/genann_mod.rs",
+   "line": 18,
+   "signature": "(ann: Option<&Genann>, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_act_linear"
+  },
+  {
+   "rust_function": "genann_act_linear",
+   "file": "src/common/genann_mod.rs",
+   "line": 21,
+   "signature": "(ann: Option<&Genann>, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "",
+   "matcher_proposed_for": "genann_act_threshold"
+  },
+  {
+   "rust_function": "genann_randomize",
+   "file": "src/genann.rs",
+   "line": 12,
+   "signature": "(ann: Option<&mut Genann>) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_randomize",
+   "matcher_proposed_for": "genann_act_hidden_indirect"
+  },
+  {
+   "rust_function": "genann_copy",
+   "file": "src/genann.rs",
+   "line": 16,
+   "signature": "(ann: Option<&Genann>) -> Option<Genann>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_copy",
+   "matcher_proposed_for": "genann_copy"
+  },
+  {
+   "rust_function": "genann_write",
+   "file": "src/genann.rs",
+   "line": 61,
+   "signature": "(ann: Option<&Genann>, out: Option<&mut dyn Write>) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_write",
+   "matcher_proposed_for": "genann_act_sigmoid_cached"
+  },
+  {
+   "rust_function": "genann_act_sigmoid",
+   "file": "src/genann.rs",
+   "line": 93,
+   "signature": "(ann: Option<&Genann>, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_act_sigmoid",
+   "matcher_proposed_for": "genann_act_sigmoid"
+  },
+  {
+   "rust_function": "genann_act_sigmoid_cached",
+   "file": "src/genann.rs",
+   "line": 105,
+   "signature": "(ann: Option<&Genann>, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_act_sigmoid_cached",
+   "matcher_proposed_for": "genann_randomize"
+  },
+  {
+   "rust_function": "genann_act_hidden_indirect",
+   "file": "src/genann.rs",
+   "line": 134,
+   "signature": "(ann: Option<&Genann>, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_act_hidden_indirect",
+   "matcher_proposed_for": "genann_act_output_indirect"
+  },
+  {
+   "rust_function": "genann_act_output_indirect",
+   "file": "src/genann.rs",
+   "line": 140,
+   "signature": "(ann: Option<&Genann>, a: f64) -> f64",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_act_output_indirect",
+   "matcher_proposed_for": "genann_write"
+  },
+  {
+   "rust_function": "genann_init_sigmoid_lookup",
+   "file": "src/genann.rs",
+   "line": 149,
+   "signature": "(ann: Option<&Genann>) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_init_sigmoid_lookup",
+   "matcher_proposed_for": "genann_init_sigmoid_lookup"
+  },
+  {
+   "rust_function": "genann_run",
+   "file": "src/genann.rs",
+   "line": 161,
+   "signature": "(ann: Option<&'a Genann>, inputs: Option<&[f64]>) -> Option<&'a [f64]>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_run",
+   "matcher_proposed_for": "genann_free"
+  },
+  {
+   "rust_function": "genann_init",
+   "file": "src/genann.rs",
+   "line": 301,
+   "signature": "(inputs: i32, hidden_layers: i32, hidden: i32, outputs: i32) -> Option<Box<Genann>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_init",
+   "matcher_proposed_for": "genann_init"
+  },
+  {
+   "rust_function": "genann_train",
+   "file": "src/genann.rs",
+   "line": 355,
+   "signature": "(ann: Option<&Genann>, inputs: Option<&[f64]>, desired_outputs: Option<&[f64]>, learning_rate: f64) -> ()",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_train",
+   "matcher_proposed_for": "genann_train"
+  },
+  {
+   "rust_function": "genann_read",
+   "file": "src/genann.rs",
+   "line": 528,
+   "signature": "(input: Option<&mut R>) -> Option<Box<Genann>>",
+   "same_name_in_c": "yes",
+   "duplicate_leaf": "",
+   "tool_claimed_by": "genann_read",
+   "matcher_proposed_for": "genann_read"
+  }
+ ],
+ "verifi_tags": {
+  "Fixed_5_Compile_Failed": 1,
+  "No_Fix_Compile_Success": 9,
+  "Free_Function": 1,
+  "Fixed_2_Compile_Success": 2,
+  "Fixed_1_Compile_Success": 2
+ },
+ "matcher_forced_raw": [
+  [
+   "genann_act_hidden_indirect",
+   "genann_randomize",
+   0.4473238210585783,
+   -0.023387850156485424
+  ],
+  [
+   "genann_act_output_indirect",
+   "genann_act_hidden_indirect",
+   0.27001680672268913,
+   -0.35261064425770305
+  ],
+  [
+   "genann_act_sigmoid",
+   "genann_act_sigmoid",
+   0.5853554102362304,
+   0.21472297782668853
+  ],
+  [
+   "genann_init_sigmoid_lookup",
+   "genann_init_sigmoid_lookup",
+   0.5581749181851121,
+   0.18605518117024067
+  ],
+  [
+   "genann_act_sigmoid_cached",
+   "genann_write",
+   0.43630014520030097,
+   0.052557309604524205
+  ],
+  [
+   "genann_act_linear",
+   "genann_act_threshold",
+   0.6393417366946779,
+   0.0
+  ],
+  [
+   "genann_act_threshold",
+   "genann_act_linear",
+   0.41462745098039216,
+   -0.2247142857142857
+  ],
+  [
+   "genann_init",
+   "genann_init",
+   0.6142049772939823,
+   0.25468227304727253
+  ],
+  [
+   "genann_read",
+   "genann_read",
+   0.3566321104809581,
+   0.07898516793557459
+  ],
+  [
+   "genann_copy",
+   "genann_copy",
+   0.5068939849624061,
+   -0.08136158730158716
+  ],
+  [
+   "genann_randomize",
+   "genann_act_sigmoid_cached",
+   0.4903838403097329,
+   0.01967216909466918
+  ],
+  [
+   "genann_free",
+   "genann_run",
+   0.370949450304455,
+   -0.029624103580256855
+  ],
+  [
+   "genann_train",
+   "genann_train",
+   0.3674276301016415,
+   0.056474796812556016
+  ],
+  [
+   "genann_write",
+   "genann_act_output_indirect",
+   0.27576746277458347,
+   -0.35167631473642097
+  ]
+ ],
+ "matcher_deploy_raw": [
+  [
+   "genann_act_sigmoid",
+   "genann_act_sigmoid",
+   0.5853554102362304,
+   0.21472297782668853
+  ],
+  [
+   "genann_init_sigmoid_lookup",
+   "genann_init_sigmoid_lookup",
+   0.5581749181851121,
+   0.18605518117024067
+  ],
+  [
+   "genann_act_sigmoid_cached",
+   "genann_write",
+   0.43630014520030097,
+   0.052557309604524205
+  ],
+  [
+   "genann_init",
+   "genann_init",
+   0.6142049772939823,
+   0.25468227304727253
+  ],
+  [
+   "genann_read",
+   "genann_read",
+   0.3566321104809581,
+   0.07898516793557459
+  ],
+  [
+   "genann_randomize",
+   "genann_act_sigmoid_cached",
+   0.4903838403097329,
+   0.01967216909466918
+  ],
+  [
+   "genann_train",
+   "genann_train",
+   0.3674276301016415,
+   0.056474796812556016
+  ]
+ ],
+ "matcher_deploy_ambiguous": [
+  [
+   "genann_act_hidden_indirect",
+   "genann_randomize",
+   0.4473238210585783,
+   -0.023387850156485424
+  ],
+  [
+   "genann_act_output_indirect",
+   "genann_act_hidden_indirect",
+   0.27001680672268913,
+   -0.35261064425770305
+  ],
+  [
+   "genann_act_linear",
+   "genann_act_threshold",
+   0.6393417366946779,
+   0.0
+  ],
+  [
+   "genann_act_threshold",
+   "genann_act_linear",
+   0.41462745098039216,
+   -0.2247142857142857
+  ],
+  [
+   "genann_copy",
+   "genann_copy",
+   0.5068939849624061,
+   -0.08136158730158716
+  ],
+  [
+   "genann_free",
+   "genann_run",
+   0.370949450304455,
+   -0.029624103580256855
+  ],
+  [
+   "genann_write",
+   "genann_act_output_indirect",
+   0.27576746277458347,
+   -0.35167631473642097
+  ]
+ ],
+ "labels_meta": {
+  "case": "ptrtrans_genann",
+  "sheet_fingerprint": "e5afacc8ae057a20",
+  "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
+  "method": "manual code reading of each C function body (input/genann/genann.c) against every candidate Rust function (same name, tool claim, matcher forced proposal) in src/genann.rs and src/common/genann_mod.rs, cross-checked with RUN.md and the PtrTrans metadata jsonl (stub reverts, header-declaration units, Free_Function elision), plus a grep of the whole crate for Drop impls / free functions.",
+  "date": "2026-09-02",
+  "reviewed_by_user": false
+ }
+}

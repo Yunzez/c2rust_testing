@@ -1,0 +1,28 @@
+{
+ "schema_version": 1,
+ "program": "bzip2_c2rust",
+ "entry": "BZ2_indexIntoF",
+ "params": [
+  {
+   "name": "indx",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "scalar"
+  },
+  {
+   "name": "cftab",
+   "elem": "i32",
+   "elem_width": 4,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 257
+  }
+ ],
+ "return": {
+  "rust": "i32"
+ },
+ "decode_scalars_first": true,
+ "provenance": "hand-authored for the RQ4 coverage experiment; every bound is a documented bzip2 1.0.8 requirement, see make_schemas.py",
+ "note": "cftab has no length parameter, so it cannot be filled from the fuzz input; both sides get the same zeroed 257-entry table. Memory-safe but the binary search is then deterministic \u2014 a known limitation of the schema language."
+}

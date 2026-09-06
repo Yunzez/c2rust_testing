@@ -148,7 +148,8 @@ def gate_stats(export_path, entry, corpus_n):
         if demangle(fdef["name"]) == entry:
             reached = max(reached or 0, fdef["count"])
     return {"inputs_replayed": corpus_n, "reached_rust": reached,
-            "ub_gate_excluded": (corpus_n - reached) if reached is not None else None}
+            "ub_gate_excluded": (corpus_n - reached)
+                                if (reached is not None and corpus_n is not None) else None}
 
 
 def demangle(sym):

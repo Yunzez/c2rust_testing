@@ -1,0 +1,183 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+-> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/src/lib.rs:13476:18
+      |
+13476 |     copyFileName(crate::bzip2::inName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/src/lib.rs:13479:18
+      |
+13479 |     copyFileName(crate::bzip2::outName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/src/lib.rs:13482:18
+      |
+13482 |     copyFileName(crate::bzip2::progNameReally.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/src/lib.rs:13485:34
+      |
+13485 |         core::ptr::addr_of_mut!(*crate::bzip2::progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize)) as
+      |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/src/lib.rs:13488:34
+      |
+13488 |         core::ptr::addr_of_mut!(*crate::bzip2::progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize)) as
+      |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: `bzip2_crown` (lib) generated 191 warnings (run `cargo fix --lib -p bzip2_crown` to apply 76 suggestions)
+   Compiling bzip2_crown-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/fuzz)
+warning: multiple methods are never used
+  --> fuzz_targets/bzip2_crown_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `maxLen` should have a snake case name
+   --> fuzz_targets/bzip2_crown_ft.rs:137:9
+    |
+137 |     let maxLen = cur.take_i32();
+    |         ^^^^^^ help: convert the identifier to snake case: `max_len`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `alphaSize` should have a snake case name
+   --> fuzz_targets/bzip2_crown_ft.rs:139:9
+    |
+139 |     let alphaSize = freq_c.len() as i32;
+    |         ^^^^^^^^^ help: convert the identifier to snake case: `alpha_size`
+
+warning: `bzip2_crown-fuzz` (bin "bzip2_crown_ft") generated 3 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 19.34s
+Processing 7 input files using 1 workers (batch size: ~7)
+Worker 0: Generating coverage for 7 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 1482781799
+INFO: Loaded 1 modules   (1679 inline 8-bit counters): 1679 [0x563747d31f60, 0x563747d325ef), 
+INFO: Loaded 1 PC tables (1679 PCs): 1679 [0x563747d325f0,0x563747d38ee0), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft: Running 7 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/156943bc66ed63da38a9acffb23ea5266ab78878
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/156943bc66ed63da38a9acffb23ea5266ab78878 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/8fcdb792fa20bfee4c950e102386119fe371929b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/8fcdb792fa20bfee4c950e102386119fe371929b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/042dc4512fa3d391c5170cf3aa61e6a638f84342
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/042dc4512fa3d391c5170cf3aa61e6a638f84342 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/4f47772e607dbebbaef208b67278c62a0e3992ec
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/4f47772e607dbebbaef208b67278c62a0e3992ec in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/e8463e94edd275e5b89ba5f8e234714266c7f8b7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/e8463e94edd275e5b89ba5f8e234714266c7f8b7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/71853c6197a6a7f222db0f1978c7cb232b87c5ee
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/71853c6197a6a7f222db0f1978c7cb232b87c5ee in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/seed_fixed
+ALARM: working on the last Unit for 25 seconds
+       and the timeout value is 25 (use -timeout=N to change)
+==163576== ERROR: libFuzzer: timeout after 25 seconds
+    #0 0x563747c4a341  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x102341) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #1 0x563747c99f2b  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x151f2b) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #2 0x563747c8f67e  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x14767e) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #3 0x7fc845a45caf  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45caf) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #4 0x563747c9c470  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x154470) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #5 0x563747c7cdc0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x134dc0) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #6 0x563747c771bb  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x12f1bb) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #7 0x563747c7ae21  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x132e21) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #8 0x563747c87460  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x13f460) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #9 0x563747c888d8  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x1408d8) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #10 0x563747c86655  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x13e655) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #11 0x563747c8f9bc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x1479bc) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #12 0x563747cadad5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x165ad5) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #13 0x563747cbaf61  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x172f61) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #14 0x563747ca9556  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x161556) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+    #15 0x7fc845a2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #16 0x7fc845a2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #17 0x563747bb55a4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x6d5a4) (BuildId: 50dc86d6dea753631a04221fad8ac7638cc19ac0)
+
+SUMMARY: libFuzzer: timeout
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 70: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/fuzz/coverage/bzip2_crown_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/BZ2_hbMakeCodeLengths/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/156943bc66ed63da38a9acffb23ea5266ab78878" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/8fcdb792fa20bfee4c950e102386119fe371929b" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/042dc4512fa3d391c5170cf3aa61e6a638f84342" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/4f47772e607dbebbaef208b67278c62a0e3992ec" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/e8463e94edd275e5b89ba5f8e234714266c7f8b7" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/71853c6197a6a7f222db0f1978c7cb232b87c5ee" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/BZ2_hbMakeCodeLengths/seed_fixed"
+

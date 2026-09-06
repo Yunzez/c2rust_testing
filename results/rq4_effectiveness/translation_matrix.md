@@ -99,14 +99,14 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 
 ## Current totals (filled cells only)
 
-- **Bugs: 7 crash + 13 semantic-diff + 0 hang**, across **5 published tools** (C2SaferRust, PtrTrans,
+- **Bugs: 10 crash + 14 semantic-diff + 0 hang** (C9 = C2SaferRust lil non-NUL-terminated C-string literals in `register_stdcmds`, the root of its CRASH-ALL, and C10 = CROWN lil `lil_subst_to_list` dropping `if (!words) words = lil_alloc_list()` — a defect on an E1-certified cell — both found by the RQ4 plan pipeline 2026-09-06; C8 = Laertes bzip2 zeroed `incs` shell-sort table, found by the RQ4 plan pipeline 2026-09-05, scanner-predicted, suite-corroborated), across **5 published tools** (C2SaferRust, PtrTrans,
   CROWN, Laertes, SACTOR), classes: **checksum-corruption — now 3 independent instances** (C2SaferRust crc32,
   Laertes bzip2, Laertes optipng); NULL/empty conflation; UTF-8-panic; call-site contract loss; CROWN
   ownership-lift breaking a codec (corrupt output + memory-unsafety); **PtrTrans qsort wrong-index
   reshaping — the sort that doesn't sort (68% of inputs unsorted, zero panics)** (#29); **guard
   hoisting + argc off-by-one** (C2SaferRust tulip driver, #30); **SACTOR immutable-lookup UB — 100%
   all-zero network output** (#32, the 4th zeroed-table instance)
-- **Zeroed-table corruption is the dominant class — now 4 instances across 3 tools**: Laertes's
+- **Zeroed-table corruption is the dominant class — now 5 instances across 3 tools** (the 5th: Laertes bzip2 `incs`, C8 — the shell-sort increment table, whose zeroing turns a bounded `while` into an out-of-bounds walk on every real compress): Laertes's
   uncalled-init zeroes any no-rebuild lookup table (bzip2 CRC #14, optipng zlib CRC #8); C2SaferRust's
   slice-lift conflates empty/NULL (crc32 #9); **SACTOR's mutability-loss makes the table immutable so
   the (called!) init's writes are UB'd away (genann sigmoid #32)**. Three distinct mechanisms, one

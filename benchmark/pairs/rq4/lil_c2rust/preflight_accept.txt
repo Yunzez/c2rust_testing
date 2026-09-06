@@ -1,0 +1,8 @@
+# Boundaries whose crash-on-every-input is REVIEWED and accepted as an unconstructible
+# precondition, not a harness bug (2026-09-06, lil x c2rust/Laertes campaigns): these are
+# lil.c's parser internals; they read lil->code[lil->head] and lil->code is NULL in a
+# freshly constructed interpreter (lil_new()). The harness can build the object but not the
+# "parse in progress" state they require. Recorded, never promoted.
+ateol
+get_dollarpart
+next_word

@@ -1,0 +1,204 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/src/lib.rs:11399:17
+      |
+11399 |                 inName.as_mut_ptr());
+      |                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/src/lib.rs:11400:13
+      |
+11400 |         pad(&mut inName, longestFileName);
+      |             ^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+help: use `&raw mut` instead to create a raw pointer
+      |
+11400 |         pad(&raw mut inName, longestFileName);
+      |              +++
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/src/lib.rs:11540:18
+      |
+11540 |     copyFileName(inName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/src/lib.rs:11543:18
+      |
+11543 |     copyFileName(outName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/src/lib.rs:11546:18
+      |
+11546 |     copyFileName(progNameReally.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/src/lib.rs:11549:15
+      |
+11549 |         &mut *progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize) as
+      |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/src/lib.rs:11552:15
+      |
+11552 |         &mut *progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize) as
+      |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: `bzip2_c2saferrust` (lib) generated 190 warnings (run `cargo fix --lib -p bzip2_c2saferrust` to apply 4 suggestions)
+   Compiling bzip2_c2saferrust-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/fuzz)
+warning: multiple methods are never used
+  --> fuzz_targets/bzip2_c2saferrust_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+...
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `bzip2_c2saferrust-fuzz` (bin "bzip2_c2saferrust_ft") generated 1 warning
+    Finished `release` profile [optimized + debuginfo] target(s) in 19.11s
+Processing 21 input files using 1 workers (batch size: ~21)
+Worker 0: Generating coverage for 21 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2699609664
+INFO: Loaded 1 modules   (1366 inline 8-bit counters): 1366 [0x55aafc93ca80, 0x55aafc93cfd6), 
+INFO: Loaded 1 PC tables (1366 PCs): 1366 [0x55aafc93cfd8,0x55aafc942538), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft: Running 21 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/ec3111d15175cc02a4dc4e4d35a0bda12b1fb544
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/ec3111d15175cc02a4dc4e4d35a0bda12b1fb544 in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/e10eecf5783b6879b0faa39d62cbde1d2bdfa898
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/e10eecf5783b6879b0faa39d62cbde1d2bdfa898 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/7b504801aec1baa8b7059e14eae0eed594b2a6e1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/7b504801aec1baa8b7059e14eae0eed594b2a6e1 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/180afd06440574dc3420ee704f3e20c56be8fda6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/180afd06440574dc3420ee704f3e20c56be8fda6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/1ef6c8a282f1123d2d14741ccf1c9bd5e0b300d0
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/1ef6c8a282f1123d2d14741ccf1c9bd5e0b300d0 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/8d221838513d0306eb90a5d34c5f946ad4d94d4f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/8d221838513d0306eb90a5d34c5f946ad4d94d4f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/7a5b453f36a6ae2528ae4e04c1c0ff04e386ce9d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/7a5b453f36a6ae2528ae4e04c1c0ff04e386ce9d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/798c1663b77378b6f452c16dbed5aa39aca518b1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/798c1663b77378b6f452c16dbed5aa39aca518b1 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/08fa168a39e26f7d8a9a776122c675ae3e929505
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/08fa168a39e26f7d8a9a776122c675ae3e929505 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/755cfd2b5c07cd3cea625dc817d81c260ae9c404
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/755cfd2b5c07cd3cea625dc817d81c260ae9c404 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/3c26d3d6c0609122d026af12b4c7578b4bd8d311
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/3c26d3d6c0609122d026af12b4c7578b4bd8d311 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/38c40b37429ad1e50e42cc4092a4b1dd67f9a867
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/38c40b37429ad1e50e42cc4092a4b1dd67f9a867 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/a42c6cf1de3abfdea9b95f34687cbbe92b9a7383
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/a42c6cf1de3abfdea9b95f34687cbbe92b9a7383 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/261eb1ed22c92d40771c810bf11e4b40fedf0684
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/261eb1ed22c92d40771c810bf11e4b40fedf0684 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/12f3bd29626fc2c0c700b1436b69a51420851cec
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/12f3bd29626fc2c0c700b1436b69a51420851cec in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/a5118cf9563516a81fbcb2b3fcb6b6e6c7e0384c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/a5118cf9563516a81fbcb2b3fcb6b6e6c7e0384c in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/884b79da46541e7bcc08157f10a661c67bce4fd2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/884b79da46541e7bcc08157f10a661c67bce4fd2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/b7ff82e46afa82eacf2beea83b46cbe5ada407e8
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/b7ff82e46afa82eacf2beea83b46cbe5ada407e8 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/c6a27adad40abb35f893e6dfac7e5f225c2db5c5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/c6a27adad40abb35f893e6dfac7e5f225c2db5c5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/f69f4070015405888778eac60d29f9fba3ceb2be
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/f69f4070015405888778eac60d29f9fba3ceb2be in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/fallbackSimpleSort/seed_fixed in 0 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/fallbackSimpleSort/fuzz/coverage/bzip2_c2saferrust_ft/coverage.profdata".
+

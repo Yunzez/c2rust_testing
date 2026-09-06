@@ -55,12 +55,13 @@ Current primary taxonomy in `rq4_effectiveness/defect_manifest.md`:
 | Byte-string domain narrowing | 5 |
 | Ownership-state corruption | 3 |
 | Null/empty conflation | 3 |
-| Initialization loss or corruption | 3 |
+| Initialization loss or corruption | 4 |
 | Interface-contract loss | 3 |
-| **Total** | **20** |
+| Semantic computation substitution | 1 |
+| **Total** | **22** |
 
 RQ3 describes the observed corpus. It does not estimate population prevalence
-from these 20 defects.
+from these 24 defects.
 
 ## RQ4 — Coverage beyond shipped tests
 

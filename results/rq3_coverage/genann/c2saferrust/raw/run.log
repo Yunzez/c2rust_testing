@@ -1,0 +1,49 @@
+GENANN TEST SUITE
+basic         
+pass: 7   fail: 0      0ms
+xor           
+pass: 5   fail: 0      0ms
+backprop      
+pass: 1   fail: 0      0ms
+train and     
+pass: 5   fail: 0      0ms
+train or      
+pass: 4   fail: 0      0ms
+train xor     
+pass: 5   fail: 0      0ms
+persist       
+
+thread 'main' (3633213) panicked at src/lib.rs:554:90:
+called `Result::unwrap()` on an `Err` value: Os { code: 9, kind: Uncategorized, message: "Bad file descriptor" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (3633213) panicked at library/core/src/panicking.rs:225:5:
+panic in a function that cannot unwind
+stack backtrace:
+   0:     0x55703c4b5802 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::hf5c071f3d4d6a673
+   1:     0x55703c4e5eef - core::fmt::write::h64fea00ae71370e8
+   2:     0x55703c467491 - std::io::Write::write_fmt::ha55b41ddcc107117
+   3:     0x55703c47c702 - std::sys::backtrace::BacktraceLock::print::h389e77e20d4ee0c2
+   4:     0x55703c484a8a - std::panicking::default_hook::{{closure}}::h651d615136fd3f3b
+   5:     0x55703c4848e4 - std::panicking::default_hook::h8e12d412917b3552
+   6:     0x55703c4851b5 - std::panicking::panic_with_hook::h5f7ef3efbb7c445c
+   7:     0x55703c484f66 - std::panicking::panic_handler::{{closure}}::h7bc4d3cbd7b0aab4
+   8:     0x55703c47c839 - std::sys::backtrace::__rust_end_short_backtrace::h4ede48052c8c6d63
+   9:     0x55703c4587bd - __rustc[8dad1328f75840d5]::rust_begin_unwind
+  10:     0x55703c4f630d - core::panicking::panic_nounwind_fmt::h84cadb72d758e0ce
+  11:     0x55703c4f61d2 - core::panicking::panic_nounwind::h1097543fb7453764
+  12:     0x55703c4f6467 - core::panicking::panic_cannot_unwind::h41f8ac9b208e4a23
+  13:     0x55703c445fa8 - genann_c2saferrust[7bd36a0f15e2b093]::test::persist
+  14:     0x55703c445494 - genann_c2saferrust[7bd36a0f15e2b093]::test::main_0
+  15:     0x55703c443ee5 - genann_c2saferrust[7bd36a0f15e2b093]::test::main
+  16:     0x55703c43d193 - std[d7852cb937e3e663]::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17:     0x55703c43d1a9 - std[d7852cb937e3e663]::rt::lang_start::<()>::{closure#0}
+  18:     0x55703c46b410 - std::rt::lang_start_internal::h161b22de8ce80149
+  19:     0x55703c43d225 - main
+  20:     0x7f33dd22a601 - __libc_start_call_main
+                               at ./csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+  21:     0x7f33dd22a718 - __libc_start_main_impl
+                               at ./csu/../csu/libc-start.c:360:3
+  22:     0x55703c43d0a5 - _start
+  23:                0x0 - <unknown>
+thread caused non-unwinding panic. aborting.

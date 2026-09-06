@@ -1,0 +1,3896 @@
+[
+ {
+  "boundary": "BZ2_blockSort",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bsInitWrite",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzBuffToBuffCompress",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "dest",
+    "c_decoder": "output_buffer",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "destLen",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "parameter_carried_length",
+     "capacity_param": "destLen",
+     "fills_from_fuzz": false,
+     "max_elems": 1048576,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "dest's element count is fuzz-decoded and capped by the global policy; it defines destLen"
+     }
+    },
+    "evidence": [],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "destLen",
+    "c_decoder": "capacity_ptr",
+    "detail": {
+     "of_buffer": "dest",
+     "elem": "u32",
+     "elem_width": 4
+    },
+    "evidence": [
+     {
+      "rule": "capacity_passed_by_pointer",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "destLen carries dest's capacity in and its written length out"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "source",
+    "c_decoder": "input_buffer",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "sourceLen",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "parameter_carried_length",
+     "length_param": "sourceLen",
+     "fills_from_fuzz": true,
+     "max_elems": 1048576,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "source's element count is fuzz-decoded and capped by the global policy; it defines sourceLen"
+     }
+    },
+    "evidence": [],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "sourceLen",
+    "c_decoder": "length",
+    "detail": {
+     "of_buffer": "source"
+    },
+    "evidence": [
+     {
+      "rule": "length_of_buffer_not_decoded_independently",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "sourceLen is the element count of source"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "blockSize100k",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 1,
+     "max": 9,
+     "derivation": [
+      "rejection_guard"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "guard_negated_lt",
+      "file": "bzlib.c",
+      "line": 1259,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of blockSize100k narrowed to [1, None] by the entry's own rejection guard"
+     },
+     {
+      "rule": "guard_negated_gt",
+      "file": "bzlib.c",
+      "line": 1259,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of blockSize100k narrowed to [1, 9] by the entry's own rejection guard"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "verbosity",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4,
+     "derivation": [
+      "rejection_guard"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "guard_negated_lt",
+      "file": "bzlib.c",
+      "line": 1259,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of verbosity narrowed to [0, None] by the entry's own rejection guard"
+     },
+     {
+      "rule": "guard_negated_gt",
+      "file": "bzlib.c",
+      "line": 1259,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of verbosity narrowed to [0, 4] by the entry's own rejection guard"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "workFactor",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 250,
+     "derivation": [
+      "rejection_guard"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "guard_negated_lt",
+      "file": "bzlib.c",
+      "line": 1259,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of workFactor narrowed to [0, None] by the entry's own rejection guard"
+     },
+     {
+      "rule": "guard_negated_gt",
+      "file": "bzlib.c",
+      "line": 1259,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of workFactor narrowed to [0, 250] by the entry's own rejection guard"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "dest: no lossless Rust bridge -- Rust signature has 5 parameters, C has 7: reshaped API, no positional bridge"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzBuffToBuffDecompress",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "dest",
+    "c_decoder": "output_buffer",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "destLen",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "parameter_carried_length",
+     "capacity_param": "destLen",
+     "fills_from_fuzz": false,
+     "max_elems": 1048576,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "dest's element count is fuzz-decoded and capped by the global policy; it defines destLen"
+     }
+    },
+    "evidence": [],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "destLen",
+    "c_decoder": "capacity_ptr",
+    "detail": {
+     "of_buffer": "dest",
+     "elem": "u32",
+     "elem_width": 4
+    },
+    "evidence": [
+     {
+      "rule": "capacity_passed_by_pointer",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "destLen carries dest's capacity in and its written length out"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "source",
+    "c_decoder": "input_buffer",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "sourceLen",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "parameter_carried_length",
+     "length_param": "sourceLen",
+     "fills_from_fuzz": true,
+     "max_elems": 1048576,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "source's element count is fuzz-decoded and capped by the global policy; it defines sourceLen"
+     }
+    },
+    "evidence": [],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "sourceLen",
+    "c_decoder": "length",
+    "detail": {
+     "of_buffer": "source"
+    },
+    "evidence": [
+     {
+      "rule": "length_of_buffer_not_decoded_independently",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "sourceLen is the element count of source"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "small",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1,
+     "derivation": [
+      "rejection_guard"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "guard_negated_inequality_set",
+      "file": "bzlib.c",
+      "line": 1310,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of small narrowed to [0, 1] by the entry's own rejection guard"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "verbosity",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4,
+     "derivation": [
+      "rejection_guard"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "guard_negated_lt",
+      "file": "bzlib.c",
+      "line": 1310,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of verbosity narrowed to [0, None] by the entry's own rejection guard"
+     },
+     {
+      "rule": "guard_negated_gt",
+      "file": "bzlib.c",
+      "line": 1310,
+      "col": 4,
+      "snippet": "if (dest == NULL || destLen == NULL ||",
+      "note": "accepted domain of verbosity narrowed to [0, 4] by the entry's own rejection guard"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "dest: no lossless Rust bridge -- Rust signature has 4 parameters, C has 6: reshaped API, no positional bridge"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzCompress",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzCompressEnd",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzCompressInit",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzDecompress",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzDecompressEnd",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzDecompressInit",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzRead",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzReadClose",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzReadGetUnused",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzReadOpen",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzWrite",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzWriteClose",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzWriteClose64",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzWriteOpen",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bz__AssertH__fail",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "errcode",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "i32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzclose",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzdopen",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "fd",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "c_int",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "mode",
+    "c_decoder": "input_string",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "max_elems": 1048576
+    },
+    "evidence": [
+     {
+      "rule": "const_char_star_without_length_is_a_string",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "mode is a const char* with no length parameter and no provable extent"
+     }
+    ],
+    "rust_type": "&str",
+    "rust_bridge": null
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "fd: environment input -- it flows into bzopen_or_bzdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter",
+   "mode: environment input -- it flows into bzopen_or_bzdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter",
+   "mode: no lossless Rust bridge -- input buffer of i8 has Rust type &str, which is not a raw pointer, a slice, a Vec or a Box<[T]> of the same element type"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzerror",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzflush",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzlibVersion",
+  "status": "planned",
+  "inputs": [],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzopen",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "path",
+    "c_decoder": "input_string",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "max_elems": 1048576
+    },
+    "evidence": [
+     {
+      "rule": "const_char_star_without_length_is_a_string",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "path is a const char* with no length parameter and no provable extent"
+     }
+    ],
+    "rust_type": "&str",
+    "rust_bridge": null
+   },
+   {
+    "param": "mode",
+    "c_decoder": "input_string",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "max_elems": 1048576
+    },
+    "evidence": [
+     {
+      "rule": "const_char_star_without_length_is_a_string",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "mode is a const char* with no length parameter and no provable extent"
+     }
+    ],
+    "rust_type": "&str",
+    "rust_bridge": null
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "path: environment input -- it flows into bzopen_or_bzdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter",
+   "mode: environment input -- it flows into bzopen_or_bzdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter",
+   "path: no lossless Rust bridge -- input buffer of i8 has Rust type &str, which is not a raw pointer, a slice, a Vec or a Box<[T]> of the same element type",
+   "mode: no lossless Rust bridge -- input buffer of i8 has Rust type &str, which is not a raw pointer, a slice, a Vec or a Box<[T]> of the same element type"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzread",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_bzwrite",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: unsupported pointer target for b: unsupported BZFILE"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_compressBlock",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_decompress",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_hbAssignCodes",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "code",
+    "c_decoder": "output_buffer",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "param",
+      "p": "alphaSize",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "proven_index_bound",
+     "capacity_param": "alphaSize",
+     "fills_from_fuzz": false
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 163,
+      "col": 32,
+      "snippet": "if (length[i] == n) { code[i] = vec; vec++; };",
+      "note": "code[alphaSize-1] written"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "length",
+    "c_decoder": "input_buffer",
+    "detail": {
+     "elem": "u8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "alphaSize",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "proven_index_bound",
+     "length_param": "alphaSize",
+     "fills_from_fuzz": true,
+     "max_elems": 262144,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "length's element count is fuzz-decoded and capped by the global policy; it defines alphaSize"
+     }
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 163,
+      "col": 14,
+      "snippet": "if (length[i] == n) { code[i] = vec; vec++; };",
+      "note": "length[alphaSize-1] read"
+     }
+    ],
+    "rust_type": "*mut UChar",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "minLen",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "huffman.c",
+      "line": 161,
+      "col": 4,
+      "snippet": "for (n = minLen; n <= maxLen; n++) {",
+      "note": "minLen appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "minLen controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "maxLen",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "huffman.c",
+      "line": 161,
+      "col": 4,
+      "snippet": "for (n = minLen; n <= maxLen; n++) {",
+      "note": "maxLen appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "maxLen controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "alphaSize",
+    "c_decoder": "length",
+    "detail": {
+     "of_buffer": "length"
+    },
+    "evidence": [
+     {
+      "rule": "length_of_buffer_not_decoded_independently",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "alphaSize is the element count of length"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "minLen",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 161,
+     "col": 4,
+     "snippet": "for (n = minLen; n <= maxLen; n++) {",
+     "note": "minLen appears in this loop's control expressions"
+    }
+   },
+   {
+    "param": "maxLen",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 161,
+     "col": 4,
+     "snippet": "for (n = minLen; n <= maxLen; n++) {",
+     "note": "maxLen appears in this loop's control expressions"
+    }
+   },
+   {
+    "param": "alphaSize",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 162,
+     "col": 7,
+     "snippet": "for (i = 0; i < alphaSize; i++)",
+     "note": "alphaSize appears in this loop's control expressions"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_hbCreateDecodeTables",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "limit",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "max",
+      "of": [
+       {
+        "k": "param",
+        "p": "maxLen",
+        "mul": 1,
+        "div": 1,
+        "add": 1
+       },
+       {
+        "k": "const",
+        "v": 23
+       }
+      ]
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1025,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 190,
+      "col": 42,
+      "snippet": "for (i = 0; i < BZ_MAX_CODE_LEN; i++) limit[i] = 0;",
+      "note": "limit[22] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 195,
+      "col": 7,
+      "snippet": "limit[i] = vec-1;",
+      "note": "limit[maxLen] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 199,
+      "col": 19,
+      "snippet": "base[i] = ((limit[i-1] + 1) << 1) - base[i];",
+      "note": "limit[maxLen-1] read"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "base",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "max",
+      "of": [
+       {
+        "k": "param",
+        "p": "maxLen",
+        "mul": 1,
+        "div": 1,
+        "add": 2
+       },
+       {
+        "k": "const",
+        "v": 257
+       }
+      ]
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1026,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 185,
+      "col": 42,
+      "snippet": "for (i = 0; i < BZ_MAX_CODE_LEN; i++) base[i] = 0;",
+      "note": "base[22] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 186,
+      "col": 36,
+      "snippet": "for (i = 0; i < alphaSize; i++) base[length[i]+1]++;",
+      "note": "base[256] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 188,
+      "col": 42,
+      "snippet": "for (i = 1; i < BZ_MAX_CODE_LEN; i++) base[i] += base[i-1];",
+      "note": "base[22] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 188,
+      "col": 53,
+      "snippet": "for (i = 1; i < BZ_MAX_CODE_LEN; i++) base[i] += base[i-1];",
+      "note": "base[21] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 194,
+      "col": 15,
+      "snippet": "vec += (base[i+1] - base[i]);",
+      "note": "base[maxLen+1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 194,
+      "col": 27,
+      "snippet": "vec += (base[i+1] - base[i]);",
+      "note": "base[maxLen] read"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "perm",
+    "c_decoder": "output_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "pp is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 183,
+      "col": 32,
+      "snippet": "if (length[j] == i) { perm[pp] = j; pp++; };",
+      "note": "perm[unknown(pp is not a loop induction variable in scope)] written"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "length",
+    "c_decoder": "input_buffer",
+    "detail": {
+     "elem": "u8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "alphaSize",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "proven_index_bound",
+     "length_param": "alphaSize",
+     "fills_from_fuzz": true,
+     "max_elems": 1048576,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "length's element count is fuzz-decoded and capped by the global policy; it defines alphaSize"
+     }
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 183,
+      "col": 14,
+      "snippet": "if (length[j] == i) { perm[pp] = j; pp++; };",
+      "note": "length[alphaSize-1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 186,
+      "col": 41,
+      "snippet": "for (i = 0; i < alphaSize; i++) base[length[i]+1]++;",
+      "note": "length[alphaSize-1] read"
+     }
+    ],
+    "rust_type": "*mut UChar",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "minLen",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "huffman.c",
+      "line": 181,
+      "col": 4,
+      "snippet": "for (i = minLen; i <= maxLen; i++)",
+      "note": "minLen appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "minLen controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "maxLen",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp",
+      "extent_fits_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "huffman.c",
+      "line": 181,
+      "col": 4,
+      "snippet": "for (i = minLen; i <= maxLen; i++)",
+      "note": "maxLen appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "maxLen controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     },
+     {
+      "rule": "extent_fits_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "maxLen appears in the proven required extent of limit; the harness allocates 4096 elements, so maxLen <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "alphaSize",
+    "c_decoder": "length",
+    "detail": {
+     "of_buffer": "length"
+    },
+    "evidence": [
+     {
+      "rule": "length_of_buffer_not_decoded_independently",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "alphaSize is the element count of length"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "minLen",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 181,
+     "col": 4,
+     "snippet": "for (i = minLen; i <= maxLen; i++)",
+     "note": "minLen appears in this loop's control expressions"
+    }
+   },
+   {
+    "param": "maxLen",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 181,
+     "col": 4,
+     "snippet": "for (i = minLen; i <= maxLen; i++)",
+     "note": "maxLen appears in this loop's control expressions"
+    }
+   },
+   {
+    "param": "alphaSize",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 182,
+     "col": 7,
+     "snippet": "for (j = 0; j < alphaSize; j++)",
+     "note": "alphaSize appears in this loop's control expressions"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_hbMakeCodeLengths",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "len",
+    "c_decoder": "output_buffer",
+    "detail": {
+     "elem": "u8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "alphaSize",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "proven_index_bound",
+     "capacity_param": "alphaSize",
+     "fills_from_fuzz": false
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 119,
+      "col": 10,
+      "snippet": "len[i-1] = j;",
+      "note": "len[alphaSize-1] written"
+     }
+    ],
+    "rust_type": "*mut UChar",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "freq",
+    "c_decoder": "input_buffer",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "param",
+      "p": "alphaSize",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "proven_index_bound",
+     "length_param": "alphaSize",
+     "fills_from_fuzz": true,
+     "max_elems": 262144,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "freq's element count is fuzz-decoded and capped by the global policy; it defines alphaSize"
+     }
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 80,
+      "col": 22,
+      "snippet": "weight[i+1] = (freq[i] == 0 ? 1 : freq[i]) << 8;",
+      "note": "freq[alphaSize-1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "huffman.c",
+      "line": 80,
+      "col": 41,
+      "snippet": "weight[i+1] = (freq[i] == 0 ? 1 : freq[i]) << 8;",
+      "note": "freq[alphaSize-1] read"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "alphaSize",
+    "c_decoder": "length",
+    "detail": {
+     "of_buffer": "freq"
+    },
+    "evidence": [
+     {
+      "rule": "length_of_buffer_not_decoded_independently",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "alphaSize is the element count of freq"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "maxLen",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "alphaSize",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 79,
+     "col": 4,
+     "snippet": "for (i = 0; i < alphaSize; i++)",
+     "note": "alphaSize appears in this loop's control expressions"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "BZ2_indexIntoF",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "indx",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "cftab",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "mid is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "bzlib.c",
+      "line": 694,
+      "col": 19,
+      "snippet": "if (indx >= cftab[mid]) nb = mid; else na = mid;",
+      "note": "cftab[unknown(mid is not a loop induction variable in scope)] read"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "add_pair_to_block",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "bsFinishWrite",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "bsPutUChar",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "bsPutUInt32",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "bsW",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "bz_config_ok",
+  "status": "planned",
+  "inputs": [],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "bzopen_or_bzdopen",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "path",
+    "c_decoder": "input_string",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "max_elems": 1048576
+    },
+    "evidence": [
+     {
+      "rule": "const_char_star_without_length_is_a_string",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "path is a const char* with no length parameter and no provable extent"
+     }
+    ],
+    "rust_type": "*const std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "fd",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "std::os::raw::c_int",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "mode",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "const",
+      "v": 1
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "pointer_dereferenced_in_body",
+      "file": "bzlib.c",
+      "line": 1402,
+      "col": 11,
+      "snippet": "while (*mode) {",
+      "note": "*mode is read"
+     }
+    ],
+    "rust_type": "*const std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "open_mode",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "std::os::raw::c_int",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "path: environment input -- it flows into fopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter",
+   "fd: environment input -- it flows into fdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "copy_input_until_stop",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "copy_output_until_stop",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "default_bzalloc",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "opaque",
+    "c_decoder": "null_pointer",
+    "detail": {
+     "input_strength": "complete",
+     "reason": "the entry never uses opaque, so NULL is the whole input"
+    },
+    "evidence": [
+     {
+      "rule": "void_pointer_has_no_shape",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "void* carries no shape, so NULL is the only constructible value"
+     }
+    ],
+    "rust_type": "*mut std::ffi::c_void",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "items",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "i32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "size",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "i32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "default_bzfree",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "opaque",
+    "c_decoder": "null_pointer",
+    "detail": {
+     "input_strength": "complete",
+     "reason": "the entry never uses opaque, so NULL is the whole input"
+    },
+    "evidence": [
+     {
+      "rule": "void_pointer_has_no_shape",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "void* carries no shape, so NULL is the only constructible value"
+     }
+    ],
+    "rust_type": "*mut std::ffi::c_void",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "addr",
+    "c_decoder": "null_pointer",
+    "detail": {
+     "input_strength": "partial(null-only)",
+     "reason": "the entry uses addr, so NULL leaves the other path unreachable"
+    },
+    "evidence": [
+     {
+      "rule": "void_pointer_has_no_shape",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "void* carries no shape, so NULL is the only constructible value"
+     },
+     {
+      "rule": "param_escapes_into_call",
+      "file": "bzlib.c",
+      "line": 111,
+      "col": 22,
+      "snippet": "if (addr != NULL) free ( addr );",
+      "note": "addr is passed to free"
+     }
+    ],
+    "rust_type": "*mut std::ffi::c_void",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "fallbackQSort3",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "fmap",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "lo is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 128,
+      "col": 33,
+      "snippet": "if (r3 == 0) med = eclass[fmap[lo]]; else",
+      "note": "fmap[unknown(lo is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 129,
+      "col": 33,
+      "snippet": "if (r3 == 1) med = eclass[fmap[(lo+hi)>>1]]; else",
+      "note": "fmap[unknown(div)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 130,
+      "col": 33,
+      "snippet": "med = eclass[fmap[hi]];",
+      "note": "fmap[unknown(hi is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 138,
+      "col": 31,
+      "snippet": "n = (Int32)eclass[fmap[unLo]] - (Int32)med;",
+      "note": "fmap[unknown(unLo is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 140,
+      "col": 16,
+      "snippet": "fswap(fmap[unLo], fmap[ltLo]);",
+      "note": "fmap[unknown(unLo is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 140,
+      "col": 16,
+      "snippet": "fswap(fmap[unLo], fmap[ltLo]);",
+      "note": "fmap[unknown(unLo is not a loop induction variable in scope)] written"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "eclass",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "const",
+      "v": 4294967296
+     },
+     "extent_source": "policy_allocation_capped",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 128,
+      "col": 26,
+      "snippet": "if (r3 == 0) med = eclass[fmap[lo]]; else",
+      "note": "eclass[4294967295] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 129,
+      "col": 26,
+      "snippet": "if (r3 == 1) med = eclass[fmap[(lo+hi)>>1]]; else",
+      "note": "eclass[4294967295] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 130,
+      "col": 26,
+      "snippet": "med = eclass[fmap[hi]];",
+      "note": "eclass[4294967295] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 138,
+      "col": 24,
+      "snippet": "n = (Int32)eclass[fmap[unLo]] - (Int32)med;",
+      "note": "eclass[4294967295] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 149,
+      "col": 24,
+      "snippet": "n = (Int32)eclass[fmap[unHi]] - (Int32)med;",
+      "note": "eclass[4294967295] read"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "loSt",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "loSt can influence an index into fmap; the harness allocates 4096 elements, so loSt <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "hiSt",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "hiSt can influence an index into fmap; the harness allocates 4096 elements, so hiSt <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "fallbackSimpleSort",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "fmap",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "i is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 44,
+      "col": 16,
+      "snippet": "tmp = fmap[i];",
+      "note": "fmap[unknown(i is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 46,
+      "col": 52,
+      "snippet": "for ( j = i+4; j <= hi && ec_tmp > eclass[fmap[j]]; j += 4 )",
+      "note": "fmap[hi] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 47,
+      "col": 13,
+      "snippet": "fmap[j-4] = fmap[j];",
+      "note": "fmap[hi-4] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 47,
+      "col": 25,
+      "snippet": "fmap[j-4] = fmap[j];",
+      "note": "fmap[hi] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 48,
+      "col": 10,
+      "snippet": "fmap[j-4] = tmp;",
+      "note": "fmap[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 53,
+      "col": 13,
+      "snippet": "tmp = fmap[i];",
+      "note": "fmap[unknown(i is not a loop induction variable in scope)] read"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "eclass",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "tmp is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 45,
+      "col": 19,
+      "snippet": "ec_tmp = eclass[tmp];",
+      "note": "eclass[unknown(tmp is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 46,
+      "col": 45,
+      "snippet": "for ( j = i+4; j <= hi && ec_tmp > eclass[fmap[j]]; j += 4 )",
+      "note": "eclass[4294967295] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 54,
+      "col": 16,
+      "snippet": "ec_tmp = eclass[tmp];",
+      "note": "eclass[unknown(tmp is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 55,
+      "col": 42,
+      "snippet": "for ( j = i+1; j <= hi && ec_tmp > eclass[fmap[j]]; j++ )",
+      "note": "eclass[4294967295] read"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "lo",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "blocksort.c",
+      "line": 43,
+      "col": 7,
+      "snippet": "for ( i = hi-4; i >= lo; i-- ) {",
+      "note": "lo appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "lo controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "hi",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp",
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "blocksort.c",
+      "line": 43,
+      "col": 7,
+      "snippet": "for ( i = hi-4; i >= lo; i-- ) {",
+      "note": "hi appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "hi controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     },
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "hi can influence an index into fmap; the harness allocates 4096 elements, so hi <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "hi",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "blocksort.c",
+     "line": 43,
+     "col": 7,
+     "snippet": "for ( i = hi-4; i >= lo; i-- ) {",
+     "note": "hi appears in this loop's control expressions"
+    }
+   },
+   {
+    "param": "lo",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "blocksort.c",
+     "line": 43,
+     "col": 7,
+     "snippet": "for ( i = hi-4; i >= lo; i-- ) {",
+     "note": "lo appears in this loop's control expressions"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "fallbackSort",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "fmap",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "k is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 240,
+      "col": 7,
+      "snippet": "fmap[k] = i;",
+      "note": "fmap[unknown(k is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 269,
+      "col": 14,
+      "snippet": "k = fmap[i] - H; if (k < 0) k += nblock;",
+      "note": "fmap[nblock-1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 302,
+      "col": 29,
+      "snippet": "cc1 = eclass[fmap[i]];",
+      "note": "fmap[unknown(r is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 326,
+      "col": 15,
+      "snippet": "eclass8[fmap[i]] = (UChar)j;",
+      "note": "fmap[nblock-1] read"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "eclass",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "k is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 270,
+      "col": 10,
+      "snippet": "eclass[k] = j;",
+      "note": "eclass[unknown(k is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 302,
+      "col": 22,
+      "snippet": "cc1 = eclass[fmap[i]];",
+      "note": "eclass[4294967295] read"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "bhtab",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "nBhtab is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 244,
+      "col": 33,
+      "snippet": "for (i = 0; i < nBhtab; i++) bhtab[i] = 0;",
+      "note": "bhtab[unknown(nBhtab is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 245,
+      "col": 30,
+      "snippet": "for (i = 0; i < 256; i++) SET_BH(ftab[i]);",
+      "note": "bhtab[67108863] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 255,
+      "col": 7,
+      "snippet": "SET_BH(nblock + 2*i);",
+      "note": "bhtab[unknown(div)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 256,
+      "col": 7,
+      "snippet": "CLEAR_BH(nblock + 2*i + 1);",
+      "note": "bhtab[unknown(div)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 268,
+      "col": 14,
+      "snippet": "if (ISSET_BH(i)) j = i;",
+      "note": "bhtab[unknown(div)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 279,
+      "col": 17,
+      "snippet": "while (ISSET_BH(k) && UNALIGNED_BH(k)) k++;",
+      "note": "bhtab[unknown(div)] read"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "nblock",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp",
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "blocksort.c",
+      "line": 232,
+      "col": 4,
+      "snippet": "for (i = 0; i < nblock; i++) ftab[eclass8[i]]++;",
+      "note": "nblock appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "nblock controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     },
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "nblock can influence an index into fmap; the harness allocates 4096 elements, so nblock <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "verb",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "nblock",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "blocksort.c",
+     "line": 232,
+     "col": 4,
+     "snippet": "for (i = 0; i < nblock; i++) ftab[eclass8[i]]++;",
+     "note": "nblock appears in this loop's control expressions"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "flush_RL",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "generateMTFValues",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "handle_compress",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "init_RL",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "isempty_RL",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "mainGtU",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "i1",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "extent_fits_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "extent_fits_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "i1 appears in the proven required extent of block; the harness allocates 4096 elements, so i1 <= 4095"
+     }
+    ],
+    "rust_type": "UInt32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "i2",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "extent_fits_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "extent_fits_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "i2 appears in the proven required extent of block; the harness allocates 4096 elements, so i2 <= 4095"
+     }
+    ],
+    "rust_type": "UInt32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "block",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "u8",
+     "elem_width": 1,
+     "extent": {
+      "k": "max",
+      "of": [
+       {
+        "k": "param",
+        "p": "i1",
+        "mul": 1,
+        "div": 1,
+        "add": 1
+       },
+       {
+        "k": "param",
+        "p": "i2",
+        "mul": 1,
+        "div": 1,
+        "add": 1
+       }
+      ]
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 360,
+      "col": 9,
+      "snippet": "c1 = block[i1]; c2 = block[i2];",
+      "note": "block[i1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 360,
+      "col": 25,
+      "snippet": "c1 = block[i1]; c2 = block[i2];",
+      "note": "block[i2] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 364,
+      "col": 9,
+      "snippet": "c1 = block[i1]; c2 = block[i2];",
+      "note": "block[i1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 364,
+      "col": 25,
+      "snippet": "c1 = block[i1]; c2 = block[i2];",
+      "note": "block[i2] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 368,
+      "col": 9,
+      "snippet": "c1 = block[i1]; c2 = block[i2];",
+      "note": "block[i1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 368,
+      "col": 25,
+      "snippet": "c1 = block[i1]; c2 = block[i2];",
+      "note": "block[i2] read"
+     }
+    ],
+    "rust_type": "*mut UChar",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "quadrant",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "u16",
+     "elem_width": 2,
+     "extent": {
+      "k": "max",
+      "of": [
+       {
+        "k": "param",
+        "p": "i1",
+        "mul": 1,
+        "div": 1,
+        "add": 1
+       },
+       {
+        "k": "param",
+        "p": "i2",
+        "mul": 1,
+        "div": 1,
+        "add": 1
+       }
+      ]
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 414,
+      "col": 12,
+      "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+      "note": "quadrant[i1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 414,
+      "col": 31,
+      "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+      "note": "quadrant[i2] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 420,
+      "col": 12,
+      "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+      "note": "quadrant[i1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 420,
+      "col": 31,
+      "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+      "note": "quadrant[i2] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 426,
+      "col": 12,
+      "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+      "note": "quadrant[i1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 426,
+      "col": 31,
+      "snippet": "s1 = quadrant[i1]; s2 = quadrant[i2];",
+      "note": "quadrant[i2] read"
+     }
+    ],
+    "rust_type": "*mut UInt16",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "nblock",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "UInt32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "budget",
+    "c_decoder": "output_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "const",
+      "v": 1
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1,
+     "fills_from_fuzz": false
+    },
+    "evidence": [
+     {
+      "rule": "pointer_dereferenced_in_body",
+      "file": "blocksort.c",
+      "line": 464,
+      "col": 8,
+      "snippet": "(*budget)--;",
+      "note": "*budget is written"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "mainQSort3",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "ptr",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "lo is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 657,
+      "col": 27,
+      "snippet": "mmed3 ( block[ptr[ lo         ]+d],",
+      "note": "ptr[unknown(lo is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 658,
+      "col": 27,
+      "snippet": "block[ptr[ hi         ]+d],",
+      "note": "ptr[unknown(hi is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 659,
+      "col": 27,
+      "snippet": "block[ptr[ (lo+hi)>>1 ]+d] );",
+      "note": "ptr[unknown(div)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 667,
+      "col": 31,
+      "snippet": "n = ((Int32)block[ptr[unLo]+d]) - med;",
+      "note": "ptr[unknown(unLo is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 669,
+      "col": 16,
+      "snippet": "mswap(ptr[unLo], ptr[ltLo]);",
+      "note": "ptr[unknown(unLo is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 669,
+      "col": 16,
+      "snippet": "mswap(ptr[unLo], ptr[ltLo]);",
+      "note": "ptr[unknown(unLo is not a loop induction variable in scope)] written"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "block",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "u8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "sum of two non-constants"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 657,
+      "col": 21,
+      "snippet": "mmed3 ( block[ptr[ lo         ]+d],",
+      "note": "block[unknown(sum of two non-constants)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 658,
+      "col": 21,
+      "snippet": "block[ptr[ hi         ]+d],",
+      "note": "block[unknown(sum of two non-constants)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 659,
+      "col": 21,
+      "snippet": "block[ptr[ (lo+hi)>>1 ]+d] );",
+      "note": "block[unknown(sum of two non-constants)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 667,
+      "col": 25,
+      "snippet": "n = ((Int32)block[ptr[unLo]+d]) - med;",
+      "note": "block[unknown(sum of two non-constants)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 677,
+      "col": 25,
+      "snippet": "n = ((Int32)block[ptr[unHi]+d]) - med;",
+      "note": "block[unknown(sum of two non-constants)] read"
+     }
+    ],
+    "rust_type": "*mut UChar",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "quadrant",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "u16",
+     "elem_width": 2,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut UInt16",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "nblock",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "loSt",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "loSt can influence an index into ptr; the harness allocates 4096 elements, so loSt <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "hiSt",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "hiSt can influence an index into ptr; the harness allocates 4096 elements, so hiSt <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "dSt",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "dSt can influence an index into ptr; the harness allocates 4096 elements, so dSt <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "budget",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "const",
+      "v": 1
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "pointer_dereferenced_in_body",
+      "file": "blocksort.c",
+      "line": 652,
+      "col": 14,
+      "snippet": "if (*budget < 0) return;",
+      "note": "*budget is read"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "mainSimpleSort",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "ptr",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "i is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 512,
+      "col": 14,
+      "snippet": "v = ptr[i];",
+      "note": "ptr[unknown(i is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 515,
+      "col": 21,
+      "snippet": "ptr[j-h]+d, v+d, block, quadrant, nblock, budget",
+      "note": "ptr[unknown(operator BinaryOperator.Sub)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 517,
+      "col": 13,
+      "snippet": "ptr[j] = ptr[j-h];",
+      "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 517,
+      "col": 22,
+      "snippet": "ptr[j] = ptr[j-h];",
+      "note": "ptr[unknown(operator BinaryOperator.Sub)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 521,
+      "col": 10,
+      "snippet": "ptr[j] = v;",
+      "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 526,
+      "col": 14,
+      "snippet": "v = ptr[i];",
+      "note": "ptr[unknown(i is not a loop induction variable in scope)] read"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "block",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "u8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut UChar",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "quadrant",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "u16",
+     "elem_width": 2,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut UInt16",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "nblock",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "lo",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "lo can influence an index into ptr; the harness allocates 4096 elements, so lo <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "hi",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "d",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "budget",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "const",
+      "v": 1
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "pointer_dereferenced_in_body",
+      "file": "blocksort.c",
+      "line": 552,
+      "col": 14,
+      "snippet": "if (*budget < 0) return;",
+      "note": "*budget is read"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "mainSort",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "ptr",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "j is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 811,
+      "col": 7,
+      "snippet": "ptr[j] = i;",
+      "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 815,
+      "col": 7,
+      "snippet": "ptr[j] = i-1;",
+      "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 819,
+      "col": 7,
+      "snippet": "ptr[j] = i-2;",
+      "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 823,
+      "col": 7,
+      "snippet": "ptr[j] = i-3;",
+      "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 829,
+      "col": 7,
+      "snippet": "ptr[j] = i;",
+      "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 924,
+      "col": 17,
+      "snippet": "k = ptr[j]-1; if (k < 0) k += nblock;",
+      "note": "ptr[unknown(j is not a loop induction variable in scope)] read"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "block",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "i is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 772,
+      "col": 8,
+      "snippet": "j = block[0] << 8;",
+      "note": "block[0] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 776,
+      "col": 33,
+      "snippet": "j = (j >> 8) | ( ((UInt16)block[i]) << 8);",
+      "note": "block[unknown(i is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 779,
+      "col": 33,
+      "snippet": "j = (j >> 8) | ( ((UInt16)block[i-1]) << 8);",
+      "note": "block[unknown(i is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 782,
+      "col": 33,
+      "snippet": "j = (j >> 8) | ( ((UInt16)block[i-2]) << 8);",
+      "note": "block[unknown(i is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 785,
+      "col": 33,
+      "snippet": "j = (j >> 8) | ( ((UInt16)block[i-3]) << 8);",
+      "note": "block[unknown(i is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 790,
+      "col": 33,
+      "snippet": "j = (j >> 8) | ( ((UInt16)block[i]) << 8);",
+      "note": "block[unknown(i is not a loop induction variable in scope)] read"
+     }
+    ],
+    "rust_type": "*mut UChar",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "quadrant",
+    "c_decoder": "output_array",
+    "detail": {
+     "elem": "u16",
+     "elem_width": 2,
+     "extent": {
+      "k": "unknown",
+      "why": "i is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 775,
+      "col": 7,
+      "snippet": "quadrant[i] = 0;",
+      "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 778,
+      "col": 7,
+      "snippet": "quadrant[i-1] = 0;",
+      "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 781,
+      "col": 7,
+      "snippet": "quadrant[i-2] = 0;",
+      "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 784,
+      "col": 7,
+      "snippet": "quadrant[i-3] = 0;",
+      "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 789,
+      "col": 7,
+      "snippet": "quadrant[i] = 0;",
+      "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 797,
+      "col": 7,
+      "snippet": "quadrant[nblock+i] = 0;",
+      "note": "quadrant[unknown(sum of two non-constants)] written"
+     }
+    ],
+    "rust_type": "*mut UInt16",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "ftab",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "u32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "i is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 770,
+      "col": 33,
+      "snippet": "for (i = 65536; i >= 0; i--) ftab[i] = 0;",
+      "note": "ftab[unknown(i is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 777,
+      "col": 7,
+      "snippet": "ftab[j]++;",
+      "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 780,
+      "col": 7,
+      "snippet": "ftab[j]++;",
+      "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 783,
+      "col": 7,
+      "snippet": "ftab[j]++;",
+      "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 786,
+      "col": 7,
+      "snippet": "ftab[j]++;",
+      "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "blocksort.c",
+      "line": 791,
+      "col": 7,
+      "snippet": "ftab[j]++;",
+      "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+     }
+    ],
+    "rust_type": "*mut UInt32",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "nblock",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 4095,
+     "derivation": [
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "nblock can influence an index into ptr; the harness allocates 4096 elements, so nblock <= 4095"
+     }
+    ],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "verb",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "Int32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "budget",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "const",
+      "v": 1
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "pointer_dereferenced_in_body",
+      "file": "blocksort.c",
+      "line": 902,
+      "col": 23,
+      "snippet": "if (*budget < 0) return;",
+      "note": "*budget is read"
+     }
+    ],
+    "rust_type": "*mut Int32",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "makeMaps_d",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "makeMaps_e",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "mmed3",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "a",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "u8",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "b",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "u8",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "c",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "u8",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "myfeof",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "prepare_new_block",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "sendMTFValues",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "unRLE_obuf_to_output_FAST",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "unRLE_obuf_to_output_SMALL",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16
+  },
+  "plan_version": 1
+ }
+]

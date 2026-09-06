@@ -1,0 +1,147 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+ && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `ann__inputs` should have a snake case name
+   --> fuzz_targets/genann_c2saferrust_ft.rs:142:9
+    |
+142 |     let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));
+    |         ^^^^^^^^^^^ help: convert the identifier to snake case: `ann_inputs`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `ann__hidden_layers` should have a snake case name
+   --> fuzz_targets/genann_c2saferrust_ft.rs:143:9
+    |
+143 |     let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));
+    |         ^^^^^^^^^^^^^^^^^^ help: convert the identifier to snake case: `ann_hidden_layers`
+
+warning: variable `ann__hidden` should have a snake case name
+   --> fuzz_targets/genann_c2saferrust_ft.rs:144:9
+    |
+144 |     let ann__hidden = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));
+    |         ^^^^^^^^^^^ help: convert the identifier to snake case: `ann_hidden`
+
+warning: variable `ann__outputs` should have a snake case name
+   --> fuzz_targets/genann_c2saferrust_ft.rs:145:9
+    |
+145 |     let ann__outputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));
+    |         ^^^^^^^^^^^^ help: convert the identifier to snake case: `ann_outputs`
+
+warning: `genann_c2saferrust-fuzz` (bin "genann_c2saferrust_ft") generated 9 warnings (run `cargo fix --bin "genann_c2saferrust_ft"` to apply 4 suggestions)
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.71s
+Processing 45 input files using 1 workers (batch size: ~45)
+Worker 0: Generating coverage for 45 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 1873562609
+INFO: Loaded 1 modules   (2377 inline 8-bit counters): 2377 [0x56038a6ffd70, 0x56038a7006b9), 
+INFO: Loaded 1 PC tables (2377 PCs): 2377 [0x56038a7006c0,0x56038a709b50), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/harnesses/genann_train/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/genann_c2saferrust_ft: Running 45 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/533d4e0dded0fc8d3ebaf77ef27083396c06a383
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/533d4e0dded0fc8d3ebaf77ef27083396c06a383 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/822b5134c7683bdd22e7047f68b2bdec71e0e169
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/822b5134c7683bdd22e7047f68b2bdec71e0e169 in 3 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/4ab45712a83e2b9f3d743786ecc2c8139f67636c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/4ab45712a83e2b9f3d743786ecc2c8139f67636c in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/add5b3dabc3c42213bf45307e02a773f289eb6f6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/add5b3dabc3c42213bf45307e02a773f289eb6f6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/c8754ac250d1018631238a49d983196189f0b0da
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/c8754ac250d1018631238a49d983196189f0b0da in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/7ba9053aba60592b973c6ead98e796e24e8d2a35
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/7ba9053aba60592b973c6ead98e796e24e8d2a35 in 3 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/11d1b0ca9bc65bcc1828500548190eab106bb05a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/11d1b0ca9bc65bcc1828500548190eab106bb05a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/0e75a3d2a35d81de416f0be0bc3f013c48758506
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/0e75a3d2a35d81de416f0be0bc3f013c48758506 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/661c7502b40865d2c3d45f9d88df28b2a03f4786
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/661c7502b40865d2c3d45f9d88df28b2a03f4786 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/05f34dc49c4e75a4c3d9903b30f8480fddfee0c2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/05f34dc49c4e75a4c3d9903b30f8480fddfee0c2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/6cf8576bff20fad2d9a77d3516ce948986e3eab1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/6cf8576bff20fad2d9a77d3516ce948986e3eab1 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/5b067a737fe234e6a7d74cf1a173f61ef68b6a15
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/5b067a737fe234e6a7d74cf1a173f61ef68b6a15 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/20eb85699586b40b01585863fa55daa1853ac74d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/20eb85699586b40b01585863fa55daa1853ac74d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/a98e03c2946773cfdf1f8896300757b2ddc6cdaf
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/a98e03c2946773cfdf1f8896300757b2ddc6cdaf in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/cb7417f86a495a19e3afd8060bf144a5f55bc52d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/cb7417f86a495a19e3afd8060bf144a5f55bc52d in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/adc39f9f81659ed58ede88eefe31777e1ec9f9b9
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/adc39f9f81659ed58ede88eefe31777e1ec9f9b9 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/e4adaa6b8feaac5795f0bf145f6e9362e00a6e05
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/e4adaa6b8feaac5795f0bf145f6e9362e00a6e05 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/78866dcbd3d58b5f5db2714ee56253d5b7ece5ca
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/78866dcbd3d58b5f5db2714ee56253d5b7ece5ca in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/775d95d598030105c33cb01c89fe5ecabbeba096
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/775d95d598030105c33cb01c89fe5ecabbeba096 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/793c96def37c1e0798976dcf3407f1d3591c35aa
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/793c96def37c1e0798976dcf3407f1d3591c35aa in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/6d18e5953d5814d5080d4a42059d067a85eff42d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/6d18e5953d5814d5080d4a42059d067a85eff42d in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/75d87345696bf34108ae2a2f4bf49bd0b90c16b3
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/75d87345696bf34108ae2a2f4bf49bd0b90c16b3 in 3 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/868ec82ba71ff70dcc0647942b4dd9c6e3eca675
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/868ec82ba71ff70dcc0647942b4dd9c6e3eca675 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/05d0a988b11b9e5ed445633294ad67853e270d07
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/05d0a988b11b9e5ed445633294ad67853e270d07 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/1a289c61b50f211c81e9f5a1a7a5981d73099026
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/1a289c61b50f211c81e9f5a1a7a5981d73099026 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/79a833cd36a5e77c8ec0a07ad7dff457b57fe5b8
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/79a833cd36a5e77c8ec0a07ad7dff457b57fe5b8 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/e2e1dd8dc2e6a50236fa5a22ac040f25435c728c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/e2e1dd8dc2e6a50236fa5a22ac040f25435c728c in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/89afaefedc2bbadc647cfc208cd245429cce2f03
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/89afaefedc2bbadc647cfc208cd245429cce2f03 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/052b46f3e3ebca624d1e49a3d28886d83435546f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/052b46f3e3ebca624d1e49a3d28886d83435546f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/c062970394c2b2c19a0bf1932c5f42d7c4364b69
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/c062970394c2b2c19a0bf1932c5f42d7c4364b69 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/20fb532438d74a6cb7b8b11fd36e5a0ecbc3fc22
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/20fb532438d74a6cb7b8b11fd36e5a0ecbc3fc22 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/531dc88082ce2d3ef7db9b5088d4fdd08581a9a0
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/531dc88082ce2d3ef7db9b5088d4fdd08581a9a0 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/0d0d61320f98c921388afed4c509939d343f3d53
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/0d0d61320f98c921388afed4c509939d343f3d53 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/731cd8bfb4d4d7f6643b3b7fdbddb66dc089c436
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/731cd8bfb4d4d7f6643b3b7fdbddb66dc089c436 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/89ddeb7f4d5360a48daba684983bb089372ac728
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/89ddeb7f4d5360a48daba684983bb089372ac728 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/56d560e07a6d0e84b8486b8c07c25ff7f14f255a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/56d560e07a6d0e84b8486b8c07c25ff7f14f255a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/9db812af2f776d13598bc771e7662e2291cb6193
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/9db812af2f776d13598bc771e7662e2291cb6193 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/6fe7da8d1a6400c54cd7c5553bfc6b41ec355f95
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/6fe7da8d1a6400c54cd7c5553bfc6b41ec355f95 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/ba5729ccf7545580880037f97e339ffcac686c8b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/ba5729ccf7545580880037f97e339ffcac686c8b in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/97334704f0525f8d229f3bfa1ed03b7cc7dec503
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/97334704f0525f8d229f3bfa1ed03b7cc7dec503 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/33353fb25990fccbe806c2103e0e8749485e8b2c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/33353fb25990fccbe806c2103e0e8749485e8b2c in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/4942cc42973e7b9edbff99c0a0cb08ca83b0e681
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/4942cc42973e7b9edbff99c0a0cb08ca83b0e681 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/eaba98292b586c8bbf00dcce02e3bcd650337ce8
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/eaba98292b586c8bbf00dcce02e3bcd650337ce8 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/5ba93c9db0cff93f52b521d7420e43f6eda2784f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/5ba93c9db0cff93f52b521d7420e43f6eda2784f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/corpus/genann_train/seed_fixed in 2 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_c2saferrust/harnesses/genann_train/fuzz/coverage/genann_c2saferrust_ft/coverage.profdata".
+

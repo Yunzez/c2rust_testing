@@ -1,0 +1,216 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+ib.rs:11381:23
+      |
+11381 |                 fopen(inName.as_mut_ptr(),
+      |                       ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/src/lib.rs:11387:25
+      |
+11387 |                         inName.as_mut_ptr(), strerror(*__error()));
+      |                         ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/src/lib.rs:11398:17
+      |
+11398 |                 inName.as_mut_ptr());
+      |                 ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/src/lib.rs:11399:13
+      |
+11399 |         pad(&mut inName, longestFileName);
+      |             ^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+help: use `&raw mut` instead to create a raw pointer
+      |
+11399 |         pad(&raw mut inName, longestFileName);
+      |              +++
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/src/lib.rs:11539:18
+      |
+11539 |     copyFileName(inName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/src/lib.rs:11542:18
+      |
+11542 |     copyFileName(outName.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/src/lib.rs:11545:18
+      |
+11545 |     copyFileName(progNameReally.as_mut_ptr(),
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/src/lib.rs:11548:15
+      |
+11548 |         &mut *progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize) as
+      |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/src/lib.rs:11551:15
+      |
+11551 |         &mut *progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize) as
+      |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: `bzip2_c2saferrust` (lib) generated 189 warnings (run `cargo fix --lib -p bzip2_c2saferrust` to apply 4 suggestions)
+   Compiling bzip2_c2saferrust-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/fuzz)
+warning: multiple methods are never used
+  --> fuzz_targets/bzip2_c2saferrust_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `c2r_div` is never used
+   --> fuzz_targets/bzip2_c2saferrust_ft.rs:106:4
+    |
+106 | fn c2r_div(what: &str) {
+    |    ^^^^^^^
+
+warning: `bzip2_c2saferrust-fuzz` (bin "bzip2_c2saferrust_ft") generated 2 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 18.04s
+Processing 1 input files using 1 workers (batch size: ~1)
+Worker 0: Generating coverage for 1 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2554184165
+INFO: Loaded 1 modules   (1088 inline 8-bit counters): 1088 [0x55a6acd33700, 0x55a6acd33b40), 
+INFO: Loaded 1 PC tables (1088 PCs): 1088 [0x55a6acd33b40,0x55a6acd37f40), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft: Running 1 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_bz__AssertH__fail/seed_fixed
+
+
+bzip2/libbzip2: internal error number 50462976.
+This is a bug in bzip2/libbzip2, 1.0.8, 13-Jul-2019.
+Please report it to: bzip2-devel@sourceware.org.  If this happened
+when you were using some program which uses libbzip2 as a
+component, you should also report this bug to the author(s)
+of that program.  Please make an effort to report this bug;
+timely and accurate bug reports eventually lead to higher
+quality software.  Thanks.
+
+
+==3226472== ERROR: libFuzzer: fuzz target exited
+    #0 0x55a6acc50bb1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0xfdbb1) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #1 0x55a6acc9a8eb  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x1478eb) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #2 0x55a6acc8feab  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x13ceab) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #3 0x7f096fc485e0  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x485e0) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #4 0x7f096fc486bd  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x486bd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #5 0x55a6accf4864  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x1a1864) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #6 0x55a6accf6dc3  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x1a3dc3) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #7 0x55a6acc81c12  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x12ec12) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #8 0x55a6acc7d8a6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x12a8a6) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #9 0x55a6acc80b21  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x12db21) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #10 0x55a6acc87e30  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x134e30) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #11 0x55a6acc892a8  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x1362a8) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #12 0x55a6acc87025  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x134025) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #13 0x55a6acc9037c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x13d37c) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #14 0x55a6accae415  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x15b415) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #15 0x55a6accbb8a1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x1688a1) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #16 0x55a6acca9e96  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x156e96) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+    #17 0x7f096fc2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #18 0x7f096fc2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #19 0x55a6acbbc1e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft+0x691e4) (BuildId: 68f57acf419ba5dfe2bacc4bafb2ffceb0c8337a)
+
+SUMMARY: libFuzzer: fuzz target exited
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 77: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/fuzz/coverage/bzip2_c2saferrust_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_bz__AssertH__fail/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_bz__AssertH__fail/seed_fixed"
+

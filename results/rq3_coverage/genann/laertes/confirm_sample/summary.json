@@ -1,0 +1,83 @@
+{
+ "mode": "confirm_sample",
+ "sample_per_boundary": 200,
+ "boundaries": [
+  {
+   "boundary": "genann_copy",
+   "candidates_total": 469,
+   "adjudicated": 200,
+   "tally": {
+    "not_reproducible": 200
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 200,
+     "example": "oom-002c6cdb4dc881a103188f42bd793052fa2bafce"
+    }
+   ],
+   "seconds": 44
+  },
+  {
+   "boundary": "genann_init",
+   "candidates_total": 775,
+   "adjudicated": 201,
+   "tally": {
+    "ub_associated": 21,
+    "ub_associated_termination": 180
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: requested",
+     "frame": "#0 ___interceptor_malloc asan_malloc_linux.cpp:67",
+     "artifacts": 91,
+     "example": "crash-01b4e19ee0774a75c0762e1afa507d77fbe6c198"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 52,
+     "example": "crash-0129eaa847ac0ed2790d683de60a34c436236109"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_genann_randomize genann.c:174",
+     "artifacts": 36,
+     "example": "crash-025c93145c3c16b6f28d531fa124fcc468033d97"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: requested",
+     "frame": "#0 ___interceptor_malloc asan_malloc_linux.cpp:67",
+     "artifacts": 17,
+     "example": "crash-0092188a43852516233a39d6ea09dfb3f196a968"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_genann_randomize genann.c:174",
+     "artifacts": 4,
+     "example": "crash-289729a49a2f0ae6aed6b814d5d8c326c29d8af7"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: libFuzzer: out",
+     "frame": "#0 ___interceptor_malloc asan_malloc_linux.cpp:67",
+     "artifacts": 1,
+     "example": "crash-369262df1ce96909c1e6469f2508629d38549ebf"
+    }
+   ],
+   "seconds": 206
+  }
+ ],
+ "total": {
+  "not_reproducible": 200,
+  "ub_associated": 21,
+  "ub_associated_termination": 180
+ }
+}

@@ -334,8 +334,83 @@
    "attr": "no",
    "align": "no",
    "provenance": "exact-source",
-   "provenance_note": "CROWN consumed tools/frameworks/crown/c-code/bzip2 (bzip2 1.0.8); archive oracle_comp.c is built from it. Behavioral attribution only: no line-level CROWN-vs-base diff archived (results/rq4_effectiveness/bugs_detailed.md appendix)",
-   "evidence": "results/rq4_effectiveness/bugs/bzip2_crown/; results/rq4_effectiveness/translation_matrix.md fn 10; results/rq4_effectiveness/bugs_detailed.md:282",
+   "provenance_note": "CROWN consumed tools/frameworks/crown/c-code/bzip2 (bzip2 1.0.8); archive oracle_comp.c is built from it. LINE-LEVEL ROOT CAUSE FOUND 2026-09-05 by the RQ4 plan pipeline: in fallbackSort, c2rust's `let ref mut fresh0 = *bhtab.offset((ftab[i] >> 5) as isize); *fresh0 |= 1 << ..` (the SET_BH macro, bhtab[zz>>5] |= 1<<(zz&31)) was rewritten by CROWN to the plain store `*bhtab.offset((ftab[i] >> 5) as isize) = 1 << ..` at all three SET_BH sites (CLEAR_BH's `&=` survived); setting one bit now clears the rest of the word. CROWN removed every one of c2rust's 15 `let ref mut fresh` reborrows in this crate. The heap overrun and the free() abort are downstream of the corrupted sort. Family was assigned by behavioral attribution before this diff existed; a computation-substitution reading (|= -> =) is now supportable and shares its root cause with S10",
+   "evidence": "results/rq4_effectiveness/bugs/bzip2_crown/; results/rq4_effectiveness/translation_matrix.md fn 10; results/rq4_effectiveness/bugs_detailed.md:282. RQ4 plan pipeline 2026-09-05 (results/rq3_coverage/bzip2/crown/): fallbackSort 32/32 confirmed_divergence on `array bhtab` with the C side in contract (layout-independent), 5109 wild-address ASan hits attached as its memory face; BZ2_bzBuffToBuffCompress 4 confirmed_termination = generateMTFValues `(*s).mtfFreq[(j+1) as usize] += 1` index out of bounds with no sanitizer, downstream of the same corruption",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "C8",
+   "library": "bzip2",
+   "tool": "Laertes",
+   "kind": "crash",
+   "root_cause": "static incs[14] (shell-sort increments) initializer moved into laertes_init_incs(), which nothing calls: the table is all zero, so `while (incs[hp] < bigN) hp++` never stops",
+   "family": "initialization loss or corruption",
+   "symptom": "index out of bounds in mainSimpleSort on any block that reaches the shell sort, i.e. every real compress; the shipped acceptance suite's three compress commands produce empty output (process dies)",
+   "boundary": "function (BZ2_bzBuffToBuffCompress) / crash; also reached through mainQSort3 and mainSimpleSort",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (found by the RQ4 plan pipeline, not an OBS cell)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "unknown",
+   "provenance_note": "MECHANISM exact-source: `static mut incs: [c_int; 14] = [0; 14]` + `laertes_init_incs()` defined once and never called, read directly from the Laertes crate (bzip2_laertes/blocksort.rs:906); the severed-init scanner had flagged this static (results/rq4_effectiveness/severed_init_scan.json: incs, poisoned=true, consumer_refs=3). REFERENCE C: the harness compiles CROWN's copy of the Laertes benchmark (tools/frameworks/crown/c-code/bzip2, 1.0.8); whether Laertes consumed a byte-identical copy is not recorded (same status as C4)",
+   "evidence": "results/rq3_coverage/bzip2/laertes/ (RQ4 cell, plan pipeline, 3600 s, seed 42): confirm/BZ2_bzBuffToBuffCompress_verdicts 506/506 confirmed (233 confirmed_termination: C-only ASan+UBSan clean, Rust panics with no sanitizer, panic marker at lib.rs:943 mainSimpleSort), confirm_sample/mainQSort3 53 + mainSimpleSort 18 confirmed_termination at the same site; results/rq3_coverage/bzip2/tests_side_results.json (compress 0/3); scanner prediction: results/rq4_effectiveness/severed_init_scan.json",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "C9",
+   "library": "lil",
+   "tool": "C2SaferRust",
+   "kind": "crash",
+   "root_cause": "register_stdcmds passes Rust string literals as C strings without a NUL terminator (`\"reflect\".as_ptr() as *const i8`); C passes NUL-terminated literals. hm_get's CStr::from_ptr / strlen then reads past the literal",
+   "family": "byte-string domain narrowing",
+   "symptom": "lil_new() cannot complete: every interpreter construction crashes (ASan: global-buffer-overflow in strlen under hm_get; without a sanitizer: `NonNull::new_unchecked requires that the pointer is non-null` precondition panic). This is the root of the CRASH-ALL observed for lil x C2SaferRust in the reach census; 23 of 47 planned boundaries never execute",
+   "boundary": "function (lil_new, via register_stdcmds -> lil_register -> add_func -> find_cmd -> hm_get) / crash; 18 further boundaries blocked downstream (they take the produced lil_t)",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (found by the RQ4 plan pipeline; producer bridge lil_new)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/lil_c2saferrust/translated/lil_c2saferrust.rs:4725 (register_stdcmds) and :491-492 (hm_get: CStr::from_ptr(key)); C from lil.c:220 (hm_get) and register_stdcmds' lil_register(lil, \"reflect\", fnc_reflect)",
+   "evidence": "results/rq3_coverage/lil/c2saferrust/ (RQ4 cell, 3600 s, seed 42): confirm_sample 57 confirmed_termination across 19 boundaries, all one site (rust_no_sanitizer: NonNull precondition panic in core ptr/unique.rs reached from lil_new; rust_only ASan: global-buffer-overflow in __interceptor_strlen <- hm_get <- add_func <- lil_new); c_only normal on every one. ONE defect: the 19 boundaries share the producer's crash (18 downstream-blocked)",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "C10",
+   "library": "lil",
+   "tool": "CROWN",
+   "kind": "crash",
+   "root_cause": "lil_subst_to_list dropped C's fallback `if (!words) words = lil_alloc_list();` after substitute(): when substitution fails (an unterminated quote in the argument) it returns NULL where C returns an empty list",
+   "family": "null/empty conflation",
+   "symptom": "fnc_enveval (the `enveval` builtin) calls lil_list_size(invars) on the NULL: null pointer dereference (debug-assertion panic `null pointer dereference occurred` at lil.rs:404 without a sanitizer; SEGV with). Any script `enveval <malformed> ...` crashes the interpreter that C runs to completion",
+   "boundary": "function (lil_parse -> fnc_enveval -> lil_subst_to_list -> lil_list_size) / crash",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (found by the RQ4 plan pipeline on a cell E1 CERTIFIED: CROWN lil, 111,043-record expr/variable/list/string corpus, 0 diffs -- that corpus never called enveval with a malformed list)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/lil_crown/translated/lil_crown.rs:983-988 (lil_subst_to_list: `words = substitute(..); ..; return words;` with no NULL fallback) vs lil.c:919-920 (`words = substitute(lil); if (!words) words = lil_alloc_list();`); crash site lil_crown.rs:420 = lil.rs:404 (lil_list_size: `return (*list).c;`)",
+   "evidence": "results/rq3_coverage/lil/crown/ (RQ4 cell, 3600 s, seed 42): confirm_sample on lil_parse: 67 confirmed_termination (rust_no_sanitizer panic `null pointer dereference occurred` at harness lib.rs:420), 2 timeouts not confirmed; c_only normal (ASan+UBSan) on every one; confirmed_inputs/lil_parse/ (scripts beginning `enveval '(`...)",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
   {
@@ -584,7 +659,7 @@
    "attr": "no",
    "align": "no",
    "provenance": "exact-source",
-   "provenance_note": "as C7 (crown/c-code/bzip2 1.0.8 = CROWN's input; behavioral attribution only, no line-level diff archived)",
+   "provenance_note": "as C7 (crown/c-code/bzip2 1.0.8 = CROWN's input). Line-level root cause now archived under C7 (fallbackSort SET_BH `|=` rewritten to `=`, 2026-09-05): the structurally invalid stream is the downstream face of the same corrupted sort, so S10 and C7 share one root cause; RQ4 cell 2026-09-05: BZ2_bzBuffToBuffCompress 97/97 replay divergences confirmed (destLen + output stream), results/rq3_coverage/bzip2/crown/",
    "evidence": "results/rq4_effectiveness/bugs/bzip2_crown/ (crown_compress_driver.rs, crown_corrupt_A4096.bz2); results/rq4_effectiveness/translation_matrix.md fn 10; results/rq4_effectiveness/bugs_detailed.md:716. INDEPENDENT REDISCOVERY 2026-09-03: the generated differential harness for the CROWN compress boundary (shared with C7) reported 75,872 written-length divergence events in a 3600 s campaign; results/rq3_coverage/bzip2/",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
@@ -757,8 +832,8 @@
  ],
  "summary": {
   "counting_units": "Two units, never mixed (U1): DEFECTS (root-cause level) and DIVERGENT/VALID RECORDS (per-cell strength). Record counts are per OBS cell and are NOT summable across cells or across defects sharing a cell (C6+S13 share tulip_c2saferrust; S7+S8+S9 share cjson_ptrtrans).",
-  "defects_total": 21,
-  "crash": 7,
+  "defects_total": 24,
+  "crash": 10,
   "semantic": 14,
   "defects_per_family": {
    "control-flow preservation failure": {
@@ -770,12 +845,13 @@
     ]
    },
    "byte-string domain narrowing": {
-    "count": 5,
+    "count": 6,
     "ids": [
      "C2",
      "C3",
      "C4",
      "C5",
+     "C9",
      "S9"
     ]
    },
@@ -787,20 +863,22 @@
      "S11"
     ]
    },
-   "null/empty conflation": {
-    "count": 3,
-    "ids": [
-     "S1",
-     "S2",
-     "S12"
-    ]
-   },
    "initialization loss or corruption": {
-    "count": 3,
+    "count": 4,
     "ids": [
+     "C8",
      "S3",
      "S4",
      "S5"
+    ]
+   },
+   "null/empty conflation": {
+    "count": 4,
+    "ids": [
+     "C10",
+     "S1",
+     "S2",
+     "S12"
     ]
    },
    "interface-contract loss": {
@@ -842,13 +920,16 @@
    ]
   },
   "obs_not_run_defects": {
-   "count": 12,
+   "count": 15,
    "ids": [
     "C2",
     "C3",
     "C4",
     "C5",
     "C7",
+    "C8",
+    "C9",
+    "C10",
     "S2",
     "S4",
     "S5",
@@ -1014,17 +1095,19 @@
    }
   },
   "per_channel_note": "Booleans, single seed 42, one run per cell (pilot). Crash defects (C1, C6) are recovered by every channel as Rust-failure (O-R sees NO-RETURN). O-P(silent)=yes only for the two crash defects and for S13 (CLI boundary, exit status IS the externalised state) - U3 wording: process-output sensitivity is determined by the driver's externalization policy; never 'O-P-silent is universally zero'.",
-  "family_note": "Families record one primary root-cause mechanism per defect, so the counts sum to 21. Cross-cutting symptoms may be discussed separately but do not create additional memberships. The cJSON non-UTF-8 rejection (S9) is grouped with the four C2SaferRust byte-string restrictions because all five narrow a C byte-string domain to valid UTF-8.",
-  "attr_coverage": "No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: results/ablations/attribution/urlparser/result.json; lil: results/ablations/attribution/lil/result.json) are UB-exclusion / certificate cells with 0 confirmed translation divergences (CONTRACT P2/P3). ATTR coverage of the confirmed defects = 0/21.",
-  "align_coverage": "ALIGN pilot exists for one defect (S6, results/rq1_matching/align_qsort_ptrtrans/). ALIGN coverage of the confirmed defects = 1/21. No buildable wrong-map witness exists (P5).",
+  "family_note": "Families record one primary root-cause mechanism per defect, so the counts sum to 24. Cross-cutting symptoms may be discussed separately but do not create additional memberships. The cJSON non-UTF-8 rejection (S9) is grouped with the four C2SaferRust byte-string restrictions because all five narrow a C byte-string domain to valid UTF-8.",
+  "attr_coverage": "No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: results/ablations/attribution/urlparser/result.json; lil: results/ablations/attribution/lil/result.json) are UB-exclusion / certificate cells with 0 confirmed translation divergences (CONTRACT P2/P3). ATTR coverage of the confirmed defects = 0/24.",
+  "align_coverage": "ALIGN pilot exists for one defect (S6, results/rq1_matching/align_qsort_ptrtrans/). ALIGN coverage of the confirmed defects = 1/24. No buildable wrong-map witness exists (P5).",
   "provenance_counts": {
    "exact-source": {
-    "count": 8,
+    "count": 10,
     "ids": [
      "C1",
      "C2",
      "C3",
      "C7",
+     "C9",
+     "C10",
      "S5",
      "S6",
      "S10",
@@ -1032,9 +1115,10 @@
     ]
    },
    "unknown": {
-    "count": 3,
+    "count": 4,
     "ids": [
      "C4",
+     "C8",
      "S3",
      "S12"
     ]

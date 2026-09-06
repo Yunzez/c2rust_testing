@@ -1,119 +1,62 @@
 # RQ4 — coverage beyond shipped tests: bzip2
 
-*`rq3_coverage/` is a legacy directory name; this is current **RQ4**.*
-Protocol: [`PROTOCOL.md`](PROTOCOL.md). Inventory: [`INVENTORY.md`](INVENTORY.md).
+*`rq3_coverage/` is a legacy directory name; this is current **RQ4**.* Protocol: [`../PROTOCOL.md`](../PROTOCOL.md).
+Status 2026-09-05: **four cells complete under the plan pipeline** (c2rust, Laertes, CROWN, C2SaferRust),
+3 600 s each, serial, one campaign and one corpus per cell (PROTOCOL §4). SACTOR (`✗(parse)`) and PtrTrans
+(`✗(compile)`) produce no runnable artifact and stay N/A with their E1 evidence. The earlier hand-schema
+cell is kept under [`c2rust_handschema_superseded/`](c2rust_handschema_superseded/) and is not a comparison point.
 
-Status 2026-09-03: **one cell run** (c2rust), twice — round 1 had a broken input model and its
-numbers are superseded (`c2rust/RUN.md` §2 and §8). By instruction, work stops after this corrected
-pilot. No library-level mean is computed, and nothing here is ready for the paper table.
+## Cell table (per-tool `RUN.md` carries the procedure, deviations and limits)
 
-## Result table
+| tool | tests side (suite through the translation) | planned / built / exported of 64 | corpus | fn tests | fn ours | reg tests | reg ours | only-ours reg | divergences on replay | confirmed |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| **c2rust** | **PASS 6/6** — baseline | 19 / 19 / 16 | 1 338 | 51/66 (0.773) | 46/66 (0.697) | 7 007/8 789 (0.797) | 7 090 (**0.807**) | **481** (only-tests 398) | **0** / 1 338 | **0** of 1 046 sampled |
+| Laertes | TEST-FAILS 0/6 | 19 / 19 / 16 | 974 | — | 45/82 (0.549) | — | 6 206/10 065 (0.617) | — | **299** / 974 | **532 / 532** on the public boundaries: 299 divergence (S3, two boundaries) + 233 termination (**C8**, `incs`) |
+| CROWN | TEST-ADAPTER-FAILS | 19 / 19 / 16 | 1 003 | — | 51/74 (0.689) | — | 5 414/9 084 (0.596) | — | **242** / 1 003 | Decompress 113/113 (S11); Compress 97 divergence (S10) + 4 termination; `fallbackSort` 32/32 `bhtab` — one root cause (`SET_BH` `\|=` → `=`) |
+| C2SaferRust | TEST-FAILS 0/6 | 17 / 17 / 15 | 302 | — | 15/69 (0.217) | — | 1 158/8 227 (0.141) | — | **3** / 302 | `mmed3` 3/3 (S14) |
 
-| Tool | Artifact status | Test status | Matched | Eligible | Built | Executed | Corpus inputs | Fuzz s (alloc/actual) | Test fn cov | Our fn cov | Δ | Test reg cov | Our reg cov | Δ |
-|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| **c2rust** | complete, builds | shipped suite, representation-only adapter, **6/6 pass** | 64 | 14 | 11 | **10** | 1563 | 3600 wall (concurrent) | **0.773** | **0.682** | **−0.091** | **0.797** | **0.798** | **+0.001** |
-| Laertes | complete, builds | same | — | — | — | — | — | — | — | — | — | — | — | — |
-| C2SaferRust | complete; reshaped API SIGSEGVs on 100 % of E3 inputs | same | — | — | — | — | — | — | — | — | — | — | — | — |
-| CROWN | complete; macOS-transpiled, link needs shims | same | — | — | — | — | — | — | — | — | — | — | — | — |
-| SACTOR | **NON-BUILDING** — `✗(parse)`, no artifact produced | n/a | — | — | — | — | — | — | — | — | — | — | — | — |
-| PtrTrans | **NON-BUILDING** — `✗(compile)`, 73 errors, 55/78 stub-reverts | n/a | — | — | — | — | — | — | — | — | — | — | — | — |
+`—` = the suite is not a baseline (PROTOCOL §2): universe from a link-dead-code build, partition Ours / Neither.
+Raw region counts are per-translation identities and are **not comparable across tools**; compare the
+fractions and the candidate counts. All four cells pass the four sanity checks (`cells.json`).
 
-`—` = not attempted (stopped after the corrected c2rust pilot). **No outcome is converted to 0 %.**
+## What this library says
 
-Function-level sets for c2rust: total in scope 66, both 43, only-tests 8, only-ours 2, covered by
-neither 13. Regions: total 8789, both 6609, only-tests 398, only-ours 409. 7 inputs were excluded
-by the C-side UB gate before Rust ran.
+1. **Only one of four translations passes the library's own acceptance suite.** Laertes, CROWN and
+   C2SaferRust fail it outright (0/6, adapter does not compile, 0/6). That is a result about the
+   translations, reported before any fuzzing number.
+2. **The negative control holds at every layer.** On c2rust the same generator, budget and corpus give
+   0 replay divergences, 0 confirmed artifacts, and 0 artifacts at all on the two public boundaries.
+3. **Every catalogued bzip2 defect the pipeline could reach, it re-found with no hand work**: S3 (Laertes,
+   on both its boundaries), S10 and S11 (CROWN), S14 (C2SaferRust). S12 sits on a public boundary the
+   generator cannot bridge for C2SaferRust's reshaped API and is not re-confirmed.
+4. **One new defect, C8** (Laertes, zeroed shell-sort increment table): predicted by the severed-init
+   scanner, realised by a fuzzer-found input, corroborated by the suite's empty compress outputs, and
+   confirmed 506/506 with the C side clean under ASan + full UBSan. See `laertes/RUN.md` §7.
+5. **A line-level root cause for CROWN's compressor** (C7 / S10): the `SET_BH` bit-set became a plain
+   store when CROWN removed c2rust's reborrow idiom. Found through an internal boundary (`fallbackSort`,
+   32/32 value divergences with C in contract), which the public boundary alone had only shown as
+   layout-dependent crashes.
+6. **The budget amendment was necessary for one cell**: 300 → 3 600 s adds +1.2 % (c2rust) and +1.0 %
+   (Laertes) of regions, but **+8.6 % on CROWN**, whose decompressor was far from saturated at five
+   minutes; function coverage is flat from 300 s in all three.
 
-### Coverage curve (artifact-level union over all ten harnesses)
+## Gaps and limits
 
-| minute | corpus inputs | functions | fn coverage | regions | region coverage |
-|---:|---:|---:|---:|---:|---:|
-| 1 | 755 | 45 | 0.682 | 6970 | 0.793 |
-| 5 | 1263 | 45 | 0.682 | 6982 | 0.794 |
-| 10 | 1426 | 45 | 0.682 | 6998 | 0.796 |
-| 30 | 1495 | 45 | 0.682 | 7005 | 0.797 |
-| 60 | 1563 | 45 | 0.682 | 7018 | 0.798 |
+- The 46 000–60 000 termination artifacts per tool on the internal sort routines are the input model's
+  out-of-contract inputs, identical in shape on all four tools; adjudicated at a 200-per-channel sample
+  and reported with their totals (PROTOCOL §4, adjudication depth).
+- CROWN's Compress and `fallbackSort` wild-address ASan reports (2 645 + 523 + 5 109) are never claimed
+  on their own (layout dependence); the claimable evidence is the `bhtab` value divergence.
+- Single campaigns: run-to-run variance was measured once at ≈5 % on one boundary; no repeat campaigns.
+- `BZ2_bz__AssertH__fail` (exits) and `mainSort` (out of contract at the first input) export no coverage
+  on any tool.
+- C2SaferRust's coverage measures the generator's reach on a reshaped API, not the translation.
 
-**It saturates inside the first minute.** Fifty-nine further minutes add 0 functions and 48 of 8789
-regions while the corpus doubles. The binding constraint is boundary eligibility and seed quality,
-not campaign length. This is the number that should decide the budget frozen for the other nine
-libraries: a longer campaign buys nothing here.
+## Files
 
-## bzip2 mean over paired complete outputs
-
-**Not computed.** One artifact has been measured; a mean over a single cell is not a library
-result. It will be computed only over cells that reach PAIRED, and the tools excluded from it will
-be named with their reason.
-
-## Multi-harness merging: was it valid?
-
-Yes, and it is the reason the c2rust number is trustworthy at all. Coverage is unioned at the level
-of function and region **identity** across the 10 harnesses, at each of the five checkpoints —
-never summed, never averaged. Because
-`llvm-cov` cannot deduplicate across separate binaries, each harness was exported separately and the
-union was computed over identities defined as
-`(source file, start line)` for functions and `(source file, start line, start col, end line, end col)`
-for regions, in the artifact's original per-file coordinates. Three corrections were required before
-the union was sound, each of which had silently changed the numbers:
-
-1. symbol names differ between the two sides (different crate-disambiguator hashes) → identity is
-   `(file, line)`;
-2. matching `lib.rs` by basename also matched libfuzzer-sys's own instrumented `src/lib.rs`;
-3. `--expose-entry` inserts a line into a harness's `lib.rs`, shifting all later lines by one.
-
-After these, **0 functions and 0 regions** in the ours union fall outside the tests-side universe.
-Sanity checks `both + only_tests = covered_tests`, `both + only_ours = covered_ours`,
-`both + only_tests + only_ours = union`, scope membership and `covered ≤ denominator` all pass.
-
-## Methodological blockers
-
-1. **The eligibility rule is wrong in both directions, and it dominates the result.**
-   It *under*-accepts by never inspecting the return type — `BZ2_bzopen`/`bzdopen`/`bzopen_or_bzdopen`
-   pass the rule, then fail to build because the comparator cannot compare `BZFILE*` values.
-   It *over*-accepts pointers with no length parameter: with a correct schema those boundaries are
-   memory-safe, but their arrays cannot be filled from the fuzz input at all, so
-   `BZ2_indexIntoF`, `fallbackQSort3` and `fallbackSimpleSort` are driven with degenerate data.
-   The in-loop UB gate does not compensate: it is UBSan-minimal on the C side and does not check
-   raw-pointer heap accesses.
-2. **The automatic input model was wrong on 6 of 7 boundaries in round 1** and had to be replaced
-   by hand-authored schemas plus five generator fixes (`c2rust/RUN.md` §2–§3). Nine libraries
-   remain; each will need the same schema work, and the cost of that must be stated in the paper
-   rather than implied to be automatic.
-3. **Coverage saturates in under a minute**, so no budget statement of the form "we fuzzed for N
-   hours" carries information for this artifact. Report the saturation point instead.
-4. **Removing the C side would buy nothing.** Replaying the same corpora with the UB gate off, and
-   again with C never called, gives *identical* Rust coverage: 45 functions / 7018 regions in all
-   three modes. The gate withholds 0 functions and 0 regions. Both self-checks pass
-   (`gated` reproduces the headline; `nogate` and `rust-only` are identical set-for-set).
-   `c2rust/RUN.md` §10.
-5. **The whole gap is one missing capability.** Of the 21 in-scope functions the validator misses,
-   17 are the `FILE*`/`BZFILE*` API, 2 are reachable only through it (`isdigit`, `__isctype`, from
-   mode-string parsing), and 2 are degenerate (`BZ2_bzlibVersion` has no parameters,
-   `BZ2_bz__AssertH__fail` calls `exit(3)`). The validator covers every one of the 45 functions
-   that is not behind a file handle. An environment adapter for process-owned file state — stage
-   3's deferred case, and the example the workflow figure already uses — would close essentially
-   all of it.
-6. **The comparison is between different API layers.** All 8 only-tests functions are the
-   `FILE*`/`BZFILE*` stream API, which the validator is structurally unable to drive; reaching them
-   needs environment adapters (stage 3's deferred case). At region level the two sides are at
-   parity while reaching substantially different code (409 only-ours vs 398 only-tests). Any paper
-   sentence using −0.091 must say what the gap is made of.
-7. **C-source provenance is still unbound.** Phase 0 records that no bzip2 harness ever bound a C
-   hash to the translator's input; only the version string matches. Hashes are archived in
-   `c2rust/artifact_hashes.json`, but the binding itself remains unverified.
-8. **Generator/validator defects were found and fixed in a scratchpad copy** (repo copies
-   untouched, both diffs archived). Two of them — C globals not renamed in the oracle, and a
-   `bounded_scalar` that used `%` instead of `rem_euclid` — would silently corrupt any differential
-   campaign on any library. Whether to upstream them into `tools/stu_selector/` is a separate
-   decision and should be made before the other nine libraries are run.
-
-## Directory
-
-- `c2rust/` — the cell: `RUN.md`, `scope.json`, `artifact_hashes.json`, `result.json` (curve +
-  final + sanity), the four identity lists, both sides' coverage exports and profiles, all 10
-  campaign corpora, the seed corpora, the 10 hand-authored schemas, the per-pair eligibility
-  verdicts, logs, and every script used plus both generator diffs.
-- `c2rust_diagnostic_pilot/` — **rejected**, not an RQ4 result; kept for the one diagnostic
-  observation it supports. Its banner says why.
-- `c2rust/round1_superseded/` — round-1 corpora, exports and logs, kept as provenance for §8 of
-  `c2rust/RUN.md`. Its numbers describe a broken input model and must not be cited.
+`tests_side_results.json` (suite outcomes recomputed from preserved outputs), `cells.json` (the table's
+source), per tool: `RUN.md`, `funnel.json`, `plans.json`, `analysis/` (+ `analysis@300s`, `@1800s`),
+`snapshots.json`, `divergences/` (inputs + outcomes), `confirm*/` (verdicts gzipped, clusters),
+`harnesses/<b>/` (generated fuzz target, build.rs, coverage log), `candidates_sample/`,
+`candidates_manifest.json.gz`, `corpus.tar.gz`, `harness_exports.tar.gz`, `artifact_hashes.json`,
+`fuzz_logs/` (head + tail). Pairs: `benchmark/pairs/rq4/bzip2_<tool>/`.

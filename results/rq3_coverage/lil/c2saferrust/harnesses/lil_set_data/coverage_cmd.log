@@ -1,0 +1,251 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+                                            ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:4668:35
+     |
+4668 | ...                   mut argv: *mut lil_value_t) -> lil_value_t {
+     |                           ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:4939:34
+     |
+4939 | unsafe extern "C" fn do_exit(mut lil: lil_t, mut val: lil_value_t) {
+     |                                  ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:4967:40
+     |
+4967 | unsafe extern "C" fn fnc_writechar(mut lil: lil_t, mut argc: size_t, mut argv: *mut lil_value_t) -> lil_value_t {
+     |                                        ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `rv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:4986:13
+     |
+4986 |     let mut rv: *mut std::os::raw::c_char = 0 as *mut std::os::raw::c_char;
+     |             ^^ help: if this is intentional, prefix it with an underscore: `_rv`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:4976:37
+     |
+4976 | unsafe extern "C" fn fnc_system(mut lil: lil_t, mut argc: size_t,
+     |                                     ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:5005:39
+     |
+5005 | unsafe extern "C" fn fnc_readline(mut lil: lil_t, mut argc: size_t,
+     |                                       ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:5005:55
+     |
+5005 | unsafe extern "C" fn fnc_readline(mut lil: lil_t, mut argc: size_t,
+     |                                                       ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:5006:39
+     |
+5006 | ...                   mut argv: *mut lil_value_t) -> lil_value_t {
+     |                           ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused return value of `Box::<T>::from_raw` that must be used
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:455:26
+    |
+455 |                 unsafe { Box::from_raw(key_ptr); } // Assuming the key was allocated with Box
+    |                          ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: call `drop(Box::from_raw(ptr))` if you intend to drop the `Box`
+    = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
+help: use `let _ = ...` to ignore the resulting value
+    |
+455 |                 unsafe { let _ = Box::from_raw(key_ptr); } // Assuming the key was allocated with Box
+    |                          +++++++
+
+warning: unused return value of `Box::<T>::from_raw` that must be used
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/src/lib.rs:458:18
+    |
+458 |         unsafe { Box::from_raw(cell.e); } // Assuming the cell.e was allocated with Box
+    |                  ^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: call `drop(Box::from_raw(ptr))` if you intend to drop the `Box`
+help: use `let _ = ...` to ignore the resulting value
+    |
+458 |         unsafe { let _ = Box::from_raw(cell.e); } // Assuming the cell.e was allocated with Box
+    |                  +++++++
+
+warning: `lil_c2saferrust` (lib) generated 124 warnings
+   Compiling lil_c2saferrust-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/fuzz)
+warning: unused variable: `cur`
+   --> fuzz_targets/lil_c2saferrust_ft.rs:140:13
+    |
+140 |     let mut cur = Cur::new(data);
+    |             ^^^ help: if this is intentional, prefix it with an underscore: `_cur`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/lil_c2saferrust_ft.rs:140:9
+    |
+140 |     let mut cur = Cur::new(data);
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `d` and `p` are never read
+ --> fuzz_targets/lil_c2saferrust_ft.rs:3:18
+  |
+3 | struct Cur<'a> { d: &'a [u8], p: usize }
+  |        ---       ^            ^
+  |        |
+  |        fields in this struct
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: multiple methods are never used
+  --> fuzz_targets/lil_c2saferrust_ft.rs:6:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+ 5 |     fn new(d: &'a [u8]) -> Self { Cur { d, p: 0 } }
+ 6 |     fn byte(&mut self) -> u8 { let b = if self.p < self.d.len() { self.d[self.p] } else { 0 }; self.p += 1; b }
+   |        ^^^^
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+
+warning: `lil_c2saferrust-fuzz` (bin "lil_c2saferrust_ft") generated 4 warnings (run `cargo fix --bin "lil_c2saferrust_ft"` to apply 1 suggestion)
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.51s
+Processing 1 input files using 1 workers (batch size: ~1)
+Worker 0: Generating coverage for 1 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3566589389
+INFO: Loaded 1 modules   (11602 inline 8-bit counters): 11602 [0x5612accbade0, 0x5612accbdb32), 
+INFO: Loaded 1 PC tables (11602 PCs): 11602 [0x5612accbdb38,0x5612acceb058), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft: Running 1 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_set_data/seed_fixed
+=================================================================
+==1390009==ERROR: AddressSanitizer: global-buffer-overflow on address 0x5612aca7cb27 at pc 0x5612acaccb2b bp 0x7ffefad98490 sp 0x7ffefad97c58
+READ of size 8 at 0x5612aca7cb27 thread T0
+    #0 0x5612acaccb2a  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0xdab2a) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #1 0x5612acba614a  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x1b414a) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #2 0x5612acbafee0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x1bdee0) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #3 0x5612acbacac0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x1baac0) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #4 0x5612acb7a699  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x188699) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #5 0x5612acb7daed  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x18baed) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #6 0x5612acbf54c0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x2034c0) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #7 0x5612acbf6938  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x204938) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #8 0x5612acbf46b5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x2026b5) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #9 0x5612acbfd9fc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x20b9fc) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #10 0x5612acc1bb15  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x229b15) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #11 0x5612acc28fa1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x236fa1) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #12 0x5612acc17596  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0x225596) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+    #13 0x7fd879e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #14 0x7fd879e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #15 0x5612acab8ca4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0xc6ca4) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169)
+
+0x5612aca7cb27 is located 57 bytes before global variable 'alloc_6cdddc34a6688ff73d063931b863c949' defined in 'lil_c2saferrust.172aa331fcd5d668-cgu.0' (0x5612aca7cb60) of size 6
+0x5612aca7cb27 is located 25 bytes before global variable 'alloc_5ba3f646adf8c82091715f38fa65b1bb' defined in 'lil_c2saferrust.172aa331fcd5d668-cgu.0' (0x5612aca7cb40) of size 4
+0x5612aca7cb27 is located 0 bytes after global variable 'alloc_fc1fc25a9ec73ec7b6b1aa626e6a39c1' defined in 'lil_c2saferrust.172aa331fcd5d668-cgu.0' (0x5612aca7cb20) of size 7
+SUMMARY: AddressSanitizer: global-buffer-overflow (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft+0xdab2a) (BuildId: 91fadd9e833c61a5dc83f103ec691c8b543f0169) 
+Shadow bytes around the buggy address:
+  0x5612aca7c880: 00 00 00 07 f9 f9 f9 f9 00 00 00 00 03 f9 f9 f9
+  0x5612aca7c900: f9 f9 f9 f9 00 00 00 f9 f9 f9 f9 f9 00 02 f9 f9
+  0x5612aca7c980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07
+  0x5612aca7ca00: f9 f9 f9 f9 05 f9 f9 f9 01 f9 f9 f9 05 f9 f9 f9
+  0x5612aca7ca80: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+=>0x5612aca7cb00: 03 f9 f9 f9[07]f9 f9 f9 04 f9 f9 f9 06 f9 f9 f9
+  0x5612aca7cb80: 05 f9 f9 f9 03 f9 f9 f9 05 f9 f9 f9 05 f9 f9 f9
+  0x5612aca7cc00: 05 f9 f9 f9 04 f9 f9 f9 07 f9 f9 f9 06 f9 f9 f9
+  0x5612aca7cc80: 00 f9 f9 f9 07 f9 f9 f9 00 f9 f9 f9 05 f9 f9 f9
+  0x5612aca7cd00: 05 f9 f9 f9 07 f9 f9 f9 06 f9 f9 f9 04 f9 f9 f9
+  0x5612aca7cd80: 06 f9 f9 f9 05 f9 f9 f9 05 f9 f9 f9 06 f9 f9 f9
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==1390009==ABORTING
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 1: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/fuzz/coverage/lil_c2saferrust_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_set_data/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_set_data/seed_fixed"
+

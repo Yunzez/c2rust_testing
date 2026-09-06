@@ -1,0 +1,146 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `minLen` should have a snake case name
+   --> fuzz_targets/bzip2_c2saferrust_ft.rs:137:9
+    |
+137 |     let minLen = (0 as i32) + (cur.take_i32().rem_euclid(((1024) as i32) - (0 as i32) + 1));
+    |         ^^^^^^ help: convert the identifier to snake case: `min_len`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `maxLen` should have a snake case name
+   --> fuzz_targets/bzip2_c2saferrust_ft.rs:138:9
+    |
+138 |     let maxLen = (0 as i32) + (cur.take_i32().rem_euclid(((1024) as i32) - (0 as i32) + 1));
+    |         ^^^^^^ help: convert the identifier to snake case: `max_len`
+
+warning: variable `alphaSize` should have a snake case name
+   --> fuzz_targets/bzip2_c2saferrust_ft.rs:140:9
+    |
+140 |     let alphaSize = length_c.len() as i32;
+    |         ^^^^^^^^^ help: convert the identifier to snake case: `alpha_size`
+
+warning: `bzip2_c2saferrust-fuzz` (bin "bzip2_c2saferrust_ft") generated 4 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 17.96s
+Processing 43 input files using 1 workers (batch size: ~43)
+Worker 0: Generating coverage for 43 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3472843584
+INFO: Loaded 1 modules   (1131 inline 8-bit counters): 1131 [0x55c7e87ea2a0, 0x55c7e87ea70b), 
+INFO: Loaded 1 PC tables (1131 PCs): 1131 [0x55c7e87ea710,0x55c7e87eedc0), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_hbAssignCodes/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_c2saferrust_ft: Running 43 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/0871d50c4fe70789cfa6c46a06faac55a7af1513
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/0871d50c4fe70789cfa6c46a06faac55a7af1513 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/88df2d7252daa59d5bd43edeb58754590ce2042c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/88df2d7252daa59d5bd43edeb58754590ce2042c in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/b18e1016507e7f46d9b6db07edbf8a3e9abe34a9
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/b18e1016507e7f46d9b6db07edbf8a3e9abe34a9 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/bad69d0a28af07579d220d37b8ffe182c5a7f644
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/bad69d0a28af07579d220d37b8ffe182c5a7f644 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/5fcecd0b5e343a5ef476d1dfbb34db1648312968
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/5fcecd0b5e343a5ef476d1dfbb34db1648312968 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/ff4cd5ea41ca40d02c60230ab395c9ad75d996c0
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/ff4cd5ea41ca40d02c60230ab395c9ad75d996c0 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/7783eed736c2e88e9c5a494c68ec0fd3f2c1594c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/7783eed736c2e88e9c5a494c68ec0fd3f2c1594c in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/281e73af3c72ff55a0058a4db05e23461de543ed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/281e73af3c72ff55a0058a4db05e23461de543ed in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/ea9a52f47be4a761c9732c8d419964cf8cc0a34f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/ea9a52f47be4a761c9732c8d419964cf8cc0a34f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/8a59dbdb64542d5caf4952b481494d85384a7f64
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/8a59dbdb64542d5caf4952b481494d85384a7f64 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/7f1706684f1c298c2bf8eda57d34e0fd1ce3dea2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/7f1706684f1c298c2bf8eda57d34e0fd1ce3dea2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/19a1099f6fff30d944646da96983fe4caf368d35
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/19a1099f6fff30d944646da96983fe4caf368d35 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/787f6023e35094c27917daf2db876040429448c3
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/787f6023e35094c27917daf2db876040429448c3 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/fbfbf53a7b8fdb48677ca0e7c42609258b47e558
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/fbfbf53a7b8fdb48677ca0e7c42609258b47e558 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/7c96b8f3043695adab116b05419c4c01f514340d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/7c96b8f3043695adab116b05419c4c01f514340d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/400b5ac55a7cb34586f05538943b8df6c8f5bc13
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/400b5ac55a7cb34586f05538943b8df6c8f5bc13 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/4c89729baf559ba498a00063adecbc07390e1900
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/4c89729baf559ba498a00063adecbc07390e1900 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/cc8af5b60784208310fa6b9071dd5f26a8d49530
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/cc8af5b60784208310fa6b9071dd5f26a8d49530 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/766e99cad40c4b0c7043ef2c94bdd00051b679aa
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/766e99cad40c4b0c7043ef2c94bdd00051b679aa in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/3b2f767e06d80a598f2c9fb483d789fe2586d81f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/3b2f767e06d80a598f2c9fb483d789fe2586d81f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/3a036d6f767ce589f0b2bf8f0f80926c7b749816
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/3a036d6f767ce589f0b2bf8f0f80926c7b749816 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/bc1588e2d393701186107ee9935faedb53d14d38
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/bc1588e2d393701186107ee9935faedb53d14d38 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/3bdc32131fbf51de24411ffa2a2cd9c14cf76a78
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/3bdc32131fbf51de24411ffa2a2cd9c14cf76a78 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/235c7ef7e7759548bb46ffdb5793d41c85f10750
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/235c7ef7e7759548bb46ffdb5793d41c85f10750 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/04ecdef4e9d769b887c8de01b062f6abefe373d8
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/04ecdef4e9d769b887c8de01b062f6abefe373d8 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/9903d0a0b25083d7369c5ddf648c5cbb7dad7a2a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/9903d0a0b25083d7369c5ddf648c5cbb7dad7a2a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/c717b207458dcf7312cd3768e5c4f68349d8b7f4
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/c717b207458dcf7312cd3768e5c4f68349d8b7f4 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/d347fb3701a58e15eb2ba718b6e69bad558978e8
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/d347fb3701a58e15eb2ba718b6e69bad558978e8 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/f1ef659abd85a5c022b19024e04d0dceb02b3849
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/f1ef659abd85a5c022b19024e04d0dceb02b3849 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/4b30c067e0a40bfe94964dee666f95a1040eeabd
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/4b30c067e0a40bfe94964dee666f95a1040eeabd in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/448fdc403286d6f153fd089df03373b48fdcbf95
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/448fdc403286d6f153fd089df03373b48fdcbf95 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/b0e12010765d49819d9e69dc7d96d40af7353fc6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/b0e12010765d49819d9e69dc7d96d40af7353fc6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/71df759b91910a10617b881921b35b5671ce47d4
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/71df759b91910a10617b881921b35b5671ce47d4 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/a341cd946812dc0c4e50ce2ea85f207f435cd5c4
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/a341cd946812dc0c4e50ce2ea85f207f435cd5c4 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/a3f0373a1bfd8f408fff2b558697515781e90e6d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/a3f0373a1bfd8f408fff2b558697515781e90e6d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/0549b18052ec7b6c97427ed86ad7359d29632b0f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/0549b18052ec7b6c97427ed86ad7359d29632b0f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/a15a26b09ecca400a70d72a5b14fa6408e4be94b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/a15a26b09ecca400a70d72a5b14fa6408e4be94b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/934ff939db99d4e340f9d754546fda9ada67b825
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/934ff939db99d4e340f9d754546fda9ada67b825 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/0c7a623fd2bbc05b06423be359e4021d36e721ad
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/0c7a623fd2bbc05b06423be359e4021d36e721ad in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/9ac521e32f8e19473bc914e1af8ae423a6d8c122
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/9ac521e32f8e19473bc914e1af8ae423a6d8c122 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/2d14ab97cc3dc294c51c0d6814f4ea45f4b4e312
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/2d14ab97cc3dc294c51c0d6814f4ea45f4b4e312 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/5ba93c9db0cff93f52b521d7420e43f6eda2784f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/5ba93c9db0cff93f52b521d7420e43f6eda2784f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/corpus/BZ2_hbAssignCodes/seed_fixed in 0 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_c2saferrust/harnesses/BZ2_hbAssignCodes/fuzz/coverage/bzip2_c2saferrust_ft/coverage.profdata".
+

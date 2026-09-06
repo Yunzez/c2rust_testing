@@ -38,3 +38,13 @@ max_bytes = 1048576
 [plugin.free]
 c = "cJSON_Delete"
 rust = "cJSON_Delete"
+
+# What the Rust half needs from the translation. The generator checks these against the
+# translated crate BEFORE linking the plugin: a translation that renames a field (PtrTrans:
+# `type_` for `type_0`) or lacks the destructor cannot host this comparator, and the boundary then
+# degrades to the ladder's next rung (pointer nullness) instead of failing to build. The list is
+# explicit so that the compatibility decision is auditable, not inferred from the .rs source.
+[plugin.requires]
+rust_struct = "cJSON"
+rust_fields = ["type_0", "valueint", "valuedouble", "valuestring", "string", "child", "next"]
+rust_fns = ["cJSON_Delete"]

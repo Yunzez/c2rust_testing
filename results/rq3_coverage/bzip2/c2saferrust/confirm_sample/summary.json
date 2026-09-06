@@ -1,0 +1,432 @@
+{
+ "mode": "confirm_sample",
+ "sample_per_boundary": 200,
+ "boundaries": [
+  {
+   "boundary": "BZ2_bz__AssertH__fail",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: fuzz target exited",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 41
+  },
+  {
+   "boundary": "BZ2_hbCreateDecodeTables",
+   "candidates_total": 27239,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated_termination": 200
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 200,
+     "example": "crash-00018f2cfeab0e59b33211ffc615e9b103ecfd3c"
+    }
+   ],
+   "seconds": 66
+  },
+  {
+   "boundary": "BZ2_hbMakeCodeLengths",
+   "candidates_total": 19,
+   "adjudicated": 19,
+   "tally": {
+    "inconclusive": 17,
+    "ub_associated": 2
+   },
+   "clusters": [
+    {
+     "verdict": "inconclusive",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 17,
+     "example": "timeout-1b3e6b806b72471aa97c49aafb1c8350405ad7f3"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: left shift of 117835012 by 8 places cannot be represented in type 'int'",
+     "frame": "<no frame>",
+     "artifacts": 2,
+     "example": "timeout-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 1522
+  },
+  {
+   "boundary": "default_bzalloc",
+   "candidates_total": 51,
+   "adjudicated": 51,
+   "tally": {
+    "ub_associated": 51
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 1086931145 * 102 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-044f22dda6a06630cf5a1d246853219dfb29e168"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 1575968239 * 65290 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-0d6ebcce53efbc84c95777a75f7e897669b5106a"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 1006436352 * 189 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-1cbfc64b123a2039825c02ef257b1b9bcdcd54ed"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 1057646891 * 2570 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-60da3530124f1435e2b1dcbfaae3c37bbf196f0c"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 2071690089 * 31611 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-689c101aa368fd6ba8e2445ade75df245879d605"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 168430090 * 2570 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-7a0c7e3dd8173007d955db528117071f441c8541"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 1080639593 * 102 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-7bb9ad0927f562f6d3ad82a42f9fd9e29cd5a38c"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 1635432450 * 127 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-7f07dbb2a97708e51c90b2a31306b273e3237b79"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 436912410 * 193 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-858edfdee027f6707193f000d835fc4086c375b6"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 171916137 * 10424 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-8aa6a51bd54b9fc1c3e4c3f97018d1776234547b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 2042722687 * 193 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-8ce6032a531f5223814b1da65a3b6b2c0fd6b8dd"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: signed integer overflow: 1057675625 * 184 cannot be represented in type 'Int32' (aka 'int')",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-8d28b201df76086d4a452ff9953c915ffb38dd95"
+    }
+   ],
+   "seconds": 47
+  },
+  {
+   "boundary": "fallbackQSort3",
+   "candidates_total": 4253,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 198,
+    "instrument_only": 2
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_fallbackQSort3 blocksort.c:138",
+     "artifacts": 182,
+     "example": "crash-001e6dfe12d80e34e46a2d937ffec4328d44238d"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_fallbackSimpleSort blocksort.c:?",
+     "artifacts": 7,
+     "example": "crash-005fcbf99e5d21170b9d6854011f17307227187b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_fallbackQSort3 blocksort.c:138",
+     "artifacts": 6,
+     "example": "crash-014c6fa6cb9a4fe01457c7ff0fc3686d87a0ece1"
+    },
+    {
+     "verdict": "instrument_only",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 fallbackQSort3 lib.rs:273",
+     "artifacts": 2,
+     "example": "crash-0290125c6b71aedfe595a6e186754a15a266e9b7"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_fallbackSimpleSort blocksort.c:45",
+     "artifacts": 1,
+     "example": "crash-050c7ee7a05b7544bd843243781fe5ed99b52250"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_fallbackSimpleSort blocksort.c:55",
+     "artifacts": 1,
+     "example": "crash-05e980650f84ff2f466a4222948c2b82d07c2acc"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_fallbackSimpleSort blocksort.c:54",
+     "artifacts": 1,
+     "example": "crash-08e6678cf62d80b172c2e5b9cb17010b8e9b0b50"
+    }
+   ],
+   "seconds": 65
+  },
+  {
+   "boundary": "fallbackSimpleSort",
+   "candidates_total": 3923,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 198,
+    "instrument_only": 2
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_fallbackSimpleSort blocksort.c:?",
+     "artifacts": 154,
+     "example": "crash-000a03849297beab696a7fc45e2e531cf23d4745"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_fallbackSimpleSort blocksort.c:43",
+     "artifacts": 43,
+     "example": "crash-002e5b2c6781d601db5e8b0a761cb26049f0da35"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_fallbackSimpleSort blocksort.c:53",
+     "artifacts": 1,
+     "example": "crash-0057f4b05c7f320ca1ac3f6f6c16fbcf11eee98a"
+    },
+    {
+     "verdict": "instrument_only",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 fallbackSimpleSort lib.rs:196",
+     "artifacts": 1,
+     "example": "crash-09db98ca8027e28e18b5f01d6a9132a26a954870"
+    },
+    {
+     "verdict": "instrument_only",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 fallbackSimpleSort lib.rs:180",
+     "artifacts": 1,
+     "example": "crash-0c7eb6188ef18b2a3f15cfad8485658ba376f7ad"
+    }
+   ],
+   "seconds": 65
+  },
+  {
+   "boundary": "mainGtU",
+   "candidates_total": 12,
+   "adjudicated": 12,
+   "tally": {
+    "ub_associated": 12
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:362",
+     "artifacts": 6,
+     "example": "crash-113d6c98802b04e72fc14a9b6f2b589e6ad1ddcc"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:410",
+     "artifacts": 2,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:366",
+     "artifacts": 1,
+     "example": "crash-185ce0ab0614f0bd829caa4e018853c58c129330"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:378",
+     "artifacts": 1,
+     "example": "crash-489c75892a39ce6e3f8a023c46d71c25a0119925"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:428",
+     "artifacts": 1,
+     "example": "crash-b4a5b17d3895534d769a2872f9b5bdc0f1ad53ac"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:390",
+     "artifacts": 1,
+     "example": "crash-f399a870dc3569296d80f56c0116ff49e014e527"
+    }
+   ],
+   "seconds": 44
+  },
+  {
+   "boundary": "mainQSort3",
+   "candidates_total": 7500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 189,
+    "instrument_only": 11
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:442",
+     "artifacts": 176,
+     "example": "crash-0002917758b8b90e86a0edd17bf9003cba56bbe5"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:436",
+     "artifacts": 13,
+     "example": "crash-003b1c430b44b5baa81658067513b2666889dca3"
+    },
+    {
+     "verdict": "instrument_only",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 mainQSort3 lib.rs:891",
+     "artifacts": 11,
+     "example": "crash-0137b719fb3126943658eed964539bceddc016db"
+    }
+   ],
+   "seconds": 69
+  },
+  {
+   "boundary": "mainSimpleSort",
+   "candidates_total": 3730,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 200
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainGtU blocksort.c:436",
+     "artifacts": 161,
+     "example": "crash-0029c56d2747aee28bb8849f5b3b14d2cee73c63"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainSimpleSort blocksort.c:512",
+     "artifacts": 37,
+     "example": "crash-0053dfb06c12b94ce079b33993f071ba44949184"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_mainSimpleSort blocksort.c:529",
+     "artifacts": 2,
+     "example": "crash-02f3077a9309fddb93dcf1a45446f231274ad34c"
+    }
+   ],
+   "seconds": 67
+  },
+  {
+   "boundary": "mainSort",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_mainSort blocksort.c:770",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 42
+  },
+  {
+   "boundary": "mmed3",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "confirmed_divergence": 3
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "divergence-3933681b7fc803db1467af11e72751ec6942a4dd"
+    }
+   ],
+   "seconds": 41
+  }
+ ],
+ "total": {
+  "ub_associated": 856,
+  "ub_associated_termination": 200,
+  "inconclusive": 17,
+  "instrument_only": 15,
+  "confirmed_divergence": 3
+ }
+}

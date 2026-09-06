@@ -37,7 +37,7 @@ TOOLCHAIN = "nightly-2025-09-01"
 
 
 def sh(cmd, **kw):
-    return subprocess.run(cmd, capture_output=True, text=True, **kw)
+    return subprocess.run(cmd, capture_output=True, text=True, errors="replace", **kw)
 
 
 def plan_all(pair: Path, out: Path) -> list[dict]:
@@ -84,8 +84,20 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
                 if changed:
                     stripped = extra.name
             (out_dir / "c" / extra.name).write_text(text)
+        # ... and so do source SUBDIRECTORIES (tulip: `tulip.c` includes indicators/*.c and
+        # utils/buffer.c by relative path, and those include ../indicators.h).
+        for sub in sorted(p for p in (pair / "source").iterdir() if p.is_dir()):
+            dst = out_dir / "c" / sub.name
+            if not dst.exists():
+                shutil.copytree(sub, dst)
         if private and stripped is None:
-            return f"could not give the C `static` {entry} external linkage in any sibling .c"
+            # Single-TU pair (cJSON): the static lives in the oracle TU itself, and the generator's
+            # --expose-entry already dropped its `static` there. Only a static that is STILL
+            # static in the harness copy is a failure.
+            main = out_dir / "c" / a.c_source
+            still_static = main.exists() and gdh.strip_static_c(main.read_text(), entry)[1]
+            if still_static:
+                return f"could not give the C `static` {entry} external linkage (not in the oracle TU nor any sibling .c)"
     if a.shim:
         shutil.copy(a.shim, out_dir / "c" / "shims.c")
         b = out_dir / "build.rs"
@@ -97,9 +109,18 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
         b.write_text(t)
     if private and defs:
         mod = defs.get("defs", {}).get(entry)
-        if mod:
-            lib = out_dir / "src" / "lib.rs"
-            lib.write_text(lib.read_text() + f"\npub use crate::{mod}::{entry};\n")
+        lib = out_dir / "src" / "lib.rs"
+        # A flat single-file translation (cJSON, SACTOR's genann) has no module: --expose-entry
+        # already made the entry pub at the crate root, and a re-export through a module that does
+        # not exist is an unresolved import.
+        text = lib.read_text()
+        if mod and re.search(rf'(?m)^\s*(?:pub\s+)?mod\s+{re.escape(mod)}\s*\{{', text):
+            # CROWN wraps the modules in a namespace (`pub mod src { pub mod lil {..} }`): the
+            # flatten's own re-exports say what the path prefix is; a C `static` exposed here
+            # takes the same one (15 lil x CROWN builds failed with `unresolved import crate::lil`).
+            m = re.search(rf'(?m)^pub use crate::((?:\w+::)*){re.escape(mod)}::\w+;', text)
+            prefix = m.group(1) if m else ""
+            lib.write_text(text + f"\npub use crate::{prefix}{mod}::{entry};\n")
     for d in (out_dir, out_dir / "fuzz"):
         (d / "rust-toolchain").write_text(TOOLCHAIN + "\n")
     return None
@@ -122,7 +143,7 @@ def execute(binary: Path, corpus: Path, art: Path, seconds: int) -> dict:
            "-ignore_ooms=1", f"-max_total_time={seconds}", "-timeout=5", "-rss_limit_mb=4096",
            f"-artifact_prefix={art}/"]
     try:
-        r = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=seconds + 240)
+        r = subprocess.run(cmd, env=env, capture_output=True, text=True, errors="replace", timeout=seconds + 240)
         log = r.stdout + r.stderr
     except subprocess.TimeoutExpired as e:
         log = ((e.stdout or b"").decode("replace") if isinstance(e.stdout, bytes) else (e.stdout or "")) \

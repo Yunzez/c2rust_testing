@@ -1,0 +1,197 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+core: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/add_func/src/lib.rs:5256:40
+     |
+5256 | unsafe extern "C" fn fnc_writechar(mut lil: * mut crate::lil::_lil_t, mut argc: std::os::raw::c_ulong,
+     |                                        ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/add_func/src/lib.rs:5265:37
+     |
+5265 | unsafe extern "C" fn fnc_system(mut lil: * mut crate::lil::_lil_t, mut argc: std::os::raw::c_ulong,
+     |                                     ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/add_func/src/lib.rs:5294:39
+     |
+5294 | unsafe extern "C" fn fnc_readline(mut lil: * mut crate::lil::_lil_t, mut argc: std::os::raw::c_ulong,
+     |                                       ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/add_func/src/lib.rs:5294:74
+     |
+5294 | unsafe extern "C" fn fnc_readline(mut lil: * mut crate::lil::_lil_t, mut argc: std::os::raw::c_ulong,
+     |                                                                          ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/add_func/src/lib.rs:5295:39
+     |
+5295 | ...                   mut argv: * mut * mut crate::lil::_lil_value_t) -> * mut crate::lil::_lil_value_t {
+     |                           ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: `lil_laertes` (lib) generated 69 warnings (run `cargo fix --lib -p lil_laertes` to apply 40 suggestions)
+   Compiling lil_laertes-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/add_func/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/lil_laertes_ft.rs:154:17
+    |
+154 |             let c_ret = c_add_func(lil_c as *mut core::ffi::c_void, name_buf.as_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/lil_laertes_ft.rs:164:17
+    |
+164 |             let r_ret = translated::add_func(lil_r, name_buf.as_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: multiple methods are never used
+  --> fuzz_targets/lil_laertes_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `lil_laertes-fuzz` (bin "lil_laertes_ft") generated 3 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.53s
+Processing 30 input files using 1 workers (batch size: ~30)
+Worker 0: Generating coverage for 30 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3514381908
+INFO: Loaded 1 modules   (11160 inline 8-bit counters): 11160 [0x55afaa44dd20, 0x55afaa4508b8), 
+INFO: Loaded 1 PC tables (11160 PCs): 11160 [0x55afaa4508b8,0x55afaa47c238), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/add_func/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft: Running 30 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/f704fc492534bb72262140ee1f1d66abfa9181a2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/f704fc492534bb72262140ee1f1d66abfa9181a2 in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/25cede0cef88821e30ffbe851a71a811a59e5abe
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/25cede0cef88821e30ffbe851a71a811a59e5abe in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/4eb2f512bd65e011fdae7cc786a40472c29918c5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/4eb2f512bd65e011fdae7cc786a40472c29918c5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/3c8a72191b45bf3eda2fe4d7f813b19788c8dd83
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/3c8a72191b45bf3eda2fe4d7f813b19788c8dd83 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/721e61d81d705c8711c8c32b747946fa9657588f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/721e61d81d705c8711c8c32b747946fa9657588f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/784dde1e676085f71cc225e6d7e5d258eb0df7f4
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/784dde1e676085f71cc225e6d7e5d258eb0df7f4 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/a510d063743db4b7755ef50f5cf5853d8f6834e5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/a510d063743db4b7755ef50f5cf5853d8f6834e5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/943c2f3684c6ce9dfc007286eec70375040e32c1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/943c2f3684c6ce9dfc007286eec70375040e32c1 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/99e5be2a8451cd1f2aaba37afb201051daedf89b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/99e5be2a8451cd1f2aaba37afb201051daedf89b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/b00d09cdf818b4a722d60654a7171ca338d865a2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/b00d09cdf818b4a722d60654a7171ca338d865a2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/790e174484168f631159ed2c14d8b7a507b07eb1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/790e174484168f631159ed2c14d8b7a507b07eb1 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/c175da87598b7d5f67c7bf02848ac3fdd98bb980
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/c175da87598b7d5f67c7bf02848ac3fdd98bb980 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/630fdef7912339ad22460ce9ec01e64ed7049295
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/630fdef7912339ad22460ce9ec01e64ed7049295 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/6fe7dbc23781426f1c2242415cef51af00b9e29e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/6fe7dbc23781426f1c2242415cef51af00b9e29e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/d69321d0b9dbf18e46eca3fcf4c51cc2cfb9dcb8
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/d69321d0b9dbf18e46eca3fcf4c51cc2cfb9dcb8 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/22d6958bb6e259a2f08642fd75d83f66a3234b36
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/22d6958bb6e259a2f08642fd75d83f66a3234b36 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/d707238c26a35ff096a7bc44f074c15c9bf9d2f2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/d707238c26a35ff096a7bc44f074c15c9bf9d2f2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/d575effb86c64e9efd99c541f3628d03db4c451b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/d575effb86c64e9efd99c541f3628d03db4c451b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/be3e521007d99e665aa8e6971d970727f1b6bf83
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/be3e521007d99e665aa8e6971d970727f1b6bf83 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/46286d9a99d18056b39ef2b2c434672fb7ecf5d6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/46286d9a99d18056b39ef2b2c434672fb7ecf5d6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/72440b6e38f215461b2cce963227e1b98aa70e3a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/72440b6e38f215461b2cce963227e1b98aa70e3a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/90ab8a4ae33b508fe46e228b25e68eeaf70b1329
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/90ab8a4ae33b508fe46e228b25e68eeaf70b1329 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/e656a2f7c06c9adf7e031a5ce93be59b521996dd
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/e656a2f7c06c9adf7e031a5ce93be59b521996dd in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/292b0901993f7e9d9a0d9b80542f9e59505ba5be
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/292b0901993f7e9d9a0d9b80542f9e59505ba5be in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/97a2a5ba80860099c704e2a407d42774eca3076d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/97a2a5ba80860099c704e2a407d42774eca3076d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/503576a76097ebc8e4885212d2f3bcd24fd4d9a6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/503576a76097ebc8e4885212d2f3bcd24fd4d9a6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/2af74da2f2e9952572a3aee6b5e69d5e11be54a5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/2af74da2f2e9952572a3aee6b5e69d5e11be54a5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/5ba93c9db0cff93f52b521d7420e43f6eda2784f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/5ba93c9db0cff93f52b521d7420e43f6eda2784f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/bf8b4530d8d246dd74ac53a13471bba17941dff7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/bf8b4530d8d246dd74ac53a13471bba17941dff7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/add_func/seed_fixed in 0 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/add_func/fuzz/coverage/lil_laertes_ft/coverage.profdata".
+

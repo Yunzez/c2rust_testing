@@ -6,7 +6,9 @@
 This file is frozen **before** any cell in the current round runs. `README.md` in this directory
 requires exactly that: *"'Shipped tests' is undefined for tools that ship no suite. The definition
 must be written down per system before any cell runs, not chosen per cell afterwards"*, and the
-same for the budget, seeds and stopping rule.
+same for the budget, seeds and stopping rule. Operational lessons that are not protocol — quotas,
+serial cells, detached launches, the noise classes, generator traps — live in
+[`docs/rq4_runbook.md`](../../docs/rq4_runbook.md); read it before running another library.
 
 It supersedes `bzip2/PROTOCOL.md`, which was written for one library.
 
@@ -92,7 +94,7 @@ would be our construction rather than evidence that already existed.
 | | |
 |---|---|
 | campaign | **Rust-only** (`C2R_MODE=rust-only`), libFuzzer fork mode, all harnesses of a cell concurrent |
-| budget | **300 s wall per cell** |
+| budget | **3 600 s wall per cell** (amended 2026-09-04, before any cell under this protocol produced a number; see below) |
 | flags | `-seed=42 -timeout=25 -rss_limit_mb=8192 -fork=1 -ignore_crashes=1 -ignore_timeouts=1 -ignore_ooms=1` |
 | stopping rule | fixed wall clock, no early stop, no extension for a cell that looks interesting |
 | seeding | the library's own **shipped sample inputs**, encoded into the harness input format, plus one fixed 64-byte seed per corpus |
@@ -123,10 +125,41 @@ between minute 1 and minute 60" was measured *with* seeds. It licenses a short b
 campaign; it says nothing about an unseeded one, and reading it as if it did is what produced the
 first run under this protocol.
 
-The budget is short **because saturation was measured, not assumed**: on bzip2 × c2rust the
+**Amendment, 2026-09-04 — 300 s → 3 600 s.** The 300 s figure was licensed by a saturation
+measurement taken on **one cell of one tool** (bzip2 × c2rust). Generalising it to every cell of
+every translator is exactly the assumption this protocol says not to make: a reshaped translation
+may saturate later, and a cell that is still growing at its last checkpoint cannot be told apart
+from one that finished. The budget is therefore raised to a full hour, which costs machine time
+and nothing else.
+
+The 300 s number is **not** discarded. Snapshots are hard-linked corpus copies, so the 60 / 300 /
+600 / 1 800 s corpora survive the run and coverage is recomputable from any of them. Every cell
+consequently reports the hour, and can report the five minutes from the same campaign, with no
+second run and no choice made after seeing the outcome.
+
+This is an amendment made **before any cell under this protocol produced a number** — the four
+bzip2 cells' first attempt died in the build phase (`EDQUOT`, four concurrent cargo target dirs)
+and produced no data. It is recorded rather than silently applied, and it moves the budget only
+upward: no cell is ever extended because it looked interesting, which §3's stopping rule still
+forbids.
+
+The budget was originally short **because saturation was measured, not assumed**: on bzip2 × c2rust the
 campaign gained **0 functions and 48 of 8 789 regions between minute 1 and minute 60** while the
 corpus doubled. The binding constraint is boundary coverage and seed quality, not campaign length.
 The snapshots exist so that claim is re-checked in every cell rather than inherited.
+
+**Procedural amendment 2026-09-06 — preflight before every campaign.** After the harnesses are
+built and before the campaign starts, each harness is run once on the empty input in c-only and
+in rust-only mode, and all harnesses run a 60 s fork-mode test with the campaign's own libFuzzer
+parameters. A harness whose C side crashes on the empty input, or whose test run crashes on
+~every job with a corpus that never grows, is flagged; unless it is listed in the pair's
+`preflight_accept.txt` (a reviewed, reasoned "unconstructible precondition"), the cell stops
+before the campaign (exit 3) and is re-run after review. The preflight's corpus is discarded and
+the budget, seed and stopping rule above are untouched; this changes what is measured only in
+that a harness bug is caught in one minute instead of after an hour (lil × c2rust/Laertes,
+`lil_parse`: a dangling length-0 buffer crashed every execution; those two cells re-ran that one
+boundary and record the deviation). Results: `preflight/preflight.json` per cell, the funnel row,
+RUN.md.
 
 ## 4. One campaign, one corpus
 
@@ -141,7 +174,33 @@ Rust-only campaign (§3)
 ```
 
 Candidates are therefore candidates *on the coverage corpus*, and both numbers come from one
-budget. A differential discovery run — fuzzing guided by the comparison rather than by Rust
+budget.
+
+**Two candidate channels, one confirmation** (recorded 2026-09-05 02:10, before any full
+adjudication ran). The Rust-only campaign leaves *termination* artifacts (an input on which the
+translation trapped; libFuzzer keeps it out of the corpus). The combined replay of the saved corpus
+produces *divergence* artifacts (both sides returned and disagreed on a ladder rung, or one side
+trapped where the other did not). Both go through the same confirmation; `ub-gated` replay
+outcomes — the in-loop noise filter fired on the C side — are counted and listed but are not
+candidates, because confirmation re-checks C-definedness under ASan + full UBSan anyway.
+
+**Adjudication depth.** Every boundary is first adjudicated on a fixed **sample of 200 artifacts
+per channel** (terminations and divergences separately, each sorted by artifact name — libFuzzer
+names are content hashes, so the draw within a channel is unbiased; sampling the two channels
+together would let thousands of `crash-*` names crowd out every `divergence-*`, which is what
+happened on CROWN `fallbackSort` before this sentence was added at 03:25) and the sample is
+labelled as such wherever it is quoted. A boundary is adjudicated **in full** when (a) it
+is a public-API boundary whose input model is sound — the same model produced zero artifacts on the
+faithful c2rust translation — or (b) any `confirmed_*` verdict appears in its sample. A boundary
+whose sample is entirely `ub_associated*` / `instrument_only` / timeout-`inconclusive` is reported
+at the sample together with its total artifact count. Reason, stated before the fact: the internal
+sort routines (`mainQSort3`, `hbCreateDecodeTables`, …) yield 10⁴–10⁵ artifacts per tool because
+their input model puts them out of contract by construction, identically on all four tools;
+re-deriving "out of contract" 10⁵ times at four replays each would cost ~40 machine-hours and
+establish nothing the sample does not. Every defect found so far lives on the public-API
+boundaries, which have 10²–10³ artifacts and are adjudicated completely.
+
+A differential discovery run — fuzzing guided by the comparison rather than by Rust
 coverage — is a **separate experiment** needing its own pre-registered budget, and its corpus is
 **never** merged into the coverage corpus.
 

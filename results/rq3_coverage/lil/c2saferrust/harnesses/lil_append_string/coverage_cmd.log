@@ -1,0 +1,226 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+8:35
+     |
+4668 | ...                   mut argv: *mut lil_value_t) -> lil_value_t {
+     |                           ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:4939:34
+     |
+4939 | unsafe extern "C" fn do_exit(mut lil: lil_t, mut val: lil_value_t) {
+     |                                  ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:4967:40
+     |
+4967 | unsafe extern "C" fn fnc_writechar(mut lil: lil_t, mut argc: size_t, mut argv: *mut lil_value_t) -> lil_value_t {
+     |                                        ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `rv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:4986:13
+     |
+4986 |     let mut rv: *mut std::os::raw::c_char = 0 as *mut std::os::raw::c_char;
+     |             ^^ help: if this is intentional, prefix it with an underscore: `_rv`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:4976:37
+     |
+4976 | unsafe extern "C" fn fnc_system(mut lil: lil_t, mut argc: size_t,
+     |                                     ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:5005:39
+     |
+5005 | unsafe extern "C" fn fnc_readline(mut lil: lil_t, mut argc: size_t,
+     |                                       ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:5005:55
+     |
+5005 | unsafe extern "C" fn fnc_readline(mut lil: lil_t, mut argc: size_t,
+     |                                                       ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:5006:39
+     |
+5006 | ...                   mut argv: *mut lil_value_t) -> lil_value_t {
+     |                           ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused return value of `Box::<T>::from_raw` that must be used
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:455:26
+    |
+455 |                 unsafe { Box::from_raw(key_ptr); } // Assuming the key was allocated with Box
+    |                          ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: call `drop(Box::from_raw(ptr))` if you intend to drop the `Box`
+    = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
+help: use `let _ = ...` to ignore the resulting value
+    |
+455 |                 unsafe { let _ = Box::from_raw(key_ptr); } // Assuming the key was allocated with Box
+    |                          +++++++
+
+warning: unused return value of `Box::<T>::from_raw` that must be used
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/src/lib.rs:458:18
+    |
+458 |         unsafe { Box::from_raw(cell.e); } // Assuming the cell.e was allocated with Box
+    |                  ^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: call `drop(Box::from_raw(ptr))` if you intend to drop the `Box`
+help: use `let _ = ...` to ignore the resulting value
+    |
+458 |         unsafe { let _ = Box::from_raw(cell.e); } // Assuming the cell.e was allocated with Box
+    |                  +++++++
+
+warning: `lil_c2saferrust` (lib) generated 124 warnings
+   Compiling lil_c2saferrust-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/lil_c2saferrust_ft.rs:155:17
+    |
+155 |             let c_ret = c_lil_append_string(val_c as *mut core::ffi::c_void, s_buf.as_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/lil_c2saferrust_ft.rs:165:17
+    |
+165 |             let r_ret = translated::lil_append_string(val_r, s_buf.as_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: multiple methods are never used
+  --> fuzz_targets/lil_c2saferrust_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `val__num` should have a snake case name
+   --> fuzz_targets/lil_c2saferrust_ft.rs:141:9
+    |
+141 |     let val__num = (0 as f64) + (cur.take_f64().rem_euclid(((32) as f64) - (0 as f64) + (1 as f64)));
+    |         ^^^^^^^^ help: convert the identifier to snake case: `val_num`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `lil_c2saferrust-fuzz` (bin "lil_c2saferrust_ft") generated 4 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.76s
+Processing 21 input files using 1 workers (batch size: ~21)
+Worker 0: Generating coverage for 21 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 1608654809
+INFO: Loaded 1 modules   (1231 inline 8-bit counters): 1231 [0x5578e0b2ed90, 0x5578e0b2f25f), 
+INFO: Loaded 1 PC tables (1231 PCs): 1231 [0x5578e0b2f260,0x5578e0b33f50), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2saferrust_ft: Running 21 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/d366be9b39182e8f3bdf3e9fec2ddf71493a2ba1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/d366be9b39182e8f3bdf3e9fec2ddf71493a2ba1 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/958222cd24fae22df82657c2e556e519c8f9ab70
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/958222cd24fae22df82657c2e556e519c8f9ab70 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/f9a7c46ad746036596bb4c43a85513a2352d730f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/f9a7c46ad746036596bb4c43a85513a2352d730f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/4073692fb094d630d74d22549a19c8f6c87372a6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/4073692fb094d630d74d22549a19c8f6c87372a6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/ab91939158ef4bb3f8b2122c545dc52e5cc9f237
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/ab91939158ef4bb3f8b2122c545dc52e5cc9f237 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/ab1d8cf09fec9cd77b71da9e4a5e545c5c7575e2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/ab1d8cf09fec9cd77b71da9e4a5e545c5c7575e2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/b6f7ef9a82fe27ea81237ed4ce6de8abc4541156
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/b6f7ef9a82fe27ea81237ed4ce6de8abc4541156 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/2209afd3644231cc552006a6e940059e3a15ebf6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/2209afd3644231cc552006a6e940059e3a15ebf6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/9c75f35cad2101fc9be34b6344feeb8f1031eb3f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/9c75f35cad2101fc9be34b6344feeb8f1031eb3f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/72477e02a6d76caa5bb7ef5c430aabfa07d18612
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/72477e02a6d76caa5bb7ef5c430aabfa07d18612 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/7d2238c8f5bcddf3751b6028f598dbe58009858d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/7d2238c8f5bcddf3751b6028f598dbe58009858d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/63bf60c7105a07a2b125bbf89e61abdabc6978c2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/63bf60c7105a07a2b125bbf89e61abdabc6978c2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/9b35cb7b5ecaaf6a61a559153b3c740d20ac7a14
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/9b35cb7b5ecaaf6a61a559153b3c740d20ac7a14 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/3a9ed34518d278ac94621ec9a3e4055ea16d37a7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/3a9ed34518d278ac94621ec9a3e4055ea16d37a7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/d35daa8ac5da090815bce6349b1d174b01879fce
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/d35daa8ac5da090815bce6349b1d174b01879fce in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/ac7eac301599927d34dacd7b06a400f9a8283452
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/ac7eac301599927d34dacd7b06a400f9a8283452 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/abb542af100c47a8507a8d0d848379a1bcb96871
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/abb542af100c47a8507a8d0d848379a1bcb96871 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/13fe9fd2e16cb2dfd4137039cfa338e990ed2cdc
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/13fe9fd2e16cb2dfd4137039cfa338e990ed2cdc in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/c4ea21bb365bbeeaf5f2c654883e56d11e43c44e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/c4ea21bb365bbeeaf5f2c654883e56d11e43c44e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/2ace62c1befa19e3ea37dd52be9f6d508c5163e6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/2ace62c1befa19e3ea37dd52be9f6d508c5163e6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/corpus/lil_append_string/seed_fixed in 0 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2saferrust/harnesses/lil_append_string/fuzz/coverage/lil_c2saferrust_ft/coverage.profdata".
+

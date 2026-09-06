@@ -1,0 +1,225 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+  --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:4575:9
+     |
+4575 |     mut lil: *mut _lil_t,
+     |         ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:4576:9
+     |
+4576 |     mut argc: libc::c_ulong,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:4577:9
+     |
+4577 |     mut argv: *mut *mut _lil_value_t,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:5124:34
+     |
+5124 | unsafe extern "C" fn do_exit(mut lil: *mut crate::src::lil::_lil_t, mut val: *mut crate::src::lil::_lil_value_t) {
+     |                                  ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:5205:9
+     |
+5205 |     mut lil: *mut crate::src::lil::_lil_t,
+     |         ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:5220:9
+     |
+5220 |     mut lil: *mut crate::src::lil::_lil_t,
+     |         ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:5249:9
+     |
+5249 |     mut lil: *mut crate::src::lil::_lil_t,
+     |         ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:5250:9
+     |
+5250 |     mut argc: libc::c_ulong,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:5251:9
+     |
+5251 |     mut argv: *mut *mut crate::src::lil::_lil_value_t,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: `lil_crown` (lib) generated 25 warnings
+   Compiling lil_crown-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/fuzz)
+warning: unused variable: `cur`
+   --> fuzz_targets/lil_crown_ft.rs:140:13
+    |
+140 |     let mut cur = Cur::new(data);
+    |             ^^^ help: if this is intentional, prefix it with an underscore: `_cur`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `c_ret`
+   --> fuzz_targets/lil_crown_ft.rs:152:17
+    |
+152 |             let c_ret = c_ateol(lil_c as *mut core::ffi::c_void);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/lil_crown_ft.rs:162:17
+    |
+162 |             let r_ret = translated::ateol(lil_r);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/lil_crown_ft.rs:140:9
+    |
+140 |     let mut cur = Cur::new(data);
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `d` and `p` are never read
+ --> fuzz_targets/lil_crown_ft.rs:3:18
+  |
+3 | struct Cur<'a> { d: &'a [u8], p: usize }
+  |        ---       ^            ^
+  |        |
+  |        fields in this struct
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: multiple methods are never used
+  --> fuzz_targets/lil_crown_ft.rs:6:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+ 5 |     fn new(d: &'a [u8]) -> Self { Cur { d, p: 0 } }
+ 6 |     fn byte(&mut self) -> u8 { let b = if self.p < self.d.len() { self.d[self.p] } else { 0 }; self.p += 1; b }
+   |        ^^^^
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+
+warning: `lil_crown-fuzz` (bin "lil_crown_ft") generated 6 warnings (run `cargo fix --bin "lil_crown_ft"` to apply 1 suggestion)
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.38s
+Processing 1 input files using 1 workers (batch size: ~1)
+Worker 0: Generating coverage for 1 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 576842506
+INFO: Loaded 1 modules   (10765 inline 8-bit counters): 10765 [0x558bc9d40750, 0x558bc9d4315d), 
+INFO: Loaded 1 PC tables (10765 PCs): 10765 [0x558bc9d43160,0x558bc9d6d230), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft: Running 1 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/corpus/ateol/seed_fixed
+C2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:731:13: null pointer dereference occurred
+
+thread '<unnamed>' (2631506) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/src/lib.rs:731:13:
+null pointer dereference occurred
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+==2631506== ERROR: libFuzzer: deadly signal
+    #0 0x558bc9be3831  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x14f831) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #1 0x558bc9c91cab  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x1fdcab) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #2 0x558bc9c87189  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x1f3189) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #3 0x7fc4c5c45caf  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45caf) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #4 0x7fc4c5ca642b  (/usr/lib/x86_64-linux-gnu/libc.so.6+0xa642b) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #5 0x7fc4c5c45b7d  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45b7d) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #6 0x7fc4c5c288eb  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x288eb) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #7 0x558bc9ceb3b9  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x2573b9) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #8 0x558bc9ced6d8  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x2596d8) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #9 0x558bc9c7f9bc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x1eb9bc) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #10 0x558bc9c0de27  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x179e27) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #11 0x558bc9cee0dd  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x25a0dd) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #12 0x558bc9cede75  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x259e75) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #13 0x558bc9cec558  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x258558) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #14 0x558bc9cddd0c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x249d0c) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #15 0x558bc9d19dec  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x285dec) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #16 0x558bc9d19fcc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x285fcc) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #17 0x558bc9c5055d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x1bc55d) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #18 0x558bc9c1049a  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x17c49a) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #19 0x558bc9c13a6d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x17fa6d) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #20 0x558bc9c7f1f0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x1eb1f0) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #21 0x558bc9c80668  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x1ec668) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #22 0x558bc9c7e3e5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x1ea3e5) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #23 0x558bc9c8773c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x1f373c) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #24 0x558bc9ca5855  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x211855) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #25 0x558bc9cb2ce1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x21ece1) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #26 0x558bc9ca12d6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0x20d2d6) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+    #27 0x7fc4c5c2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #28 0x7fc4c5c2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #29 0x558bc9b4ee64  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft+0xbae64) (BuildId: 3e6d4f137a10e4abfb6b0b9234c5165d8ea6ace7)
+
+NOTE: libFuzzer has rudimentary signal handlers.
+      Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+SUMMARY: libFuzzer: deadly signal
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 77: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/fuzz/coverage/lil_crown_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/harnesses/ateol/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_crown_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_crown/corpus/ateol/seed_fixed"
+

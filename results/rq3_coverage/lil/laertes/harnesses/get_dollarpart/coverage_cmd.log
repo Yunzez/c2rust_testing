@@ -1,0 +1,203 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+ed variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/src/lib.rs:5256:40
+     |
+5256 | unsafe extern "C" fn fnc_writechar(mut lil: * mut crate::lil::_lil_t, mut argc: std::os::raw::c_ulong,
+     |                                        ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/src/lib.rs:5265:37
+     |
+5265 | unsafe extern "C" fn fnc_system(mut lil: * mut crate::lil::_lil_t, mut argc: std::os::raw::c_ulong,
+     |                                     ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `lil`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/src/lib.rs:5294:39
+     |
+5294 | unsafe extern "C" fn fnc_readline(mut lil: * mut crate::lil::_lil_t, mut argc: std::os::raw::c_ulong,
+     |                                       ^^^ help: if this is intentional, prefix it with an underscore: `_lil`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/src/lib.rs:5294:74
+     |
+5294 | unsafe extern "C" fn fnc_readline(mut lil: * mut crate::lil::_lil_t, mut argc: std::os::raw::c_ulong,
+     |                                                                          ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/src/lib.rs:5295:39
+     |
+5295 | ...                   mut argv: * mut * mut crate::lil::_lil_value_t) -> * mut crate::lil::_lil_value_t {
+     |                           ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: `lil_laertes` (lib) generated 69 warnings (run `cargo fix --lib -p lil_laertes` to apply 40 suggestions)
+   Compiling lil_laertes-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/fuzz)
+warning: unused variable: `cur`
+   --> fuzz_targets/lil_laertes_ft.rs:140:13
+    |
+140 |     let mut cur = Cur::new(data);
+    |             ^^^ help: if this is intentional, prefix it with an underscore: `_cur`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `c_ret`
+   --> fuzz_targets/lil_laertes_ft.rs:152:17
+    |
+152 |             let c_ret = c_get_dollarpart(lil_c as *mut core::ffi::c_void);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/lil_laertes_ft.rs:162:17
+    |
+162 |             let r_ret = translated::get_dollarpart(lil_r);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/lil_laertes_ft.rs:140:9
+    |
+140 |     let mut cur = Cur::new(data);
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `d` and `p` are never read
+ --> fuzz_targets/lil_laertes_ft.rs:3:18
+  |
+3 | struct Cur<'a> { d: &'a [u8], p: usize }
+  |        ---       ^            ^
+  |        |
+  |        fields in this struct
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: multiple methods are never used
+  --> fuzz_targets/lil_laertes_ft.rs:6:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+ 5 |     fn new(d: &'a [u8]) -> Self { Cur { d, p: 0 } }
+ 6 |     fn byte(&mut self) -> u8 { let b = if self.p < self.d.len() { self.d[self.p] } else { 0 }; self.p += 1; b }
+   |        ^^^^
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+
+warning: `lil_laertes-fuzz` (bin "lil_laertes_ft") generated 6 warnings (run `cargo fix --bin "lil_laertes_ft"` to apply 1 suggestion)
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.29s
+Processing 1 input files using 1 workers (batch size: ~1)
+Worker 0: Generating coverage for 1 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3977205352
+INFO: Loaded 1 modules   (11081 inline 8-bit counters): 11081 [0x55fe20303260, 0x55fe20305da9), 
+INFO: Loaded 1 PC tables (11081 PCs): 11081 [0x55fe20305db0,0x55fe20331240), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft: Running 1 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/get_dollarpart/seed_fixed
+C2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/src/lib.rs:1365:8: null pointer dereference occurred
+
+thread '<unnamed>' (228411) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/src/lib.rs:1365:8:
+null pointer dereference occurred
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+==228411== ERROR: libFuzzer: deadly signal
+    #0 0x55fe2019e871  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x153871) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #1 0x55fe20252c6b  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x207c6b) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #2 0x55fe20248149  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1fd149) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #3 0x7fc6cfe45caf  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45caf) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #4 0x7fc6cfea642b  (/usr/lib/x86_64-linux-gnu/libc.so.6+0xa642b) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #5 0x7fc6cfe45b7d  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45b7d) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #6 0x7fc6cfe288eb  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x288eb) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #7 0x55fe202ac379  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x261379) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #8 0x55fe202ae698  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x263698) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #9 0x55fe2024097c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1f597c) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #10 0x55fe201c8e67  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x17de67) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #11 0x55fe202af09d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x26409d) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #12 0x55fe202aee35  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x263e35) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #13 0x55fe202ad518  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x262518) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #14 0x55fe2029eccc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x253ccc) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #15 0x55fe202dadac  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x28fdac) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #16 0x55fe202daf8c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x28ff8c) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #17 0x55fe2020d670  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1c2670) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #18 0x55fe2020e8c5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1c38c5) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #19 0x55fe201cb4da  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1804da) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #20 0x55fe201ceaad  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x183aad) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #21 0x55fe202401b0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1f51b0) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #22 0x55fe20241628  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1f6628) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #23 0x55fe2023f3a5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1f43a5) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #24 0x55fe202486fc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x1fd6fc) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #25 0x55fe20266815  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x21b815) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #26 0x55fe20273ca1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x228ca1) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #27 0x55fe20262296  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0x217296) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+    #28 0x7fc6cfe2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #29 0x7fc6cfe2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #30 0x55fe20109ea4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft+0xbeea4) (BuildId: bbe7c0488cf29bb0ef7fa60231512936a40866e3)
+
+NOTE: libFuzzer has rudimentary signal handlers.
+      Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+SUMMARY: libFuzzer: deadly signal
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 77: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/fuzz/coverage/lil_laertes_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/harnesses/get_dollarpart/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_laertes_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_laertes/corpus/get_dollarpart/seed_fixed"
+

@@ -1,84 +1,59 @@
 {
- "cell": "bzip2__c2rust",
- "rust_artifact": {
-  "canonical_path": "tools/frameworks/c2saferrust/laertes_benchmarks/bzip2/ (gitignored; library .rs byte-identical to git-tracked fuzz/bzip2_c2rust_e3/src/, verified by cmp)",
-  "translator": "c2rust (mechanical), transpiled on macOS \u2014 references __stdinp/__stdoutp/__stderrp/__maskrune/_DefaultRuneLocale/__error",
-  "sha256_scoped_sources": {
-   "blocksort.rs": "8edc09042ffcf5d2bd14028dafd62208f9ca7449c9c40476d94fdf17c1ed3ae4",
-   "bzlib.rs": "ea5e6587b005b33d11f68c134654901d3009d7861d397cbdc43393a0f066fe00",
-   "compress.rs": "6e428234b698f71871d8445e1a9790e4d5aa14be28aeeaa34d75f7d17367397f",
-   "crctable.rs": "cbafa26200524cf153750d00f328058accf6a73e71286b71bacf706a72fcaf69",
-   "decompress.rs": "abc5bf47e5d8692ec2e9b230df7025eca4dde6723b90289153541b60215610f9",
-   "huffman.rs": "bdd000f52d4758fa2a9a7c8ea29e4055a8125bc06618843a842c3067747c83d0",
-   "randtable.rs": "7708ba6b00946f604c63bcfcd85eebbe097c01fd77cff7533eb6b4b71a86b829"
-  },
-  "sha256_flattened_crate": "c0522bc19b66448c78d509026c914beca015ef6a7636031efb1f0ca7d204b1ee"
+ "pair": {
+  "source/blocksort.c": "4e48cd2ccff44699e67a7c949b0e9576c05b8dcbe20f863475c4fcc8db11a409",
+  "source/bzip2lib.c": "d4378051f781933805b118de356768b3e0515dd004188607dfe1df66fd096821",
+  "source/bzlib.c": "d06cf1bd991df1f2dc8ef4f7713d186eb636767111cbd4807ef5fc4a54ca6838",
+  "source/bzlib.h": "6ac62e811669598ee30c9e1c379b9e627f6ff17a5a3dc1e0b4fa8b8ea75e580d",
+  "source/bzlib_private.h": "c0cda4f35ee1f2d54c9beacd524f8d28e0dbf8494aca30d854af3f143af4341b",
+  "source/compress.c": "75995bd6e8c5f1e1dad05178f3cf53137df99ce860a1984324f78591f28deed3",
+  "source/crctable.c": "2fb7a564629386456e731f431a5cf4f5026747bace4cd10be8f5ecf082066a92",
+  "source/decompress.c": "31a89f8bf408ef0e4acae83e8be60a8eb4edece6c866d6e32b8f7e557ca54bc6",
+  "source/huffman.c": "bdeb45f3f535546a672811b68aa87cc58fd395b28ecebc34fa3566a656a4d1d1",
+  "source/randtable.c": "407054ca6f54cd737dbc26ceb6b7874b55a0fcff86c2eb23cbec2fbdbb884815",
+  "translated/bzip2_c2rust.rs": "c0522bc19b66448c78d509026c914beca015ef6a7636031efb1f0ca7d204b1ee",
+  "translated/bzip2_c2rust.rs.defs.json": "8a1c2cbca18fceb43807e2705990c52bba04ab33c6dc15b17ab8609ffa4b3078",
+  "translated/bzip2_c2rust.rs.linemap.json": "38c6aaa9b4a9e7e8ec63f6e6a5a82b38226b2c34e03019faba95269557fa2628"
  },
- "c_source": {
-  "path": "tools/frameworks/crown/c-code/bzip2/",
-  "identity": "bzip2 1.0.8",
-  "sha256": {
-   "bzlib.c": "d06cf1bd991df1f2dc8ef4f7713d186eb636767111cbd4807ef5fc4a54ca6838",
-   "blocksort.c": "4e48cd2ccff44699e67a7c949b0e9576c05b8dcbe20f863475c4fcc8db11a409",
-   "compress.c": "75995bd6e8c5f1e1dad05178f3cf53137df99ce860a1984324f78591f28deed3",
-   "decompress.c": "31a89f8bf408ef0e4acae83e8be60a8eb4edece6c866d6e32b8f7e557ca54bc6",
-   "huffman.c": "bdeb45f3f535546a672811b68aa87cc58fd395b28ecebc34fa3566a656a4d1d1",
-   "crctable.c": "2fb7a564629386456e731f431a5cf4f5026747bace4cd10be8f5ecf082066a92",
-   "randtable.c": "407054ca6f54cd737dbc26ceb6b7874b55a0fcff86c2eb23cbec2fbdbb884815",
-   "bzlib.h": "6ac62e811669598ee30c9e1c379b9e627f6ff17a5a3dc1e0b4fa8b8ea75e580d",
-   "bzlib_private.h": "c0cda4f35ee1f2d54c9beacd524f8d28e0dbf8494aca30d854af3f143af4341b",
-   "Makefile": "d8955bf6fbd0b136fb2c20ccc1c93b1320cfe10ae9f9dcbb7a8f0dc6fb4140ea"
-  },
-  "amalgamation_sha256": "d4378051f781933805b118de356768b3e0515dd004188607dfe1df66fd096821",
-  "matches_translator_input": "unknown \u2014 Phase 0 (results/rq2_attribution/harness_manifest.json) records that no bzip2 harness ever bound a C hash to the translator input; only the version string matches"
- },
- "matcher_output": {
-  "path": "results/rq1_matching/raw/group_a/bzip2__c2rust/matcher_output.json",
-  "sha256": "83231e8ff814f2c18d51f2f7e0fd66363f7d46727f88746163e87fea83316182",
-  "forced_pairs": 64
- },
- "generator": {
-  "base": "tools/stu_selector/gen_diff_harness.py",
-  "GEN_VERSION": "0.5+rq4fix2026-09-03b",
-  "copy_used": "scratchpad rq4_gen/ (repo copies of gen_diff_harness.py and harness_schema.py untouched)",
-  "diffs": [
-   "raw/generator_rq4_fixes.diff",
-   "raw/schema_module_rq4_fixes.diff"
-  ]
- },
- "toolchain": {
-  "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)\nbinary: rustc\ncommit-hash: 07d246fc6dc227903da2955b38a59e060539a485\ncommit-date: 2025-08-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.91.0-nightly\nLLVM version: 21.1.0",
-  "llvm_cov": "LLVM version 21.1.0-rust-1.91.0-nightly",
-  "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
-  "cargo_fuzz": "cargo-fuzz 0.13.2",
-  "tests_side_rustflags": "-C instrument-coverage -C codegen-units=1 -C link-dead-code -C debug-assertions --cfg fuzzing",
-  "ours_side_rustflags": "set by cargo-fuzz: sancov + -Zsanitizer=address -Cdebug-assertions -Ccodegen-units=1, plus -C instrument-coverage for ",
-  "flag_note": "-C debug-assertions and --cfg fuzzing were added to the TESTS side so both sides compile the same MIR; cargo-fuzz forces them on the ours side and cannot be told otherwise"
- },
- "schemas": {
-  "BZ2_bzBuffToBuffCompress": "7e978a8fb9a60ff327856cd5a16cab187417714f2b09e92e0d2c9be821f60340",
-  "BZ2_bzBuffToBuffDecompress": "bf49902d409515f684f4d7bfad92656c516b7f4bdb655f1e912de8369c153a74",
-  "BZ2_hbAssignCodes": "e3cb6e92e81bd3d4407e4d4eac8c7fa137bde1c7ae867ac92ca276744ac7c6a6",
-  "BZ2_hbCreateDecodeTables": "bcb8043f0dbaff7bce9cbc53e0fd4148bd118fd437fec77874195a7f0411fdad",
-  "BZ2_hbMakeCodeLengths": "fc848ebce31fe41805cb2bed9c2ab78b2b6bb937ac464a3525ce9d9ece29fc86",
-  "BZ2_indexIntoF": "943afb471678319228a12642350c133c584df1385ca50cd4bb7eb6f35667f2ef",
-  "fallbackQSort3": "75dff54a0f807b9f82efbab84750012b1292e9fd525806e9e5a29ecd44add3d4",
-  "fallbackSimpleSort": "85749b8c50653ad5e33b3ddf91c1000339cfee1e35258d09e4d452bc63ad7f69",
-  "fallbackSort": "869a9a6766d681b349fb6fc2c41f1b6d215505ef75a1f4de5354cbfeb796086b",
-  "mmed3": "2bbd5607a7751d55c3d708f45cdb83b400362be6cc03c338029a187fe42f62ca"
- },
- "campaign": {
-  "round": 2,
-  "budget": "compress 3600 s, decompress 3600 s, eight other runnable boundaries 600 s each",
-  "concurrency": "all ten harnesses run concurrently on 32 cores; artifact wall clock 3600 s",
-  "libfuzzer": "-seed=42 -max_len=1048576 (long) / 65536 (short) -rss_limit_mb=8192 -timeout=25 -fork=1 -ignore_crashes=1",
-  "seeded": "compress 22 seeds, decompress 30 seeds (raw/make_seeds.py); all other harnesses unseeded",
-  "checkpoints": [
-   1,
-   5,
-   10,
-   30,
-   60
-  ]
+ "cell": {
+  "harnesses/BZ2_bzBuffToBuffCompress.bin": "87a639381678d55550c0599d1b0bee3f435323786479515a15ffc4240a1bc104",
+  "harnesses/BZ2_bzBuffToBuffDecompress.bin": "02c5a6524a4e4ef581ec3e65312ebc1e0b1109c0e897f7a76d15ae1256cf2e21",
+  "harnesses/BZ2_bz__AssertH__fail.bin": "36e78a406535993e565b8d7c57fae5d3cc4084fe8b82e27b4976ebb6e76ca4d9",
+  "harnesses/BZ2_bz__AssertH__fail_nosan.bin": "f3ba00985a5d87540e043e0eed78515e5142d63be1af8240936be4efbc07b766",
+  "harnesses/BZ2_bz__AssertH__fail_san.bin": "2dfa3a89dd22ae8f5f99a957c5aa526c1944a79c00457a87a04602ef95fbc725",
+  "harnesses/BZ2_bzlibVersion.bin": "159681808850c3172e9827a30572eba05a2774f032bb4d57b3538ba1866eaf35",
+  "harnesses/BZ2_hbAssignCodes.bin": "b38e190fe1ca46f559e42b96c08d64141517dcba60eb2a9921ac3c66bf9d37b8",
+  "harnesses/BZ2_hbCreateDecodeTables.bin": "b55d6105a4423a7d01889f07453be896edf7dd482e09c9ee724695bc6cd6a2af",
+  "harnesses/BZ2_hbCreateDecodeTables_nosan.bin": "6631eb3736b54f05fcfc612b6a5d0f905a468e3ad5121a29fcd5d22cb39a0714",
+  "harnesses/BZ2_hbCreateDecodeTables_san.bin": "55707f245e1b3dd21733231a6318351cb7fab3618ce0cf3e91646784e076f709",
+  "harnesses/BZ2_hbMakeCodeLengths.bin": "0847090738cfd20f7f9e1775e142c1cb9ba1e009027ed7a49c8c1bac8a98d7dc",
+  "harnesses/BZ2_hbMakeCodeLengths_nosan.bin": "9aa9fad683cd80909b257d0bae1f33cee04a8425bf252411a52b73c955e49128",
+  "harnesses/BZ2_hbMakeCodeLengths_san.bin": "b8443547f135537a4902d0709c5c7992d2fe41573bfdb8b3f56a7558b6e6f723",
+  "harnesses/BZ2_indexIntoF.bin": "044adcc2c1d7ed61b3571b7b7cb1f5a806865b29b438236de8db954d8b183456",
+  "harnesses/bz_config_ok.bin": "97fc62400dd92aad4580adf23f15c44b863d7c192dab2b31b8796d536cb490c1",
+  "harnesses/default_bzalloc.bin": "5821d00372e086b126cf27d8bae60c54cce85ef7ecdc63adfeda1ef04eb5e638",
+  "harnesses/default_bzalloc_nosan.bin": "ad324fe6d91cc84d768e4d1699f15bbe7d7f4bf9157d1dee248fc85b7ac3b9e3",
+  "harnesses/default_bzalloc_san.bin": "ff634b137405f3c84a0afc915c9b3401a8ac786431f4bf82e5360a8f79b483b2",
+  "harnesses/default_bzfree.bin": "3090e19ee60df685ebb15436d4ec4001bba02faba26580d7202eaae52d7f6a98",
+  "harnesses/fallbackQSort3.bin": "514b0802e6b908ec15a46db0772796ae15b4a8eb1702343d910b1d5c4fbbbf47",
+  "harnesses/fallbackQSort3_nosan.bin": "c9c995d9c58ff88ec824668840e3a798d481f5b8af8479e5b569ddf1197fc0a3",
+  "harnesses/fallbackQSort3_san.bin": "926145565698abd8f02de2734e5b2156254a0e8cd64a03aafc189be9e5328ba2",
+  "harnesses/fallbackSimpleSort.bin": "3ac06b9aa2a0c96cb225112edf8efb138aa1a8b47f1d24bccfc48192ecbb826a",
+  "harnesses/fallbackSimpleSort_nosan.bin": "b66d20574992c6860c649c649b8cd57d94103a377ddd76ce1209d9180873a676",
+  "harnesses/fallbackSimpleSort_san.bin": "f44b9776969540c0bd156febc2a4a712c597f8aa30a3e2f65c4f3fc8b2918b9c",
+  "harnesses/fallbackSort.bin": "486a9af28bd3241461e9cf7242d786c02ddf9b6cf04380c2117088aaa89f0da5",
+  "harnesses/mainGtU.bin": "8d965d1e8061d1a48ab407a0ec5dd249f0958da659b4630e4a08f6c15537b087",
+  "harnesses/mainGtU_nosan.bin": "2f732b459755e8baba6b2c2283b004cfff5395e2d89b80d93dfb8d99a0b0259c",
+  "harnesses/mainGtU_san.bin": "3a298733ad0763d9f1af81f6c9262d5aa19cf79ef98b8d4eca39765426e0ad1e",
+  "harnesses/mainQSort3.bin": "77d32007fa6cc42d3229717623ec21f64fa6264b61fbdc8208016ebfbd4a494b",
+  "harnesses/mainQSort3_nosan.bin": "fd3086a078d35dab70a5f200bfc99c2c5b36aba48c240419067c71d02dc0914b",
+  "harnesses/mainQSort3_san.bin": "28a56c7525e5abc2c92c58ee78f6d1a84dca9de1666f480c591fb7494c5ec83f",
+  "harnesses/mainSimpleSort.bin": "247af93bf00fccab3c33807a47da86e43b9a19575096048b213fab90eef529a3",
+  "harnesses/mainSimpleSort_nosan.bin": "c7362f22d335819e99134c4374cd7654dabed0476267abed2315fcae6fa2238c",
+  "harnesses/mainSimpleSort_san.bin": "dbc598dd40b14c509609e8082f5a972ee57f04689e37c0edaaae22c99c741eae",
+  "harnesses/mainSort.bin": "c55e2ca5874276e447ec866ceeedcc0a01dc76c0cd6ff818d3202375d4587b8a",
+  "harnesses/mainSort_nosan.bin": "ee0d35c6d29e39c47d5ec2af5d1259c0c913b50bd944b6d73f8a402b8b4a4361",
+  "harnesses/mainSort_san.bin": "e5cfe9e565ccd2cdf79349cb536780aa92326d4111c7f2403e3a49b302c90963",
+  "harnesses/mmed3.bin": "c8b5e3fdfd90dc9c8fa26af0643e6499347a3d09e85e82725f1076b1f22d4f2d",
+  "corpus.tar.gz": "e33ea0fcf86b4652d29d0e90a7156ec8bf659f37d6ac4102b06c78ab7b2425e1"
  }
 }

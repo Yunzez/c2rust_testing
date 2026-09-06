@@ -1,0 +1,220 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `bzip2_crown-fuzz` (bin "bzip2_crown_ft") generated 1 warning
+    Finished `release` profile [optimized + debuginfo] target(s) in 19.05s
+Processing 32 input files using 1 workers (batch size: ~32)
+Worker 0: Generating coverage for 32 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 436662763
+INFO: Loaded 1 modules   (2351 inline 8-bit counters): 2351 [0x56417b3d8f50, 0x56417b3d987f), 
+INFO: Loaded 1 PC tables (2351 PCs): 2351 [0x56417b3d9880,0x56417b3e2b70), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/fallbackSort/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft: Running 32 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/47c1aaa68c4ec9d8cdb4eb3afcad45d3da0a5928
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/47c1aaa68c4ec9d8cdb4eb3afcad45d3da0a5928 in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/3c2a1028c785a8aa484ee847afb16a362ad4289f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/3c2a1028c785a8aa484ee847afb16a362ad4289f in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/6fcf6f67ea5e8f88fe8f02462befc3cd19b922d7
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/6fcf6f67ea5e8f88fe8f02462befc3cd19b922d7 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/ac8e25b4c74b31f66bfddfec93523daa600e9ad1
+        bucket sorting ...
+        depth      1 has    287 unresolved strings
+        depth      2 has    287 unresolved strings
+        depth      4 has    287 unresolved strings
+        depth      8 has    287 unresolved strings
+        depth     16 has    287 unresolved strings
+        depth     32 has    287 unresolved strings
+        depth     64 has    287 unresolved strings
+        depth    128 has    287 unresolved strings
+        depth    256 has    287 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/ac8e25b4c74b31f66bfddfec93523daa600e9ad1 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/064351f1cdb4e0d3e921503ac4365a607e256a2f
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/064351f1cdb4e0d3e921503ac4365a607e256a2f in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/1ec2d40042a3c08ea08371b96ac1c4735a6a9da1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/1ec2d40042a3c08ea08371b96ac1c4735a6a9da1 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/dadfb9a93740fd1fa60867b56bcfdd1d1f193c5e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/dadfb9a93740fd1fa60867b56bcfdd1d1f193c5e in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/29e2dcfbb16f63bb0254df7585a15bb6fb5e927d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/29e2dcfbb16f63bb0254df7585a15bb6fb5e927d in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/d0cf79023c72a3c57a6a110a067c402fd26104bf
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/d0cf79023c72a3c57a6a110a067c402fd26104bf in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/d57a281360b0397e17fd449153eb58a47dd5b12c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/d57a281360b0397e17fd449153eb58a47dd5b12c in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/369ad5c30a4cbd9b77a4b789da0ca1efc6f73ef5
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/369ad5c30a4cbd9b77a4b789da0ca1efc6f73ef5 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/23ef0891ba2e8a764a6e3c1160388fd10c622ff5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/23ef0891ba2e8a764a6e3c1160388fd10c622ff5 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/76ce207d200f390bf84d5c8ab42e98a87b8aab12
+        bucket sorting ...
+        depth      1 has     94 unresolved strings
+        depth      2 has     94 unresolved strings
+        depth      4 has     94 unresolved strings
+        depth      8 has     94 unresolved strings
+        depth     16 has     94 unresolved strings
+        depth     32 has     94 unresolved strings
+        depth     64 has     94 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/76ce207d200f390bf84d5c8ab42e98a87b8aab12 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/2b2aee0514a3fd6c674e54f0656cb98a9a2e85fe
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/2b2aee0514a3fd6c674e54f0656cb98a9a2e85fe in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/fee4fd1005c8ff8fee3c48bc92d0a88fa65def45
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/fee4fd1005c8ff8fee3c48bc92d0a88fa65def45 in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/606e4456d8037a7fdbaa8e1c1898ab2138f2fbcd
+        bucket sorting ...
+        depth      1 has    510 unresolved strings
+        depth      2 has    510 unresolved strings
+        depth      4 has    510 unresolved strings
+        depth      8 has    510 unresolved strings
+        depth     16 has    510 unresolved strings
+        depth     32 has    510 unresolved strings
+        depth     64 has    510 unresolved strings
+        depth    128 has    510 unresolved strings
+        depth    256 has    510 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/606e4456d8037a7fdbaa8e1c1898ab2138f2fbcd in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/8e26aad2c59cfe839e6f4df2a69e4c2e44ea0261
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/8e26aad2c59cfe839e6f4df2a69e4c2e44ea0261 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/d786769d946d2ad88be7e6140bdcb846452e7974
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/d786769d946d2ad88be7e6140bdcb846452e7974 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/68bbb35bfd6c5f7c9ccee43aedf7cca8d2d0c3fb
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/68bbb35bfd6c5f7c9ccee43aedf7cca8d2d0c3fb in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/a721885b2cc664ff8921ba5ddbb387cd5ece2122
+        bucket sorting ...
+        depth      1 has    607 unresolved strings
+        depth      2 has    607 unresolved strings
+        depth      4 has    607 unresolved strings
+        depth      8 has    607 unresolved strings
+        depth     16 has    607 unresolved strings
+        depth     32 has    607 unresolved strings
+        depth     64 has    607 unresolved strings
+        depth    128 has    607 unresolved strings
+        depth    256 has    607 unresolved strings
+        depth    512 has    607 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/a721885b2cc664ff8921ba5ddbb387cd5ece2122 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/e5c71fd58320ba99982bfd8815c0a1d9ec610521
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/e5c71fd58320ba99982bfd8815c0a1d9ec610521 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/1a333065f4e7bb63e1b028d72d74c0885b8c59f3
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/1a333065f4e7bb63e1b028d72d74c0885b8c59f3 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/38dca7ecfe2ac10fc232f08b16997c957f27b02f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/38dca7ecfe2ac10fc232f08b16997c957f27b02f in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/011154160e0863fceaa3d9cceccfcde6f2e250c1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/011154160e0863fceaa3d9cceccfcde6f2e250c1 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/538f5213415da9e56885a62a361eed731277df63
+        bucket sorting ...
+        depth      1 has    158 unresolved strings
+        depth      2 has    158 unresolved strings
+        depth      4 has    158 unresolved strings
+        depth      8 has    158 unresolved strings
+        depth     16 has    158 unresolved strings
+        depth     32 has    158 unresolved strings
+        depth     64 has    158 unresolved strings
+        depth    128 has    158 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/538f5213415da9e56885a62a361eed731277df63 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/431fc05d4c585437c8ec6fd41f1d5a39c6cfa036
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/431fc05d4c585437c8ec6fd41f1d5a39c6cfa036 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/e46ea36c6cec12699f7a571a6903e720276230e2
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/e46ea36c6cec12699f7a571a6903e720276230e2 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/af677dcc3dfae721006aab8f47cbd47cdedae50a
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/af677dcc3dfae721006aab8f47cbd47cdedae50a in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/a73a5aa97970dcb735b8f385792488e78991b2a1
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/a73a5aa97970dcb735b8f385792488e78991b2a1 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/e89cfd8b22f1950d2f64ec0efe99a00edbee6038
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/e89cfd8b22f1950d2f64ec0efe99a00edbee6038 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/07b8b9b26ba57fd2530f37104038ceb28dd2278c
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/07b8b9b26ba57fd2530f37104038ceb28dd2278c in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/seed_fixed
+        bucket sorting ...
+        depth      1 has      0 unresolved strings
+        reconstructing block ...
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/fallbackSort/seed_fixed in 1 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/fallbackSort/fuzz/coverage/bzip2_crown_ft/coverage.profdata".
+

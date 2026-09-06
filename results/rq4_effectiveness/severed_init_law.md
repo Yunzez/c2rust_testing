@@ -125,7 +125,7 @@ State it as a **mechanism with a denominator**, not as a bug tally:
 > (`ti_indicators`); one poisoned static (`genann::lookup`) is provably harmless because the library
 > rebuilds it lazily, which is the control that keeps the class from being overstated.
 
-This directly answers the "your 20 bugs are really 6 mechanisms" objection by **conceding it and making
+This directly answers the "your 22 bugs are really 7 mechanisms" objection by **conceding it and making
 the mechanism the headline**: one root cause, a machine-checkable predicate for it, 139 predicted sites,
 and a stated precision control.
 

@@ -1,0 +1,230 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+   Compiling libc v0.2.189
+   Compiling find-msvc-tools v0.1.12
+   Compiling shlex v2.0.1
+   Compiling arbitrary v1.4.2
+   Compiling jobserver v0.1.35
+   Compiling cc v1.4.5
+   Compiling genann_crown v0.1.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy)
+   Compiling libfuzzer-sys v0.4.13
+warning: unused variable: `argc`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:565:9
+    |
+565 |     mut argc: libc::c_int,
+    |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `argv`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:566:9
+    |
+566 |     mut argv: *mut *mut libc::c_char,
+    |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused variable: `argc`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:688:9
+    |
+688 |     mut argc: libc::c_int,
+    |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:689:9
+    |
+689 |     mut argv: *mut *mut libc::c_char,
+    |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused variable: `argc`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:875:9
+    |
+875 |     mut argc: libc::c_int,
+    |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:876:9
+    |
+876 |     mut argv: *mut *mut libc::c_char,
+    |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:1100:9
+     |
+1100 |     mut argc: libc::c_int,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:1101:9
+     |
+1101 |     mut argv: *mut *mut libc::c_char,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:2000:9
+     |
+2000 |     mut argc: libc::c_int,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/src/lib.rs:2001:9
+     |
+2001 |     mut argv: *mut *mut libc::c_char,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: `genann_crown` (lib) generated 10 warnings
+   Compiling genann_crown-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/genann_crown_ft.rs:156:17
+    |
+156 |             let c_ret = c_genann_copy(ann_c as *const core::ffi::c_void);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/genann_crown_ft.rs:167:17
+    |
+167 |             let r_ret = translated::genann_copy(ann_r as *const _);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: multiple methods are never used
+  --> fuzz_targets/genann_crown_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `ann__inputs` should have a snake case name
+   --> fuzz_targets/genann_crown_ft.rs:142:9
+    |
+142 |     let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));
+    |         ^^^^^^^^^^^ help: convert the identifier to snake case: `ann_inputs`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `ann__hidden_layers` should have a snake case name
+   --> fuzz_targets/genann_crown_ft.rs:143:9
+    |
+143 |     let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));
+    |         ^^^^^^^^^^^^^^^^^^ help: convert the identifier to snake case: `ann_hidden_layers`
+
+warning: variable `ann__hidden` should have a snake case name
+   --> fuzz_targets/genann_crown_ft.rs:144:9
+    |
+144 |     let ann__hidden = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));
+    |         ^^^^^^^^^^^ help: convert the identifier to snake case: `ann_hidden`
+
+warning: variable `ann__outputs` should have a snake case name
+   --> fuzz_targets/genann_crown_ft.rs:145:9
+    |
+145 |     let ann__outputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));
+    |         ^^^^^^^^^^^^ help: convert the identifier to snake case: `ann_outputs`
+
+warning: `genann_crown-fuzz` (bin "genann_crown_ft") generated 7 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.51s
+Processing 14 input files using 1 workers (batch size: ~14)
+Worker 0: Generating coverage for 14 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2221504877
+INFO: Loaded 1 modules   (1279 inline 8-bit counters): 1279 [0x563f97898640, 0x563f97898b3f), 
+INFO: Loaded 1 PC tables (1279 PCs): 1279 [0x563f97898b40,0x563f9789db30), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/genann_crown_ft: Running 14 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/e5fbde5397a8b31355a3e0039d53395afe70201a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/e5fbde5397a8b31355a3e0039d53395afe70201a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/776301f098cef516ed4233db0b2aa597c36c740b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/776301f098cef516ed4233db0b2aa597c36c740b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/e27773308283d1ddb765eadf9f1c758604206caa
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/e27773308283d1ddb765eadf9f1c758604206caa in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/225946b9bbbb4935b731e852e0a1e03152e79bef
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/225946b9bbbb4935b731e852e0a1e03152e79bef in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/a9f8f67b6739b4264510aeb1525b98f8fa50e82c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/a9f8f67b6739b4264510aeb1525b98f8fa50e82c in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/6317cce33d215de249b8b419560f2f113d65e02f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/6317cce33d215de249b8b419560f2f113d65e02f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/8955c9523166664925be165949012fb811301a97
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/8955c9523166664925be165949012fb811301a97 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/02ba157d999ef8bca44005d2f5c66d29bc348646
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/02ba157d999ef8bca44005d2f5c66d29bc348646 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/0ffedd1d616e01fbff5446877878d79d4b0c2c3a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/0ffedd1d616e01fbff5446877878d79d4b0c2c3a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/8dc00598417d4eb788a77ac6ccef3cb484905d8b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/8dc00598417d4eb788a77ac6ccef3cb484905d8b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/5bab61eb53176449e25c2c82f172b82cb13ffb9d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/5bab61eb53176449e25c2c82f172b82cb13ffb9d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/e9c5d7db93a1c17d45c5820daf458224bfa7a725
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/e9c5d7db93a1c17d45c5820daf458224bfa7a725 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/0ab8318acaf6e678dd02e2b5c343ed41111b393d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/0ab8318acaf6e678dd02e2b5c343ed41111b393d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/corpus/genann_copy/seed_fixed in 1 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_ga_crown/harnesses/genann_copy/fuzz/coverage/genann_crown_ft/coverage.profdata".
+

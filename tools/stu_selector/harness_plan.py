@@ -39,6 +39,7 @@ import argparse
 import ctypes
 import json
 import os
+import copy
 import re
 import sys
 from dataclasses import dataclass, asdict, field
@@ -75,6 +76,12 @@ class GeneratorPolicy:
     # Rows in a pointer table (`char **strings` + count). One decoded byte picks the count, so
     # this must stay in [0, 255].
     max_table_rows: int = 16
+    # Cap on every scalar handed to a PRODUCER (docs/producer_bridge_pilot.md section 4). The
+    # producer's own allocation is an expression over its scalars (genann_init: weights ~
+    # inputs*hidden + hidden*hidden*layers + ...), which the pilot does not prove against
+    # max_buffer_bytes; one global cap keeps that allocation small (32 -> ~35k doubles) and, since
+    # the target's array extents come from the same scalars, keeps those arrays small too.
+    producer_scalar_max: int = 32
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -390,6 +397,8 @@ class BodyFacts:
     escape_callees: dict = field(default_factory=dict)   # param -> {callee names}
     loop_bound_params: dict = field(default_factory=dict)   # param -> ev
     unresolved: list = field(default_factory=list)
+    rows: dict = field(default_factory=dict)          # T** param -> {row k: pseudo pointer name}
+    advanced: set = field(default_factory=set)        # pointers the body increments or reassigns
 
 
 class BodyAnalyzer:
@@ -399,9 +408,13 @@ class BodyAnalyzer:
     caller's fact, never the boundary's contract.
     """
 
-    def __init__(self, fn_cursor, param_names: set[str]):
+    def __init__(self, fn_cursor, param_names: set[str], table_params: set[str] | None = None):
         self.fn = fn_cursor
-        self.params = param_names
+        self.params = set(param_names)
+        # T** parameters whose rows may be named by locals (`input = inputs[0]`); each named row
+        # becomes a pseudo pointer parameter `inputs__row0` with an extent of its own.
+        self.tables = set(table_params or ())
+        self.row_alias: dict[str, str] = {}
         self.assigns: dict[str, list[tuple[str, int]]] = {}   # local -> [(kind, loop_depth)]
         self.scope: list[dict] = []          # lexical stack of {loop var: (upper, lower)}
         self.deps: dict[str, set] = {}       # local -> names its value can depend on
@@ -429,6 +442,47 @@ class BodyAnalyzer:
         self.scope = []
         self._scan(body, loop_depth=0, write_targets=set())
         return self.facts
+
+    # -- pointer tables ---------------------------------------------------
+    def _row_of(self, expr):
+        """(table param, k) when `expr` is `P[k]`: P a T** parameter, k a non-negative constant."""
+        e = _peel(expr)
+        if e is None or e.kind != CursorKind.ARRAY_SUBSCRIPT_EXPR:
+            return None
+        kids = list(e.get_children())
+        if len(kids) != 2:
+            return None
+        base, _ = _ref_name(kids[0])
+        k = _int_literal(kids[1])
+        if base in self.tables and k is not None and k >= 0:
+            return base, k
+        return None
+
+    def _row_pseudo(self, tab: str, k: int) -> str:
+        name = f"{tab}__row{k}"
+        self.facts.rows.setdefault(tab, {})[k] = name
+        self.params.add(name)
+        return name
+
+    def _alias(self, name):
+        return self.row_alias.get(name, name) if name else name
+
+    def _note_pointer_write(self, lhs):
+        """`p++`, `p += k`, `p = ...` on a pointer parameter or a row alias: its derefs and
+        subscripts are relative to a moving base, so they do not bound its extent (pass 1)."""
+        if self.pass_no != 1:
+            return
+        l = _peel(lhs)
+        if l is None or l.kind != CursorKind.DECL_REF_EXPR:
+            return
+        n, r = _ref_name(l)
+        if not n:
+            return
+        if n in self.row_alias:
+            self.facts.advanced.add(self.row_alias[n])
+        elif (n in self.params and r is not None and r.kind == CursorKind.PARM_DECL
+              and r.type is not None and r.type.kind == TypeKind.POINTER):
+            self.facts.advanced.add(n)
 
     # -- rejection guards -------------------------------------------------
     def _collect_guards(self, body):
@@ -533,6 +587,20 @@ class BodyAnalyzer:
         kind = node.kind
         kids = list(node.get_children())
 
+        if kind == CursorKind.VAR_DECL and kids and self.pass_no == 1 and kids[-1].kind.is_expression():
+            init = kids[-1]
+            row = self._row_of(init)
+            if row is not None:
+                self.row_alias[node.spelling] = self._row_pseudo(*row)
+            # `T v = <init>` makes v depend on every name in <init>, exactly like `v = <init>`
+            names = set()
+            for m in init.walk_preorder():
+                if m.kind == CursorKind.DECL_REF_EXPR:
+                    nm, mr = _ref_name(m)
+                    if nm and (nm in self.params or (mr is not None and mr.kind == CursorKind.VAR_DECL)):
+                        names.add(nm)
+            self.deps.setdefault(node.spelling, set()).update(names)
+
         if kind == CursorKind.FOR_STMT:
             binding = self._for_stmt(node, loop_depth) if self.pass_no == 2 else {}
             self.scope.append(binding)
@@ -551,12 +619,14 @@ class BodyAnalyzer:
 
         if kind == CursorKind.BINARY_OPERATOR and _binop(node) in _ASSIGN_OPS and len(kids) == 2:
             self._record_dep(kids[0], kids[1])
+            self._note_pointer_write(kids[0])
             self._record_write(kids[0], loop_depth, in_for_control)
             self._scan(kids[0], loop_depth, write_targets | {_key(kids[0])}, in_for_control)
             self._scan(kids[1], loop_depth, write_targets, in_for_control)
             return
         if kind == CursorKind.COMPOUND_ASSIGNMENT_OPERATOR and len(kids) == 2:
             self._record_dep(kids[0], kids[1])
+            self._note_pointer_write(kids[0])
             self._record_write(kids[0], loop_depth, in_for_control)
             self._scan(kids[0], loop_depth, write_targets | {_key(kids[0])}, in_for_control)
             self._scan(kids[1], loop_depth, write_targets, in_for_control)
@@ -564,6 +634,7 @@ class BodyAnalyzer:
         if kind == CursorKind.UNARY_OPERATOR and kids:
             toks = [t.spelling for t in node.get_tokens()]
             if "++" in toks or "--" in toks:
+                self._note_pointer_write(kids[0])
                 self._record_write(kids[0], loop_depth, in_for_control)
                 self._scan(kids[0], loop_depth, write_targets | {_key(kids[0])}, in_for_control)
                 return
@@ -573,6 +644,11 @@ class BodyAnalyzer:
         if kind == CursorKind.ARRAY_SUBSCRIPT_EXPR and len(kids) == 2 and self.pass_no == 2:
             base, idx = kids
             name, ref = _ref_name(base)
+            name = self._alias(name)                 # `input[i]` with `input = inputs[0]`
+            if name is None:
+                row = self._row_of(base)             # `outputs[1][i]`: the row itself is the base
+                if row is not None:
+                    name = self._row_pseudo(*row)
             if name in self.params:
                 bnd, _ = self._bound_of(idx, 0)
                 low = self._lower_of(idx, 0)
@@ -665,7 +741,14 @@ class BodyAnalyzer:
     def _record_deref(self, target, written: bool, node):
         if self.pass_no != 2:
             return
+        t = _peel(target)
+        if t is not None and t.kind == CursorKind.UNARY_OPERATOR:        # `*p++`, `*--p`
+            toks = [tk.spelling for tk in t.get_tokens()]
+            ch = list(t.get_children())
+            if ("++" in toks or "--" in toks) and ch:
+                target = ch[0]
         n, _ = _ref_name(target)
+        n = self._alias(n)
         if n in self.params:
             d = self.facts.derefs.setdefault(n, {"written": False, "read": False, "ev": None})
             d["written"] = d["written"] or written
@@ -939,7 +1022,51 @@ def effectful_functions(cc_dir: Path) -> set:
     call `fopen`, it calls `bzopen_or_bzdopen`, which does. Without the transitive step the rule
     would catch the private helper and wave the two public entry points through.
     """
+    return _reaching_functions(cc_dir, EFFECTFUL_CALLS)
+
+
+# Randomness a producer may reach (docs/producer_bridge_pilot.md section 3): the same fixpoint
+# finds `genann_init -> genann_randomize -> rand`, which a body-only scan misses.
+RANDOM_CALLS = {"rand", "random", "drand48", "lrand48", "mrand48", "rand_r", "srand", "srandom"}
+
+
+def random_functions(cc_dir: Path) -> set:
+    return _reaching_functions(cc_dir, RANDOM_CALLS)
+
+
+def freeing_functions(cc_dir: Path) -> set:
+    """Functions that transitively call free(): the destructor candidates of section 2."""
+    return _reaching_functions(cc_dir, {"free"})
+
+
+_CALLGRAPH_CACHE: dict = {}
+
+
+def callgraph(cc_dir: Path) -> dict:
+    """{function: set(callees)} over every definition in the pair's translation unit(s), parsed once."""
     key = str(cc_dir)
+    if key not in _CALLGRAPH_CACHE:
+        _reaching_functions(cc_dir, set())          # populates the cache as a side effect
+    return _CALLGRAPH_CACHE[key]
+
+
+def reachable_functions(cc_dir: Path, f: str) -> set:
+    """Transitive callees of `f` inside the TU: a derivable proxy for how much of the library a
+    producer's object can carry (cJSON_Parse reaches the whole parser; cJSON_CreateString reaches two
+    helpers). Used only to ORDER producer candidates."""
+    edges = callgraph(cc_dir)
+    seen, todo = set(), [f]
+    while todo:
+        g = todo.pop()
+        for h in edges.get(g, ()):
+            if h in edges and h not in seen:
+                seen.add(h)
+                todo.append(h)
+    return seen
+
+
+def _reaching_functions(cc_dir: Path, sources: set) -> set:
+    key = (str(cc_dir), tuple(sorted(sources)))
     if key in _EFFECTFUL_CACHE:
         return _EFFECTFUL_CACHE[key]
     cgmod._configure_libclang()
@@ -958,13 +1085,24 @@ def effectful_functions(cc_dir: Path) -> set:
         finally:
             os.chdir(cwd0)
         for cur in tu.cursor.walk_preorder():
+            # A file-scope function pointer initialised to one of the sources is that source under
+            # another name: cJSON's `static void (*cJSON_free)(void *) = free;` makes every
+            # `cJSON_free(p)` a call to free(). Aliases live in the same edge map as functions.
+            if cur.kind == CursorKind.VAR_DECL and cur.semantic_parent is not None \
+                    and cur.semantic_parent.kind == CursorKind.TRANSLATION_UNIT:
+                refs = {n.spelling for n in cur.walk_preorder()
+                        if n.kind == CursorKind.DECL_REF_EXPR and n.spelling}
+                if refs:
+                    edges.setdefault(cur.spelling, set()).update(refs)
+                continue
             if cur.kind != CursorKind.FUNCTION_DECL or not cur.is_definition():
                 continue
             callees = edges.setdefault(cur.spelling, set())
             for n in cur.walk_preorder():
                 if n.kind == CursorKind.CALL_EXPR and n.spelling:
                     callees.add(n.spelling)
-    eff = set(EFFECTFUL_CALLS)
+    _CALLGRAPH_CACHE[str(cc_dir)] = edges
+    eff = set(sources)
     changed = True
     while changed:                      # fixpoint over the call graph
         changed = False
@@ -1033,6 +1171,15 @@ def rust_type_aliases(rs_text: str) -> dict:
             cur = _resolve_leaf(nxt)
         if cur in _INT_RUST or cur in _FLOAT_RUST or cur == "bool":
             out[name] = cur
+    # Pointer typedefs: c2rust keeps `pub type lil_t = *mut _lil_t;` where Laertes writes the
+    # pointer out at every use. Same shape, one spelling -- resolve the alias so a producer that
+    # "returns lil_t" is recognised as returning a raw pointer to _lil_t. Only a bare
+    # `*mut/*const Ident` right-hand side qualifies (fn-pointer and Option aliases stay opaque).
+    for name, rhs in re.findall(r"(?m)^\s*pub\s+type\s+([A-Za-z_]\w*)\s*=\s*([^;]+);",
+                                rs_text or ""):
+        m = re.fullmatch(r"\s*\*\s*(mut|const)\s+((?:[A-Za-z_]\w*::)*)([A-Za-z_]\w*)\s*", rhs)
+        if m and name not in out and m.group(3) != name:
+            out[name] = f"*{m.group(1)} {m.group(3)}"
     return out
 
 
@@ -1053,7 +1200,8 @@ def _norm_ty(ty: str, aliases: dict | None = None) -> str:
     Order matters: removing the whitespace first welds `*mut c_char` into `*mutc_char`, and the
     alias substitution then finds no `c_char` token to resolve.
     """
-    ty = re.sub(r"&\s*'\w+\s*", "&", ty or "")
+    ty = re.sub(r"/\*.*?\*/", "", ty or "")          # CROWN annotates: `*mut /* owning */ T`
+    ty = re.sub(r"&\s*'\w+\s*", "&", ty)
     ty = _GLOBAL_COLONS.sub("", ty)
     ty = _ALIAS_PATH.sub("", ty)
     ty = _MODULE_PATH.sub("", ty)
@@ -1074,11 +1222,38 @@ def _norm_ty(ty: str, aliases: dict | None = None) -> str:
 
 def rust_bridge(adapter: str, rust_ty: str | None, elem: str | None,
                 c_rust: str | None, aliases: dict | None = None,
-                one_elem: bool = False) -> tuple[str | None, str | None]:
+                one_elem: bool = False, writes: bool = False) -> tuple[str | None, str | None]:
     """(bridge name, reason it is missing).  `rust_ty` None means the C ABI form."""
     if rust_ty is None:
         return "c_abi", None                 # no Rust signature parsed: raw C-ABI call
     r = _norm_ty(rust_ty, aliases)
+
+    if adapter == "buffer_table":
+        # The table keeps its C shape in every translation this bridges: a pointer to pointers of
+        # the same element type. A reshaped table (`&[&[f64]]`, `Vec<Vec<f64>>`) is refused.
+        m = re.fullmatch(r"\*(?:mut|const)\*(mut|const)(\w+)", r)
+        if m and m.group(2) == _resolve_leaf(elem or ""):
+            if writes and m.group(1) == "const":
+                return None, (f"buffer table rows are written by the callee but the Rust "
+                              f"parameter is {rust_ty} (const rows)")
+            return "c_abi", None
+        return None, (f"buffer table of {elem} has Rust type {rust_ty}, which is not a pointer to "
+                      f"pointers of the same element type (reshaped table; no bridge)")
+
+    if adapter == "produced_object":
+        # The object comes from the translation's OWN producer, so it already has the Rust type
+        # the target wants; the bridge only has to know whether to pass it as a raw pointer or
+        # reborrow it as a reference. Anything else (a Box, an owned struct) is a reshaped
+        # ownership model the pilot does not bridge.
+        name = _resolve_leaf(elem or "")
+        if re.fullmatch(rf"\*(?:mut|const){re.escape(name)}", r):
+            return "c_abi", None
+        if re.fullmatch(rf"&(?:mut)?{re.escape(name)}", r):
+            return "ref_obj", None
+        if re.fullmatch(rf"Option<&(?:mut)?{re.escape(name)}>", r):
+            return "opt_ref_obj", None
+        return None, (f"produced object of type {elem} is passed as {rust_ty} in Rust, which is "
+                      f"neither a raw pointer, a reference, nor an Option of one (pilot bridges only those)")
 
     if adapter == "input_string_pointer_table":
         m = re.fullmatch(r"\*(?:mut|const)\*(?:mut|const)(\w+)", r)
@@ -1169,7 +1344,19 @@ def apply_rust_bridges(plan: InputPlan, rust_types: list[str] | None,
     # Rust call and has no bridge of its own.
     by_name = {p["name"]: p for p in params}
     by_pos = {}
-    if rust_types is not None and len(rust_types) == len(params):
+    if rust_types is not None and len(rust_types) != len(params):
+        # A reshaped signature (C2SaferRust: `(dest: &mut Vec<u8>, source: &[u8], ..)` for a
+        # seven-parameter C function) cannot be bridged positionally. Before this check every
+        # parameter silently fell through to `c_abi` -- the plan said `planned`, and the build
+        # said `E0061: takes 5 arguments but 7 were supplied`. A boundary that cannot be planned
+        # FAILED harness construction; it is not a plan with a hopeful bridge.
+        why = (f"Rust signature has {len(rust_types)} parameters, C has {len(params)}: "
+               f"reshaped API, no positional bridge")
+        for s in plan.specs:
+            s.rust_type, s.rust_bridge = None, None
+        return [f"{s.param}: no lossless Rust bridge -- {why}" for s in plan.specs[:1]] \
+            or [f"(signature): {why}"]
+    if rust_types is not None:
         by_pos = {p["name"]: rust_types[i] for i, p in enumerate(params)}
     folded = set()
     for s in plan.specs:
@@ -1177,7 +1364,8 @@ def apply_rust_bridges(plan: InputPlan, rust_types: list[str] | None,
         one = (s.detail.get("alloc_elems") == 1
                or (s.detail.get("extent") or {}).get("v") == 1)
         b, why = rust_bridge(s.c_decoder, ty, s.detail.get("elem"),
-                             by_name.get(s.param, {}).get("rust"), aliases, one)
+                             by_name.get(s.param, {}).get("rust"), aliases, one,
+                             writes=bool(s.detail.get("written")))
         s.rust_type = ty
         s.rust_bridge = b
         if b is None:
@@ -1278,6 +1466,34 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
     _subs = subscripted_names(facts)
     scalars = [p for p in params if p["kind"] == "scalar"]
 
+    # ---- T** buffer tables (tulip: `TI_REAL const *const *inputs`, `TI_REAL *const *outputs`) ----
+    # A T** indexed ONLY by constants is a table of rows; row k is a pointer parameter of its own
+    # (`inputs__row0`), whose extent the body derives like any other pointer's -- through the
+    # local that names it (`input = inputs[0]`) or a nested subscript (`outputs[1][i]`). The row
+    # count is a fact of the body (max constant index + 1), never a caller's table declaration.
+    tables: dict[str, int] = {}
+    pseudo_rows: dict[str, tuple[str, int]] = {}
+    for p in params:
+        n = p["name"]
+        # a `char** + count` is the string table of old (cJSON_CreateStringArray); a table of any
+        # other element type indexed by constants is a buffer table, adjacency notwithstanding
+        if p["kind"] != "ptr_ptr" or n in facts.derefs or n in facts.advanced \
+                or p.get("elem") not in (_INT_RUST | _FLOAT_RUST) \
+                or (p.get("elem") in ("i8", "u8") and _table_count(p, params, _subs)):
+            continue
+        own = [s for s in facts.subscripts if s.base == n]
+        if not own or any(s.written or s.index_bound.get("k") != "const" for s in own):
+            continue
+        rows = max(s.index_bound["v"] for s in own) + 1
+        if rows < 1 or rows > policy.max_table_rows:
+            continue
+        tables[n] = rows
+        for k in range(rows):
+            name = f"{n}__row{k}"
+            pseudo_rows[name] = (n, k)
+            ptrs.append({"kind": "ptr", "const": bool(p.get("inner_const")), "elem": p["elem"],
+                         "elem_w": p["elem_w"], "name": name, "_row_of": (n, k)})
+
     for p in params:
         eff = facts.escape_callees.get(p["name"], set()) & (effectful or EFFECTFUL_CALLS)
         if eff:
@@ -1288,7 +1504,8 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
         if p["kind"] == "void_ptr" and facts.derefs.get(p["name"], {}).get("read"):
             plan.failures.append(f"{p['name']}: void* is dereferenced by the entry, so NULL is "
                                  f"not a valid value and no other value can be constructed")
-        if p["kind"] == "ptr_ptr" and not _table_count(p, params, subscripted_names(facts)):
+        if p["kind"] == "ptr_ptr" and p["name"] not in tables \
+                and not _table_count(p, params, subscripted_names(facts)):
             plan.failures.append(
                 f"{p['name']}: T** is not a constructible input here -- it is dereferenced and "
                 f"written rather than indexed, so it is an OUT pointer whose value is an interior "
@@ -1322,6 +1539,19 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
             req[n].append(b_const(1))
             lowers[n].append(b_const(0))
             ev_by_param[n].append(d["ev"])
+    # A pointer the body ADVANCES (`*out++ = v`, `p += k`) is dereferenced relative to a moving
+    # base: neither its derefs nor its subscripts bound the extent. Before this rule `*out++` in
+    # a loop counted as extent 1 -- an under-allocation the harness itself would have caused.
+    # The extent is unknown; the policy allocation applies, and the loop-trip clamp (max_trip)
+    # is what keeps the writes inside it -- recorded as the unproven obligation it is.
+    for n in facts.advanced:
+        if n in req:
+            req[n] = [b_unknown("pointer advanced in the body")]
+            lowers[n] = [b_const(0)]
+            ev_by_param[n].append(_ev("pointer_advanced_in_body", _NoLoc(),
+                                      f"{n} is incremented or reassigned in the body, so its "
+                                      f"accesses do not bound its extent: policy allocation, with "
+                                      f"the loop-trip parameters clamped by the policy"))
 
     # ---- scalar caps: guards, index roles, loop-trip policy ----
     caps: dict[str, int] = {}
@@ -1400,7 +1630,7 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
     pair_src: dict[str, str] = {}
     scalar_names = {s["name"] for s in scalars}
     for pn in list(req):
-        if not req[pn]:
+        if not req[pn] or pn in pseudo_rows:     # a table row never defines a length parameter
             continue
         b = b_max(req[pn])
         # ONLY an extent that is exactly one parameter, with no additive or multiplicative term
@@ -1412,7 +1642,7 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
             pair_src[pn] = "proven_index_bound"
     for p in ptrs:                     # heuristic fallback: adjacency + uniform name relation
         pn = p["name"]
-        if pn in length_of or req.get(pn):
+        if pn in length_of or req.get(pn) or p.get("_row_of"):
             continue
         i = names.index(pn)
         for j in (i + 1, i - 1):
@@ -1493,6 +1723,30 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
     # ---- adapters ----
     for p in params:
         n = p["name"]
+        if p["kind"] == "ptr_ptr" and n in tables:
+            row_specs = []
+            for k in range(tables[n]):
+                e = plan.extents[f"{n}__row{k}"]
+                if e["written"] and e["read"]:
+                    ad = "inout_array"
+                elif e["written"]:
+                    ad = "output_array"
+                else:
+                    ad = "input_array"
+                row_specs.append({"row": k, "adapter": ad, "extent": e["bound"],
+                                  "extent_source": e["source"], "alloc_elems": e["alloc_elems"],
+                                  "fills_from_fuzz": bool(e["read"]), "written": bool(e["written"]),
+                                  "evidence": e["evidence"]})
+            plan.specs.append(InputSpec(
+                n, "buffer_table",
+                {"elem": p["elem"], "elem_width": p["elem_w"],
+                 "inner_const": bool(p.get("inner_const")), "rows": tables[n],
+                 "row_specs": row_specs, "written": any(r["written"] for r in row_specs)},
+                [_ev("t_star_star_indexed_by_constants_is_a_buffer_table", _NoLoc(),
+                     f"{n} is indexed only by the constants 0..{tables[n] - 1}; each row is a "
+                     f"buffer whose extent is derived from the body like any pointer parameter "
+                     f"(a local initialised from {n}[k] names row k)")]))
+            continue
         if p["kind"] == "ptr_ptr":
             cnt = _table_count(p, params, _subs)
             if cnt is None:
@@ -1634,9 +1888,256 @@ class HarnessPlan:
     plan_version: int = PLAN_VERSION
 
 
+_SIG_CACHE: dict = {}
+_PRODUCER_PLAN_CACHE: dict = {}
+_DESTRUCTOR_CACHE: dict = {}
+
+
+def _sig(cc_dir: Path, f: str, with_return_desc: bool = True, allow_nonpod: bool = True):
+    """parse_entry_signature, memoised: planning cJSON's 71 boundaries re-parsed the TU thousands of
+    times (every candidate producer, every destructor candidate, for every target)."""
+    key = (str(cc_dir), f, with_return_desc, allow_nonpod)
+    if key not in _SIG_CACHE:
+        try:
+            _SIG_CACHE[key] = ("ok", gdh.parse_entry_signature(cc_dir, f, with_return_desc=with_return_desc,
+                                                              allow_nonpod=allow_nonpod))
+        except SystemExit as e:
+            _SIG_CACHE[key] = ("err", str(e))
+    tag, val = _SIG_CACHE[key]
+    if tag == "err":
+        raise SystemExit(val)
+    return val
+
+
+def _rust_fn_exists(rs_text: str | None, name: str) -> bool:
+    return bool(rs_text) and re.search(
+        rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(name)}\s*[<(]',
+        rs_text) is not None
+
+
+_DRIVER_CACHE: dict = {}
+
+
+def _first_of(cur, kind):
+    for n in cur.walk_preorder():
+        if n.kind == kind and n.spelling:
+            return n.spelling
+    return None
+
+
+def driver_evidence(cc_dir: Path, target: str) -> dict:
+    """{producer: n}: in the pair's shipped drivers (`<pair>/drivers/*.c` -- test.c, example*.c,
+    tests/main.c -- compiled with the pair's own flags, never linked into the harness), how often the
+    value passed to `target` is the result of `producer`, either directly (`target(producer(..))`)
+    or through a local assigned from it. A call-graph fact of the artifact, not a schema; used only
+    to ORDER candidates that already passed rules 1-4. Empty when the pair ships no drivers."""
+    key = (str(cc_dir), target)
+    if key in _DRIVER_CACHE:
+        return _DRIVER_CACHE[key]
+    out: dict = {}
+    drivers = sorted((Path(cc_dir).parent / "drivers").glob("*.c"))
+    if not drivers:
+        _DRIVER_CACHE[key] = out
+        return out
+    cgmod._configure_libclang()
+    from clang.cindex import CompilationDatabase
+    cdb = CompilationDatabase.fromDirectory(str(cc_dir))
+    cmd = next(iter(cdb.getAllCompileCommands()))
+    args = cgmod._filter_compile_args(list(cmd.arguments),
+                                      {cmd.filename, str((Path(cmd.directory) / cmd.filename).resolve()),
+                                       Path(cmd.filename).name})
+    index = Index.create()
+    for d in drivers:
+        try:
+            tu = index.parse(str(d), args=args)
+        except Exception:
+            continue
+        for fn in tu.cursor.walk_preorder():
+            if fn.kind != CursorKind.FUNCTION_DECL or not fn.is_definition():
+                continue
+            assigned: dict = {}
+            for n in fn.walk_preorder():
+                if n.kind == CursorKind.VAR_DECL:
+                    for k in n.get_children():
+                        c = _first_of(k, CursorKind.CALL_EXPR)
+                        if c:
+                            assigned[n.spelling] = c
+                elif n.kind == CursorKind.BINARY_OPERATOR:
+                    kids = list(n.get_children())
+                    if len(kids) == 2 and kids[0].kind == CursorKind.DECL_REF_EXPR:
+                        c = _first_of(kids[1], CursorKind.CALL_EXPR)
+                        if c:
+                            assigned[kids[0].spelling] = c
+                elif n.kind == CursorKind.CALL_EXPR and n.spelling == target:
+                    for a in list(n.get_children())[1:]:
+                        c = _first_of(a, CursorKind.CALL_EXPR)
+                        if c and c != target:
+                            out[c] = out.get(c, 0) + 1
+                            continue
+                        ref = _first_of(a, CursorKind.DECL_REF_EXPR)
+                        if ref in assigned:
+                            out[assigned[ref]] = out.get(assigned[ref], 0) + 1
+    _DRIVER_CACHE[key] = out
+    return out
+
+
+def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolicy,
+                   rust_text: str | None, rust_aliases: dict | None):
+    """docs/producer_bridge_pilot.md sections 2-4: pick the producer for a `T*` parameter whose
+    struct carries pointers, or say exactly why there is none. Returns (InputSpec | None, reason | None)."""
+    st = param["struct"]
+    tname, cname = st["name"], st.get("c_name", st["name"])
+    base_reason = f"struct-invariant param {param['name']}: {tname} {st.get('reason')} (needs invariant reconstruction)"
+    if rust_text is None:
+        return None, base_reason + "; no Rust text to verify a producer against"
+    rand_fns = random_functions(cc_dir)
+    free_fns = freeing_functions(cc_dir)
+    considered, alternatives, viable = [], [], []
+    for f in _all_entries(cc_dir):
+        if f == entry:
+            continue
+        try:
+            fparams, fret, _fns, fdesc = _sig(cc_dir, f)
+        except SystemExit as e:
+            alternatives.append({"fn": f, "excluded": f"signature: {e}"[:120]})
+            continue
+        # rule 2: canonical pointee type is T, const ignored; mutability must satisfy the target
+        if fdesc.get("kind") != "pointer" or fdesc.get("inner", {}).get("kind") != "struct" \
+                or fdesc["inner"].get("name") != tname:
+            continue                                   # returns something else: not a candidate
+        considered.append(f)
+        if fdesc.get("const") and not param.get("const"):
+            alternatives.append({"fn": f, "excluded": "returns const T* but the target takes T*"})
+            continue
+        # rule 3: depth one -- a producer may not itself take T*
+        if any(q.get("kind") == "ptr_struct_nonpod" for q in fparams):
+            alternatives.append({"fn": f, "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"})
+            continue
+        # rule 1: exists on both sides, and the Rust side hands the object back as a raw pointer
+        # (the pilot's only ownership shape: what `*mut T` from C becomes on a faithful lift)
+        if not _rust_fn_exists(rust_text, f):
+            alternatives.append({"fn": f, "excluded": "not present in the Rust translation"})
+            continue
+        # the harness calls `translated::<producer>`: a C `static` producer that the translation
+        # keeps private (lil's `real_trim`) is not callable, so it is not a candidate -- the next
+        # viable producer (the public API's own constructor) is ranked instead
+        if not re.search(rf'(?m)^\s*(?:#\[no_mangle\]\s*)?pub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(f)}\b', rust_text or ""):
+            alternatives.append({"fn": f, "excluded": "not public in the translation (C static kept private); the harness cannot call it"})
+            continue
+        rret = _norm_ty(gdh.parse_rust_ret_type(rust_text, f) or "", rust_aliases)
+        if not re.fullmatch(rf"\*(?:mut|const){re.escape(tname)}", rret):
+            alternatives.append({"fn": f, "excluded": f"returns {rret or 'nothing'} in Rust; the pilot needs a raw pointer to {tname}"})
+            continue
+        # rule 4: every parameter plannable by the existing InputPlan (scalars, strings, buffers --
+        # the cJSON generalisation: `cJSON_Parse(const char*)` is a producer, not just scalar-only ones)
+        frt = gdh.parse_rust_param_types(rust_text, f)
+        pk = (str(cc_dir), f)
+        if pk not in _PRODUCER_PLAN_CACHE:
+            _PRODUCER_PLAN_CACHE[pk] = build_plan(cc_dir, f, policy, rust_types=(frt or None),
+                                                  rust_aliases=rust_aliases, rust_text=rust_text,
+                                                  allow_producer=False)
+        fplan = copy.deepcopy(_PRODUCER_PLAN_CACHE[pk])     # the caps below mutate it
+        if fplan.status != "planned":
+            alternatives.append({"fn": f, "excluded": "its own plan fails: " + "; ".join(fplan.failures)[:160]})
+            continue
+        # determinism (section 3)
+        seed_reset = "none"
+        if f in rand_fns:
+            if re.search(r'\b(?:libc::)?s?rand\s*\(', rust_text) or re.search(r'fn\s+s?rand\s*\(', rust_text):
+                seed_reset = "libc"
+            else:
+                alternatives.append({"fn": f, "excluded": "reaches rand() in C but the Rust side has no libc randomness to re-seed"})
+                continue
+        # producer scalars: the producer's own guards, then the global producer cap (section 4);
+        # then the producer's inputs are lowered by the SAME lowering every boundary gets
+        fq = {q["name"]: q for q in fparams}
+        for s in fplan.inputs:
+            d = s.setdefault("detail", {}) if isinstance(s.get("detail"), dict) else {}
+            s["detail"] = d
+            if s["c_decoder"] in ("scalar", "bounded_scalar"):
+                hi = d.get("max")
+                d["max"] = policy.producer_scalar_max if hi is None else min(int(hi), policy.producer_scalar_max)
+                d["min"] = max(int(d.get("min") or 0), 0)
+                d.setdefault("evidence", []).append(_ev_policy(
+                    "policy_producer_scalar_cap", "producer_scalar_max",
+                    f"{s['param']} is a producer scalar; the produced object's allocation and the "
+                    f"target's array extents are expressions over it, so it is capped at {policy.producer_scalar_max}"))
+                s["c_decoder"] = "bounded_scalar"
+        try:
+            lowered = lower_to_schema(fplan, fparams, f, "ptr", policy)["params"]
+        except LoweringError as e:
+            alternatives.append({"fn": f, "excluded": f"its inputs have no lowering: {e}"[:160]})
+            continue
+        surface = sum(1 for s in fplan.inputs if s["c_decoder"] != "null_pointer")
+        viable.append({"fn": f, "nparams": len(fparams), "surface": surface,
+                       "reach": len(reachable_functions(cc_dir, f)),
+                       "driver": driver_evidence(cc_dir, entry).get(f, 0),
+                       "lowered": lowered, "frt": frt or None, "seed_reset": seed_reset})
+    if not viable:
+        why = "; ".join(f"{x['fn']}: {x['excluded']}" for x in alternatives if x["fn"] in considered) or "no function returns it"
+        return None, base_reason + f"; no producer for {tname}*: {why}"
+    # Ordering (docs/producer_bridge_pilot.md section 2, cJSON generalisation): a producer whose
+    # object carries fuzz-controlled state first (cJSON_Parse's string over CreateObject's nothing),
+    # then the one the shipped drivers feed to this target, then the fewest parameters. Every
+    # candidate is a legal sequence; the order decides what gets explored, and it is recorded.
+    # Order: the producer whose body reaches the most of the library (cJSON_Parse reaches the whole
+    # parser and can build any node; cJSON_CreateString reaches two helpers), then the one with
+    # fuzz-controlled inputs, then the one the shipped drivers feed to this target, then the
+    # fewest parameters. All derivable from the artifact; every candidate is a legal sequence.
+    viable.sort(key=lambda v: (-v["reach"], -v["surface"], -v["driver"], v["nparams"], v["fn"]))
+    chosen = viable[0]
+    for v in viable[1:]:
+        alternatives.append({"fn": v["fn"], "excluded": f"ranked below {chosen['fn']}: reaches {v['reach']} fns "
+                                                       f"(vs {chosen['reach']}), fuzz surface {v['surface']} "
+                                                       f"(vs {chosen['surface']}), driver evidence {v['driver']} "
+                                                       f"(vs {chosen['driver']}), params {v['nparams']} (vs {chosen['nparams']})"})
+    f = chosen["fn"]
+    # destructor (section 2): takes exactly T*, returns void, reaches free() -- one per type
+    dk = (str(cc_dir), tname)
+    if dk not in _DESTRUCTOR_CACHE:
+        _DESTRUCTOR_CACHE[dk] = None
+        for g in _all_entries(cc_dir):
+            if g not in free_fns:
+                continue
+            try:
+                gparams, gret, _x, gdesc = _sig(cc_dir, g)
+            except SystemExit:
+                continue
+            if gret == "void" and len(gparams) == 1 and gparams[0].get("kind") == "ptr_struct_nonpod" \
+                    and gparams[0]["struct"].get("name") == tname and _rust_fn_exists(rust_text, g):
+                _DESTRUCTOR_CACHE[dk] = g
+                break
+    destructor = _DESTRUCTOR_CACHE[dk] if _DESTRUCTOR_CACHE[dk] not in (entry, f) else None
+    # The target IS the type's destructor (cJSON_Delete, genann_free): after it the object is gone
+    # on both sides, so nothing may read it -- no post-state canonicalisation, no second free;
+    # only how the two sides terminated is compared. NOTE the destructor rule itself is
+    # "takes exactly T*, returns void, reaches free()" -- an assumption checked by hand on
+    # genann_free and cJSON_Delete, not an ownership inference (docs/producer_bridge_pilot.md).
+    consumed = (entry == _DESTRUCTOR_CACHE[dk])
+    detail = {"producer": f, "producer_lowered": chosen["lowered"],
+              "consumed_by_target": consumed,
+              "producer_rust_types": chosen["frt"],
+              "destructor": destructor,
+              "lifecycle": "init -> target -> free" if destructor else "not claimed (no destructor found)",
+              "seed_reset": chosen["seed_reset"], "seed": 42,
+              "struct": tname, "c_struct": cname, "const": bool(param.get("const")),
+              "elem": tname,
+              "producer_evidence": ("sole candidate under rules 1-4" if len(viable) == 1 else
+                                    f"ranked first of {len(viable)}: reaches {chosen['reach']} fns, fuzz surface "
+                                    f"{chosen['surface']}, driver evidence {chosen['driver']}, params {chosen['nparams']}"),
+              "producer_alternatives": alternatives}
+    spec = InputSpec(param=param["name"], c_decoder="produced_object", detail=detail,
+                     evidence=[_ev_policy("producer_bridge", "producer_scalar_max",
+                                          f"{param['name']} is built by {f}() on each side; "
+                                          f"see docs/producer_bridge_pilot.md")])
+    return spec, None
+
+
 def build_plan(cc_dir: Path, entry: str, policy: GeneratorPolicy = POLICY,
                rust_types: list[str] | None = None,
-               rust_aliases: dict | None = None) -> HarnessPlan:
+               rust_aliases: dict | None = None,
+               rust_text: str | None = None,
+               allow_producer: bool = True) -> HarnessPlan:
     """InputPlan -> HarnessPlan.  No schema is read; nothing is hand-written.
 
     The return value is NOT a construction gate.  What can be compared about it is decided by the
@@ -1649,11 +2150,17 @@ def build_plan(cc_dir: Path, entry: str, policy: GeneratorPolicy = POLICY,
         return HarnessPlan(entry, "failed", [], [], [reason], policy.as_dict())
 
     try:
-        params, ret, _fns, ret_desc = gdh.parse_entry_signature(cc_dir, entry, with_return_desc=True)
+        params, ret, _fns, ret_desc = gdh.parse_entry_signature(cc_dir, entry, with_return_desc=True,
+                                                              allow_nonpod=allow_producer)
     except SystemExit as e:
         return _fail(f"signature: {e}")
     if not params and entry not in _fns:
         return _fail("signature: the entry was not found in the pair's translation unit")
+    # A boundary exists only if BOTH sides define it. With `--all` the C side enumerates every
+    # function of the TU, including ones the translator's input never had (a C-source version newer
+    # than the one it consumed); those planned as C-ABI and then failed at build with E0425.
+    if rust_text is not None and not _rust_fn_exists(rust_text, entry):
+        return _fail(f"signature: {entry} is not present in the Rust translation (no boundary)")
     if not params:
         # No arguments is not a construction failure: there IS no input to construct. Both sides
         # are called once and compared -- a single deterministic execution decides the boundary.
@@ -1662,10 +2169,30 @@ def build_plan(cc_dir: Path, entry: str, policy: GeneratorPolicy = POLICY,
     cur, _tu = entry_cursor(cc_dir, entry)
     if cur is None:
         return _fail("body: no definition found in the pair's compilation database")
-    facts = BodyAnalyzer(cur, {p["name"] for p in params}).run()
+    facts = BodyAnalyzer(cur, {p["name"] for p in params},
+                         {p["name"] for p in params
+                          if p["kind"] == "ptr_ptr" and p.get("elem") in (_INT_RUST | _FLOAT_RUST)}).run()
 
     iplan = analyze_inputs(params, facts, policy, effectful_functions(cc_dir))
     failures += iplan.failures + facts.unresolved
+    # A `T*` whose struct carries pointers is not decodable from bytes; the pilot builds it with
+    # the library's own producer (docs/producer_bridge_pilot.md) or fails with the reason.
+    n_produced = 0
+    for p in params:
+        if p.get("kind") == "ptr_struct_nonpod":
+            spec, why = _plan_producer(cc_dir, p, entry, policy, rust_text, rust_aliases)
+            if spec is None:
+                failures.append(f"signature: {why}")
+            else:
+                iplan.specs.append(spec)
+                n_produced += 1
+    if n_produced >= 2:
+        # `cJSON_AddItemToArray(array, item)`: after the call `item` belongs to `array`, and freeing
+        # both is a double free -- a harness bug that would masquerade as a crash. Ownership
+        # transfer between two produced objects is not derived in this increment, so the boundary
+        # is refused rather than guessed (docs/producer_bridge_pilot.md, cJSON generalisation).
+        failures.append(f"signature: {n_produced} produced objects in one call; ownership transfer "
+                        f"between them cannot be ruled out, so the lifecycle cannot be claimed")
     # Second materialization: the same C-shaped input as Rust arguments. A parameter shape with no
     # lossless bridge is a construction failure -- inputs are not allowed to be approximate.
     failures += apply_rust_bridges(iplan, rust_types, params, rust_aliases)
@@ -1747,7 +2274,32 @@ def lower_to_schema(plan: HarnessPlan, params: list[dict], program: str, ret_rus
         elems_cap = min(policy.unproven_extent_elems, byte_cap)
         if a == "null_pointer":
             out.append({"name": n, "role": "null_pointer", "decode": "null"})
+        elif a == "produced_object":
+            # The producer's scalars are lowered exactly like any bounded scalar; the generator
+            # namespaces them under the object's name so `genann_run(ann, inputs)` and
+            # `genann_init(inputs, ...)` cannot collide.
+            # The producer's inputs were lowered by lower_to_schema when the producer was chosen;
+            # the Rust parameter types ride along by position so the generator can bridge them
+            # (a `&str` for `const char*`, a slice for a buffer) exactly as for any target.
+            pp = [dict(q) for q in d["producer_lowered"]]
+            prt = d.get("producer_rust_types") or []
+            if len(prt) == len(pp):
+                for q, t in zip(pp, prt):
+                    q["rust_pty"] = re.sub(r"&\s*'\w+\s*", "&", t)
+            out.append({"name": n, "role": "produced_object", "decode": "producer_call",
+                        "producer": d["producer"], "producer_params": pp,
+                        "destructor": d.get("destructor"), "consumed": bool(d.get("consumed_by_target")),
+                        "seed_reset": d.get("seed_reset", "none"),
+                        "seed": int(d.get("seed", 42)), "const": bool(d.get("const")),
+                        "struct": d["struct"], "c_struct": d.get("c_struct", d["struct"]),
+                        "rust_pty": spec.get("rust_type"), "bridge": spec.get("rust_bridge")})
         elif a == "scalar":
+            out.append({"name": n, "role": "scalar", "decode": "scalar",
+                        "rust": p["rust"], "width": p["w"]})
+        elif a == "bounded_scalar" and d.get("max") is None:
+            # A one-sided rejection guard (`if (inputs < 1) return 0;`) bounds nothing the decoder
+            # can use: values below the bound are legal inputs the callee rejects on both sides.
+            # Lower as a full-range scalar rather than inventing an upper bound (genann_init).
             out.append({"name": n, "role": "scalar", "decode": "scalar",
                         "rust": p["rust"], "width": p["w"]})
         elif a == "bounded_scalar":
@@ -1802,6 +2354,18 @@ def lower_to_schema(plan: HarnessPlan, params: list[dict], program: str, ret_rus
                         "elems": elems, "fill": "fuzz" if d.get("fills_from_fuzz") else "zero",
                         "const": bool(p.get("const")),
                         "one_elem": spec.get("rust_bridge") == "mut_ref_one"})
+        elif a == "buffer_table":
+            rows = []
+            for r in d["row_specs"]:
+                try:
+                    elems = _rust_extent_expr(r.get("extent"), r.get("alloc_elems"), byte_cap)
+                except LoweringError as e:
+                    raise LoweringError(f"{plan.boundary}: {n} row {r['row']}: {e}")
+                rows.append({"elems": elems, "fill": "fuzz" if r.get("fills_from_fuzz") else "zero",
+                             "written": bool(r.get("written"))})
+            out.append({"name": n, "role": "buffer_table", "decode": "buffer_table",
+                        "elem": p["elem"], "elem_width": p["elem_w"],
+                        "inner_const": bool(p.get("inner_const")), "rows": rows})
         else:
             raise LoweringError(f"{plan.boundary}: no lowering for adapter {a!r} on {n}")
     return {"schema_version": 1, "program": program, "entry": plan.boundary,
@@ -1812,18 +2376,29 @@ def lower_to_schema(plan: HarnessPlan, params: list[dict], program: str, ret_rus
 def plan_and_lower(cc_dir: Path, entry: str, program: str,
                    policy: GeneratorPolicy = POLICY,
                    rust_types: list[str] | None = None,
-                   rust_aliases: dict | None = None) -> tuple[HarnessPlan, dict | None]:
-    plan = build_plan(cc_dir, entry, policy, rust_types, rust_aliases)
+                   rust_aliases: dict | None = None,
+                   rust_text: str | None = None) -> tuple[HarnessPlan, dict | None]:
+    plan = build_plan(cc_dir, entry, policy, rust_types, rust_aliases, rust_text=rust_text)
     if plan.status != "planned":
         return plan, None
-    params, ret, _fns = gdh.parse_entry_signature(cc_dir, entry)
+    params, ret, _fns = gdh.parse_entry_signature(cc_dir, entry, allow_nonpod=True)
     return plan, lower_to_schema(plan, params, program, ret, policy)
 
 
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+_ENTRIES_CACHE: dict = {}
+
+
 def _all_entries(cc_dir: Path) -> list[str]:
+    if str(cc_dir) in _ENTRIES_CACHE:
+        return _ENTRIES_CACHE[str(cc_dir)]
+    _ENTRIES_CACHE[str(cc_dir)] = _all_entries_uncached(cc_dir)
+    return _ENTRIES_CACHE[str(cc_dir)]
+
+
+def _all_entries_uncached(cc_dir: Path) -> list[str]:
     cgmod._configure_libclang()
     from clang.cindex import CompilationDatabase
     cdb = CompilationDatabase.fromDirectory(str(cc_dir))
@@ -1885,7 +2460,7 @@ def main() -> int:
     aliases = rust_type_aliases(rs_text) if rs_text else None
     for e in entries:
         rt = gdh.parse_rust_param_types(rs_text, a.rust_entry or e) if rs_text else None
-        p = build_plan(cc, e, rust_types=(rt or None), rust_aliases=aliases)
+        p = build_plan(cc, e, rust_types=(rt or None), rust_aliases=aliases, rust_text=rs_text)
         plans.append(p)
         if outdir:
             (outdir / f"{e}.plan.json").write_text(json.dumps(asdict(p), indent=1) + "\n")

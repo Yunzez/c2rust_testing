@@ -1,0 +1,122 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+ (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `val__num` should have a snake case name
+   --> fuzz_targets/lil_c2rust_ft.rs:141:9
+    |
+141 |     let val__num = (0 as f64) + (cur.take_f64().rem_euclid(((32) as f64) - (0 as f64) + (1 as f64)));
+    |         ^^^^^^^^ help: convert the identifier to snake case: `val_num`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `lil_c2rust-fuzz` (bin "lil_c2rust_ft") generated 6 warnings (run `cargo fix --bin "lil_c2rust_ft"` to apply 2 suggestions)
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.61s
+Processing 19 input files using 1 workers (batch size: ~19)
+Worker 0: Generating coverage for 19 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2285659230
+INFO: Loaded 1 modules   (1276 inline 8-bit counters): 1276 [0x56035e1bc750, 0x56035e1bcc4c), 
+INFO: Loaded 1 PC tables (1276 PCs): 1276 [0x56035e1bcc50,0x56035e1c1c10), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft: Running 19 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/20c81b29562fd0ca6a8c2a48457b2861f7d4a7cf
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/20c81b29562fd0ca6a8c2a48457b2861f7d4a7cf in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/35713e28aa3a5f215abbca9eacc2ebf44c403cab
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/35713e28aa3a5f215abbca9eacc2ebf44c403cab in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/b937e3714fd5d81c785ea657483536326d840606
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/b937e3714fd5d81c785ea657483536326d840606 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/2f69f7c795f34a52383392bb0055cfd89f0a0aff
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/2f69f7c795f34a52383392bb0055cfd89f0a0aff in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/86f7e437faa5a7fce15d1ddcb9eaeaea377667b8
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/86f7e437faa5a7fce15d1ddcb9eaeaea377667b8 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/78cb351ae3b2c04f9888a923390996dbea8ae415
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/78cb351ae3b2c04f9888a923390996dbea8ae415 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/f1f0959f9631c1e437aa992f65bae9ec20d5edf6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/f1f0959f9631c1e437aa992f65bae9ec20d5edf6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/49e68a7deef44b6ad541919e53c19177e3953732
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/49e68a7deef44b6ad541919e53c19177e3953732 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/9a88f2419d36d8358f794eda2ce159a666555c33
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/9a88f2419d36d8358f794eda2ce159a666555c33 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/0afa69ccdadae0667dd03391654ca041ed30530e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/0afa69ccdadae0667dd03391654ca041ed30530e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/80a07e53f3351f446acae9cfb6bf124604aa3fec
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/80a07e53f3351f446acae9cfb6bf124604aa3fec in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/d275ea4ed3c35ff0951374646fb69e35ede0897a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/d275ea4ed3c35ff0951374646fb69e35ede0897a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/35792a3e0bb22ee3aae948a552a7b1273af560c5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/35792a3e0bb22ee3aae948a552a7b1273af560c5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/69a0f9f10c268fccf9806f0dae875575a0d4a7db
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/69a0f9f10c268fccf9806f0dae875575a0d4a7db in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/65059a1435d48eaf12ae55cec8c8ee0ed1354786
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/65059a1435d48eaf12ae55cec8c8ee0ed1354786 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/4f47772e607dbebbaef208b67278c62a0e3992ec
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/4f47772e607dbebbaef208b67278c62a0e3992ec in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/e8463e94edd275e5b89ba5f8e234714266c7f8b7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/e8463e94edd275e5b89ba5f8e234714266c7f8b7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/71853c6197a6a7f222db0f1978c7cb232b87c5ee
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/71853c6197a6a7f222db0f1978c7cb232b87c5ee in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/seed_fixed
+=================================================================
+==2913063==ERROR: AddressSanitizer: requested allocation size 0xf0e0d0c0b0a0911 (0xf0e0d0c0b0a1918 after adjustments for alignment, red zones etc.) exceeds maximum supported size of 0x10000000000 (thread T0)
+    #0 0x56035e0d19ac  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0xf69ac) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #1 0x56035e10c42d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x13142d) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #2 0x56035e1065f6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x12b5f6) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #3 0x56035e10b061  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x130061) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #4 0x56035e1127c0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x1377c0) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #5 0x56035e113c38  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x138c38) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #6 0x56035e1119b5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x1369b5) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #7 0x56035e11acfc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x13fcfc) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #8 0x56035e138e15  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x15de15) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #9 0x56035e1462a1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x16b2a1) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #10 0x56035e134896  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x159896) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+    #11 0x7f83f902a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #12 0x7f83f902a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #13 0x56035e0446e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0x696e4) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed)
+
+==2913063==HINT: if you don't care about these errors you may set allocator_may_return_null=1
+SUMMARY: AddressSanitizer: allocation-size-too-big (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft+0xf69ac) (BuildId: 0fe03f2585493f6beff99c50a956165bbfd062ed) 
+==2913063==ABORTING
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 1: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/fuzz/coverage/lil_c2rust_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/harnesses/lil_append_string_len/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lil_c2rust_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/20c81b29562fd0ca6a8c2a48457b2861f7d4a7cf" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/35713e28aa3a5f215abbca9eacc2ebf44c403cab" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/b937e3714fd5d81c785ea657483536326d840606" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/2f69f7c795f34a52383392bb0055cfd89f0a0aff" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/86f7e437faa5a7fce15d1ddcb9eaeaea377667b8" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/78cb351ae3b2c04f9888a923390996dbea8ae415" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/f1f0959f9631c1e437aa992f65bae9ec20d5edf6" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/49e68a7deef44b6ad541919e53c19177e3953732" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/9a88f2419d36d8358f794eda2ce159a666555c33" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/0afa69ccdadae0667dd03391654ca041ed30530e" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/80a07e53f3351f446acae9cfb6bf124604aa3fec" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/d275ea4ed3c35ff0951374646fb69e35ede0897a" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/35792a3e0bb22ee3aae948a552a7b1273af560c5" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/69a0f9f10c268fccf9806f0dae875575a0d4a7db" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/65059a1435d48eaf12ae55cec8c8ee0ed1354786" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/4f47772e607dbebbaef208b67278c62a0e3992ec" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/e8463e94edd275e5b89ba5f8e234714266c7f8b7" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/71853c6197a6a7f222db0f1978c7cb232b87c5ee" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lil_c2rust/corpus/lil_append_string_len/seed_fixed"
+

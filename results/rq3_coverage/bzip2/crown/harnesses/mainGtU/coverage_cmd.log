@@ -1,0 +1,190 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/src/lib.rs:13489:34
+      |
+13489 |         core::ptr::addr_of_mut!(*crate::bzip2::progNameReally.as_mut_ptr().offset(0 as std::os::raw::c_int as isize)) as
+      |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: `bzip2_crown` (lib) generated 192 warnings (run `cargo fix --lib -p bzip2_crown` to apply 76 suggestions)
+   Compiling bzip2_crown-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/bzip2_crown_ft.rs:155:17
+    |
+155 |             let c_ret = c_mainGtU(i1, i2, block_c.as_mut_ptr(), quadrant_c.as_mut_ptr(), nblock, budget_c.as_mut_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/bzip2_crown_ft.rs:160:17
+    |
+160 |             let r_ret = translated::mainGtU(i1, i2, block_r.as_mut_ptr(), quadrant_r.as_mut_ptr(), nblock, Some(&mut budget_r[0]));
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: multiple methods are never used
+  --> fuzz_targets/bzip2_crown_ft.rs:8:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `bzip2_crown-fuzz` (bin "bzip2_crown_ft") generated 3 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 20.54s
+Processing 5 input files using 1 workers (batch size: ~5)
+Worker 0: Generating coverage for 5 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 4071053645
+INFO: Loaded 1 modules   (1652 inline 8-bit counters): 1652 [0x561cecc4e360, 0x561cecc4e9d4), 
+INFO: Loaded 1 PC tables (1652 PCs): 1652 [0x561cecc4e9d8,0x561cecc55118), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft: Running 5 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/34e0d76ba22a03595b2ec74ed9b47c8137593afb
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/34e0d76ba22a03595b2ec74ed9b47c8137593afb in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/e64ba7edd4532eff9b608d6877c63eb35d3bb65e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/e64ba7edd4532eff9b608d6877c63eb35d3bb65e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/adc83b19e793491b1c6ea0fd8b46cd9f32e592fc in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/71853c6197a6a7f222db0f1978c7cb232b87c5ee
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/71853c6197a6a7f222db0f1978c7cb232b87c5ee in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/seed_fixed
+=================================================================
+==171747==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7e096a7eed00 at pc 0x561cecb9a391 bp 0x7ffcf33e57b0 sp 0x7ffcf33e57a8
+READ of size 1 at 0x7e096a7eed00 thread T0
+    #0 0x561cecb9a390  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x137390) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #1 0x561cecb91f67  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x12ef67) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #2 0x561cecb968e1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x1338e1) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #3 0x561cecba27a0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x13f7a0) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #4 0x561cecba3c18  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x140c18) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #5 0x561cecba1995  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x13e995) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #6 0x561cecbaacfc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x147cfc) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #7 0x561cecbc8e95  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x165e95) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #8 0x561cecbd6321  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x173321) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #9 0x561cecbc4916  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x161916) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #10 0x7ff96b62a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #11 0x7ff96b62a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #12 0x561cecad0864  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x6d864) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+
+0x7e096a7eed00 is located 0 bytes after 4096-byte region [0x7e096a7edd00,0x7e096a7eed00)
+allocated by thread T0 here:
+    #0 0x561cecb5d734  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0xfa734) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #1 0x561cecb91a29  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x12ea29) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #2 0x561cecb968e1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x1338e1) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #3 0x561cecba27a0  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x13f7a0) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #4 0x561cecba3c18  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x140c18) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #5 0x561cecba1995  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x13e995) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #6 0x561cecbaacfc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x147cfc) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #7 0x561cecbc8e95  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x165e95) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #8 0x561cecbd6321  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x173321) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #9 0x561cecbc4916  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x161916) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+    #10 0x7ff96b62a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #11 0x7ff96b62a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #12 0x561cecad0864  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x6d864) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft+0x137390) (BuildId: d81ff177cb5ae1ef064aa376187a7ed055699b57) 
+Shadow bytes around the buggy address:
+  0x7e096a7eea80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7e096a7eeb00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7e096a7eeb80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7e096a7eec00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7e096a7eec80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x7e096a7eed00:[fa]fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7e096a7eed80: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7e096a7eee00: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7e096a7eee80: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7e096a7eef00: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7e096a7eef80: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==171747==ABORTING
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 1: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/fuzz/coverage/bzip2_crown_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/harnesses/mainGtU/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/bzip2_crown_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/34e0d76ba22a03595b2ec74ed9b47c8137593afb" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/e64ba7edd4532eff9b608d6877c63eb35d3bb65e" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/adc83b19e793491b1c6ea0fd8b46cd9f32e592fc" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/71853c6197a6a7f222db0f1978c7cb232b87c5ee" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_bz_crown/corpus/mainGtU/seed_fixed"
+

@@ -32,7 +32,7 @@ EXTRA_MODULES = ["bzip2"]
 MODULES = LIB_MODULES + EXTRA_MODULES
 _DRIVER_NAMES = {"main", "test", "smoke", "sample", "fuzzer", "bzip2", "bzip2recover",
                  "example1", "example2", "example3", "example4", "benchmark", "pngtest",
-                 "minigzip", "example"}
+                 "minigzip", "example", "rundiff", "sample_bin"}
 FN_DEF = re.compile(r'(?m)^\s*(?:#\[no_mangle\]\s*)?(?:pub\s+)?(?:unsafe\s+)?extern\s+"C"\s+fn\s+(\w+)')
 FN_DEF2 = re.compile(r'(?m)^\s*pub\s+(?:unsafe\s+)?fn\s+(\w+)')
 # An idiomatic rewriter may emit a plain, private, non-extern `fn` at module level (C2SaferRust
@@ -62,6 +62,10 @@ HEADER = [
 def auto_modules(src: pathlib.Path):
     """Every module in the crate, split into scored library modules and unscored drivers."""
     names = sorted(p.stem for p in src.glob("*.rs") if p.stem != "lib")
+    # one level of directory modules (tulip: `pub mod indicators { pub mod abs; ... }` from
+    # indicators/abs.rs) -- named "dir/stem", emitted inside `pub mod dir { .. }` below
+    names += sorted(f"{p.parent.name}/{p.stem}" for p in src.glob("*/*.rs")
+                    if p.parent.name not in ("target", "bin") and p.stem != "mod")
     lib = [n for n in names if n not in _DRIVER_NAMES]
     extra = [n for n in names if n in _DRIVER_NAMES]
     return lib, extra
@@ -89,37 +93,73 @@ def main(src_dir, out_file, lib_modules=None, extra_modules=None):
                     if not re.search(PUB_DEF.format(re.escape(name)), scan):
                         private.add(name)
 
+    # CROWN wraps every module in a namespace module -- `pub mod src { pub mod genann; ... }` --
+    # and the bodies use `crate::src::genann::...` paths. The modules must then be inlined INSIDE
+    # that wrapper, byte-for-byte as before, or every crate-absolute path dangles.
+    root = src / "lib.rs"
+    ns = None
+    if root.exists():
+        rtxt = root.read_text()
+        mw = re.search(r'(?m)^\s*(?:pub\s+)?mod\s+(\w+)\s*\{\s*\n((?:\s*(?:pub\s+)?mod\s+\w+\s*;\s*\n)+)\s*\}', rtxt)
+        if mw and set(re.findall(r'mod\s+(\w+)\s*;', mw.group(2))) >= set(MODULES):
+            ns = mw.group(1)
+
     lines = list(HEADER)
     ranges = {}          # module -> [first_line, last_line] in the flattened file (1-based)
+    if ns:
+        lines.append(f"pub mod {ns} {{")
+    cur_dir = None
     for m in MODULES:
-        lines.append(f"pub mod {m} {{")
+        d, _, leaf = m.rpartition("/")
+        if d != cur_dir:
+            if cur_dir:
+                lines.append(f"}} // mod {cur_dir}")
+            if d:
+                lines.append(f"pub mod {d} {{")
+            cur_dir = d or None
+        lines.append(f"pub mod {leaf} {{")
         first = len(lines) + 1
         body = bodies[m].split("\n")
         lines.extend(body)
         ranges[m] = [first, len(lines)]
         lines.append("}")
         lines.append("")
+    if cur_dir:
+        lines.append(f"}} // mod {cur_dir}")
+    if ns:
+        lines.append(f"}} // mod {ns}")
+        lines.append("")
 
+    prefix = f"crate::{ns}::" if ns else "crate::"
     lines.append("// root re-exports so the generated harness's `translated::<entry>` resolves")
     for name in sorted(defs):
         if name in private:
             lines.append(f"// {name}: private in {defs[name]} — exposed per-entry by --expose-entry")
         else:
-            lines.append(f"pub use crate::{defs[name]}::{name};")
+            lines.append(f"pub use {prefix}{defs[name].replace('/', '::')}::{name};")
     # Some translators put SUPPORT MODULES in the crate root that the translated modules import
     # (Laertes ships `laertes_rt` and `__laertes_array`, used by `use crate::laertes_rt::*;` in
     # every module). Carry over inline `mod` blocks from the original root -- and only those:
     # free items at the root are not carried, because c2rust's own root defines #[no_mangle]
     # stand-ins for the macOS libc symbols and those would collide with the shims we link.
-    root = src / "lib.rs"
     if root.exists():
         rt = root.read_text().split("\n")
-        carried, depth, taking = [], 0, False
+        carried, depth, taking, carried_skip = [], 0, False, False
         for ln in rt:
             if not taking and re.match(r'^\s*(pub(\([^)]*\))?\s+)?mod\s+\w+\s*\{', ln):
+                dirs = {m.rpartition("/")[0] for m in MODULES if "/" in m}
+                mname = re.match(r'^\s*(?:pub(?:\([^)]*\))?\s+)?mod\s+(\w+)', ln).group(1)
+                if (ns and mname == ns) or mname in dirs:
+                    # the namespace wrapper itself, or a directory group (`pub mod indicators {
+                    # pub mod abs; ... }`): already emitted above with the modules inside
+                    taking, depth = True, 0
+                    carried_skip = True
+                else:
+                    carried_skip = False
                 taking, depth = True, 0
             if taking:
-                carried.append(ln)
+                if not carried_skip:
+                    carried.append(ln)
                 depth += ln.count("{") - ln.count("}")
                 if depth <= 0:
                     taking = False

@@ -76,8 +76,12 @@ def run_once(binary: Path, mode: str, inp: Path, timeout_s: float, out_dir: Path
     timed_out = False
     with open(errf, "wb") as fh:
         try:
+            # run inside a throwaway directory: the library under test may write files named
+            # by its input (lil `store`), and this must never land in the caller's cwd
+            _sb = Path(binary).parent / "sandbox"
+            _sb.mkdir(parents=True, exist_ok=True)
             p = subprocess.run([str(binary), str(inp), "-runs=1"], env=env, timeout=timeout_s,
-                               stdout=subprocess.DEVNULL, stderr=fh)
+                               stdout=subprocess.DEVNULL, stderr=fh, cwd=str(_sb))
             rc = p.returncode
         except subprocess.TimeoutExpired:
             timed_out, rc = True, None

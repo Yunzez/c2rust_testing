@@ -59,6 +59,7 @@ GEN_CAPABILITIES = (
     "input_struct_array", "inout_struct_array", "output_array",
     "output_buffer_with_capacity_ptr",   # RQ4
     "plan_array",                        # HarnessPlan lowering
+    "buffer_table",                      # T** of constant-indexed rows (tulip inputs/outputs)
 )
 
 # c2rust type spelling -> (rust_ffi_type, byte_width). size_t -> usize to match translation.
@@ -192,8 +193,12 @@ def _describe_record(t, s, _depth: int = 0) -> dict:
             "fields": fields, "pod": pod, "reason": reason}
 
 
-def _param_from_descriptor(desc: dict, name: str) -> dict:
-    """Map a type descriptor to a harness param. T** is recognized but deferred."""
+def _param_from_descriptor(desc: dict, name: str, allow_nonpod: bool = False) -> dict:
+    """Map a type descriptor to a harness param. T** is recognized but deferred.
+
+    `allow_nonpod`: the HarnessPlan path asks for a struct-with-pointers parameter to come back as
+    `ptr_struct_nonpod` so the planner can try the producer bridge
+    (docs/producer_bridge_pilot.md); every other caller keeps the construction failure."""
     if desc["kind"] == "scalar":
         return {"kind": "scalar", "rust": desc["rust"], "w": desc["width"], "name": name}
     if desc["kind"] == "pointer":
@@ -207,6 +212,9 @@ def _param_from_descriptor(desc: dict, name: str) -> dict:
                     "inner_extent": inner["extent"], "name": name}
         if inner["kind"] == "struct":
             if not inner["pod"]:
+                if allow_nonpod:
+                    return {"kind": "ptr_struct_nonpod", "const": desc["const"], "struct": inner,
+                            "name": name}
                 raise SystemExit(f"struct-invariant param {name}: {inner['name']} "
                                  f"{inner['reason']} (needs invariant reconstruction)")
             return {"kind": "ptr_struct", "const": desc["const"], "struct": inner, "name": name}
@@ -252,7 +260,8 @@ def _param_usage(fn, names: set) -> dict:
     return usage
 
 
-def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = False):
+def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = False,
+                          allow_nonpod: bool = False):
     # with_return_desc=True adds a 4th element: the structural descriptor of the RETURN type,
     # which eligibility needs in order to decide whether the return value can be compared at
     # all. Default stays a 3-tuple so existing callers are unaffected.
@@ -305,7 +314,7 @@ def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = Fal
             usage = _param_usage(cur, {a.spelling for a in arg_cursors if a.spelling})
             for idx, a in enumerate(arg_cursors):
                 pname = safe_name(a.spelling, idx)
-                pd = _param_from_descriptor(describe_type(a.type), pname)
+                pd = _param_from_descriptor(describe_type(a.type), pname, allow_nonpod)
                 u = usage.get(a.spelling, {})
                 pd["subscripted"] = u.get("subscripted", False)
                 pd["used_as_index"] = u.get("used_as_index", False)
@@ -376,6 +385,41 @@ def load_plugins(paths: list[str] | None) -> list[dict]:
     return out
 
 
+def plugin_compat(pl: dict, rust_text: str) -> str | None:
+    """Why this plugin cannot be linked against THIS translation, or None if it can.
+
+    A comparator's Rust half reads the translated struct's fields by name and calls the
+    translation's destructor; the manifest lists both ([plugin.requires]). A translation that
+    renames a field (PtrTrans `type_` for c2rust's `type_0`) or ships no destructor cannot host
+    it -- and by the comparison ladder that is a DEGRADATION to the next rung (pointer
+    nullness), never a build failure. Without a `requires` table the plugin is assumed compatible
+    (the pre-manifest behaviour).
+    """
+    req = pl.get("requires") or {}
+    if not req:
+        return None
+    st = req.get("rust_struct") or pl["c_type"]
+    m = re.search(rf'(?ms)^\s*pub\s+struct\s+{re.escape(st)}\b[^{{]*\{{(.*?)^\s*\}}', rust_text or "")
+    if not m:
+        return f"no `pub struct {st}` in the translation"
+    fields = set(re.findall(r'(?m)^\s*pub\s+([A-Za-z_]\w*)\s*:', m.group(1)))
+    miss = [f for f in req.get("rust_fields", []) if f not in fields]
+    if miss:
+        return f"struct {st} lacks field(s) {miss} the comparator reads"
+    for fn in req.get("rust_fns", []):
+        if not re.search(rf'(?m)^\s*(?:#\[no_mangle\]\s*)?pub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(fn)}\b', rust_text or ""):
+            return f"no public fn {fn} in the translation"
+    return None
+
+
+_PLUGINS_OK: list | None = None      # plugins compatible with the translation being generated for
+_PLUGINS_DEGRADED: dict = {}         # library -> reason, for the verdict and the log
+
+
+def _plugins(args) -> list[dict]:
+    return _PLUGINS_OK if _PLUGINS_OK is not None else load_plugins(args.plugins)
+
+
 def _match_plugin(ret_desc: dict, plugins: list[dict]) -> dict | None:
     inner = ret_desc.get("inner") or {}
     names = {inner.get("name"), inner.get("c_name"), inner.get("spelling")}
@@ -398,7 +442,7 @@ RETURN_TEMPLATES = {
 
 
 def return_contract(ret_desc: dict, ret_rust: str, schema: dict | None,
-                    plugins: list[dict] | None = None) -> dict:
+                    plugins: list[dict] | None = None, rust_sig_ret: str | None = None) -> dict:
     """Classify the C return type into a comparison contract, or say why there is none.
 
     A schema may declare `return: {kind: ...}` to select a pointer template; without one, any
@@ -453,8 +497,26 @@ def return_contract(ret_desc: dict, ret_rust: str, schema: dict | None,
         # across two allocators, so the ladder degrades to rung 3 -- nullness, never the address.
         # docs/harness_oracle_plan.md: inputs must be exact, outputs may be partial.
         inner = (ret_desc.get("inner") or {}).get("kind", "?")
+        # The Rust side must be able to ANSWER the nullness question. A reshaped translation
+        # (C2SaferRust `BZ2_bzlibVersion() -> &str` for `const char*`) returns a reference, which
+        # is never null, or an Option; casting either to `*const c_void` does not compile, and
+        # before this check the plan said `planned` and rustc said E0606.
+        # `ret_rust` here is the C-side mapping, and for a pointer it is the sentinel "ptr"; the
+        # decision needs the TRANSLATION's own return type, parsed from the .rs and passed in as
+        # `rust_sig_ret` (None when no signature was found: keep the raw-pointer reading).
+        rr = (rust_sig_ret or "").replace(" ", "")
+        if not rr or rr.startswith("*"):
+            rust_null = "(r_ret as *const core::ffi::c_void).is_null()"
+        elif rr.startswith("Option<"):
+            rust_null = "r_ret.is_none()"
+        elif rr.startswith("&"):
+            rust_null = "{ let _ = &r_ret; false }"   # a reference is never null
+        else:
+            return {"template": None, "reason":
+                    f"C returns a pointer but the Rust return type is {ret_rust}: neither a raw "
+                    f"pointer, a reference, nor an Option, so nullness has no Rust-side reading"}
         return {"template": "pointer_nullness", "compare": RETURN_TEMPLATES["pointer_nullness"],
-                "oracle_strength": "partial(nullness)",
+                "oracle_strength": "partial(nullness)", "rust_null": rust_null,
                 "note": f"pointer return (to {inner}) has no canonical comparator; register a "
                         f"comparator plugin to compare the pointed-to object"}
     return {"template": None, "reason":
@@ -571,6 +633,28 @@ def items_from_schema(schema: dict) -> list[dict]:
                           "elem": p["elem"], "elem_w": p["elem_width"], "cap": p["cap"]})
         elif role == "null_pointer":
             items.append({"kind": "void_ptr", "role": "null_ptr", "name": p["name"]})
+        elif role == "produced_object":
+            # docs/producer_bridge_pilot.md: the object is built on each side by the library's
+            # own producer from scalars decoded here; the producer's scalars are namespaced under
+            # the object so `genann_run(ann, inputs)` and `genann_init(inputs, ..)` cannot collide.
+            # The producer's lowered parameters are ordinary schema params (scalars, strings,
+            # buffers); they get the same items/decode/call treatment as a target's, under the
+            # object's namespace. Cross-references (a buffer's length param) are renamed with them.
+            pre = p["name"] + "__"
+            pabi = []
+            for q in p["producer_params"]:
+                q2 = dict(q, name=pre + q["name"])
+                for k in ("length_param", "capacity_param", "of_buffer"):
+                    if q2.get(k):
+                        q2[k] = pre + q2[k]
+                pabi.append(q2)
+            items.append({"kind": "produced", "role": "produced", "name": p["name"],
+                          "producer": p["producer"], "destructor": p.get("destructor"),
+                          "consumed": bool(p.get("consumed")),
+                          "seed_reset": p.get("seed_reset", "none"), "seed": int(p.get("seed", 42)),
+                          "const": bool(p.get("const")), "struct": p["struct"],
+                          "params_abi": pabi,
+                          "params_items": items_from_schema({"params": pabi})})
         elif role == "plan_array":
             # HarnessPlan lowering: an allocation the harness owns, sized by a plan expression
             # (a constant, or a usize expression over already-decoded parameters), filled from the
@@ -579,6 +663,12 @@ def items_from_schema(schema: dict) -> list[dict]:
                           "elem": p["elem"], "elem_w": p["elem_width"],
                           "elems": p["elems"], "fill": p.get("fill", "zero"),
                           "const": bool(p.get("const"))})
+        elif role == "buffer_table":
+            # T** whose rows are named by constants: each row is a plan array of its own, and
+            # the table handed to the callee is a Vec of the rows' pointers (one per side).
+            items.append({"kind": "ptr_ptr", "role": "buf_table", "name": p["name"],
+                          "elem": p["elem"], "elem_w": p["elem_width"],
+                          "inner_const": bool(p.get("inner_const")), "rows": p["rows"]})
         elif role == "input_string":
             it = {"kind": "ptr", "role": "in_str", "name": p["name"],
                   "elem": p["elem"], "elem_w": p["elem_width"]}
@@ -626,7 +716,7 @@ def items_from_schema(schema: dict) -> list[dict]:
         buf_roles = ("in_buf", "io_buf", "out_buf_cap", "in_str", "in_arr", "in_table",
                      "in_str_table", "in_struct_arr", "io_struct_arr")
         # plan arrays go LAST: their size may be an expression over a length a buffer defines.
-        items.sort(key=lambda i: 2 if i["role"] == "plan_arr" else
+        items.sort(key=lambda i: 2 if i["role"] in ("plan_arr", "buf_table") else
                                  (1 if i["role"] in buf_roles else 0))
     return items
 
@@ -925,6 +1015,24 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
     byte-identical): each buffer emits its take + its derived-length binding right after it.
     """
     decode, post = [], []
+    # Two variable-length inputs cannot both take the REST of the fuzz bytes: the first would
+    # starve the second (cJSON_GetObjectItem: the producer's JSON text ate everything, the key was
+    # always empty). Every rest-taking input but the last, in decode order and through produced
+    # objects, is length-delimited instead. Marked once, at the top level.
+    if not any(i.get("_lenpref") is not None for i in items):
+        def _rest_takers(its):
+            out = []
+            for i in its:
+                if i.get("role") == "produced":
+                    out += _rest_takers(i["params_items"])
+                elif i.get("role") in ("in_str", "in_buf", "io_buf") and (i["role"] == "in_str" or "max_len" in i):
+                    out.append(i)
+            return out
+        rt = _rest_takers(items)
+        for i in rt[:-1]:
+            i["_lenpref"] = True
+        for i in rt[-1:]:
+            i["_lenpref"] = False
     for it in items:
         n = it["name"]
         if it["role"] == "scalar":
@@ -936,20 +1044,25 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
                 # blockSize100k, declared 1..9, actually ranged -7..9 and half of every campaign
                 # was spent on inputs the callee rejects outright.
                 decode.append(f"    let {n} = ({mn} as {ty}) + (cur.take_{ty}()"
-                              f".rem_euclid((({hi}) as {ty}) - ({mn} as {ty}) + 1));")
+                              f".rem_euclid((({hi}) as {ty}) - ({mn} as {ty}) + (1 as {ty})));")   # `+ 1` is an integer literal: E0277 on a bounded f64 (lil_alloc_double)
             else:
                 decode.append(f"    let {n} = cur.take_{it['rust']}();")
         elif it["role"] == "in_buf":
-            take = (f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
+            take = (f"cur.take_len_{it['elem']}({it['max_len']})" if it.get("_lenpref")
+                    else f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
                     else f"cur.take_vec_{it['elem']}()")
-            decode.append(f"    let {n}_buf: Vec<{it['elem']}> = {take};")
+            decode.append(f"    let mut {n}_buf: Vec<{it['elem']}> = {take};")
+            decode.append(f"    {n}_buf.reserve(1); unsafe {{ *{n}_buf.as_mut_ptr().add({n}_buf.len()) = 0 as {it['elem']}; }}  // sentinel past len: a length-0 buffer is still a valid, NUL-terminated pointer (lil_parse: codelen 0 => strlen(code)); an empty Vec's as_ptr() is dangling")
             decode.append(f"    let {it['len_name']} = {n}_buf.len(){_len_cast(it)};")
         elif it["role"] == "io_buf":
-            take = (f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
+            take = (f"cur.take_len_{it['elem']}({it['max_len']})" if it.get("_lenpref")
+                    else f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
                     else f"cur.take_vec_{it['elem']}()")
             decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = {take};")
             decode.append(f"    let {it['len_name']} = {n}_c.len(){_len_cast(it)};")
             decode.append(f"    let mut {n}_r = {n}_c.clone();")
+            for _side in ("c", "r"):        # sentinel past len on BOTH copies (see in_buf)
+                decode.append(f"    {n}_{_side}.reserve(1); unsafe {{ *{n}_{_side}.as_mut_ptr().add({n}_{_side}.len()) = 0 as {it['elem']}; }}")
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: buffer {n}"); }}')
         elif it["role"] == "out_buf_cap":
             # RQ4: output buffer whose capacity is passed by pointer. Both sides get their own
@@ -965,6 +1078,12 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             post.append(f'    if {cn}_c != {cn}_r {{ panic!("divergence: written length {cn}"); }}')
             post.append(f"    {{ let _n = ({cn}_c as usize).min({c});")
             post.append(f'      if {n}_c[.._n] != {n}_r[.._n] {{ panic!("divergence: output buffer {n}"); }} }}')
+        elif it["role"] == "produced":
+            # the producer's inputs are decoded here exactly like a target's (namespaced); the two
+            # objects are built in the body, one per side. Their post-call comparison, when a
+            # comparator plugin knows the type, is emitted in the body too, not here.
+            d2, _p2 = _decode_and_post(list(it["params_items"]))
+            decode.extend(d2)
         elif it["role"] == "out_scalar":
             decode.append(f"    let mut {n}_c: {it['elem']} = 0 as {it['elem']};")
             decode.append(f"    let mut {n}_r: {it['elem']} = 0 as {it['elem']};")
@@ -985,10 +1104,37 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
                 decode.append(f"    let mut {n}_c: Vec<{e}> = vec![0 as {e}; {n}_n];")
             decode.append(f"    let mut {n}_r: Vec<{e}> = {n}_c.clone();")
             post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: array {n}"); }}')
+        elif it["role"] == "buf_table":
+            e = it["elem"]
+            _pk = "const" if it.get("inner_const") else "mut"
+            _as = "as_ptr" if it.get("inner_const") else "as_mut_ptr"
+            for k, row in enumerate(it["rows"]):
+                rn = f"{n}__{k}"
+                decode.append(f"    let {rn}_n: usize = {row['elems']};")
+                if row["fill"] == "fuzz":
+                    decode.append(f"    let mut {rn}_c: Vec<{e}> = "
+                                  f"(0..{rn}_n).map(|_| cur.take_{e}()).collect();")
+                else:
+                    decode.append(f"    let mut {rn}_c: Vec<{e}> = vec![0 as {e}; {rn}_n];")
+                decode.append(f"    let mut {rn}_r: Vec<{e}> = {rn}_c.clone();")
+                if row["written"]:
+                    if e in ("f32", "f64"):
+                        # bit-for-bit: `!=` on floats calls NaN != NaN, which would report a
+                        # divergence both sides produced identically
+                        post.append(f'    if {rn}_c.len() != {rn}_r.len() || {rn}_c.iter().zip({rn}_r.iter())'
+                                    f'.any(|(x, y)| x.to_bits() != y.to_bits()) '
+                                    f'{{ panic!("divergence: table {n} row {k}"); }}')
+                    else:
+                        post.append(f'    if {rn}_c != {rn}_r {{ panic!("divergence: table {n} row {k}"); }}')
+            for side in ("c", "r"):
+                decode.append(f"    let {n}_tab_{side}: Vec<*{_pk} {e}> = vec!["
+                              + ", ".join(f"{n}__{k}_{side}.{_as}()" for k in range(len(it["rows"])))
+                              + "];")
         elif it["role"] == "in_str":
             # take_vec_* caps at 63 bytes, which is far too short for a real parser input; the
             # plan's policy bound is used when it has one.
-            _take = (f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
+            _take = (f"cur.take_len_{it['elem']}({it.get('max_len', 65535)})" if it.get("_lenpref")
+                     else f"cur.take_rest_{it['elem']}({it['max_len']})" if "max_len" in it
                      else f"cur.take_vec_{it['elem']}()")
             decode.append(f"    let mut {n}_buf: Vec<{it['elem']}> = {_take};")
             decode.append(f"    {n}_buf.push(0 as {it['elem']});")
@@ -1066,6 +1212,24 @@ def _base_exprs(abi: list[dict], base: str) -> tuple[str, str, str, str]:
     raise SystemExit(f"interior_pointer base {base!r} has unusable role {role!r}")
 
 
+# Pointer typedefs of the translation (`pub type lil_t = *mut _lil_t;`, c2rust keeps them where
+# Laertes/CROWN spell the pointer out). Set once per generation from the .rs text; the decisions
+# below read the TRANSLATION's parameter/return types and must see the pointer, not its name.
+# Resolved at the point of use so plans.json keeps the translation's own spelling.
+_RUST_ALIASES: dict = {}
+
+
+def _ptr_alias(rty: str | None) -> str:
+    t = (rty or "").strip()
+    return _RUST_ALIASES.get(t, t)
+
+
+def hp_norm(rty: str) -> str:
+    """The translation's scalar type resolved to a primitive (aliases + C-ABI names), for casts."""
+    import harness_plan as _hp
+    return _hp._norm_ty(rty, _RUST_ALIASES)
+
+
 def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
     """Call arguments and extern signature in STRICT schema (ABI) order.
 
@@ -1092,9 +1256,14 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
     r_pairs: list[tuple[str, str]] = []  # (param_name, rust_call_expr); filtered for folding below
     for p in abi:
         role, n = p["role"], p["name"]
-        rty = (p.get("rust_pty") or "").replace(" ", "")
+        rty = _ptr_alias(p.get("rust_pty")).replace(" ", "")
         if role in ("scalar", "length", "capacity"):
-            c_args.append(n); r_pairs.append((n, n)); decl.append(f"{n}: {p['rust']}")
+            # The C-ABI decl uses the generator's own mapping (`size_t` -> usize); a faithful
+            # translation may spell the same C type differently (c2rust: `size_t` = c_ulong = u64).
+            # Same width, different name: the plan's `scalar_cast` bridge, materialised here.
+            _rt = hp_norm(rty) if rty else ""
+            cast = f"{n} as {_rt}" if (_rt in _INT_TYPES or _rt in ("f32", "f64")) and _rt != p["rust"] else n
+            c_args.append(n); r_pairs.append((n, cast)); decl.append(f"{n}: {p['rust']}")
         elif role == "input_buffer":
             c_args.append(f"{n}_buf.as_ptr()")
             decl.append(f"{n}: *const {p['elem']}")
@@ -1143,6 +1312,21 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
             c_args.append("core::ptr::null_mut()")
             r_pairs.append((n, "core::ptr::null_mut()"))
             decl.append(f"{n}: *mut core::ffi::c_void")
+        elif role == "produced_object":
+            cst = "const" if p.get("const") else "mut"
+            c_args.append(f"{n}_c as *{cst} core::ffi::c_void")
+            decl.append(f"{n}: *{cst} core::ffi::c_void")
+            # Mutability follows the RUST parameter, not the C one: CROWN lifts `const genann*`
+            # to `Option<&mut genann>` because the function writes ann->output. The object is
+            # ours (a raw pointer from the producer), so either reborrow is available.
+            br, rty = p.get("bridge"), _ptr_alias(p.get("rust_pty")).replace(" ", "")
+            want_mut = "&mut" in rty or rty.startswith("*mut")
+            if br == "ref_obj":
+                r_pairs.append((n, f"&mut *{n}_r" if want_mut else f"&*{n}_r"))
+            elif br == "opt_ref_obj":
+                r_pairs.append((n, f"Some(&mut *{n}_r)" if want_mut else f"Some(&*{n}_r)"))
+            else:
+                r_pairs.append((n, f"{n}_r" if want_mut else f"{n}_r as *const _"))
         elif role == "plan_array" and p.get("one_elem") and (
                 rty.startswith("&mut") or rty.startswith("Option<&mut") or rty.startswith("&")
                 or rty.startswith("Option<&")):
@@ -1171,6 +1355,10 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
         elif role == "input_fixed_array_buffer":
             c_args.append(f"{n}_buf.as_ptr()"); r_pairs.append((n, f"{n}_buf.as_ptr()"))
             decl.append(f"{n}: *const [{p['elem']}; {p['inner_extent']}]")
+        elif role == "buffer_table":
+            _pk = "const" if p.get("inner_const") else "mut"
+            c_args.append(f"{n}_tab_c.as_ptr()"); r_pairs.append((n, f"{n}_tab_r.as_ptr()"))
+            decl.append(f"{n}: *const *{_pk} {p['elem']}")
         elif role in ("input_rectangular_pointer_table", "input_string_pointer_table"):
             c_args.append(f"{n}_tab_c.as_mut_ptr()"); r_pairs.append((n, f"{n}_tab_r.as_mut_ptr()"))
             _pk = "const" if p.get("inner_const") else "mut"
@@ -1297,7 +1485,8 @@ def gen_target_rust_only(entry: str, items: list[dict], abi: list[dict], ret: st
 
 def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: str,
                ub_free: bool = False, rust_entry: str | None = None,
-               rust_ret: str | None = None, ret_contract: dict | None = None) -> str:
+               rust_ret: str | None = None, ret_contract: dict | None = None,
+               plugins: list[dict] | None = None) -> str:
     """Generate the fuzz_target source: decode from items, call/signature in ABI order.
 
     When ub_free, the C oracle is UBSan-instrumented (recover + minimal runtime, flag-based
@@ -1332,6 +1521,57 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
 
     call_c = f"c_{entry}({', '.join(c_args)})"
     call_r = f"translated::{rust_entry or entry}({', '.join(r_args)})"
+
+    # Producer bridge (docs/producer_bridge_pilot.md section 5): the sequence
+    # producer -> target -> destructor, one object per side, phase-marked, NULL-aware.
+    _produced = [it for it in items if it.get("role") == "produced"]
+    _prod_c, _prod_r, _null_c, _null_r, _null_cmp, _free_c, _free_r, _prod_externs = [], [], [], [], [], [], [], []
+    _obj_cmp_after, _obj_plugin = [], None
+    for it in _produced:
+        n, pr, ds = it["name"], it["producer"], it.get("destructor")
+        # the producer's call is assembled by the same routine as the target's, so a `&str` or
+        # slice parameter of an idiomatic producer is bridged exactly as it would be for a target
+        pc, pr_args, pdecl = _call_and_decl(it["params_abi"])
+        _prod_externs.append(f"    fn c_{pr}({', '.join(pdecl)}) -> *mut core::ffi::c_void;")
+        if ds:
+            _prod_externs.append(f"    fn c_{ds}(p: *mut core::ffi::c_void);")
+        seed = ([f"        srand({it['seed']} as core::ffi::c_uint);"] if it["seed_reset"] == "libc" else [])
+        # The in-loop UB gate must cover the PRODUCER's C call too: cJSON_Parse's `(int)double`
+        # cast is UB on out-of-range numbers, and without this the two objects differed before the
+        # target ran and were reported as a producer divergence on the faithful translation.
+        _prod_c += ["        c2r_phase(C2R_PH_PRODUCER);", *seed,
+                    *(["        c2r_ub_reset();"] if ub_free else []),
+                    f"        let {n}_c = c_{pr}({', '.join(pc)});",
+                    *(['        if _c2r_m == C2R_GATED && c2r_ub_get() != 0 { c2r_outcome("ub-gated", ""); return; }  // C producer hit UB -> reject']
+                      if ub_free else [])]
+        _prod_r += ["        c2r_phase(C2R_PH_PRODUCER);", *seed, f"        let {n}_r = translated::{pr}({', '.join(pr_args)});"]
+        _null_c.append(f'        if {n}_c.is_null() {{ c2r_outcome("normal", ""); return; }}  // producer rejected the input')
+        _null_r.append(f'        if {n}_r.is_null() {{ c2r_outcome("normal", ""); return; }}')
+        _null_cmp += [f'        if {n}_c.is_null() != {n}_r.is_null() {{ c2r_div("producer {pr} nullness"); }}',
+                      f'        if {n}_c.is_null() {{ c2r_outcome("normal", ""); return; }}']
+        # A comparator plugin that knows the produced type turns the sequence-level oracle into an
+        # attributed one: the two objects are canonicalised right after the producers (a difference
+        # there belongs to the producer) and again after the target (a difference there is the
+        # target's effect on the object). cJSON has such a plugin; genann does not.
+        pl = _match_plugin({"inner": {"name": it["struct"]}}, plugins or [])
+        if pl is not None:
+            _obj_plugin = pl
+            cap = int(pl.get("max_bytes", 1 << 20))
+            def _canon(tag, what):
+                return [f"        {{ let mut _ob = vec![0u8; {cap}];",
+                        f"          let _on = c2r_canon({n}_c as *const core::ffi::c_void, _ob.as_mut_ptr() as *mut i8, _ob.len());",
+                        f"          let _or = c2r_canon_rust({n}_r as *const core::ffi::c_void);",
+                        f"          if _on > _ob.len() || _or.len() > {cap} {{ c2r_div(\"canonical form exceeded the plugin buffer ({tag})\"); }}",
+                        f"          else if _ob[.._on] != _or[..] {{ c2r_div(\"{what}\"); }} }}"]
+            _null_cmp += _canon("producer", f"producer {pr} state of {n}")
+            if not it.get("consumed"):     # the target freed it: reading it back would be OUR use-after-free
+                _obj_cmp_after += _canon("after", f"produced object {n} state after {entry}")
+        if ds:
+            _free_c += ["        c2r_phase(C2R_PH_FREE);", f"        if !{n}_c.is_null() {{ c_{ds}({n}_c); }}"]
+            _free_r += ["        c2r_phase(C2R_PH_FREE);", f"        if !{n}_r.is_null() {{ translated::{ds}({n}_r); }}"]
+    if any(it["seed_reset"] == "libc" for it in _produced):
+        _prod_externs.append("    fn srand(seed: core::ffi::c_uint);")
+    _ind = lambda ls: [l.replace("        ", "            ", 1) for l in ls]
     # UB-free gate: reset before C, reject (return) if C tripped UB, then call Rust.
     pre = "        c2r_ub_reset();\n" if ub_free else ""
     gate = ('        if _c2r_m == C2R_GATED && c2r_ub_get() != 0 '
@@ -1387,7 +1627,10 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
         rust_call = f"        let r_ret = {call_r};"
         _free_lines = []
-        if free.get("c") and free.get("rust"):
+        # With a produced object in play the boundary may return a pointer INTO it
+        # (cJSON_GetObjectItem); freeing that would corrupt the parent the destructor frees later.
+        # Fresh returns then leak (detect_leaks=0) rather than risk a double free.
+        if free.get("c") and free.get("rust") and not _produced:
             _free_lines = [
                 "        // Releasing what the boundary allocated is CONTRACT, not comparison: a",
                 "        // campaign without it is dominated by RSS growth. A panic while freeing",
@@ -1416,9 +1659,10 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         # is comparable; everything past this rung needs a comparator plugin.
         body_call = f"{pre}        let c_ret = {call_c};\n{gate}"
         rust_call = f"        let r_ret = {call_r};"
+        rn = (ret_contract or {}).get("rust_null") or "(r_ret as *const core::ffi::c_void).is_null()"
         ret_cmp = (
             "        let c_null = (c_ret as *const core::ffi::c_void).is_null();\n"
-            "        let r_null = (r_ret as *const core::ffi::c_void).is_null();\n"
+            f"        let r_null = {rn};\n"
             '        if c_null != r_null { c2r_div("returned pointer nullness"); }')
     elif (ret_contract or {}).get("template") == "interior_pointer":
         # The returned pointer is compared as NULLNESS + OFFSET FROM ITS DECLARED BASE, never as an
@@ -1441,7 +1685,11 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         rust_call = f"        let r_ret = {call_r};"
         # idiomatic translations may return a different-but-compatible integer width/signedness
         # (e.g. C `int`/i32 vs Rust `isize`); compare via i128 so the widths line up.
-        if rust_ret and rust_ret != ret and ret in _INT_TYPES and rust_ret in _INT_TYPES:
+        # `rust_ret` may be a typedef of the translation (c2rust: `size_t` = u64 for the
+        # generator's usize); resolve it before deciding, or the two spellings compare as
+        # different types and rustc rejects `c_ret != r_ret` (lil_list_size).
+        _rr = hp_norm(rust_ret) if rust_ret else rust_ret
+        if _rr and _rr != ret and ret in _INT_TYPES and _rr in _INT_TYPES:
             cmp = "(c_ret as i128) != (r_ret as i128)"
         else:
             cmp = "c_ret != r_ret"
@@ -1469,7 +1717,13 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         _extractor = (Path(ret_contract["plugin"]["_rust_source"])
                       .read_text(encoding="utf-8").split("\n"))
     _rust_only_free = ([f"            translated::{ret_contract['free']['rust']}(r_ret);"]
-                       if _so else [])
+                       if _so and not _produced else [])
+    if _obj_plugin is not None and not _pl:
+        # the produced object's type has a comparator plugin even though the return does not:
+        # link the plugin's two halves for the object-state comparison
+        ub_externs += ["    fn c2r_canon(obj: *const core::ffi::c_void, out: *mut i8, "
+                       "cap: usize) -> usize;"]
+        _extractor = Path(_obj_plugin["_rust_source"]).read_text(encoding="utf-8").split("\n")
     # emitted ONLY for a boundary that actually uses the interior-pointer contract, so every other
     # generated target is byte-identical to before this template existed
     _interior_helper = ([
@@ -1503,6 +1757,12 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         *[f"    fn take_rest_{t}(&mut self, max: usize) -> Vec<{t}> {{ let mut v = Vec::new(); "
           f"while self.p < self.d.len() && v.len() < max {{ v.push(self.take_{t}()); }} v }}"
           for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64", "f32", "f64"]],
+        # length-delimited take, emitted only when a target has more than one rest-taking input
+        # (so every earlier generated target stays byte-identical): a u16 prefix picks the length
+        *([f"    fn take_len_{t}(&mut self, max: usize) -> Vec<{t}> {{ let n = (self.take_u16() as usize) % (max.min(65535) + 1); "
+           f"let mut v = Vec::new(); while self.p < self.d.len() && v.len() < n {{ v.push(self.take_{t}()); }} v }}"
+           for t in ["u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64", "f32", "f64"]]
+          if any("take_len_" in l for l in decode) else []),
         "}",
         "",
         "// RQ4: C reference and UB gate are selected at RUN TIME so every mode shares one binary,",
@@ -1534,6 +1794,8 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "// crash at phase 3 is the translation diverging on TERMINATION, not a C-side failure.",
         "const C2R_PH_DECODE: u8 = 0; const C2R_PH_C: u8 = 1; const C2R_PH_C_DONE: u8 = 2;",
         "const C2R_PH_RUST: u8 = 3; const C2R_PH_RUST_DONE: u8 = 4; const C2R_PH_COMPARED: u8 = 5;",
+        *(["// producer bridge: the step of the init -> target -> free sequence an outcome happened in",
+           "const C2R_PH_PRODUCER: u8 = 6; const C2R_PH_FREE: u8 = 7;"] if _produced else []),
         "static C2R_PHASE: std::sync::atomic::AtomicU8 = std::sync::atomic::AtomicU8::new(0);",
         "fn c2r_phase(p: u8) { C2R_PHASE.store(p, std::sync::atomic::Ordering::Relaxed); }",
         "fn c2r_outcome_file() -> Option<&\'static str> {",
@@ -1596,6 +1858,8 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "extern \"C\" {",
         f"    fn c_{entry}({extern_args}) {extern_ret};",
         *ub_externs,
+        # the destructor may already be declared as the return contract's `free` (cJSON_Delete)
+        *[l for l in _prod_externs if l not in ub_externs],
         "}",
         "",
         "fuzz_target!(|data: &[u8]| {",
@@ -1608,12 +1872,15 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "    unsafe {",
         "        if _c2r_m == C2R_C_ONLY {",
         "            // confirmation phase A: C alone, so any sanitizer report is C's",
+        *_ind(_prod_c), *_ind(_null_c),
         "            c2r_phase(C2R_PH_C);",
         *[l.replace("        ", "            ", 1)
           for l in body_call.split("\n") if l and "C hit UB -> reject" not in l],
         "            c2r_phase(C2R_PH_C_DONE);",
+        *_ind(_free_c),
         "        } else if _c2r_m == C2R_RUST_ONLY {",
         "            // no C reference, so nothing can be compared; throughput bound only",
+        *_ind(_prod_r), *_ind(_null_r),
         "            c2r_phase(C2R_PH_RUST);",
         rust_call.replace("        ", "            ", 1),
         "            c2r_phase(C2R_PH_RUST_DONE);",
@@ -1621,7 +1888,9 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         # comparison: without this, rust-only replay leaks every returned object and
         # LeakSanitizer fails the run, which is how the cJSON_Create* coverage replays died.
         *_rust_only_free,
+        *_ind(_free_r),
         "        } else {",
+        *_ind(_prod_c), *_ind(_prod_r), *_ind(_null_cmp),
         "            c2r_phase(C2R_PH_C);",
         *[l.replace("        ", "            ", 1) for l in body_call.split("\n") if l],
         "            c2r_phase(C2R_PH_C_DONE);",
@@ -1630,6 +1899,8 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "            c2r_phase(C2R_PH_RUST_DONE);",
         *[l.replace("        ", "            ", 1) for l in ret_cmp.split("\n") if l],
         *[l.replace("        ", "            ", 1) for l in post],
+        *_ind(_obj_cmp_after),
+        *_ind(_free_c), *_ind(_free_r),
         "        }",
         "    }",
         "    c2r_phase(C2R_PH_COMPARED);",
@@ -1663,7 +1934,10 @@ def strip_static_c(c_text: str, entry: str) -> tuple[str, bool]:
     entry's definition (a `static` C function isn't linkable even after the f->c_f #define rename)."""
     import re
     pat = rf'(?m)^(\s*)static(\s+[^\n;{{]*\b{re.escape(entry)}\s*(?:<[^>()]*>)?\s*\()'
-    new = re.sub(pat, r'\1\2', c_text, count=1)
+    # every occurrence, not the first: a forward declaration (`static const char *parse_array(..);`
+    # before the definition, as cJSON writes them) left the DEFINITION static, and C rejects a
+    # static definition after a non-static declaration.
+    new = re.sub(pat, r'\1\2', c_text)
     return new, (new != c_text)
 
 
@@ -1793,16 +2067,28 @@ def main() -> int:
         # The RustBridge needs the translated signature: a parameter shape the bridge cannot
         # reproduce losslessly is a construction failure, decided HERE rather than at build time.
         _rs_text = rs.read_text(encoding="utf-8", errors="replace")
+        global _RUST_ALIASES, _PLUGINS_OK, _PLUGINS_DEGRADED
+        _RUST_ALIASES = hp.rust_type_aliases(_rs_text)
+        _PLUGINS_OK, _PLUGINS_DEGRADED = [], {}
+        for _pl in load_plugins(args.plugins):
+            _why = plugin_compat(_pl, _rs_text)
+            if _why:
+                _PLUGINS_DEGRADED[_pl.get("library") or _pl["c_type"]] = _why
+                print(f"  plugin {_pl.get('library') or _pl['c_type']}: incompatible with this translation "
+                      f"({_why}); the ladder degrades to pointer nullness")
+            else:
+                _PLUGINS_OK.append(_pl)
         _rt = parse_rust_param_types(_rs_text, args.rust_entry or args.entry)
         plan, lowered = hp.plan_and_lower(cc, args.entry, name, rust_types=(_rt or None),
-                                          rust_aliases=hp.rust_type_aliases(_rs_text))
+                                          rust_aliases=hp.rust_type_aliases(_rs_text),
+                                          rust_text=_rs_text)
         if args.plan_json:
             from dataclasses import asdict as _asdict
             Path(args.plan_json).write_text(json.dumps(_asdict(plan), indent=1) + "\n")
         if lowered is None:
             print(f"harness construction failed: {'; '.join(plan.failures)}")
             return 2
-        params, ret, all_fns = parse_entry_signature(cc, args.entry)
+        params, ret, all_fns = parse_entry_signature(cc, args.entry, allow_nonpod=True)
         items, abi = items_from_schema(lowered), lowered["params"]
         seen = [q["name"] for q in abi]
         assert seen == [q["name"] for q in params], f"lowering lost ABI order: {seen}"
@@ -1810,10 +2096,19 @@ def main() -> int:
               + ", ".join(f"{i['param']}={i['rust_bridge']}" for i in plan.inputs))
         # The return value is not a construction gate: the fixed ladder decides what about it is
         # comparable (void -> nothing, scalar -> value, pointer -> nullness, or a plugin).
-        _rd = parse_entry_signature(cc, args.entry, with_return_desc=True)[3]
+        _rd = parse_entry_signature(cc, args.entry, with_return_desc=True, allow_nonpod=True)[3]
         verdict = {"supported": True,
-                   "return_contract": return_contract(_rd, ret, None, load_plugins(args.plugins))}
+                   "return_contract": return_contract(
+                       _rd, ret, None, _plugins(args),
+                       rust_sig_ret=_ptr_alias(parse_rust_ret_type(_rs_text, args.rust_entry or args.entry)))}
+        if _PLUGINS_DEGRADED:
+            verdict["plugin_degraded"] = dict(_PLUGINS_DEGRADED)
         _rc0 = verdict["return_contract"]
+        if _rc0.get("template") is None:
+            # A return the ladder cannot read is a construction failure, not a silent fall-through
+            # to `c_ret != r_ret` (which, for two pointers, compares ADDRESSES and diverges always).
+            print(f"harness construction failed: return -- {_rc0.get('reason')}")
+            return 2
         # termination-only : nothing but how the two runs ended is comparable
         # partial(nullness) : a returned pointer, compared as NULL vs non-NULL only
         # observable-state  : return scalars plus every buffer the harness itself owns
@@ -1914,9 +2209,14 @@ doc = false
     for h in (pair / "source").glob("*.h"):
         (out / "c" / h.name).write_text(h.read_text(), encoding="utf-8")
 
+    # A translation written against the `libc` crate (CROWN's genann: 890 uses) needs it as a
+    # dependency of the harness crate the translation is copied into; one written against
+    # std::os::raw (c2rust, Laertes, CROWN's bzip2) does not, and gets the same Cargo.toml as before.
+    _needs_libc = bool(re.search(r"(?m)\blibc::|^\s*(?:pub\s+)?use\s+libc\b|extern\s+crate\s+libc\b", rs_text))
     (out / "Cargo.toml").write_text(
         f'[package]\nname = "{crate}"\nversion = "0.1.0"\nedition = "2021"\n\n'
-        f'[build-dependencies]\ncc = "1"\n\n[dependencies]\n', encoding="utf-8")
+        f'[build-dependencies]\ncc = "1"\n\n[dependencies]\n'
+        + ('libc = "0.2"\n' if _needs_libc else ''), encoding="utf-8")
 
     # RQ4 FIX 2: all_fns now also carries "@var:<name>" entries for file-scope C globals.
     _rename = [f.removeprefix("@var:") for f in all_fns]
@@ -1926,8 +2226,15 @@ doc = false
         (out / "c" / "ubshim.c").write_text(UBSHIM_C, encoding="utf-8")
     _rcv = verdict.get("return_contract") or {}
     _so_file = ""
-    if _rcv.get("template") == "comparator_plugin":
-        _p = _rcv["plugin"]
+    # a comparator plugin is linked when the RETURN is its type, or when a PRODUCED OBJECT is
+    _pobj_pl = None
+    for _q in abi:
+        if _q.get("role") == "produced_object":
+            _pobj_pl = _match_plugin({"inner": {"name": _q["struct"]}}, _plugins(args))
+            if _pobj_pl:
+                break
+    if _rcv.get("template") == "comparator_plugin" or _pobj_pl is not None:
+        _p = _rcv["plugin"] if _rcv.get("template") == "comparator_plugin" else _pobj_pl
         # The plugin's C half is compiled INTO the oracle, so the generator's function renaming
         # applies to it: a call to `cJSON_Delete` in the plugin becomes `c_cJSON_Delete`, i.e. the
         # C side's own function. That is what makes one plugin serve both sides.
@@ -2011,7 +2318,8 @@ doc = false
 
     (out / "fuzz" / "fuzz_targets" / f"{crate}_ft.rs").write_text(
         gen_target(args.entry, items, abi, ret, crate, ub_free=args.ub_free, rust_entry=rust_entry,
-                   rust_ret=rust_ret, ret_contract=verdict.get("return_contract")), encoding="utf-8")
+                   rust_ret=rust_ret, ret_contract=verdict.get("return_contract"),
+                   plugins=_plugins(args)), encoding="utf-8")
 
     print(f"generated harness at {out}")
     print(f"  entry: {args.entry} -> {ret}")

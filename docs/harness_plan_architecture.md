@@ -185,3 +185,45 @@ all of them, and the ones that are not recoverable are failures to report, not b
 Several of the `cap` values were read off a caller's local array declaration, which rule 7 forbids;
 those boundaries take a policy-allocated buffer or fail construction. Ownership (which function
 releases a returned object) is a genuinely non-type fact and falls under rule 8.
+
+## Addendum 2026-09-05 — `T**` buffer tables (tulip), and pointers the body advances
+
+**Shape.** tulip's 104 indicator functions all take
+`(int size, TI_REAL const *const *inputs, TI_REAL const *options, TI_REAL *const *outputs)`:
+a table of input rows and a table of output rows, each row `size` doubles, the row count a fact of
+the indicator (`inputs[0..3]` for `ad`, `outputs[0..2]` for `bbands`). Every translator in the study
+keeps that C shape (`*const *const f64`, `*const *mut f64`), so this is a **C-side InputPlan
+capability**, not a per-translator bridge: the planner refused all 104 with "T** is dereferenced and
+written rather than indexed" because the only `T**` it knew was the `char** + count` string table.
+
+**Rule (derived, never from a caller).** A `T**` parameter of scalar element type that the body
+indexes **only by non-negative constants** is a *buffer table* with `max k + 1` rows. Each row is a
+pseudo pointer parameter (`inputs__row0`) whose extent is derived exactly like any pointer's — the
+body reaches it through the local that names it (`const TI_REAL *input = inputs[0];` makes `input`
+an alias for row 0) or through a nested subscript (`outputs[1][i]`). Rows the body never touches get
+the policy allocation, zero-filled. Rows never define a length parameter (a shared `size` stays a
+bounded scalar, clamped by `extent_fits_allocation` and the loop-trip policy). A `char** + count`
+keeps its string-table reading. The row count is capped by `max_table_rows`.
+
+**Pointers the body advances — a soundness fix that this exposed.** `*output++ = v` was recorded as
+a dereference, i.e. extent 1, for a pointer that the loop writes `size` times. Any pointer parameter
+or row alias that is incremented, compound-assigned or reassigned is now `advanced`: its derefs and
+subscripts are relative to a moving base and bound nothing, so the extent is unknown → policy
+allocation (4 096 elements), with the loop-trip parameters clamped by `max_trip` (1 024) as the
+recorded, unproven obligation. This applies to plain pointer parameters too (it was wrong for them
+before; no earlier library hit the pattern).
+
+**Lowering and generation.** `buffer_table` → one schema param carrying `rows: [{elems, fill,
+written}]`. The generator allocates each row per side (fuzz-filled when the callee reads it), builds
+one `Vec<*const T>` / `Vec<*mut T>` of row pointers per side, passes `.as_ptr()`, and after the call
+compares every written row **bit for bit** (`to_bits()` for floats: `!=` would report NaN ≠ NaN as a
+divergence both sides produced). The Rust bridge accepts only a pointer to pointers of the same
+element type; a reshaped table (`&[&[f64]]`) is refused with the reason.
+
+**Campaign parameter.** A table boundary decodes up to rows × 1 024 doubles; libFuzzer's default
+`-max_len=4096` bytes would leave the rows almost entirely zero. `cell.py --max-len` (default 4 096,
+tulip cells 65 536) is recorded in each cell's `campaign_params.json` and printed in RUN.md.
+
+**Evidence.** tulip × c2rust planner: 109/213 → **213/213**; row extents: `inputs` 104 proven
+(`size`) / 70 policy, `outputs` 31 proven / 83 policy (pointer-advanced). Golden regression
+unchanged (26 entries) before the tulip cases were added.

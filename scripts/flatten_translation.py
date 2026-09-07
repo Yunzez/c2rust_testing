@@ -66,12 +66,14 @@ def auto_modules(src: pathlib.Path):
     # indicators/abs.rs) -- named "dir/stem", emitted inside `pub mod dir { .. }` below
     names += sorted(f"{p.parent.name}/{p.stem}" for p in src.glob("*/*.rs")
                     if p.parent.name not in ("target", "bin") and p.stem != "mod")
-    lib = [n for n in names if n not in _DRIVER_NAMES]
-    extra = [n for n in names if n in _DRIVER_NAMES]
+    lib = [n for n in names if n.rpartition("/")[2] not in _DRIVER_NAMES]
+    extra = [n for n in names if n.rpartition("/")[2] in _DRIVER_NAMES]   # libpng/pngtest, zlib/test/*
     return lib, extra
 
 
-def main(src_dir, out_file, lib_modules=None, extra_modules=None):
+def main(src_dir, out_file, lib_modules=None, extra_modules=None, namespace=None, root_glob=False):
+    """`namespace`: the crate's wrapper module when the auto-detection below cannot see it (CROWN's
+    quadtree nests a directory module of the same name: `pub mod src { pub mod src {..} pub mod test; }`)."""
     global LIB_MODULES, MODULES
     src = pathlib.Path(src_dir)
     if lib_modules is not None:
@@ -97,8 +99,8 @@ def main(src_dir, out_file, lib_modules=None, extra_modules=None):
     # and the bodies use `crate::src::genann::...` paths. The modules must then be inlined INSIDE
     # that wrapper, byte-for-byte as before, or every crate-absolute path dangles.
     root = src / "lib.rs"
-    ns = None
-    if root.exists():
+    ns = namespace
+    if root.exists() and ns is None:
         rtxt = root.read_text()
         mw = re.search(r'(?m)^\s*(?:pub\s+)?mod\s+(\w+)\s*\{\s*\n((?:\s*(?:pub\s+)?mod\s+\w+\s*;\s*\n)+)\s*\}', rtxt)
         if mw and set(re.findall(r'mod\s+(\w+)\s*;', mw.group(2))) >= set(MODULES):
@@ -131,6 +133,13 @@ def main(src_dir, out_file, lib_modules=None, extra_modules=None):
         lines.append("")
 
     prefix = f"crate::{ns}::" if ns else "crate::"
+    if root_glob:
+        # a single-file crate whose body addresses its OWN items as `crate::url_data` (Laertes'
+        # rewriter spells paths absolutely): once the file is a module, the root must still
+        # provide those names -- a glob re-export of the module does, without touching the body
+        lines.append("// root glob re-export: the translation addresses its own items as crate::<item>")
+        for m in LIB_MODULES:
+            lines.append(f"pub use {prefix}{m.replace('/', '::')}::*;")
     lines.append("// root re-exports so the generated harness's `translated::<entry>` resolves")
     for name in sorted(defs):
         if name in private:
@@ -163,6 +172,11 @@ def main(src_dir, out_file, lib_modules=None, extra_modules=None):
                 depth += ln.count("{") - ln.count("}")
                 if depth <= 0:
                     taking = False
+        # ... and the root's own `pub use crate::..;` re-exports (PtrTrans's quadtree modules say
+        # `use crate::*;` and reach each other's types through `pub use crate::node::*;` at the root)
+        for ln in rt:
+            if re.match(r'^\s*pub\s+use\s+crate::', ln) and ln not in carried:
+                carried.append(ln)
         if carried:
             lines.append("// support modules carried verbatim from the translation's own crate root")
             lines.extend(carried)

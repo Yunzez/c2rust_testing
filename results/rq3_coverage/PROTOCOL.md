@@ -89,6 +89,25 @@ adapter is a copy of the crate with a `Cargo.toml` declaring the existing transp
 We do **not** transpile a test driver ourselves and we do **not** substitute a proxy suite: either
 would be our construction rather than evidence that already existed.
 
+### Amendment 2026-09-07 — the remaining five libraries (pre-registered before any of their cells ran)
+
+| library | the suite | driver present in the translation | status |
+|---|---|---|---|
+| **qsort** | none (a 30-line example project; no test target) | — | `TEST-UNAVAILABLE` ×6, rlib universe |
+| **urlparser** | `Makefile` `test:` = `test.c` (assert-based) — the translation unit **is** the test program | `test.rs` in c2rust / Laertes / C2SaferRust; CROWN's `main` is commented out (adapter calls `main_0`) | to measure ×4; the driver's own `main_0` sits inside the scored module and is reported by name |
+| **quadtree** | `Makefile` `all: test` → `test.c` | `test.rs` in c2rust (crustbench output) and CROWN; none in PtrTrans's shipped crate | to measure ×2; PtrTrans `TEST-UNAVAILABLE` |
+| **lodepng** | `lodepng_unittest.cpp` (C++) | never transpiled | `TEST-UNAVAILABLE` ×2 |
+| **optipng** | `make test` = `bitset_test`, `ratio_test`, gifread/minitiff self-tests | none transpiled (zlib's `example.rs`/`minigzip.rs` are zlib's own tests, not optipng's target) | `TEST-UNAVAILABLE` ×3 |
+
+Two libraries carry more than one C revision in the tree (quadtree: upstream-newer for c2rust,
+0.1.0 for CROWN and PtrTrans); each pair takes the revision its translator consumed and hashes it.
+Renamed functions (qsort × SACTOR / PtrTrans, `quickSort → quick_sort`) are taken from the RQ1
+ground-truth labels and passed to the generator as `translated/renames.json`; a reshaped
+signature the frozen bridge cannot construct is *construction unsupported*, not patched.
+E1's UB-gate exclusions (urlparser × Laertes / CROWN) are run as cells: reach and the funnel are
+properties of the translation, and the gate acts per input in confirmation. Plan:
+`docs/rq4_plan_ten_libraries.md`.
+
 ## 3. Budget, seeds, stopping rule
 
 | | |

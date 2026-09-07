@@ -1,0 +1,36 @@
+{
+  "_what": "qsort ships no test or acceptance target: the Laertes benchmark's qsort is a three-function CMake example (swap/partition/quickSort) with no driver; no translation in this study carries one (Laertes' rundiff.rs and the E1 harnesses are ours, not the library's). PROTOCOL.md section 2 (amendment 2026-09-07) therefore gives TEST-UNAVAILABLE for every qsort cell and the universe comes from a link-dead-code denominator build (scripts/rq4/denominator.sh, reference call <crate>::qsort::partition on a two-element array). Recorded 2026-09-07.",
+  "_c_source": {
+    "all": "laertes_benchmarks/qsort/qsort.c, 30 lines (the file every qsort translation in the study came from, incl. our SACTOR / PtrTrans / CROWN runs; sha recorded in artifact_hashes.json per cell)"
+  },
+  "c2rust": {
+    "status": "TEST-UNAVAILABLE",
+    "baseline": false,
+    "observation": "no shipped suite; denominator: 3 functions"
+  },
+  "laertes": {
+    "status": "TEST-UNAVAILABLE",
+    "baseline": false,
+    "observation": "no shipped suite; denominator: 83 functions (Laertes' own runtime modules count as identities, unreachable from any boundary -- compare only-ours counts, not the fraction, as for tulip x Laertes)"
+  },
+  "c2saferrust": {
+    "status": "TEST-UNAVAILABLE",
+    "baseline": false,
+    "observation": "no shipped suite; denominator: 3 functions"
+  },
+  "crown": {
+    "status": "TEST-UNAVAILABLE",
+    "baseline": false,
+    "observation": "no shipped suite; denominator: 3 functions"
+  },
+  "sactor": {
+    "status": "TEST-UNAVAILABLE",
+    "baseline": false,
+    "observation": "no shipped suite; denominator: 8 functions (nested helper fns and prog_main are separate identities)"
+  },
+  "ptrtrans": {
+    "status": "TEST-UNAVAILABLE",
+    "baseline": false,
+    "observation": "no shipped suite; denominator: 3 functions"
+  }
+}

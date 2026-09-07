@@ -1,0 +1,2 @@
+# Reviewed crash-alls (docs/rq4_runbook.md, preflight). Evidence: funnel smoke 2026-09-07, 5 s, both sides.
+get_quadrant_   # requires a SPLIT node (root->nw/ne/sw/se non-NULL); the only producer yields a leaf, so the C body dereferences a NULL child on every input (226/227 execs crash on c2rust and CROWN alike) -- unconstructible precondition, not a translation defect

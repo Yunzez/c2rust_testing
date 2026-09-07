@@ -1,0 +1,77 @@
+{
+ "lib": "quadtree",
+ "tool": "c2rust",
+ "source": {
+  "source/point.c": {
+   "from": "tools/c2rust_crustbench/out/quadtree/src/point.c",
+   "sha256": "0036557ef073025d69d20ace0aa831ed34fb498e7e3a001fc2f8124ce984691f"
+  },
+  "source/bounds.c": {
+   "from": "tools/c2rust_crustbench/out/quadtree/src/bounds.c",
+   "sha256": "04e02c63d31d034430bed0081874f43e6147737dfc7c2d80c861881febf63c22"
+  },
+  "source/node.c": {
+   "from": "tools/c2rust_crustbench/out/quadtree/src/node.c",
+   "sha256": "95a5d681f866bfbaf0802099af70618bbe17f193eb2810b05c7bef0ad225b8b7"
+  },
+  "source/quadtree.c": {
+   "from": "tools/c2rust_crustbench/out/quadtree/src/quadtree.c",
+   "sha256": "a730b3306b6c8a4c6fb4ba3a3ebcaf5d0ec2947401302800a5c6075be74e6ccc"
+  },
+  "source/quadtree.h": {
+   "from": "tools/c2rust_crustbench/out/quadtree/src/quadtree.h",
+   "sha256": "cc7375f7a7a67955dc9c3008e530639ebbeaa6b8ab1b78918d22fd63433ae293"
+  },
+  "source/quadtree_all.c": {
+   "from": "amalgamation of ['point.c', 'bounds.c', 'node.c', 'quadtree.c']",
+   "sha256": "19871b2aaea027c317c56f9e2e2cfbc15098b1f9afc742ea8f7ae2f889aaa8a3"
+  }
+ },
+ "rust": {
+  "bounds.rs": {
+   "from": "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/qt_src_c2rust/bounds.rs",
+   "sha256": "152e23e1a5eea3a3aa0f25314fec8ec81fd0be3d271e3a4f3f798f20f2e4589b"
+  },
+  "node.rs": {
+   "from": "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/qt_src_c2rust/node.rs",
+   "sha256": "bf1e413c20417b68855eefa26c214892ef0ca493fe428aacc61016be40be3016"
+  },
+  "point.rs": {
+   "from": "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/qt_src_c2rust/point.rs",
+   "sha256": "44a27db1ed904e064fbdf15f843448e621f521f1c05dd0c8a165e183b47b340f"
+  },
+  "quadtree.rs": {
+   "from": "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/qt_src_c2rust/quadtree.rs",
+   "sha256": "50dfe651eae2761cbc0b123b5cb8f75eb435d5e7d1801adaa8807d4700fcc815",
+   "crate_attrs_removed": 1
+  },
+  "test.rs": {
+   "from": "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/qt_src_c2rust/test.rs",
+   "sha256": "bb8ebabcc480ee46fb9bd7b1b9632fe298e1c8dcfc55e34b8828fedb6c72526d",
+   "crate_attrs_removed": 1
+  },
+  "modules": {
+   "scored": [
+    "bounds",
+    "node",
+    "point",
+    "quadtree"
+   ],
+   "unscored": [
+    "test"
+   ]
+  },
+  "translated/quadtree_c2rust.rs": {
+   "sha256": "28a5f3994804300444ca7d4012a67afec713c5ae31c92b0eccc4249a3edc0dc9"
+  },
+  "translated/quadtree_c2rust.rs.defs.json": {
+   "sha256": "3b68cb5c628139c33c8872e30d54c605699af6a2310758c049e2c681e405b47d"
+  },
+  "translated/quadtree_c2rust.rs.linemap.json": {
+   "sha256": "6edcd28ccff1c34eff56c0e79edec603714db60971b90ecf462957d08142ccd9"
+  }
+ },
+ "notes": [
+  "c2rust run by us on the CRUST-bench quadtree copy (tools/c2rust_crustbench/out/quadtree: the NEWER upstream revision -- insert_ returns 0/1/2, node_contains_ uses <=); translation = src/*.rs + test.rs (the shipped test.c transpiled)"
+ ]
+}

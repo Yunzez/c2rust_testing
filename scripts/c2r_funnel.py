@@ -48,9 +48,27 @@ def plan_all(pair: Path, out: Path) -> list[dict]:
     return json.loads((out / "plans.json").read_text())
 
 
+def pair_excludes(pair: Path) -> set[str]:
+    """`<pair>/exclude.txt`: boundaries that are not library functions (a test driver's `main`
+    when the translation unit IS the test program, as urlparser's test.c is), one per line, `#`
+    comments. They are dropped before planning and never counted in the funnel."""
+    p = Path(pair) / "exclude.txt"
+    if not p.exists():
+        return set()
+    return {ln.split("#")[0].strip() for ln in p.read_text().splitlines() if ln.split("#")[0].strip()}
+
+
+def rust_name(pair: Path, entry: str) -> str:
+    """The entry's name in the Rust translation: `<pair>/translated/renames.json` (the RQ1
+    matcher's map for a renaming translator) or the C name itself."""
+    p = Path(pair) / "translated" / "renames.json"
+    m = json.loads(p.read_text()) if p.exists() else {}
+    return m.get(entry, entry)
+
+
 def generate(a, pair: Path, entry: str, out_dir: Path, private: bool) -> tuple[bool, str]:
     cmd = [sys.executable, str(ROOT / "tools/stu_selector/gen_diff_harness.py"),
-           "--pair", str(pair), "--entry", entry, "--rust-entry", entry,
+           "--pair", str(pair), "--entry", entry, "--rust-entry", rust_name(pair, entry),
            "--plan", "--ub-free", "--out", str(out_dir)]
     if a.c_source:
         cmd += ["--c-source", a.c_source]
@@ -69,9 +87,14 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
         # The pair ships an amalgamation plus its siblings; the generator copied only the named
         # translation unit, so the siblings it #includes have to come too.
         stripped = None
-        for extra in sorted((pair / "source").glob("*.c")):
-            if extra.name == a.c_source:
-                continue
+        # source SUBDIRECTORIES first (tulip: `tulip.c` includes indicators/*.c by relative path;
+        # optipng: 52 units in nine directories), then every .c/.h at any depth gets the static strip
+        for sub in sorted(p for p in (pair / "source").iterdir() if p.is_dir()):
+            shutil.copytree(sub, out_dir / "c" / sub.name, dirs_exist_ok=True)
+        for extra in sorted(list((pair / "source").rglob("*.c")) + list((pair / "source").rglob("*.h"))):
+            if extra.name == a.c_source and extra.parent == pair / "source":
+                continue                   # (a header-only library keeps its statics in the .h: urlparser's strff)
+            rel = extra.relative_to(pair / "source")
             text = extra.read_text()
             if private:
                 text, changed = gdh.strip_static_c(text, entry)
@@ -82,14 +105,42 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
                     text, n = pat.subn(r'\1', text, count=1)
                     changed = bool(n)
                 if changed:
-                    stripped = extra.name
-            (out_dir / "c" / extra.name).write_text(text)
-        # ... and so do source SUBDIRECTORIES (tulip: `tulip.c` includes indicators/*.c and
-        # utils/buffer.c by relative path, and those include ../indicators.h).
-        for sub in sorted(p for p in (pair / "source").iterdir() if p.is_dir()):
-            dst = out_dir / "c" / sub.name
-            if not dst.exists():
-                shutil.copytree(sub, dst)
+                    stripped = str(rel)
+            (out_dir / "c" / rel).parent.mkdir(parents=True, exist_ok=True)
+            (out_dir / "c" / rel).write_text(text)
+        # A multi-TU pair (compile_commands.json with one entry per unit): the oracle is every unit
+        # compiled separately with the same rename defines, as the library's own build does.
+        # build.rs gets the units, their include directories and their -D/-std flags.
+        ccj = pair / "build" / "compile_commands.json"
+        cmds = json.loads(ccj.read_text()) if ccj.exists() else []
+        if len(cmds) > 1:
+            src_root = (pair / "source").resolve()
+            files, incs, flags = [], [], []
+            for c in cmds:
+                if c["file"] == a.c_source:
+                    continue
+                files.append(f'c/{c["file"]}')
+                args = c.get("arguments") or c.get("command", "").split()
+                it = iter(range(len(args)))
+                for i in it:
+                    x = args[i]
+                    if x == "-I" and i + 1 < len(args):
+                        d = Path(args[i + 1]).resolve()
+                        rel = d.relative_to(src_root) if d != src_root and src_root in d.parents else Path(".")
+                        inc = "c" if str(rel) == "." else f"c/{rel}"
+                        if inc not in incs:
+                            incs.append(inc)
+                        next(it, None)
+                    elif x.startswith(("-D", "-std=", "-U")) and x not in flags:
+                        flags.append(x)
+            b = out_dir / "build.rs"
+            bt = b.read_text()
+            anchor = f'    build.file("c/{a.c_source}");'
+            assert anchor in bt, "build.rs anchor not found for the multi-TU rewrite"
+            extra = "".join(f'\n    build.file("{f}");' for f in files)
+            extra += "".join(f'\n    build.include("{d}");' for d in incs)
+            extra += "".join(f'\n    build.flag("{f}");' for f in flags)
+            b.write_text(bt.replace(anchor, anchor + extra, 1))
         if private and stripped is None:
             # Single-TU pair (cJSON): the static lives in the oracle TU itself, and the generator's
             # --expose-entry already dropped its `static` there. Only a static that is STILL
@@ -114,13 +165,47 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
         # already made the entry pub at the crate root, and a re-export through a module that does
         # not exist is an unresolved import.
         text = lib.read_text()
-        if mod and re.search(rf'(?m)^\s*(?:pub\s+)?mod\s+{re.escape(mod)}\s*\{{', text):
+        # a directory module (CROWN quadtree `src/quadtree`, tulip `indicators/abs`) is declared by
+        # its leaf name and addressed by its `::` path
+        leaf = mod.rpartition("/")[2] if mod else mod
+        if mod and re.search(rf'(?m)^\s*(?:pub\s+)?mod\s+{re.escape(leaf)}\s*\{{', text):
             # CROWN wraps the modules in a namespace (`pub mod src { pub mod lil {..} }`): the
             # flatten's own re-exports say what the path prefix is; a C `static` exposed here
             # takes the same one (15 lil x CROWN builds failed with `unresolved import crate::lil`).
-            m = re.search(rf'(?m)^pub use crate::((?:\w+::)*){re.escape(mod)}::\w+;', text)
+            modpath = mod.replace("/", "::")
+            m = re.search(rf'(?m)^pub use crate::((?:\w+::)*){re.escape(modpath)}::\w+;', text)
             prefix = m.group(1) if m else ""
-            lib.write_text(text + f"\npub use crate::{prefix}{mod}::{entry};\n")
+            lib.write_text(text + f"\npub use crate::{prefix}{modpath}::{entry};\n")
+    # Types the generated target names at the crate root (`translated::quadtree_point_t` for a
+    # POD struct input) live in the ENTRY's module: c2rust's per-file output re-declares every
+    # type in each module and CROWN aliases them per module, so the entry's own module is the one
+    # spelling its signature uses. Re-export exactly those, from that module, when the root does
+    # not already provide them. Functions are re-exported by the flatten; this is for types.
+    if defs:
+        mod = defs.get("defs", {}).get(entry)
+        lib = out_dir / "src" / "lib.rs"
+        ft = out_dir / "fuzz" / "fuzz_targets"
+        srcs = [p.read_text() for p in ft.glob("*.rs")] if ft.exists() else []
+        if mod and srcs and lib.exists():
+            text = lib.read_text()
+            modpath = mod.replace("/", "::")
+            m = re.search(rf'(?m)^pub use crate::((?:\w+::)*){re.escape(modpath)}::\w+;', text)
+            prefix = m.group(1) if m else ""
+            names = set()
+            for s in srcs:
+                names.update(re.findall(r'\btranslated::([A-Za-z_]\w*)\b', s))
+            add = []
+            for nm in sorted(names):
+                if re.search(rf'(?m)^pub use crate::(?:\w+::)*{re.escape(nm)};', text):
+                    continue                                   # a function the flatten re-exported
+                if re.search(rf'(?m)^\s*pub\s+(?:struct|type|enum|union)\s+{re.escape(nm)}\b', text) is None:
+                    continue                                   # not a type the translation defines
+                if re.search(rf'(?m)^(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(nm)}\b', text):
+                    continue
+                add.append(f"pub use crate::{prefix}{modpath}::{nm};")
+            if add:
+                lib.write_text(text + "\n// types the generated target names, from the entry's own module\n"
+                               + "\n".join(add) + "\n")
     for d in (out_dir, out_dir / "fuzz"):
         (d / "rust-toolchain").write_text(TOOLCHAIN + "\n")
     return None
@@ -185,6 +270,7 @@ def main() -> int:
     _rs_text = _rs.read_text(encoding="utf-8", errors="replace") if _rs else ""
 
     plans = plan_all(pair, out)
+    plans = [p for p in plans if p["boundary"] not in pair_excludes(pair)]
     if a.only:
         keep = {s.strip() for s in a.only.split(",")}
         plans = [p for p in plans if p["boundary"] in keep]

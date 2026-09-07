@@ -1,0 +1,43 @@
+{
+ "lib": "urlparser",
+ "tool": "crown",
+ "source": {
+  "source/url.h": {
+   "from": "tools/frameworks/crown/c-code/urlparser/url.h",
+   "sha256": "a991cab060eac6d085a080521b714518bcad9d21f87fefdd4b2e93bcbe7ee11a"
+  },
+  "source/test.c": {
+   "from": "tools/frameworks/crown/c-code/urlparser/test.c",
+   "sha256": "68fc1ce6d2bba54f2f2c096999fda02fc0c7dac414f8df41f1ef2d67f05d4911"
+  }
+ },
+ "rust": {
+  "lib.rs": {
+   "from": "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/url_src_crown/lib.rs",
+   "sha256": "9889e5772429c6607f5e1c8a4a4f985c4df844b65c38b73e900b527d8e526aad"
+  },
+  "test.rs": {
+   "from": "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/url_src_crown/test.rs",
+   "sha256": "55f1b7c9d207b3c8669ec6598d48a066fb0f34273570fea1e8cdbfec0d54be8b"
+  },
+  "modules": {
+   "scored": [
+    "test"
+   ],
+   "unscored": []
+  },
+  "translated/urlparser_crown.rs": {
+   "sha256": "c514ade62431de12b5e4ff33ab086c73146ef41566a56f3c392fe6ba7b916138"
+  },
+  "translated/urlparser_crown.rs.defs.json": {
+   "sha256": "deac2e4cf99a6b6b5290f5d8cae3a8e377251e6809647c3154d6fd901bac0a26"
+  },
+  "translated/urlparser_crown.rs.linemap.json": {
+   "sha256": "f4a39cb7bd6617535c39c0d4967e093dc01f7acb039a60a010e2946b2a24596c"
+  }
+ },
+ "notes": [
+  "urlparser: url.h is header-only and test.c is the shipped make-test target; the translation unit IS the test program, so the scored module 'test' carries the driver's main_0 (reported by name; main excluded via exclude.txt). C reference heap-overflows in url_parse->get_part on every normal URL (E1 #27): boundaries through url_parse are expected ub_associated",
+  "CROWN's shipped result (tools/frameworks/crown/results/urlparser) over its c-code/urlparser (same url.h/test.c as the Laertes set); main commented out by CROWN"
+ ]
+}

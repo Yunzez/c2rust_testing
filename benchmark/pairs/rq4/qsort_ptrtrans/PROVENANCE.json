@@ -1,0 +1,43 @@
+{
+ "lib": "qsort",
+ "tool": "ptrtrans",
+ "source": {
+  "source/qsort.c": {
+   "from": "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/qsort/qsort.c",
+   "sha256": "b857f308fbdb67ba448e9013cc3b0a93341c9d045ca02312419f4eee5ca2d50d"
+  }
+ },
+ "rust": {
+  "qsort.rs": {
+   "from": "results/rq4_effectiveness/bugs/qsort_ptrtrans/translated_qsort.rs",
+   "sha256": "717008ffbf94a38247847918821e86487d004b5fd09c32f9335788570b3d876c"
+  },
+  "modules": {
+   "scored": [
+    "qsort"
+   ],
+   "unscored": []
+  },
+  "translated/qsort_ptrtrans.rs": {
+   "sha256": "3c993fe986ac0169bbff1b4a3ed331d297f928a8b46b293b63d5372920bda34b"
+  },
+  "translated/qsort_ptrtrans.rs.defs.json": {
+   "sha256": "b0383801e6e4ca774070b0bc15dd393a10d493b68aada2e87003e816b7687204"
+  },
+  "translated/qsort_ptrtrans.rs.linemap.json": {
+   "sha256": "0522e116fbbe6f806c26765e310c4b3e8dbbf6129bdcd449fde30e45602a0da0"
+  },
+  "translated/renames.json": {
+   "sha256": "6e9f8fd47d3175c742f6febb5b70de9a7863dca3468c65fb67e429db0af858e1"
+  }
+ },
+ "notes": [
+  "PtrTrans (gpt-5.1, Trans_PA) output archived with defect S? (results/rq4_effectiveness/bugs/qsort_ptrtrans); quickSort renamed quick_sort"
+ ],
+ "renames": {
+  "map": {
+   "quickSort": "quick_sort"
+  },
+  "source": "results/rq1_matching/annotation/<tool>_qsort/labels.json (RQ1 ground truth; matcher and manual agree)"
+ }
+}

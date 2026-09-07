@@ -1,0 +1,43 @@
+{
+ "lib": "qsort",
+ "tool": "sactor",
+ "source": {
+  "source/qsort.c": {
+   "from": "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/qsort/qsort.c",
+   "sha256": "b857f308fbdb67ba448e9013cc3b0a93341c9d045ca02312419f4eee5ca2d50d"
+  }
+ },
+ "rust": {
+  "qsort.rs": {
+   "from": "fuzz/qsort_sactor_e3lite/src/lib.rs",
+   "sha256": "34142f75aa16d65585bebe5fcf97c4a53d36d79aefe2fa07a252b1777f7ec224"
+  },
+  "modules": {
+   "scored": [
+    "qsort"
+   ],
+   "unscored": []
+  },
+  "translated/qsort_sactor.rs": {
+   "sha256": "a67800023dd2f661419e4a70edda844063f76f9de706630c14356693da5e589d"
+  },
+  "translated/qsort_sactor.rs.defs.json": {
+   "sha256": "04e800692cec4f05c774809dc21138a3e61c7823d3282a450ec67134c477ed3b"
+  },
+  "translated/qsort_sactor.rs.linemap.json": {
+   "sha256": "63d43f21a830e212d01dd1522bbd00a7d3ba8f44167ece66655f850c27c2cd40"
+  },
+  "translated/renames.json": {
+   "sha256": "6e9f8fd47d3175c742f6febb5b70de9a7863dca3468c65fb67e429db0af858e1"
+  }
+ },
+ "notes": [
+  "SACTOR (gpt-5.1) output, kept copy in fuzz/qsort_sactor_e3lite; quickSort renamed quick_sort"
+ ],
+ "renames": {
+  "map": {
+   "quickSort": "quick_sort"
+  },
+  "source": "results/rq1_matching/annotation/<tool>_qsort/labels.json (RQ1 ground truth; matcher and manual agree)"
+ }
+}

@@ -235,6 +235,30 @@ def b_params(b: dict | None) -> set[str]:
     return set().union(*(b_params(x) for x in b["of"])) if b["of"] else set()
 
 
+def b_subst(b: dict | None, mapping: dict) -> dict:
+    """Rewrite a callee-relative bound into the caller's parameters: every callee parameter it
+    mentions is replaced by the caller's argument bound (a caller parameter or a constant); a
+    callee parameter whose argument is anything else makes the bound unknown."""
+    if b_is_unknown(b):
+        return b or b_unknown("?")
+    if b["k"] == "const":
+        return b
+    if b["k"] == "param":
+        m = mapping.get(b["p"])
+        if m is None:
+            return b_unknown(f"callee bound depends on {b['p']}, whose argument is not a boundary parameter")
+        if m["k"] == "const":
+            return b_const((m["v"] * b["mul"]) // b["div"] + b["add"])
+        if b["mul"] == 1 and b["div"] == 1:
+            return b_param(m["p"], m["mul"], m["div"], m["add"] + b["add"])
+        if m["add"] == 0:
+            return b_param(m["p"], m["mul"] * b["mul"], m["div"] * b["div"], b["add"])
+        return b_unknown("callee bound with a scaled, offset argument")
+    if b["k"] == "max":
+        return b_max([b_subst(x, mapping) for x in b["of"]])
+    return b_unknown("subst")
+
+
 def b_eval_max(b: dict | None, caps: dict[str, int]) -> int | None:
     """Numeric upper bound, given a numeric cap for every parameter mentioned."""
     if b is None or b["k"] == "unknown":
@@ -408,9 +432,21 @@ class BodyAnalyzer:
     caller's fact, never the boundary's contract.
     """
 
-    def __init__(self, fn_cursor, param_names: set[str], table_params: set[str] | None = None):
+    # Callee summaries (2026-09-07). The boundary's body may hand a parameter to another function
+    # of the same TU that does the dereferencing (`quickSort(arr, low, high)` reads `arr[high]`
+    # only inside `partition`). Those accesses are the boundary's own obligations, so the callee's
+    # facts about its parameter are carried back onto the caller's argument when the argument is a
+    # plain boundary parameter or a constant -- bounded depth, no recursion, memoised per callee.
+    # This is still "from the body": a call is a statement of the body. Rule 7 stands unchanged:
+    # nothing here looks at a CALL SITE *of the boundary* (what callers pass in).
+    CALLEE_DEPTH = 2
+
+    def __init__(self, fn_cursor, param_names: set[str], table_params: set[str] | None = None,
+                 depth: int = 0, call_chain: frozenset | None = None):
         self.fn = fn_cursor
         self.params = set(param_names)
+        self.depth = depth
+        self.call_chain = (call_chain or frozenset()) | {fn_cursor.spelling}
         # T** parameters whose rows may be named by locals (`input = inputs[0]`); each named row
         # becomes a pseudo pointer parameter `inputs__row0` with an extent of its own.
         self.tables = set(table_params or ())
@@ -669,9 +705,92 @@ class BodyAnalyzer:
                         n, _ev("param_escapes_into_call", node,
                                f"{n} is passed to {callee or 'another function'}"))
                     self.facts.escape_callees.setdefault(n, set()).add(callee)
+            self._absorb_callee(node, callee)
 
         for c in kids:
             self._scan(c, loop_depth, write_targets, in_for_control)
+
+    def _callee_definition(self, callee: str):
+        if not callee:
+            return None
+        tu = self.fn.translation_unit
+        for cur in tu.cursor.walk_preorder():
+            if cur.kind == CursorKind.FUNCTION_DECL and cur.spelling == callee and cur.is_definition():
+                f = cur.location.file.name if cur.location and cur.location.file else ""
+                if f and not f.startswith(("/usr/", "/lib/")):
+                    return cur
+        return None
+
+    def _absorb_callee(self, node, callee: str):
+        """Carry the callee's facts about its parameters onto the arguments the boundary passes."""
+        if self.depth >= self.CALLEE_DEPTH or not callee or callee in self.call_chain:
+            return
+        args = list(node.get_arguments())
+        mapping: dict[str, dict] = {}       # callee param -> bound of the caller's argument
+        arg_name: dict[str, str] = {}       # callee param -> caller parameter name
+        cur = self._callee_definition(callee)
+        if cur is None:
+            return
+        cparams = [a.spelling for a in cur.get_arguments()]
+        if len(cparams) != len(args):
+            return
+        for q, a in zip(cparams, args):
+            n, _ = _ref_name(a)
+            if n in self.params:
+                mapping[q] = b_param(n)
+                arg_name[q] = n
+            else:
+                lit = _int_literal(a)
+                if lit is not None:
+                    mapping[q] = b_const(lit)
+        if not arg_name:
+            return
+        key = (str(self.fn.translation_unit.spelling), callee, self.depth + 1)
+        cf = _CALLEE_FACTS.get(key)
+        if cf is None:
+            try:
+                cf = BodyAnalyzer(cur, set(cparams), depth=self.depth + 1,
+                                  call_chain=self.call_chain).run()
+            except Exception as e:   # a callee the analyser cannot read is no fact, not a crash
+                cf = BodyFacts(unresolved=[f"callee {callee}: {e}"])
+            _CALLEE_FACTS[key] = cf
+        for q, n in arg_name.items():
+            d = cf.derefs.get(q)
+            if d:
+                mine = self.facts.derefs.setdefault(n, {"written": False, "read": False, "ev": None})
+                mine["written"] = mine["written"] or d["written"]
+                mine["read"] = mine["read"] or d["read"]
+                if mine["ev"] is None:
+                    mine["ev"] = _ev("pointer_dereferenced_in_callee", node,
+                                     f"{n} is passed to {callee}({q}), which "
+                                     f"{'writes' if d['written'] else 'reads'} *{q}")
+            for s in cf.subscripts:
+                if s.base != q:
+                    continue
+                self.facts.subscripts.append(Subscript(
+                    base=n, written=s.written,
+                    index_bound=b_subst(s.index_bound, mapping),
+                    index_lower=b_subst(s.index_lower, mapping),
+                    deps=sorted({arg_name[x] for x in s.deps if x in arg_name}),
+                    ev=_ev("index_bound_via_callee", node,
+                           f"{n} is passed to {callee}({q}), which "
+                           f"{'writes' if s.written else 'reads'} {q}[{b_render(s.index_bound)}] "
+                           f"(bound rewritten to the boundary's parameters)")))
+            if q in cf.loop_bound_params:
+                self.facts.loop_bound_params.setdefault(
+                    n, _ev("loop_trip_count_controlled_by_param_via_callee", node,
+                           f"{n} is passed to {callee}({q}), where {q} controls a loop"))
+            if q in cf.advanced:
+                self.facts.advanced.add(n)
+            for c2 in cf.escape_callees.get(q, ()):
+                self.facts.escape_callees.setdefault(n, set()).add(c2)
+            g = cf.guards.get(q)
+            if g and n not in self.facts.guards:
+                gg = dict(g)
+                gg["evidence"] = list(g.get("evidence", [])) + [
+                    _ev("rejection_guard_via_callee", node,
+                        f"{n} is passed to {callee}({q}), which rejects it outside this range")]
+                self.facts.guards[n] = gg
 
     def _record_dep(self, lhs, rhs):
         """`v = <expr>` makes v depend on every name in <expr> (pass 1 only)."""
@@ -989,20 +1108,7 @@ def _params_in(cur, params: set[str]) -> set[str]:
 # ---------------------------------------------------------------------------
 def entry_cursor(cc_dir: Path, entry: str):
     """The definition cursor of `entry`, from the pair's own compilation database."""
-    cgmod._configure_libclang()
-    from clang.cindex import CompilationDatabase
-    cdb = CompilationDatabase.fromDirectory(str(cc_dir))
-    index = Index.create()
-    cwd0 = os.getcwd()
-    for cmd in cdb.getAllCompileCommands():
-        src_abs = str((Path(cmd.directory) / cmd.filename).resolve())
-        names = {cmd.filename, src_abs, Path(cmd.filename).name}
-        args = cgmod._filter_compile_args(list(cmd.arguments), names)
-        os.chdir(cmd.directory if Path(cmd.directory).exists() else cc_dir)
-        try:
-            tu = index.parse(src_abs, args=args)
-        finally:
-            os.chdir(cwd0)
+    for cmd, tu in gdh.parsed_tus(cc_dir):
         for cur in tu.cursor.walk_preorder():
             if (cur.kind == CursorKind.FUNCTION_DECL and cur.is_definition()
                     and cur.spelling == entry):
@@ -1809,8 +1915,17 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
                                              f"written length out")]))
             continue
         if p["kind"] == "ptr_struct":
+            # a POD struct behind a pointer: decoded field by field (input_struct / inout_struct in
+            # the generator). A boundary that FREES it (quadtree_point_free) would free the
+            # harness's own value: no heap-owned struct adapter exists, so that is a construction
+            # failure, stated -- not a crash on both sides counted as agreement.
+            freed = bool(facts.escape_callees.get(n, set()) & {"free", "realloc"})
+            if freed:
+                plan.failures.append(f"{n}: the boundary passes this POD struct pointer to free(); "
+                                     f"the harness owns the value and has no heap-owned struct adapter")
             plan.specs.append(InputSpec(n, "struct_value",
-                                        {"struct": p["struct"]["name"]}, e["evidence"]))
+                                        {"struct": p["struct"]["name"], "written": bool(e["written"]),
+                                         "freed": freed}, e["evidence"]))
             continue
         ln = length_of.get(n)
         # A length parameter may size several buffers of different element widths (`alphaSize`
@@ -1909,13 +2024,29 @@ def _sig(cc_dir: Path, f: str, with_return_desc: bool = True, allow_nonpod: bool
     return val
 
 
+# C name -> Rust name for translators that rename functions (SACTOR / PtrTrans `quickSort ->
+# quick_sort`). Loaded from `<pair>/translated/renames.json`; the map is the matcher's (RQ1) output
+# for the pair, never guessed here. Absent file = identity, so name-preserving pairs are unchanged.
+_RENAMES: dict[str, str] = {}
+
+
+def load_renames(pair: Path) -> dict[str, str]:
+    p = Path(pair) / "translated" / "renames.json"
+    return json.loads(p.read_text()) if p.exists() else {}
+
+
+def _rn(name: str) -> str:
+    return _RENAMES.get(name, name)
+
+
 def _rust_fn_exists(rs_text: str | None, name: str) -> bool:
     return bool(rs_text) and re.search(
-        rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(name)}\s*[<(]',
+        rf'(?m)^\s*(?:pub\s+)?(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(_rn(name))}\s*[<(]',
         rs_text) is not None
 
 
 _DRIVER_CACHE: dict = {}
+_CALLEE_FACTS: dict = {}     # (TU, callee, depth) -> BodyFacts, one analysis per callee per plan run
 
 
 def _first_of(cur, kind):
@@ -2021,16 +2152,16 @@ def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolic
         # the harness calls `translated::<producer>`: a C `static` producer that the translation
         # keeps private (lil's `real_trim`) is not callable, so it is not a candidate -- the next
         # viable producer (the public API's own constructor) is ranked instead
-        if not re.search(rf'(?m)^\s*(?:#\[no_mangle\]\s*)?pub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(f)}\b', rust_text or ""):
+        if not re.search(rf'(?m)^\s*(?:#\[no_mangle\]\s*)?pub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(_rn(f))}\b', rust_text or ""):
             alternatives.append({"fn": f, "excluded": "not public in the translation (C static kept private); the harness cannot call it"})
             continue
-        rret = _norm_ty(gdh.parse_rust_ret_type(rust_text, f) or "", rust_aliases)
+        rret = _norm_ty(gdh.parse_rust_ret_type(rust_text, _rn(f)) or "", rust_aliases)
         if not re.fullmatch(rf"\*(?:mut|const){re.escape(tname)}", rret):
             alternatives.append({"fn": f, "excluded": f"returns {rret or 'nothing'} in Rust; the pilot needs a raw pointer to {tname}"})
             continue
         # rule 4: every parameter plannable by the existing InputPlan (scalars, strings, buffers --
         # the cJSON generalisation: `cJSON_Parse(const char*)` is a producer, not just scalar-only ones)
-        frt = gdh.parse_rust_param_types(rust_text, f)
+        frt = gdh.parse_rust_param_types(rust_text, _rn(f))
         pk = (str(cc_dir), f)
         if pk not in _PRODUCER_PLAN_CACHE:
             _PRODUCER_PLAN_CACHE[pk] = build_plan(cc_dir, f, policy, rust_types=(frt or None),
@@ -2149,6 +2280,10 @@ def build_plan(cc_dir: Path, entry: str, policy: GeneratorPolicy = POLICY,
     def _fail(reason: str) -> HarnessPlan:
         return HarnessPlan(entry, "failed", [], [], [reason], policy.as_dict())
 
+    # a renaming translator's map travels with the pair (also when the generator drives this
+    # function directly with --plan, where main() below never runs)
+    if not _RENAMES:
+        _RENAMES.update(load_renames(Path(cc_dir).parent))
     try:
         params, ret, _fns, ret_desc = gdh.parse_entry_signature(cc_dir, entry, with_return_desc=True,
                                                               allow_nonpod=allow_producer)
@@ -2274,6 +2409,12 @@ def lower_to_schema(plan: HarnessPlan, params: list[dict], program: str, ret_rus
         elems_cap = min(policy.unproven_extent_elems, byte_cap)
         if a == "null_pointer":
             out.append({"name": n, "role": "null_pointer", "decode": "null"})
+        elif a == "struct_value":
+            if d.get("freed"):
+                raise LoweringError(f"{plan.boundary}: {n} is freed by the boundary (no heap-owned struct adapter)")
+            out.append({"name": n, "role": "inout_struct" if d.get("written") else "input_struct",
+                        "struct_name": p["struct"]["name"],
+                        "fields": gdh._struct_fields_to_schema(p["struct"])})
         elif a == "produced_object":
             # The producer's scalars are lowered exactly like any bounded scalar; the generator
             # namespaces them under the object's name so `genann_run(ann, inputs)` and
@@ -2399,20 +2540,8 @@ def _all_entries(cc_dir: Path) -> list[str]:
 
 
 def _all_entries_uncached(cc_dir: Path) -> list[str]:
-    cgmod._configure_libclang()
-    from clang.cindex import CompilationDatabase
-    cdb = CompilationDatabase.fromDirectory(str(cc_dir))
-    index = Index.create()
-    cwd0, out = os.getcwd(), []
-    for cmd in cdb.getAllCompileCommands():
-        src_abs = str((Path(cmd.directory) / cmd.filename).resolve())
-        args = cgmod._filter_compile_args(list(cmd.arguments),
-                                          {cmd.filename, src_abs, Path(cmd.filename).name})
-        os.chdir(cmd.directory if Path(cmd.directory).exists() else cc_dir)
-        try:
-            tu = index.parse(src_abs, args=args)
-        finally:
-            os.chdir(cwd0)
+    out = []
+    for cmd, tu in gdh.parsed_tus(cc_dir):
         for cur in tu.cursor.walk_preorder():
             if cur.kind == CursorKind.FUNCTION_DECL and cur.is_definition():
                 f = cur.location.file.name if cur.location and cur.location.file else ""
@@ -2438,6 +2567,7 @@ def main() -> int:
     a = ap.parse_args()
 
     cc = Path(a.pair) / "build"
+    _RENAMES.update(load_renames(Path(a.pair)))
     if a.all:
         entries = _all_entries(cc)
     elif a.entries:
@@ -2459,7 +2589,7 @@ def main() -> int:
     plans = []
     aliases = rust_type_aliases(rs_text) if rs_text else None
     for e in entries:
-        rt = gdh.parse_rust_param_types(rs_text, a.rust_entry or e) if rs_text else None
+        rt = gdh.parse_rust_param_types(rs_text, a.rust_entry or _rn(e)) if rs_text else None
         p = build_plan(cc, e, rust_types=(rt or None), rust_aliases=aliases, rust_text=rs_text)
         plans.append(p)
         if outdir:

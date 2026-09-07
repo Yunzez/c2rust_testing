@@ -141,6 +141,23 @@ def describe_type(t, _depth: int = 0) -> dict:
     return {"kind": "unsupported", "spelling": t.spelling}
 
 
+def describe_param_type(t) -> dict:
+    """A PARAMETER declared with array type (`int arr[]`, `int arr[10]`, `char s[n]`) has pointer
+    type in C (array-to-pointer adjustment, C11 6.7.6.3p7): describe it as the pointer it is.
+    Only for parameters -- struct fields and pointees keep their array shape (describe_type)."""
+    s = t
+    seen = 0
+    while s.kind in (TypeKind.TYPEDEF, TypeKind.ELABORATED) and seen < 8:
+        s = s.get_canonical()
+        seen += 1
+    if s.kind in (TypeKind.INCOMPLETEARRAY, TypeKind.CONSTANTARRAY, TypeKind.VARIABLEARRAY,
+                  TypeKind.DEPENDENTSIZEDARRAY):
+        et = s.element_type
+        return {"kind": "pointer", "const": et.is_const_qualified(), "inner": describe_type(et, 1),
+                "decayed_from": t.spelling}
+    return describe_type(t)
+
+
 def _rust_record_name(t) -> str:
     """The Rust type name c2rust gives this record: the C typedef/tag spelling, qualifiers stripped."""
     name = t.spelling
@@ -260,6 +277,37 @@ def _param_usage(fn, names: set) -> dict:
     return usage
 
 
+_TU_CACHE: dict = {}
+
+
+def parsed_tus(cc_dir: Path) -> list:
+    """[(compile command, libclang TU)] for the pair's compilation database, parsed ONCE per
+    process. A multi-TU pair (optipng: 52 units) is otherwise re-parsed by every signature and
+    cursor lookup, i.e. thousands of times per plan run."""
+    key = str(Path(cc_dir).resolve())
+    if key in _TU_CACHE:
+        return _TU_CACHE[key][1]
+    cgmod._configure_libclang()
+    from clang.cindex import CompilationDatabase
+    import os
+    cdb = CompilationDatabase.fromDirectory(str(cc_dir))
+    index = Index.create()
+    cwd0 = os.getcwd()
+    out = []
+    for cmd in cdb.getAllCompileCommands():
+        src_abs = str((Path(cmd.directory) / cmd.filename).resolve())
+        names = {cmd.filename, src_abs, Path(cmd.filename).name}
+        args = cgmod._filter_compile_args(list(cmd.arguments), names)
+        os.chdir(cmd.directory if Path(cmd.directory).exists() else cc_dir)
+        try:
+            tu = index.parse(src_abs, args=args)
+        finally:
+            os.chdir(cwd0)
+        out.append((cmd, tu))
+    _TU_CACHE[key] = (index, out)          # the index must outlive its TUs
+    return out
+
+
 def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = False,
                           allow_nonpod: bool = False):
     # with_return_desc=True adds a 4th element: the structural descriptor of the RETURN type,
@@ -284,15 +332,7 @@ def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = Fal
     # value against itself. Real libraries have such tables (bzip2: BZ2_crc32Table, BZ2_rNums);
     # the micro-benchmark corpus this generator was built on has none.
     all_globals: list[str] = []
-    for cmd in cdb.getAllCompileCommands():
-        src_abs = str((Path(cmd.directory) / cmd.filename).resolve())
-        names = {cmd.filename, src_abs, Path(cmd.filename).name}
-        args = cgmod._filter_compile_args(list(cmd.arguments), names)
-        os.chdir(cmd.directory if Path(cmd.directory).exists() else cc_dir)
-        try:
-            tu = index.parse(src_abs, args=args)
-        finally:
-            os.chdir(cwd0)
+    for cmd, tu in parsed_tus(cc_dir):
         for cur in tu.cursor.walk_preorder():
             if cur.kind == CursorKind.VAR_DECL and cur.is_definition():
                 f = cur.location.file.name if cur.location and cur.location.file else None
@@ -314,7 +354,7 @@ def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = Fal
             usage = _param_usage(cur, {a.spelling for a in arg_cursors if a.spelling})
             for idx, a in enumerate(arg_cursors):
                 pname = safe_name(a.spelling, idx)
-                pd = _param_from_descriptor(describe_type(a.type), pname, allow_nonpod)
+                pd = _param_from_descriptor(describe_param_type(a.type), pname, allow_nonpod)
                 u = usage.get(a.spelling, {})
                 pd["subscripted"] = u.get("subscripted", False)
                 pd["used_as_index"] = u.get("used_as_index", False)
@@ -1172,7 +1212,7 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             post.append(f'    if {n}_back_c != {n}_back_r {{ panic!("divergence: string table {n}"); }}')
         elif it["role"] == "in_struct":
             # const struct pointer: one decoded value shared by both sides (callee must not mutate).
-            decode.append(f"    let {n}_val = {_rust_struct_literal(it['struct'])};")
+            decode.append(f"    let mut {n}_val = {_rust_struct_literal(it['struct'])};")
         elif it["role"] == "io_struct":
             # mutable struct pointer: decode once, give each side its own copy (struct is Copy),
             # compare field-wise afterwards.
@@ -1326,7 +1366,11 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
             elif br == "opt_ref_obj":
                 r_pairs.append((n, f"Some(&mut *{n}_r)" if want_mut else f"Some(&*{n}_r)"))
             else:
-                r_pairs.append((n, f"{n}_r" if want_mut else f"{n}_r as *const _"))
+                # `as *mut _`: a per-file c2rust translation defines the same C struct once per
+                # module (quadtree: `node::quadtree_node` from the producer, `quadtree::quadtree_node`
+                # in the target's signature); the raw-pointer cast lets rustc infer the target's
+                # spelling and is the identity when they already agree.
+                r_pairs.append((n, f"{n}_r as *mut _" if want_mut else f"{n}_r as *const _"))
         elif role == "plan_array" and p.get("one_elem") and (
                 rty.startswith("&mut") or rty.startswith("Option<&mut") or rty.startswith("&")
                 or rty.startswith("Option<&")):
@@ -1364,8 +1408,12 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
             _pk = "const" if p.get("inner_const") else "mut"
             decl.append(f"{n}: *mut *{_pk} {p['elem']}")
         elif role == "input_struct":
-            c_args.append(f"&{n}_val"); r_pairs.append((n, f"&{n}_val"))
-            decl.append(f"{n}: *const translated::{p['struct_name']}")
+            # the C parameter may be a non-const `T*` the body only reads (quadtree's
+            # `get_quadrant_(root, point)`): the translation then wants `*mut T`, so the shared
+            # value is handed over as a mutable raw pointer; the analysis says nobody writes it
+            c_args.append(f"&mut {n}_val")
+            r_pairs.append((n, f"&mut {n}_val as *mut _" if rty.startswith("*mut") else f"&{n}_val"))
+            decl.append(f"{n}: *mut translated::{p['struct_name']}")
         elif role == "inout_struct":
             c_args.append(f"&mut {n}_c"); r_pairs.append((n, f"&mut {n}_r"))
             decl.append(f"{n}: *mut translated::{p['struct_name']}")
@@ -1933,7 +1981,9 @@ def strip_static_c(c_text: str, entry: str) -> tuple[str, bool]:
     """Give the renamed C oracle symbol `c_<entry>` external linkage by dropping `static` from the
     entry's definition (a `static` C function isn't linkable even after the f->c_f #define rename)."""
     import re
-    pat = rf'(?m)^(\s*)static(\s+[^\n;{{]*\b{re.escape(entry)}\s*(?:<[^>()]*>)?\s*\()'
+    # `[^;{}]*?` may span lines: quadtree writes `static void\nelision_(void* key){}` and
+    # `static int\ninsert_(...)`. It cannot cross another declaration, which ends in `;` or `{`.
+    pat = rf'(?m)^(\s*)static(\s+[^;{{}}]*?\b{re.escape(entry)}\s*(?:<[^>()]*>)?\s*\()'
     # every occurrence, not the first: a forward declaration (`static const char *parse_array(..);`
     # before the definition, as cJSON writes them) left the DEFINITION static, and C rejects a
     # static definition after a non-static declaration.
@@ -2273,7 +2323,7 @@ doc = false
     ub_file = f'\n    build.file("c/ubshim.c");' if args.ub_free else ""
     (out / "build.rs").write_text(f'''fn main() {{
     let mut build = cc::Build::new();
-    build.compiler("clang").flag("-O1").flag("-g")
+    build.compiler("clang").include("c").flag("-O1").flag("-g")
         .flag("-fsanitize-coverage=inline-8bit-counters,pc-table,trace-cmp"){ub_flags}.warnings(false);
     build
 {defines};

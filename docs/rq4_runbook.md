@@ -137,6 +137,38 @@ sentinel · a `None` template must fail construction, not fall through to an add
   the translation (`plugin_compat`) and an incompatible plugin is dropped for that translation
   with the reason printed and recorded in the verdict (`plugin_degraded`); the return contract
   falls to pointer nullness. Never fix this by editing the plugin for one translator.
+- **Array-typed parameters (qsort, 2026-09-07): `int arr[]` was "unsupported param type".** A parameter
+  declared with array type IS a pointer (C11 6.7.6.3p7); `describe_param_type` now decays it, only
+  for parameters (fields and pointees keep their array shape). All six qsort pairs went 1/3 → 3/3.
+- **Wrappers that never dereference (qsort `quickSort`, 2026-09-07): zero-filled buffer, unbounded
+  indices.** The boundary passes `arr, low, high` to `partition`, which does the indexing; the
+  analyzer saw "pointer is never dereferenced" and planned a zero array with plain scalars, so the
+  campaign would have been all out-of-bounds. `BodyAnalyzer` now carries a callee's facts about its
+  own parameters back onto the arguments the boundary passes (depth ≤ 2, no recursion, memoised):
+  derefs, subscripts with the bound rewritten to the boundary's parameters, loop-trip controls,
+  advanced pointers, escapes and rejection guards. Rule 7 is untouched (nothing looks at callers of
+  the boundary). The 29 golden plans are byte-identical; the generator hash changed, so cells run
+  from here carry a different hash than the first nineteen (recorded per funnel row).
+- **Renamed entries (qsort × SACTOR / PtrTrans): `<pair>/translated/renames.json`** is the RQ1 map;
+  `harness_plan.py`, `c2r_funnel.py` and `cell.py` pass it as `--rust-entry`. Absent = identity.
+- **Single-file crate roots as modules (`make_pair.py`):** crate-level `#![feature]` /
+  `#![register_tool]` lines are dropped when the file becomes a module (the flatten's header carries
+  them); a Laertes root's `mod laertes_rt {}` / `mod __laertes_array {}` blocks are moved verbatim to
+  a synthesized lib.rs (`--split-root-mods`) so `crate::laertes_rt::*` still resolves.
+- **quadtree / urlparser, 2026-09-07 (all fixed the same day, generator hash changed again):**
+  a two-line `static void\nname(` definition was not stripped (`strip_static_c` now spans lines);
+  a static defined in a sibling **header** (url.h's `strff`) was never stripped (siblings now include
+  `*.h`); the harness compiled `c/test.c` without `-I c` so `#include <url.h>` failed (build.rs has
+  `.include("c")`); a POD struct behind a pointer (`quadtree_point_t*`) was planned as `struct_value`
+  with no lowering (planner lied) -- now `input_struct` / `inout_struct`, refused when the boundary
+  frees it; the type name the target uses (`translated::quadtree_point_t`) is re-exported from the
+  ENTRY's module (c2rust re-declares types per file, CROWN aliases per module); a produced object is
+  passed `as *mut _` because the producer's module spells the struct differently from the target's;
+  a directory module (`src/quadtree`) needed its leaf name for the static re-export; `exclude.txt`
+  drops a driver's `main` when the TU is the test program.
+- **Shipped suites that fail under the translation (recorded, denominator only):** quadtree × CROWN
+  (`NonNull::new_unchecked requires non-null`, debug-assertions), urlparser × Laertes (SIGSEGV),
+  urlparser × C2SaferRust (double free). A failing suite is never 0 %, and it is E1 evidence, not RQ4.
 - **Universe rlib selection.** `rlib_universe.py` takes cargo's `--message-format=json` log and
   picks the exact lib artifact of that build; the newest-by-mtime rlib is only a fallback and is
   labelled as such in `denominator.json._source.selected_by`.

@@ -1,0 +1,40 @@
+{
+ "lib": "urlparser",
+ "tool": "c2rust",
+ "source": {
+  "source/url.h": {
+   "from": "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/urlparser/url.h",
+   "sha256": "a991cab060eac6d085a080521b714518bcad9d21f87fefdd4b2e93bcbe7ee11a"
+  },
+  "source/test.c": {
+   "from": "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/urlparser/test.c",
+   "sha256": "68fc1ce6d2bba54f2f2c096999fda02fc0c7dac414f8df41f1ef2d67f05d4911"
+  }
+ },
+ "rust": {
+  "test.rs": {
+   "from": "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/urlparser/test.rs",
+   "sha256": "abe128be579963bda83898aad3ccd72691b389b4f2cc3ad4913910483f92b57e",
+   "crate_attrs_removed": 5
+  },
+  "modules": {
+   "scored": [
+    "test"
+   ],
+   "unscored": []
+  },
+  "translated/urlparser_c2rust.rs": {
+   "sha256": "eabb2197b466078eaf5e1edf69e7d22e90ffa34e984038c810cd630f2b155539"
+  },
+  "translated/urlparser_c2rust.rs.defs.json": {
+   "sha256": "602e1bc58ab67b2fb390151d679b47ddca183e1e99e122783b73cba8e7b64003"
+  },
+  "translated/urlparser_c2rust.rs.linemap.json": {
+   "sha256": "d04eaf0f4973f4c4e8efbb08558cacdb6b4069bfec5910047c75575c19986f90"
+  }
+ },
+ "notes": [
+  "urlparser: url.h is header-only and test.c is the shipped make-test target; the translation unit IS the test program, so the scored module 'test' carries the driver's main_0 (reported by name; main excluded via exclude.txt). C reference heap-overflows in url_parse->get_part on every normal URL (E1 #27): boundaries through url_parse are expected ub_associated",
+  "c2rust base from the Laertes benchmark set (laertes_benchmarks/urlparser/test.rs)"
+ ]
+}

@@ -1,0 +1,41 @@
+{
+ "lib": "urlparser",
+ "tool": "laertes",
+ "source": {
+  "source/url.h": {
+   "from": "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/urlparser/url.h",
+   "sha256": "a991cab060eac6d085a080521b714518bcad9d21f87fefdd4b2e93bcbe7ee11a"
+  },
+  "source/test.c": {
+   "from": "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/urlparser/test.c",
+   "sha256": "68fc1ce6d2bba54f2f2c096999fda02fc0c7dac414f8df41f1ef2d67f05d4911"
+  }
+ },
+ "rust": {
+  "test.rs": {
+   "from": "/home/yunzez/c2rust_testing/tools/frameworks/c2saferrust/laertes_benchmarks/urlparser_laertes/test.rs",
+   "sha256": "d8f99e988cef4c9f7abe264b81d30c946a5b4b5f9293f56c89b4aee0bd7c6e7e",
+   "split_root_mods": "490 lines of root `mod` blocks moved to lib.rs verbatim",
+   "crate_attrs_removed": 5
+  },
+  "modules": {
+   "scored": [
+    "test"
+   ],
+   "unscored": []
+  },
+  "translated/urlparser_laertes.rs": {
+   "sha256": "87bcb66bcd2211a3fd9b1c31bb2d9bc32741b46a26ea592bda3ff5573f7867cb"
+  },
+  "translated/urlparser_laertes.rs.defs.json": {
+   "sha256": "602e1bc58ab67b2fb390151d679b47ddca183e1e99e122783b73cba8e7b64003"
+  },
+  "translated/urlparser_laertes.rs.linemap.json": {
+   "sha256": "3ccaf0cd0e3e0d2d82123101446500f412ca0f68372a174a60419d25269b7f98"
+  }
+ },
+ "notes": [
+  "urlparser: url.h is header-only and test.c is the shipped make-test target; the translation unit IS the test program, so the scored module 'test' carries the driver's main_0 (reported by name; main excluded via exclude.txt). C reference heap-overflows in url_parse->get_part on every normal URL (E1 #27): boundaries through url_parse are expected ub_associated",
+  "Laertes shipped translation (laertes_benchmarks/urlparser_laertes/test.rs); its body addresses url_data as crate::url_data, hence the root glob re-export"
+ ]
+}

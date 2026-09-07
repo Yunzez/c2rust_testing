@@ -98,7 +98,7 @@ def build_one(a, pair, entry, private, out_dir, target, sanitize=False, nosan=Fa
     """Generate + fix up + build one harness, and keep its binary."""
     shutil.rmtree(out_dir, ignore_errors=True)
     cmd = [sys.executable, str(ROOT / "tools/stu_selector/gen_diff_harness.py"),
-           "--pair", str(pair), "--entry", entry, "--rust-entry", entry,
+           "--pair", str(pair), "--entry", entry, "--rust-entry", F.rust_name(pair, entry),
            "--plan", "--ub-free", "--out", str(out_dir)]
     if a.c_source:
         cmd += ["--c-source", a.c_source]
@@ -404,6 +404,8 @@ def main() -> int:
     target = out / "target"
 
     plans = F.plan_all(pair, out)
+
+    plans = [p for p in plans if p["boundary"] not in F.pair_excludes(pair)]
     if a.only:
         keep = {s.strip() for s in a.only.split(",")}
         plans = [p for p in plans if p["boundary"] in keep]

@@ -225,7 +225,7 @@ DEFECTS = [
          attr="no", align="no",
          provenance="unknown",
          provenance_note="catalog appendix: original bzip2 .c not archived for the checksum quotes (base c2rust quoted). Execution oracle (archive + OBS cell) = tools/frameworks/crown/c-code/bzip2 (bzip2 1.0.8); identity with the Laertes-benchmark bzip2 that Laertes consumed is not recorded",
-         evidence=("results/rq4_effectiveness/bugs/bzip2_laertes/; results/rq4_effectiveness/translation_matrix.md fn 14; results/rq4_effectiveness/bugs_detailed.md:388. INDEPENDENT REDISCOVERY 2026-09-03: the schema-driven differential harness generated for BZ2_bzBuffToBuffCompress (generator 0.6, with no knowledge of this defect) reported 58,327 output-buffer divergence events in a 3600 s campaign, with the same signature as the archived cell (written length equal, bytes differ); results/rq3_coverage/bzip2/")),
+         evidence=("RQ4 RE-FIND (plan pipeline, 3600 s, seed 42, 2026-09-04): results/rq3_coverage/bzip2/laertes/ — confirmed on both its boundaries (confirm_sample: 299 confirmed_divergence), C clean under ASan+UBSan; bzip2/SUMMARY.md §3; results/rq4_effectiveness/bugs/bzip2_laertes/; results/rq4_effectiveness/translation_matrix.md fn 14; results/rq4_effectiveness/bugs_detailed.md:388. INDEPENDENT REDISCOVERY 2026-09-03: the schema-driven differential harness generated for BZ2_bzBuffToBuffCompress (generator 0.6, with no knowledge of this defect) reported 58,327 output-buffer divergence events in a 3600 s campaign, with the same signature as the archived cell (written length equal, bytes differ); results/rq3_coverage/bzip2/")),
     dict(id="S4", library="optipng (zlib)", tool="Laertes", kind="semantic",
          root_cause="laertes_init_crc_table never called; no DYNAMIC_CRC_TABLE rebuild",
          family="initialization loss or corruption",
@@ -245,7 +245,7 @@ DEFECTS = [
          attr="no", align="no",
          provenance="exact-source",
          provenance_note="SACTOR consumed the in-repo genann.c (renamed genann_lib.c; compile_commands.json archived); driver.c in archive",
-         evidence="results/rq4_effectiveness/bugs/genann_sactor/; results/rq4_effectiveness/translation_matrix.md fn 32; results/rq4_effectiveness/bugs_detailed.md:464"),
+         evidence="RQ4 RE-FIND (plan pipeline with the producer bridge, 2026-09-05): results/rq3_coverage/genann/sactor/ — 17/21 corpus inputs diverge on genann_act_sigmoid_cached, genann_act_hidden_indirect, genann_act_output_indirect; 51/51 confirmed_divergence with C clean; none of the three boundaries is reachable without the bridge; genann/SUMMARY.md §3; results/rq4_effectiveness/bugs/genann_sactor/; results/rq4_effectiveness/translation_matrix.md fn 32; results/rq4_effectiveness/bugs_detailed.md:464"),
     dict(id="S6", library="qsort", tool="PtrTrans", kind="semantic",
          root_cause="split_at_mut swap indexes right[j-i] not right[0]; None-swallowing swap",
          family="interface-contract loss",
@@ -304,7 +304,7 @@ DEFECTS = [
          attr="no", align="no",
          provenance="exact-source",
          provenance_note="as C7 (crown/c-code/bzip2 1.0.8 = CROWN's input). Line-level root cause now archived under C7 (fallbackSort SET_BH `|=` rewritten to `=`, 2026-09-05): the structurally invalid stream is the downstream face of the same corrupted sort, so S10 and C7 share one root cause; RQ4 cell 2026-09-05: BZ2_bzBuffToBuffCompress 97/97 replay divergences confirmed (destLen + output stream), results/rq3_coverage/bzip2/crown/",
-         evidence=("results/rq4_effectiveness/bugs/bzip2_crown/ (crown_compress_driver.rs, crown_corrupt_A4096.bz2); results/rq4_effectiveness/translation_matrix.md fn 10; results/rq4_effectiveness/bugs_detailed.md:716. INDEPENDENT REDISCOVERY 2026-09-03: the generated differential harness for the CROWN compress boundary (shared with C7) reported 75,872 written-length divergence events in a 3600 s campaign; results/rq3_coverage/bzip2/")),
+         evidence=("RQ4 RE-FIND (plan pipeline, 2026-09-04): results/rq3_coverage/bzip2/crown/ — 242 confirmed_divergence in the sample, root cause found at line level (SET_BH `|=` → `=`); bzip2/SUMMARY.md §3, §5; results/rq4_effectiveness/bugs/bzip2_crown/ (crown_compress_driver.rs, crown_corrupt_A4096.bz2); results/rq4_effectiveness/translation_matrix.md fn 10; results/rq4_effectiveness/bugs_detailed.md:716. INDEPENDENT REDISCOVERY 2026-09-03: the generated differential harness for the CROWN compress boundary (shared with C7) reported 75,872 written-length divergence events in a 3600 s campaign; results/rq3_coverage/bzip2/")),
     dict(id="S11", library="bzip2", tool="CROWN", kind="semantic",
          root_cause="decompress small=0 fast-path state machine broken by lift",
          family="ownership-state corruption",
@@ -314,7 +314,7 @@ DEFECTS = [
          attr="no", align="no",
          provenance="exact-source",
          provenance_note="as C7",
-         evidence="results/rq4_effectiveness/bugs/bzip2_crown/crown_decompress_driver.rs; results/rq4_effectiveness/translation_matrix.md fn 10; results/rq4_effectiveness/bugs_detailed.md:745"),
+         evidence="RQ4 RE-FIND (plan pipeline, 2026-09-04): results/rq3_coverage/bzip2/crown/ (decompression boundaries, confirm_sample); bzip2/SUMMARY.md §3; results/rq4_effectiveness/bugs/bzip2_crown/crown_decompress_driver.rs; results/rq4_effectiveness/translation_matrix.md fn 10; results/rq4_effectiveness/bugs_detailed.md:745"),
     dict(id="S12", library="bzip2", tool="C2SaferRust", kind="semantic",
          root_cause="API NULL guards folded into is_empty(); valid empty buffer rejected",
          family="null/empty conflation",
@@ -358,7 +358,7 @@ DEFECTS = [
                           "whether the original .c was byte-identical (bzip2_WIP ships no .c). C for context: "
                           "tools/frameworks/crown/c-code/bzip2/blocksort.c:583 (bzip2 1.0.8). Hashes of all three "
                           "in the archive raw/source_hashes.txt"),
-         evidence=("results/rq4_effectiveness/bugs/bzip2_c2saferrust_mmed3/ (exhaustive census, both bodies, the "
+         evidence=("RQ4 RE-FIND (plan pipeline, 2026-09-04): results/rq3_coverage/bzip2/c2saferrust/ — 3 confirmed_divergence on the mmed3 boundary in the replay of the coverage corpus; bzip2/SUMMARY.md §3; results/rq4_effectiveness/bugs/bzip2_c2saferrust_mmed3/ (exhaustive census, both bodies, the "
                    "single call site, the generated harness and a saved divergence input). DOWNSTREAM SCOPE: the "
                    "established effect is pivot selection and potential performance degradation only; an effect on "
                    "bzip2 compressed output is NOT claimed and was not demonstrated either way (the artifact aborts "

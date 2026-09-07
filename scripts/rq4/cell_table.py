@@ -23,7 +23,11 @@ def row(cell: Path, tests_side: dict | None) -> dict:
     res = load(cell / "analysis" / "result.json")
     plans = load(cell / "plans.json") or []
     rep = load(cell / "divergences" / "summary.json") or []
-    conf = load(cell / "confirm" / "summary.json") or load(cell / "confirm_sample" / "summary.json")
+    conf = load(cell / "confirm" / "summary.json")
+
+    if not (conf or {}).get("total"):   # an empty full confirmation must not hide the sample
+
+        conf = load(cell / "confirm_sample" / "summary.json") or conf
     built = [r for r in funnel if r.get("built")]
     executed = [r for r in built if (r.get("corpus") or 0) > 0]
     exported = [r for r in built if str(r.get("coverage", "")).startswith(("batch", "per-input"))]

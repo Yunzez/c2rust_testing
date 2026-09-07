@@ -828,6 +828,22 @@
     "O-F": "not run"
    },
    "evidence": "results/rq3_coverage/bzip2/ (crown campaign logs and the generated harness)"
+  },
+  {
+   "id": "CAND-5",
+   "library": "cJSON",
+   "tool": "PtrTrans",
+   "status": "candidate - held out by classification (untranslated function, not a mistranslation)",
+   "description": "every cJSON_Create* returns None: cJSON_New_Item (cjson_ptrtrans.rs:1122) is an unimplemented stub returning None, so no object can be created; C returns a non-NULL object on every input. E1 already counts PtrTrans's cJSON as 24/118 stubs (process failure); this is the first replayable, confirmed evidence of what the stubs do to a caller",
+   "records": "18 / 20 replayed inputs, 18/18 confirmed_divergence (rung 3 nullness; c_only and rust_only normal), 7 boundaries, one site (results/rq3_coverage/cjson/ptrtrans/, RQ4 cell re-run 2026-09-06)",
+   "obs": {
+    "O-R": "n/a",
+    "O-P(silent)": "n/a",
+    "O-P(print)": "n/a",
+    "O-S": "yes",
+    "O-F": "yes"
+   },
+   "evidence": "results/rq3_coverage/cjson/ptrtrans/RUN.md section 7; confirm_sample/*_verdicts; funnel.json"
   }
  ],
  "summary": {
@@ -1148,7 +1164,8 @@
    "CAND-1",
    "CAND-2",
    "CAND-3",
-   "CAND-4"
+   "CAND-4",
+   "CAND-5"
   ]
  }
 }

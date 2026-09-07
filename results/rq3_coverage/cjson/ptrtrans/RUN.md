@@ -129,45 +129,53 @@ Total: confirmed_divergence 18
 
 <!-- prose -->
 
-## 7. What this cell is, and is not
+## 7. What this cell is, and is not (re-run of 2026-09-06)
 
-**Construction unsupported, by decision.** PtrTrans reshapes cJSON's API: its producers return
-`Option<&mut cJSON>` (`cJSON_Parse(Option<&[u8]>) -> Option<&mut cJSON>`), `cJSON_New_Item` is a
-`None` stub, and `cJSON_Delete` is not defined in the crate at all (E1: 24 of 118 functions are
-stubs). The producer bridge requires a raw-pointer producer and a reachable destructor
-(`docs/producer_bridge_pilot.md` §2, §6a), so the 64 `cJSON*`-taking boundaries (30 `item`,
-23 `object`, 9 `array`, 2 `child`) are **construction unsupported** here, not "unsupported schema"
-and not a defect. The user's rule for extending the bridge is recorded in the pilot doc: a shape is
-implemented only when it recurs across more than one translator with a usable producer; this
-one appears in PtrTrans alone. The implementation was frozen before this cell ran.
+**Second run, under the plugin-compatibility degradation.** The first run of this cell (2026-09-05)
+built 2 of the 15 direct boundaries: the 10 `cJSON_Create*` boundaries failed to *build* because the
+cJSON comparator plugin was linked blind and its Rust half named a field (`type_0`) and a destructor
+(`cJSON_Delete`) that PtrTrans's crate does not have. That was a generator defect, not a property of
+the translation: by the comparison ladder an incompatible plugin must **degrade** the return contract to
+pointer nullness, never fail the build. The generator now checks the plugin's declared requirements
+(`[plugin.requires]`: struct, fields, destructor) against the translation and drops it with the reason
+when they are not met; this cell was re-run in full after that fix (denominator, campaign, replay,
+confirmation), and its numbers replace the first run's.
 
-**Of the 15 direct boundaries, 2 build.** The other 13 fail for reasons that are the translation's,
-recorded verbatim in `funnel.json`:
+**Funnel.** 113 matched, 15 planned (the 64 `cJSON*`-taking boundaries are *construction unsupported*
+under the frozen bridge: PtrTrans's producers return `Option<&mut cJSON>`, `cJSON_New_Item` is a `None`
+stub, `cJSON_Delete` does not exist — see the pilot doc), **9 built**: `cJSON_Create{Array,Bool,False,
+Null,Number,Object,True}`, `cJSON_GetErrorPtr`, `cJSON_Version`. The 6 that still do not build are the
+translation's reshaping, recorded verbatim in `funnel.json`: `cJSON_Create{Double,Float,Int}Array` take a
+slice in Rust where C takes `(ptr, count)` (E0061, arity), `compare_double` and `parse_hex4` take reshaped
+types (E0308), `get_decimal_point` fails to link (`localeconv` path). The oracle for every built boundary
+is `partial(nullness)`.
 
-| boundaries | build error | what it means |
-|---|---|---|
-| 10 × `cJSON_Create{Array,Bool,DoubleArray,False,FloatArray,IntArray,Null,Number,Object,True}` | `E0425: cannot find function cJSON_Delete`; `E0609: no field type_0 on cJSON` | a fresh object is returned, the harness frees it through the library's destructor and compares it through the comparator plugin; PtrTrans has neither the destructor nor the C field layout (`type_0` is renamed) |
-| `compare_double`, `parse_hex4` | `E0308: mismatched types` | reshaped signatures (slices and references in place of pointers) with no positional bridge |
-| `get_decimal_point` | `linking with cc failed` | the C side's `localeconv` path; the translation carries no equivalent symbol |
+**Campaign and replay.** 3 600 s, seed 42, all nine concurrent; corpora of 1–8 inputs (the inputs are a
+few scalars, so the fuzzer saturates in seconds: `cJSON_CreateNumber` 8, `cJSON_CreateBool` 5, the rest 1).
+Combined replay of the 20 corpus inputs: **18 `divergence`**, 2 `normal` (`cJSON_Version` and
+`cJSON_GetErrorPtr` in its fresh-process state). Every divergence is rung 3: **the C side returns a
+non-NULL object, the translation returns `None`**.
 
-The two that build, `cJSON_Version` and `cJSON_GetErrorPtr`, take no input: `cJSON_Version` returns
-a version string and `cJSON_GetErrorPtr` reads the parser's global error pointer as it stands in a
-fresh process (no parse has run in the harness, so it observes the initial state — a zero-argument
-function, not a constant one). The corpus is one input each, the campaign is one execution each,
-the combined replay is 2 `normal`, there are no candidates and nothing to confirm. The **negative control is trivially satisfied** and says
-nothing about PtrTrans's correctness — the catalogued PtrTrans cJSON defects (S7–S9) came from the
-earlier hand-written `cJSON_Parse` campaign (`../campaign_cJSON_Parse/`), which this pipeline
-cannot regenerate.
+**Confirmation.** 18 of 18 sampled → `confirmed_divergence` (`c_only` normal under ASan+UBSan,
+`rust_only` normal, combined replay reports the nullness difference at phase 4). One site, and it is
+visible in the source: every `cJSON_Create*` calls `cJSON_New_Item(&global_hooks)`, and PtrTrans's
+`cJSON_New_Item` (`cjson_ptrtrans.rs:1122`) is an unimplemented stub returning `None`, so no object can
+ever be created. This is the same root as the `Option<&mut T>` producer problem that makes the other 64
+boundaries unconstructible.
 
-**Deviation: the universe was recomputed once.** The first coverage pass reported fn 1/1, region
-3/3: the link-dead-code denominator bin referenced only `cJSON_Version()`, which rustc inlines
-across crates, so the linker never pulled the rlib member and `-C link-dead-code` had nothing to
-keep. `#[no_mangle]` translations never show this (exported symbols are not inlined away), which is
-why every earlier universe was correct — verified identical, bin route vs rlib route, on all of
-them (bzip2/genann/cJSON×c2rust/lil). The universe is now exported from the rlib's own
-instrumented objects (`scripts/rq4/rlib_universe.py`, 121 functions / 2 125 regions) and the
-numbers in §4 are the recomputed ones: **fn 2 / 121 (0.017), regions 9 / 2 125 (0.004)**. That is
-the honest figure for what the frozen pipeline reaches on this translation: almost nothing.
+**How it is recorded.** As a **candidate (CAND-5)**, not a promoted defect: the mechanism is an
+*untranslated* function (E1 already counts PtrTrans's cJSON as 24 of 118 stubs, a process failure), not a
+mistranslated one; the manifest's defect rows are mistranslations with a source-level mechanism. The
+confirmed divergences are the first instrumented, replayable evidence of what the stubs do to a caller,
+which is why they are kept as evidence rather than dropped. The author decides whether that distinction
+holds.
 
-**Not established:** any coverage or correctness statement about PtrTrans's cJSON beyond the two
-zero-argument functions observed in a fresh process. The cell exists so that the matrix says *why* it is empty.
+**Coverage.** 10 of 121 functions (0.083), 68 of 2 125 regions (0.032) — the nine constructors' own
+bodies up to the stub, `cJSON_Version`, `cJSON_GetErrorPtr`. Universe from the rlib's own instrumented
+objects (`rlib_universe.py`; the first run's link-dead-code denominator had collapsed to two functions
+because `cJSON_Version()` is cross-crate inlined — verified identical to the bin route on every other
+cell).
+
+**Not established:** anything about PtrTrans's cJSON beyond object construction; the 64 unsupported
+boundaries carry no number. The catalogued PtrTrans cJSON defects (S7–S9) come from the earlier
+hand-written `cJSON_Parse` campaign (`../campaign_cJSON_Parse/`), which this pipeline cannot regenerate.

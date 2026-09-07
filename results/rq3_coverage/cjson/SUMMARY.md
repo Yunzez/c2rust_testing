@@ -5,14 +5,14 @@ planner: the producer bridge, cJSON generalisation ([`docs/producer_bridge_pilot
 Status 2026-09-05: **two cells complete, c2rust and PtrTrans** (3 600 s each, one campaign, one corpus). The tests side is
 TEST-UNAVAILABLE for every cJSON translation (only `cJSON.c` was translated; the C driver `tests/main.c` is used as
 producer-selection evidence, never linked). PtrTrans's cJSON is **construction unsupported** under the frozen bridge
-(producer returns `Option<&mut cJSON>`, `cJSON_Delete` undefined): its cell reaches two zero-argument functions (`cJSON_Version`, and `cJSON_GetErrorPtr` in its fresh-process state).
+(producer returns `Option<&mut cJSON>`, `cJSON_Delete` undefined). Re-run on 2026-09-06 with the plugin-compatibility degradation: 9 direct boundaries build against pointer nullness and every `cJSON_Create*` call diverges — C returns an object, PtrTrans returns `None` through its `cJSON_New_Item` stub (18/18 confirmed; recorded as candidate CAND-5, an untranslated function rather than a mistranslation).
 
 ## Cell table
 
 | tool | tests side | planned / built of 58 | corpus | fn ours | reg ours | divergences on replay | confirmed |
 |---|---|---:|---:|---:|---:|---:|---|
 | **c2rust** | TEST-UNAVAILABLE (denominator) | 39 / 39 (12 C `static`) | 8 796 | 49/59 (0.831) | 1 816/2 237 (**0.812**) | **0** / 8 796 (372 `ub-gated`) | **0** of 3 844 sampled |
-| **PtrTrans** | TEST-UNAVAILABLE (denominator) | 15 / **2** of 113 (64 `cJSON*` construction unsupported; 10 need `cJSON_Delete`, 3 reshaped) | 2 | 2/121 (0.017) | 9/2 125 (**0.004**) | 0 / 2 | nothing to confirm |
+| **PtrTrans** | TEST-UNAVAILABLE (denominator) | 15 / **9** of 113 (64 `cJSON*` construction unsupported; 6 reshaped/link) | 20 | 10/121 (0.083) | 68/2 125 (**0.032**) | **18** / 20 | **18 of 18 `confirmed_divergence`**, one site (`cJSON_New_Item` stub → `None`) → CAND-5 |
 
 Producer-bridge ablation, same campaign (`ablation_producer_bridge.json`): the 21 harnesses without a produced
 object reach 29/59 functions (0.492) and 791/2 237 regions (**0.354**); with the 18 `cJSON_Parse`-fed boundaries,
@@ -37,12 +37,13 @@ object reach 29/59 functions (0.492) and 791/2 237 regions (**0.354**); with the
 
 - No paired cell: no cJSON translation carries a transpiled suite, so there is no tests-side coverage to
   compare against — the validator's number stands alone, against the link-dead-code universe.
-- PtrTrans is empty by construction, and the matrix says why (`ptrtrans/RUN.md` §7): the frozen bridge has no
+- PtrTrans: 64 of 113 boundaries are construction unsupported (`ptrtrans/RUN.md` §7): the frozen bridge has no
   `Option<&mut T>` shape and the crate has no destructor; the decision not to build a one-translator bridge is
-  recorded in the pilot doc. c2rust's faithful translation gives the control, not a defect hunt. The catalogued
+  recorded in the pilot doc. The 9 that build all show the same stub (CAND-5). The first run's "2 built" was a
+  generator defect (a plugin linked blind); the re-run replaces it. c2rust's faithful translation gives the control, not a defect hunt. The catalogued
   PtrTrans cJSON defects (S7–S9) came from the earlier hand `cJSON_Parse` campaign (`campaign_cJSON_Parse/`).
-- The PtrTrans universe was recomputed once (bin-route denominator collapsed by cross-crate inlining; now from
-  the rlib's objects — `scripts/rq4/rlib_universe.py`; all earlier universes verified identical both ways).
+- The PtrTrans universe comes from the rlib's objects (`scripts/rq4/rlib_universe.py`): the first run's bin-route
+  denominator had collapsed by cross-crate inlining; all earlier universes were verified identical both ways.
 - The cell died once after its campaign (scratchpad file-count quota) and was finished from the intact
   campaign data; its discovery binaries were rebuilt once (producer gate). Both are in `c2rust/RUN.md` §7.
 - Single campaign; no repeats.

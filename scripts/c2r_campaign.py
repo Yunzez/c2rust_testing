@@ -208,7 +208,7 @@ def discover(a) -> int:
 
 # ---------------------------------------------------------------------------
 VERDICTS = {
-    "ub_associated": "C itself is not memory-safe on this input: not a finding",
+    "ub_associated": "C provides no clean reference execution on this input (sanitizer report, signal or non-zero exit): not a finding",
     "ub_associated_termination": (
         "C's `normal` was only apparent -- replaying C alone shows it had already gone out of "
         "bounds. The same illegal access is SILENT UB in C and an explicit panic/abort in the "
@@ -260,6 +260,9 @@ def classify(a_c: dict, b_rust: dict, c_comb: dict, d_nosan: dict | None = None)
       * nothing happens: the failure was the sanitizer's alone.
     """
     if a_c["outcome"] in ("signal", "nonzero-exit") or a_c["sanitizer"]:
+        # C does not provide a clean reference execution on this input (a sanitizer report, a
+        # signal, or a non-zero exit). That is not a statement that C is memory-unsafe; it is
+        # the absence of the reference the comparison needs.
         why = f"C alone: {a_c['outcome']}" + (f" ({a_c['sanitizer']})" if a_c["sanitizer"] else "")
         # A panic or a reported divergence on top of a dirty C is NOT a translation defect: the
         # same illegal access is silent UB on one side and an explicit failure on the other.
@@ -309,7 +312,14 @@ def classify(a_c: dict, b_rust: dict, c_comb: dict, d_nosan: dict | None = None)
                                              f"{b_rust['sanitizer'] or b_rust['outcome']}")
         return "inconclusive", "fails only when both sides run; neither side fails alone"
     if c_comb["outcome"] == "timeout":
-        return "confirmed_termination", "C alone returns, the differential run times out"
+        # Side attribution is required here too: the combined run can hang in either side's
+        # code. Only when the translation ALONE also times out (C alone returned) is the
+        # difference the translation's. (Tightened 2026-09-07; two lil x CROWN samples that the
+        # old rule had labelled confirmed_termination were already excluded from C10.)
+        if b_rust["outcome"] == "timeout":
+            return "confirmed_termination", "C alone returns; the translation alone times out"
+        return "inconclusive", ("the combined run times out but neither side does alone; "
+                                "the hang is not attributable to one side")
     return "not_reproducible", "no UB check fired on C; the ladder agrees on replay"
 
 

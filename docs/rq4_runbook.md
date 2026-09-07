@@ -203,4 +203,19 @@ sentinel · a `None` template must fail construction, not fall through to an add
   environment adapter the planner already names for parameters flowing into effectful calls —
   and a harness for it must not run outside a sandbox at all. Before committing, look for
   untracked top-level files with campaign-window mtimes.
+- **First real PREFLIGHT_REVIEW (tulip × Laertes, `ti_find_indicator`).** Empty input: C ok,
+  Rust crash; 60 s run 129/130 jobs crashed, corpus 0. Source: Laertes renders the static
+  `ti_indicators[105]` table as all-default (`::new()`), name pointers NULL — the
+  initialization-loss family (C8's mechanism). That is a translation-side crash-all, i.e. a
+  finding for the campaign and the confirmation to record, so the review outcome is: write the
+  reason into `<pair>/preflight_accept.txt` and re-run the cell with `--reuse-bins` (the build
+  phase stands). The rule of thumb: **C ok + Rust crash on the empty input = translation,
+  accept with reason; C crash on the empty input = harness bug until proven otherwise.** The
+  serial script had moved on to the next cell meanwhile, as designed; the re-run is queued after
+  the chain (`tulip_chain5.sh`).
+- **Target pruning, second pass (tulip × C2SaferRust).** After the first pruning pass the
+  target-triple profile was down to 94 MB, but `target/release/build/<crate>-<hash>/` — the HOST
+  profile, one compiled build script plus its C-oracle outputs per harness — held 160 × ~6 MB.
+  `_prune_target` now prunes both profiles. Measure `du -sm <cell>/target/*` during a build
+  before trusting any pruning claim.
 

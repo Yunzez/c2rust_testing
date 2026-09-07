@@ -401,6 +401,12 @@ CANDIDATES = [
          records="26,404 divergence events in a 600 s campaign (event count, NOT deduplicated records; U1/U2)",
          obs=chan("not run", "not run", "not run", "not run", "not run"),
          evidence="results/rq3_coverage/bzip2/ (crown campaign logs and the generated harness)"),
+    dict(id="CAND-5", library="cJSON", tool="PtrTrans",
+         status="candidate - held out by classification (untranslated function, not a mistranslation)",
+         description="every cJSON_Create* returns None: cJSON_New_Item (cjson_ptrtrans.rs:1122) is an unimplemented stub returning None, so no object can be created; C returns a non-NULL object on every input. E1 already counts PtrTrans's cJSON as 24/118 stubs (process failure); this is the first replayable, confirmed evidence of what the stubs do to a caller",
+         records="18 / 20 replayed inputs, 18/18 confirmed_divergence (rung 3 nullness; c_only and rust_only normal), 7 boundaries, one site (results/rq3_coverage/cjson/ptrtrans/, RQ4 cell re-run 2026-09-06)",
+         obs=chan("n/a", "n/a", "n/a", "yes", "yes"),
+         evidence="results/rq3_coverage/cjson/ptrtrans/RUN.md section 7; confirm_sample/*_verdicts; funnel.json"),
 ]
 
 ATTR_NOTE = ("No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: "

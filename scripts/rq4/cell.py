@@ -75,19 +75,23 @@ def _prune_target(target: Path, crate: str) -> None:
     and the scratchpad's byte quota killed all four tulip cells in their build phase. Only the
     shared dependencies (libfuzzer-sys, libc, arbitrary) are worth keeping between builds.
     """
-    rel = target / "x86_64-unknown-linux-gnu" / "release"
     pats = [crate, crate.replace("-", "_")]
-    for sub in ("deps", "build", ".fingerprint"):
-        d = rel / sub
-        if not d.is_dir():
-            continue
-        for p in d.iterdir():
-            if any(x in p.name for x in pats):
-                shutil.rmtree(p, ignore_errors=True) if p.is_dir() else p.unlink(missing_ok=True)
-    for p in rel.glob(f"*{pats[1]}*"):
-        if p.is_file():
-            p.unlink(missing_ok=True)
-    shutil.rmtree(rel / "incremental", ignore_errors=True)
+    # BOTH profiles: the target-triple one holds the fuzz binary and the library rlib; the HOST
+    # one (`target/release/`) holds each harness crate's compiled build script and its build
+    # outputs -- ~5 MB x 213 harnesses, which is what was left after the first pruning pass
+    # (tulip x C2SaferRust: 1.0 GB in target/release, 94 MB in the triple dir).
+    for rel in (target / "x86_64-unknown-linux-gnu" / "release", target / "release"):
+        for sub in ("deps", "build", ".fingerprint"):
+            d = rel / sub
+            if not d.is_dir():
+                continue
+            for p in d.iterdir():
+                if any(x in p.name for x in pats):
+                    shutil.rmtree(p, ignore_errors=True) if p.is_dir() else p.unlink(missing_ok=True)
+        for p in rel.glob(f"*{pats[1]}*"):
+            if p.is_file():
+                p.unlink(missing_ok=True)
+        shutil.rmtree(rel / "incremental", ignore_errors=True)
 
 
 def build_one(a, pair, entry, private, out_dir, target, sanitize=False, nosan=False):

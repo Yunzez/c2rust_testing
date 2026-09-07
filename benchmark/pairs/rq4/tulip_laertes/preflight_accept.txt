@@ -1,0 +1,9 @@
+# Reviewed 2026-09-07 00:58 after PREFLIGHT_REVIEW tulip/laertes.
+# ti_find_indicator: C side normal on the empty input; the TRANSLATION crashes on every input
+# (60 s run: 129/130 jobs crashed, corpus 0). Cause, from the source: Laertes renders the static
+# table `ti_indicators[105]` as `[ti_indicator_info::new(); 105]` -- every entry default-valued,
+# name pointers NULL -- and ti_find_indicator's binary search strcmp()s a NULL name
+# (tulip_laertes.rs:10464 vs indicators_index.c). This is a translation-side crash-all of the
+# initialization-loss family (cf. C8, bzip2 x Laertes), not a harness defect: accepted so the
+# campaign records it and the confirmation adjudicates it. Nothing is promoted from this file.
+ti_find_indicator

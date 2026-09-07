@@ -319,6 +319,55 @@ def parsed_tus(cc_dir: Path) -> list:
     return out
 
 
+_DEF_INDEX: dict = {}
+_FNS_CACHE: dict = {}
+
+
+def _fns_and_globals(cc_dir: Path) -> tuple[list, list]:
+    """(function definitions, external file-scope variables) of the pair's units, scanned once:
+    parse_entry_signature used to walk every unit for every entry AND every producer candidate
+    (optipng: 700 x 52 ASTs, 900 s for one plan)."""
+    key = str(Path(cc_dir).resolve())
+    if key in _FNS_CACHE:
+        return _FNS_CACHE[key]
+    fns, globs = [], []
+    for cmd, tu in parsed_tus(cc_dir):
+        for cur in tu.cursor.walk_preorder():
+            if cur.kind == CursorKind.VAR_DECL and cur.is_definition():
+                f = cur.location.file.name if cur.location and cur.location.file else None
+                if (f and not f.startswith(("/usr/", "/lib/"))
+                        and cur.semantic_parent is not None
+                        and cur.semantic_parent.kind == CursorKind.TRANSLATION_UNIT
+                        and cur.linkage == clang.cindex.LinkageKind.EXTERNAL):
+                    globs.append(cur.spelling)
+                continue
+            if cur.kind != CursorKind.FUNCTION_DECL or not cur.is_definition():
+                continue
+            f = cur.location.file.name if cur.location and cur.location.file else None
+            if not f or f.startswith(("/usr/", "/lib/")):
+                continue
+            fns.append(cur.spelling)
+    _FNS_CACHE[key] = (fns, globs)
+    return _FNS_CACHE[key]
+
+
+def definition_index(cc_dir: Path) -> dict:
+    """{function name: (definition cursor, its TU)} over the pair's units, built once. A lookup
+    by walking every unit's AST per entry made optipng's 700-entry plan O(entries x AST)."""
+    key = str(Path(cc_dir).resolve())
+    if key in _DEF_INDEX:
+        return _DEF_INDEX[key]
+    idx: dict = {}
+    for cmd, tu in parsed_tus(cc_dir):
+        for cur in tu.cursor.walk_preorder():
+            if cur.kind == CursorKind.FUNCTION_DECL and cur.is_definition():
+                f = cur.location.file.name if cur.location and cur.location.file else ""
+                if f and not f.startswith(("/usr/", "/lib/")) and cur.spelling not in idx:
+                    idx[cur.spelling] = (cur, tu)
+    _DEF_INDEX[key] = idx
+    return idx
+
+
 def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = False,
                           allow_nonpod: bool = False):
     # with_return_desc=True adds a 4th element: the structural descriptor of the RETURN type,
@@ -343,24 +392,10 @@ def parse_entry_signature(cc_dir: Path, entry: str, with_return_desc: bool = Fal
     # value against itself. Real libraries have such tables (bzip2: BZ2_crc32Table, BZ2_rNums);
     # the micro-benchmark corpus this generator was built on has none.
     all_globals: list[str] = []
-    for cmd, tu in parsed_tus(cc_dir):
-        for cur in tu.cursor.walk_preorder():
-            if cur.kind == CursorKind.VAR_DECL and cur.is_definition():
-                f = cur.location.file.name if cur.location and cur.location.file else None
-                if (f and not f.startswith(("/usr/", "/lib/"))
-                        and cur.semantic_parent is not None
-                        and cur.semantic_parent.kind == CursorKind.TRANSLATION_UNIT
-                        and cur.linkage == clang.cindex.LinkageKind.EXTERNAL):
-                    all_globals.append(cur.spelling)
-                continue
-            if cur.kind != CursorKind.FUNCTION_DECL or not cur.is_definition():
-                continue
-            f = cur.location.file.name if cur.location and cur.location.file else None
-            if not f or f.startswith(("/usr/", "/lib/")):
-                continue
-            all_fns.append(cur.spelling)
-            if cur.spelling != entry:
-                continue
+    all_fns, all_globals = _fns_and_globals(cc_dir)
+    _hit = definition_index(cc_dir).get(entry)
+    for cur in ([_hit[0]] if _hit else []):
+        if True:
             arg_cursors = list(cur.get_arguments())
             usage = _param_usage(cur, {a.spelling for a in arg_cursors if a.spelling})
             for idx, a in enumerate(arg_cursors):

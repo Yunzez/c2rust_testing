@@ -714,12 +714,17 @@ class BodyAnalyzer:
         if not callee:
             return None
         tu = self.fn.translation_unit
-        for cur in tu.cursor.walk_preorder():
-            if cur.kind == CursorKind.FUNCTION_DECL and cur.spelling == callee and cur.is_definition():
-                f = cur.location.file.name if cur.location and cur.location.file else ""
-                if f and not f.startswith(("/usr/", "/lib/")):
-                    return cur
-        return None
+        key = str(tu.spelling)
+        idx = _TU_DEFS.get(key)
+        if idx is None:                     # one walk per TU, not one per call expression
+            idx = {}
+            for cur in tu.cursor.walk_preorder():
+                if cur.kind == CursorKind.FUNCTION_DECL and cur.is_definition():
+                    f = cur.location.file.name if cur.location and cur.location.file else ""
+                    if f and not f.startswith(("/usr/", "/lib/")) and cur.spelling not in idx:
+                        idx[cur.spelling] = cur
+            _TU_DEFS[key] = idx
+        return idx.get(callee)
 
     def _absorb_callee(self, node, callee: str):
         """Carry the callee's facts about its parameters onto the arguments the boundary passes."""
@@ -1108,14 +1113,8 @@ def _params_in(cur, params: set[str]) -> set[str]:
 # ---------------------------------------------------------------------------
 def entry_cursor(cc_dir: Path, entry: str):
     """The definition cursor of `entry`, from the pair's own compilation database."""
-    for cmd, tu in gdh.parsed_tus(cc_dir):
-        for cur in tu.cursor.walk_preorder():
-            if (cur.kind == CursorKind.FUNCTION_DECL and cur.is_definition()
-                    and cur.spelling == entry):
-                f = cur.location.file.name if cur.location and cur.location.file else ""
-                if not f.startswith(("/usr/", "/lib/")):
-                    return cur, tu          # keep `tu` alive: cursors borrow from it
-    return None, None
+    hit = gdh.definition_index(cc_dir).get(entry)
+    return hit if hit else (None, None)      # the index keeps every TU alive: cursors borrow from it
 
 
 _EFFECTFUL_CACHE: dict[str, set] = {}
@@ -2053,6 +2052,7 @@ def _rust_fn_exists(rs_text: str | None, name: str) -> bool:
 
 _DRIVER_CACHE: dict = {}
 _CALLEE_FACTS: dict = {}     # (TU, callee, depth) -> BodyFacts, one analysis per callee per plan run
+_TU_DEFS: dict = {}          # TU spelling -> {function: definition cursor}
 
 
 def _first_of(cur, kind):
@@ -2546,14 +2546,7 @@ def _all_entries(cc_dir: Path) -> list[str]:
 
 
 def _all_entries_uncached(cc_dir: Path) -> list[str]:
-    out = []
-    for cmd, tu in gdh.parsed_tus(cc_dir):
-        for cur in tu.cursor.walk_preorder():
-            if cur.kind == CursorKind.FUNCTION_DECL and cur.is_definition():
-                f = cur.location.file.name if cur.location and cur.location.file else ""
-                if f and not f.startswith(("/usr/", "/lib/")):
-                    out.append(cur.spelling)
-    return sorted(set(out))
+    return sorted(gdh.definition_index(cc_dir))
 
 
 def main() -> int:

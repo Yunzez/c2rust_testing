@@ -169,6 +169,23 @@ sentinel · a `None` template must fail construction, not fall through to an add
 - **Shipped suites that fail under the translation (recorded, denominator only):** quadtree × CROWN
   (`NonNull::new_unchecked requires non-null`, debug-assertions), urlparser × Laertes (SIGSEGV),
   urlparser × C2SaferRust (double free). A failing suite is never 0 %, and it is E1 evidence, not RQ4.
+- **lodepng / optipng, 2026-09-07:** an `enum` parameter or field was "unsupported" (now its
+  underlying integer; c2rust spells it `pub type E = c_uint`, resolved through the alias map --
+  47 lodepng boundaries); `size_t*` vs c2rust's `*mut u64` was "different element type" (same
+  width, accepted, like the earlier scalar `size_t` fix); optipng's zlib headers have no include
+  guards, so the pair is **multi-TU** (`make_pair.py --tus`: one compile command per unit, every
+  `source/` directory an include dir, fixups emit every unit into build.rs with the shared rename
+  defines) -- the planner parses each unit ONCE (`parsed_tus` cache; before it, every lookup
+  re-parsed all 52); directory modules are emitted contiguously in the flatten (an unscored
+  `libpng/pngtest` after `zlib/*` opened `pub mod libpng` twice); driver detection uses the leaf
+  name of a directory module.
+- `pkill -f harness_plan.py` kills the shell that runs it (exit 144): use `pgrep -f "harness_[p]lan"`.
+- **zlib's `adler32(adler, buf, len)` (optipng): `buf` planned as a NUL-terminated string, `len` a free
+  scalar → heap overflow on both sides (316/9 646 crashes in the smoke).** The body advances `buf`
+  (`*buf++`, unknown required extent) and the adjacency/name heuristic skipped every pointer that had
+  ANY required-extent entry, unknown included. It now applies when the extent is unknown; adler32
+  went to 1 M execs / 0 crashes. Smoke a few boundaries of a new library before its chain: 8 s of
+  fuzzing on one harness caught this; a preflight would have flagged it only per cell.
 - **Universe rlib selection.** `rlib_universe.py` takes cargo's `--message-format=json` log and
   picks the exact lib artifact of that build; the newest-by-mtime rlib is only a fallback and is
   labelled as such in `denominator.json._source.selected_by`.

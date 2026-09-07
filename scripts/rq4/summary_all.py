@@ -65,7 +65,7 @@ def fmt_cov(x: dict, k: str) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--libs", default="bzip2,genann,cjson,lil,tulip")
+    ap.add_argument("--libs", default="bzip2,genann,cjson,lil,tulip,qsort,urlparser,quadtree,lodepng,optipng")
     ap.add_argument("--out", default=str(RQ4 / "SUMMARY_ALL.md"))
     a = ap.parse_args()
     libs = [s.strip() for s in a.libs.split(",") if s.strip()]

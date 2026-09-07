@@ -158,7 +158,11 @@ def main() -> int:
                 f"(build/compile_commands.json), exactly as its own build does. This file is the "
                 f"generator's nominal main unit and defines nothing. */\n")
         incs = []
-        for d in sorted({str(Path(f).parent) for f in tus} | {"."}):
+        # every directory under source/ is an include directory (a header-only component such as
+        # optipng's cexcept/ has no TU of its own but is included by optim.c)
+        dirs = sorted({str(Path(f).parent) for f in tus}
+                      | {p.name for p in (pair / "source").iterdir() if p.is_dir()} | {"."})
+        for d in dirs:
             incs += ["-I", src_abs if d == "." else f"{src_abs}/{d}"]
         cc = [{"directory": src_abs, "file": a.main,
                "arguments": ["clang", "-c", "-O1"] + incs + a.cflags.split() + [a.main, "-o", "main_stub.o"]}]

@@ -133,6 +133,17 @@ def describe_type(t, _depth: int = 0) -> dict:
                 "const": et.is_const_qualified(), "elem": describe_type(et, _depth + 1)}
     if s.kind in (TypeKind.FUNCTIONPROTO, TypeKind.FUNCTIONNOPROTO):
         return {"kind": "function", "spelling": t.spelling}
+    if s.kind == TypeKind.ENUM:
+        # an enum is its underlying integer (C11 6.7.2.2p4; clang picks unsigned int unless a
+        # negative enumerator exists); c2rust spells it `pub type E = c_uint` (lodepng's
+        # LodePNGColorType, 47 boundaries) so the Rust side resolves through the alias map
+        try:
+            et = s.get_declaration().enum_type
+            sc = map_scalar(et.spelling) or map_scalar(et.get_canonical().spelling)
+        except Exception:
+            sc = None
+        if sc:
+            return {"kind": "scalar", "rust": sc[0], "width": sc[1], "enum": t.spelling}
     sc = map_scalar(t.spelling) or map_scalar(s.spelling)
     if sc:
         return {"kind": "scalar", "rust": sc[0], "width": sc[1]}

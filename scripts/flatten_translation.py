@@ -79,6 +79,9 @@ def main(src_dir, out_file, lib_modules=None, extra_modules=None, namespace=None
     if lib_modules is not None:
         LIB_MODULES = list(lib_modules)
         MODULES = LIB_MODULES + list(extra_modules or [])
+        # emit directory modules contiguously: an unscored `libpng/pngtest` after the scored
+        # `zlib/*` would open `pub mod libpng {` a second time (E0428)
+        MODULES = sorted(MODULES, key=lambda m: (m.rpartition("/")[0], MODULES.index(m)))
     defs, private, bodies = {}, set(), {}
     for m in MODULES:
         t = (src / f"{m}.rs").read_text()

@@ -1378,7 +1378,11 @@ def rust_bridge(adapter: str, rust_ty: str | None, elem: str | None,
         if writes and not mut:
             return None, (f"{adapter} is written by the callee but the Rust parameter is "
                           f"{rust_ty} (const)")
-        if elem and pointee not in (elem, "c_void", "core::ffi::c_void") and adapter != "null_pointer":
+        # `size_t*` is `*mut u64` in c2rust's spelling (c_ulong) and `*mut usize` in an idiomatic
+        # one: same width, same signedness on this target -- one logical buffer either way
+        _same = {"usize": {"usize", "u64"}, "u64": {"usize", "u64"}, "isize": {"isize", "i64"}, "i64": {"isize", "i64"}}
+        if elem and pointee not in ({elem, "c_void", "core::ffi::c_void"} | _same.get(elem, set())) \
+                and adapter != "null_pointer":
             return None, (f"pointer element type is {elem} in C and {pointee} in Rust: the same "
                           f"logical buffer cannot be passed")
         return "c_abi", None
@@ -1748,7 +1752,9 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
             pair_src[pn] = "proven_index_bound"
     for p in ptrs:                     # heuristic fallback: adjacency + uniform name relation
         pn = p["name"]
-        if pn in length_of or req.get(pn) or p.get("_row_of"):
+        # a pointer the body ADVANCES (`*buf++`, zlib's adler32/crc32) has an unknown required
+        # extent, which is exactly what the adjacent `len` says: the heuristic applies to it too
+        if pn in length_of or p.get("_row_of") or (req.get(pn) and not b_is_unknown(b_max(req[pn]))):
             continue
         i = names.index(pn)
         for j in (i + 1, i - 1):

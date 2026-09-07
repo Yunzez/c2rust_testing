@@ -96,16 +96,20 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
                 continue                   # (a header-only library keeps its statics in the .h: urlparser's strff)
             rel = extra.relative_to(pair / "source")
             text = extra.read_text()
-            if private:
-                text, changed = gdh.strip_static_c(text, entry)
-                if not changed:
-                    pat = re.compile(
-                        rf'(?m)^[ \t]*static[ \t]*\n(?:[ \t]*(?:__inline__|inline)[ \t]*\n)?'
-                        rf'([ \t]*[A-Za-z_][\w \t\*]*\b{re.escape(entry)}[ \t]*\()')
-                    text, n = pat.subn(r'\1', text, count=1)
-                    changed = bool(n)
-                if changed:
-                    stripped = str(rel)
+            # Internal linkage is a fact about the C SIDE, so the strip is driven by the C side and
+            # not by what the translation did with the function: PtrTrans emits quadtree's
+            # `static find_` as a `pub fn`, so the Rust-driven `private` flag was False, the oracle
+            # kept its `static`, and the harness failed to LINK (`undefined symbol: c_find_`).
+            # On a non-static definition the substitution simply does not match.
+            text, changed = gdh.strip_static_c(text, entry)
+            if not changed:
+                pat = re.compile(
+                    rf'(?m)^[ \t]*static[ \t]*\n(?:[ \t]*(?:__inline__|inline)[ \t]*\n)?'
+                    rf'([ \t]*[A-Za-z_][\w \t\*]*\b{re.escape(entry)}[ \t]*\()')
+                text, n = pat.subn(r'\1', text, count=1)
+                changed = bool(n)
+            if changed:
+                stripped = str(rel)
             (out_dir / "c" / rel).parent.mkdir(parents=True, exist_ok=True)
             (out_dir / "c" / rel).write_text(text)
         # A multi-TU pair (compile_commands.json with one entry per unit): the oracle is every unit

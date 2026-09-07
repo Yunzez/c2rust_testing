@@ -1,2 +1,11 @@
-# Reviewed crash-alls (docs/rq4_runbook.md, preflight). Evidence: funnel smoke 2026-09-07, 5 s, both sides.
-get_quadrant_   # requires a SPLIT node (root->nw/ne/sw/se non-NULL); the only producer yields a leaf, so the C body dereferences a NULL child on every input (226/227 execs crash on c2rust and CROWN alike) -- unconstructible precondition, not a translation defect
+# Reviewed crash-alls (docs/rq4_runbook.md, preflight). ONE root cause, in the C reference itself.
+# quadtree 0.1.0's `get_quadrant_` reads `outer->bounds` of a node's four children without checking
+# them, and `find_` recurses into it, so any search of a tree that has had NO insert dereferences a
+# NULL child. Reaching a non-empty tree needs `quadtree_insert` first -- a SECOND produced object,
+# which the frozen bridge does not construct -- so the precondition is unconstructible, not a
+# translation defect. Verified 2026-09-07 on both pairs: c-only SEGVs on the empty input,
+# rust-only is clean. The newer upstream source the c2rust pair uses added `if(!node) return NULL;`
+# to `find_`, which is why only these two pairs carry the entry.
+get_quadrant_
+find_
+quadtree_search

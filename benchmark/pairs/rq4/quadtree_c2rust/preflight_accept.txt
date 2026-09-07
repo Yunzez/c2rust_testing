@@ -1,2 +1,7 @@
-# Reviewed crash-alls (docs/rq4_runbook.md, preflight). Evidence: funnel smoke 2026-09-07, 5 s, both sides.
-get_quadrant_   # requires a SPLIT node (root->nw/ne/sw/se non-NULL); the only producer yields a leaf, so the C body dereferences a NULL child on every input (226/227 execs crash on c2rust and CROWN alike) -- unconstructible precondition, not a translation defect
+# Reviewed crash-all (docs/rq4_runbook.md, preflight). `get_quadrant_` reads `outer->bounds` of the
+# four children of the node it is given; the only producer yields an UNSPLIT node whose children are
+# NULL, so the C reference dereferences NULL on every input (226 of 227 execs in the 5 s smoke).
+# Splitting the node first needs `quadtree_insert` on a tree -- a second produced object the frozen
+# bridge does not construct. `find_` and `quadtree_search` are NOT listed here: this source revision
+# guards `find_` with `if(!node) return NULL;` and both run clean.
+get_quadrant_

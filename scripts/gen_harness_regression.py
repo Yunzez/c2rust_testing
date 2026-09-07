@@ -82,6 +82,11 @@ PLAN_CASES = [
     ("tulip_c2rust", "ti_ad", "tulip.c"),                            # buffer tables: 4 input rows + 1 output row, all proven `size`
     ("tulip_c2rust", "ti_bbands", "tulip.c"),                        # buffer tables: 3 output rows incl. an inout row; bitwise f64 row compare
     ("cjson_c2rust", "cJSON_Delete", "cJSON.c", "plugins/cjson/plugin.toml"),         # target IS the destructor: no post-state canon, no second free
+    # the `nullable owned object` family (docs/producer_bridge_pilot.md 6b), one case per shape
+    ("quadtree_c2rust", "quadtree_insert", "quadtree_all.c"),      # RAW owner on the same library: the control that must not move
+    ("quadtree_crown", "quadtree_search", "quadtree_all.c"),       # boxed owner -> Option<&mut T> view, CONSUMING destructor (quadtree_free)
+    ("quadtree_ptrtrans", "quadtree_search", "quadtree_all.c"),    # boxed owner -> Option<&T> view, no destructor -> the box's own Drop
+    ("quadtree_ptrtrans", "quadtree_node_isleaf", "quadtree_all.c"),  # boxed owner + C `int` vs Rust `bool` return
 ]
 
 

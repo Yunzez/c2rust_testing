@@ -41,7 +41,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
 # different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
-GEN_VERSION = "0.7"   # 2026-09-04: HARNESS PLAN path (--plan). The InputPlan is derived from the
+GEN_VERSION = "0.8"   # 2026-09-07: the `nullable owned object` producer-bridge family --
+# a produced object whose Rust owner is `Option<Box<R>>` (CROWN and PtrTrans quadtree), lent to the
+# target as a borrowed view. Frozen scope in docs/producer_bridge_pilot.md.
+_GEN_VERSION_0_7 = "0.7"   # 2026-09-04: HARNESS PLAN path (--plan). The InputPlan is derived from the
                       # C AST + body by tools/stu_selector/harness_plan.py and lowered here; no
                       # schema file is read or written. Adds the `plan_array` adapter (a
                       # harness-owned allocation sized by a plan expression) and short/unsigned
@@ -735,6 +738,7 @@ def items_from_schema(schema: dict) -> list[dict]:
                         q2[k] = pre + q2[k]
                 pabi.append(q2)
             items.append({"kind": "produced", "role": "produced", "name": p["name"],
+                          "owner": p.get("owner", "raw"), "cleanup": p.get("cleanup", "rust_destructor"),
                           "producer": p["producer"], "destructor": p.get("destructor"),
                           "consumed": bool(p.get("consumed")),
                           "seed_reset": p.get("seed_reset", "none"), "seed": int(p.get("seed", 42)),
@@ -1407,7 +1411,14 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
             # ours (a raw pointer from the producer), so either reborrow is available.
             br, rty = p.get("bridge"), _ptr_alias(p.get("rust_pty")).replace(" ", "")
             want_mut = "&mut" in rty or rty.startswith("*mut")
-            if br == "ref_obj":
+            if p.get("owner") == "opt_box":
+                # The harness keeps the box; the target gets a borrowed view of it. `unwrap` is
+                # safe: the None case returned above, before the target was called.
+                r_pairs.append((n, {"opt_box_opt_ref_mut": f"{n}_r.as_deref_mut()",
+                                    "opt_box_opt_ref": f"{n}_r.as_deref()",
+                                    "opt_box_ref_mut": f"{n}_r.as_deref_mut().unwrap()",
+                                    "opt_box_ref": f"{n}_r.as_deref().unwrap()"}[br]))
+            elif br == "ref_obj":
                 r_pairs.append((n, f"&mut *{n}_r" if want_mut else f"&*{n}_r"))
             elif br == "opt_ref_obj":
                 r_pairs.append((n, f"Some(&mut *{n}_r)" if want_mut else f"Some(&*{n}_r)"))
@@ -1638,16 +1649,26 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
                     f"        let {n}_c = c_{pr}({', '.join(pc)});",
                     *(['        if _c2r_m == C2R_GATED && c2r_ub_get() != 0 { c2r_outcome("ub-gated", ""); return; }  // C producer hit UB -> reject']
                       if ub_free else [])]
-        _prod_r += ["        c2r_phase(C2R_PH_PRODUCER);", *seed, f"        let {n}_r = translated::{pr}({', '.join(pr_args)});"]
+        # `Option<Box<T>>` owner: the harness holds the box (hence `mut`, for the borrowed views
+        # below), and "no object" is None rather than a null pointer.
+        _boxed = it.get("owner") == "opt_box"
+        _r_none = f"{n}_r.is_none()" if _boxed else f"{n}_r.is_null()"
+        _prod_r += ["        c2r_phase(C2R_PH_PRODUCER);", *seed,
+                    f"        let {'mut ' if _boxed else ''}{n}_r = translated::{pr}({', '.join(pr_args)});"]
         _null_c.append(f'        if {n}_c.is_null() {{ c2r_outcome("normal", ""); return; }}  // producer rejected the input')
-        _null_r.append(f'        if {n}_r.is_null() {{ c2r_outcome("normal", ""); return; }}')
-        _null_cmp += [f'        if {n}_c.is_null() != {n}_r.is_null() {{ c2r_div("producer {pr} nullness"); }}',
+        _null_r.append(f'        if {_r_none} {{ c2r_outcome("normal", ""); return; }}')
+        _null_cmp += [f'        if {n}_c.is_null() != {_r_none} {{ c2r_div("producer {pr} nullness"); }}',
                       f'        if {n}_c.is_null() {{ c2r_outcome("normal", ""); return; }}']
         # A comparator plugin that knows the produced type turns the sequence-level oracle into an
         # attributed one: the two objects are canonicalised right after the producers (a difference
         # there belongs to the producer) and again after the target (a difference there is the
         # target's effect on the object). cJSON has such a plugin; genann does not.
         pl = _match_plugin({"inner": {"name": it["struct"]}}, plugins or [])
+        if pl is not None and _boxed:
+            # A comparator plugin's Rust half takes a raw pointer to the object; a boxed owner is a
+            # different representation, so the plugin is DROPPED for this boundary (the same
+            # degradation `plugin_compat` applies) rather than compiled against the wrong shape.
+            pl = None
         if pl is not None:
             _obj_plugin = pl
             cap = int(pl.get("max_bytes", 1 << 20))
@@ -1662,7 +1683,19 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
                 _obj_cmp_after += _canon("after", f"produced object {n} state after {entry}")
         if ds:
             _free_c += ["        c2r_phase(C2R_PH_FREE);", f"        if !{n}_c.is_null() {{ c_{ds}({n}_c); }}"]
+        if ds and not _boxed:
             _free_r += ["        c2r_phase(C2R_PH_FREE);", f"        if !{n}_r.is_null() {{ translated::{ds}({n}_r); }}"]
+        elif _boxed:
+            # Family rule 5: the box moves at most once. A consuming destructor takes it; otherwise
+            # the box's own Drop frees it and the destructor is not called at all.
+            _cl = it.get("cleanup", "drop")
+            if _cl == "rust_consuming_option_box":
+                _free_r += ["        c2r_phase(C2R_PH_FREE);", f"        translated::{ds}({n}_r.take());"]
+            elif _cl == "rust_consuming_box":
+                _free_r += ["        c2r_phase(C2R_PH_FREE);",
+                            f"        if let Some(_b) = {n}_r.take() {{ translated::{ds}(_b); }}"]
+            else:
+                _free_r += ["        c2r_phase(C2R_PH_FREE);", f"        drop({n}_r.take());"]
     if any(it["seed_reset"] == "libc" for it in _produced):
         _prod_externs.append("    fn srand(seed: core::ffi::c_uint);")
     _ind = lambda ls: [l.replace("        ", "            ", 1) for l in ls]
@@ -1783,7 +1816,13 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         # generator's usize); resolve it before deciding, or the two spellings compare as
         # different types and rustc rejects `c_ret != r_ret` (lil_list_size).
         _rr = hp_norm(rust_ret) if rust_ret else rust_ret
-        if _rr and _rr != ret and ret in _INT_TYPES and _rr in _INT_TYPES:
+        if _rr == "bool" and ret in _INT_TYPES:
+            # C spells a predicate's answer as an int, an idiomatic translation as `bool`
+            # (PtrTrans: quadtree_node_isleaf/isempty/ispointer). C's own truth rule is `!= 0`,
+            # so that is the comparison -- casting the bool to an int instead would call C's 2
+            # and Rust's true a divergence.
+            cmp = "(c_ret != 0) != r_ret"
+        elif _rr and _rr != ret and ret in _INT_TYPES and _rr in _INT_TYPES:
             cmp = "(c_ret as i128) != (r_ret as i128)"
         else:
             cmp = "c_ret != r_ret"

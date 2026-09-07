@@ -1327,7 +1327,8 @@ def _norm_ty(ty: str, aliases: dict | None = None) -> str:
 
 def rust_bridge(adapter: str, rust_ty: str | None, elem: str | None,
                 c_rust: str | None, aliases: dict | None = None,
-                one_elem: bool = False, writes: bool = False) -> tuple[str | None, str | None]:
+                one_elem: bool = False, writes: bool = False,
+                owner: tuple | None = None) -> tuple[str | None, str | None]:
     """(bridge name, reason it is missing).  `rust_ty` None means the C ABI form."""
     if rust_ty is None:
         return "c_abi", None                 # no Rust signature parsed: raw C-ABI call
@@ -1350,6 +1351,21 @@ def rust_bridge(adapter: str, rust_ty: str | None, elem: str | None,
         # the target wants; the bridge only has to know whether to pass it as a raw pointer or
         # reborrow it as a reference. Anything else (a Box, an owned struct) is a reshaped
         # ownership model the pilot does not bridge.
+        if owner and owner[0] == "opt_box":
+            # Nullable owned object: the harness holds the box for the whole call and lends the
+            # target a BORROWED view of it. A target that takes the box by value would move the
+            # owner out of the harness -- the object could not then be compared or freed on a
+            # claimed schedule -- so it stays a construction failure (family rule 6).
+            orx = re.escape(owner[1])
+            m = re.fullmatch(rf"Option<&(mut)?{orx}(?:<[^<>]*>)?>", r)
+            if m:
+                return ("opt_box_opt_ref_mut" if m.group(1) else "opt_box_opt_ref"), None
+            m = re.fullmatch(rf"&(mut)?{orx}(?:<[^<>]*>)?", r)
+            if m:
+                return ("opt_box_ref_mut" if m.group(1) else "opt_box_ref"), None
+            return None, (f"the produced object is owned as Option<Box<{owner[1]}>> in Rust and the "
+                          f"target takes {rust_ty}: the nullable-owned-object bridge lends a borrowed "
+                          f"view (Option<&T>, Option<&mut T>, &T, &mut T) and never transfers the box")
         name = _resolve_leaf(elem or "")
         if re.fullmatch(rf"\*(?:mut|const){re.escape(name)}", r):
             return "c_abi", None
@@ -1472,9 +1488,11 @@ def apply_rust_bridges(plan: InputPlan, rust_types: list[str] | None,
         ty = by_pos.get(s.param)
         one = (s.detail.get("alloc_elems") == 1
                or (s.detail.get("extent") or {}).get("v") == 1)
+        _own = ((s.detail.get("producer_owner"), s.detail.get("producer_rust_owner"))
+                if s.detail.get("producer_owner") else None)
         b, why = rust_bridge(s.c_decoder, ty, s.detail.get("elem"),
                              by_name.get(s.param, {}).get("rust"), aliases, one,
-                             writes=bool(s.detail.get("written")))
+                             writes=bool(s.detail.get("written")), owner=_own)
         s.rust_type = ty
         s.rust_bridge = b
         if b is None:
@@ -2118,6 +2136,31 @@ def driver_evidence(cc_dir: Path, target: str) -> dict:
     return out
 
 
+# The `nullable owned object` bridge family (2026-09-07). C's owning `T*` reaches Rust either as a
+# raw pointer (the mechanical lift) or as `Option<Box<R>>` -- CROWN and PtrTrans both produce the
+# latter for quadtree. The two shapes differ in WHO owns the object during the call: with a raw
+# pointer the callee sees the same address the harness holds; with a box the HARNESS owns it and
+# lends the target a borrowed view. Everything else about the sequence is unchanged.
+_OWNED_BOX = re.compile(r"Option<Box<([A-Za-z_]\w*)(?:<[^<>]*>)?>>")
+
+
+def _producer_owner(rret: str, tname: str) -> tuple[str | None, str | None]:
+    """(owner kind, Rust type name of the owned object) for a producer's normalised return type.
+
+    `raw`     -- `*mut T` / `*const T`; the object's Rust type is the C type's name.
+    `opt_box` -- `Option<Box<R>>`; R is returned so the TARGET's borrowed view can be required to
+                 name the same R. The C signature already says both sides mean one object, so the
+                 Rust-side obligation is consistency, not a C-to-Rust type-name map (PtrTrans
+                 renames `quadtree_node_t` to `QuadtreeNode`).
+    """
+    if re.fullmatch(rf"\*(?:mut|const){re.escape(tname)}", rret):
+        return "raw", tname
+    m = _OWNED_BOX.fullmatch(rret)
+    if m:
+        return "opt_box", m.group(1)
+    return None, None
+
+
 def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolicy,
                    rust_text: str | None, rust_aliases: dict | None):
     """docs/producer_bridge_pilot.md sections 2-4: pick the producer for a `T*` parameter whose
@@ -2162,8 +2205,11 @@ def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolic
             alternatives.append({"fn": f, "excluded": "not public in the translation (C static kept private); the harness cannot call it"})
             continue
         rret = _norm_ty(gdh.parse_rust_ret_type(rust_text, _rn(f)) or "", rust_aliases)
-        if not re.fullmatch(rf"\*(?:mut|const){re.escape(tname)}", rret):
-            alternatives.append({"fn": f, "excluded": f"returns {rret or 'nothing'} in Rust; the pilot needs a raw pointer to {tname}"})
+        owner_kind, owner_rust = _producer_owner(rret, tname)
+        if owner_kind is None:
+            alternatives.append({"fn": f, "excluded": f"returns {rret or 'nothing'} in Rust; the bridge owns a "
+                                                      f"produced object either as a raw pointer to {tname} or as "
+                                                      f"Option<Box<T>> (nullable owned object), and this is neither"})
             continue
         # rule 4: every parameter plannable by the existing InputPlan (scalars, strings, buffers --
         # the cJSON generalisation: `cJSON_Parse(const char*)` is a producer, not just scalar-only ones)
@@ -2207,6 +2253,7 @@ def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolic
             continue
         surface = sum(1 for s in fplan.inputs if s["c_decoder"] != "null_pointer")
         viable.append({"fn": f, "nparams": len(fparams), "surface": surface,
+                       "owner": owner_kind, "owner_rust": owner_rust,
                        "reach": len(reachable_functions(cc_dir, f)),
                        "driver": driver_evidence(cc_dir, entry).get(f, 0),
                        "lowered": lowered, "frt": frt or None, "seed_reset": seed_reset})
@@ -2221,7 +2268,13 @@ def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolic
     # parser and can build any node; cJSON_CreateString reaches two helpers), then the one with
     # fuzz-controlled inputs, then the one the shipped drivers feed to this target, then the
     # fewest parameters. All derivable from the artifact; every candidate is a legal sequence.
-    viable.sort(key=lambda v: (-v["reach"], -v["surface"], -v["driver"], v["nparams"], v["fn"]))
+    # A RAW-pointer producer outranks a boxed one for the same type, before every other key: it is
+    # the mechanical shape, it keeps the harness's sequence identical to the C one, and fixing the
+    # order this way proves that adding the boxed family cannot move a producer choice that was
+    # already made (CROWN's quadtree_node_t has both: `quadtree_node_with_bounds` raw and
+    # `quadtree_node_new` boxed).
+    viable.sort(key=lambda v: (v["owner"] != "raw", -v["reach"], -v["surface"], -v["driver"],
+                               v["nparams"], v["fn"]))
     chosen = viable[0]
     for v in viable[1:]:
         alternatives.append({"fn": v["fn"], "excluded": f"ranked below {chosen['fn']}: reaches {v['reach']} fns "
@@ -2251,7 +2304,27 @@ def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolic
     # "takes exactly T*, returns void, reaches free()" -- an assumption checked by hand on
     # genann_free and cJSON_Delete, not an ownership inference (docs/producer_bridge_pilot.md).
     consumed = (entry == _DESTRUCTOR_CACHE[dk])
+    # Cleanup of a BOXED owner (family rule 5: move at most once, never a double free). The C side
+    # always calls its own destructor when there is one. On the Rust side the box is moved into a
+    # CONSUMING destructor if the translation has one; otherwise the box's own Drop is the analogue
+    # of the C free and the destructor is not called at all -- calling a borrowing destructor and
+    # then dropping could free the same allocation twice.
+    cleanup = "rust_destructor"
+    if chosen["owner"] == "opt_box":
+        d0 = ""
+        if destructor:
+            drt = gdh.parse_rust_param_types(rust_text, _rn(destructor)) or []
+            d0 = _norm_ty(drt[0], rust_aliases) if drt else ""
+        orx = re.escape(chosen["owner_rust"])
+        if re.fullmatch(rf"Option<Box<{orx}(?:<[^<>]*>)?>>", d0):
+            cleanup = "rust_consuming_option_box"
+        elif re.fullmatch(rf"Box<{orx}(?:<[^<>]*>)?>", d0):
+            cleanup = "rust_consuming_box"
+        else:
+            cleanup = "drop"
     detail = {"producer": f, "producer_lowered": chosen["lowered"],
+              "producer_owner": chosen["owner"], "producer_rust_owner": chosen["owner_rust"],
+              "cleanup": cleanup,
               "consumed_by_target": consumed,
               "producer_rust_types": chosen["frt"],
               "destructor": destructor,
@@ -2434,6 +2507,9 @@ def lower_to_schema(plan: HarnessPlan, params: list[dict], program: str, ret_rus
                 for q, t in zip(pp, prt):
                     q["rust_pty"] = re.sub(r"&\s*'\w+\s*", "&", t)
             out.append({"name": n, "role": "produced_object", "decode": "producer_call",
+                        "owner": d.get("producer_owner", "raw"),
+                        "owner_rust": d.get("producer_rust_owner"),
+                        "cleanup": d.get("cleanup", "rust_destructor"),
                         "producer": d["producer"], "producer_params": pp,
                         "destructor": d.get("destructor"), "consumed": bool(d.get("consumed_by_target")),
                         "seed_reset": d.get("seed_reset", "none"),

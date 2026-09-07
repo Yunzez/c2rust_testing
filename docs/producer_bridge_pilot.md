@@ -241,6 +241,88 @@ E0425/E0609 on PtrTrans now build against nullness, and a 5-second probe already
 `cJSON_New_Item` stub). The rerun is queued after tulip. This is the ladder implemented correctly,
 not a PtrTrans adapter: the check is generic and c2rust's cell is unaffected (golden unchanged).
 
+## 6b. The `nullable owned object` bridge family (2026-09-07, after quadtree)
+
+**User decision, and the rule it satisfies.** The frozen implementation is extended only when a
+representation recurs across at least two translators with a usable producer. It does here: CROWN
+and PtrTrans both hand quadtree's owning `T*` back as `Option<Box<R>>`, and both have a producer
+(`quadtree_new`, `quadtree_node_with_bounds`, `quadtree_bounds_new`, `quadtree_point_new`). This is
+not "a new `if` per Rust type": it is the second OWNER shape in a small, closed set.
+
+The producer bridge has two independent axes. Until now only one point of the first axis existed:
+
+| axis | shapes supported |
+|---|---|
+| **owner** (what the producer hands back, who holds it during the call) | `*mut T` / `*const T` — the mechanical lift · **`Option<Box<R>>` — the nullable owned object (new)** |
+| **view** (what the target is given) | raw pointer · `&T` / `&mut T` · `Option<&T>` / `Option<&mut T>` |
+
+A boxed owner cannot use the raw-owner path: the harness must HOLD the box across the call and lend
+the target a borrowed view, which the generator previously had no way to express (it had no notion
+of owner and borrowed view being different things). That is why this was never "a missing type name".
+
+**The family, frozen.**
+
+```
+C owner:      T*                          (the C producer returns it; the C target takes it)
+Rust owner:   Option<Box<R>>              (the harness's local, `mut`)
+target view:  Option<&R> | Option<&mut R> | &R | &mut R      -- BORROWED, never moved
+cleanup:      C: the C destructor when one exists
+              Rust: a CONSUMING destructor (`Option<Box<R>>` / `Box<R>`) if the translation has one,
+                    otherwise the box's own Drop -- exactly one release either way
+```
+
+Supported only when all of these hold, each checked in the plan and recorded in it:
+
+1. the producer matches on both sides: C returns `T*`, Rust returns `Option<Box<R>>`;
+2. the target only BORROWS the object;
+3. the harness owns the box for the whole call (the producer, the target and the release are one
+   sequence in one iteration);
+4. nullness corresponds and is compared (`c_ptr.is_null()` vs `owner.is_none()`), so a producer that
+   rejects the input on one side only is a divergence, not a silent skip;
+5. the box moves at most once, so a double free is not expressible;
+6. still refused, with the reason in the plan: several produced objects in one call, `Rc`/`Arc`/`Pin`,
+   a producer that itself takes `Option<&mut T>`, and a target that CONSUMES the box
+   (`quadtree_free(Option<Box<quadtree_t>>)` — the owner would leave the harness, so neither the
+   comparison nor the release schedule could be claimed).
+
+**R is checked for consistency, not against the C name.** The producer's `R` must be the type the
+target's view names. The C signature already establishes that both sides mean one object; requiring
+`R` to equal the C type's name would need a C-to-Rust type map for nothing, and PtrTrans renames the
+struct (`quadtree_node_t` → `QuadtreeNode`).
+
+**A raw producer outranks a boxed one for the same type,** before every other ranking key. CROWN's
+`quadtree_node_t` has both (`quadtree_node_with_bounds` raw, `quadtree_node_new` boxed); fixing the
+order this way proves that adding the family cannot move a producer choice that was already made.
+
+**Measured effect** (plans, same pairs, before → after):
+
+| pair | planned of 24 | newly planned |
+|---|---|---|
+| quadtree × c2rust | 17 → 17 | — (raw-owner translation: the negative control is untouched) |
+| quadtree × CROWN | 12 → 13 | `quadtree_search` |
+| quadtree × PtrTrans | 5 → 11 | `find_`, `quadtree_search`, `quadtree_bounds_extend`, `quadtree_node_isempty`, `quadtree_node_isleaf`, `quadtree_node_ispointer` |
+
+`genann × CROWN`, an existing producer-bridge cell, plans 10 of 12 before and after. Nothing was lost
+anywhere. The generated sequence was read and run before the version was frozen: `bounds_extend`
+1.9 M executions and the three node predicates ~1.5 M each, no crash; `quadtree_search` on the two
+0.1.0 pairs is a C-side crash-all (see below).
+
+**Two gaps this exposed, both fixed rather than left to fail at build time** (a plan that cannot
+build is the planner lying, `docs/rq4_runbook.md`):
+
+* a C predicate returning `int` against a translation returning `bool` — compared by C's own truth
+  rule, `(c_ret != 0) != r_ret`, never by casting the bool (which would call C's `2` a divergence);
+* internal linkage is a fact about the C side, so the oracle's `static` strip is driven by the C
+  side and not by what the translation did: PtrTrans emits quadtree's `static find_` as a `pub fn`,
+  the Rust-driven flag said "not private", the oracle kept its `static` and the harness would not
+  link (`undefined symbol: c_find_`).
+
+**Adjacent shape, deliberately NOT implemented** (reported for a decision): a BOXED owner whose
+target takes a raw pointer (`quadtree_insert(tree: *mut quadtree_t, ..)`, `quadtree_bounds_extend`
+in CROWN). Lending `owner.as_deref_mut().map(|r| r as *mut _)` is the translation's own idiom —
+CROWN writes exactly that internally — but it is a third view for the new owner and is outside the
+frozen family. It would add two CROWN boundaries.
+
 ## 7. Non-goals (explicitly out of the pilot)
 
 Generic inference over arbitrary `T*`; producers deeper than one level; canonical comparison of the

@@ -1,0 +1,313 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/harnesses/ti_adx/src/lib.rs:21256:46
+      |
+21256 |     let mut info: *const ti_indicator_info = crate::example2::ti_indicators.as_mut_ptr();
+      |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/harnesses/ti_adx/src/lib.rs:21560:17
+      |
+21560 |                 crate::fuzzer::dummy_in.as_mut_ptr()
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/harnesses/ti_adx/src/lib.rs:21564:17
+      |
+21564 |                 crate::fuzzer::dummy_in0.as_mut_ptr()
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/harnesses/ti_adx/src/lib.rs:21568:17
+      |
+21568 |                 crate::fuzzer::dummy_ot.as_mut_ptr()
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a mutable reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/harnesses/ti_adx/src/lib.rs:21694:69
+      |
+21694 |         let mut info_0: *const crate::example2::ti_indicator_info = crate::fuzzer::ti_indicators.as_mut_ptr();
+      |                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: `tulip_crown` (lib) generated 223 warnings (run `cargo fix --lib -p tulip_crown` to apply 131 suggestions)
+   Compiling tulip_crown-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/harnesses/ti_adx/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/tulip_crown_ft.rs:163:17
+    |
+163 |             let c_ret = c_ti_adx(size, inputs_tab_c.as_ptr(), options_c.as_ptr(), outputs_tab_c.as_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/tulip_crown_ft.rs:168:17
+    |
+168 |             let r_ret = translated::ti_adx(size, inputs_tab_r.as_ptr(), options_r.as_ptr(), outputs_tab_r.as_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_crown_ft.rs:139:9
+    |
+139 |     let mut inputs__0_c: Vec<f64> = (0..inputs__0_n).map(|_| cur.take_f64()).collect();
+    |         ----^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_crown_ft.rs:140:9
+    |
+140 |     let mut inputs__0_r: Vec<f64> = inputs__0_c.clone();
+    |         ----^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_crown_ft.rs:142:9
+    |
+142 |     let mut inputs__1_c: Vec<f64> = (0..inputs__1_n).map(|_| cur.take_f64()).collect();
+    |         ----^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_crown_ft.rs:143:9
+    |
+143 |     let mut inputs__1_r: Vec<f64> = inputs__1_c.clone();
+    |         ----^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_crown_ft.rs:145:9
+    |
+145 |     let mut inputs__2_c: Vec<f64> = (0..inputs__2_n).map(|_| cur.take_f64()).collect();
+    |         ----^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_crown_ft.rs:146:9
+    |
+146 |     let mut inputs__2_r: Vec<f64> = inputs__2_c.clone();
+    |         ----^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_crown_ft.rs:150:9
+    |
+150 |     let mut options_c: Vec<f64> = (0..options_n).map(|_| cur.take_f64()).collect();
+    |         ----^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_crown_ft.rs:151:9
+    |
+151 |     let mut options_r: Vec<f64> = options_c.clone();
+    |         ----^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: multiple methods are never used
+  --> fuzz_targets/tulip_crown_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `inputs__0_n` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:138:9
+    |
+138 |     let inputs__0_n: usize = 4096;
+    |         ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_0_n`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `inputs__0_c` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:139:13
+    |
+139 |     let mut inputs__0_c: Vec<f64> = (0..inputs__0_n).map(|_| cur.take_f64()).collect();
+    |             ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_0_c`
+
+warning: variable `inputs__0_r` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:140:13
+    |
+140 |     let mut inputs__0_r: Vec<f64> = inputs__0_c.clone();
+    |             ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_0_r`
+
+warning: variable `inputs__1_n` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:141:9
+    |
+141 |     let inputs__1_n: usize = 4096;
+    |         ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_1_n`
+
+warning: variable `inputs__1_c` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:142:13
+    |
+142 |     let mut inputs__1_c: Vec<f64> = (0..inputs__1_n).map(|_| cur.take_f64()).collect();
+    |             ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_1_c`
+
+warning: variable `inputs__1_r` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:143:13
+    |
+143 |     let mut inputs__1_r: Vec<f64> = inputs__1_c.clone();
+    |             ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_1_r`
+
+warning: variable `inputs__2_n` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:144:9
+    |
+144 |     let inputs__2_n: usize = 4096;
+    |         ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_2_n`
+
+warning: variable `inputs__2_c` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:145:13
+    |
+145 |     let mut inputs__2_c: Vec<f64> = (0..inputs__2_n).map(|_| cur.take_f64()).collect();
+    |             ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_2_c`
+
+warning: variable `inputs__2_r` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:146:13
+    |
+146 |     let mut inputs__2_r: Vec<f64> = inputs__2_c.clone();
+    |             ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_2_r`
+
+warning: variable `outputs__0_n` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:152:9
+    |
+152 |     let outputs__0_n: usize = 4096;
+    |         ^^^^^^^^^^^^ help: convert the identifier to snake case: `outputs_0_n`
+
+warning: variable `outputs__0_c` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:153:13
+    |
+153 |     let mut outputs__0_c: Vec<f64> = vec![0 as f64; outputs__0_n];
+    |             ^^^^^^^^^^^^ help: convert the identifier to snake case: `outputs_0_c`
+
+warning: variable `outputs__0_r` should have a snake case name
+   --> fuzz_targets/tulip_crown_ft.rs:154:13
+    |
+154 |     let mut outputs__0_r: Vec<f64> = outputs__0_c.clone();
+    |             ^^^^^^^^^^^^ help: convert the identifier to snake case: `outputs_0_r`
+
+warning: `tulip_crown-fuzz` (bin "tulip_crown_ft") generated 23 warnings (run `cargo fix --bin "tulip_crown_ft"` to apply 8 suggestions)
+    Finished `release` profile [optimized + debuginfo] target(s) in 10.94s
+Processing 9 input files using 1 workers (batch size: ~9)
+Worker 0: Generating coverage for 9 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2966172045
+INFO: Loaded 1 modules   (1469 inline 8-bit counters): 1469 [0x56263042ba90, 0x56263042c04d), 
+INFO: Loaded 1 PC tables (1469 PCs): 1469 [0x56263042c050,0x562630431c20), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/harnesses/ti_adx/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/tulip_crown_ft: Running 9 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/280be2ed55ccc2347d2bea21274fa2cf74b0f8a4
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/280be2ed55ccc2347d2bea21274fa2cf74b0f8a4 in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/4fa078f660fb5b6b2730b3af4c111cc9fb368893
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/4fa078f660fb5b6b2730b3af4c111cc9fb368893 in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/f09c30d6ca2740e068b54e0772a32437a4e3d5d4
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/f09c30d6ca2740e068b54e0772a32437a4e3d5d4 in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/ac779c8cf87dc7cd97eccafdd8f419d2c1071864
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/ac779c8cf87dc7cd97eccafdd8f419d2c1071864 in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/5ba93c9db0cff93f52b521d7420e43f6eda2784f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/5ba93c9db0cff93f52b521d7420e43f6eda2784f in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/90a96ed0623941fdf29ab62511420619668b5c65
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/90a96ed0623941fdf29ab62511420619668b5c65 in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/0e6d77f4c7f14da3f992b2b59969a1f47b71e1fc
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/0e6d77f4c7f14da3f992b2b59969a1f47b71e1fc in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/4be3fbfc3b7fb8e70a3470c57bb6a5feebcf524c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/4be3fbfc3b7fb8e70a3470c57bb6a5feebcf524c in 2 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/corpus/ti_adx/seed_fixed in 2 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_crown/harnesses/ti_adx/fuzz/coverage/tulip_crown_ft/coverage.profdata".
+

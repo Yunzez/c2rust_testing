@@ -1,0 +1,60 @@
+[
+ {
+  "artifact": "slow-unit-7fa44c54aace3b4c0ac8f86c62874ac60dd36ac1",
+  "size": 64,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (runtime error: -4.65374e+129 is outside the range of representable values of type 'int')",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: -4.65374e+129 is outside the range of representable values of type 'int'",
+   "wild_address": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 2103597299\nINFO: Loaded 1 modules   (1032 inline 8-bit counters): 1032 [0x561b69e34b70, 0x561b69e34f78), \nINFO: Loaded 1 PC tables (1032 PCs): 1032 [0x561b69e34f78,0x561b69e38ff8), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_msw_start_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/confirm_sample/ti_msw_start_cands/slow-unit-7fa44c54aace3b4c0ac8f86c62874ac60dd36ac1\nc/indicators/msw.c:29:12: runtime error: -4.65374e+129 is outside the range of representable values of type 'int'\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/indicators/msw.c:29:12 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "ub-gated",
+   "reported": "ub-gated",
+   "phase": 1,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 2168194656\nINFO: Loaded 1 modules   (1071 inline 8-bit counters): 1071 [0x5597feae2030, 0x5597feae245f), \nINFO: Loaded 1 PC tables (1071 PCs): 1071 [0x5597feae2460,0x5597feae6750), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_msw_start.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/confirm_sample/ti_msw_start_cands/slow-unit-7fa44c54aace3b4c0ac8f86c62874ac60dd36ac1\nC2R_OUTCOME kind=ub-gated phase=1 detail=\nC2R_OUTCOME kind=ub-gated phase=1 detail=\nExecuted /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/confirm_sample/ti_msw_start_cands/slow-unit-7fa44c54aace3b4c0ac8f86c62874ac60dd36ac1 in 2 ms\n***\n*** NOTE: fuzzing was not performed, you have only\n***       executed the target code on a fixed set of inputs.\n***\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ }
+]

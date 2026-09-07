@@ -99,7 +99,7 @@ domain is finite, fuzzed otherwise — same method, different coverage), ASan/UB
 
 ## Current totals (filled cells only)
 
-- **Bugs: 10 crash + 14 semantic-diff + 0 hang** (C9 = C2SaferRust lil non-NUL-terminated C-string literals in `register_stdcmds`, the root of its CRASH-ALL, and C10 = CROWN lil `lil_subst_to_list` dropping `if (!words) words = lil_alloc_list()` — a defect on an E1-certified cell — both found by the RQ4 plan pipeline 2026-09-06; C8 = Laertes bzip2 zeroed `incs` shell-sort table, found by the RQ4 plan pipeline 2026-09-05, scanner-predicted, suite-corroborated), across **5 published tools** (C2SaferRust, PtrTrans,
+- **Bugs: 11 crash + 15 semantic-diff + 0 hang** (C11 = Laertes tulip all-default `ti_indicators` table, severed init on a certified cell; S15 = C2SaferRust tulip `ti_adx_start` pointer cast in place of a load — both found by the RQ4 plan pipeline 2026-09-07; C9 = C2SaferRust lil non-NUL-terminated C-string literals in `register_stdcmds`, the root of its CRASH-ALL, and C10 = CROWN lil `lil_subst_to_list` dropping `if (!words) words = lil_alloc_list()` — a defect on an E1-certified cell — both found by the RQ4 plan pipeline 2026-09-06; C8 = Laertes bzip2 zeroed `incs` shell-sort table, found by the RQ4 plan pipeline 2026-09-05, scanner-predicted, suite-corroborated), across **5 published tools** (C2SaferRust, PtrTrans,
   CROWN, Laertes, SACTOR), classes: **checksum-corruption — now 3 independent instances** (C2SaferRust crc32,
   Laertes bzip2, Laertes optipng); NULL/empty conflation; UTF-8-panic; call-site contract loss; CROWN
   ownership-lift breaking a codec (corrupt output + memory-unsafety); **PtrTrans qsort wrong-index

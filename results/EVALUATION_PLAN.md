@@ -61,7 +61,7 @@ Current primary taxonomy in `rq4_effectiveness/defect_manifest.md`:
 | **Total** | **22** |
 
 RQ3 describes the observed corpus. It does not estimate population prevalence
-from these 24 defects.
+from these 26 defects.
 
 ## RQ4 — Coverage beyond shipped tests
 

@@ -133,8 +133,9 @@ def main() -> int:
                    check=True)
     # provenance hashes
     hashes = {"pair": {}, "cell": {}}
-    for f in sorted((pair / "source").glob("*")):
-        hashes["pair"][f"source/{f.name}"] = sha(f)
+    for f in sorted((pair / "source").rglob("*")):   # tulip's source/ has subdirectories (indicators/, utils/)
+        if f.is_file():
+            hashes["pair"][f"source/{f.relative_to(pair / 'source')}"] = sha(f)
     for f in sorted((pair / "translated").glob("*")):
         hashes["pair"][f"translated/{f.name}"] = sha(f)
     for f in sorted(hs.glob("*.bin")):

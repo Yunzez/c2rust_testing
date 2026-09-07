@@ -21,12 +21,12 @@ Assembled by `scripts/rq4/summary_all.py` from every library's `cells.json` (its
 | lil | Laertes | 145 | 51 | 51 | 51 | 48 | 4907 | 5112 | 7 |
 | lil | C2SaferRust | 145 | 47 | 47 | 47 | 24 | 340 | 3670 | 27 |
 | lil | CROWN | 145 | 42 | 42 | 42 | 39 | 1859 | 617 | 3 |
-| tulip | c2rust | 213 | 213 | 0 | 0 | 0 | 0 | 0 | None |
-| tulip | Laertes | 213 | 213 | 0 | 0 | 0 | 0 | 0 | None |
-| tulip | C2SaferRust | 213 | 212 | 0 | 0 | 0 | 0 | 0 | None |
-| tulip | CROWN | 213 | 213 | 0 | 0 | 0 | 0 | 0 | None |
+| tulip | c2rust | 213 | 213 | 212 | 212 | 212 | 1903 | 1149 | 0 |
+| tulip | Laertes | 213 | 213 | 212 | 212 | 211 | 1813 | 1157 | 1 |
+| tulip | C2SaferRust | 213 | 212 | 212 | 212 | 212 | 1776 | 1038 | 9 |
+| tulip | CROWN | 213 | 213 | 212 | 212 | 212 | 1814 | 1076 | 0 |
 
-19 cells: 1223 planned of 1922 matched boundaries, 365 built, 365 executed, 284 with a coverage export; 25337 corpus inputs in total.
+19 cells: 1223 planned of 1922 matched boundaries, 1213 built, 1213 executed, 1131 with a coverage export; 32643 corpus inputs in total.
 
 ## 2. Coverage of the translation: shipped suite vs validator
 
@@ -49,10 +49,10 @@ Fractions are of the cell's universe (the passing suite's instrumented build whe
 | lil | Laertes | TEST-UNAVAILABLE | — | 144/183 (0.787) | 144 | — | 5028/6143 (0.818) | 5028 |
 | lil | C2SaferRust | TEST-UNAVAILABLE | — | 25/154 (0.162) | 25 | — | 362/5751 (0.063) | 362 |
 | lil | CROWN | TEST-UNAVAILABLE | — | 127/134 (0.948) | 127 | — | 5294/6409 (0.826) | 5294 |
-| tulip | c2rust | *incomplete* | | | | | | |
-| tulip | Laertes | *incomplete* | | | | | | |
-| tulip | C2SaferRust | *incomplete* | | | | | | |
-| tulip | CROWN | *incomplete* | | | | | | |
+| tulip | c2rust | PASS | 213/213 (1.000) | 212/213 (0.995) | 0 | 8616/9298 (0.927) | 3197/9298 (0.344) | 73 |
+| tulip | Laertes | TEST-FAILS | — | 211/216 (0.977) | 211 | — | 3168/13191 (0.240) | 3168 |
+| tulip | C2SaferRust | TEST-FAILS | — | 212/213 (0.995) | 212 | — | 3167/9306 (0.340) | 3167 |
+| tulip | CROWN | PASS | 213/213 (1.000) | 212/213 (0.995) | 0 | 8616/9219 (0.935) | 3197/9219 (0.347) | 73 |
 
 ## 3. Candidates, confirmation, defects
 
@@ -75,12 +75,12 @@ Confirmation totals are the cell's labelled sample (or its full confirmation whe
 | lil | Laertes | 0 | 0 | 662 | 52 | 102 | — |
 | lil | C2SaferRust | 0 | 57 | 413 | 3 | 1 | C9 |
 | lil | CROWN | 0 | 69 | 218 | 61 | 43 | C10 |
-| tulip | c2rust | 0 | 0 | 0 | 0 | 0 | — |
-| tulip | Laertes | 0 | 0 | 0 | 0 | 0 | — |
-| tulip | C2SaferRust | 0 | 0 | 0 | 0 | 0 | — |
-| tulip | CROWN | 0 | 0 | 0 | 0 | 0 | — |
+| tulip | c2rust | 0 | 0 | 243 | 0 | 0 | — |
+| tulip | Laertes | 0 | 2 | 244 | 0 | 35 | C11 |
+| tulip | C2SaferRust | 5 | 7 | 242 | 0 | 4 | S15 |
+| tulip | CROWN | 0 | 0 | 243 | 0 | 1 | — |
 
-Confirmed across all cells: 613 value divergences, 363 terminations, before clustering (one site = one defect; a producer's crash counts once and blocks its dependants).
+Confirmed across all cells: 618 value divergences, 372 terminations, before clustering (one site = one defect; a producer's crash counts once and blocks its dependants).
 
 ## 4. Defects the RQ4 cells found or re-found
 
@@ -90,6 +90,8 @@ Confirmed across all cells: 613 value divergences, 363 terminations, before clus
 | C8 | bzip2 × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
 | C9 | lil × C2SaferRust | byte-string domain narrowing | NEW — found by the RQ4 plan pipeline |
 | C10 | lil × CROWN | null/empty conflation | NEW — found by the RQ4 plan pipeline |
+| S15 | tulipindicators × C2SaferRust | semantic computation substitution | catalogued earlier; re-found by the RQ4 cell |
+| C11 | tulipindicators × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
 | S3 | bzip2 × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
 | S5 | genann × SACTOR | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
 | S10 | bzip2 × CROWN | ownership-state corruption | catalogued earlier; re-found by the RQ4 cell |

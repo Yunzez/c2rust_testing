@@ -1,0 +1,65 @@
+[
+ {
+  "artifact": "crash-f4da567ff744706721653f90b27c5315b3da5042",
+  "size": 15,
+  "verdict": "ub_associated_termination",
+  "why": "C alone: signal (runtime error: -5.45181e+245 is outside the range of representable values of type 'int'); the translation PANICS on its own, with no sanitizer",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: -5.45181e+245 is outside the range of representable values of type 'int'",
+   "wild_address": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 3705722381\nINFO: Loaded 1 modules   (1034 inline 8-bit counters): 1034 [0x559ca815c0d0, 0x559ca815c4da), \nINFO: Loaded 1 PC tables (1034 PCs): 1034 [0x559ca815c4e0,0x559ca8160580), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/confirm_sample/ti_fisher_start_cands/crash-f4da567ff744706721653f90b27c5315b3da5042\nc/indicators/fisher.c:29:12: runtime error: -5.45181e+245 is outside the range of representable values of type 'int'\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/indicators/fisher.c:29:12 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_san.bin+0x13837c) (BuildId: 63387ad54f17d070d414f5da3136c9ffd6090824)\n    #24 0x55736e38a495  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_san.bin+0x156495) (BuildId: 63387ad54f17d070d414f5da3136c9ffd6090824)\n    #25 0x55736e397921  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_san.bin+0x163921) (BuildId: 63387ad54f17d070d414f5da3136c9ffd6090824)\n    #26 0x55736e385f16  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_san.bin+0x151f16) (BuildId: 63387ad54f17d070d414f5da3136c9ffd6090824)\n    #27 0x7f2eec62a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #28 0x7f2eec62a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #29 0x55736e29ab24  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_san.bin+0x66b24) (BuildId: 63387ad54f17d070d414f5da3136c9ffd6090824)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "ub-gated",
+   "reported": "ub-gated",
+   "phase": 1,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 4049405991\nINFO: Loaded 1 modules   (1075 inline 8-bit counters): 1075 [0x560139398230, 0x560139398663), \nINFO: Loaded 1 PC tables (1075 PCs): 1075 [0x560139398668,0x56013939c998), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/confirm_sample/ti_fisher_start_cands/crash-f4da567ff744706721653f90b27c5315b3da5042\nC2R_OUTCOME kind=ub-gated phase=1 detail=\nC2R_OUTCOME kind=ub-gated phase=1 detail=\nExecuted /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/confirm_sample/ti_fisher_start_cands/crash-f4da567ff744706721653f90b27c5315b3da5042 in 0 ms\n***\n*** NOTE: fuzzing was not performed, you have only\n***       executed the target code on a fixed set of inputs.\n***\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "\"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 4080131350\nINFO: Loaded 1 modules   (546 inline 8-bit counters): 546 [0x55de5f24e050, 0x55de5f24e272), \nINFO: Loaded 1 PC tables (546 PCs): 546 [0x55de5f24e278,0x55de5f250498), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/confirm_sample/ti_fisher_start_cands/crash-f4da567ff744706721653f90b27c5315b3da5042\nC2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_nosan/src/lib.rs:3341:12: attempt to subtract with\n\nthread '<unnamed>' (2655882) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_laertes/harnesses/ti_fisher_start_nosan/src/lib.rs:3341:12:\nattempt to subtract with overflow\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n==2655882== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ }
+]

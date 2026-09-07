@@ -1,0 +1,209 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_c2rust_ft.rs:144:9
+    |
+144 |     let mut options_c: Vec<f64> = vec![0 as f64; options_n];
+    |         ----^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> fuzz_targets/tulip_c2rust_ft.rs:145:9
+    |
+145 |     let mut options_r: Vec<f64> = options_c.clone();
+    |         ----^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: multiple methods are never used
+  --> fuzz_targets/tulip_c2rust_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `inputs__0_n` should have a snake case name
+   --> fuzz_targets/tulip_c2rust_ft.rs:138:9
+    |
+138 |     let inputs__0_n: usize = 1024;
+    |         ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_0_n`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `inputs__0_c` should have a snake case name
+   --> fuzz_targets/tulip_c2rust_ft.rs:139:13
+    |
+139 |     let mut inputs__0_c: Vec<f64> = (0..inputs__0_n).map(|_| cur.take_f64()).collect();
+    |             ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_0_c`
+
+warning: variable `inputs__0_r` should have a snake case name
+   --> fuzz_targets/tulip_c2rust_ft.rs:140:13
+    |
+140 |     let mut inputs__0_r: Vec<f64> = inputs__0_c.clone();
+    |             ^^^^^^^^^^^ help: convert the identifier to snake case: `inputs_0_r`
+
+warning: variable `outputs__0_n` should have a snake case name
+   --> fuzz_targets/tulip_c2rust_ft.rs:146:9
+    |
+146 |     let outputs__0_n: usize = 1024;
+    |         ^^^^^^^^^^^^ help: convert the identifier to snake case: `outputs_0_n`
+
+warning: variable `outputs__0_c` should have a snake case name
+   --> fuzz_targets/tulip_c2rust_ft.rs:147:13
+    |
+147 |     let mut outputs__0_c: Vec<f64> = vec![0 as f64; outputs__0_n];
+    |             ^^^^^^^^^^^^ help: convert the identifier to snake case: `outputs_0_c`
+
+warning: variable `outputs__0_r` should have a snake case name
+   --> fuzz_targets/tulip_c2rust_ft.rs:148:13
+    |
+148 |     let mut outputs__0_r: Vec<f64> = outputs__0_c.clone();
+    |             ^^^^^^^^^^^^ help: convert the identifier to snake case: `outputs_0_r`
+
+warning: `tulip_c2rust-fuzz` (bin "tulip_c2rust_ft") generated 13 warnings (run `cargo fix --bin "tulip_c2rust_ft"` to apply 4 suggestions)
+    Finished `release` profile [optimized + debuginfo] target(s) in 11.03s
+Processing 32 input files using 1 workers (batch size: ~32)
+Worker 0: Generating coverage for 32 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 1426062599
+INFO: Loaded 1 modules   (1208 inline 8-bit counters): 1208 [0x55e31f1d6640, 0x55e31f1d6af8), 
+INFO: Loaded 1 PC tables (1208 PCs): 1208 [0x55e31f1d6af8,0x55e31f1db678), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/harnesses/ti_round/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/tulip_c2rust_ft: Running 32 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/670041de9f5656b2a8358e36a9695a2e44f50f2d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/670041de9f5656b2a8358e36a9695a2e44f50f2d in 1 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/392090416183aad02a60a10ea0ce6e49403c3872
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/392090416183aad02a60a10ea0ce6e49403c3872 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/857369aff603d164db148e6b175622ee928172df
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/857369aff603d164db148e6b175622ee928172df in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/4e09a9bef454dda4070876b6d079bf871988a51c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/4e09a9bef454dda4070876b6d079bf871988a51c in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/9781a322f6b2b3da376b39baf487f901ab571fb6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/9781a322f6b2b3da376b39baf487f901ab571fb6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/ea6c42ded415dd4d59b36ca20a5dc76d53f48bd3
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/ea6c42ded415dd4d59b36ca20a5dc76d53f48bd3 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/2fac7e4ab0f962679f7015438768c6d621ddcec6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/2fac7e4ab0f962679f7015438768c6d621ddcec6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/05dca86810dc8fa8a6f8d2476710b360d3b322fd
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/05dca86810dc8fa8a6f8d2476710b360d3b322fd in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/6ec8b57d15e7efa1efd8114382f9d3bc5565b839
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/6ec8b57d15e7efa1efd8114382f9d3bc5565b839 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/1f58126289f807d6df8e7dbdc79fd1b9771377f7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/1f58126289f807d6df8e7dbdc79fd1b9771377f7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/dde5a95a9dbf00427ec9f8726aa277ea98572a37
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/dde5a95a9dbf00427ec9f8726aa277ea98572a37 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/a51cb800f3b8ca1d8e29f6b0c80f9a76c016c4d3
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/a51cb800f3b8ca1d8e29f6b0c80f9a76c016c4d3 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/67c5e85a1449b1ba827fbbc99c012b762c75a7ff
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/67c5e85a1449b1ba827fbbc99c012b762c75a7ff in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/9786fb5abdaf928ff0f942303ccde7412e257846
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/9786fb5abdaf928ff0f942303ccde7412e257846 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/ca8c5a2561437594a002eb353d3b72bc31205b67
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/ca8c5a2561437594a002eb353d3b72bc31205b67 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/15686b554d63d56ce9080b718de6eb10f263a5e5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/15686b554d63d56ce9080b718de6eb10f263a5e5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/e8ea553121f463c1c2065b692bfcd8e4518ee0b7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/e8ea553121f463c1c2065b692bfcd8e4518ee0b7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/0e356ba505631fbf715758bed27d503f8b260e3a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/0e356ba505631fbf715758bed27d503f8b260e3a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/2ace62c1befa19e3ea37dd52be9f6d508c5163e6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/2ace62c1befa19e3ea37dd52be9f6d508c5163e6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/f8b877b2fa1a6ec8d450cbc2b7fdef93970b401c
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/f8b877b2fa1a6ec8d450cbc2b7fdef93970b401c in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/37afafa70ff8db533600ebe3026db708bae472bf
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/37afafa70ff8db533600ebe3026db708bae472bf in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/921e0366f0853ca2e90593cf2b33d5004f66579d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/921e0366f0853ca2e90593cf2b33d5004f66579d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/b69b90431980f505895222089d56d40231f3faec
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/b69b90431980f505895222089d56d40231f3faec in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/97a267be03cea115c95f0cf279b5eb252df3ccc9
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/97a267be03cea115c95f0cf279b5eb252df3ccc9 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/dc9ac99e1f72525ccf2d0b2b987d5339524a9d41
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/dc9ac99e1f72525ccf2d0b2b987d5339524a9d41 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/5e3fa36a05dc2cb9bbcfeba4dea84d878b08777f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/5e3fa36a05dc2cb9bbcfeba4dea84d878b08777f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/814534d2f8ea9bde7180e61176ace691c9bce2b9
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/814534d2f8ea9bde7180e61176ace691c9bce2b9 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/fd1154809b4075cd47bb7f57dcfdb9f78c2f91e2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/fd1154809b4075cd47bb7f57dcfdb9f78c2f91e2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/9e11bfa148b44f0e67c847b276f0a6647907655f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/9e11bfa148b44f0e67c847b276f0a6647907655f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/044782e958490659f078919af5283bae7ebbbda9
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/044782e958490659f078919af5283bae7ebbbda9 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/65c5e354363650b154f040d6fb99299213517da2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/65c5e354363650b154f040d6fb99299213517da2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/corpus/ti_round/seed_fixed in 0 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_tulip_c2rust/harnesses/ti_round/fuzz/coverage/tulip_c2rust_ft/coverage.profdata".
+

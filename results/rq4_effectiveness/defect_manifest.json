@@ -414,6 +414,56 @@
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
   {
+   "id": "S15",
+   "library": "tulipindicators",
+   "tool": "C2SaferRust",
+   "kind": "semantic",
+   "root_cause": "ti_adx_start casts the options POINTER to an integer instead of loading options[0]: `(options.offset(0) as i32 - 1) * 2` for C's `((int)options[0]-1) * 2`; the indicator's start offset becomes the low 32 bits of a heap address",
+   "family": "semantic computation substitution",
+   "symptom": "wrong return value on every valid input (5/5 sampled confirmed_divergence), and `attempt to multiply with overflow` panics when the address bits are large (7/7 sampled confirmed_termination); C is in contract on all of them. The other 36 `_start` functions that read options dereference correctly (`*options.offset(0)`), checked by a deterministic probe (options[0] = 5.0, combined replay: 18 of 18 normal, only ti_adx_start diverges)",
+   "boundary": "function (ti_adx_start) / semantic + crash; ti_adx and every caller of ti_adx_start inherit the wrong start offset",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (found by the RQ4 plan pipeline; buffer-table cell, 3600 s, seed 42)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/tulip_c2saferrust/translated/tulip_c2saferrust.rs:391-395 (laertes_benchmarks/tulipindicators_WIP/indicators/adx.rs), C from tulip 0.8.4 indicators/adx.c:28-30. E1's tulip x C2SaferRust evidence (C6, S13, the 150k-record indicator-value certificate) compared indicator outputs through the sample driver and never called ti_adx_start",
+   "evidence": "results/rq3_coverage/tulip/c2saferrust/ (RQ4 cell, 2026-09-07): replay of the coverage corpus 6 divergence + 3 panic; confirm_sample/ti_adx_start_verdicts: 5 confirmed_divergence (rung 2, return value) + 7 confirmed_termination (no-sanitizer panic `attempt to multiply with overflow` at lib.rs:393); confirmed_inputs/ti_adx_start/; direct probe recorded in tulip/c2saferrust/RUN.md section 7",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "C11",
+   "library": "tulipindicators",
+   "tool": "Laertes",
+   "kind": "crash",
+   "root_cause": "the static table `ti_indicators[105]` is rendered as 105 `ti_indicator_info::new()` (every `name` NULL) with its initialiser moved into a `laertes_init_*` function nothing calls -- the severed-init pattern the scanner had flagged for this very table; ti_find_indicator's binary search then strcmp()s a NULL name",
+   "family": "initialization loss or corruption",
+   "symptom": "ti_find_indicator dereferences the zero page on every input (SEGV in strcmp; deterministic, with and without a sanitizer), so no indicator can be looked up by name; C returns normally",
+   "boundary": "function (ti_find_indicator) / crash; every caller of the lookup inherits it",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (found by the RQ4 plan pipeline: preflight stop, then the campaign; 2026-09-07)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/tulip_laertes/translated/tulip_laertes.rs:10464 (the all-default table) and :19587-19602 (ti_find_indicator); C from tulip 0.8.4 indicators_index.c (ti_indicators[] with string names, ti_find_indicator). Scanner: results/rq4_effectiveness/severed_init_law.md flags tulipindicators::ti_indicators; E3 called the initialiser via Once to run at all. E1's Laertes tulip certificate (11 arithmetic indicators, 150k records, 0 diffs) never called the lookup",
+   "evidence": "results/rq3_coverage/tulip/laertes/ (RQ4 cell, 3600 s, seed 42): preflight/preflight.json (C ok, Rust crash on the empty input; 129/130 jobs crashed); replay 1 signal; confirm_sample/ti_find_indicator_verdicts: 2 confirmed_termination under the zero-page rule (ASan: address points to the zero page; no-sanitizer replay SIGSEGV); confirmed_inputs/ti_find_indicator/; RUN.md section 7",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
    "id": "S1",
    "library": "optipng (zlib)",
    "tool": "C2SaferRust",
@@ -848,9 +898,9 @@
  ],
  "summary": {
   "counting_units": "Two units, never mixed (U1): DEFECTS (root-cause level) and DIVERGENT/VALID RECORDS (per-cell strength). Record counts are per OBS cell and are NOT summable across cells or across defects sharing a cell (C6+S13 share tulip_c2saferrust; S7+S8+S9 share cjson_ptrtrans).",
-  "defects_total": 24,
-  "crash": 10,
-  "semantic": 14,
+  "defects_total": 26,
+  "crash": 11,
+  "semantic": 15,
   "defects_per_family": {
    "control-flow preservation failure": {
     "count": 3,
@@ -880,9 +930,10 @@
     ]
    },
    "initialization loss or corruption": {
-    "count": 4,
+    "count": 5,
     "ids": [
      "C8",
+     "C11",
      "S3",
      "S4",
      "S5"
@@ -897,18 +948,19 @@
      "S12"
     ]
    },
+   "semantic computation substitution": {
+    "count": 2,
+    "ids": [
+     "S15",
+     "S14"
+    ]
+   },
    "interface-contract loss": {
     "count": 3,
     "ids": [
      "S6",
      "S7",
      "S8"
-    ]
-   },
-   "semantic computation substitution": {
-    "count": 1,
-    "ids": [
-     "S14"
     ]
    }
   },
@@ -936,7 +988,7 @@
    ]
   },
   "obs_not_run_defects": {
-   "count": 15,
+   "count": 17,
    "ids": [
     "C2",
     "C3",
@@ -946,6 +998,8 @@
     "C8",
     "C9",
     "C10",
+    "S15",
+    "C11",
     "S2",
     "S4",
     "S5",
@@ -1111,12 +1165,12 @@
    }
   },
   "per_channel_note": "Booleans, single seed 42, one run per cell (pilot). Crash defects (C1, C6) are recovered by every channel as Rust-failure (O-R sees NO-RETURN). O-P(silent)=yes only for the two crash defects and for S13 (CLI boundary, exit status IS the externalised state) - U3 wording: process-output sensitivity is determined by the driver's externalization policy; never 'O-P-silent is universally zero'.",
-  "family_note": "Families record one primary root-cause mechanism per defect, so the counts sum to 24. Cross-cutting symptoms may be discussed separately but do not create additional memberships. The cJSON non-UTF-8 rejection (S9) is grouped with the four C2SaferRust byte-string restrictions because all five narrow a C byte-string domain to valid UTF-8.",
-  "attr_coverage": "No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: results/ablations/attribution/urlparser/result.json; lil: results/ablations/attribution/lil/result.json) are UB-exclusion / certificate cells with 0 confirmed translation divergences (CONTRACT P2/P3). ATTR coverage of the confirmed defects = 0/24.",
-  "align_coverage": "ALIGN pilot exists for one defect (S6, results/rq1_matching/align_qsort_ptrtrans/). ALIGN coverage of the confirmed defects = 1/24. No buildable wrong-map witness exists (P5).",
+  "family_note": "Families record one primary root-cause mechanism per defect, so the counts sum to 26. Cross-cutting symptoms may be discussed separately but do not create additional memberships. The cJSON non-UTF-8 rejection (S9) is grouped with the four C2SaferRust byte-string restrictions because all five narrow a C byte-string domain to valid UTF-8.",
+  "attr_coverage": "No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: results/ablations/attribution/urlparser/result.json; lil: results/ablations/attribution/lil/result.json) are UB-exclusion / certificate cells with 0 confirmed translation divergences (CONTRACT P2/P3). ATTR coverage of the confirmed defects = 0/26.",
+  "align_coverage": "ALIGN pilot exists for one defect (S6, results/rq1_matching/align_qsort_ptrtrans/). ALIGN coverage of the confirmed defects = 1/26. No buildable wrong-map witness exists (P5).",
   "provenance_counts": {
    "exact-source": {
-    "count": 10,
+    "count": 12,
     "ids": [
      "C1",
      "C2",
@@ -1124,6 +1178,8 @@
      "C7",
      "C9",
      "C10",
+     "S15",
+     "C11",
      "S5",
      "S6",
      "S10",

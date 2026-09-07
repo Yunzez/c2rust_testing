@@ -218,4 +218,23 @@ sentinel · a `None` template must fail construction, not fall through to an add
   profile, one compiled build script plus its C-oracle outputs per harness — held 160 × ~6 MB.
   `_prune_target` now prunes both profiles. Measure `du -sm <cell>/target/*` during a build
   before trusting any pruning claim.
+- **A grep is a hypothesis, a probe is evidence (tulip × C2SaferRust).** A regex for
+  `options.offset(0) as i32` matched 19 `_start` functions and read as a family of pointer-cast
+  mistranslations; a deterministic probe (options[0] = 5.0, combined replay on the cell's own
+  binaries) showed 18 of them agree with C — the pattern had not excluded the leading `*`. One
+  site (`ti_adx_start`) is real (S15). Never widen a defect from one confirmed site to a family
+  without replaying each site.
+- **Zero-page faults are deterministic (tulip × Laertes `ti_find_indicator`).** The layout-luck
+  rule (`out_of_contract_access` for a raw signal without a panic) does not apply to a fault on
+  the zero page: that page is never mapped, so a NULL dereference faults on every layout, on
+  both sides. `classify` now records `null_page` from the ASan report ("address points to the
+  zero page" / address < 0x1000) and returns `confirmed_termination` for it; the three
+  ti_find_indicator candidates were re-adjudicated under the new rule.
+- **tulip's option domain is the coverage gap.** Options are doubles the indicator casts to
+  int; random doubles overflow the cast (C-side UB, 243 `ub_associated_termination`, one per
+  boundary) or land outside `1..size`, so every corpus saturated within a minute (1528 → 1640
+  inputs, 60 → 1800 s) and the validator reached 0.34 of the regions the smoke suite reaches
+  (functions: 212/213 both). A rejection guard on a local derived from an array element
+  (`period = (int)options[0]; if (period < 1) return`) is not a parameter guard the planner can
+  see; that is the concrete input-model limit this library exposes, recorded, not patched.
 

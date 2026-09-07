@@ -125,9 +125,15 @@ def run_once(binary: Path, mode: str, inp: Path, timeout_s: float, out_dir: Path
             or (bool(san) and "AddressSanitizer" in err and _loc is None
                 and "is a wild pointer" not in err))
     frames = _symbolize(err, 4)
+    # A fault on the ZERO PAGE is not layout luck: that page is never mapped (mmap_min_addr), so
+    # a NULL(+small offset) dereference faults on every layout, on both sides, deterministically.
+    _addr = re.search(r"SEGV on unknown address (0x[0-9a-f]+)", err)
+    null_page = ("address points to the zero page" in err
+                 or (_addr is not None and int(_addr.group(1), 16) < 0x1000))
     return {"mode": mode, "outcome": outcome, "reported": reported, "phase": phase,
             "returncode": rc, "signal": (-rc if rc is not None and rc < 0 else None),
-            "sanitizer": san.group(0) if san else None, "wild_address": wild,
+            "sanitizer": san.group(0) if san else None, "wild_address": wild and not null_page,
+            "null_page": null_page,
             "oob_distance": far,
             "top_frames": frames,
             "stderr_tail": err[-1500:] if outcome != "normal" else ""}
@@ -297,6 +303,11 @@ def classify(a_c: dict, b_rust: dict, c_comb: dict, d_nosan: dict | None = None)
                     return "instrument_only", (
                         "with no sanitizer the translation does not fail either; the failure is "
                         "the instrument's, not the program's")
+                if b_rust.get("null_page") or d_nosan.get("null_page"):
+                    return "confirmed_termination", (
+                        "no UB check fired on C alone; the translation alone faults on the ZERO "
+                        "PAGE (a NULL dereference), with and without a sanitizer -- deterministic "
+                        "on every memory layout, so not layout luck")
                 return "out_of_contract_access", (
                     f"with no sanitizer the translation takes a {d_nosan['outcome']} rather than "
                     f"panicking; a wild read faults only if its page is unmapped, so the outcome "

@@ -26,10 +26,13 @@ denominator (`tests_side_results.json`). Two translators rename the public entry
 
 ## What this library says
 
-1. **The reach ceiling, and it is real.** Four of six translations are covered **completely** — every
-   function and every region of the translation, from three generated harnesses and a corpus of
-   ~120 inputs. Nothing about the method caps at tulip's 34 %: that number is tulip's option domain,
-   not the campaign's limit. The two cells below 100 % are below it for stated structural reasons,
+1. **Four of six translations are covered completely** — every function and every region of the
+   translation, from three generated harnesses and a corpus of ~120 inputs. For THESE artifacts the
+   instrumented region set therefore contains nothing unreachable, and tulip's 34 % is not a cap the
+   method imposes. This is an example, not a corpus-level claim: the infeasible fraction may differ
+   per artifact, and the denominator is the complete instrumented set precisely because deciding
+   which regions are reachable would require reachability analysis
+   (`docs/rq4_denominator_decision_2026-09-08.md`). The two cells below 100 % are below it for stated structural reasons,
    not for want of exploration: SACTOR's universe contains two nested helper functions and
    `prog_main`, which no boundary calls (6 of 8 functions, 99 of 196 regions), and PtrTrans reaches 105 of 120
    regions. *Read from the translation, not verified against the export:* its extra regions are the

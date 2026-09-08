@@ -35,7 +35,11 @@ def main() -> int:
     ap.add_argument("--lib", required=True)
     ap.add_argument("--tool", required=True)
     ap.add_argument("--pair", required=True)
-    ap.add_argument("--dest", default="results/rq3_coverage")
+    # ABSOLUTE by default: the chain scripts run from the scratchpad, and a relative default
+    # silently archived nine cells into <scratchpad>/results/ while their RUN.md went to the repo
+    # (2026-09-08). The evidence was recovered, but the failure was invisible -- the script printed
+    # its usual success line.
+    ap.add_argument("--dest", default=str(Path(__file__).resolve().parents[2] / "results/rq3_coverage"))
     a = ap.parse_args()
     cell, pair = Path(a.cell), Path(a.pair)
     dest = Path(a.dest) / a.lib / a.tool

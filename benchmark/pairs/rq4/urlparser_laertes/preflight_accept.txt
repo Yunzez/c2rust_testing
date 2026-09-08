@@ -18,3 +18,15 @@ url_get_search
 url_inspect
 url_data_inspect   # takes a url_data_t* the producer url_parse builds through get_part
 url_free           # same producer
+
+# --- reviewed 2026-09-08, PREFLIGHT_REVIEW on this cell ---
+# url_is_protocol is a TRANSLATION crash-all, not an unconstructible precondition, and it is accepted
+# so the campaign can produce evidence for it. C side clean on the empty input and on 60 s of inputs;
+# the Laertes side crashes on 2189 of 2190 jobs with an empty corpus. Cause read off the artifact:
+# `pub static mut URL_SCHEMES: [*mut c_char; 177]` is initialised to 177 NULL pointers and the real
+# values live in `laertes_init_URL_SCHEMES()`, which occurs exactly ONCE in the whole crate -- its own
+# definition -- so it is never called. `url_is_protocol` then does `strcmp(URL_SCHEMES[0], str)` =
+# strcmp(NULL, str) on its first iteration, for every input. The c2rust control initialises the same
+# table inline with the string literals. Same mechanism as C8 (bzip2 `incs`) and C11 (tulip
+# `ti_indicators`); `url_is_ssh` in the same crate is clean over 7.1 M executions.
+url_is_protocol

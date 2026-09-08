@@ -1,0 +1,452 @@
+[
+ {
+  "boundary": "partition",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "arr",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "i is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_from_body",
+      "file": "qsort.c",
+      "line": 10,
+      "col": 17,
+      "snippet": "int pivot = arr[high];",
+      "note": "arr[high] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "qsort.c",
+      "line": 14,
+      "col": 13,
+      "snippet": "if (arr[j] <= pivot) {",
+      "note": "arr[high-1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "qsort.c",
+      "line": 16,
+      "col": 19,
+      "snippet": "swap(&arr[i], &arr[j]);",
+      "note": "arr[unknown(i is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "qsort.c",
+      "line": 16,
+      "col": 28,
+      "snippet": "swap(&arr[i], &arr[j]);",
+      "note": "arr[high-1] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "qsort.c",
+      "line": 19,
+      "col": 11,
+      "snippet": "swap(&arr[i + 1], &arr[high]);",
+      "note": "arr[unknown(i is not a loop induction variable in scope)] read"
+     },
+     {
+      "rule": "index_bound_from_body",
+      "file": "qsort.c",
+      "line": 19,
+      "col": 24,
+      "snippet": "swap(&arr[i + 1], &arr[high]);",
+      "note": "arr[high] read"
+     }
+    ],
+    "rust_type": "&mut [i32]",
+    "rust_bridge": "mut_slice"
+   },
+   {
+    "param": "low",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp",
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "qsort.c",
+      "line": 13,
+      "col": 5,
+      "snippet": "for (int j = low; j <= high - 1; j++) {",
+      "note": "low appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "low controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     },
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "low can influence an index into arr; the harness allocates 4096 elements, so low <= 4095"
+     }
+    ],
+    "rust_type": "i32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "high",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp",
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param",
+      "file": "qsort.c",
+      "line": 13,
+      "col": 5,
+      "snippet": "for (int j = low; j <= high - 1; j++) {",
+      "note": "high appears in this loop's control expressions"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "high controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     },
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "high can influence an index into arr; the harness allocates 4096 elements, so high <= 4095"
+     }
+    ],
+    "rust_type": "i32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "low",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "qsort.c",
+     "line": 13,
+     "col": 5,
+     "snippet": "for (int j = low; j <= high - 1; j++) {",
+     "note": "low appears in this loop's control expressions"
+    }
+   },
+   {
+    "param": "high",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "qsort.c",
+     "line": 13,
+     "col": 5,
+     "snippet": "for (int j = low; j <= high - 1; j++) {",
+     "note": "high appears in this loop's control expressions"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quickSort",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "arr",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "unknown",
+      "why": "i is not a loop induction variable in scope"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "index_bound_via_callee",
+      "file": "qsort.c",
+      "line": 26,
+      "col": 17,
+      "snippet": "int i = partition(arr, low, high);",
+      "note": "arr is passed to partition(arr), which reads arr[high] (bound rewritten to the boundary's parameters)"
+     },
+     {
+      "rule": "index_bound_via_callee",
+      "file": "qsort.c",
+      "line": 26,
+      "col": 17,
+      "snippet": "int i = partition(arr, low, high);",
+      "note": "arr is passed to partition(arr), which reads arr[high-1] (bound rewritten to the boundary's parameters)"
+     },
+     {
+      "rule": "index_bound_via_callee",
+      "file": "qsort.c",
+      "line": 26,
+      "col": 17,
+      "snippet": "int i = partition(arr, low, high);",
+      "note": "arr is passed to partition(arr), which reads arr[unknown(i is not a loop induction variable in scope)] (bound rewritten to the boundary's parameters)"
+     },
+     {
+      "rule": "index_bound_via_callee",
+      "file": "qsort.c",
+      "line": 26,
+      "col": 17,
+      "snippet": "int i = partition(arr, low, high);",
+      "note": "arr is passed to partition(arr), which reads arr[high-1] (bound rewritten to the boundary's parameters)"
+     },
+     {
+      "rule": "index_bound_via_callee",
+      "file": "qsort.c",
+      "line": 26,
+      "col": 17,
+      "snippet": "int i = partition(arr, low, high);",
+      "note": "arr is passed to partition(arr), which reads arr[unknown(i is not a loop induction variable in scope)] (bound rewritten to the boundary's parameters)"
+     },
+     {
+      "rule": "index_bound_via_callee",
+      "file": "qsort.c",
+      "line": 26,
+      "col": 17,
+      "snippet": "int i = partition(arr, low, high);",
+      "note": "arr is passed to partition(arr), which reads arr[high] (bound rewritten to the boundary's parameters)"
+     }
+    ],
+    "rust_type": "&mut [i32]",
+    "rust_bridge": "mut_slice"
+   },
+   {
+    "param": "low",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp",
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param_via_callee",
+      "file": "qsort.c",
+      "line": 26,
+      "col": 17,
+      "snippet": "int i = partition(arr, low, high);",
+      "note": "low is passed to partition(low), where low controls a loop"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "low controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     },
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "low can influence an index into arr; the harness allocates 4096 elements, so low <= 4095"
+     }
+    ],
+    "rust_type": "i32",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "high",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp",
+      "index_clamped_to_allocation"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param_via_callee",
+      "file": "qsort.c",
+      "line": 26,
+      "col": 17,
+      "snippet": "int i = partition(arr, low, high);",
+      "note": "high is passed to partition(high), where high controls a loop"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "high controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     },
+     {
+      "rule": "index_clamped_to_allocation",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+      "note": "high can influence an index into arr; the harness allocates 4096 elements, so high <= 4095"
+     }
+    ],
+    "rust_type": "i32",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "low",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param_via_callee",
+     "file": "qsort.c",
+     "line": 26,
+     "col": 17,
+     "snippet": "int i = partition(arr, low, high);",
+     "note": "low is passed to partition(low), where low controls a loop"
+    }
+   },
+   {
+    "param": "high",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param_via_callee",
+     "file": "qsort.c",
+     "line": 26,
+     "col": 17,
+     "snippet": "int i = partition(arr, low, high);",
+     "note": "high is passed to partition(high), where high controls a loop"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "swap",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "a",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "const",
+      "v": 1
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "pointer_dereferenced_in_body",
+      "file": "qsort.c",
+      "line": 3,
+      "col": 13,
+      "snippet": "int t = *a;",
+      "note": "*a is read"
+     }
+    ],
+    "rust_type": "&mut i32",
+    "rust_bridge": "mut_ref_one"
+   },
+   {
+    "param": "b",
+    "c_decoder": "inout_array",
+    "detail": {
+     "elem": "i32",
+     "elem_width": 4,
+     "extent": {
+      "k": "const",
+      "v": 1
+     },
+     "extent_source": "proven_extent_in_boundary",
+     "alloc_elems": 1,
+     "fills_from_fuzz": true
+    },
+    "evidence": [
+     {
+      "rule": "pointer_dereferenced_in_body",
+      "file": "qsort.c",
+      "line": 4,
+      "col": 10,
+      "snippet": "*a = *b;",
+      "note": "*b is read"
+     }
+    ],
+    "rust_type": "&mut i32",
+    "rust_bridge": "mut_ref_one"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ }
+]

@@ -1,0 +1,27 @@
+{
+ "mode": "confirm_sample",
+ "sample_per_boundary": 200,
+ "boundaries": [
+  {
+   "boundary": "quickSort",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "out_of_contract_access": 200
+   },
+   "clusters": [
+    {
+     "verdict": "out_of_contract_access",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 partition ??:?",
+     "artifacts": 200,
+     "example": "crash-00065409a48d1cab1801bfd7ecc1e063a628c57c"
+    }
+   ],
+   "seconds": 290
+  }
+ ],
+ "total": {
+  "out_of_contract_access": 200
+ }
+}

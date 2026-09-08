@@ -1,0 +1,2177 @@
+[
+ {
+  "boundary": "elision_",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "key",
+    "c_decoder": "null_pointer",
+    "detail": {
+     "input_strength": "complete",
+     "reason": "the entry never uses key, so NULL is the whole input"
+    },
+    "evidence": [
+     {
+      "rule": "void_pointer_has_no_shape",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "void* carries no shape, so NULL is the only constructible value"
+     }
+    ],
+    "rust_type": "*mut ::core::ffi::c_void",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "find_",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "x",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "y",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "node",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "get_quadrant_",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      },
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "node is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "get_quadrant_",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "point",
+    "c_decoder": "struct_value",
+    "detail": {
+     "struct": "quadtree_point_t",
+     "written": false,
+     "freed": false
+    },
+    "evidence": [],
+    "rust_type": "*mut quadtree_point_t",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "root",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "root is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "insert_",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "point",
+    "c_decoder": "struct_value",
+    "detail": {
+     "struct": "quadtree_point_t",
+     "written": false,
+     "freed": false
+    },
+    "evidence": [],
+    "rust_type": "*mut quadtree_point_t",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "key",
+    "c_decoder": "null_pointer",
+    "detail": {
+     "input_strength": "partial(null-only)",
+     "reason": "the entry uses key, so NULL leaves the other path unreachable"
+    },
+    "evidence": [
+     {
+      "rule": "void_pointer_has_no_shape",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "void* carries no shape, so NULL is the only constructible value"
+     },
+     {
+      "rule": "param_escapes_into_call",
+      "file": "quadtree.c",
+      "line": 118,
+      "col": 14,
+      "snippet": "return insert_(tree, root, point, key);",
+      "note": "key is passed to insert_"
+     }
+    ],
+    "rust_type": "*mut ::core::ffi::c_void",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "tree",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_new",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": "quadtree_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_t",
+     "c_struct": "quadtree_t",
+     "const": false,
+     "elem": "quadtree_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "tree is built by quadtree_new() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_t",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "root",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "get_quadrant_",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      },
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "root is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "node_contains_",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "it",
+    "c_decoder": "struct_value",
+    "detail": {
+     "struct": "quadtree_point_t",
+     "written": false,
+     "freed": false
+    },
+    "evidence": [],
+    "rust_type": "*mut quadtree_point_t",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "outer",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "get_quadrant_",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      },
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "outer is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_bounds_extend",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "x",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "y",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "bounds",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_bounds_new",
+     "producer_lowered": [],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_bounds_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": null,
+     "destructor": "quadtree_bounds_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_bounds_t",
+     "c_struct": "quadtree_bounds_t",
+     "const": false,
+     "elem": "quadtree_bounds_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "bounds is built by quadtree_bounds_new() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_bounds_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_bounds_free",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "bounds",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_bounds_new",
+     "producer_lowered": [],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_bounds_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": true,
+     "producer_rust_types": null,
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_bounds_t",
+     "c_struct": "quadtree_bounds_t",
+     "const": false,
+     "elem": "quadtree_bounds_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "bounds is built by quadtree_bounds_new() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_bounds_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_bounds_new",
+  "status": "planned",
+  "inputs": [],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_free",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "tree",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_new",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": true,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_t",
+     "c_struct": "quadtree_t",
+     "const": false,
+     "elem": "quadtree_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "tree is built by quadtree_new() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_insert",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "x",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "y",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "key",
+    "c_decoder": "null_pointer",
+    "detail": {
+     "input_strength": "partial(null-only)",
+     "reason": "the entry uses key, so NULL leaves the other path unreachable"
+    },
+    "evidence": [
+     {
+      "rule": "void_pointer_has_no_shape",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "void* carries no shape, so NULL is the only constructible value"
+     },
+     {
+      "rule": "param_escapes_into_call",
+      "file": "quadtree.c",
+      "line": 153,
+      "col": 24,
+      "snippet": "if(!(insert_status = insert_(tree, tree->root, point, key))){",
+      "note": "key is passed to insert_"
+     }
+    ],
+    "rust_type": "*mut ::core::ffi::c_void",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "tree",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_new",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": "quadtree_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_t",
+     "c_struct": "quadtree_t",
+     "const": false,
+     "elem": "quadtree_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "tree is built by quadtree_new() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_new",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "minx",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "miny",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "maxx",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "maxy",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_node_free",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_node_isempty",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "node",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "get_quadrant_",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      },
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "node is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_node_isleaf",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "node",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "get_quadrant_",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      },
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "node is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_node_ispointer",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "node",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "get_quadrant_",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      },
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "node is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_node_new",
+  "status": "planned",
+  "inputs": [],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_node_reset",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_node_with_bounds",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "minx",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "miny",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "maxx",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "maxy",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_point_free",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "point",
+    "c_decoder": "struct_value",
+    "detail": {
+     "struct": "quadtree_point_t",
+     "written": false,
+     "freed": true
+    },
+    "evidence": [],
+    "rust_type": "*mut quadtree_point_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "point: the boundary passes this POD struct pointer to free(); the harness owns the value and has no heap-owned struct adapter"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_point_new",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "x",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "y",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_search",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "x",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "y",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "::core::ffi::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "tree",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_new",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": "quadtree_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_t",
+     "c_struct": "quadtree_t",
+     "const": false,
+     "elem": "quadtree_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "tree is built by quadtree_new() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "quadtree_walk",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "reset_node_",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "tree",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_new",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": "quadtree_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_t",
+     "c_struct": "quadtree_t",
+     "const": false,
+     "elem": "quadtree_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "tree is built by quadtree_new() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_t",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "node",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "get_quadrant_",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      },
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "node is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "split_node_",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "tree",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_new",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": "quadtree_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_t",
+     "c_struct": "quadtree_t",
+     "const": false,
+     "elem": "quadtree_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": [
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "tree is built by quadtree_new() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_t",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "node",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "quadtree_node_with_bounds",
+     "producer_lowered": [
+      {
+       "name": "minx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "miny",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxx",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      },
+      {
+       "name": "maxy",
+       "role": "scalar",
+       "decode": "bounded_scalar",
+       "rust": "f64",
+       "width": 8,
+       "min_value": 0,
+       "max_value": 32
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "quadtree_node_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double",
+      "::core::ffi::c_double"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "quadtree_node_t",
+     "c_struct": "quadtree_node_t",
+     "const": false,
+     "elem": "quadtree_node_t",
+     "producer_evidence": "ranked first of 2: reaches 4 fns, fuzz surface 4, driver evidence 0, params 4",
+     "producer_alternatives": [
+      {
+       "fn": "get_quadrant_",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      },
+      {
+       "fn": "quadtree_node_free",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_reset",
+       "excluded": "signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_walk",
+       "excluded": "signature: callback parameter descent deferred: function pointers (callback binding) not yet supported"
+      },
+      {
+       "fn": "quadtree_node_new",
+       "excluded": "ranked below quadtree_node_with_bounds: reaches 0 fns (vs 4), fuzz surface 0 (vs 4), driver evidence 0 (vs 0), params 0 (vs 4)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "node is built by quadtree_node_with_bounds() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut quadtree_node_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ }
+]

@@ -1,0 +1,201 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+esting/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/src/lib.rs:695:38
+    |
+695 | pub unsafe extern "C" fn descent(mut node: *mut quadtree_node_t) {}
+    |                                      ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `node`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/src/lib.rs:697:37
+    |
+697 | pub unsafe extern "C" fn ascent(mut node: *mut quadtree_node_t) {}
+    |                                     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `argc`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/src/lib.rs:1189:9
+     |
+1189 |     mut argc: ::core::ffi::c_int,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argc`
+
+warning: unused variable: `argv`
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/src/lib.rs:1190:9
+     |
+1190 |     mut argv: *mut *const ::core::ffi::c_char,
+     |         ^^^^ help: if this is intentional, prefix it with an underscore: `_argv`
+
+warning: `quadtree_c2rust` (lib) generated 5 warnings
+   Compiling quadtree_c2rust-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/quadtree_c2rust_ft.rs:156:17
+    |
+156 |             let c_ret = c_get_quadrant_(root_c as *mut core::ffi::c_void, &mut point_val);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/quadtree_c2rust_ft.rs:164:17
+    |
+164 |             let r_ret = translated::get_quadrant_(root_r as *mut _, &mut point_val as *mut _);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: multiple methods are never used
+  --> fuzz_targets/quadtree_c2rust_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `C2R_PH_FREE` is never used
+  --> fuzz_targets/quadtree_c2rust_ft.rs:70:38
+   |
+70 | const C2R_PH_PRODUCER: u8 = 6; const C2R_PH_FREE: u8 = 7;
+   |                                      ^^^^^^^^^^^
+
+warning: variable `root__minx` should have a snake case name
+   --> fuzz_targets/quadtree_c2rust_ft.rs:140:9
+    |
+140 |     let root__minx = (0 as f64) + (cur.take_f64().rem_euclid(((32) as f64) - (0 as f64) + (1 as f64)));
+    |         ^^^^^^^^^^ help: convert the identifier to snake case: `root_minx`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `root__miny` should have a snake case name
+   --> fuzz_targets/quadtree_c2rust_ft.rs:141:9
+    |
+141 |     let root__miny = (0 as f64) + (cur.take_f64().rem_euclid(((32) as f64) - (0 as f64) + (1 as f64)));
+    |         ^^^^^^^^^^ help: convert the identifier to snake case: `root_miny`
+
+warning: variable `root__maxx` should have a snake case name
+   --> fuzz_targets/quadtree_c2rust_ft.rs:142:9
+    |
+142 |     let root__maxx = (0 as f64) + (cur.take_f64().rem_euclid(((32) as f64) - (0 as f64) + (1 as f64)));
+    |         ^^^^^^^^^^ help: convert the identifier to snake case: `root_maxx`
+
+warning: variable `root__maxy` should have a snake case name
+   --> fuzz_targets/quadtree_c2rust_ft.rs:143:9
+    |
+143 |     let root__maxy = (0 as f64) + (cur.take_f64().rem_euclid(((32) as f64) - (0 as f64) + (1 as f64)));
+    |         ^^^^^^^^^^ help: convert the identifier to snake case: `root_maxy`
+
+warning: `quadtree_c2rust-fuzz` (bin "quadtree_c2rust_ft") generated 8 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.54s
+Processing 1 input files using 1 workers (batch size: ~1)
+Worker 0: Generating coverage for 1 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 1620961634
+INFO: Loaded 1 modules   (1238 inline 8-bit counters): 1238 [0x55ff4b954e10, 0x55ff4b9552e6), 
+INFO: Loaded 1 PC tables (1238 PCs): 1238 [0x55ff4b9552e8,0x55ff4b95a048), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft: Running 1 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/corpus/get_quadrant_/seed_fixed
+C2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/src/lib.rs:362:14: null pointer dereference occurr
+
+thread '<unnamed>' (38574) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/src/lib.rs:362:14:
+null pointer dereference occurred
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+==38574== ERROR: libFuzzer: deadly signal
+    #0 0x55ff4b8722b1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0xfd2b1) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #1 0x55ff4b8bd8eb  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1488eb) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #2 0x55ff4b8b2dc9  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x13ddc9) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #3 0x7f6eb9c45caf  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45caf) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #4 0x7f6eb9ca642b  (/usr/lib/x86_64-linux-gnu/libc.so.6+0xa642b) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #5 0x7f6eb9c45b7d  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45b7d) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #6 0x7f6eb9c288eb  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x288eb) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #7 0x55ff4b916f79  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1a1f79) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #8 0x55ff4b919298  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1a4298) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #9 0x55ff4b8ab5ec  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1365ec) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #10 0x55ff4b89c8a7  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1278a7) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #11 0x55ff4b919c9d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1a4c9d) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #12 0x55ff4b919a35  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1a4a35) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #13 0x55ff4b918118  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1a3118) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #14 0x55ff4b9098cc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1948cc) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #15 0x55ff4b9457ec  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1d07ec) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #16 0x55ff4b9459cc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1d09cc) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #17 0x55ff4b8a3dc9  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x12edc9) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #18 0x55ff4b8a4047  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x12f047) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #19 0x55ff4b89fbc4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x12abc4) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #20 0x55ff4b8a3171  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x12e171) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #21 0x55ff4b8aae20  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x135e20) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #22 0x55ff4b8ac298  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x137298) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #23 0x55ff4b8aa015  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x135015) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #24 0x55ff4b8b337c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x13e37c) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #25 0x55ff4b8d1415  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x15c415) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #26 0x55ff4b8de8a1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x1698a1) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #27 0x55ff4b8cce96  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x157e96) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+    #28 0x7f6eb9c2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #29 0x7f6eb9c2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #30 0x55ff4b7dd8e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft+0x688e4) (BuildId: ca00a02d65d0e503bc76ebd991c22618d300865b)
+
+NOTE: libFuzzer has rudimentary signal handlers.
+      Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+SUMMARY: libFuzzer: deadly signal
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 77: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/fuzz/coverage/quadtree_c2rust_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/harnesses/get_quadrant_/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/quadtree_c2rust_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_quadtree_c2rust/corpus/get_quadrant_/seed_fixed"
+

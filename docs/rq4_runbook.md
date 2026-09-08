@@ -186,6 +186,16 @@ sentinel · a `None` template must fail construction, not fall through to an add
   ANY required-extent entry, unknown included. It now applies when the extent is unknown; adler32
   went to 1 M execs / 0 crashes. Smoke a few boundaries of a new library before its chain: 8 s of
   fuzzing on one harness caught this; a preflight would have flagged it only per cell.
+- **The archive went to the scratchpad for nine cells (2026-09-08), and said nothing.**
+  `archive_cell.py --dest` defaulted to the RELATIVE `results/rq3_coverage`, and the new chain
+  scripts run from the scratchpad (the older tulip chain happened to `cd` into the repo first), so
+  qsort x6 and quadtree x3 archived into `<scratchpad>/results/` while their RUN.md, cells.json and
+  tables went to the repo through absolute paths. The success line printed as usual. Recovered in
+  full (corpus, plans, analysis, divergence inputs) because the scratchpad had not been pruned yet.
+  Fixed at the root: the default is now absolute, derived from the script's own location, and the
+  post scripts pass `--dest $R/results/rq3_coverage` as well. **Check `ls results/rq3_coverage/<lib>/<tool>`
+  against a finished library before deleting a cell from the scratchpad** -- an archive is 15-16
+  entries, not two.
 - **Universe rlib selection.** `rlib_universe.py` takes cargo's `--message-format=json` log and
   picks the exact lib artifact of that build; the newest-by-mtime rlib is only a fallback and is
   labelled as such in `denominator.json._source.selected_by`.

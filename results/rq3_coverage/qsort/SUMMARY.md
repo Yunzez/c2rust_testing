@@ -31,9 +31,13 @@ denominator (`tests_side_results.json`). Two translators rename the public entry
    ~120 inputs. Nothing about the method caps at tulip's 34 %: that number is tulip's option domain,
    not the campaign's limit. The two cells below 100 % are below it for stated structural reasons,
    not for want of exploration: SACTOR's universe contains two nested helper functions and
-   `prog_main`, which no boundary calls (6 of 8 functions, 99 of 196 regions), and PtrTrans's extra
-   regions are the arms of its defensive `swap(Option, Option)` that no-op on `None` — arms the C
-   function has no counterpart for and no input can reach through a non-null producer (105 of 120).
+   `prog_main`, which no boundary calls (6 of 8 functions, 99 of 196 regions), and PtrTrans reaches 105 of 120
+   regions. *Read from the translation, not verified against the export:* its extra regions are the
+   arms of the defensive `swap(Option, Option)` that no-op on `None`, which the C function has no
+   counterpart for and which no input can reach through a non-null producer. Confirming that from
+   the archived llvm-cov exports needs each harness's own `src/lib.rs` for the line alignment, and
+   the archive keeps the fuzz target and `build.rs` but not that file, so the check requires
+   re-generating the harnesses (deterministic; the generator hash is in the funnel).
 2. **S6 re-found, as a value divergence, by the generic pipeline.** PtrTrans's `partition` computes
    the second swap index as `right.get_mut(j - i)` — element `2j − i`, not `j` — and its
    `swap(Option, Option)` silently no-ops when an index is out of range, so nothing ever panics.

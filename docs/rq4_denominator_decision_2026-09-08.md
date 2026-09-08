@@ -80,3 +80,30 @@ of inserting a line). That removes the alignment step entirely, and with it a cl
 has already caused one bug (every function after the exposure point attributed to the wrong line) and
 now blocks post-hoc region analysis. Until then, record the insert position and line count per
 harness so alignment needs no file.
+
+## Verification of the computation after external review (2026-09-08, evening)
+
+A review of the denominator reasoning made six points. Each was checked against the toolchain
+(`nightly-2025-09-01`, LLVM 21.1.0) and the archived cells, not against memory. Isolated rebuilds in
+`scratchpad/denom_check/` (qsort × Laertes, 83 functions / 463 regions, most of them never called).
+
+| claim | verdict | evidence |
+|---|---|---|
+| `-C instrument-coverage` alone records unused functions; `-C link-dead-code` is not the basis | **correct** | rlib built WITHOUT `-C link-dead-code`: identical 83 functions / 463 regions, identical identity set. The flag never decided the universe; reading the rlib's objects instead of a linked binary did. |
+| `-C link-dead-code` is documented as "not recommended" | correct; flag stays on measured builds only for parity with the archived ones, and is documented as inert for the universe | rustc codegen-options doc |
+| "the rlib method has no prior art" is not claimable | accepted | one search cannot establish absence; llvm-cov reads objects/archives and has `--empty-profile`. Positioning: *a measurement protocol built from standard LLVM primitives*, in the method text, not a contribution. |
+| use `llvm-cov export --empty-profile <rlib>` instead of an unrelated profdata with counts zeroed | **half right** | `--empty-profile` exists in our llvm-cov and gives all-zero counts, but on the rlib ARCHIVE it fails with `no coverage data found` (members: `lib.rmeta`, one `.rcgu.o`, `shims.o`). On the unpacked `.rcgu.o` it works and yields exactly the set the current zeroing route yields. So unpacking is the primary route, `--empty-profile` replaces the profdata trick. Change queued for `rlib_universe.py` after the chain. |
+| the denominator build must match the replay's toolchain / source / cfg / debug-assertions / instrumentation | **holds, measured** | both pin `nightly-2025-09-01`; both `--cfg fuzzing -C debug-assertions`, release; the harness side adds ASan + sancov, which do not alter the source-region map: across all 34 archived cells `ours_identities_outside_universe.functions = 0`, regions ≤ 8 (the known `--expose-entry` column shift on one line). |
+| a linked binary's universe depends on which archive members the driver pulled | correct, and it is why the bin route was retired | with `codegen-units=1` the pull is all-or-nothing: the bin route gives the full rlib object plus `denom::main` (84 vs 83 here) or, when the only reference is inlined, collapses (cJSON × PtrTrans, 2 functions). |
+
+Provenance of the archived denominators: 23 cells hold the rlib-route file (`_source` present); **8 hold
+the bin-route file** (cjson × c2rust, genann × C2SaferRust/CROWN/SACTOR, lil × 4), built with
+`-C link-dead-code`, all with plausible counts and none collapsed; **3 have none** (bzip2 × c2rust,
+genann × c2rust, genann × Laertes: universe = the tests build). Step 2 therefore covers all
+**11**: rebuild the rlib universe, compare the identity set (basename + every region) with the
+archived one, and only if it differs recompute the numerator. Today's control rebuild of qsort × Laertes
+matched its archived universe exactly, region for region, with the file path the only difference.
+
+Paper sentence, as the reviewer phrased it and as agreed: *We report artifact-relative source
+coverage. The denominator is the complete source-region map embedded in the instrumented translated
+library, independent of any particular test or harness binary.* No reachable ceiling is estimated.

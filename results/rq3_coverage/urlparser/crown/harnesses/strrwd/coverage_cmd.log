@@ -1,0 +1,199 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+   Compiling libc v0.2.189
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.12
+   Compiling arbitrary v1.4.2
+   Compiling jobserver v0.1.35
+   Compiling cc v1.4.5
+   Compiling libfuzzer-sys v0.4.13
+   Compiling urlparser_crown v0.1.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd)
+warning: variable `y` is assigned to, but never used
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/src/lib.rs:472:13
+    |
+472 |     let mut y = 0 as libc::c_int;
+    |             ^
+    |
+    = note: consider using `_y` instead
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `y` is assigned to, but never used
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/src/lib.rs:547:13
+    |
+547 |     let mut y = 0 as libc::c_int;
+    |             ^
+    |
+    = note: consider using `_y` instead
+
+warning: `urlparser_crown` (lib) generated 2 warnings
+   Compiling urlparser_crown-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/urlparser_crown_ft.rs:148:17
+    |
+148 |             let c_ret = c_strrwd(ptr_c.as_mut_ptr(), n);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/urlparser_crown_ft.rs:153:17
+    |
+153 |             let r_ret = translated::strrwd(ptr_r.as_mut_ptr(), n);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: multiple methods are never used
+  --> fuzz_targets/urlparser_crown_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `urlparser_crown-fuzz` (bin "urlparser_crown_ft") generated 3 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 8.54s
+Processing 1 input files using 1 workers (batch size: ~1)
+Worker 0: Generating coverage for 1 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3631058847
+INFO: Loaded 1 modules   (1128 inline 8-bit counters): 1128 [0x5642c2ca64d0, 0x5642c2ca6938), 
+INFO: Loaded 1 PC tables (1128 PCs): 1128 [0x5642c2ca6938,0x5642c2caafb8), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft: Running 1 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/corpus/strrwd/seed_fixed
+=================================================================
+==225713==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7bdfffde00c0 at pc 0x5642c2b446db bp 0x7fff86972b70 sp 0x7fff86972338
+READ of size 10 at 0x7bdfffde00c0 thread T0
+    #0 0x5642c2b446da  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x7b6da) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #1 0x5642c2bf7792  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x12e792) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #2 0x5642c2bf2ce3  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x129ce3) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #3 0x5642c2bf6cf1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x12dcf1) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #4 0x5642c2bfcf10  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x133f10) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #5 0x5642c2bfe388  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x135388) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #6 0x5642c2bfc105  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x133105) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #7 0x5642c2c0547c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x13c47c) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #8 0x5642c2c23515  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x15a515) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #9 0x5642c2c309a1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x1679a1) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #10 0x5642c2c1ef96  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x155f96) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #11 0x7f2000a2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #12 0x7f2000a2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #13 0x5642c2b30c64  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x67c64) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+
+0x7bdfffde00c0 is located 0 bytes after 128-byte region [0x7bdfffde0040,0x7bdfffde00c0)
+allocated by thread T0 here:
+    #0 0x5642c2bbdf2c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0xf4f2c) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #1 0x5642c2bee47f  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x12547f) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #2 0x5642c2bf250d  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x12950d) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #3 0x5642c2bee7f1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x1257f1) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #4 0x5642c2bf37cc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x12a7cc) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #5 0x5642c2bf6cf1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x12dcf1) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #6 0x5642c2bfcf10  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x133f10) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #7 0x5642c2bfe388  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x135388) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #8 0x5642c2bfc105  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x133105) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #9 0x5642c2c0547c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x13c47c) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #10 0x5642c2c23515  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x15a515) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #11 0x5642c2c309a1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x1679a1) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #12 0x5642c2c1ef96  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x155f96) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+    #13 0x7f2000a2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #14 0x7f2000a2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #15 0x5642c2b30c64  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x67c64) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft+0x7b6da) (BuildId: 418b98c54c457f96c31d02d55a6c816dff0b9a49) 
+Shadow bytes around the buggy address:
+  0x7bdfffddfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfffddfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfffddff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfffddff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfffde0000: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+=>0x7bdfffde0080: 00 00 00 00 00 00 00 00[fa]fa fa fa fa fa fa fa
+  0x7bdfffde0100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7bdfffde0180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bdfffde0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bdfffde0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bdfffde0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==225713==ABORTING
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 1: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/fuzz/coverage/urlparser_crown_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/harnesses/strrwd/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/urlparser_crown_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_urlparser_crown/corpus/strrwd/seed_fixed"
+

@@ -1,0 +1,231 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+   Compiling libc v0.2.189
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.12
+   Compiling arbitrary v1.4.2
+   Compiling jobserver v0.1.35
+   Compiling cc v1.4.5
+   Compiling lodepng_c2rust v0.1.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next)
+   Compiling libfuzzer-sys v0.4.13
+warning: unnecessary parentheses around method argument
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:11321:27
+      |
+11321 |             .wrapping_add((if compress != 0 { compressedsize } else { textsize }));
+      |                           ^                                                     ^
+      |
+      = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default
+help: remove these parentheses
+      |
+11321 -             .wrapping_add((if compress != 0 { compressedsize } else { textsize }));
+11321 +             .wrapping_add(if compress != 0 { compressedsize } else { textsize });
+      |
+
+warning: unnecessary parentheses around block return value
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:12864:45
+      |
+12864 | ...                   (if (*info_png).sbit_r > (*info_png).sbit_g {
+      |                       ^
+...
+12868 | ...                   })
+      |                        ^
+      |
+help: remove these parentheses
+      |
+12864 ~                                             if (*info_png).sbit_r > (*info_png).sbit_g {
+12865 |                                                 (*info_png).sbit_r
+12866 |                                             } else {
+12867 |                                                 (*info_png).sbit_g
+12868 ~                                             }
+      |
+
+warning: unused variable: `nbits`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:787:73
+    |
+787 | unsafe extern "C" fn ensureBits9(mut reader: *mut LodePNGBitReader, mut nbits: size_t) {
+    |                                                                         ^^^^^ help: if this is intentional, prefix it with an underscore: `_nbits`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `nbits`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:810:74
+    |
+810 | unsafe extern "C" fn ensureBits17(mut reader: *mut LodePNGBitReader, mut nbits: size_t) {
+    |                                                                          ^^^^^ help: if this is intentional, prefix it with an underscore: `_nbits`
+
+warning: unused variable: `nbits`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:844:74
+    |
+844 | unsafe extern "C" fn ensureBits25(mut reader: *mut LodePNGBitReader, mut nbits: size_t) {
+    |                                                                          ^^^^^ help: if this is intentional, prefix it with an underscore: `_nbits`
+
+warning: unused variable: `nbits`
+   --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:888:74
+    |
+888 | unsafe extern "C" fn ensureBits32(mut reader: *mut LodePNGBitReader, mut nbits: size_t) {
+    |                                                                          ^^^^^ help: if this is intentional, prefix it with an underscore: `_nbits`
+
+warning: creating a shared reference to mutable static
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:2479:9
+     |
+2479 |         LENGTHBASE.as_ptr(),
+     |         ^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+     |
+     = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+     = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+     = note: `#[warn(static_mut_refs)]` (part of `#[warn(rust_2024_compatibility)]`) on by default
+
+warning: creating a shared reference to mutable static
+    --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:2486:9
+     |
+2486 |         DISTANCEBASE.as_ptr(),
+     |         ^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+     |
+     = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+     = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: unused comparison that must be used
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/src/lib.rs:13457:185
+      |
+13457 | ...                   (*state).error != 0;
+      |                       ^^^^^^^^^^^^^^^^^^^ the comparison produces a value
+      |
+      = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
+help: use `let _ = ...` to ignore the resulting value
+      |
+13457 |                                                                                                                                                                                         let _ = (*state).error != 0;
+      |                                                                                                                                                                                         +++++++
+
+warning: `lodepng_c2rust` (lib) generated 9 warnings (run `cargo fix --lib -p lodepng_c2rust` to apply 2 suggestions)
+   Compiling lodepng_c2rust-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/lodepng_c2rust_ft.rs:149:17
+    |
+149 |             let c_ret = c_lodepng_chunk_next(chunk_c.as_mut_ptr(), end_c.as_mut_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/lodepng_c2rust_ft.rs:154:17
+    |
+154 |             let r_ret = translated::lodepng_chunk_next(chunk_r.as_mut_ptr(), end_r.as_mut_ptr());
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: multiple methods are never used
+  --> fuzz_targets/lodepng_c2rust_ft.rs:8:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `lodepng_c2rust-fuzz` (bin "lodepng_c2rust_ft") generated 3 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 13.53s
+Processing 15 input files using 1 workers (batch size: ~15)
+Worker 0: Generating coverage for 15 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3435272760
+INFO: Loaded 1 modules   (1295 inline 8-bit counters): 1295 [0x557d6368f440, 0x557d6368f94f), 
+INFO: Loaded 1 PC tables (1295 PCs): 1295 [0x557d6368f950,0x557d63694a40), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lodepng_c2rust_ft: Running 15 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/4caece539b039b16e16206ea2478f8c5ffb2ca05
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/4caece539b039b16e16206ea2478f8c5ffb2ca05 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/3f204494b70b7c232957afb94abcb3789ae0ffdd
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/3f204494b70b7c232957afb94abcb3789ae0ffdd in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/8181b0e039800e07872a845713f505aeb374963b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/8181b0e039800e07872a845713f505aeb374963b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/3d01c3a87c339469ffec95dc402ae93dc4e3641e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/3d01c3a87c339469ffec95dc402ae93dc4e3641e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/4effda12c2611e2e4feb6f0d342feb685ccd825b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/4effda12c2611e2e4feb6f0d342feb685ccd825b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/3f6bb7c1deacf34039a9417a4e847ded621dca1f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/3f6bb7c1deacf34039a9417a4e847ded621dca1f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/5020f0f42f13bf820432bcd77d0d76a56cbb45f9
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/5020f0f42f13bf820432bcd77d0d76a56cbb45f9 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/913a3391f60b903abea1f488db6471e7a23c2e4f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/913a3391f60b903abea1f488db6471e7a23c2e4f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/90f49e6ac8b9a59a7b75427f79a5a4291133ac16
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/90f49e6ac8b9a59a7b75427f79a5a4291133ac16 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/8017a815ef3b1a9c8907f19d0dbd304971a037fc
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/8017a815ef3b1a9c8907f19d0dbd304971a037fc in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/68bf087a56771aab44d0a40477c803079ab9ad0d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/68bf087a56771aab44d0a40477c803079ab9ad0d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/56cfd687cc44707e97e7763b97ebff183903c8f5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/56cfd687cc44707e97e7763b97ebff183903c8f5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/85e53271e14006f0265921d02d4d736cdc580b0b
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/85e53271e14006f0265921d02d4d736cdc580b0b in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/3c7923f135d358fd685065fde8a996d474367da2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/3c7923f135d358fd685065fde8a996d474367da2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/corpus/lodepng_chunk_next/seed_fixed in 0 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_c2rust/harnesses/lodepng_chunk_next/fuzz/coverage/lodepng_c2rust_ft/coverage.profdata".
+

@@ -1,0 +1,145 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+   fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `optipng_c2rust-fuzz` (bin "optipng_c2rust_ft") generated 5 warnings (run `cargo fix --bin "optipng_c2rust_ft"` to apply 2 suggestions)
+    Finished `release` profile [optimized + debuginfo] target(s) in 16.16s
+Processing 11 input files using 1 workers (batch size: ~11)
+Worker 0: Generating coverage for 11 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2680436856
+INFO: Loaded 1 modules   (1232 inline 8-bit counters): 1232 [0x55f32c8c46e0, 0x55f32c8c4bb0), 
+INFO: Loaded 1 PC tables (1232 PCs): 1232 [0x55f32c8c4bb0,0x55f32c8c98b0), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft: Running 11 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/7254e56fb13140ea999c279bd8fc18bdff68e437
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/7254e56fb13140ea999c279bd8fc18bdff68e437 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/1ce7b57319452b48a1b7083142589b83311c5ea5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/1ce7b57319452b48a1b7083142589b83311c5ea5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/9cd6ab14c7fff09199f6f0a6e7e7d6b10fcf6b26
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/9cd6ab14c7fff09199f6f0a6e7e7d6b10fcf6b26 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/8a077fe29a41be1ca22eba17dca8b3ecbe73af95
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/8a077fe29a41be1ca22eba17dca8b3ecbe73af95 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/f6e2cf658b3838e3ad6852a5d94262511fb83c4d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/f6e2cf658b3838e3ad6852a5d94262511fb83c4d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/f566252060ac5dbae71e84bb8d0b2cf650e54b0e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/f566252060ac5dbae71e84bb8d0b2cf650e54b0e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/3f3d2d8955322f325af6db2238355fa07007ebd9
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/3f3d2d8955322f325af6db2238355fa07007ebd9 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/e8463e94edd275e5b89ba5f8e234714266c7f8b7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/e8463e94edd275e5b89ba5f8e234714266c7f8b7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/71853c6197a6a7f222db0f1978c7cb232b87c5ee
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/71853c6197a6a7f222db0f1978c7cb232b87c5ee in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/5ba93c9db0cff93f52b521d7420e43f6eda2784f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/5ba93c9db0cff93f52b521d7420e43f6eda2784f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/seed_fixed
+=================================================================
+==3337747==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7bd618be0591 at pc 0x55f32c8148b8 bp 0x7ffcee6c95f0 sp 0x7ffcee6c95e8
+READ of size 1 at 0x7bd618be0591 thread T0
+    #0 0x55f32c8148b7  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x1328b7) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #1 0x55f32c80e7e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x12c7e4) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #2 0x55f32c813381  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x131381) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #3 0x55f32c81a010  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x138010) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #4 0x55f32c81b488  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x139488) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #5 0x55f32c819205  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x137205) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #6 0x55f32c82257c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x14057c) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #7 0x55f32c840615  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x15e615) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #8 0x55f32c84daa1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x16baa1) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #9 0x55f32c83c096  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x15a096) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #10 0x7fb61982a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #11 0x7fb61982a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #12 0x55f32c74bc64  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x69c64) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+
+0x7bd618be0591 is located 0 bytes after 1-byte region [0x7bd618be0590,0x7bd618be0591)
+allocated by thread T0 here:
+    #0 0x55f32c7d8f44  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0xf6f44) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #1 0x55f32c811179  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x12f179) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #2 0x55f32c80e725  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x12c725) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #3 0x55f32c813381  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x131381) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #4 0x55f32c81a010  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x138010) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #5 0x55f32c81b488  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x139488) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #6 0x55f32c819205  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x137205) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #7 0x55f32c82257c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x14057c) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #8 0x55f32c840615  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x15e615) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #9 0x55f32c84daa1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x16baa1) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #10 0x55f32c83c096  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x15a096) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+    #11 0x7fb61982a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #12 0x7fb61982a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #13 0x55f32c74bc64  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x69c64) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft+0x1328b7) (BuildId: f8eff56d5cec76330a65370c9f60b67046121dab) 
+Shadow bytes around the buggy address:
+  0x7bd618be0300: fa fa fd fa fa fa fd fa fa fa fd fa fa fa fd fa
+  0x7bd618be0380: fa fa fd fa fa fa fd fa fa fa fd fa fa fa fd fa
+  0x7bd618be0400: fa fa fd fa fa fa fd fa fa fa fd fa fa fa fd fa
+  0x7bd618be0480: fa fa fd fa fa fa fd fa fa fa fd fa fa fa fd fa
+  0x7bd618be0500: fa fa fd fa fa fa fd fa fa fa fd fa fa fa 01 fa
+=>0x7bd618be0580: fa fa[01]fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bd618be0600: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bd618be0680: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bd618be0700: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bd618be0780: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x7bd618be0800: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==3337747==ABORTING
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 1: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/fuzz/coverage/optipng_c2rust_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/png_safecat/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/7254e56fb13140ea999c279bd8fc18bdff68e437" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/1ce7b57319452b48a1b7083142589b83311c5ea5" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/9cd6ab14c7fff09199f6f0a6e7e7d6b10fcf6b26" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/8a077fe29a41be1ca22eba17dca8b3ecbe73af95" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/f6e2cf658b3838e3ad6852a5d94262511fb83c4d" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/f566252060ac5dbae71e84bb8d0b2cf650e54b0e" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/3f3d2d8955322f325af6db2238355fa07007ebd9" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/e8463e94edd275e5b89ba5f8e234714266c7f8b7" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/71853c6197a6a7f222db0f1978c7cb232b87c5ee" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/5ba93c9db0cff93f52b521d7420e43f6eda2784f" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/png_safecat/seed_fixed"
+

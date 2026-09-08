@@ -1,0 +1,309 @@
+{
+ "mode": "confirm_sample",
+ "sample_per_boundary": 200,
+ "boundaries": [
+  {
+   "boundary": "DefaultError",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: fuzz target exited",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 81
+  },
+  {
+   "boundary": "ErrorAlloc",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: fuzz target exited",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 67
+  },
+  {
+   "boundary": "add_one_chunk",
+   "candidates_total": 17,
+   "adjudicated": 17,
+   "tally": {
+    "ub_associated": 17
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_add_one_chunk pngset.c:1364",
+     "artifacts": 10,
+     "example": "crash-14347ff5e4f3b90df1faa3b7ebcfd7130ee61f6f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 MemcmpInterceptorCommon(void*, int (*)(void const*, void const*, unsigned long), void const*, void const*, unsigned long) sanitizer_common_interceptors.inc:848",
+     "artifacts": 7,
+     "example": "crash-7666e37fbf0da14896bac116c4ab3e2acbdf144f"
+    }
+   ],
+   "seconds": 88
+  },
+  {
+   "boundary": "crc32_combine",
+   "candidates_total": 528,
+   "adjudicated": 228,
+   "tally": {
+    "ub_associated": 114,
+    "instrument_only": 104,
+    "inconclusive": 10
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: stack-buffer-overflow",
+     "frame": "#0 c_gf2_matrix_times crc32.c:353",
+     "artifacts": 114,
+     "example": "crash-0001d619e3ab7b5731332fde53fb4af6bf292421"
+    },
+    {
+     "verdict": "instrument_only",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 104,
+     "example": "crash-000d7545e9518cf9a7e2a9f18d013acc70affcd1"
+    },
+    {
+     "verdict": "inconclusive",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 10,
+     "example": "signal-0114cd329e026aa99488e9b7e5a37c6d09f05d37"
+    }
+   ],
+   "seconds": 110
+  },
+  {
+   "boundary": "crc32_combine64",
+   "candidates_total": 528,
+   "adjudicated": 228,
+   "tally": {
+    "ub_associated": 114,
+    "instrument_only": 104,
+    "inconclusive": 10
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: stack-buffer-overflow",
+     "frame": "#0 c_gf2_matrix_times crc32.c:353",
+     "artifacts": 114,
+     "example": "crash-0001d619e3ab7b5731332fde53fb4af6bf292421"
+    },
+    {
+     "verdict": "instrument_only",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 104,
+     "example": "crash-000d7545e9518cf9a7e2a9f18d013acc70affcd1"
+    },
+    {
+     "verdict": "inconclusive",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 10,
+     "example": "signal-0114cd329e026aa99488e9b7e5a37c6d09f05d37"
+    }
+   ],
+   "seconds": 111
+  },
+  {
+   "boundary": "default_error_handler",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: fuzz target exited",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 86
+  },
+  {
+   "boundary": "opng_get_alpha_row",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 86
+  },
+  {
+   "boundary": "png_do_write_interlace",
+   "candidates_total": 62,
+   "adjudicated": 62,
+   "tally": {
+    "ub_associated": 19,
+    "not_reproducible": 42,
+    "inconclusive": 1
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 42,
+     "example": "slow-unit-034ee26055a9467d41c60cd153cdcf49684c31eb"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 __asan_memcpy asan_interceptors_memintrinsics.cpp:63",
+     "artifacts": 17,
+     "example": "crash-1d754878934eea7787b8b7ca4586ff49148d306e"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_png_do_write_interlace pngwutil.c:2172",
+     "artifacts": 2,
+     "example": "crash-43e74b4100d85c358284c3262d74fbd315dffb22"
+    },
+    {
+     "verdict": "inconclusive",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "timeout-5343def79cb74538e7c25b248add4383a397f3cf"
+    }
+   ],
+   "seconds": 2438
+  },
+  {
+   "boundary": "png_safecat",
+   "candidates_total": 153,
+   "adjudicated": 153,
+   "tally": {
+    "ub_associated": 153
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_png_safecat pngerror.c:118",
+     "artifacts": 153,
+     "example": "crash-04de3f88f1848c8c4d99c7846be0b4f4159cb224"
+    }
+   ],
+   "seconds": 95
+  },
+  {
+   "boundary": "pngx_gif_error",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 85
+  },
+  {
+   "boundary": "pngx_tiff_error",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 86
+  },
+  {
+   "boundary": "zError",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated_termination": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 3,
+     "example": "crash-adc83b19e793491b1c6ea0fd8b46cd9f32e592fc"
+    }
+   ],
+   "seconds": 84
+  },
+  {
+   "boundary": "zcalloc",
+   "candidates_total": 1,
+   "adjudicated": 1,
+   "tally": {
+    "ub_associated": 1
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: out",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 1,
+     "example": "oom-6efa7fd60d1b4556085cd1cb48eebd3839f23334"
+    }
+   ],
+   "seconds": 85
+  }
+ ],
+ "total": {
+  "ub_associated": 436,
+  "instrument_only": 208,
+  "inconclusive": 21,
+  "not_reproducible": 42,
+  "ub_associated_termination": 3
+ }
+}

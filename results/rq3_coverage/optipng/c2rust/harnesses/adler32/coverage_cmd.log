@@ -1,0 +1,185 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+red reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/adler32/src/lib.rs:93629:27
+      |
+93629 |         compress_block(s, static_ltree.as_ptr(), static_dtree.as_ptr());
+      |                           ^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/adler32/src/lib.rs:93629:50
+      |
+93629 |         compress_block(s, static_ltree.as_ptr(), static_dtree.as_ptr());
+      |                                                  ^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: `optipng_c2rust` (lib) generated 910 warnings (run `cargo fix --lib -p optipng_c2rust` to apply 617 suggestions)
+   Compiling optipng_c2rust-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/adler32/fuzz)
+warning: unused variable: `c_ret`
+   --> fuzz_targets/optipng_c2rust_ft.rs:147:17
+    |
+147 |             let c_ret = c_adler32(adler, buf_buf.as_ptr(), len);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_c_ret`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `r_ret`
+   --> fuzz_targets/optipng_c2rust_ft.rs:152:17
+    |
+152 |             let r_ret = translated::adler32(adler, buf_buf.as_ptr(), len);
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_r_ret`
+
+warning: multiple methods are never used
+  --> fuzz_targets/optipng_c2rust_ft.rs:8:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `optipng_c2rust-fuzz` (bin "optipng_c2rust_ft") generated 3 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 16.33s
+Processing 32 input files using 1 workers (batch size: ~32)
+Worker 0: Generating coverage for 32 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3527134343
+INFO: Loaded 1 modules   (1361 inline 8-bit counters): 1361 [0x55f728f10210, 0x55f728f10761), 
+INFO: Loaded 1 PC tables (1361 PCs): 1361 [0x55f728f10768,0x55f728f15c78), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/adler32/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2rust_ft: Running 32 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/f73cd58d356c898d1c2b8a868060be9c914ba292
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/f73cd58d356c898d1c2b8a868060be9c914ba292 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/6aef0c011fdbcc4f411914bda0e140656c5b4dc7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/6aef0c011fdbcc4f411914bda0e140656c5b4dc7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/3d20ea71d31f2b75b115e77d06b073eabda4e8a3
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/3d20ea71d31f2b75b115e77d06b073eabda4e8a3 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/faaaa6c7d0ff67b6952efb277bf89d2962703255
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/faaaa6c7d0ff67b6952efb277bf89d2962703255 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/70eff2a6d8a20fbb56bb9fa87a46f6196699a5f2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/70eff2a6d8a20fbb56bb9fa87a46f6196699a5f2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/1faeb1eb79bca99ce70be883d87a913c86a67506
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/1faeb1eb79bca99ce70be883d87a913c86a67506 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/e7f3a06085256734eec402f3b82ffdf428a34393
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/e7f3a06085256734eec402f3b82ffdf428a34393 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/e9331114ccd46553c59f65ed7f23c38dbbe8f638
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/e9331114ccd46553c59f65ed7f23c38dbbe8f638 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/3bac7274d897bfcac5bd9cd03d0ebee6f823538e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/3bac7274d897bfcac5bd9cd03d0ebee6f823538e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/a775f7b683c01ac594bf32606339fbce8cadacb9
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/a775f7b683c01ac594bf32606339fbce8cadacb9 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/e3c5b624de6ada69917306bda1325312aec8ea35
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/e3c5b624de6ada69917306bda1325312aec8ea35 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/19a410707a406ebae7d6dbd5f6a666edfe63136a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/19a410707a406ebae7d6dbd5f6a666edfe63136a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/9f1c7f033ac4f2fd36c02e59e6eead423f4924a6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/9f1c7f033ac4f2fd36c02e59e6eead423f4924a6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/0e6d77f4c7f14da3f992b2b59969a1f47b71e1fc
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/0e6d77f4c7f14da3f992b2b59969a1f47b71e1fc in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/a57e25ed0b09163214772f22c1e3086dafb80121
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/a57e25ed0b09163214772f22c1e3086dafb80121 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/fc5b848f6ff8ca68fe6d501e6869713737b81311
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/fc5b848f6ff8ca68fe6d501e6869713737b81311 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/c1df6df26cd41699d1695ace474456eca363e801
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/c1df6df26cd41699d1695ace474456eca363e801 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/de61d3049c7c6d6647b62346ad227b519c0bd81d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/de61d3049c7c6d6647b62346ad227b519c0bd81d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/651c4a89b3a956b93ceb4e5880c84afc097906cc
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/651c4a89b3a956b93ceb4e5880c84afc097906cc in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/3bb527b8fe8c5285c678c13c5a84b8ccf94ed338
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/3bb527b8fe8c5285c678c13c5a84b8ccf94ed338 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/975d94308a43bd47b3e72683aa49c19fc3dc17a1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/975d94308a43bd47b3e72683aa49c19fc3dc17a1 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/4ae544094c3db1fd1900b59b345b02ae3a76a7c7
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/4ae544094c3db1fd1900b59b345b02ae3a76a7c7 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/c5e6f7ca00badcc5faa739ae8e7e9891fee952ae
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/c5e6f7ca00badcc5faa739ae8e7e9891fee952ae in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/075b75b5afe4875eba9e478c23061bdf6fd8b663
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/075b75b5afe4875eba9e478c23061bdf6fd8b663 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/a88e64646a6b0b54fd1c7e7df884c7653b4215eb
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/a88e64646a6b0b54fd1c7e7df884c7653b4215eb in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/30304670b424aca0e4a247ed57db89e6027b61fc
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/30304670b424aca0e4a247ed57db89e6027b61fc in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/994f21517554d64c1bb051982c1820050783cbd6
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/994f21517554d64c1bb051982c1820050783cbd6 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/0186b9221e2aceadc092f2b4bab05c2a112c48bb
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/0186b9221e2aceadc092f2b4bab05c2a112c48bb in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/1489f923c4dca729178b3e3233458550d8dddf29
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/1489f923c4dca729178b3e3233458550d8dddf29 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/60ba4b2daa4ed4d070fec06687e249e0e6f9ee45
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/60ba4b2daa4ed4d070fec06687e249e0e6f9ee45 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/5ba93c9db0cff93f52b521d7420e43f6eda2784f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/5ba93c9db0cff93f52b521d7420e43f6eda2784f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/corpus/adler32/seed_fixed in 0 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2rust/harnesses/adler32/fuzz/coverage/optipng_c2rust_ft/coverage.profdata".
+

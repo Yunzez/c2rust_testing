@@ -1,0 +1,181 @@
+rc=1
+--- stdout ---
+
+--- stderr ---
+
+warning: creating a shared reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/src/lib.rs:84575:35
+      |
+84575 |     s.d_desc.stat_desc = unsafe { &static_d_desc };
+      |                                   ^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+help: use `&raw const` instead to create a raw pointer
+      |
+84575 |     s.d_desc.stat_desc = unsafe { &raw const static_d_desc };
+      |                                    +++++++++
+
+warning: creating a shared reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/src/lib.rs:84577:36
+      |
+84577 |     s.bl_desc.stat_desc = unsafe { &static_bl_desc };
+      |                                    ^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+help: use `&raw const` instead to create a raw pointer
+      |
+84577 |     s.bl_desc.stat_desc = unsafe { &raw const static_bl_desc };
+      |                                     +++++++++
+
+warning: creating a shared reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/src/lib.rs:85681:27
+      |
+85681 |         compress_block(s, static_ltree.as_ptr(), static_dtree.as_ptr());
+      |                           ^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+     --> /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/src/lib.rs:85681:50
+      |
+85681 |         compress_block(s, static_ltree.as_ptr(), static_dtree.as_ptr());
+      |                                                  ^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+      |
+      = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+      = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: `optipng_c2saferrust` (lib) generated 826 warnings (run `cargo fix --lib -p optipng_c2saferrust` to apply 441 suggestions)
+   Compiling optipng_c2saferrust-fuzz v0.0.0 (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/fuzz)
+warning: multiple methods are never used
+  --> fuzz_targets/optipng_c2saferrust_ft.rs:7:8
+   |
+ 4 | impl<'a> Cur<'a> {
+   | ---------------- methods in this implementation
+...
+ 7 |     fn take_u8(&mut self) -> u8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } u8::from_le_bytes(v) }
+   |        ^^^^^^^
+ 8 |     fn take_i8(&mut self) -> i8 { let mut v = [0u8; 1]; for i in 0..1 { v[i] = self.byte(); } i8::from_le_bytes(v) }
+ 9 |     fn take_u16(&mut self) -> u16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } u16::from_le_bytes(v) }
+   |        ^^^^^^^^
+10 |     fn take_i16(&mut self) -> i16 { let mut v = [0u8; 2]; for i in 0..2 { v[i] = self.byte(); } i16::from_le_bytes(v) }
+   |        ^^^^^^^^
+11 |     fn take_u32(&mut self) -> u32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } u32::from_le_bytes(v) }
+   |        ^^^^^^^^
+12 |     fn take_i32(&mut self) -> i32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } i32::from_le_bytes(v) }
+   |        ^^^^^^^^
+13 |     fn take_u64(&mut self) -> u64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } u64::from_le_bytes(v) }
+   |        ^^^^^^^^
+14 |     fn take_i64(&mut self) -> i64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } i64::from_le_bytes(v) }
+   |        ^^^^^^^^
+15 |     fn take_usize(&mut self) -> usize { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } usize::from_le_bytes(v) }
+   |        ^^^^^^^^^^
+16 |     fn take_f32(&mut self) -> f32 { let mut v = [0u8; 4]; for i in 0..4 { v[i] = self.byte(); } f32::from_le_bytes(v) }
+   |        ^^^^^^^^
+17 |     fn take_f64(&mut self) -> f64 { let mut v = [0u8; 8]; for i in 0..8 { v[i] = self.byte(); } f64::from_le_bytes(v) }
+   |        ^^^^^^^^
+18 |     fn take_vec_u8(&mut self) -> Vec<u8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u8()).collect() }
+   |        ^^^^^^^^^^^
+19 |     fn take_vec_i8(&mut self) -> Vec<i8> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i8()).collect() }
+   |        ^^^^^^^^^^^
+20 |     fn take_vec_u16(&mut self) -> Vec<u16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u16()).collect() }
+   |        ^^^^^^^^^^^^
+21 |     fn take_vec_i16(&mut self) -> Vec<i16> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i16()).collect() }
+   |        ^^^^^^^^^^^^
+22 |     fn take_vec_u32(&mut self) -> Vec<u32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u32()).collect() }
+   |        ^^^^^^^^^^^^
+23 |     fn take_vec_i32(&mut self) -> Vec<i32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i32()).collect() }
+   |        ^^^^^^^^^^^^
+24 |     fn take_vec_u64(&mut self) -> Vec<u64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_u64()).collect() }
+   |        ^^^^^^^^^^^^
+25 |     fn take_vec_i64(&mut self) -> Vec<i64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_i64()).collect() }
+   |        ^^^^^^^^^^^^
+26 |     fn take_vec_f32(&mut self) -> Vec<f32> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f32()).collect() }
+   |        ^^^^^^^^^^^^
+27 |     fn take_vec_f64(&mut self) -> Vec<f64> { let n = (self.byte() as usize) % 64; (0..n).map(|_| self.take_f64()).collect() }
+   |        ^^^^^^^^^^^^
+28 |     fn take_rest_u8(&mut self, max: usize) -> Vec<u8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+   |        ^^^^^^^^^^^^
+29 |     fn take_rest_i8(&mut self, max: usize) -> Vec<i8> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(sel...
+30 |     fn take_rest_u16(&mut self, max: usize) -> Vec<u16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+31 |     fn take_rest_i16(&mut self, max: usize) -> Vec<i16> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+32 |     fn take_rest_u32(&mut self, max: usize) -> Vec<u32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+33 |     fn take_rest_i32(&mut self, max: usize) -> Vec<i32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+34 |     fn take_rest_u64(&mut self, max: usize) -> Vec<u64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+35 |     fn take_rest_i64(&mut self, max: usize) -> Vec<i64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+36 |     fn take_rest_f32(&mut self, max: usize) -> Vec<f32> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+37 |     fn take_rest_f64(&mut self, max: usize) -> Vec<f64> { let mut v = Vec::new(); while self.p < self.d.len() && v.len() < max { v.push(s...
+   |        ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `c2r_div` is never used
+   --> fuzz_targets/optipng_c2saferrust_ft.rs:106:4
+    |
+106 | fn c2r_div(what: &str) {
+    |    ^^^^^^^
+
+warning: `optipng_c2saferrust-fuzz` (bin "optipng_c2saferrust_ft") generated 2 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 17.19s
+Processing 1 input files using 1 workers (batch size: ~1)
+Worker 0: Generating coverage for 1 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3871034025
+INFO: Loaded 1 modules   (33212 inline 8-bit counters): 33212 [0x55c4c3530740, 0x55c4c35388fc), 
+INFO: Loaded 1 PC tables (33212 PCs): 33212 [0x55c4c3538900,0x55c4c35ba4c0), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft: Running 1 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/corpus/opng_optimize_impl/seed_fixed
+C2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/src/lib.rs:56243:21: null pointer derefer
+
+thread '<unnamed>' (3731312) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/src/lib.rs:56243:21:
+null pointer dereference occurred
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+==3731312== ERROR: libFuzzer: deadly signal
+    #0 0x55c4c32a1671  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x234671) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #1 0x55c4c3436ceb  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3c9ceb) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #2 0x55c4c342c1c9  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3bf1c9) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #3 0x7f2b88445caf  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45caf) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #4 0x7f2b884a642b  (/usr/lib/x86_64-linux-gnu/libc.so.6+0xa642b) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #5 0x7f2b88445b7d  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x45b7d) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #6 0x7f2b884288eb  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x288eb) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #7 0x55c4c3490aa9  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x423aa9) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #8 0x55c4c34936c8  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x4266c8) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #9 0x55c4c3424a0c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3b7a0c) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #10 0x55c4c32cbad7  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x25ead7) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #11 0x55c4c34940cd  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x4270cd) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #12 0x55c4c3493e65  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x426e65) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #13 0x55c4c3492268  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x425268) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #14 0x55c4c3482dcc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x415dcc) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #15 0x55c4c34c150c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x45450c) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #16 0x55c4c34c16ec  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x4546ec) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #17 0x55c4c33c2d54  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x355d54) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #18 0x55c4c32cebc3  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x261bc3) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #19 0x55c4c32d2051  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x265051) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #20 0x55c4c3424240  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3b7240) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #21 0x55c4c34256b8  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3b86b8) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #22 0x55c4c3423435  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3b6435) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #23 0x55c4c342c77c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3bf77c) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #24 0x55c4c344a915  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3dd915) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #25 0x55c4c3457da1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3eada1) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #26 0x55c4c3446396  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x3d9396) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+    #27 0x7f2b8842a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #28 0x7f2b8842a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)
+    #29 0x55c4c320c164  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft+0x19f164) (BuildId: 94e0a10f6f45631b7634a16583878db6a50054c9)
+
+NOTE: libFuzzer has rudimentary signal handlers.
+      Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+SUMMARY: libFuzzer: deadly signal
+Error: Failed to generate coverage data
+
+Caused by:
+    Command exited with failure status exit status: 77: LLVM_PROFILE_FILE="/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/fuzz/coverage/optipng_c2saferrust_ft/raw/batch-0.profraw" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/harnesses/opng_optimize_impl/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/optipng_c2saferrust_ft" "-timeout=25" "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_optipng_c2saferrust/corpus/opng_optimize_impl/seed_fixed"
+

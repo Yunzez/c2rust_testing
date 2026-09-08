@@ -1,0 +1,1113 @@
+OK  DefaultError                   inputs= 1
+OK  DefaultWarning                 inputs= 1
+OK  ErrorAlloc                     inputs= 0
+FAIL ErrorRead                      inputs= 0
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL GIFDestroyExtension            inputs= 0
+       - signature: struct-invariant param ext: GIFExtension has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFExtension*: no function returns it
+FAIL GIFDestroyImage                inputs= 0
+       - signature: struct-invariant param image: GIFImage has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFImage*: no function returns it
+FAIL GIFGetColorTable               inputs= 1
+       - colors: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param image: GIFImage has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFImage*: no function returns it
+FAIL GIFGetGraphicCtl               inputs= 1
+       - signature: struct-invariant param ext: GIFExtension has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFExtension*: no function returns it
+FAIL GIFInitExtension               inputs= 2
+       - signature: struct-invariant param ext: GIFExtension has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFExtension*: no function returns it
+FAIL GIFInitImage                   inputs= 1
+       - rows: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param image: GIFImage has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFImage*: no function returns it
+FAIL GIFReadDataBlock               inputs= 1
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL GIFReadImageData               inputs= 0
+       - signature: struct-invariant param image: GIFImage has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFImage*: no function returns it
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL GIFReadNextBlock               inputs= 0
+       - signature: struct-invariant param image: GIFImage has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFImage*: no function returns it
+       - signature: struct-invariant param ext: GIFExtension has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFExtension*: no function returns it
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL GIFReadNextExtension           inputs= 0
+       - signature: struct-invariant param ext: GIFExtension has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFExtension*: no function returns it
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL GIFReadNextImage               inputs= 0
+       - signature: struct-invariant param image: GIFImage has pointer field 'Screen' (needs invariant reconstruction); no producer for GIFImage*: no function returns it
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL GIFReadScreen                  inputs= 1
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL GIFSkipDataBlocks              inputs= 0
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL GetByte                        inputs= 0
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL LZWDecodeByte                  inputs= 2
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL LZWGetCode                     inputs= 2
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL ReadBytes                      inputs= 2
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL _tr_align                      inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL _tr_flush_bits                 inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL _tr_flush_block                inputs= 3
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL _tr_init                       inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL _tr_stored_block               inputs= 3
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL _tr_tally                      inputs= 2
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+OK  add_one_chunk                  inputs= 4
+OK  adler32                        inputs= 3
+OK  adler32_combine                inputs= 3
+OK  adler32_combine64              inputs= 3
+OK  adler32_combine_               inputs= 3
+OK  adler32_z                      inputs= 3
+FAIL alloc_ulong_array              inputs= 1
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+OK  app_finish                     inputs= 0
+OK  app_init                       inputs= 0
+OK  app_print_cntrl                inputs= 1
+FAIL app_printf                     inputs= 1
+       - fmt: no lossless Rust bridge -- Rust signature has 2 parameters, C has 1: reshaped API, no positional bridge
+OK  app_progress                   inputs= 2
+FAIL bi_flush                       inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+OK  bi_reverse                     inputs= 2
+FAIL bi_windup                      inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL bmp_fread_bytes                inputs= 3
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL bmp_fread_halfbytes            inputs= 3
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+OK  bmp_get_dword                  inputs= 1
+OK  bmp_get_word                   inputs= 1
+OK  bmp_memset_bytes               inputs= 4
+OK  bmp_memset_halfbytes           inputs= 4
+OK  bmp_process_mask               inputs= 3
+FAIL bmp_read_rows                  inputs= 2
+       - begin_row: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - end_row: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL bmp_to_png_rows                inputs= 6
+       - row_pointers: no lossless Rust bridge -- string pointer table of u8 has Rust type png_bytepp, which is not a pointer to a pointer to the same element type
+FAIL build_bl_tree                  inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL build_tree                     inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+       - signature: struct-invariant param desc: tree_desc has pointer field 'dyn_tree' (needs invariant reconstruction); no producer for tree_desc*: no function returns it
+FAIL cast_ulong_to_uint             inputs= 1
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+FAIL check_location                 inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  check_num_option               inputs= 4
+OK  check_obj_option               inputs= 2
+OK  check_power2_option            inputs= 4
+OK  check_rangeset_option          inputs= 3
+OK  compress                       inputs= 4
+OK  compress2                      inputs= 5
+OK  compressBound                  inputs= 1
+FAIL compress_block                 inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+       - signature: struct-invariant param ltree: ct_data has nested struct field 'fc' (needs invariant reconstruction); no producer for ct_data*: no function returns it
+       - signature: struct-invariant param dtree: ct_data has nested struct field 'fc' (needs invariant reconstruction); no producer for ct_data*: no function returns it
+OK  crc32                          inputs= 3
+OK  crc32_big                      inputs= 3
+OK  crc32_combine                  inputs= 3
+OK  crc32_combine64                inputs= 3
+OK  crc32_combine_                 inputs= 3
+OK  crc32_little                   inputs= 3
+OK  crc32_z                        inputs= 3
+OK  default_error_handler          inputs= 1
+OK  default_warning_handler        inputs= 1
+FAIL deflate                        inputs= 1
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateBound                   inputs= 1
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateCopy                    inputs= 0
+       - signature: struct-invariant param dest: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+       - signature: struct-invariant param source: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateEnd                     inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateGetDictionary           inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateInit2_                  inputs= 7
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateInit_                   inputs= 3
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateParams                  inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflatePending                 inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflatePrime                   inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateReset                   inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateResetKeep               inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateSetDictionary           inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateSetHeader               inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+       - signature: struct-invariant param head: gz_header_s has pointer field 'extra' (needs invariant reconstruction); no producer for gz_header_s*: no function returns it
+FAIL deflateStateCheck              inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflateTune                    inputs= 4
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL deflate_fast                   inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL deflate_huff                   inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL deflate_rle                    inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL deflate_slow                   inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL deflate_stored                 inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL detect_data_type               inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+OK  err_option_arg                 inputs= 2
+FAIL error                          inputs= 1
+       - fmt: no lossless Rust bridge -- Rust signature has 2 parameters, C has 1: reshaped API, no positional bridge
+FAIL fill_window                    inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL fixedtables                    inputs= 0
+       - signature: struct-invariant param state: inflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for inflate_state*: no function returns it
+FAIL flush_pending                  inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL gen_bitlen                     inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+       - signature: struct-invariant param desc: tree_desc has pointer field 'dyn_tree' (needs invariant reconstruction); no producer for tree_desc*: no function returns it
+FAIL gen_codes                      inputs= 2
+       - signature: struct-invariant param tree: ct_data has nested struct field 'fc' (needs invariant reconstruction); no producer for ct_data*: no function returns it
+OK  get_crc_table                  inputs= 0
+OK  get_ulong_i                    inputs= 1
+OK  get_ulong_m                    inputs= 1
+FAIL get_ulong_value                inputs= 2
+       - signature: struct-invariant param getter_ptr: minitiff_getter has pointer field 'get_ushort' (needs invariant reconstruction); no producer for minitiff_getter*: no function returns it
+OK  get_ushort_i                   inputs= 1
+OK  get_ushort_m                   inputs= 1
+OK  gf2_matrix_square              inputs= 2
+OK  gf2_matrix_times               inputs= 2
+FAIL gz_avail                       inputs= 0
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_comp                        inputs= 1
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_decomp                      inputs= 0
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_error                       inputs= 2
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_fetch                       inputs= 0
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_init                        inputs= 0
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_load                        inputs= 3
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_look                        inputs= 0
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_open                        inputs= 3
+       - path: environment input -- it flows into open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL gz_read                        inputs= 2
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_reset                       inputs= 0
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_skip                        inputs= 1
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_write                       inputs= 2
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gz_zero                        inputs= 1
+       - signature: struct-invariant param state: gz_state has nested struct field 'x' (needs invariant reconstruction); no producer for gz_state*: no function returns it
+FAIL gzbuffer                       inputs= 1
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzclearerr                     inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzclose                        inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzclose_r                      inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzclose_w                      inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzdirect                       inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzdopen                        inputs= 2
+       - fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+       - mode: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL gzeof                          inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzerror                        inputs= 1
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzflush                        inputs= 1
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzfread                        inputs= 3
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzfwrite                       inputs= 3
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzgetc                         inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzgetc_                        inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzgets                         inputs= 2
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzoffset                       inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzoffset64                     inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzopen                         inputs= 2
+       - path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+       - mode: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL gzopen64                       inputs= 2
+       - path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+       - mode: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL gzprintf                       inputs= 1
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+       - format: no lossless Rust bridge -- Rust signature has 3 parameters, C has 2: reshaped API, no positional bridge
+FAIL gzputc                         inputs= 1
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzputs                         inputs= 1
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzread                         inputs= 2
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzrewind                       inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzseek                         inputs= 2
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzseek64                       inputs= 2
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzsetparams                    inputs= 2
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gztell                         inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gztell64                       inputs= 0
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzungetc                       inputs= 1
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL gzvprintf                      inputs= 1
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+       - signature: struct-invariant param va: __va_list_tag has pointer field 'overflow_arg_area' (needs invariant reconstruction); no producer for __va_list_tag*: no function returns it
+FAIL gzwrite                        inputs= 2
+       - signature: struct-invariant param file: gzFile_s has pointer field 'next' (needs invariant reconstruction); no producer for gzFile_s*: gz_open: not public in the translation (C static kept private); the harness cannot call it; gzdopen: its own plan fails: fd: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an e; gzopen: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an; gzopen64: its own plan fails: path: environment input -- it flows into gz_open(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an
+FAIL inflate                        inputs= 1
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateBack                    inputs= 0
+       - signature: callback parameter in_ deferred: function pointers (callback binding) not yet supported
+FAIL inflateBackEnd                 inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateBackInit_               inputs= 4
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateCodesUsed               inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateCopy                    inputs= 0
+       - signature: struct-invariant param dest: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+       - signature: struct-invariant param source: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateEnd                     inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateGetDictionary           inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateGetHeader               inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+       - signature: struct-invariant param head: gz_header_s has pointer field 'extra' (needs invariant reconstruction); no producer for gz_header_s*: no function returns it
+FAIL inflateInit2_                  inputs= 3
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateInit_                   inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateMark                    inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflatePrime                   inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateReset                   inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateReset2                  inputs= 1
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateResetKeep               inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateSetDictionary           inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateStateCheck              inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateSync                    inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateSyncPoint               inputs= 0
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateUndermine               inputs= 1
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflateValidate                inputs= 1
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflate_fast                   inputs= 1
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL inflate_table                  inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param table
+FAIL init_block                     inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL lm_init                        inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL longest_match                  inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL main                           inputs= 2
+       - argc: environment input -- it flows into process_files(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+       - argv: environment input -- it flows into process_files(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL minitiff_destroy_info          inputs= 0
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+FAIL minitiff_error                 inputs= 1
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+FAIL minitiff_init_info             inputs= 0
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+FAIL minitiff_read_info             inputs= 0
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL minitiff_read_row              inputs= 2
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL minitiff_validate_info         inputs= 0
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+FAIL minitiff_warning               inputs= 1
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+OK  opng_allow_chunk               inputs= 1
+FAIL opng_analyze_bits              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_analyze_sample_usage      inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+OK  opng_bitset_count              inputs= 1
+OK  opng_bitset_find_first         inputs= 1
+OK  opng_bitset_find_last          inputs= 1
+OK  opng_bitset_find_next          inputs= 2
+OK  opng_bitset_find_prev          inputs= 2
+OK  opng_check_idat_size           inputs= 1
+OK  opng_clear_image_info          inputs= 0
+FAIL opng_copy_file                 inputs= 0
+       - signature: struct-invariant param infile: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+       - signature: struct-invariant param outfile: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+OK  opng_destroy_image_info        inputs= 0
+FAIL opng_error                     inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL opng_fgetsize                  inputs= 1
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+OK  opng_finalize                  inputs= 0
+OK  opng_finish_iterations         inputs= 0
+FAIL opng_freado                    inputs= 4
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+OK  opng_free                      inputs= 1
+FAIL opng_fseeko                    inputs= 2
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL opng_ftello                    inputs= 0
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL opng_fwriteo                   inputs= 4
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+OK  opng_get_alpha_row             inputs= 4
+FAIL opng_handle_chunk              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  opng_init_iteration            inputs= 4
+OK  opng_init_iterations           inputs= 0
+OK  opng_init_read_data            inputs= 0
+OK  opng_init_write_data           inputs= 0
+FAIL opng_initialize                inputs= 0
+       - signature: struct-invariant param init_options: opng_options has pointer field 'out_name' (needs invariant reconstruction); no producer for opng_options*: no function returns it
+       - signature: struct-invariant param init_ui: opng_ui has pointer field 'printf_fn' (needs invariant reconstruction); no producer for opng_ui*: no function returns it
+OK  opng_insert_palette_entry      inputs=10
+OK  opng_is_apng_chunk             inputs= 1
+OK  opng_is_image_chunk            inputs= 1
+OK  opng_iterate                   inputs= 0
+FAIL opng_load_image_info           inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_optimize                  inputs= 1
+       - infile_name: environment input -- it flows into opng_optimize_impl(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+OK  opng_optimize_impl             inputs= 1
+FAIL opng_os_copy_attr              inputs= 2
+       - dest_path: environment input -- it flows into chmod(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL opng_os_create_dir             inputs= 1
+       - dirname: environment input -- it flows into mkdir(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL opng_os_rename                 inputs= 3
+       - src_path: environment input -- it flows into rename(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+       - dest_path: environment input -- it flows into rename(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+OK  opng_os_test                   inputs= 2
+OK  opng_os_test_eq                inputs= 2
+FAIL opng_os_unlink                 inputs= 1
+       - path: environment input -- it flows into unlink(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+OK  opng_path_make_backup          inputs= 3
+OK  opng_path_replace_dir          inputs= 4
+OK  opng_path_replace_ext          inputs= 4
+OK  opng_print_error               inputs= 1
+OK  opng_print_fsize_difference    inputs= 3
+OK  opng_print_fsize_ratio         inputs= 2
+OK  opng_print_image_info          inputs= 4
+OK  opng_print_warning             inputs= 1
+FAIL opng_read_data                 inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL opng_read_file                 inputs= 0
+       - signature: struct-invariant param infile: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL opng_realloc_PLTE              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_realloc_tRNS              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_reduce_bits               inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_reduce_image              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_reduce_palette            inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_reduce_palette_bits       inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_reduce_to_palette         inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_set_keep_unknown_chunk    inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL opng_snprintf_impl             inputs= 3
+       - buffer: no lossless Rust bridge -- Rust signature has 4 parameters, C has 3: reshaped API, no positional bridge
+OK  opng_sprint_uratio_impl        inputs= 5
+FAIL opng_store_image_info          inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+OK  opng_str2ulong                 inputs= 3
+OK  opng_strcasecmp                inputs= 2
+OK  opng_strltrim                  inputs= 1
+OK  opng_strparse_rangeset_to_bitset inputs= 3
+OK  opng_strpbrk_digit             inputs= 1
+OK  opng_strtail                   inputs= 2
+OK  opng_ullratio_to_factor_string inputs= 3
+OK  opng_ullratio_to_percent_string inputs= 3
+OK  opng_ulratio_to_factor_string  inputs= 3
+OK  opng_ulratio_to_percent_string inputs= 3
+FAIL opng_validate_image            inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL opng_warning                   inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL opng_write_data                inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL opng_write_file                inputs= 4
+       - signature: struct-invariant param outfile: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+OK  optimize_cmf                   inputs= 2
+OK  panic                          inputs= 1
+OK  parse_args                     inputs= 2
+OK  png_access_version_number      inputs= 0
+FAIL png_app_error                  inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_app_warning                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_benign_error               inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_cache_unknown_chunk        inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_calculate_crc              inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_calloc                     inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_check_IHDR                 inputs= 7
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_check_chunk_length         inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_check_chunk_name           inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_chunk_benign_error         inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_chunk_error                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_chunk_report               inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_chunk_unknown_handling     inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_chunk_warning              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_combine_row                inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_compress_IDAT              inputs= 3
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_crc_error                  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_crc_finish                 inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_crc_read                   inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_create_info_struct         inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_create_png_struct          inputs= 0
+       - signature: callback parameter error_fn deferred: function pointers (callback binding) not yet supported
+FAIL png_create_read_struct         inputs= 0
+       - signature: callback parameter error_fn deferred: function pointers (callback binding) not yet supported
+FAIL png_create_write_struct        inputs= 0
+       - signature: callback parameter error_fn deferred: function pointers (callback binding) not yet supported
+FAIL png_data_freer                 inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_default_error              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_default_flush              inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_default_read_data          inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_default_warning            inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_default_write_data         inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_deflate_claim              inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_destroy_info_struct        inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param info_ptr_ptr
+FAIL png_destroy_png_struct         inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_destroy_read_struct        inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param png_ptr_ptr
+FAIL png_destroy_write_struct       inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param png_ptr_ptr
+FAIL png_do_check_palette_indexes   inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  png_do_read_interlace          inputs= 4
+FAIL png_do_read_transformations    inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  png_do_write_interlace         inputs= 3
+FAIL png_error                      inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_flush                      inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_format_buffer              inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  png_format_number              inputs= 4
+FAIL png_formatted_warning          inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_free                       inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_free_buffer_list           inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param listp
+FAIL png_free_data                  inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_IHDR                   inputs= 7
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_PLTE                   inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param palette
+FAIL png_get_bKGD                   inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param background
+FAIL png_get_bit_depth              inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_channels               inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_chunk_cache_max        inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_chunk_malloc_max       inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_color_type             inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_compression_buffer_size inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_compression_type       inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_copyright              inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_error_ptr              inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_filter_type            inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_hIST                   inputs= 0
+       - hist: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_header_ver             inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_header_version         inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_image_height           inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_image_width            inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+OK  png_get_int_32                 inputs= 1
+FAIL png_get_interlace_type         inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_io_chunk_type          inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_io_ptr                 inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_io_state               inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_libpng_ver             inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_palette_max            inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_pixel_aspect_ratio_fixed inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_pixels_per_meter       inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_rowbytes               inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_rows                   inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_sBIT                   inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param sig_bit
+FAIL png_get_signature              inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_tRNS                   inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param trans_color
+OK  png_get_uint_16                inputs= 1
+FAIL png_get_uint_31                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  png_get_uint_32                inputs= 1
+FAIL png_get_unknown_chunks         inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param unknowns
+FAIL png_get_user_height_max        inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_user_width_max         inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_get_valid                  inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_x_offset_microns       inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_x_offset_pixels        inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_x_pixels_per_meter     inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_y_offset_microns       inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_y_offset_pixels        inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_get_y_pixels_per_meter     inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+OK  png_gt                         inputs= 2
+FAIL png_handle_IEND                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_handle_IHDR                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_handle_PLTE                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_handle_as_unknown          inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_handle_bKGD                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_handle_hIST                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_handle_sBIT                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_handle_tRNS                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_handle_unknown             inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_image_size                 inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_inflate_claim              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_info_init_3                inputs= 0
+       - signature: unsupported: pointer-to-pointer-to-struct param ptr_ptr
+FAIL png_init_filter_functions      inputs= 0
+       - signature: struct-invariant param pp: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_init_io                    inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param fp: _IO_FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for _IO_FILE*: no function returns it
+FAIL png_init_palette_transformations inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_init_read_transformations  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_init_rgb_transformations   inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_longjmp                    inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_malloc                     inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_malloc_array               inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_malloc_array_checked       inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_malloc_base                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_malloc_warn                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_IDAT_data             inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_buffer                inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_chunk_header          inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_data                  inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_destroy               inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_end                   inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_read_filter_row            inputs= 4
+       - signature: struct-invariant param pp: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  png_read_filter_row_avg        inputs= 3
+OK  png_read_filter_row_paeth_1byte_pixel inputs= 3
+OK  png_read_filter_row_paeth_multibyte_pixel inputs= 3
+OK  png_read_filter_row_sub        inputs= 3
+OK  png_read_filter_row_up         inputs= 3
+FAIL png_read_finish_IDAT           inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_finish_row            inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_image                 inputs= 0
+       - image: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_info                  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_read_png                   inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_read_row                   inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_rows                  inputs= 1
+       - row: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - display_row: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_sig                   inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_read_start_row             inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_read_transform_info        inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_read_update_info           inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_realloc_array              inputs= 4
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_reset_crc                  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_reset_zstream              inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_rtran_ok                   inputs= 0
+       - signature: png_rtran_ok is not present in the Rust translation (no boundary)
+OK  png_safecat                    inputs= 4
+OK  png_save_int_32                inputs= 2
+OK  png_save_uint_16               inputs= 2
+OK  png_save_uint_32               inputs= 2
+FAIL png_set_IHDR                   inputs= 7
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_PLTE                   inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_bKGD                   inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_benign_errors          inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_check_for_invalid_index inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_chunk_cache_max        inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_chunk_malloc_max       inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_compression_buffer_size inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_compression_level      inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_compression_mem_level  inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_compression_method     inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_compression_strategy   inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_compression_window_bits inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_crc_action             inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_error_fn               inputs= 0
+       - signature: callback parameter error_fn deferred: function pointers (callback binding) not yet supported
+FAIL png_set_filter                 inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_flush                  inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_hIST                   inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_interlace_handling     inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_invalid                inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_keep_unknown_chunks    inputs= 3
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_read_fn                inputs= 0
+       - signature: callback parameter read_data_fn deferred: function pointers (callback binding) not yet supported
+FAIL png_set_read_status_fn         inputs= 0
+       - signature: callback parameter read_row_fn deferred: function pointers (callback binding) not yet supported
+FAIL png_set_rows                   inputs= 0
+       - row_pointers: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_sBIT                   inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_sig_bytes              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_tRNS                   inputs= 3
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_unknown_chunk_location inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_set_unknown_chunks         inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+       - signature: struct-invariant param unknowns: png_unknown_chunk_t has pointer field 'data' (needs invariant reconstruction); no producer for png_unknown_chunk_t*: no function returns it
+FAIL png_set_user_limits            inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_set_write_fn               inputs= 0
+       - signature: callback parameter write_data_fn deferred: function pointers (callback binding) not yet supported
+FAIL png_set_write_status_fn        inputs= 0
+       - signature: callback parameter write_row_fn deferred: function pointers (callback binding) not yet supported
+FAIL png_setup_avg_row              inputs= 3
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_setup_avg_row_only         inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_setup_paeth_row            inputs= 3
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_setup_paeth_row_only       inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_setup_sub_row              inputs= 3
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_setup_sub_row_only         inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_setup_up_row               inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_setup_up_row_only          inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  png_sig_cmp                    inputs= 3
+FAIL png_start_read_image           inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_user_version_check         inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_warning                    inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  png_warning_parameter          inputs= 3
+OK  png_warning_parameter_signed   inputs= 4
+OK  png_warning_parameter_unsigned inputs= 4
+FAIL png_write_IEND                 inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_IHDR                 inputs= 7
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_PLTE                 inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_bKGD                 inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_chunk                inputs= 3
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_chunk_data           inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_chunk_end            inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_chunk_header         inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_chunk_start          inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_complete_chunk       inputs= 3
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_data                 inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_destroy              inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_end                  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_write_filtered_row         inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_find_filter          inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_finish_row           inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_flush                inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_hIST                 inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_image                inputs= 0
+       - image: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_info                 inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_write_info_before_PLTE     inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_write_png                  inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL png_write_row                  inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_rows                 inputs= 1
+       - row: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_sBIT                 inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_sig                  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_start_row            inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_write_tRNS                 inputs= 4
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  png_zalloc                     inputs= 3
+OK  png_zfree                      inputs= 2
+FAIL png_zlib_inflate               inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL png_zstream_error              inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+OK  pngx_gif_error                 inputs= 1
+OK  pngx_gif_warning               inputs= 1
+FAIL pngx_malloc_rows               inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL pngx_malloc_rows_extended      inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL pngx_read_bmp                  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pngx_read_gif                  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pngx_read_image                inputs= 0
+       - fmt_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - fmt_long_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL pngx_read_jpeg                 inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pngx_read_pnm                  inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pngx_read_tiff                 inputs= 0
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pngx_set_compression_type      inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL pngx_set_filter_type           inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL pngx_set_gif_palette           inputs= 2
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL pngx_set_gif_transparent       inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL pngx_set_interlace_type        inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+FAIL pngx_sig_is_bmp                inputs= 2
+       - fmt_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - fmt_long_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+FAIL pngx_sig_is_gif                inputs= 2
+       - fmt_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - fmt_long_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+FAIL pngx_sig_is_jpeg               inputs= 2
+       - fmt_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - fmt_long_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+FAIL pngx_sig_is_png                inputs= 2
+       - fmt_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - fmt_long_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - signature: struct-invariant param png_ptr: png_struct_def opaque/incomplete (no visible fields) (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+FAIL pngx_sig_is_pnm                inputs= 2
+       - fmt_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - fmt_long_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+FAIL pngx_sig_is_tiff               inputs= 2
+       - fmt_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+       - fmt_long_name_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+OK  pngx_tiff_error                inputs= 1
+OK  pngx_tiff_warning              inputs= 1
+FAIL pnm_fget_bytes                 inputs= 4
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pnm_fget_char                  inputs= 0
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pnm_fget_header                inputs= 1
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pnm_fget_values                inputs= 3
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pnm_fpeek_eof                  inputs= 1
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pnm_fput_bytes                 inputs= 4
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pnm_fput_header                inputs= 1
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pnm_fput_values                inputs= 3
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL pnm_fscan_uint                 inputs= 1
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+OK  pnm_is_valid                   inputs= 1
+OK  pnm_mem_size                   inputs= 3
+OK  pnm_raw_sample_size            inputs= 1
+FAIL pqdownheap                     inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+       - signature: struct-invariant param tree: ct_data has nested struct field 'fc' (needs invariant reconstruction); no producer for ct_data*: no function returns it
+OK  process_files                  inputs= 2
+FAIL putShortMSB                    inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL read_buf                       inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL read_ulong_values              inputs= 3
+       - signature: struct-invariant param getter_ptr: minitiff_getter has pointer field 'get_ushort' (needs invariant reconstruction); no producer for minitiff_getter*: no function returns it
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL scan_option                    inputs= 3
+       - opt_arg_ptr: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+FAIL scan_tree                      inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+       - signature: struct-invariant param tree: ct_data has nested struct field 'fc' (needs invariant reconstruction); no producer for ct_data*: no function returns it
+FAIL seek_to_offset                 inputs= 1
+       - signature: struct-invariant param info_ptr: minitiff_info has pointer field 'error_handler' (needs invariant reconstruction); no producer for minitiff_info*: no function returns it
+       - signature: struct-invariant param stream: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it
+FAIL send_all_trees                 inputs= 3
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+FAIL send_tree                      inputs= 1
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+       - signature: struct-invariant param tree: ct_data has nested struct field 'fc' (needs invariant reconstruction); no producer for ct_data*: no function returns it
+FAIL slide_hash                     inputs= 0
+       - signature: struct-invariant param s: deflate_state has pointer field 'strm' (needs invariant reconstruction); no producer for deflate_state*: no function returns it
+OK  syncsearch                     inputs= 3
+OK  tr_static_init                 inputs= 0
+OK  uncompress                     inputs= 4
+FAIL uncompress2                    inputs= 4
+       - source: no lossless Rust bridge -- output_buffer is written by the callee but the Rust parameter is *const Bytef (const)
+FAIL updatewindow                   inputs= 2
+       - signature: struct-invariant param strm: z_stream_s has pointer field 'next_in' (needs invariant reconstruction); no producer for z_stream_s*: no function returns it
+FAIL write_unknown_chunks           inputs= 1
+       - signature: struct-invariant param png_ptr: png_struct_def has pointer field 'error_fn' (needs invariant reconstruction); no producer for png_struct_def*: no function returns it
+       - signature: struct-invariant param info_ptr: png_info_def has pointer field 'palette' (needs invariant reconstruction); no producer for png_info_def*: png_create_info_struct: takes a struct-with-pointers itself (pilot is depth 1)
+OK  zError                         inputs= 1
+OK  zcalloc                        inputs= 3
+OK  zcfree                         inputs= 2
+OK  zlibCompileFlags               inputs= 0
+OK  zlibVersion                    inputs= 0
+
+planned 128 / 552

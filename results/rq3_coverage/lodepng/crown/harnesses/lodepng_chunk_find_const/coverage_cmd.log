@@ -1,0 +1,129 @@
+rc=0
+--- stdout ---
+
+--- stderr ---
+ize) -> Vec<u64> { let n = (self.take_u16() as usize) % (max.min(65535) + 1); let mut v = Vec::new(...
+   |        ^^^^^^^^^^^^
+45 |     fn take_len_i64(&mut self, max: usize) -> Vec<i64> { let n = (self.take_u16() as usize) % (max.min(65535) + 1); let mut v = Vec::new(...
+   |        ^^^^^^^^^^^^
+46 |     fn take_len_f32(&mut self, max: usize) -> Vec<f32> { let n = (self.take_u16() as usize) % (max.min(65535) + 1); let mut v = Vec::new(...
+   |        ^^^^^^^^^^^^
+47 |     fn take_len_f64(&mut self, max: usize) -> Vec<f64> { let n = (self.take_u16() as usize) % (max.min(65535) + 1); let mut v = Vec::new(...
+   |        ^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable `type__buf` should have a snake case name
+   --> fuzz_targets/lodepng_crown_ft.rs:151:13
+    |
+151 |     let mut type__buf: Vec<i8> = cur.take_rest_i8(1048576);
+    |             ^^^^^^^^^ help: convert the identifier to snake case: `type_buf`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `lodepng_crown-fuzz` (bin "lodepng_crown_ft") generated 4 warnings
+    Finished `release` profile [optimized + debuginfo] target(s) in 13.07s
+Processing 45 input files using 1 workers (batch size: ~45)
+Worker 0: Generating coverage for 45 files
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2409892104
+INFO: Loaded 1 modules   (1408 inline 8-bit counters): 1408 [0x5628262e0640, 0x5628262e0bc0), 
+INFO: Loaded 1 PC tables (1408 PCs): 1408 [0x5628262e0bc0,0x5628262e63c0), 
+/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/harnesses/lodepng_chunk_find_const/target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release/lodepng_crown_ft: Running 45 inputs 1 time(s) each.
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/9bb6acd3f87fda0d18cb51ce41aaa06dfd519750
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/9bb6acd3f87fda0d18cb51ce41aaa06dfd519750 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/4f1223657b77bacac0a62a474efaddc3b344dcf2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/4f1223657b77bacac0a62a474efaddc3b344dcf2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/894aed46b4269e3096549a78f5e03f7930ccee2f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/894aed46b4269e3096549a78f5e03f7930ccee2f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/8d56df7454bf51a088df193798c4eab7fe4e2ac2
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/8d56df7454bf51a088df193798c4eab7fe4e2ac2 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/57ace0ab0e275da8ad159715144b02deda683280
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/57ace0ab0e275da8ad159715144b02deda683280 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/9c01b0711335fa7738545de5068e65f00b568c18
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/9c01b0711335fa7738545de5068e65f00b568c18 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/de1d0c022861af6470e1a241de059c1405fceb09
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/de1d0c022861af6470e1a241de059c1405fceb09 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/b7bd2ed8de7f76184f57c77519a8b1059fe54414
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/b7bd2ed8de7f76184f57c77519a8b1059fe54414 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/af3da72bcba4f3a4aae9d1eed3d514f7b4d1b730
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/af3da72bcba4f3a4aae9d1eed3d514f7b4d1b730 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/10f539c80711413d3f4cf0a9c73612895121e63d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/10f539c80711413d3f4cf0a9c73612895121e63d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/1520cf509a99d264938719032434a1d3c20501eb
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/1520cf509a99d264938719032434a1d3c20501eb in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/d055945608f9e0420c1ed65b34eefc881568b347
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/d055945608f9e0420c1ed65b34eefc881568b347 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/4feb6fe64777f2dad881dcfbe38048ed9063b312
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/4feb6fe64777f2dad881dcfbe38048ed9063b312 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/6d59b0c00dedb1f92220af1f10b59c6d8077ae4d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/6d59b0c00dedb1f92220af1f10b59c6d8077ae4d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/b675d626df95c50db4d82bf06c994985ecbe1740
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/b675d626df95c50db4d82bf06c994985ecbe1740 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/5ba93c9db0cff93f52b521d7420e43f6eda2784f
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/5ba93c9db0cff93f52b521d7420e43f6eda2784f in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/6a6c45e5f9dcad4b73008304ea1ef6ba52cbc59e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/6a6c45e5f9dcad4b73008304ea1ef6ba52cbc59e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/c8f31f249db44852c63a38fb034d8b9d18f1ab1a
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/c8f31f249db44852c63a38fb034d8b9d18f1ab1a in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/7d241092c74221a9c4a34b95f7a62a3bdb515ea3
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/7d241092c74221a9c4a34b95f7a62a3bdb515ea3 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/98b04aedd43b12625367776dc6fc60105fe121a4
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/98b04aedd43b12625367776dc6fc60105fe121a4 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/77ce0377defbd11b77b1f4ad54ca40ea5ef28490
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/77ce0377defbd11b77b1f4ad54ca40ea5ef28490 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/bdd1ec217fecff577f4ab7058ce6cdb1d74e1990
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/bdd1ec217fecff577f4ab7058ce6cdb1d74e1990 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/c5c30b18d58b60755370034fb08ba17e799a6614
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/c5c30b18d58b60755370034fb08ba17e799a6614 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/d5d5370bbe3e3ce247c6f0825a9e16db2b8cd5c5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/d5d5370bbe3e3ce247c6f0825a9e16db2b8cd5c5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/8f01a816f0c87c7d31f38bba8c8ba181ea392f70
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/8f01a816f0c87c7d31f38bba8c8ba181ea392f70 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/b61f43340413e224b64c0866e34320f8a9e65a97
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/b61f43340413e224b64c0866e34320f8a9e65a97 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/49b8e79291a73b6eaed8c3f92fd4ebb2ea3fe71d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/49b8e79291a73b6eaed8c3f92fd4ebb2ea3fe71d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e4adaa6b8feaac5795f0bf145f6e9362e00a6e05
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e4adaa6b8feaac5795f0bf145f6e9362e00a6e05 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e9c8a60cce8dfbf7391683173c7ebd30f65325d4
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e9c8a60cce8dfbf7391683173c7ebd30f65325d4 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/82bca71c4e56600c9385fc9b721f1e958ff9fbf0
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/82bca71c4e56600c9385fc9b721f1e958ff9fbf0 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e38549057c095f68a33b673921bfde8dc5fc822d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e38549057c095f68a33b673921bfde8dc5fc822d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/808f1eabe06559ea75f6fe970eaed2e82153c45d
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/808f1eabe06559ea75f6fe970eaed2e82153c45d in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/3f5022fec100f3f00485b5d4749dd2f0f6c675b5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/3f5022fec100f3f00485b5d4749dd2f0f6c675b5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/6fa01b06e40d4c4d0a35e9d659a7f25b1812f845
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/6fa01b06e40d4c4d0a35e9d659a7f25b1812f845 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/c10878a8f601e7d4eb953d5b56bff49d552a0ad0
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/c10878a8f601e7d4eb953d5b56bff49d552a0ad0 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e5c042811b552e1884788f398839a6b21b3fc165
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e5c042811b552e1884788f398839a6b21b3fc165 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e5501eca839511634ef4a7f9ec25f818dfdf8527
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/e5501eca839511634ef4a7f9ec25f818dfdf8527 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/ac025aa33ea55544d29e4da4fd9f751e2afcda05
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/ac025aa33ea55544d29e4da4fd9f751e2afcda05 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/0ecc3e13daf16790f2ed42365f6d71972277ce12
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/0ecc3e13daf16790f2ed42365f6d71972277ce12 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/5d07c02703d758bbc621a762abdfed0f8965662e
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/5d07c02703d758bbc621a762abdfed0f8965662e in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/0d70a955eebfbdced7515cdbfc2632c161b91de8
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/0d70a955eebfbdced7515cdbfc2632c161b91de8 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/65392db9b74b56927497eea8625e62b9d58f55ca
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/65392db9b74b56927497eea8625e62b9d58f55ca in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/9d6be0308829891a6f3ed74c275cad495c2454d1
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/9d6be0308829891a6f3ed74c275cad495c2454d1 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/163fbc971a0e3e8343ed8816ff395712f52a2fa5
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/163fbc971a0e3e8343ed8816ff395712f52a2fa5 in 0 ms
+Running: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/seed_fixed
+Executed /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/corpus/lodepng_chunk_find_const/seed_fixed in 0 ms
+***
+*** NOTE: fuzzing was not performed, you have only
+***       executed the target code on a fixed set of inputs.
+***
+Merging raw coverage data...
+Coverage data merged and saved in "/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/cell_lodepng_crown/harnesses/lodepng_chunk_find_const/fuzz/coverage/lodepng_crown_ft/coverage.profdata".
+

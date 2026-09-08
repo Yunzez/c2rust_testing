@@ -210,6 +210,14 @@ sentinel · a `None` template must fail construction, not fall through to an add
   `base + n`. Affects `lodepng_chunk_find` and `lodepng_chunk_next`; the latter was NOT flagged by
   the preflight, so the same lottery can hide the shape entirely. Until then the boundaries run and
   are recorded as a construction limit in `<pair>/preflight_accept.txt`.
+  **Second instance, another library and another translator (optipng x Laertes, same day):**
+  `png_format_number(start, end, ..)` (libpng/pngerror.c:133) writes BACKWARDS from `end` -- its
+  first statement is `*--end = 0;` -- and the plan gave `end` an independent `output_array` whose
+  extent it PROVED to be exactly 1, so the first write is already out of bounds. The rule must
+  therefore fire on a pointer that is DECREMENTED as well as on one that is advanced, whenever it is
+  compared with another pointer parameter of the same element type. The tell in the plan is one
+  pointer with a tiny proven extent (or "never dereferenced") beside another of the same element
+  type, with the body comparing the two.
 - **Two chains can fire on the same DONE marker.** The urlparser Laertes re-run and the lodepng chain
   both waited on `URLPARSER_CHAIN_DONE` and started two cells a minute apart (2026-09-08 03:46).
   Re-runs now wait for the LAST library's DONE (`rerun_queue.sh`), never a mid-chain one.
@@ -223,6 +231,25 @@ sentinel · a `None` template must fail construction, not fall through to an add
   verdicts had to be recomputed. **Check after every post: each finished cell has `confirm_sample/`
   with a non-empty `total`, and the step took more than a second.** Editing a chain script with a
   regex is how this happened; edit the one line, not a pattern.
+- **`confirmed_termination` is emitted with its own definition INVERTED when C alone times out
+  (`scripts/c2r_campaign.py:282`, found 2026-09-08).**
+  ```python
+  if a_c["outcome"] == "timeout":
+      return ("inconclusive" if b_rust["outcome"] == "timeout" else "confirmed_termination",
+              "C alone times out")
+  ```
+  `confirmed_termination` means *"C returned normally and the translation did not"*. Here C did NOT
+  return and the translation DID: the four channels read c_only=timeout, rust_only=normal,
+  combined=timeout, rust_no_sanitizer=normal. It should be `inconclusive` (or a named
+  c-alone-timeout bucket): the C replay carries ASan **and full UBSan** and is an order of magnitude
+  slower, so a timeout there is as likely to be instrumentation cost as non-termination, and the
+  budget is a replay budget, not a proof that C loops forever.
+  **Blast radius, measured over every archived cell: 6 rows, all in lodepng x c2rust**
+  (`Adam7_interlace` 5, `Adam7_deinterlace` 1) -- i.e. six false defects on the NEGATIVE CONTROL.
+  The other 641 `confirmed_termination` rows come from the two correct branches ("C returned
+  normally, the translation panicked", 578; "no UB check fired on C alone, Rust alone fails", 63).
+  No manifest entry rests on the six. Fix the branch, and RE-CLASSIFY the archived rows offline --
+  `verdicts.json.gz` stores all four channels per row, so no replay has to be repeated.
 - **Universe rlib selection.** `rlib_universe.py` takes cargo's `--message-format=json` log and
   picks the exact lib artifact of that build; the newest-by-mtime rlib is only a fallback and is
   labelled as such in `denominator.json._source.selected_by`.

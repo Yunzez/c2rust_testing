@@ -213,6 +213,16 @@ sentinel · a `None` template must fail construction, not fall through to an add
 - **Two chains can fire on the same DONE marker.** The urlparser Laertes re-run and the lodepng chain
   both waited on `URLPARSER_CHAIN_DONE` and started two cells a minute apart (2026-09-08 03:46).
   Re-runs now wait for the LAST library's DONE (`rerun_queue.sh`), never a mid-chain one.
+- **A too-broad `sed` put `--dest` on the CONFIRM line and the confirmation silently did not run
+  (2026-09-08).** Fixing the archive destination, the substitution matched `--pair $PAIRS/<lib>_$T`
+  in BOTH the `archive_cell.py` and the `confirm_cell.py` invocations; `confirm_cell.py` rejects the
+  argument, exits 2, and the post script carries on. Four cells (urlparser × c2rust / C2SaferRust /
+  CROWN, lodepng × CROWN) reached `RUN.md + archive` with no adjudication at all, and the only
+  visible symptom was a confirm step that took **zero seconds** and an archive with no
+  `confirm_sample/`. Nothing was lost -- every candidate and divergence INPUT is archived -- but the
+  verdicts had to be recomputed. **Check after every post: each finished cell has `confirm_sample/`
+  with a non-empty `total`, and the step took more than a second.** Editing a chain script with a
+  regex is how this happened; edit the one line, not a pattern.
 - **Universe rlib selection.** `rlib_universe.py` takes cargo's `--message-format=json` log and
   picks the exact lib artifact of that build; the newest-by-mtime rlib is only a fallback and is
   labelled as such in `denominator.json._source.selected_by`.

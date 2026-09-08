@@ -196,6 +196,23 @@ sentinel · a `None` template must fail construction, not fall through to an add
   post scripts pass `--dest $R/results/rq3_coverage` as well. **Check `ls results/rq3_coverage/<lib>/<tool>`
   against a finished library before deleting a cell from the scratchpad** -- an archive is 15-16
   entries, not two.
+- **A `(begin, end)` RANGE PAIR is planned as two independent buffers (lodepng, 2026-09-08).**
+  `lodepng_chunk_find(unsigned char* chunk, unsigned char* end, ..)` guards with
+  `if (chunk >= end || end - chunk < 12) return 0;`: the two pointers denote ONE buffer. The plan
+  allocated two 4096-byte buffers, so the guard compares unrelated allocations and whether the loop
+  walks off the end is memory-layout luck -- c-only ran 110 559 executions clean with a growing
+  corpus while rust-only heap-overflowed at once, **on the faithful c2rust control**. Read as a
+  defect this would have been a false positive on the negative control; it is an input-model gap.
+  The signature is already in the plan: the end pointer's own evidence says *"pointer is never
+  dereferenced"* while the other is *"pointer advanced in the body"*, and the body compares them.
+  **To fix when the generator unfreezes:** when two pointer parameters of the same element type are
+  compared to each other (or subtracted) in the body, allocate ONE buffer and set the second to
+  `base + n`. Affects `lodepng_chunk_find` and `lodepng_chunk_next`; the latter was NOT flagged by
+  the preflight, so the same lottery can hide the shape entirely. Until then the boundaries run and
+  are recorded as a construction limit in `<pair>/preflight_accept.txt`.
+- **Two chains can fire on the same DONE marker.** The urlparser Laertes re-run and the lodepng chain
+  both waited on `URLPARSER_CHAIN_DONE` and started two cells a minute apart (2026-09-08 03:46).
+  Re-runs now wait for the LAST library's DONE (`rerun_queue.sh`), never a mid-chain one.
 - **Universe rlib selection.** `rlib_universe.py` takes cargo's `--message-format=json` log and
   picks the exact lib artifact of that build; the newest-by-mtime rlib is only a fallback and is
   labelled as such in `denominator.json._source.selected_by`.

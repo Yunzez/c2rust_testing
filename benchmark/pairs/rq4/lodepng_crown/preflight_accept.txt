@@ -1,0 +1,25 @@
+# Reviewed 2026-09-08 on the lodepng x c2rust preflight; every reason below is a fact about the C
+# side or about OUR input model, so it holds for any translation of this C and is pre-accepted here.
+#
+# (1) The C reference crashes too -- an unconstructible precondition, not a translation defect.
+#     Verified: c-only crashes on the EMPTY input (chunk_check_crc, uivector_cleanup) or within 10 s
+#     of c-only fuzzing (chunk_generate_crc, ASan SEGV). A PNG chunk pointer must address a real
+#     chunk header whose length field bounds the buffer, and uivector_cleanup frees `p->data`, which
+#     the harness cannot make a valid allocation.
+lodepng_chunk_check_crc
+lodepng_chunk_generate_crc
+uivector_cleanup
+#
+# (2) OUR INPUT MODEL IS INVALID for this boundary -- neither side's behaviour here is meaningful,
+#     and it must never be read as a defect. `lodepng_chunk_find(unsigned char* chunk,
+#     unsigned char* end, const char type[5])` takes a RANGE over ONE buffer (`if(chunk >= end ||
+#     end - chunk < 12) return 0;`), and the plan allocates `chunk` and `end` as two INDEPENDENT
+#     4096-byte buffers (`end`'s own evidence says "pointer is never dereferenced"). The guard then
+#     compares two unrelated allocations, so whether the loop walks off the end is memory-layout
+#     luck: c-only ran 110 559 executions clean with a growing corpus, rust-only heap-overflows at
+#     once, on the FAITHFUL c2rust control. Expect out_of_contract_access / instrument_only at
+#     confirmation. `lodepng_chunk_next(chunk, end)` has the same shape and was NOT flagged -- the
+#     same lottery fell the other way -- so its candidates carry the same caveat.
+#     A planner rule for (begin, end) range pairs is recorded in docs/rq4_runbook.md; the generator
+#     is frozen for this campaign, so the boundary runs and is reported as a construction limit.
+lodepng_chunk_find

@@ -109,3 +109,8 @@ the five scalar-only harnesses alone reach 131 / 573 regions (0.229); with the b
 pointer / void: nullness and the input arrays only); a wrong network output would be invisible here, which is
 why this cell's value oracle lives in the activation boundaries. Corpora are tiny (8–44 inputs); the hour
 buys nothing on this library and is kept for uniformity. Single campaign.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the tests build): identical, function for function and in region count.
+No published number changes; only the provenance sentence does.

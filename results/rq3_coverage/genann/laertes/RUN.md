@@ -91,3 +91,8 @@ paired. **Negative control holds**: 0 divergences on the corpus replay, 0 confir
 consistent with the E1 certificate for this translation. The producer-bridge ablation from this campaign is in
 `../ablation_producer_bridge.json`. Not established: `run` / `train` output values (pilot oracle limit); single
 campaign; tiny corpora.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the tests build): identical, function for function and in region count.
+No published number changes; only the provenance sentence does.

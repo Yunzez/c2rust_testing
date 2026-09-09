@@ -172,3 +172,8 @@ Total: inconclusive 45, instrument_only 52, not_reproducible 57, ub_associated 5
 **Deviation:** `lil_parse` was re-fuzzed alone and merged, for the same harness bug and in the same way as the c2rust cell (`deviations.json`; corpus 2 517, 1 210 artifacts, 3 600 s alone). The three parser internals (`ateol`, `get_dollarpart`, `next_word`) are crash-all for the same unconstructible-precondition reason and are accepted, not promoted.
 
 **Not established:** any coverage for the three crash-all internals; the exact contention of the `lil_parse` re-run.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the bin-route export, kept as `raw/denominator_binroute_superseded.json`): identical up to `denom::main`, the reference binary's own function, which the lib.rs scope filter never counted.
+No published number changes; only the provenance sentence does.

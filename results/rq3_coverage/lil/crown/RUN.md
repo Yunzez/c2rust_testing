@@ -167,3 +167,8 @@ Total: confirmed_termination 69, inconclusive 42, instrument_only 61, not_reprod
 **Deviation:** the cell was started twice. The first start built 27 of 42 harnesses — the 15 C `static` entries failed with `unresolved import crate::lil`, because CROWN wraps its modules in `pub mod src { .. }` and the funnel's `--expose-entry` re-export used the unprefixed path — and its campaign was killed after 20 minutes; nothing from it was kept. The fix (the re-export takes the prefix from the flatten's own `pub use` lines) is generic; the cell then ran in full with the preflight. Generator hash `a8925ba6292dd9ac` for every harness.
 
 **Not established:** whether the same dropped-fallback pattern exists at CROWN's other `substitute()` callers (`lil_subst_to_value`, `lil_parse_value`) — they were not reached by a failing substitution in the sample.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the bin-route export, kept as `raw/denominator_binroute_superseded.json`): identical up to `denom::main`, the reference binary's own function, which the lib.rs scope filter never counted.
+No published number changes; only the provenance sentence does.

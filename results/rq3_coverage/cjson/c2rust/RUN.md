@@ -204,3 +204,8 @@ refused boundaries (`cJSON_AddItemTo*`, `ReplaceItem*`, `InsertItemInArray`) and
 internals are not measured. No second translation of cJSON is bridged yet: PtrTrans's
 `cJSON_Parse(Option<&[u8]>) -> Option<&mut cJSON>` returns an `Option<&mut T>`, outside the pilot's
 raw-pointer rule. Single campaign.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the bin-route export, kept as `raw/denominator_binroute_superseded.json`): identical up to `denom::main`, the reference binary's own function, which the lib.rs scope filter never counted.
+No published number changes; only the provenance sentence does.

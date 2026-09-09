@@ -178,3 +178,8 @@ Total: inconclusive 60, instrument_only 53, not_reproducible 56, ub_associated 5
 3. *The coverage phase died and was finished* (`finish_cell.py`): `cargo fuzz coverage` echoed a non-UTF-8 corpus file name and the collector decoded it strictly. 39 boundaries kept their exports, 8 were recollected, 3 could not be — `ateol`, `get_dollarpart`, `next_word`, parser internals that read `lil->code[lil->head]` on a freshly constructed interpreter (`lil->code` is NULL) and crash on every input including the empty one. They are listed in the pair's `preflight_accept.txt` as unconstructible preconditions, never promoted.
 
 **Not established:** anything about `lil_list_size`; any coverage for the three crash-all internals; the exact contention under which `lil_parse`'s corpus was grown.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the bin-route export, kept as `raw/denominator_binroute_superseded.json`): identical up to `denom::main`, the reference binary's own function, which the lib.rs scope filter never counted.
+No published number changes; only the provenance sentence does.

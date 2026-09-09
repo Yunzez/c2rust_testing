@@ -107,3 +107,20 @@ matched its archived universe exactly, region for region, with the file path the
 Paper sentence, as the reviewer phrased it and as agreed: *We report artifact-relative source
 coverage. The denominator is the complete source-region map embedded in the instrumented translated
 library, independent of any particular test or harness binary.* No reachable ceiling is estimated.
+
+## Step 2 executed (2026-09-09): eleven cells rebuilt, all agree, no number changes
+
+`scratchpad/denom_rebuild/` (build_all.sh, compare.py, compare.json). Each cell's rlib universe now sits in
+`raw/denominator.json` with `raw/denominator_provenance.json`; the eight bin-route files are kept beside
+them as `denominator_binroute_superseded.json`.
+
+| cell | archived universe came from | rebuilt rlib universe | result |
+|---|---|---|---|
+| bzip2 × c2rust | tests build | 66 fn / 8 789 reg | **identical** (function identities and region count) |
+| genann × c2rust | tests build | 12 / 573 | **identical** |
+| genann × Laertes | tests build | 17 / 587 | **identical** |
+| genann × C2SaferRust, CROWN, SACTOR; cJSON × c2rust; lil × c2rust, C2SaferRust, CROWN, Laertes | bin-route `denom` export | 41, 27, 21; 59; 160, 166, 142, 280 fn | **identical up to `denom::main`** — the reference binary's own function, in `denom.rs`, which the lib.rs scope filter never counted |
+
+Outcome (b) of the two-stage plan: the numerators stand, no harness is regenerated, and the provenance
+sentence moves for every cell to "the translation's own instrumented objects". The bin route is now
+nowhere in the published data; it remains in `denominator.sh` only as the link check.

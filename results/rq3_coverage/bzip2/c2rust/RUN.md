@@ -161,3 +161,8 @@ no repeat campaigns were run, so the per-cell numbers are single-run numbers. `B
 (C `exit(3)` on every input) and `mainSort` (out of contract at the first input) have no coverage
 export. The superseded hand-schema cell's numbers (`../c2rust_handschema_superseded/`, 10 harnesses,
 0.798 / only-ours 409) are history, not a comparison point.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the tests build): identical, function for function and in region count.
+No published number changes; only the provenance sentence does.

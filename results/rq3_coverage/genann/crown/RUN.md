@@ -99,3 +99,8 @@ produced no number; the pair was rebuilt with the 2015 source (sha256-identical 
 planner now refuses a target the Rust translation does not define. The adapter calls `src::test::main_0` (CROWN
 comments out `pub fn main`); `main_0` was made `pub` inside the test module only. CROWN's `genann_run` takes
 `Option<&mut genann>` and is bridged as `Some(&mut *ann_r)`.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the bin-route export, kept as `raw/denominator_binroute_superseded.json`): identical up to `denom::main`, the reference binary's own function, which the lib.rs scope filter never counted.
+No published number changes; only the provenance sentence does.

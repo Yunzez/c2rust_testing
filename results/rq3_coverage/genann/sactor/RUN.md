@@ -113,3 +113,8 @@ there. The ~4 000 `crash-*` artifacts on each cached-sigmoid boundary are NaN in
 `assert(!isnan(a))` (genann.c:87), which SACTOR transpiled as well — both sides abort, `ub_associated`, and the
 fuzzer's crash gradient chases them (corpus 21). `genann_init` overflow panics and `genann_copy` OOMs as on
 every tool. Single campaign.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the bin-route export, kept as `raw/denominator_binroute_superseded.json`): identical up to `denom::main`, the reference binary's own function, which the lib.rs scope filter never counted.
+No published number changes; only the provenance sentence does.

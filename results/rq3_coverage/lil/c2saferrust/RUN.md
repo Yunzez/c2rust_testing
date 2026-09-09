@@ -176,3 +176,8 @@ Total: confirmed_termination 57, instrument_only 3, not_reproducible 1, ub_assoc
 **Deviations:** none in procedure. This cell ran before the preflight step existed (its 23 crash-alls would have been flagged after one minute; they were seen after the hour) and before per-harness generator hashes were recorded. Its post-processing was run once early (2026-09-06 02:58, `nice 10`, concurrently with the CROWN campaign) and again by the chain; the results are identical.
 
 **Not established:** any coverage or behaviour of the interpreter beyond construction; whether other C2SaferRust `*.as_ptr()` C-string sites (lil has several) hide further defects — the first one masks them.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the bin-route export, kept as `raw/denominator_binroute_superseded.json`): identical up to `denom::main`, the reference binary's own function, which the lib.rs scope filter never counted.
+No published number changes; only the provenance sentence does.

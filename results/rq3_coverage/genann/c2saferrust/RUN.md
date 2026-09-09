@@ -92,3 +92,8 @@ descriptor (C2SaferRust reshaped `FILE*` into `&mut File`; the transpiled `tmpfi
 Ours / Neither: 10 / 12 functions, 459 / 563 regions (0.815). **Negative control holds**: 0 divergences on 186
 corpus inputs, 0 confirmed of 335 sampled — consistent with the E1 50M-record certificate. Not established:
 `run` / `train` output values; the two `FILE*` boundaries; single campaign.
+
+**Denominator provenance (2026-09-09).** The universe was rebuilt from the translation's own instrumented
+rlib objects (`raw/denominator.json`, `raw/denominator_provenance.json`) and compared with the one the
+published numbers used (the bin-route export, kept as `raw/denominator_binroute_superseded.json`): identical up to `denom::main`, the reference binary's own function, which the lib.rs scope filter never counted.
+No published number changes; only the provenance sentence does.

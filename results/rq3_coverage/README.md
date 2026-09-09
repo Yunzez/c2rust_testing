@@ -1,7 +1,11 @@
-# RQ4 — Coverage Beyond Shipped Tests
+# RQ4 — Reach of the generated differential campaigns
 
-**Status 2026-09-04: pre-registered and under measurement. One paired cell exists but is
-superseded; the current campaign is in flight.**
+**Status 2026-09-09: COMPLETE. Ten libraries, 37 cells, every cell verified by
+`scripts/rq4/check_cell.py` (37 OK / 0 BAD). The question is no longer "coverage beyond shipped
+tests": it is how much of each translated artifact the generated campaigns exercise, and what limits
+their reach (per-artifact reach against the artifact's own instrumented objects, the
+matched → planned → built → productive funnel, the input-construction mode, and the named causes of
+low reach). The tests side is recorded where a shipped suite exists but is not compared in the paper.**
 
 | | |
 |---|---|
@@ -14,7 +18,13 @@ superseded; the current campaign is in flight.**
 | **complete: cJSON × {c2rust, PtrTrans}** | [`cjson/SUMMARY.md`](cjson/SUMMARY.md) — producer bridge generalised (`cJSON_Parse` → target → `cJSON_Delete`, plugin object state); region ours **0.812** vs 0.354 without the bridge; negative control 0 / 8 796 replay divergences, 0 confirmed; PtrTrans: 64 boundaries **construction unsupported** under the frozen bridge (`Option<&mut T>` producer, no `cJSON_Delete`); the 9 direct boundaries that build show 18/18 confirmed nullness divergences from the `cJSON_New_Item` stub (CAND-5), region 0.032 |
 | **complete: lil × {c2rust, Laertes, C2SaferRust, CROWN}** | [`lil/SUMMARY.md`](lil/SUMMARY.md) — no suite (TEST-UNAVAILABLE ×4); c2rust region **0.872** / Laertes 0.818 / CROWN 0.826, both faithful translations 0 confirmed; **two new defects**: C9 (C2SaferRust: C-string literals without NUL — the root of its CRASH-ALL; 23 boundaries never run) and C10 (CROWN: dropped NULL→empty-list fallback in `lil_subst_to_list`, on an E1-**certified** cell) |
 | **complete: tulip × {c2rust, Laertes, C2SaferRust, CROWN}** | [`tulip/SUMMARY.md`](tulip/SUMMARY.md) — the first strict paired cells (c2rust and CROWN pass the transpiled smoke): validator reaches every function the suite reaches but **0.34 of its regions vs 0.93** — the option domain (`(int)options[0]` guards on a derived local) is the input-model limit, recorded; **two new defects**: C11 (Laertes: all-default `ti_indicators` table, severed init, on a certified cell — caught by the preflight, confirmed under the zero-page rule) and S15 (C2SaferRust: `ti_adx_start` casts the options pointer instead of loading it); faithful translations 0 confirmed |
-| **all five libraries complete** | [`SUMMARY_ALL.md`](SUMMARY_ALL.md) — 19 cells; new C8, C9, C10, C11, S15; re-found S3, S5, S10, S11, S14; CAND-5 held out |
+| **complete: qsort × {c2rust, Laertes, C2SaferRust, CROWN, SACTOR, PtrTrans}** | [`qsort/SUMMARY.md`](qsort/SUMMARY.md) — the whole tool row; four translations reach 100 % of functions and regions; S6 re-found (PtrTrans, 57 confirmed_divergence); C1 corroborated, not re-promoted |
+| **complete: quadtree × {c2rust, CROWN, PtrTrans}** | [`quadtree/SUMMARY.md`](quadtree/SUMMARY.md) — first library under the `nullable owned object` bridge (generator 0.8; PtrTrans 5 → 11 planned); nothing confirmed |
+| **complete: urlparser × {c2rust, C2SaferRust, CROWN, Laertes}** | [`urlparser/SUMMARY.md`](urlparser/SUMMARY.md) — reach ≈ 9 % of regions on every cell for one C-side reason (`get_part` heap overflow, E1 #27); **C12** new (Laertes `URL_SCHEMES` severed init) |
+| **complete: lodepng × {c2rust, CROWN}** | [`lodepng/SUMMARY.md`](lodepng/SUMMARY.md) — 171–178 of 235 boundaries fail at the signature (struct-invariant parameters); nothing confirmed; 12 classifier false positives re-classified |
+| **complete: optipng × {c2rust, C2SaferRust, Laertes}** | [`optipng/SUMMARY.md`](optipng/SUMMARY.md) — the largest artifact (552 boundaries, 52 units); C2SaferRust's 1 199 confirmed records fully triaged ([`optipng/c2saferrust/TRIAGE.md`](optipng/c2saferrust/TRIAGE.md)): **S19, S20, C15, S21, C16, C13, S16** new, S1/S2 re-found; Laertes **S17, S18** new, S4 re-found |
+| **all ten libraries complete** | [`SUMMARY_ALL.md`](SUMMARY_ALL.md) — 37 cells; RQ4 first found C8–C11, S15, C12, C13, S16–S21, C15, C16 (15); re-found S1–S6, S10, S11, S14, C7; manifest **36** |
+| denominator | every cell's universe is the translation's own instrumented rlib objects ([`../../docs/rq4_denominator_decision_2026-09-08.md`](../../docs/rq4_denominator_decision_2026-09-08.md), step 2 executed 2026-09-09: 11 rebuilt, all identical to the archived ones) |
 
 A first attempt at these four cells ran them **concurrently** and died in the build phase at
 `built 6/19` with `EDQUOT` — four simultaneous cargo target dirs exhausted the scratchpad's quota.

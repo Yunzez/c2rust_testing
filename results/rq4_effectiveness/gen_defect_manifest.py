@@ -482,7 +482,7 @@ DEFECTS = [
          obs_cell=None, obs=NOT_RUN, records="n/a (no OBS cell)",
          attr="no", align="no",
          provenance="exact-source",
-         provenance_note="Rust quoted from benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:47840-47869; C from the pair's source/libpng/pngwutil.c:251-289; probe scratchpad/cmf_probe (probe.c under UBSan, probe.rs with -C overflow-checks=on/off, nightly-2025-09-01), recorded in TRIAGE.md",
+         provenance_note="Rust quoted from benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:47840-47869; C from the pair's source/libpng/pngwutil.c:251-289; probe results/rq3_coverage/optipng/c2saferrust/probe_cmf/ (probe.c under UBSan, probe.rs with -C overflow-checks=on/off, nightly-2025-09-01), recorded in TRIAGE.md",
          evidence="results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample optimize_cmf 200/500 confirmed_termination at harness lib.rs:47856 (`attempt to subtract with overflow`, no-sanitizer replay panics, c_only normal); TRIAGE.md probe table"),
 ]
 

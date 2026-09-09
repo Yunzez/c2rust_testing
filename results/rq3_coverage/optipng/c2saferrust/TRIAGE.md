@@ -43,7 +43,7 @@ plus C13 and S16 promoted on 2026-09-09 from the same sample) and **1 non-defect
   64-bit `unsigned long`, and `even`/`odd` have 32 entries. Inputs with a 32-bit crc1 are the ones that
   compare the algorithms; they all diverge.
 
-**Deterministic probe for C16 (`scratchpad/cmf_probe`, 2026-09-09).** Both function bodies copied verbatim
+**Deterministic probe for C16 (`probe_cmf/` beside this file, 2026-09-09).** Both function bodies copied verbatim
 into standalone programs; input = the VALID zlib header `08 1d` (CM 8, CINFO 0, FCHECK: 0x081d % 31 = 0)
 with `data_size` 1 / 64 / 100 / 128 (≤ 128 = the CINFO-0 half window).
 

@@ -80,6 +80,10 @@ in RUN.md.
 - [ ] `run_md.py` (numbers; prose after `<!-- prose -->` survives regeneration) → `cell_table.py` →
       `archive_cell.py` (≈ 10–50 MB per cell: verdicts gzipped, stderr only on confirmed rows,
       confirmed inputs kept whole) → `SUMMARY.md` → README / INDEX → the user commits.
+- [ ] **After any manifest change**: `scripts/rq4/summary_all.py` has a hand-kept `NEW_IN_RQ4` set (the
+      ids first found by an RQ4 cell); an id missing from it is printed as "catalogued earlier; re-found"
+      (this misreported C11/S15/C12–C14/S16–S17 on 2026-09-09). Update the set, then rerun
+      `summary_all.py` and `paper_tables.py`. Also `cell_table.py` per changed library (cells.json).
 - [ ] A defect is promoted only on `confirmed_*`; one root cause on three boundaries is one defect
       (Laertes `incs`); a value divergence at an internal boundary can be the precise localisation of a
       catalogued crash (CROWN `SET_BH`). Re-read `results/rq4_effectiveness/gen_defect_manifest.py`'s

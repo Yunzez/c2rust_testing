@@ -85,7 +85,7 @@ harness so alignment needs no file.
 
 A review of the denominator reasoning made six points. Each was checked against the toolchain
 (`nightly-2025-09-01`, LLVM 21.1.0) and the archived cells, not against memory. Isolated rebuilds in
-`scratchpad/denom_check/` (qsort × Laertes, 83 functions / 463 regions, most of them never called).
+`scripts/rq4/denominator_rebuild/verify_link_dead_code_and_empty_profile*.sh` (qsort × Laertes, 83 functions / 463 regions, most of them never called).
 
 | claim | verdict | evidence |
 |---|---|---|
@@ -110,7 +110,7 @@ library, independent of any particular test or harness binary.* No reachable cei
 
 ## Step 2 executed (2026-09-09): eleven cells rebuilt, all agree, no number changes
 
-`scratchpad/denom_rebuild/` (build_all.sh, compare.py, compare.json). Each cell's rlib universe now sits in
+`scripts/rq4/denominator_rebuild/` (build_all.sh, compare.py, compare.json). Each cell's rlib universe now sits in
 `raw/denominator.json` with `raw/denominator_provenance.json`; the eight bin-route files are kept beside
 them as `denominator_binroute_superseded.json`.
 

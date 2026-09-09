@@ -385,4 +385,33 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 Total: confirmed_divergence 397, confirmed_termination 802, inconclusive 28, not_reproducible 94, ub_associated 1374, ub_associated_termination 47
 
 <!-- prose -->
+## 7. Prose (2026-09-09)
 
+**Deviations.** §4–§6 regenerated from the archive on 2026-09-09; the campaign, replay and sample
+are the original run of 2026-09-08 (the cell was re-run once with `--reuse-bins` after a first pass
+left an empty corpus; §3a records the run that produced the data).
+
+**What the cell says.** 552 matched, 121 planned (431 struct-invariant signatures, same classes as
+c2rust), **96 built** — this translation reshapes fewer of the duplicate-symbol units, so 25 rather
+than 74 fail to build — 79 exported, corpus 1 792; reach 144/564 functions (0.255),
+9 815/37 297 regions (0.263). Fifteen boundaries were Rust-side crash-all in preflight with C clean
+(`check_*_option` ×4, `err_option_arg`, `opng_init_iterations`, `opng_iterate`,
+`opng_optimize_impl`, `panic`, `opng_print_fsize_*`, `opng_free`, plus the five contract-terminators
+shared with c2rust): pre-accepted so the campaign could run, each adjudicated individually below.
+
+The sample confirms **802 `confirmed_termination` + 397 `confirmed_divergence` on 11 boundaries**.
+Read at root-cause level (N clusters ≠ N defects):
+* `opng_free` 3/3 termination — `free(ptr)` became `drop(Box::from_raw(ptr))`; free(NULL) is a
+  no-op in C. **Manifest C13** (evidence covers the NULL contract only).
+* `opng_strcasecmp` 55/55 divergence — byte-wise `tolower` comparison replaced by a lossy UTF-8
+  decode; any byte ≥ 0x80 changes the result. **Manifest S16**.
+* `crc32` 26/26 divergence — `crc32` hands its whole buffer to `crc32_z`, whose `is_null → is_empty`
+  rewrite is catalogued **S1: re-found**, not a new entry.
+* `compress` (201 t + 1 d), `compress2` (197 t + 99 d), `uncompress` (83 t + 169 d),
+  `optimize_cmf` (200 t), `bmp_memset_bytes` (117 t), `adler32` (1 + 1), `crc32_combine` and
+  `crc32_combine64` (23 d each, beside 201 C-side stack overflows adjudicated `ub_associated`):
+  **confirmed but NOT root-caused**, so not in the manifest. They are candidates for triage; the
+  zlib ones are likely few root causes (the translation is E3's CRASH-ALL trio member).
+
+**Not established.** The number of distinct defects behind the un-triaged 1 100 rows; whether the
+allocator-mismatch half of `opng_free` (Rust allocator releasing malloc memory) is observable.

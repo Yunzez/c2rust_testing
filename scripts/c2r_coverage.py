@@ -51,6 +51,20 @@ def is_lib(fname):
             and "/.cargo/" not in fname and "/registry/" not in fname
             and "/rustlib/" not in fname and "/rustc" not in fname)
 
+# --path-map OLD=NEW: the llvm-cov export records the ABSOLUTE path of each harness's src/lib.rs at
+# the time the campaign ran. When that directory is gone and the harnesses were regenerated
+# elsewhere (deterministic generator, same version), the recorded prefix is rewritten to the new
+# one. Recorded explicitly, never through a symlink at the old path.
+PATH_MAP: list[tuple[str, str]] = []
+
+
+def _relocate(path):
+    for old, new in PATH_MAP:
+        if path.startswith(old):
+            return new + path[len(old):]
+    return path
+
+
 def align_to_canonical(lib_path, canon_lines):
     """1-based line map from a harness's own src/lib.rs to the canonical flattened file.
 
@@ -61,7 +75,7 @@ def align_to_canonical(lib_path, canon_lines):
     Equal blocks map straight through; a same-size `replace` block (the rewritten signature line)
     maps line-for-line, its columns having moved -- regions on it fall outside the universe and
     are reported, never added."""
-    lines = pathlib.Path(lib_path).read_text().split("\n")
+    lines = pathlib.Path(_relocate(lib_path)).read_text().split("\n")
     sm = difflib.SequenceMatcher(None, lines, canon_lines, autojunk=False)
     m = {}
     for tag, i1, i2, j1, j2 in sm.get_opcodes():
@@ -191,6 +205,7 @@ def main(linemap, tests_json, ours_dir, out_dir, corpus_root=None, tests_availab
                             "regions_covered": len(cr), **gate_stats(jp, jp.stem, n)})
 
     res = {"scope_files": scored, "harnesses_unioned": len(per_harness),
+           "path_map": [{"recorded_prefix": o, "relocated_to": n} for o, n in PATH_MAP] or None,
            "tests_side": "measured" if tests_available else "TEST-UNAVAILABLE (denominator only)",
            "per_harness": per_harness,
            "ours_identities_outside_universe": {"functions": dropped_f, "regions": dropped_r,
@@ -240,6 +255,12 @@ if __name__ == "__main__":
     g.add_argument("--denominator", help="export of a link-dead-code `denom` binary; the universe "
                                          "only, for a cell whose tests side is unavailable")
     ap.add_argument("--corpus-root", help="to report inputs replayed vs reached-Rust per harness")
+    ap.add_argument("--path-map", action="append", default=[], metavar="OLD=NEW",
+                    help="rewrite the recorded harness src/lib.rs path prefix OLD to NEW (recovery of "
+                         "a cell whose harness directory is gone; the harnesses are regenerated at NEW)")
     a = ap.parse_args()
+    for m in a.path_map:
+        old, new = m.split("=", 1)
+        PATH_MAP.append((old.rstrip("/"), new.rstrip("/")))
     main(a.linemap, a.tests or a.denominator, a.ours, a.out, a.corpus_root,
          tests_available=bool(a.tests))

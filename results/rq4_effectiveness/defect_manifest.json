@@ -485,7 +485,7 @@
    "align": "no",
    "provenance": "base-c2rust-as-reference",
    "provenance_note": "catalog appendix: original zlib .c not archived, base c2rust quoted as reference. OBS cell oracle = zlib 1.2.11 crc32.c re-fetched (vendored version string '1.2.11-optipng') -> version-matched reconstructed for the OBS cell",
-   "evidence": "results/rq4_effectiveness/bugs/crc32_c2saferrust/; results/rq4_effectiveness/translation_matrix.md fn 9; results/rq4_effectiveness/bugs_detailed.md:322",
+   "evidence": "results/rq4_effectiveness/bugs/crc32_c2saferrust/; results/rq4_effectiveness/translation_matrix.md fn 9; results/rq4_effectiveness/bugs_detailed.md:322; RQ4 RE-FIND (plan pipeline, 3600 s, seed 42, 2026-09-08): results/rq3_coverage/optipng/c2saferrust/ confirm_sample crc32 26/26 confirmed_divergence (crc32 passes its whole buffer to crc32_z; return value), C clean under ASan+UBSan",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
   {
@@ -560,7 +560,7 @@
    "align": "no",
    "provenance": "base-c2rust-as-reference",
    "provenance_note": "catalog appendix; archive oracle_zlib.c uses the canonical SYSTEM zlib (fn 8), not the vendored source",
-   "evidence": "results/rq4_effectiveness/bugs/optipng_laertes/; results/rq4_effectiveness/translation_matrix.md fn 8; results/rq4_effectiveness/bugs_detailed.md:426",
+   "evidence": "results/rq4_effectiveness/bugs/optipng_laertes/; results/rq4_effectiveness/translation_matrix.md fn 8; results/rq4_effectiveness/bugs_detailed.md:426; RQ4 RE-FIND (plan pipeline, 3600 s, seed 42, rerun 2026-09-09): results/rq3_coverage/optipng/laertes/ confirm_sample crc32 23/23 and crc32_z 23/23 confirmed_divergence; compress 13/13 and compress2 15/16 confirmed_divergence are the same severed-init law on deflate's tables (configuration_table, _length_code, _dist_code, base_length), recorded here, not as further entries",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
   {
@@ -610,7 +610,7 @@
    "align": "yes - results/rq1_matching/align_qsort_ptrtrans/result.json: name-eq 2/3 correspondence, 0/1 defective contract boundary, 1/1 unique defect (via partition 30,480/50,000); tool map / matcher / manual 3/3, 1/1, 1/1; 0 false divergences",
    "provenance": "exact-source",
    "provenance_note": "results/rq4_effectiveness/bugs/qsort_ptrtrans/original_qsort.c archived; used by both OBS and ALIGN pilots",
-   "evidence": "results/rq4_effectiveness/bugs/qsort_ptrtrans/; results/rq4_effectiveness/translation_matrix.md fn 29; results/rq4_effectiveness/bugs_detailed.md:533",
+   "evidence": "results/rq4_effectiveness/bugs/qsort_ptrtrans/; results/rq4_effectiveness/translation_matrix.md fn 29; results/rq4_effectiveness/bugs_detailed.md:533; RQ4 RE-FIND (plan pipeline, 3600 s, seed 42, 2026-09-07): results/rq3_coverage/qsort/ptrtrans/ confirm_sample partition 31/31 + quickSort 26/26 confirmed_divergence, C clean under ASan+UBSan; qsort/SUMMARY.md §2",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
   {
@@ -812,6 +812,131 @@
    "provenance_note": "C2SaferRust is a Rust-to-Rust rewriter and its INPUT is in the repo: laertes_benchmarks/bzip2/blocksort.rs:884 is the base c2rust translation and implements the median (a line-for-line transliteration of the C, temp swap included); laertes_benchmarks/bzip2_WIP/blocksort.rs:822 is the same tool's output and returns the minimum. The defect is therefore pinned to the C2SaferRust rewrite step regardless of whether the original .c was byte-identical (bzip2_WIP ships no .c). C for context: tools/frameworks/crown/c-code/bzip2/blocksort.c:583 (bzip2 1.0.8). Hashes of all three in the archive raw/source_hashes.txt",
    "evidence": "RQ4 RE-FIND (plan pipeline, 2026-09-04): results/rq3_coverage/bzip2/c2saferrust/ — 3 confirmed_divergence on the mmed3 boundary in the replay of the coverage corpus; bzip2/SUMMARY.md §3; results/rq4_effectiveness/bugs/bzip2_c2saferrust_mmed3/ (exhaustive census, both bodies, the single call site, the generated harness and a saved divergence input). DOWNSTREAM SCOPE: the established effect is pivot selection and potential performance degradation only; an effect on bzip2 compressed output is NOT claimed and was not demonstrated either way (the artifact aborts earlier in sendMTFValues, CAND-3)",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "C12",
+   "library": "urlparser",
+   "tool": "Laertes",
+   "kind": "crash",
+   "root_cause": "`char *URL_SCHEMES[]` (url.h:54, 177 scheme strings) is emitted as 177 NULL pointers with its initializer moved into `laertes_init_URL_SCHEMES()` (urlparser_laertes.rs:99-100), which nothing calls (0 call sites); `url_is_protocol` (rs:449-462) then runs `strcmp(URL_SCHEMES[i], str)` on NULL",
+   "family": "initialization loss or corruption",
+   "symptom": "every call of url_is_protocol dereferences the zero page: SIGSEGV with and without a sanitizer (3/3 confirmed_termination); url_parse, url_get_protocol, url_get_auth, url_data_inspect and url_free fail identically through it (3/3 each) and are the same root cause, not further entries",
+   "boundary": "function (url_is_protocol) / crash; downstream url_parse -> url_is_protocol",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (no OBS cell)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/urlparser_laertes/translated/urlparser_laertes.rs:99-100 (the NULL table + severed init) and :449-462 (url_is_protocol); C from the pair's source/url.h:54 and :326-336 (header-only library: the E1 severed-init scanner had filed url.h as a fixture, a false negative)",
+   "evidence": "results/rq3_coverage/urlparser/laertes/ (RQ4 cell, 3600 s, seed 42, rerun 2026-09-09): confirm_sample url_is_protocol 3/3 confirmed_termination (c_only normal; rust_no_sanitizer SIGSEGV on the zero page), url_parse / url_get_protocol / url_get_auth / url_data_inspect / url_free 3/3 each; benchmark/pairs/rq4/urlparser_laertes/preflight_accept.txt (Rust crash-all on the probe, C clean)",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "C13",
+   "library": "optipng",
+   "tool": "C2SaferRust",
+   "kind": "crash",
+   "root_cause": "`free(ptr)` in opng_free (optim.c:390-396) rewritten as `drop(Box::from_raw(ptr as *mut _))` (optipng_c2saferrust.rs:54539-54546): C's free(NULL) is a defined no-op, Box::from_raw(NULL) is not (the debug build traps). Read from the source but NOT covered by the evidence: a non-NULL pointer would be released by Rust's allocator although libpng obtained it from malloc",
+   "family": "null/empty conflation",
+   "symptom": "opng_free(NULL) panics where C returns (3/3 confirmed_termination, rust_no_sanitizer panic, c_only normal). The evidence covers the NULL contract only",
+   "boundary": "function (opng_free) / crash",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (no OBS cell)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:54539-54546; C from the pair's source/optipng/optim.c:390-396",
+   "evidence": "results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample opng_free 3/3 confirmed_termination, one cluster; preflight_accept.txt lists opng_free as Rust crash-all with C clean",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "S16",
+   "library": "optipng",
+   "tool": "C2SaferRust",
+   "kind": "semantic",
+   "root_cause": "opng_strcasecmp's byte-wise `tolower(*str1++) - tolower(*str2++)` loop (optipng.c:189-201) is rewritten over `CStr::to_string_lossy()` + `chars()` + `to_ascii_lowercase()` (optipng_c2saferrust.rs:57252-57275): every non-UTF-8 byte becomes U+FFFD and every multi-byte sequence compares as one code point",
+   "family": "byte-string domain narrowing",
+   "symptom": "wrong return value (sign and magnitude) on any pair of strings containing a byte >= 0x80; 55/55 sampled candidates confirmed_divergence with C clean under ASan+UBSan; no crash",
+   "boundary": "function (opng_strcasecmp return value)",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (no OBS cell)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:57252-57275; C from the pair's source/optipng/optipng.c:189-201. Same mechanism as the four C2SaferRust byte-string restrictions and cJSON S9",
+   "evidence": "results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample opng_strcasecmp 55/55 confirmed_divergence (ladder phase 4, return value), one cluster; divergences/opng_strcasecmp/",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "S17",
+   "library": "optipng",
+   "tool": "Laertes",
+   "kind": "semantic",
+   "root_cause": "`static const char bak_extname[] = \".bak\"` in opng_path_make_backup (ioutil.c:410) is emitted as five zero bytes with the initializer moved into `laertes_init_bak_extname()` (optipng_laertes.rs:60151-60156), never called",
+   "family": "initialization loss or corruption",
+   "symptom": "`strcat(buffer, bak_extname)` appends the empty string: the backup path returned equals the input path, no `.bak` (19/19 confirmed_divergence on the output buffer; return value unchanged; no crash)",
+   "boundary": "output buffer (buffer) - return value unchanged",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (no OBS cell)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_laertes/translated/optipng_laertes.rs:60151-60162; C from the pair's source/optipng/ioutil.c:405-418. Same law as S3/S4 (277 laertes_init_* defined, 0 called across the ten crates; this crate 178/0)",
+   "evidence": "results/rq3_coverage/optipng/laertes/ (RQ4 cell, 3600 s, seed 42, rerun 2026-09-09): confirm_sample opng_path_make_backup 19/19 confirmed_divergence (ladder phase 4, output buffer), one cluster",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "C14",
+   "library": "optipng (zlib)",
+   "tool": "Laertes",
+   "kind": "crash",
+   "root_cause": "inflate's `static const unsigned short order[19]` (inflate.c:642, the code-length permutation) is emitted as 19 zeros with `laertes_init_order()` (optipng_laertes.rs:88687-88688) never called. In the TABLE state `state->lens[order[state->have++]] = ...` (inflate.c:941/945 -> rs:89122) writes every code-length code into lens[0] and leaves lens[1..18] unwritten, so inflate_table's `count[lens[sym]]++` (inftrees.c:110 -> rs:90608) indexes a 16-entry array with whatever the allocation held",
+   "family": "initialization loss or corruption",
+   "symptom": "`index out of bounds: the len is 16 but the index is 48830` panic inside inflate_table on any stream with a dynamic-Huffman block; C returns normally (200/204 confirmed_termination, 4 confirmed_divergence). Backtrace uncompress -> uncompress2 -> inflate -> inflate_table",
+   "boundary": "function (uncompress) / crash",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (no OBS cell)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_laertes/translated/optipng_laertes.rs:88687-88688 (order), :89122 (lens fill), :90608 (count index, inflate_table def at :90403); C from the pair's source/zlib/inflate.c:642, :941, :945 and zlib/inftrees.c:110. The vendored zlib is the one the translation consumed (pair PROVENANCE.json)",
+   "evidence": "results/rq3_coverage/optipng/laertes/ (RQ4 cell, 3600 s, seed 42, rerun 2026-09-09): confirm_sample uncompress 204/504 = confirmed_termination 200 + confirmed_divergence 4 (c_only normal, rust_no_sanitizer panic); RUST_BACKTRACE replay of candidates_sample/uncompress/crash-0101020c... gives inflate_table <- inflate <- uncompress2 <- uncompress",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   }
  ],
  "candidates": [
@@ -898,9 +1023,9 @@
  ],
  "summary": {
   "counting_units": "Two units, never mixed (U1): DEFECTS (root-cause level) and DIVERGENT/VALID RECORDS (per-cell strength). Record counts are per OBS cell and are NOT summable across cells or across defects sharing a cell (C6+S13 share tulip_c2saferrust; S7+S8+S9 share cjson_ptrtrans).",
-  "defects_total": 26,
-  "crash": 11,
-  "semantic": 15,
+  "defects_total": 31,
+  "crash": 14,
+  "semantic": 17,
   "defects_per_family": {
    "control-flow preservation failure": {
     "count": 3,
@@ -911,14 +1036,15 @@
     ]
    },
    "byte-string domain narrowing": {
-    "count": 6,
+    "count": 7,
     "ids": [
      "C2",
      "C3",
      "C4",
      "C5",
      "C9",
-     "S9"
+     "S9",
+     "S16"
     ]
    },
    "ownership-state corruption": {
@@ -930,22 +1056,26 @@
     ]
    },
    "initialization loss or corruption": {
-    "count": 5,
+    "count": 8,
     "ids": [
      "C8",
      "C11",
      "S3",
      "S4",
-     "S5"
+     "S5",
+     "C12",
+     "S17",
+     "C14"
     ]
    },
    "null/empty conflation": {
-    "count": 4,
+    "count": 5,
     "ids": [
      "C10",
      "S1",
      "S2",
-     "S12"
+     "S12",
+     "C13"
     ]
    },
    "semantic computation substitution": {
@@ -988,7 +1118,7 @@
    ]
   },
   "obs_not_run_defects": {
-   "count": 17,
+   "count": 22,
    "ids": [
     "C2",
     "C3",
@@ -1006,7 +1136,12 @@
     "S10",
     "S11",
     "S12",
-    "S14"
+    "S14",
+    "C12",
+    "C13",
+    "S16",
+    "S17",
+    "C14"
    ]
   },
   "obs_run_crash_defects": [
@@ -1165,12 +1300,12 @@
    }
   },
   "per_channel_note": "Booleans, single seed 42, one run per cell (pilot). Crash defects (C1, C6) are recovered by every channel as Rust-failure (O-R sees NO-RETURN). O-P(silent)=yes only for the two crash defects and for S13 (CLI boundary, exit status IS the externalised state) - U3 wording: process-output sensitivity is determined by the driver's externalization policy; never 'O-P-silent is universally zero'.",
-  "family_note": "Families record one primary root-cause mechanism per defect, so the counts sum to 26. Cross-cutting symptoms may be discussed separately but do not create additional memberships. The cJSON non-UTF-8 rejection (S9) is grouped with the four C2SaferRust byte-string restrictions because all five narrow a C byte-string domain to valid UTF-8.",
-  "attr_coverage": "No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: results/ablations/attribution/urlparser/result.json; lil: results/ablations/attribution/lil/result.json) are UB-exclusion / certificate cells with 0 confirmed translation divergences (CONTRACT P2/P3). ATTR coverage of the confirmed defects = 0/26.",
-  "align_coverage": "ALIGN pilot exists for one defect (S6, results/rq1_matching/align_qsort_ptrtrans/). ALIGN coverage of the confirmed defects = 1/26. No buildable wrong-map witness exists (P5).",
+  "family_note": "Families record one primary root-cause mechanism per defect, so the counts sum to 31. Cross-cutting symptoms may be discussed separately but do not create additional memberships. The cJSON non-UTF-8 rejection (S9) is grouped with the four C2SaferRust byte-string restrictions because all five narrow a C byte-string domain to valid UTF-8.",
+  "attr_coverage": "No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: results/ablations/attribution/urlparser/result.json; lil: results/ablations/attribution/lil/result.json) are UB-exclusion / certificate cells with 0 confirmed translation divergences (CONTRACT P2/P3). ATTR coverage of the confirmed defects = 0/31.",
+  "align_coverage": "ALIGN pilot exists for one defect (S6, results/rq1_matching/align_qsort_ptrtrans/). ALIGN coverage of the confirmed defects = 1/31. No buildable wrong-map witness exists (P5).",
   "provenance_counts": {
    "exact-source": {
-    "count": 12,
+    "count": 17,
     "ids": [
      "C1",
      "C2",
@@ -1183,7 +1318,12 @@
      "S5",
      "S6",
      "S10",
-     "S11"
+     "S11",
+     "C12",
+     "C13",
+     "S16",
+     "S17",
+     "C14"
     ]
    },
    "unknown": {

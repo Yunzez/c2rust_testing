@@ -1,0 +1,696 @@
+{
+ "mode": "confirm_sample",
+ "sample_per_boundary": 200,
+ "boundaries": [
+  {
+   "boundary": "Adam7_deinterlace",
+   "candidates_total": 86,
+   "adjudicated": 86,
+   "tally": {
+    "ub_associated": 85,
+    "inconclusive": 1
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_Adam7_deinterlace lodepng.c:4287",
+     "artifacts": 80,
+     "example": "crash-01f9b635f93f674e689a9a23e35674c153b50e63"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_readBitFromReversedStream lodepng.c:2436",
+     "artifacts": 5,
+     "example": "crash-1ef28bd08bdb916e45a2403a1fdb631fd92711b6"
+    },
+    {
+     "verdict": "inconclusive",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "timeout-641893190e2b7b87639df569a07149eccdffbcc4"
+    }
+   ],
+   "seconds": 84
+  },
+  {
+   "boundary": "Adam7_interlace",
+   "candidates_total": 250,
+   "adjudicated": 206,
+   "tally": {
+    "ub_associated": 201,
+    "inconclusive": 5
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_Adam7_interlace lodepng.c:5802",
+     "artifacts": 153,
+     "example": "crash-0050d04bba06f4a2ace26f07539e9419dd4c6e27"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_readBitFromReversedStream lodepng.c:2436",
+     "artifacts": 24,
+     "example": "crash-1447c5e5e4c54f7ef467a3b1248a60aa5515d113"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_Adam7_interlace lodepng.c:5802",
+     "artifacts": 20,
+     "example": "crash-08c3ac4a0eeae6ca7c1aa885fa1114b83354bc07"
+    },
+    {
+     "verdict": "inconclusive",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 5,
+     "example": "timeout-2b4efd1413b8406965af39e6cdf5eccab8a90947"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-use-after-free",
+     "frame": "#0 c_Adam7_interlace lodepng.c:5802",
+     "artifacts": 2,
+     "example": "crash-1d37fa558c10b2953bc029ac917651d299d31661"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_readBitFromReversedStream lodepng.c:2436",
+     "artifacts": 2,
+     "example": "crash-4b1dfd5d0eea4aaf098d17dba58252b5ea328e73"
+    }
+   ],
+   "seconds": 258
+  },
+  {
+   "boundary": "addColorBits",
+   "candidates_total": 18,
+   "adjudicated": 18,
+   "tally": {
+    "ub_associated_termination": 18
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 14,
+     "example": "crash-0107a85e73b3843df357f3b5dd60fc1525453e03"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_addColorBits ??:?",
+     "artifacts": 4,
+     "example": "crash-0f6fb5b0f35a73c7aca66e608745f586d9ae61d3"
+    }
+   ],
+   "seconds": 35
+  },
+  {
+   "boundary": "addPaddingBits",
+   "candidates_total": 501,
+   "adjudicated": 201,
+   "tally": {
+    "ub_associated": 201
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_readBitFromReversedStream lodepng.c:2436",
+     "artifacts": 139,
+     "example": "crash-006cf4d7b45031f7f99f547bc946708e2d6636e6"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_setBitOfReversedStream lodepng.c:2454",
+     "artifacts": 62,
+     "example": "crash-011ac5828490faa02998cd4fdc1e09adccf4cfdf"
+    }
+   ],
+   "seconds": 66
+  },
+  {
+   "boundary": "alloc_string_sized",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_lodepng_memcpy lodepng.c:123",
+     "artifacts": 3,
+     "example": "crash-adc83b19e793491b1c6ea0fd8b46cd9f32e592fc"
+    }
+   ],
+   "seconds": 33
+  },
+  {
+   "boundary": "countZeros",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_countZeros lodepng.c:1563",
+     "artifacts": 2,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_countZeros lodepng.c:1563",
+     "artifacts": 1,
+     "example": "crash-adc83b19e793491b1c6ea0fd8b46cd9f32e592fc"
+    }
+   ],
+   "seconds": 33
+  },
+  {
+   "boundary": "filterScanline",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 200
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_filterScanline lodepng.c:5502",
+     "artifacts": 50,
+     "example": "crash-00266747d2682940f7ce3c908167a8ca6f6c0753"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_filterScanline lodepng.c:5505",
+     "artifacts": 46,
+     "example": "crash-0012dae1bcb52e31f4b45565ebc6f89b88973c70"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_filterScanline lodepng.c:5527",
+     "artifacts": 35,
+     "example": "crash-000a549508d41a10a607d7f86fe4e8e58b7fe025"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_filterScanline lodepng.c:5517",
+     "artifacts": 24,
+     "example": "crash-001570e1f4570a395ee8f94982fda7f0da5bd770"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_filterScanline lodepng.c:5529",
+     "artifacts": 16,
+     "example": "crash-003da0beaf58366128fbba7def3b607859e28e36"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_filterScanline lodepng.c:5506",
+     "artifacts": 14,
+     "example": "crash-005a2f220e6a640e11792de8bfa7aa164ba7d8fa"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_filterScanline lodepng.c:5510",
+     "artifacts": 10,
+     "example": "crash-0016c28d24a0f173d872ccade0b070f91e18b19c"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_filterScanline lodepng.c:5518",
+     "artifacts": 5,
+     "example": "crash-00b2ad47bab202df335238aaa580276dcb2a2931"
+    }
+   ],
+   "seconds": 59
+  },
+  {
+   "boundary": "lodepng_chunk_check_crc",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_lodepng_read32bitInt lodepng.c:328",
+     "artifacts": 2,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_lodepng_read32bitInt lodepng.c:328",
+     "artifacts": 1,
+     "example": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    }
+   ],
+   "seconds": 33
+  },
+  {
+   "boundary": "lodepng_chunk_find",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_lodepng_chunk_next lodepng.c:2516",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 33
+  },
+  {
+   "boundary": "lodepng_chunk_find_const",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 200
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_lodepng_chunk_next_const lodepng.c:2531",
+     "artifacts": 124,
+     "example": "crash-000597f66f17aba06656160af215f2e045b44d40"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_lodepng_chunk_next_const lodepng.c:2531",
+     "artifacts": 58,
+     "example": "crash-0006b8291e16d7acbe22ee3020e0d742c95a41d2"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_lodepng_read32bitInt lodepng.c:329",
+     "artifacts": 11,
+     "example": "crash-0002b40bdcecafa001f58abcee537114e706150d"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_lodepng_chunk_type_equals lodepng.c:2475",
+     "artifacts": 6,
+     "example": "crash-00c30ae7b90ab387512398988352c4794032534b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-use-after-free",
+     "frame": "#0 c_lodepng_chunk_next_const lodepng.c:2531",
+     "artifacts": 1,
+     "example": "crash-01cbe1952d923a3b3365cabb40fd860c5fbd5e5b"
+    }
+   ],
+   "seconds": 57
+  },
+  {
+   "boundary": "lodepng_chunk_generate_crc",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_lodepng_crc32 lodepng.c:2418",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 33
+  },
+  {
+   "boundary": "lodepng_huffman_code_lengths",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated_termination": 200
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 200,
+     "example": "crash-0033baec14e50c1017f96e0c16869ff478a50d54"
+    }
+   ],
+   "seconds": 57
+  },
+  {
+   "boundary": "lodepng_malloc",
+   "candidates_total": 9,
+   "adjudicated": 9,
+   "tally": {
+    "ub_associated": 9
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: out",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 7,
+     "example": "oom-082895148bdae30dd972aee6717da0718351409a"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: requested",
+     "frame": "#0 ___interceptor_malloc asan_malloc_linux.cpp:67",
+     "artifacts": 2,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 34
+  },
+  {
+   "boundary": "lodepng_memcpy",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated_termination": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_lodepng_memcpy ??:?",
+     "artifacts": 3,
+     "example": "crash-adc83b19e793491b1c6ea0fd8b46cd9f32e592fc"
+    }
+   ],
+   "seconds": 33
+  },
+  {
+   "boundary": "lodepng_memset",
+   "candidates_total": 26,
+   "adjudicated": 26,
+   "tally": {
+    "ub_associated_termination": 26
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_lodepng_memset ??:?",
+     "artifacts": 26,
+     "example": "crash-0321f0c0c2975b12744928bcaee9f20880cb46d3"
+    }
+   ],
+   "seconds": 35
+  },
+  {
+   "boundary": "lodepng_realloc",
+   "candidates_total": 9,
+   "adjudicated": 9,
+   "tally": {
+    "ub_associated": 9
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: out",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 7,
+     "example": "oom-082895148bdae30dd972aee6717da0718351409a"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: requested",
+     "frame": "#0 __interceptor_realloc asan_malloc_linux.cpp:81",
+     "artifacts": 2,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 34
+  },
+  {
+   "boundary": "removePaddingBits",
+   "candidates_total": 501,
+   "adjudicated": 201,
+   "tally": {
+    "ub_associated": 201
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_readBitFromReversedStream lodepng.c:2436",
+     "artifacts": 145,
+     "example": "crash-006cf4d7b45031f7f99f547bc946708e2d6636e6"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_readBitFromReversedStream lodepng.c:2436",
+     "artifacts": 55,
+     "example": "crash-01491bcb2021d98d3a5957c2c3f746a865fc2c3f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-use-after-free",
+     "frame": "#0 c_readBitFromReversedStream lodepng.c:2436",
+     "artifacts": 1,
+     "example": "crash-46152eff04db9b7c55ee9ca94ca8bfd812048324"
+    }
+   ],
+   "seconds": 58
+  },
+  {
+   "boundary": "reverseBits",
+   "candidates_total": 99,
+   "adjudicated": 99,
+   "tally": {
+    "ub_associated_termination": 99
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 99,
+     "example": "crash-0238e5b75714a4b49f5dd6a5f4c8acbbe3ea9ae5"
+    }
+   ],
+   "seconds": 44
+  },
+  {
+   "boundary": "searchCodeIndex",
+   "candidates_total": 1,
+   "adjudicated": 1,
+   "tally": {
+    "inconclusive": 1
+   },
+   "clusters": [
+    {
+     "verdict": "inconclusive",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "timeout-da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    }
+   ],
+   "seconds": 112
+  },
+  {
+   "boundary": "uivector_cleanup",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated_termination": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "SEGV on unknown address",
+     "frame": "#0 c_uivector_cleanup ??:?",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 34
+  },
+  {
+   "boundary": "unfilter",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 200
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4113",
+     "artifacts": 119,
+     "example": "crash-000662df7bca2bc7166e11133e16a8be08f8c1e8"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4117",
+     "artifacts": 35,
+     "example": "crash-0014201c892d11eb80202860b9f231a5162c7486"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4118",
+     "artifacts": 14,
+     "example": "crash-004baef1f9ddfc867244808ddbd278b017956892"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4125",
+     "artifacts": 7,
+     "example": "crash-008abd97d97f90420bbb2292c6f552e629ce14d3"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilter lodepng.c:4249",
+     "artifacts": 7,
+     "example": "crash-0177a183b9f8c7ff76c8386797cc4dcb6bbe29be"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4165",
+     "artifacts": 5,
+     "example": "crash-000436638edc4ea0a1aa265d30a4f1a534510546"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4216",
+     "artifacts": 5,
+     "example": "crash-003193f4ca4074d3f025a98e614dc1862d218ee4"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4166",
+     "artifacts": 3,
+     "example": "crash-0008f79d9c5d5bcd6b7a7b4214bd063376ca9aeb"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4220",
+     "artifacts": 3,
+     "example": "crash-00d980fdfd616d85ce5fd058d3e67d11ad632893"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4123",
+     "artifacts": 1,
+     "example": "crash-0082339899bc08e00a6079da85201117428004f4"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4173",
+     "artifacts": 1,
+     "example": "crash-009bea542393ac274bf36bad9bd867644cbe2531"
+    }
+   ],
+   "seconds": 59
+  },
+  {
+   "boundary": "unfilterScanline",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 200
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4113",
+     "artifacts": 133,
+     "example": "crash-000bd61359a87481c7a8063f1ee5d9bc4628676a"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4123",
+     "artifacts": 28,
+     "example": "crash-000d3c1283fad9e81ff6eb9cf0aad0a7a59d201f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4117",
+     "artifacts": 15,
+     "example": "crash-00817dca34a8047a25629c1b001796ec7e418f2f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4173",
+     "artifacts": 12,
+     "example": "crash-006b093c7fa6a4dc8ca24fc965a93f6c813bf68a"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_unfilterScanline lodepng.c:4131",
+     "artifacts": 12,
+     "example": "crash-00d85d776b18f92b28f2f35443d3187595ea66eb"
+    }
+   ],
+   "seconds": 58
+  }
+ ],
+ "total": {
+  "ub_associated": 1521,
+  "ub_associated_termination": 349,
+  "inconclusive": 7
+ },
+ "reclassified_2026_09_09": {
+  "rows": {
+   "Adam7_deinterlace": 1,
+   "Adam7_interlace": 5
+  },
+  "reason": "classifier inversion: C-alone timeout had been labelled confirmed_termination; now inconclusive (scripts/c2r_campaign.py classify)"
+ }
+}

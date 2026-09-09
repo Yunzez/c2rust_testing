@@ -203,4 +203,47 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | timeout | 6 |
 | ub-gated | 3 |
 
+## 6. Confirmation (confirm_sample, first 200 artifacts per boundary — a labelled SAMPLE, not the cell's adjudication)
+
+| boundary | adjudicated / total | verdicts | clusters |
+|---|---:|---|---:|
+| `Adam7_deinterlace` | 86 / 86 | inconclusive 1, ub_associated 85 | 3 |
+| `Adam7_interlace` | 206 / 250 | inconclusive 5, ub_associated 201 | 6 |
+| `addColorBits` | 18 / 18 | ub_associated_termination 18 | 2 |
+| `addPaddingBits` | 201 / 501 | ub_associated 201 | 2 |
+| `alloc_string_sized` | 3 / 3 | ub_associated 3 | 1 |
+| `countZeros` | 3 / 3 | ub_associated 3 | 2 |
+| `filterScanline` | 200 / 500 | ub_associated 200 | 8 |
+| `lodepng_chunk_check_crc` | 3 / 3 | ub_associated 3 | 2 |
+| `lodepng_chunk_find` | 3 / 3 | ub_associated 3 | 1 |
+| `lodepng_chunk_find_const` | 200 / 500 | ub_associated 200 | 5 |
+| `lodepng_chunk_generate_crc` | 3 / 3 | ub_associated 3 | 1 |
+| `lodepng_huffman_code_lengths` | 200 / 500 | ub_associated_termination 200 | 1 |
+| `lodepng_malloc` | 9 / 9 | ub_associated 9 | 2 |
+| `lodepng_memcpy` | 3 / 3 | ub_associated_termination 3 | 1 |
+| `lodepng_memset` | 26 / 26 | ub_associated_termination 26 | 1 |
+| `lodepng_realloc` | 9 / 9 | ub_associated 9 | 2 |
+| `removePaddingBits` | 201 / 501 | ub_associated 201 | 3 |
+| `reverseBits` | 99 / 99 | ub_associated_termination 99 | 1 |
+| `searchCodeIndex` | 1 / 1 | inconclusive 1 | 1 |
+| `uivector_cleanup` | 3 / 3 | ub_associated_termination 3 | 1 |
+| `unfilter` | 200 / 500 | ub_associated 200 | 11 |
+| `unfilterScanline` | 200 / 500 | ub_associated 200 | 5 |
+
+Total: inconclusive 7, ub_associated 1521, ub_associated_termination 349
+
 <!-- prose -->
+## 7. Prose (2026-09-09)
+
+**Deviations.** (1) Confirmation recovered on 2026-09-09 from the archived candidate inputs and the
+kept cell directory (the original post skipped it: `--dest` appended to the confirm line). (2) Six
+rows (`Adam7_interlace` 5, `Adam7_deinterlace` 1) re-classified offline from `confirmed_termination`
+to `inconclusive` — C alone timed out, the translation returned (classifier inversion, fixed
+2026-09-09). (3) §4–§6 regenerated from the archive.
+
+**What the cell says.** 235 matched, 57 planned (178 struct-invariant signatures, same classes as
+c2rust), 54 built, 47 exported, corpus 880; reach 54/257 functions (0.210), 1 449/14 332 regions
+(0.101). CROWN's universe is larger than c2rust's by the helpers its ownership lift introduces (as
+for tulip × Laertes: compare fractions with care). Sample: 1 521 `ub_associated`,
+349 `ub_associated_termination`, 7 `inconclusive`: **nothing confirmed**. The same four C-side
+crash-alls are pre-accepted, and the same `(begin, end)` range-pair limitation applies.

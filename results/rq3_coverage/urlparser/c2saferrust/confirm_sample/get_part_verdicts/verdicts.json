@@ -1,0 +1,228 @@
+[
+ {
+  "artifact": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7",
+  "size": 64,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 175,
+   "top_frames": [
+    "#0 __interceptor_strlen sanitizer_common_interceptors.inc:425",
+    "#1 c_strdup url.h:160",
+    "#2 c_get_part url.h:206",
+    "#3 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run urlparser_c2saferrust_ft.rs:149"
+   ],
+   "stderr_tail": "t/harnesses/get_part_san.bin+0x7c6da) (BuildId: 0d0513f6ec7c5a8e8a4ffd99ae8fdb518c278f80) \nShadow bytes around the buggy address:\n  0x7bf8625dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bf8625dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bf8625e0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n  0x7bf8625e0080: fa fa fd fa fa fa 01 fa fa fa 01 fa fa fa 01 fa\n  0x7bf8625e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7bf8625e0180: fa fa fa fa[fa]fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf8625e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf8625e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf8625e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf8625e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bf8625e0400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1412746==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 174,
+   "top_frames": [
+    "#0 urlparser_c2saferrust::test::strrwd lib.rs:488",
+    "#1 get_part lib.rs:480",
+    "#2 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run urlparser_c2saferrust_ft.rs:154",
+    "#3 rust_fuzzer_test_input lib.rs:276"
+   ],
+   "stderr_tail": "/harnesses/get_part_san.bin+0x13152e) (BuildId: 0d0513f6ec7c5a8e8a4ffd99ae8fdb518c278f80) \nShadow bytes around the buggy address:\n  0x7b9124ddff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9124ddff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b9124de0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n  0x7b9124de0080: fa fa fd fd fa fa 01 fa fa fa 01 fa fa fa 01 fa\n  0x7b9124de0100: fa fa 01 fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7b9124de0180: fa fa fa fa fa fa fa[fa]fa fa fa fa fa fa fa fa\n  0x7b9124de0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9124de0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9124de0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9124de0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b9124de0400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1412749==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 175,
+   "top_frames": [
+    "#0 __interceptor_strlen ??:?",
+    "#1 c_get_part ??:?",
+    "#2 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run ??:?",
+    "#3 rust_fuzzer_test_input ??:?"
+   ],
+   "stderr_tail": "rrust/harnesses/get_part.bin+0x7b25a) (BuildId: 566b93f0d9bb20dba716667e009a7c30987e251a) \nShadow bytes around the buggy address:\n  0x7b3027ddff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b3027ddff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7b3027de0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n  0x7b3027de0080: fa fa fd fa fa fa 01 fa fa fa 01 fa fa fa 01 fa\n  0x7b3027de0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7b3027de0180: fa fa fa fa[fa]fa fa fa fa fa fa fa fa fa fa fa\n  0x7b3027de0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b3027de0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b3027de0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b3027de0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7b3027de0400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1412752==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 718716277\nINFO: Loaded 1 modules   (656 inline 8-bit counters): 656 [0x555b13a24dd0, 0x555b13a25060), \nINFO: Loaded 1 PC tables (656 PCs): 656 [0x555b13a25060,0x555b13a27960), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/get_part_cands/crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7\nfree(): double free detected in tcache 2\n==1412755== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "size": 0,
+  "verdict": "out_of_contract_access",
+  "why": "with no sanitizer the translation takes a signal rather than panicking; a wild read faults only if its page is unmapped, so the outcome is memory-layout luck on both sides",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __asan::Allocator::Deallocate(void*, unsigned long, unsigned long, __sanitizer::BufferedStackTrace*, __asan::AllocType) sanitizer_atomic_clang.h:97",
+    "#1 ___interceptor_free asan_malloc_linux.cpp:52",
+    "#2 get_part lib.rs:483",
+    "#3 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run urlparser_c2saferrust_ft.rs:154"
+   ],
+   "stderr_tail": "fd99ae8fdb518c278f80)\n    #11 0x55da32173356  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part_san.bin+0x156356) (BuildId: 0d0513f6ec7c5a8e8a4ffd99ae8fdb518c278f80)\n    #12 0x7f11aca2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #13 0x7f11aca2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x55da32085c64  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part_san.bin+0x68c64) (BuildId: 0d0513f6ec7c5a8e8a4ffd99ae8fdb518c278f80)\n\n==1412759==Register values:\nrax = 0x0000000000000002  rbx = 0x00007ffdf68835e8  rcx = 0x0000000000000003  rdx = 0x0000000000000000  \nrdi = 0x0000000000000001  rsi = 0x0000000000000003  rbp = 0x0000000000000001  rsp = 0x00007ffdf6883590  \n r8 = 0x00007ffdf68835e8   r9 = 0x0000000000000001  r10 = 0x0000000000000000  r11 = 0x000000000000000d  \nr12 = 0x000055da321ffe10  r13 = 0xfffffffffffffff1  r14 = 0x0000000000000001  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part_san.bin+0x6a347) (BuildId: 0d0513f6ec7c5a8e8a4ffd99ae8fdb518c278f80) \n==1412759==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __asan::Allocator::Deallocate(void*, unsigned long, unsigned long, __sanitizer::BufferedStackTrace*, __asan::AllocType) ??:?",
+    "#1 ___interceptor_free ??:?",
+    "#2 get_part ??:?",
+    "#3 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run ??:?"
+   ],
+   "stderr_tail": "d9bb20dba716667e009a7c30987e251a)\n    #11 0x55c89ffa50d6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part.bin+0x1530d6) (BuildId: 566b93f0d9bb20dba716667e009a7c30987e251a)\n    #12 0x7f76f062a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #13 0x7f76f062a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x55c89feb97e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part.bin+0x677e4) (BuildId: 566b93f0d9bb20dba716667e009a7c30987e251a)\n\n==1412762==Register values:\nrax = 0x0000000000000002  rbx = 0x00007ffd9e055888  rcx = 0x0000000000000003  rdx = 0x0000000000000000  \nrdi = 0x0000000000000001  rsi = 0x0000000000000005  rbp = 0x0000000000000001  rsp = 0x00007ffd9e055830  \n r8 = 0x00007ffd9e055888   r9 = 0x0000000000000001  r10 = 0x0000000000000000  r11 = 0x000000000000000d  \nr12 = 0x000055c8a0031810  r13 = 0xfffffffffffffff1  r14 = 0x0000000000000001  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part.bin+0x68ec7) (BuildId: 566b93f0d9bb20dba716667e009a7c30987e251a) \n==1412762==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 903916703\nINFO: Loaded 1 modules   (656 inline 8-bit counters): 656 [0x5565c83f1dd0, 0x5565c83f2060), \nINFO: Loaded 1 PC tables (656 PCs): 656 [0x5565c83f2060,0x5565c83f4960), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/get_part_cands/crash-da39a3ee5e6b4b0d3255bfef95601890afd80709\nfree(): invalid pointer\n==1412765== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "signal-seed_fixed",
+  "size": 64,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 175,
+   "top_frames": [
+    "#0 __interceptor_strlen sanitizer_common_interceptors.inc:425",
+    "#1 c_strdup url.h:160",
+    "#2 c_get_part url.h:206",
+    "#3 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run urlparser_c2saferrust_ft.rs:149"
+   ],
+   "stderr_tail": "t/harnesses/get_part_san.bin+0x7c6da) (BuildId: 0d0513f6ec7c5a8e8a4ffd99ae8fdb518c278f80) \nShadow bytes around the buggy address:\n  0x7ba4907dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ba4907dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ba4907e0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n  0x7ba4907e0080: fa fa fd fa fa fa 01 fa fa fa 01 fa fa fa 01 fa\n  0x7ba4907e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7ba4907e0180: fa fa fa fa[fa]fa fa fa fa fa fa fa fa fa fa fa\n  0x7ba4907e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ba4907e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ba4907e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ba4907e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ba4907e0400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1412767==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 174,
+   "top_frames": [
+    "#0 urlparser_c2saferrust::test::strrwd lib.rs:488",
+    "#1 get_part lib.rs:480",
+    "#2 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run urlparser_c2saferrust_ft.rs:154",
+    "#3 rust_fuzzer_test_input lib.rs:276"
+   ],
+   "stderr_tail": "/harnesses/get_part_san.bin+0x13152e) (BuildId: 0d0513f6ec7c5a8e8a4ffd99ae8fdb518c278f80) \nShadow bytes around the buggy address:\n  0x7bca69fdff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bca69fdff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7bca69fe0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n  0x7bca69fe0080: fa fa fd fd fa fa 01 fa fa fa 01 fa fa fa 01 fa\n  0x7bca69fe0100: fa fa 01 fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7bca69fe0180: fa fa fa fa fa fa fa[fa]fa fa fa fa fa fa fa fa\n  0x7bca69fe0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bca69fe0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bca69fe0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bca69fe0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7bca69fe0400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1412769==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 175,
+   "top_frames": [
+    "#0 __interceptor_strlen ??:?",
+    "#1 c_get_part ??:?",
+    "#2 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run ??:?",
+    "#3 rust_fuzzer_test_input ??:?"
+   ],
+   "stderr_tail": "rrust/harnesses/get_part.bin+0x7b25a) (BuildId: 566b93f0d9bb20dba716667e009a7c30987e251a) \nShadow bytes around the buggy address:\n  0x7c14041dff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c14041dff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7c14041e0000: fa fa 00 00 fa fa 00 00 fa fa fd fa fa fa fd fd\n  0x7c14041e0080: fa fa fd fa fa fa 01 fa fa fa 01 fa fa fa 01 fa\n  0x7c14041e0100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7c14041e0180: fa fa fa fa[fa]fa fa fa fa fa fa fa fa fa fa fa\n  0x7c14041e0200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c14041e0280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c14041e0300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c14041e0380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7c14041e0400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1412771==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 1034173596\nINFO: Loaded 1 modules   (656 inline 8-bit counters): 656 [0x564bdabb1dd0, 0x564bdabb2060), \nINFO: Loaded 1 PC tables (656 PCs): 656 [0x564bdabb2060,0x564bdabb4960), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/get_part_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/get_part_cands/signal-seed_fixed\nfree(): double free detected in tcache 2\n==1412773== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ }
+]

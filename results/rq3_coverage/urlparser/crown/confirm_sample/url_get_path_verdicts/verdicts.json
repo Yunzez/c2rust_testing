@@ -1,0 +1,218 @@
+[
+ {
+  "artifact": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7",
+  "size": 64,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (runtime error: null pointer passed as argument 1, which is declared to never be null)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: null pointer passed as argument 1, which is declared to never be null",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 150020630\nINFO: Loaded 1 modules   (1185 inline 8-bit counters): 1185 [0x556db3ccbbf0, 0x556db3ccc091), \nINFO: Loaded 1 PC tables (1185 PCs): 1185 [0x556db3ccc098,0x556db3cd0aa8), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/confirm_sample/url_get_path_cands/crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7\nc/url.h:373:31: runtime error: null pointer passed as argument 1, which is declared to never be null\n/usr/include/string.h:203:35: note: nonnull attribute specified here\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:373:31 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen sanitizer_common_interceptors.inc:?",
+    "#2 url_get_hostname lib.rs:460",
+    "#3 url_get_path lib.rs:638"
+   ],
+   "stderr_tail": "a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x1736e1) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n    #12 0x55cbe4a2ecd6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x161cd6) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n    #13 0x7f0bd0a2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x7f0bd0a2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #15 0x55cbe4942764  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x75764) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n\n==1435718==Register values:\nrax = 0x0000000000000000  rbx = 0x00000000cfbe1501  rcx = 0x002ae5f250561e80  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007ffd3d027830  rsp = 0x00007ffd3d026fe8  \n r8 = 0x0000000000000040   r9 = 0x0000000100000000  r10 = 0x000055cbe4ff6196  r11 = 0x0000000000000c30  \nr12 = 0x00000000ffffffff  r13 = 0x00000000000000b0  r14 = 0x0000000000000000  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1435718==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen ??:?",
+    "#2 c_url_get_hostname ??:?",
+    "#3 c_url_get_path ??:?"
+   ],
+   "stderr_tail": "451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x16af61) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n    #12 0x560a224b4556  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x159556) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n    #13 0x7f7375a2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x7f7375a2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #15 0x560a223ca364  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x6f364) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n\n==1435722==Register values:\nrax = 0x0000000000000000  rbx = 0x0000000074be0101  rcx = 0x002b051124890b40  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007ffdb6302ca0  rsp = 0x00007ffdb6302458  \n r8 = 0x00000000000000b1   r9 = 0x0000000000000000  r10 = 0x0000000000000001  r11 = 0x00000000000001fd  \nr12 = 0x00000000ffffffff  r13 = 0x0000560a225394c0  r14 = 0x0000000000000000  r15 = 0x00007b9374be00b0  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1435722==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 409692379\nINFO: Loaded 1 modules   (630 inline 8-bit counters): 630 [0x55cbf6f85270, 0x55cbf6f854e6), \nINFO: Loaded 1 PC tables (630 PCs): 630 [0x55cbf6f854e8,0x55cbf6f87c48), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/confirm_sample/url_get_path_cands/crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7\n==1435725== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "size": 0,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (runtime error: null pointer passed as argument 1, which is declared to never be null)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: null pointer passed as argument 1, which is declared to never be null",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 428072177\nINFO: Loaded 1 modules   (1185 inline 8-bit counters): 1185 [0x556134e04bf0, 0x556134e05091), \nINFO: Loaded 1 PC tables (1185 PCs): 1185 [0x556134e05098,0x556134e09aa8), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/confirm_sample/url_get_path_cands/crash-da39a3ee5e6b4b0d3255bfef95601890afd80709\nc/url.h:373:31: runtime error: null pointer passed as argument 1, which is declared to never be null\n/usr/include/string.h:203:35: note: nonnull attribute specified here\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:373:31 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen sanitizer_common_interceptors.inc:?",
+    "#2 url_get_hostname lib.rs:460",
+    "#3 url_get_path lib.rs:638"
+   ],
+   "stderr_tail": "a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x1736e1) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n    #12 0x55917b5adcd6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x161cd6) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n    #13 0x7fe005e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x7fe005e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #15 0x55917b4c1764  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x75764) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n\n==1435729==Register values:\nrax = 0x0000000000000000  rbx = 0x0000000004fe1501  rcx = 0x002ac8bdac4e1e80  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007ffd4e9e5ab0  rsp = 0x00007ffd4e9e5268  \n r8 = 0x0000000000000040   r9 = 0x0000000100000000  r10 = 0x000055917bb75196  r11 = 0x0000000000000c30  \nr12 = 0x00000000ffffffff  r13 = 0x00000000000000b0  r14 = 0x0000000000000000  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1435729==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen ??:?",
+    "#2 c_url_get_hostname ??:?",
+    "#3 c_url_get_path ??:?"
+   ],
+   "stderr_tail": "451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x16af61) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n    #12 0x55da98e22556  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x159556) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n    #13 0x7fd6a4c2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x7fd6a4c2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #15 0x55da98d38364  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x6f364) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n\n==1435731==Register values:\nrax = 0x0000000000000000  rbx = 0x00000000a3de0101  rcx = 0x002aed4c6ff90b40  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007ffc12106ea0  rsp = 0x00007ffc12106658  \n r8 = 0x00000000000000b1   r9 = 0x0000000000000000  r10 = 0x0000000000000001  r11 = 0x00000000000001fd  \nr12 = 0x00000000ffffffff  r13 = 0x000055da98ea74c0  r14 = 0x0000000000000000  r15 = 0x00007bf6a3de00d0  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1435731==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 522628799\nINFO: Loaded 1 modules   (630 inline 8-bit counters): 630 [0x559916263270, 0x5599162634e6), \nINFO: Loaded 1 PC tables (630 PCs): 630 [0x5599162634e8,0x559916265c48), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/confirm_sample/url_get_path_cands/crash-da39a3ee5e6b4b0d3255bfef95601890afd80709\n==1435733== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "signal-seed_fixed",
+  "size": 64,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (runtime error: null pointer passed as argument 1, which is declared to never be null)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: null pointer passed as argument 1, which is declared to never be null",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 540887894\nINFO: Loaded 1 modules   (1185 inline 8-bit counters): 1185 [0x555f2bee1bf0, 0x555f2bee2091), \nINFO: Loaded 1 PC tables (1185 PCs): 1185 [0x555f2bee2098,0x555f2bee6aa8), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/confirm_sample/url_get_path_cands/signal-seed_fixed\nc/url.h:373:31: runtime error: null pointer passed as argument 1, which is declared to never be null\n/usr/include/string.h:203:35: note: nonnull attribute specified here\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:373:31 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen sanitizer_common_interceptors.inc:?",
+    "#2 url_get_hostname lib.rs:460",
+    "#3 url_get_path lib.rs:638"
+   ],
+   "stderr_tail": "a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x1736e1) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n    #12 0x561de3f15cd6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x161cd6) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n    #13 0x7f249ca2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x7f249ca2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #15 0x561de3e29764  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_san.bin+0x75764) (BuildId: 1c04019651d5801ebf050d4c71814173b9b82fb8)\n\n==1435737==Register values:\nrax = 0x0000000000000000  rbx = 0x000000009bbe1501  rcx = 0x002b0ef1f78e1e80  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007fff9514e0d0  rsp = 0x00007fff9514d888  \n r8 = 0x0000000000000040   r9 = 0x0000000100000000  r10 = 0x0000561de44dd196  r11 = 0x0000000000000c30  \nr12 = 0x00000000ffffffff  r13 = 0x00000000000000b0  r14 = 0x0000000000000000  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1435737==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen ??:?",
+    "#2 c_url_get_hostname ??:?",
+    "#3 c_url_get_path ??:?"
+   ],
+   "stderr_tail": "451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x16af61) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n    #12 0x55a9f31a4556  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x159556) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n    #13 0x7f5b2f42a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x7f5b2f42a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #15 0x55a9f30ba364  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path.bin+0x6f364) (BuildId: dee3d78fdba3f50527c82101f6d4a73f26d97dd7)\n\n==1435739==Register values:\nrax = 0x0000000000000000  rbx = 0x000000002e5e0101  rcx = 0x002ad4f98c090b40  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007ffec49b8b20  rsp = 0x00007ffec49b82d8  \n r8 = 0x00000000000000b1   r9 = 0x0000000000000000  r10 = 0x0000000000000001  r11 = 0x00000000000001fd  \nr12 = 0x00000000ffffffff  r13 = 0x000055a9f32294c0  r14 = 0x0000000000000000  r15 = 0x00007b7b2e5e00b0  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1435739==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 635207502\nINFO: Loaded 1 modules   (630 inline 8-bit counters): 630 [0x55aa58082270, 0x55aa580824e6), \nINFO: Loaded 1 PC tables (630 PCs): 630 [0x55aa580824e8,0x55aa58084c48), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/harnesses/url_get_path_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_crown/confirm_sample/url_get_path_cands/signal-seed_fixed\n==1435741== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ }
+]

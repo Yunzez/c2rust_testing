@@ -34,44 +34,15 @@
    "ours_cov": 0.091514,
    "sanity": true
   },
-  "tests_side_mode": "measured"
- },
- {
-  "tool": "laertes",
-  "matched": 21,
-  "planned": 21,
-  "built": 20,
-  "executed": 0,
-  "exported": 0,
-  "corpus": 0,
-  "term_candidates": 0,
-  "div_candidates": null,
-  "tests": "TEST-FAILS",
-  "function": {
-   "universe": 25,
-   "tests": 0,
-   "ours": 0,
-   "both": 0,
-   "only_tests": 0,
-   "only_ours": 0,
-   "neither": 25,
-   "tests_cov": 0.0,
-   "ours_cov": 0.0,
-   "sanity": true
-  },
-  "region": {
-   "universe": 1477,
-   "tests": 0,
-   "ours": 0,
-   "both": 0,
-   "only_tests": 0,
-   "only_ours": 0,
-   "neither": 1477,
-   "tests_cov": 0.0,
-   "ours_cov": 0.0,
-   "sanity": true
-  },
-  "tests_side_mode": "TEST-UNAVAILABLE (denominator only)"
+  "tests_side_mode": "measured",
+  "confirm": {
+   "mode": "confirm_sample",
+   "total": {
+    "ub_associated": 30,
+    "not_reproducible": 13,
+    "ub_associated_termination": 3
+   }
+  }
  },
  {
   "tool": "c2saferrust",
@@ -108,7 +79,15 @@
    "ours_cov": 0.090448,
    "sanity": true
   },
-  "tests_side_mode": "TEST-UNAVAILABLE (denominator only)"
+  "tests_side_mode": "TEST-UNAVAILABLE (denominator only)",
+  "confirm": {
+   "mode": "confirm_sample",
+   "total": {
+    "ub_associated": 26,
+    "out_of_contract_access": 1,
+    "not_reproducible": 12
+   }
+  }
  },
  {
   "tool": "crown",
@@ -145,6 +124,58 @@
    "ours_cov": 0.085739,
    "sanity": true
   },
-  "tests_side_mode": "measured"
+  "tests_side_mode": "measured",
+  "confirm": {
+   "mode": "confirm_sample",
+   "total": {
+    "ub_associated": 30,
+    "not_reproducible": 11,
+    "ub_associated_termination": 3
+   }
+  }
+ },
+ {
+  "tool": "laertes",
+  "matched": 21,
+  "planned": 21,
+  "built": 20,
+  "executed": 20,
+  "exported": 3,
+  "corpus": 48,
+  "term_candidates": 34,
+  "div_candidates": 17,
+  "tests": "TEST-FAILS",
+  "function": {
+   "universe": 25,
+   "tests": 0,
+   "ours": 3,
+   "both": 0,
+   "only_tests": 0,
+   "only_ours": 3,
+   "neither": 22,
+   "tests_cov": 0.0,
+   "ours_cov": 0.12,
+   "sanity": true
+  },
+  "region": {
+   "universe": 1477,
+   "tests": 0,
+   "ours": 41,
+   "both": 0,
+   "only_tests": 0,
+   "only_ours": 41,
+   "neither": 1436,
+   "tests_cov": 0.0,
+   "ours_cov": 0.027759,
+   "sanity": true
+  },
+  "tests_side_mode": "TEST-UNAVAILABLE (denominator only)",
+  "confirm": {
+   "mode": "confirm_sample",
+   "total": {
+    "ub_associated": 33,
+    "confirmed_termination": 18
+   }
+  }
  }
 ]

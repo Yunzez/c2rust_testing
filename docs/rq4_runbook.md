@@ -85,6 +85,16 @@ in RUN.md.
       catalogued crash (CROWN `SET_BH`). Re-read `results/rq4_effectiveness/gen_defect_manifest.py`'s
       entry format before adding one, then `--build`.
 
+- [ ] **Recovering a cell whose scratch directory is gone** (lodepng × c2rust, optipng × c2rust,
+      2026-09-09): `harness_exports.tar.gz` unpacks as `ours/<boundary>.json` — extract into the
+      cell dir, not into an `ours/` dir (that gives `ours/ours/` and `c2r_coverage.py` sees nothing,
+      reports 0 and passes its own sanity checks). Each export records the ABSOLUTE path of its
+      harness's `src/lib.rs` for the `--expose-entry` alignment; regenerate the harnesses with
+      `rebuild_bins.py` (deterministic, no fuzzing) and pass
+      `c2r_coverage.py --path-map <old cell dir>=<regenerated dir>` — recorded in `result.json`
+      as `path_map`, never a symlink at the old path — and write `analysis/recovery.json`.
+      Accept only with 0 functions outside the universe.
+
 ## Generator/planner traps met so far (all fixed; here so a regression is recognised)
 
 coverage replay without `-timeout=25` hangs on a looping input and its `TimeoutExpired` killed the
@@ -231,8 +241,12 @@ sentinel · a `None` template must fail construction, not fall through to an add
   verdicts had to be recomputed. **Check after every post: each finished cell has `confirm_sample/`
   with a non-empty `total`, and the step took more than a second.** Editing a chain script with a
   regex is how this happened; edit the one line, not a pattern.
-- **`confirmed_termination` is emitted with its own definition INVERTED when C alone times out
-  (`scripts/c2r_campaign.py:282`, found 2026-09-08).**
+- **`confirmed_termination` was emitted with its own definition INVERTED when C alone times out
+  (`scripts/c2r_campaign.py` `classify`, found 2026-09-08, FIXED 2026-09-09 → `inconclusive`).** It
+  had produced 12 false rows, all `Adam7_interlace`/`Adam7_deinterlace`, lodepng × c2rust (6) and
+  lodepng × CROWN (6); both cells were re-classified OFFLINE from the archived
+  `confirm_sample/*_verdicts/verdicts.json.gz` (rows, clusters.json, summary.json, RUN.md §6; the
+  summary carries a `reclassified_2026_09_09` note). No re-run. The original text:
   ```python
   if a_c["outcome"] == "timeout":
       return ("inconclusive" if b_rust["outcome"] == "timeout" else "confirmed_termination",

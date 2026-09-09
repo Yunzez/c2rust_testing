@@ -1,0 +1,218 @@
+[
+ {
+  "artifact": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7",
+  "size": 64,
+  "verdict": "ub_associated_termination",
+  "why": "C alone: signal (runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')); the translation PANICS on its own, with no sanitizer",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 60045487\nINFO: Loaded 1 modules   (1218 inline 8-bit counters): 1218 [0x560cd2482c90, 0x560cd2483152), \nINFO: Loaded 1 PC tables (1218 PCs): 1218 [0x560cd2483158,0x560cd2487d78), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/confirm_sample/url_inspect_cands/crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7\nc/url.h:536:43: runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:536:43 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x14b4fc) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #24 0x55926da8a595  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x169595) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #25 0x55926da97a21  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x176a21) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #26 0x55926da86016  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x165016) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #27 0x7f739822a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #28 0x7f739822a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #29 0x55926d9987e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x777e4) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 c_url_data_inspect ??:?",
+    "#1 urlparser_c2rust_ft::_::__libfuzzer_sys_run ??:?",
+    "#2 rust_fuzzer_test_input ??:?",
+    "#3 std::panicking::catch_unwind::do_call ??:?"
+   ],
+   "stderr_tail": "703abfd6798fe36ac1e632e346e615db5b8bb0)\n    #9 0x55fdceefcbd6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x15bbd6) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0)\n    #10 0x7fd7d4e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #11 0x7fd7d4e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #12 0x55fdcee11a24  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x70a24) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0)\n\n==1407550==Register values:\nrax = 0x000055fdcf4c10e4  rbx = 0x0000000000000000  rcx = 0x00007fd7d5014750  rdx = 0x0000000000000001  \nrdi = 0x00007fd7d5014750  rsi = 0x000055fdcedcddb8  rbp = 0x00007ffc9dee6eb0  rsp = 0x00007ffc9dee6ea0  \n r8 = 0x0000000000000007   r9 = 0x0000000000000000  r10 = 0x00007fffffffff01  r11 = 0x0000000000000001  \nr12 = 0x0000000000000000  r13 = 0x00007de7d3fe0100  r14 = 0x00007bd7d2f00400  r15 = 0x00007de7d3fe1500  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x1383aa) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0) \n==1407550==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 411529971\nINFO: Loaded 1 modules   (702 inline 8-bit counters): 702 [0x5629d6a18d10, 0x5629d6a18fce), \nINFO: Loaded 1 PC tables (702 PCs): 702 [0x5629d6a18fd0,0x5629d6a1bbb0), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/confirm_sample/url_inspect_cands/crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7\nC2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan/src/lib.rs:697:12: null pointer dereference\n\nthread '<unnamed>' (1407553) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan/src/lib.rs:697:12:\nnull pointer dereference occurred\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n==1407553== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "size": 0,
+  "verdict": "ub_associated_termination",
+  "why": "C alone: signal (runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')); the translation PANICS on its own, with no sanitizer",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 430427400\nINFO: Loaded 1 modules   (1218 inline 8-bit counters): 1218 [0x560ca46d4c90, 0x560ca46d5152), \nINFO: Loaded 1 PC tables (1218 PCs): 1218 [0x560ca46d5158,0x560ca46d9d78), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/confirm_sample/url_inspect_cands/crash-da39a3ee5e6b4b0d3255bfef95601890afd80709\nc/url.h:536:43: runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:536:43 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x14b4fc) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #24 0x5585451a8595  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x169595) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #25 0x5585451b5a21  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x176a21) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #26 0x5585451a4016  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x165016) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #27 0x7f2f1ac2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #28 0x7f2f1ac2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #29 0x5585450b67e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x777e4) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 c_url_data_inspect ??:?",
+    "#1 urlparser_c2rust_ft::_::__libfuzzer_sys_run ??:?",
+    "#2 rust_fuzzer_test_input ??:?",
+    "#3 std::panicking::catch_unwind::do_call ??:?"
+   ],
+   "stderr_tail": "703abfd6798fe36ac1e632e346e615db5b8bb0)\n    #9 0x55813a93ebd6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x15bbd6) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0)\n    #10 0x7fb300a2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #11 0x7fb300a2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #12 0x55813a853a24  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x70a24) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0)\n\n==1407559==Register values:\nrax = 0x000055813af030e4  rbx = 0x0000000000000000  rcx = 0x00007fb300c14750  rdx = 0x0000000000000001  \nrdi = 0x00007fb300c14750  rsi = 0x000055813a80fdb8  rbp = 0x00007fff3ab42650  rsp = 0x00007fff3ab42640  \n r8 = 0x0000000000000007   r9 = 0x0000000000000000  r10 = 0x00007fffffffff01  r11 = 0x0000000000000001  \nr12 = 0x0000000000000000  r13 = 0x00007dc2ffbe0100  r14 = 0x00007bb2feb00400  r15 = 0x00007dc2ffbe1500  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x1383aa) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0) \n==1407559==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 525816160\nINFO: Loaded 1 modules   (702 inline 8-bit counters): 702 [0x5562e89e6d10, 0x5562e89e6fce), \nINFO: Loaded 1 PC tables (702 PCs): 702 [0x5562e89e6fd0,0x5562e89e9bb0), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/confirm_sample/url_inspect_cands/crash-da39a3ee5e6b4b0d3255bfef95601890afd80709\nC2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan/src/lib.rs:697:12: null pointer dereference\n\nthread '<unnamed>' (1407561) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan/src/lib.rs:697:12:\nnull pointer dereference occurred\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n==1407561== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "signal-seed_fixed",
+  "size": 64,
+  "verdict": "ub_associated_termination",
+  "why": "C alone: signal (runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')); the translation PANICS on its own, with no sanitizer",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 544421743\nINFO: Loaded 1 modules   (1218 inline 8-bit counters): 1218 [0x5601ad774c90, 0x5601ad775152), \nINFO: Loaded 1 PC tables (1218 PCs): 1218 [0x5601ad775158,0x5601ad779d78), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/confirm_sample/url_inspect_cands/signal-seed_fixed\nc/url.h:536:43: runtime error: member access within null pointer of type 'url_data_t' (aka 'struct url_data')\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:536:43 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x14b4fc) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #24 0x5556d4506595  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x169595) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #25 0x5556d4513a21  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x176a21) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #26 0x5556d4502016  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x165016) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n    #27 0x7fb96042a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #28 0x7fb96042a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #29 0x5556d44147e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_san.bin+0x777e4) (BuildId: 674440b2e1d34eb36457af2ef8b84b28a3cab89d)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 c_url_data_inspect ??:?",
+    "#1 urlparser_c2rust_ft::_::__libfuzzer_sys_run ??:?",
+    "#2 rust_fuzzer_test_input ??:?",
+    "#3 std::panicking::catch_unwind::do_call ??:?"
+   ],
+   "stderr_tail": "703abfd6798fe36ac1e632e346e615db5b8bb0)\n    #9 0x55cc18e14bd6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x15bbd6) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0)\n    #10 0x7fac2a82a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #11 0x7fac2a82a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #12 0x55cc18d29a24  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x70a24) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0)\n\n==1407567==Register values:\nrax = 0x000055cc193d90e4  rbx = 0x0000000000000000  rcx = 0x00007fac2aa14750  rdx = 0x0000000000000001  \nrdi = 0x00007fac2aa14750  rsi = 0x000055cc18ce5db8  rbp = 0x00007ffcdda16ab0  rsp = 0x00007ffcdda16aa0  \n r8 = 0x0000000000000007   r9 = 0x0000000000000000  r10 = 0x00007fffffffff01  r11 = 0x0000000000000001  \nr12 = 0x0000000000000000  r13 = 0x00007dbc299e0100  r14 = 0x00007bac28900400  r15 = 0x00007dbc299e1500  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect.bin+0x1383aa) (BuildId: 32703abfd6798fe36ac1e632e346e615db5b8bb0) \n==1407567==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "NG: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 640106261\nINFO: Loaded 1 modules   (702 inline 8-bit counters): 702 [0x55bb865afd10, 0x55bb865affce), \nINFO: Loaded 1 PC tables (702 PCs): 702 [0x55bb865affd0,0x55bb865b2bb0), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/confirm_sample/url_inspect_cands/signal-seed_fixed\nC2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan/src/lib.rs:697:12: null pointer dereference\n\nthread '<unnamed>' (1407569) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2rust/harnesses/url_inspect_nosan/src/lib.rs:697:12:\nnull pointer dereference occurred\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n==1407569== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ }
+]

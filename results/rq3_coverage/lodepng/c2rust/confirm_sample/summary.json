@@ -8,7 +8,7 @@
    "adjudicated": 85,
    "tally": {
     "ub_associated": 84,
-    "confirmed_termination": 1
+    "inconclusive": 1
    },
    "clusters": [
     {
@@ -26,7 +26,7 @@
      "example": "crash-1ef28bd08bdb916e45a2403a1fdb631fd92711b6"
     },
     {
-     "verdict": "confirmed_termination",
+     "verdict": "inconclusive",
      "sanitizer": null,
      "frame": "<no frame>",
      "artifacts": 1,
@@ -41,7 +41,7 @@
    "adjudicated": 206,
    "tally": {
     "ub_associated": 201,
-    "confirmed_termination": 5
+    "inconclusive": 5
    },
    "clusters": [
     {
@@ -66,7 +66,7 @@
      "example": "crash-08c3ac4a0eeae6ca7c1aa885fa1114b83354bc07"
     },
     {
-     "verdict": "confirmed_termination",
+     "verdict": "inconclusive",
      "sanitizer": null,
      "frame": "<no frame>",
      "artifacts": 5,
@@ -676,8 +676,14 @@
  ],
  "total": {
   "ub_associated": 1520,
-  "confirmed_termination": 6,
   "ub_associated_termination": 317,
-  "inconclusive": 1
+  "inconclusive": 7
+ },
+ "reclassified_2026_09_09": {
+  "rows": {
+   "Adam7_deinterlace": 1,
+   "Adam7_interlace": 5
+  },
+  "reason": "classifier inversion: C-alone timeout had been labelled confirmed_termination; now inconclusive (scripts/c2r_campaign.py classify)"
  }
 }

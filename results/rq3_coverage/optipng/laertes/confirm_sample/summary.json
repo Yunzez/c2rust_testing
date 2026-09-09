@@ -1,0 +1,412 @@
+{
+ "mode": "confirm_sample",
+ "sample_per_boundary": 200,
+ "boundaries": [
+  {
+   "boundary": "DefaultError",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: fuzz target exited",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 81
+  },
+  {
+   "boundary": "ErrorAlloc",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated_termination": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: libFuzzer: fuzz target exited",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 67
+  },
+  {
+   "boundary": "add_one_chunk",
+   "candidates_total": 18,
+   "adjudicated": 18,
+   "tally": {
+    "ub_associated": 18
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_add_one_chunk pngset.c:1364",
+     "artifacts": 11,
+     "example": "crash-14347ff5e4f3b90df1faa3b7ebcfd7130ee61f6f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 MemcmpInterceptorCommon(void*, int (*)(void const*, void const*, unsigned long), void const*, void const*, unsigned long) sanitizer_common_interceptors.inc:848",
+     "artifacts": 7,
+     "example": "crash-7666e37fbf0da14896bac116c4ab3e2acbdf144f"
+    }
+   ],
+   "seconds": 87
+  },
+  {
+   "boundary": "compress",
+   "candidates_total": 13,
+   "adjudicated": 13,
+   "tally": {
+    "confirmed_divergence": 13
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 13,
+     "example": "divergence-11d91821f1f6a6bcf8ad2645585f3ead5366843b"
+    }
+   ],
+   "seconds": 85
+  },
+  {
+   "boundary": "compress2",
+   "candidates_total": 16,
+   "adjudicated": 16,
+   "tally": {
+    "confirmed_divergence": 15,
+    "ub_associated_value": 1
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 15,
+     "example": "divergence-02b95aca8d14d84ebe8374f4cf4c45c50d208874"
+    },
+    {
+     "verdict": "ub_associated_value",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 1,
+     "example": "divergence-5ba93c9db0cff93f52b521d7420e43f6eda2784f"
+    }
+   ],
+   "seconds": 85
+  },
+  {
+   "boundary": "crc32",
+   "candidates_total": 23,
+   "adjudicated": 23,
+   "tally": {
+    "confirmed_divergence": 23
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 23,
+     "example": "divergence-07518238532e35723fcb46d3ede68e3b0414cca4"
+    }
+   ],
+   "seconds": 86
+  },
+  {
+   "boundary": "crc32_combine",
+   "candidates_total": 528,
+   "adjudicated": 228,
+   "tally": {
+    "ub_associated": 114,
+    "instrument_only": 104,
+    "inconclusive": 10
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: stack-buffer-overflow",
+     "frame": "#0 c_gf2_matrix_times crc32.c:353",
+     "artifacts": 114,
+     "example": "crash-0001d619e3ab7b5731332fde53fb4af6bf292421"
+    },
+    {
+     "verdict": "instrument_only",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 104,
+     "example": "crash-000d7545e9518cf9a7e2a9f18d013acc70affcd1"
+    },
+    {
+     "verdict": "inconclusive",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 10,
+     "example": "signal-0114cd329e026aa99488e9b7e5a37c6d09f05d37"
+    }
+   ],
+   "seconds": 110
+  },
+  {
+   "boundary": "crc32_combine64",
+   "candidates_total": 528,
+   "adjudicated": 228,
+   "tally": {
+    "ub_associated": 112,
+    "instrument_only": 106,
+    "inconclusive": 10
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: stack-buffer-overflow",
+     "frame": "#0 c_gf2_matrix_times crc32.c:353",
+     "artifacts": 112,
+     "example": "crash-0001d619e3ab7b5731332fde53fb4af6bf292421"
+    },
+    {
+     "verdict": "instrument_only",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 106,
+     "example": "crash-000d7545e9518cf9a7e2a9f18d013acc70affcd1"
+    },
+    {
+     "verdict": "inconclusive",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 10,
+     "example": "signal-0114cd329e026aa99488e9b7e5a37c6d09f05d37"
+    }
+   ],
+   "seconds": 111
+  },
+  {
+   "boundary": "crc32_z",
+   "candidates_total": 23,
+   "adjudicated": 23,
+   "tally": {
+    "confirmed_divergence": 23
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 23,
+     "example": "divergence-07518238532e35723fcb46d3ede68e3b0414cca4"
+    }
+   ],
+   "seconds": 86
+  },
+  {
+   "boundary": "default_error_handler",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: fuzz target exited",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 85
+  },
+  {
+   "boundary": "opng_path_make_backup",
+   "candidates_total": 19,
+   "adjudicated": 19,
+   "tally": {
+    "confirmed_divergence": 19
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 19,
+     "example": "divergence-1d8844a333503c713bcfae2920513952501667f5"
+    }
+   ],
+   "seconds": 85
+  },
+  {
+   "boundary": "optimize_cmf",
+   "candidates_total": 53,
+   "adjudicated": 53,
+   "tally": {
+    "inconclusive": 53
+   },
+   "clusters": [
+    {
+     "verdict": "inconclusive",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 53,
+     "example": "slow-unit-14882d29820f73b79e9c81631a9180f71c8fb208"
+    }
+   ],
+   "seconds": 4324
+  },
+  {
+   "boundary": "png_format_number",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_png_format_number pngerror.c:140",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 77
+  },
+  {
+   "boundary": "png_safecat",
+   "candidates_total": 152,
+   "adjudicated": 152,
+   "tally": {
+    "ub_associated": 152
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_png_safecat pngerror.c:118",
+     "artifacts": 152,
+     "example": "crash-04de3f88f1848c8c4d99c7846be0b4f4159cb224"
+    }
+   ],
+   "seconds": 95
+  },
+  {
+   "boundary": "pngx_gif_error",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 85
+  },
+  {
+   "boundary": "pngx_tiff_error",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 3,
+     "example": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7"
+    }
+   ],
+   "seconds": 84
+  },
+  {
+   "boundary": "uncompress",
+   "candidates_total": 504,
+   "adjudicated": 204,
+   "tally": {
+    "confirmed_termination": 200,
+    "confirmed_divergence": 4
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_termination",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 200,
+     "example": "crash-000d39a457cfffe88ac8e96b24fe59fed4e3df5a"
+    },
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 4,
+     "example": "divergence-091028d82088127e8ffb1a7a1a8447669d6a5dca"
+    }
+   ],
+   "seconds": 110
+  },
+  {
+   "boundary": "zError",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "ub_associated_termination": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 3,
+     "example": "crash-adc83b19e793491b1c6ea0fd8b46cd9f32e592fc"
+    }
+   ],
+   "seconds": 84
+  },
+  {
+   "boundary": "zcalloc",
+   "candidates_total": 1,
+   "adjudicated": 1,
+   "tally": {
+    "ub_associated": 1
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: libFuzzer: out",
+     "frame": "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+     "artifacts": 1,
+     "example": "oom-6efa7fd60d1b4556085cd1cb48eebd3839f23334"
+    }
+   ],
+   "seconds": 83
+  }
+ ],
+ "total": {
+  "ub_associated": 412,
+  "ub_associated_termination": 6,
+  "confirmed_divergence": 97,
+  "ub_associated_value": 1,
+  "instrument_only": 210,
+  "inconclusive": 73,
+  "confirmed_termination": 200
+ }
+}

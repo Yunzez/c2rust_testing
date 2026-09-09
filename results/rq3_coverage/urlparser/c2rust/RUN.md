@@ -78,4 +78,48 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | normal | 39 |
 | signal | 11 |
 
+## 6. Confirmation (confirm_sample, first 200 artifacts per boundary — a labelled SAMPLE, not the cell's adjudication)
+
+| boundary | adjudicated / total | verdicts | clusters |
+|---|---:|---|---:|
+| `get_part` | 3 / 3 | ub_associated 3 | 1 |
+| `strrwd` | 3 / 3 | ub_associated 3 | 1 |
+| `url_data_inspect` | 5 / 5 | not_reproducible 5 | 1 |
+| `url_free` | 3 / 3 | not_reproducible 3 | 1 |
+| `url_get_auth` | 2 / 2 | not_reproducible 2 | 1 |
+| `url_get_hash` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_host` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_hostname` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_path` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_pathname` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_port` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_protocol` | 2 / 2 | not_reproducible 2 | 1 |
+| `url_get_query` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_search` | 3 / 3 | ub_associated 3 | 1 |
+| `url_inspect` | 3 / 3 | ub_associated_termination 3 | 1 |
+| `url_parse` | 1 / 1 | not_reproducible 1 | 1 |
+
+Total: not_reproducible 13, ub_associated 30, ub_associated_termination 3
+
 <!-- prose -->
+## 7. Prose (2026-09-09)
+
+**Deviations.** (1) The cell's confirmation was NOT run by its post: a regex edit of the chain
+script had appended `--dest` to the `confirm_cell.py` line, which made the step exit silently. The
+candidate and divergence inputs were archived intact; the harness binaries were rebuilt from the
+archived plans (`rebuild_bins.py`, deterministic, no fuzzing) and the 200-per-boundary sample was
+adjudicated from those inputs on 2026-09-09 (§6 above is that recovery). (2) §4–§6 of this file were
+regenerated from the archive on 2026-09-09; §1–§3a are the original post's.
+
+**What the cell says.** 21 boundaries matched and planned, 20 built (`main` is excluded by the
+pair). Only 9 harnesses exported coverage: the other 11 are the boundaries that reach `get_part`,
+whose `malloc(1)` + `sscanf` (url.h:208, E1 #27) overflows on the C side for every well-formed URL,
+so C provides no reference and libFuzzer restarts on every input. That is the reason for 0.318 of
+functions and 0.092 of regions, and it is a property of the library, pre-registered in
+`preflight_accept.txt`. Every sampled candidate adjudicated `ub_associated` (30), `not_reproducible`
+(13) or `ub_associated_termination` (3): **nothing confirmed** — the negative control holds. The
+shipped test program passes on this translation (21/22 functions); the paper does not compare the
+two sides (RQ4 reframing), the numbers stay here as the acceptance record.
+
+**Not established.** Coverage of the `get_part` family under a valid C reference (would need a
+patched C, which is out of scope: we do not patch the reference).

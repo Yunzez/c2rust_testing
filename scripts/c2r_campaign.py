@@ -279,8 +279,12 @@ def classify(a_c: dict, b_rust: dict, c_comb: dict, d_nosan: dict | None = None)
             return "ub_associated_value", why + "; the comparison differed on UB input"
         return "ub_associated", why
     if a_c["outcome"] == "timeout":
-        return ("inconclusive" if b_rust["outcome"] == "timeout" else "confirmed_termination",
-                "C alone times out")
+        # C alone produced NO reference execution on this input. Whatever the translation did,
+        # nothing was compared, so nothing is confirmed. (Until 2026-09-09 this returned
+        # `confirmed_termination` when only C timed out -- inverted: it labelled a translation
+        # that RETURNED as a termination defect. 12 rows on lodepng x c2rust / x CROWN were
+        # re-classified offline from the archived verdicts; see rq4_runbook.md.)
+        return "inconclusive", "C alone times out: no reference execution"
     # No UB check fired on C from here on. That is check coverage, not a proof of definedness.
     if c_comb["outcome"] == "ub-gated":
         # The in-loop gate saw UB that ASan cannot: an out-of-range double->int cast, a signed

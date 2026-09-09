@@ -1,0 +1,218 @@
+[
+ {
+  "artifact": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7",
+  "size": 64,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (runtime error: null pointer passed as argument 1, which is declared to never be null)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: null pointer passed as argument 1, which is declared to never be null",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 4264128354\nINFO: Loaded 1 modules   (1316 inline 8-bit counters): 1316 [0x5564536917f0, 0x556453691d14), \nINFO: Loaded 1 PC tables (1316 PCs): 1316 [0x556453691d18,0x556453696f58), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/url_get_hostname_cands/crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7\nc/url.h:373:31: runtime error: null pointer passed as argument 1, which is declared to never be null\n/usr/include/string.h:203:35: note: nonnull attribute specified here\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:373:31 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: global-buffer-overflow",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": 0,
+   "top_frames": [
+    "#0 urlparser_c2saferrust::test::url_get_hostname lib.rs:447",
+    "#1 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run urlparser_c2saferrust_ft.rs:151",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "es/url_get_hostname_san.bin+0x140c4c) (BuildId: 84c5b06bcb3a88a820aa1738cbc8eed1cf8a8cef) \nShadow bytes around the buggy address:\n  0x55b45367a080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55b45367a100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55b45367a180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55b45367a200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55b45367a280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x55b45367a300: 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x55b45367a380: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x55b45367a400: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x55b45367a480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55b45367a500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55b45367a580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1418317==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen ??:?",
+    "#2 c_url_get_hostname ??:?",
+    "#3 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run ??:?"
+   ],
+   "stderr_tail": "pad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x16fde1) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n    #11 0x562f958993d6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x15e3d6) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n    #12 0x7f75a182a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #13 0x7f75a182a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x562f957acaa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x71aa4) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n\n==1418338==Register values:\nrax = 0x0000000000000000  rbx = 0x00000000a0be0101  rcx = 0x002b17cac3adab40  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007fffc96fd510  rsp = 0x00007fffc96fccc8  \n r8 = 0x00000000000000b1   r9 = 0x0000000000000000  r10 = 0x0000000000000001  r11 = 0x0000000000000b3d  \nr12 = 0x00000000ffffffff  r13 = 0x0000562f9591e740  r14 = 0x0000000000000000  r15 = 0x00007b95a0be0070  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1418338==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 230652637\nINFO: Loaded 1 modules   (701 inline 8-bit counters): 701 [0x55f0d727b490, 0x55f0d727b74d), \nINFO: Loaded 1 PC tables (701 PCs): 701 [0x55f0d727b750,0x55f0d727e320), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/url_get_hostname_cands/crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7\n==1418354== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "size": 0,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (runtime error: null pointer passed as argument 1, which is declared to never be null)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: null pointer passed as argument 1, which is declared to never be null",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 248666517\nINFO: Loaded 1 modules   (1316 inline 8-bit counters): 1316 [0x558507d2f7f0, 0x558507d2fd14), \nINFO: Loaded 1 PC tables (1316 PCs): 1316 [0x558507d2fd18,0x558507d34f58), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/url_get_hostname_cands/crash-da39a3ee5e6b4b0d3255bfef95601890afd80709\nc/url.h:373:31: runtime error: null pointer passed as argument 1, which is declared to never be null\n/usr/include/string.h:203:35: note: nonnull attribute specified here\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:373:31 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: global-buffer-overflow",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": 0,
+   "top_frames": [
+    "#0 urlparser_c2saferrust::test::url_get_hostname lib.rs:447",
+    "#1 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run urlparser_c2saferrust_ft.rs:151",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "es/url_get_hostname_san.bin+0x140c4c) (BuildId: 84c5b06bcb3a88a820aa1738cbc8eed1cf8a8cef) \nShadow bytes around the buggy address:\n  0x55cf9c38c080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55cf9c38c100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55cf9c38c180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55cf9c38c200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55cf9c38c280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x55cf9c38c300: 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x55cf9c38c380: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x55cf9c38c400: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x55cf9c38c480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55cf9c38c500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x55cf9c38c580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1418358==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen ??:?",
+    "#2 c_url_get_hostname ??:?",
+    "#3 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run ??:?"
+   ],
+   "stderr_tail": "pad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x16fde1) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n    #11 0x5556d60f53d6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x15e3d6) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n    #12 0x7f9f1542a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #13 0x7f9f1542a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x5556d6008aa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x71aa4) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n\n==1418360==Register values:\nrax = 0x0000000000000000  rbx = 0x00000000147e0101  rcx = 0x002aab6b068dab40  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007fffe3422590  rsp = 0x00007fffe3421d48  \n r8 = 0x00000000000000b1   r9 = 0x0000000000000000  r10 = 0x0000000000000001  r11 = 0x0000000000000b3d  \nr12 = 0x00000000ffffffff  r13 = 0x00005556d617a740  r14 = 0x0000000000000000  r15 = 0x00007bbf147e0090  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1418360==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 342914662\nINFO: Loaded 1 modules   (701 inline 8-bit counters): 701 [0x55d4ca4e1490, 0x55d4ca4e174d), \nINFO: Loaded 1 PC tables (701 PCs): 701 [0x55d4ca4e1750,0x55d4ca4e4320), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/url_get_hostname_cands/crash-da39a3ee5e6b4b0d3255bfef95601890afd80709\n==1418362== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "signal-seed_fixed",
+  "size": 64,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (runtime error: null pointer passed as argument 1, which is declared to never be null)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: null pointer passed as argument 1, which is declared to never be null",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 361073635\nINFO: Loaded 1 modules   (1316 inline 8-bit counters): 1316 [0x5579c71ea7f0, 0x5579c71ead14), \nINFO: Loaded 1 PC tables (1316 PCs): 1316 [0x5579c71ead18,0x5579c71eff58), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/url_get_hostname_cands/signal-seed_fixed\nc/url.h:373:31: runtime error: null pointer passed as argument 1, which is declared to never be null\n/usr/include/string.h:203:35: note: nonnull attribute specified here\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/url.h:373:31 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: global-buffer-overflow",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": 0,
+   "top_frames": [
+    "#0 urlparser_c2saferrust::test::url_get_hostname lib.rs:447",
+    "#1 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run urlparser_c2saferrust_ft.rs:151",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "es/url_get_hostname_san.bin+0x140c4c) (BuildId: 84c5b06bcb3a88a820aa1738cbc8eed1cf8a8cef) \nShadow bytes around the buggy address:\n  0x559122cb9080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x559122cb9100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x559122cb9180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x559122cb9200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x559122cb9280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x559122cb9300: 00[f9]f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x559122cb9380: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x559122cb9400: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n  0x559122cb9480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x559122cb9500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x559122cb9580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1418366==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __strlen_avx2 strlen-avx2.S:76",
+    "#1 __interceptor_strlen ??:?",
+    "#2 c_url_get_hostname ??:?",
+    "#3 urlparser_c2saferrust_ft::_::__libfuzzer_sys_run ??:?"
+   ],
+   "stderr_tail": "pad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x16fde1) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n    #11 0x5572e561d3d6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x15e3d6) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n    #12 0x7f97dbc2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #13 0x7f97dbc2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #14 0x5572e5530aa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname.bin+0x71aa4) (BuildId: 059748f3cd17dabf076a70f0ab9d860444bae9e6)\n\n==1418368==Register values:\nrax = 0x0000000000000000  rbx = 0x00000000dafe0101  rcx = 0x002ab972afcdab40  rdx = 0x0000000000000000  \nrdi = 0x0000000000000000  rsi = 0x0000000000000001  rbp = 0x00007ffff7ad2d50  rsp = 0x00007ffff7ad2508  \n r8 = 0x00000000000000b1   r9 = 0x0000000000000000  r10 = 0x0000000000000001  r11 = 0x0000000000000b3d  \nr12 = 0x00000000ffffffff  r13 = 0x00005572e56a2740  r14 = 0x0000000000000000  r15 = 0x00007bb7dafe0070  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libc.so.6+0x19a8dd) (BuildId: 240c8909736b31f963346aca80667fd00c551e32) \n==1418368==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 456206450\nINFO: Loaded 1 modules   (701 inline 8-bit counters): 701 [0x559dd1248490, 0x559dd124874d), \nINFO: Loaded 1 PC tables (701 PCs): 701 [0x559dd1248750,0x559dd124b320), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/harnesses/url_get_hostname_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/recell_urlparser_c2saferrust/confirm_sample/url_get_hostname_cands/signal-seed_fixed\n==1418370== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ }
+]

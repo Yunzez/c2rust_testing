@@ -86,4 +86,37 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | normal | 38 |
 | signal | 11 |
 
+## 6. Confirmation (confirm_sample, first 200 artifacts per boundary — a labelled SAMPLE, not the cell's adjudication)
+
+| boundary | adjudicated / total | verdicts | clusters |
+|---|---:|---|---:|
+| `get_part` | 3 / 3 | ub_associated 3 | 1 |
+| `strrwd` | 3 / 3 | ub_associated 3 | 1 |
+| `url_free` | 7 / 7 | not_reproducible 7 | 1 |
+| `url_get_auth` | 1 / 1 | not_reproducible 1 | 1 |
+| `url_get_hash` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_host` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_hostname` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_path` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_pathname` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_port` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_protocol` | 2 / 2 | not_reproducible 2 | 1 |
+| `url_get_query` | 3 / 3 | ub_associated 3 | 1 |
+| `url_get_search` | 3 / 3 | ub_associated 3 | 1 |
+| `url_inspect` | 3 / 3 | ub_associated_termination 3 | 1 |
+| `url_parse` | 1 / 1 | not_reproducible 1 | 1 |
+
+Total: not_reproducible 11, ub_associated 30, ub_associated_termination 3
+
 <!-- prose -->
+## 7. Prose (2026-09-09)
+
+**Deviations.** Confirmation recovered on 2026-09-09 from the archived inputs with rebuilt binaries
+(the original post skipped it). §4–§6 regenerated from the archive the same day.
+
+**What the cell says.** 20 of 21 planned (`main` absent from the translation), 19 built
+(`url_data_inspect` fails to build), 8 exported. 30 `ub_associated`, 11 `not_reproducible`,
+3 `ub_associated_termination`: **nothing confirmed**. The shipped test program passes (20/21
+functions); denominator taken from the translation's own instrumented objects. Low region reach
+(0.086) has the same single cause as the other urlparser cells: 11 of 20 boundaries have no clean C
+reference through `get_part`.

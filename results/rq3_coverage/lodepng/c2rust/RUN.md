@@ -154,10 +154,10 @@ libFuzzer parameters: `mode=rust-only`, `fork=1`, `max_total_time_s=3600`, `seed
 
 | | universe | tests | ours | both | only-tests | only-ours | neither | tests cov | ours cov |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| functions | 236 | 0 | 0 | 0 | 0 | 0 | 236 | 0.000 | 0.000 |
-| regions | 13260 | 0 | 0 | 0 | 0 | 0 | 13260 | 0.000 | 0.000 |
+| functions | 236 | 0 | 54 | 0 | 0 | 54 | 182 | 0.000 | 0.229 |
+| regions | 13260 | 0 | 1675 | 0 | 0 | 1675 | 11585 | 0.000 | 0.126 |
 
-Sanity checks: function pass, region pass. Harnesses unioned: 0. Identities outside the universe (excluded, never added): 0 fn / 0 reg.
+Sanity checks: function pass, region pass. Harnesses unioned: 47. Identities outside the universe (excluded, never added): 0 fn / 7 reg.
 
 ### Corpus growth at the checkpoints (inputs)
 
@@ -224,8 +224,8 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 
 | boundary | adjudicated / total | verdicts | clusters |
 |---|---:|---|---:|
-| `Adam7_deinterlace` | 85 / 85 | confirmed_termination 1, ub_associated 84 | 3 |
-| `Adam7_interlace` | 206 / 250 | confirmed_termination 5, ub_associated 201 | 6 |
+| `Adam7_deinterlace` | 85 / 85 | inconclusive 1, ub_associated 84 | 3 |
+| `Adam7_interlace` | 206 / 250 | inconclusive 5, ub_associated 201 | 6 |
 | `addColorBits` | 18 / 18 | ub_associated_termination 18 | 2 |
 | `addPaddingBits` | 201 / 501 | ub_associated 201 | 2 |
 | `alloc_string_sized` | 3 / 3 | ub_associated 3 | 1 |
@@ -247,7 +247,35 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | `unfilter` | 200 / 500 | ub_associated 200 | 10 |
 | `unfilterScanline` | 200 / 500 | ub_associated 200 | 5 |
 
-Total: confirmed_termination 6, inconclusive 1, ub_associated 1520, ub_associated_termination 317
+Total: inconclusive 7, ub_associated 1520, ub_associated_termination 317
 
 <!-- prose -->
+## 7. Prose (2026-09-09)
 
+**Deviations.** (1) The cell's scratch directory was deleted before its coverage analysis existed;
+the archived llvm-cov exports were intact, but each records the absolute path of its harness's
+`src/lib.rs` (needed for the `--expose-entry` line alignment). The harnesses were regenerated from
+the archived plans (`rebuild_bins.py`, deterministic, no fuzzing) and `c2r_coverage.py` was run with
+an explicit `--path-map` (recorded in `analysis/result.json`; procedure and hashes in
+`analysis/recovery.json`). Accepted with 0 functions outside the universe. (2) Six sampled rows on
+`Adam7_interlace` (5) and `Adam7_deinterlace` (1) had been labelled `confirmed_termination` by a
+classifier inversion — C alone timed out under ASan+UBSan and the translation returned; that is no
+reference execution, not a termination defect. They were re-classified offline to `inconclusive`
+from the archived verdict rows (summary.json carries the note); the classifier is fixed. (3) §4–§6
+regenerated from the archive.
+
+**What the cell says.** 235 boundaries matched, 64 planned: 171 fail at the signature for one
+reason class — struct-invariant parameters (`LodePNGInfo` with nested structs, `ucvector` and the
+bit reader/writer/HuffmanTree with owning pointer fields, `T**` outputs the callee allocates), which
+the frozen plan generator does not construct. 54 built, 47 exported, corpus 879. Reach 54/236
+functions (0.229), 1 675/13 260 regions (0.126). Four boundaries are pre-accepted C-side crash-alls
+(`lodepng_chunk_check_crc`, `lodepng_chunk_generate_crc`, `uivector_cleanup`, `lodepng_chunk_find`:
+a chunk pointer must address a real chunk header; `uivector_cleanup` frees memory the harness owns).
+Sample after re-classification: 1 520 `ub_associated`, 317 `ub_associated_termination`,
+7 `inconclusive`: **nothing confirmed** — c2rust clean for an eighth library.
+
+**Not established / limits.** `lodepng_chunk_find`/`lodepng_chunk_next` take a `(begin, end)`
+range that the planner models as two independent buffers, so the C side reads between unrelated
+allocations (layout luck, adjudicated `ub_associated`). A range-pair rule is recorded for the next
+generator version and was not applied mid-chain; the affected boundaries contribute noise, not
+findings. lodepng ships no test target: TEST-UNAVAILABLE, denominator from the instrumented rlib.

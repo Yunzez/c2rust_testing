@@ -300,6 +300,60 @@ Generator sources (sha256[:16] over gen_diff_harness.py, harness_plan.py, c2r_fu
 
 libFuzzer parameters: `mode=rust-only`, `fork=1`, `max_total_time_s=3600`, `seed=42`, `timeout_s=25`, `rss_limit_mb=2048`, `max_len=4096`, `ignore=['crashes', 'timeouts', 'ooms']`, `snapshots_s=[60, 300, 600, 1800]`
 
+## 4. Coverage (four-set partition, identities = (file, line) / (file, l1,c1,l2,c2))
+
+| | universe | tests | ours | both | only-tests | only-ours | neither | tests cov | ours cov |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| functions | 555 | 0 | 106 | 0 | 0 | 106 | 449 | 0.000 | 0.191 |
+| regions | 37840 | 0 | 9970 | 0 | 0 | 9970 | 27870 | 0.000 | 0.263 |
+
+Sanity checks: function pass, region pass. Harnesses unioned: 47. Identities outside the universe (excluded, never added): 0 fn / 5 reg.
+
+### Corpus growth at the checkpoints (inputs)
+
+| boundary | 60 s | 300 s | 600 s | 1800 s | 3600 s |
+|---|---:|---:|---:|---:|---:|
+| `DefaultWarning` | 16 | 16 | 16 | 16 | 16 |
+| `add_one_chunk` | 5 | 5 | 5 | 5 | 5 |
+| `adler32` | 32 | 32 | 32 | 32 | 32 |
+| `adler32_combine` | 10 | 10 | 10 | 10 | 10 |
+| `adler32_combine64` | 10 | 10 | 10 | 10 | 10 |
+| `compress` | 221 | 284 | 310 | 387 | 411 |
+| `compress2` | 257 | 327 | 391 | 468 | 488 |
+| `compressBound` | 8 | 8 | 8 | 8 | 8 |
+| `crc32` | 30 | 30 | 30 | 30 | 30 |
+| `crc32_combine` | 62 | 68 | 68 | 68 | 68 |
+| `crc32_combine64` | 61 | 68 | 68 | 68 | 68 |
+| `default_warning_handler` | 16 | 16 | 16 | 16 | 16 |
+| `get_ulong_i` | 5 | 5 | 5 | 5 | 5 |
+| `get_ulong_m` | 5 | 5 | 5 | 5 | 5 |
+| `get_ushort_i` | 3 | 3 | 3 | 3 | 3 |
+| `get_ushort_m` | 3 | 3 | 3 | 3 | 3 |
+| `opng_bitset_count` | 8 | 8 | 8 | 8 | 8 |
+| `opng_bitset_find_first` | 32 | 32 | 32 | 32 | 32 |
+| `opng_bitset_find_last` | 33 | 33 | 33 | 33 | 33 |
+| `opng_bitset_find_next` | 12 | 12 | 12 | 12 | 12 |
+| `opng_bitset_find_prev` | 11 | 11 | 11 | 11 | 11 |
+| `opng_os_test` | 43 | 44 | 44 | 44 | 44 |
+| `opng_os_test_eq` | 42 | 42 | 42 | 42 | 42 |
+| `opng_path_make_backup` | 20 | 20 | 20 | 20 | 20 |
+| `opng_path_replace_dir` | 54 | 56 | 56 | 58 | 58 |
+| `opng_path_replace_ext` | 61 | 64 | 64 | 64 | 64 |
+| `opng_strparse_rangeset_to_bitset` | 90 | 90 | 90 | 90 | 90 |
+| `png_do_write_interlace` | 13 | 17 | 20 | 23 | 28 |
+| `png_gt` | 6 | 6 | 6 | 6 | 6 |
+| `png_safecat` | 11 | 11 | 11 | 11 | 11 |
+| `png_save_int_32` | 5 | 5 | 5 | 5 | 5 |
+| `png_save_uint_16` | 5 | 5 | 5 | 5 | 5 |
+| `png_save_uint_32` | 5 | 5 | 5 | 5 | 5 |
+| `png_zalloc` | 8 | 8 | 8 | 8 | 8 |
+| `pngx_gif_warning` | 16 | 16 | 16 | 16 | 16 |
+| `pngx_tiff_warning` | 15 | 15 | 15 | 15 | 15 |
+| `pnm_is_valid` | 29 | 29 | 29 | 29 | 29 |
+| `pnm_mem_size` | 32 | 32 | 32 | 32 | 32 |
+| `pnm_raw_sample_size` | 21 | 21 | 21 | 21 | 21 |
+| `uncompress` | 220 | 257 | 271 | 293 | 347 |
+
 ## 5. Combined replay of the coverage corpus (protocol §4 step 6)
 
 Outcome tally over every saved corpus input, C reference beside the translation, ladder on:
@@ -330,4 +384,24 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 Total: inconclusive 21, instrument_only 208, not_reproducible 42, ub_associated 436, ub_associated_termination 3
 
 <!-- prose -->
+## 7. Prose (2026-09-09)
 
+**Deviations.** (1) Coverage analysis recovered on 2026-09-09 exactly as for lodepng × c2rust
+(scratch directory gone; harnesses regenerated; `--path-map` recorded; `analysis/recovery.json`);
+0 functions outside the universe. (2) §4–§6 regenerated from the archive. (3) optipng is the one
+multi-translation-unit pair (52 units, `make_pair.py --tus`).
+
+**What the cell says.** 552 boundaries matched (the largest artifact in the study), 128 planned:
+424 fail at the signature, all struct-invariant parameters — `png_struct_def` (178 + 30 opaque),
+`z_stream_s` (39), `gzFile_s` (29), `deflate_state` (28), `FILE` (24), `gz_state` (13). Of the
+128 planned only 54 built: 57 of the 74 build failures are duplicate C symbols in the multi-unit
+build (`the_exception_context`, a header tentative definition under `-fno-common`; libpng's
+`png_get_uint_*` read macros). `-fcommon` would raise the built count but changes the frozen build
+condition of the pair, so it was deliberately NOT applied (a separate sensitivity run if ever).
+47 exported, corpus 2 134; reach 106/555 functions (0.191), 9 970/37 840 regions (0.263). Seven
+pre-accepted crash-alls: five whose contract is to terminate the process (`DefaultError`,
+`default_error_handler`, `ErrorAlloc`, `pngx_gif_error`, `pngx_tiff_error`), `opng_get_alpha_row`,
+and `png_format_number`, which decrements a pointer past a buffer start (`*--end`: the same
+range-pair modelling gap as lodepng). Sample: 436 `ub_associated`, 208 `instrument_only`,
+42 `not_reproducible`, 21 `inconclusive`, 3 `ub_associated_termination`: **nothing confirmed** —
+the c2rust negative control holds on the largest artifact.

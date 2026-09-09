@@ -25,8 +25,26 @@ Assembled by `scripts/rq4/summary_all.py` from every library's `cells.json` (its
 | tulip | Laertes | 213 | 213 | 212 | 212 | 211 | 1813 | 1157 | 1 |
 | tulip | C2SaferRust | 213 | 212 | 212 | 212 | 212 | 1776 | 1038 | 9 |
 | tulip | CROWN | 213 | 213 | 212 | 212 | 212 | 1814 | 1076 | 0 |
+| qsort | c2rust | 3 | 3 | 3 | 3 | 3 | 121 | 0 | 0 |
+| qsort | Laertes | 3 | 3 | 3 | 3 | 3 | 118 | 0 | 0 |
+| qsort | C2SaferRust | 3 | 3 | 3 | 3 | 3 | 118 | 5006 | 0 |
+| qsort | CROWN | 3 | 3 | 3 | 3 | 3 | 120 | 0 | 0 |
+| qsort | SACTOR | 3 | 3 | 3 | 3 | 3 | 132 | 0 | 0 |
+| qsort | PtrTrans | 3 | 3 | 3 | 3 | 3 | 131 | 0 | 57 |
+| urlparser | c2rust | 21 | 21 | 20 | 20 | 9 | 50 | 35 | 11 |
+| urlparser | C2SaferRust | 21 | 19 | 18 | 18 | 9 | 47 | 30 | 9 |
+| urlparser | CROWN | 21 | 20 | 19 | 19 | 8 | 49 | 33 | 11 |
+| urlparser | Laertes | 21 | 21 | 20 | 20 | 3 | 48 | 34 | 17 |
+| quadtree | c2rust | 24 | 17 | 17 | 17 | 16 | 128 | 11 | 1 |
+| quadtree | CROWN | 24 | 13 | 13 | 13 | 10 | 82 | 11 | 3 |
+| quadtree | PtrTrans | 24 | 11 | 11 | 11 | 11 | 87 | 0 | 18 |
+| lodepng | c2rust | 235 | 64 | 54 | 54 | 47 | 879 | 55796 | 20 |
+| lodepng | CROWN | 235 | 57 | 54 | 54 | 47 | 880 | 55985 | 20 |
+| optipng | c2rust | 552 | 128 | 54 | 54 | 47 | 2134 | 14212 | 65 |
+| optipng | C2SaferRust | 552 | 121 | 96 | 96 | 79 | 1792 | 49522 | 391 |
+| optipng | Laertes | 552 | 121 | 55 | 55 | 48 | 999 | 15603 | 163 |
 
-19 cells: 1223 planned of 1922 matched boundaries, 1213 built, 1213 executed, 1131 with a coverage export; 32643 corpus inputs in total.
+37 cells: 1854 planned of 4222 matched boundaries, 1662 built, 1662 executed, 1483 with a coverage export; 40558 corpus inputs in total.
 
 ## 2. Coverage of the translation: shipped suite vs validator
 
@@ -53,6 +71,24 @@ Fractions are of the cell's universe (the passing suite's instrumented build whe
 | tulip | Laertes | TEST-FAILS | — | 211/216 (0.977) | 211 | — | 3168/13191 (0.240) | 3168 |
 | tulip | C2SaferRust | TEST-FAILS | — | 212/213 (0.995) | 212 | — | 3167/9306 (0.340) | 3167 |
 | tulip | CROWN | PASS | 213/213 (1.000) | 212/213 (0.995) | 0 | 8616/9219 (0.935) | 3197/9219 (0.347) | 73 |
+| qsort | c2rust | TEST-UNAVAILABLE | — | 3/3 (1.000) | 3 | — | 55/55 (1.000) | 55 |
+| qsort | Laertes | TEST-UNAVAILABLE | — | 3/3 (1.000) | 3 | — | 62/62 (1.000) | 62 |
+| qsort | C2SaferRust | TEST-UNAVAILABLE | — | 3/3 (1.000) | 3 | — | 57/57 (1.000) | 57 |
+| qsort | CROWN | TEST-UNAVAILABLE | — | 3/3 (1.000) | 3 | — | 61/61 (1.000) | 61 |
+| qsort | SACTOR | TEST-UNAVAILABLE | — | 6/8 (0.750) | 6 | — | 99/196 (0.505) | 99 |
+| qsort | PtrTrans | TEST-UNAVAILABLE | — | 3/3 (1.000) | 3 | — | 105/120 (0.875) | 105 |
+| urlparser | c2rust | PASS | 21/22 (0.955) | 7/22 (0.318) | 0 | 893/1202 (0.743) | 110/1202 (0.092) | 5 |
+| urlparser | C2SaferRust | TEST-FAILS | — | 7/24 (0.292) | 7 | — | 107/1183 (0.090) | 107 |
+| urlparser | CROWN | PASS | 20/21 (0.952) | 7/21 (0.333) | 0 | 839/1143 (0.734) | 98/1143 (0.086) | 7 |
+| urlparser | Laertes | TEST-FAILS | — | 3/25 (0.120) | 3 | — | 41/1477 (0.028) | 41 |
+| quadtree | c2rust | PASS | 24/24 (1.000) | 20/24 (0.833) | 0 | 406/436 (0.931) | 220/436 (0.505) | 2 |
+| quadtree | CROWN | TEST-FAILS | — | 17/47 (0.362) | 17 | — | 208/610 (0.341) | 208 |
+| quadtree | PtrTrans | TEST-UNAVAILABLE | — | 13/19 (0.684) | 13 | — | 134/407 (0.329) | 134 |
+| lodepng | c2rust | TEST-UNAVAILABLE | — | 54/236 (0.229) | 54 | — | 1675/13260 (0.126) | 1675 |
+| lodepng | CROWN | TEST-UNAVAILABLE | — | 54/257 (0.210) | 54 | — | 1449/14332 (0.101) | 1449 |
+| optipng | c2rust | TEST-UNAVAILABLE | — | 106/555 (0.191) | 106 | — | 9970/37840 (0.263) | 9970 |
+| optipng | C2SaferRust | TEST-UNAVAILABLE | — | 144/564 (0.255) | 144 | — | 9815/37297 (0.263) | 9815 |
+| optipng | Laertes | TEST-UNAVAILABLE | — | 71/820 (0.087) | 71 | — | 6611/49009 (0.135) | 6611 |
 
 ## 3. Candidates, confirmation, defects
 
@@ -79,8 +115,26 @@ Confirmation totals are the cell's labelled sample (or its full confirmation whe
 | tulip | Laertes | 0 | 2 | 244 | 0 | 35 | C11 |
 | tulip | C2SaferRust | 5 | 7 | 242 | 0 | 4 | S15 |
 | tulip | CROWN | 0 | 0 | 243 | 0 | 1 | — |
+| qsort | c2rust | 0 | 0 | 0 | 0 | 0 | — |
+| qsort | Laertes | 0 | 0 | 0 | 0 | 0 | — |
+| qsort | C2SaferRust | 0 | 0 | 0 | 200 | 0 | — |
+| qsort | CROWN | 0 | 0 | 0 | 0 | 0 | — |
+| qsort | SACTOR | 0 | 0 | 0 | 0 | 0 | — |
+| qsort | PtrTrans | 57 | 0 | 0 | 0 | 0 | S6 |
+| urlparser | c2rust | 0 | 0 | 33 | 0 | 13 | — |
+| urlparser | C2SaferRust | 0 | 0 | 26 | 1 | 12 | — |
+| urlparser | CROWN | 0 | 0 | 33 | 0 | 11 | — |
+| urlparser | Laertes | 0 | 18 | 33 | 0 | 0 | C12 |
+| quadtree | c2rust | 0 | 0 | 3 | 0 | 9 | — |
+| quadtree | CROWN | 0 | 0 | 9 | 0 | 5 | — |
+| quadtree | PtrTrans | 0 | 0 | 18 | 0 | 0 | — |
+| lodepng | c2rust | 0 | 0 | 1837 | 0 | 7 | — |
+| lodepng | CROWN | 0 | 0 | 1870 | 0 | 7 | — |
+| optipng | c2rust | 0 | 0 | 439 | 208 | 63 | — |
+| optipng | C2SaferRust | 397 | 802 | 1421 | 0 | 122 | S1, C13, S16 |
+| optipng | Laertes | 97 | 200 | 419 | 210 | 73 | S4, S17, C14 |
 
-Confirmed across all cells: 618 value divergences, 372 terminations, before clustering (one site = one defect; a producer's crash counts once and blocks its dependants).
+Confirmed across all cells: 1169 value divergences, 1392 terminations, before clustering (one site = one defect; a producer's crash counts once and blocks its dependants).
 
 ## 4. Defects the RQ4 cells found or re-found
 
@@ -92,9 +146,17 @@ Confirmed across all cells: 618 value divergences, 372 terminations, before clus
 | C10 | lil × CROWN | null/empty conflation | NEW — found by the RQ4 plan pipeline |
 | S15 | tulipindicators × C2SaferRust | semantic computation substitution | catalogued earlier; re-found by the RQ4 cell |
 | C11 | tulipindicators × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
+| S1 | optipng (zlib) × C2SaferRust | null/empty conflation | catalogued earlier; re-found by the RQ4 cell |
 | S3 | bzip2 × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
+| S4 | optipng (zlib) × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
 | S5 | genann × SACTOR | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
+| S6 | qsort × PtrTrans | interface-contract loss | catalogued earlier; re-found by the RQ4 cell |
 | S10 | bzip2 × CROWN | ownership-state corruption | catalogued earlier; re-found by the RQ4 cell |
 | S11 | bzip2 × CROWN | ownership-state corruption | catalogued earlier; re-found by the RQ4 cell |
 | S14 | bzip2 × C2SaferRust | semantic computation substitution | catalogued earlier; re-found by the RQ4 cell |
+| C12 | urlparser × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
+| C13 | optipng × C2SaferRust | null/empty conflation | catalogued earlier; re-found by the RQ4 cell |
+| S16 | optipng × C2SaferRust | byte-string domain narrowing | catalogued earlier; re-found by the RQ4 cell |
+| S17 | optipng × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
+| C14 | optipng (zlib) × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
 

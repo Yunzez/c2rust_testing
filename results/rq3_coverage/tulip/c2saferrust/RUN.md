@@ -398,7 +398,7 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | boundary | adjudicated / total | verdicts | clusters |
 |---|---:|---|---:|
 | `ti_adosc_start` | 1 / 1 | ub_associated_termination 1 | 1 |
-| `ti_adx_start` | 12 / 12 | confirmed_divergence 5, confirmed_termination 7 | 2 |
+| `ti_adx_start` | 12 / 12 | confirmed_divergence 5, confirmed_termination 4, instrument_only 3 | 2 |
 | `ti_adxr_start` | 1 / 1 | ub_associated_termination 1 | 1 |
 | `ti_atr_start` | 1 / 1 | ub_associated_termination 1 | 1 |
 | `ti_bbands_start` | 1 / 1 | ub_associated_termination 1 | 1 |
@@ -446,7 +446,7 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | `ti_wma_start` | 1 / 1 | ub_associated_termination 1 | 1 |
 | `ti_zlema_start` | 1 / 1 | ub_associated_termination 1 | 1 |
 
-Total: confirmed_divergence 5, confirmed_termination 7, not_reproducible 4, ub_associated_termination 242
+Total: confirmed_divergence 5, confirmed_termination 4, instrument_only 3, not_reproducible 4, ub_associated_termination 242  *(re-classified offline 2026-09-09: 3 rows `confirmed_termination` → `instrument_only`, no-sanitizer replay normal; see §7)*
 
 <!-- prose -->
 ## 7. What this cell is, and is not
@@ -474,3 +474,5 @@ two paired cells (`c2rust/RUN.md` §7).
 
 **Not established:** whether `ti_adx`'s own output is wrong downstream of the wrong start (its
 boundary's corpus never passed the option domain); anything about `ti_buffer_*`.
+
+**Re-classified 2026-09-09.** 3 of the 7 `ti_adx_start` rows labelled `confirmed_termination` returned normally in the no-sanitizer replay (the classifier had not consulted channel D for a `combined` panic); they are now `instrument_only`. S15 stands on the 5 confirmed_divergence rows and the 4 terminations that trap with no sanitizer; its manifest wording was corrected.

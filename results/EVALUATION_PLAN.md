@@ -18,7 +18,9 @@ naturally renamed pairs.
 
 Current evidence: `rq1_matching/`. The current aggregate is 40 outputs, 4,202
 pairs, macro precision/recall 0.829/0.874, and 7/9 naturally renamed pairs
-recovered. Manual labels remain preliminary until independently reviewed.
+recovered. All 15 renaming-output label sets were reviewed by the user and
+independently rechecked against their fingerprinted C and Rust artifacts on
+2026-09-09; the review changed no labels or aggregate values.
 
 ## RQ2 — End-to-end effectiveness
 

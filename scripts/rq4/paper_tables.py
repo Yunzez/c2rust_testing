@@ -15,7 +15,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 RQ4 = ROOT / "results" / "rq3_coverage"
-LIBS = ["bzip2", "genann", "cjson", "lil", "tulip", "qsort", "quadtree"]
+LIBS = ["bzip2", "genann", "cjson", "lil", "tulip", "qsort", "urlparser",
+        "quadtree", "lodepng", "optipng"]
 LIB_TEX = {"bzip2": "bzip2", "genann": "genann", "cjson": "cJSON", "lil": "lil", "tulip": "tulip",
            "qsort": "qsort", "urlparser": "urlparser", "quadtree": "quadtree", "lodepng": "lodepng", "optipng": "optipng"}
 TOOL_TEX = {"c2rust": "c2rust", "laertes": "Laertes", "crown": "CROWN", "c2saferrust": "C2SaferRust",

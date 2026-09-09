@@ -38,10 +38,11 @@ named in `scripts/rq1_group_b_scaffold.py` (shipped / July artifacts).
 7. **Truth distinctions are kept:** genuine single-function pair | `STUB:x` | `NONE` |
    `SPLIT` / `MERGED` | `AMBIGUOUS`. STUBs are not genuine pairs (strict rule; the lenient
    variant is secondary). Tool-map record shifts and placeholder names are not renames.
-8. **All labels are preliminary** (Claude-labeled, `reviewed_by_user: false` in every
-   `labels.json`); the scorer warns until a human flips the flag. Every genuine renamed pair,
-   every matcher error and every STUB-vs-genuine decision has an evidence note in its
-   `labels.json`.
+8. **All labels have been reviewed.** The user reviewed all 15 label sets, and an independent
+   second pass checked them against the fingerprinted C and Rust artifacts on 2026-09-09.
+   Every `labels.json` now records `reviewed_by_user: true`; the review changed no labels or
+   aggregate values. Every genuine renamed pair, matcher error, and STUB-vs-genuine decision
+   retains an evidence note.
 
 Tool symbols: ∘ c2rust, △ Laertes, ◇ CROWN, • C2SaferRust, ★ PtrTrans, × SACTOR.
 
@@ -147,30 +148,23 @@ Reused without reproduction (logs sufficient): tulip ★, optipng ★ (PA stage,
 lil × (0 LLM calls). bzip2 × and optipng × were re-attempted on 2026-09-02 under the Gate 0/1
 protocol (rows above); their July notes are superseded.
 
-## 5. Labels requiring independent review (all 15 cases are unreviewed)
+## 5. Independent label review (completed 2026-09-09)
 
-Highest value first:
-1. The **9 genuine renamed pairs** (qsort ★ `partition`-family, qsort ×, cJSON ★, lodepng ★ ×4,
-   bzip2 ★ ×2) — they decide "renamed correct".
-2. STUB-vs-genuine calls made by body reading rather than tool tag: ptrtrans_urlparser
-   `url_get_path` (LLM-authored constant-None body); ptrtrans_lil `lil_to_string`,
-   `lil_list_get` (STUB despite `No_Fix_Compile_Success`) and `find_cmd`, `lil_find_local_var`
-   (kept genuine though every path returns `None`); ptrtrans_genann `genann_run` (kept genuine
-   though it panics unconditionally).
-3. sactor_tulip: the labeler chose **provenance** over the README's literal "behaviorally
-   interchangeable ⇒ AMBIGUOUS" rule (the `ti_X_start` bodies fall into ~6 clone classes);
-   under the literal rule the cell collapses to AMBIGUOUS and becomes unscorable.
-4. lodepng ★ 6 AMBIGUOUS + 1 SPLIT rows; a sample of the 214 lodepng / 52 bzip2 / 31 cJSON STUB
-   rows.
-5. sactor_urlparser `url_free` (idiomatic `{}` body labeled genuine as an ownership drop).
-6. sactor_lodepng: the 20 fail-6/6 bodies and `lodepng_gtofl` labeled genuine by body reading
-   although SACTOR never verified them (tool-side E0428 / link failure); the 6 forced-matcher
-   errors are two same-body swaps (`lodepng_chunk_ancillary`↔`_safetocopy`, `isGrayICCProfile`↔
-   `isRGBICCProfile`) plus 4 mis-assignments, and 8 proposals landed on NONE rows.
-7. sactor_bzip2: `BZ2_bzflush` labeled genuine although its Rust body is a bare `0` (the C
-   body is `return 0;` with a "do nothing now" comment); the 5 SACTOR-unverified last attempts
-   (`BZ2_bzCompressInit`, `BZ2_bzReadGetUnused`, `BZ2_bzerror`, `flush_RL`, `bsPutUInt32`)
-   labeled genuine by body reading; benign added null guards in 6 bodies kept genuine.
+The user reviewed all 15 manual label sets, and a second independent pass checked the 1,235
+C-function rows against the exact C/Rust artifacts named by each sheet fingerprint. All current
+source, artifact, and tool-map hashes match those fingerprints. The audit found no missing label,
+unknown Rust target, or duplicate one-to-one truth target.
+
+The second pass re-read all nine genuine renamed correspondences and the strict exclusions for
+STUB, SPLIT, MERGED, and AMBIGUOUS rows, including the previously identified high-judgment cases.
+No label changed. The result therefore remains 161 implemented pairs in the nine COMPLETE outputs,
+nine genuine renames, and seven of nine renames recovered by the matcher.
+
+One analyzer edge case remains documented rather than silently repaired: PtrTrans lodepng contains
+a source-level placeholder for `lodepng_chunk_init`, but the Rust inventory misses it because its
+parameter uses a raw identifier. It remains `NONE`. Treating it as `STUB` would affect only the
+secondary lenient accounting; both labels are excluded from the strict implemented-pair ground
+truth and therefore leave every paper number unchanged.
 
 ## 6. Cells still impossible under the shipped configurations
 

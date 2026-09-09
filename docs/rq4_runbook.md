@@ -95,6 +95,26 @@ in RUN.md.
       as `path_map`, never a symlink at the old path — and write `analysis/recovery.json`.
       Accept only with 0 functions outside the universe.
 
+- **A `combined` panic is NOT a confirmed termination until the no-sanitizer replay traps too**
+  (`classify`, second gap, found 2026-09-09 during the optipng triage, FIXED). The panic branch had
+  returned `confirmed_termination` without consulting channel D. 234 archived rows panicked only in
+  the ASan build and returned normally without it — optipng × Laertes `uncompress` 200 (an index
+  read from uninitialised heap: ASan fills it with 0xBE, so 0xBEBE = 48830 goes out of bounds; a zeroed
+  heap gives a silent wrong result), optipng × C2SaferRust `uncompress` 31 (an overlapping
+  `copy_from_slice` memcpy the interceptor rejects), tulip × C2SaferRust `ti_adx_start` 3. All
+  re-classified offline to `instrument_only`; C14 became S18 (semantic) because its termination
+  evidence was the instrument's. **Check on every cell: `confirmed_termination` rows must have
+  `rust_no_sanitizer.outcome != normal`.**
+- **Two things that look like confirmed terminations and are not defects** (optipng × C2SaferRust
+  triage, `results/rq3_coverage/optipng/c2saferrust/TRIAGE.md`): (a) an *overflow check on a wrap C
+  defines* — `optimize_cmf`'s `--z_cinfo` on unsigned 0 is defined in C and identical in a Rust
+  release build; the debug panic is the instrument's (200 rows, not promoted); (b) a *harness
+  input-model gap* — `bmp_memset_bytes(ptr, offset, ch, len)` passes `ptr + offset` to `memset`, the
+  planner does not model libc sinks, so `offset` is an unbounded scalar and both sides compute an
+  out-of-bounds pointer (C silently, Rust's `ptr::offset` debug precondition traps; 117 rows,
+  out-of-contract input, not promoted). Planner rule for the next version: memset/memcpy/strcpy
+  arguments derive an extent `offset + len <= extent(ptr)`.
+
 ## Generator/planner traps met so far (all fixed; here so a regression is recognised)
 
 coverage replay without `-timeout=25` hangs on a looping input and its `TimeoutExpired` killed the

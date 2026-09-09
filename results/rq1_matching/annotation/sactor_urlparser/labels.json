@@ -4,7 +4,8 @@
  "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
  "method": "manual reading of each C body (run4_input/driver.c + url.h) against every Rust function in assembled_idiomatic.rs (same name, tool map, matcher proposal), cross-checked with RUN.md and run4_result/driver.c__585b2fa3/{unidiomatic,idiomatic}_failure_info.json to decide which C functions SACTOR never emitted",
  "date": "2026-09-02",
- "reviewed_by_user": false,
+ "reviewed_by_user": true,
+ "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
  "artifact_status": "PARTIAL",
  "artifact_status_note": "7 of 22 C functions were emitted in the scored (idiomatic) phase; SACTOR failed 5x on the global URL_SCHEMES / url_is_protocol and never attempted the 13 dependents, and get_part only reached the unidiomatic phase (RUN.md).",
  "labels": {

@@ -9860,7 +9860,8 @@
   "labeler": "claude (main session + 3 subagents, one per 79/79/77-row slice of the C function list)",
   "method": "per C function: read C body (lodepng.c), inspect every candidate Rust fn (same-name, tool_claim, matcher_forced/deploy, grep of distinctive constants/strings/loops over dataset/Trans_C-Rust-KG/lodepng/src/**); truth=Rust fn only when a body implementing the C logic exists; STUB:x when the crate contains only a signature-only placeholder x for the C fn; AMBIGUOUS when two duplicate empty stubs (CamelCase + snake_case) claim the same C fn; NONE when no counterpart or the counterpart is absent from the rust-analyzer inventory",
   "date": "2026-09-01",
-  "reviewed_by_user": false,
+  "reviewed_by_user": true,
+  "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
   "crate_note": "shipped PtrTrans lodepng crate is a stub shell: ~8 functions with real logic, the rest signature-only placeholders; many duplicate same-name definitions (crate cannot compile)"
  }
 }

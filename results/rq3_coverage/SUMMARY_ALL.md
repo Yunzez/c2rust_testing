@@ -22,9 +22,9 @@ Assembled by `scripts/rq4/summary_all.py` from every library's `cells.json` (its
 | lil | C2SaferRust | 145 | 47 | 47 | 47 | 24 | 340 | 3670 | 27 |
 | lil | CROWN | 145 | 42 | 42 | 42 | 39 | 1859 | 617 | 3 |
 | tulip | c2rust | 213 | 213 | 212 | 212 | 212 | 1903 | 1149 | 0 |
-| tulip | Laertes | 213 | 213 | 212 | 212 | 211 | 1813 | 1157 | 1 |
 | tulip | C2SaferRust | 213 | 212 | 212 | 212 | 212 | 1776 | 1038 | 9 |
 | tulip | CROWN | 213 | 213 | 212 | 212 | 212 | 1814 | 1076 | 0 |
+| tulip | Laertes | 213 | 213 | 212 | 212 | 211 | 1813 | 1157 | 1 |
 | qsort | c2rust | 3 | 3 | 3 | 3 | 3 | 121 | 0 | 0 |
 | qsort | Laertes | 3 | 3 | 3 | 3 | 3 | 118 | 0 | 0 |
 | qsort | C2SaferRust | 3 | 3 | 3 | 3 | 3 | 118 | 5006 | 0 |
@@ -68,9 +68,9 @@ Fractions are of the cell's universe (the passing suite's instrumented build whe
 | lil | C2SaferRust | TEST-UNAVAILABLE | — | 25/154 (0.162) | 25 | — | 362/5751 (0.063) | 362 |
 | lil | CROWN | TEST-UNAVAILABLE | — | 127/134 (0.948) | 127 | — | 5294/6409 (0.826) | 5294 |
 | tulip | c2rust | PASS | 213/213 (1.000) | 212/213 (0.995) | 0 | 8616/9298 (0.927) | 3197/9298 (0.344) | 73 |
-| tulip | Laertes | TEST-FAILS | — | 211/216 (0.977) | 211 | — | 3168/13191 (0.240) | 3168 |
 | tulip | C2SaferRust | TEST-FAILS | — | 212/213 (0.995) | 212 | — | 3167/9306 (0.340) | 3167 |
 | tulip | CROWN | PASS | 213/213 (1.000) | 212/213 (0.995) | 0 | 8616/9219 (0.935) | 3197/9219 (0.347) | 73 |
+| tulip | Laertes | TEST-FAILS | — | 211/216 (0.977) | 211 | — | 3168/13191 (0.240) | 3168 |
 | qsort | c2rust | TEST-UNAVAILABLE | — | 3/3 (1.000) | 3 | — | 55/55 (1.000) | 55 |
 | qsort | Laertes | TEST-UNAVAILABLE | — | 3/3 (1.000) | 3 | — | 62/62 (1.000) | 62 |
 | qsort | C2SaferRust | TEST-UNAVAILABLE | — | 3/3 (1.000) | 3 | — | 57/57 (1.000) | 57 |
@@ -112,9 +112,9 @@ Confirmation totals are the cell's labelled sample (or its full confirmation whe
 | lil | C2SaferRust | 0 | 57 | 413 | 3 | 1 | C9 |
 | lil | CROWN | 0 | 69 | 218 | 61 | 43 | C10 |
 | tulip | c2rust | 0 | 0 | 243 | 0 | 0 | — |
-| tulip | Laertes | 0 | 2 | 244 | 0 | 35 | C11 |
-| tulip | C2SaferRust | 5 | 7 | 242 | 0 | 4 | S15 |
+| tulip | C2SaferRust | 5 | 4 | 242 | 3 | 4 | S15 |
 | tulip | CROWN | 0 | 0 | 243 | 0 | 1 | — |
+| tulip | Laertes | 0 | 2 | 244 | 0 | 35 | C11 |
 | qsort | c2rust | 0 | 0 | 0 | 0 | 0 | — |
 | qsort | Laertes | 0 | 0 | 0 | 0 | 0 | — |
 | qsort | C2SaferRust | 0 | 0 | 0 | 200 | 0 | — |
@@ -131,10 +131,10 @@ Confirmation totals are the cell's labelled sample (or its full confirmation whe
 | lodepng | c2rust | 0 | 0 | 1837 | 0 | 7 | — |
 | lodepng | CROWN | 0 | 0 | 1870 | 0 | 7 | — |
 | optipng | c2rust | 0 | 0 | 439 | 208 | 63 | — |
-| optipng | C2SaferRust | 397 | 802 | 1421 | 0 | 122 | S1, C13, S16 |
-| optipng | Laertes | 97 | 200 | 419 | 210 | 73 | S4, S17, C14 |
+| optipng | C2SaferRust | 397 | 771 | 1421 | 31 | 122 | S1, S2, C13, S16, S19, S20, C15, S21 |
+| optipng | Laertes | 97 | 0 | 419 | 410 | 73 | S4, S17, S18 |
 
-Confirmed across all cells: 1169 value divergences, 1392 terminations, before clustering (one site = one defect; a producer's crash counts once and blocks its dependants).
+Confirmed across all cells: 1169 value divergences, 1158 terminations, before clustering (one site = one defect; a producer's crash counts once and blocks its dependants).
 
 ## 4. Defects the RQ4 cells found or re-found
 
@@ -147,6 +147,7 @@ Confirmed across all cells: 1169 value divergences, 1392 terminations, before cl
 | S15 | tulipindicators × C2SaferRust | semantic computation substitution | NEW — found by the RQ4 plan pipeline |
 | C11 | tulipindicators × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
 | S1 | optipng (zlib) × C2SaferRust | null/empty conflation | catalogued earlier; re-found by the RQ4 cell |
+| S2 | optipng (zlib) × C2SaferRust | null/empty conflation | catalogued earlier; re-found by the RQ4 cell |
 | S3 | bzip2 × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
 | S4 | optipng (zlib) × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
 | S5 | genann × SACTOR | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
@@ -158,5 +159,9 @@ Confirmed across all cells: 1169 value divergences, 1392 terminations, before cl
 | C13 | optipng × C2SaferRust | null/empty conflation | NEW — found by the RQ4 plan pipeline |
 | S16 | optipng × C2SaferRust | byte-string domain narrowing | NEW — found by the RQ4 plan pipeline |
 | S17 | optipng × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
-| C14 | optipng (zlib) × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
+| S18 | optipng (zlib) × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
+| S19 | optipng (zlib) × C2SaferRust | semantic computation substitution | NEW — found by the RQ4 plan pipeline |
+| S20 | optipng (zlib) × C2SaferRust | semantic computation substitution | NEW — found by the RQ4 plan pipeline |
+| C15 | optipng (zlib) × C2SaferRust | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
+| S21 | optipng (zlib) × C2SaferRust | semantic computation substitution | NEW — found by the RQ4 plan pipeline |
 

@@ -1,16 +1,19 @@
 # RQ1 group B — manual-labeling scaffolds for the renaming translators (PtrTrans, SACTOR)
 
+> **Historical scaffold snapshot.** All 15 cases were subsequently labeled, reviewed by the
+> user, and independently rechecked against their fingerprinted artifacts on 2026-09-09. The
+> canonical current status is [`../group_b_status.md`](../group_b_status.md); the tables below
+> preserve the original seven scaffolds as they appeared before labeling.
+
 Generated 2026-09-01 by `scripts/rq1_group_b_scaffold.py --all`. Which translator × library
 cells have analyzable output at all, and why the others are N/A, is documented in
-`../group_b_availability.md` — read that first. **No `truth` label has been written yet for
-any artifact**; nothing below is a Matching-Accuracy result.
+`../group_b_availability.md`, which has since been superseded by `../group_b_status.md`.
 
-Each directory holds `sheet.csv` (one row per C function; fill `truth` / `truth_note`),
-`sheet.json` (rows + raw matcher output + fingerprint: matcher/analyzer commits, artifact
-and C-source hashes), `rust_inventory.csv` (every Rust function with who claims it) and a
-`README.md` with the artifact facts and the labeling rules. Raw analyzer / matcher output
-per case is archived in `../raw/group_b/<case>/`. The labeling rules are identical across
-all seven; read one.
+Each directory holds `sheet.csv` (one row per C function, including the applied `truth` and
+`truth_note`), `sheet.json` (rows + raw matcher output + fingerprint: matcher/analyzer commits,
+artifact and C-source hashes), `labels.json`, `rust_inventory.csv` (every Rust function with who
+claims it), and a `README.md` with the artifact facts and labeling rules. Raw analyzer / matcher
+output per case is archived in `../raw/group_b/<case>/`.
 
 Duplicate leaf names are detected, never silently resolved: a Rust leaf defined twice makes
 `name_eq` = `DUPLICATE` and a tool claim on it `tool_claim_defined_in_rust` = `DUPLICATE`.

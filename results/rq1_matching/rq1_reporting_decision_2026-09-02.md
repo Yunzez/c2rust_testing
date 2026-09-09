@@ -85,7 +85,7 @@ details in `group_b_status.md` §2/§5.
 - **Group A artifacts** (31, name-preserving; truth = hidden-name equality): from
   `rows/group_a_table.json → per_library[lib].per_artifact_counts[key]`, per-artifact
   P = `f_correct / f_matched`, R = `f_correct / scorable`, pairs = `scorable`, renamed = 0.
-- **Group B COMPLETE artifacts** (9; truth = manual labels, `reviewed_by_user: false`): from
+- **Group B COMPLETE artifacts** (9; truth = reviewed manual labels, `reviewed_by_user: true`): from
   `rows/group_b_full.json → rows[case]` with `artifact_status == "COMPLETE"`, P/R = `forced.precision/recall`,
   pairs = `scorable`, renamed = `real_renamed.pairs`, correct = `real_renamed.forced_correct`.
 - **Group B PARTIAL artifacts** (6: lil ★, urlparser ×, quadtree ×, tulip ×, lodepng ×, bzip2 ×): listed with ᵖ,
@@ -98,7 +98,7 @@ details in `group_b_status.md` §2/§5.
 ### Consistency with earlier binding rules (`group_b_status.md` §0)
 
 Everything there still holds (forced only; unit = library; no micro / dev-eval / deployment; STUB ≠ genuine;
-labels preliminary; PARTIAL separate; pre-output failures = "failed to emit analyzable Rust under the shipped
+labels independently reviewed; PARTIAL separate; pre-output failures = "failed to emit analyzable Rust under the shipped
 configuration"). What changes: **(a)** group A and group B no longer appear as separate tables or aggregates
 in the paper; **(b)** the `name-eq R` column is dropped from the table and becomes one sentence of prose
 (0/9 vs 7/9); **(c)** N/A rows disappear — every library now has ≥ 2 complete outputs, so the table has no
@@ -106,8 +106,8 @@ N/A cells (lil/tulip/optipng were N/A only in the group-B-only view). The group-
 (7 libraries, 9 outputs, 161 pairs, 0.516/0.739) is **no longer a paper number**; keep it in
 `group_b_status.md` as the per-group provenance breakdown.
 
-### Still owed by the user before the paper is final
+### Review status
 
-- Independent review of the 9 renamed pairs and the 7 STUB-vs-genuine calls in `group_b_status.md` §5
-  (all Claude labels are `reviewed_by_user: false`).
-- Copy the table above into `evaluation.tex` (I do not edit the paper).
+The user reviewed all 15 Group-B label sets, followed by an independent artifact-level recheck on
+2026-09-09. No label or aggregate changed. The matching table is included from
+`table/matching_accuracy.tex` by `evaluation.tex`.

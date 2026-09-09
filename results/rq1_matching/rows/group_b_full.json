@@ -2,23 +2,7 @@
  "_meta": {
   "scorer": "scripts/rq1_group_b_score.py",
   "annotation_dir": "results/rq1_matching/annotation",
-  "labels_unreviewed_by_user": [
-   "ptrtrans_bzip2",
-   "ptrtrans_cjson",
-   "ptrtrans_genann",
-   "ptrtrans_lil",
-   "ptrtrans_lodepng",
-   "ptrtrans_qsort",
-   "ptrtrans_quadtree",
-   "ptrtrans_urlparser",
-   "sactor_bzip2",
-   "sactor_genann",
-   "sactor_lodepng",
-   "sactor_qsort",
-   "sactor_quadtree",
-   "sactor_tulip",
-   "sactor_urlparser"
-  ],
+  "labels_unreviewed_by_user": [],
   "partial_artifacts": [
    "ptrtrans_lil",
    "sactor_bzip2",
@@ -52,7 +36,8 @@
     "labeler": "Claude subagent (claude-fable-5-1), session 6278f822; spot-checked by the main session (blocksort.rs:384-412 stub bodies, 16 'stub/placeholder' comment hits across src/)",
     "method": "manual code reading of the C body against every candidate Rust body plus grep of the crate for unmatched functions; STUB:x = signature-only placeholder body (52 of 61 Rust fns in this crate are such placeholders; the crate is not a translation of bzip2's logic, git log shows one 'Initial translation' commit per C function with the body never filled)",
     "date": "2026-09-01",
-    "reviewed_by_user": false
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09."
    },
    "forced": {
     "matched": 54,
@@ -201,7 +186,8 @@
     "labeler": "Claude subagent (claude-fable-5-1), session 6278f822; STUB partition applied by the main session from the subagent's stub list (31 rows: 29 placeholder bodies + suffix_object/cast_away_const no-op bodies)",
     "method": "manual code reading of the C body against every candidate Rust body plus grep of the crate for unmatched functions; STUB:x = placeholder body (returns 0/None/empty) whose correspondence rests on name, parameters and the tool's doc comment only",
     "date": "2026-09-01",
-    "reviewed_by_user": false
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09."
    },
    "forced": {
     "matched": 108,
@@ -346,7 +332,8 @@
     "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
     "method": "manual code reading of each C function body (input/genann/genann.c) against every candidate Rust function (same name, tool claim, matcher forced proposal) in src/genann.rs and src/common/genann_mod.rs, cross-checked with RUN.md and the PtrTrans metadata jsonl (stub reverts, header-declaration units, Free_Function elision), plus a grep of the whole crate for Drop impls / free functions.",
     "date": "2026-09-02",
-    "reviewed_by_user": false
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09."
    },
    "forced": {
     "matched": 14,
@@ -481,7 +468,8 @@
     "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
     "method": "manual code reading of each C function body (input/lil/lil.c) against every candidate Rust function (same name, tool claim, matcher forced proposal) in PA_trans_projects/lil/src/common/lil_mod.rs (all 90 fns read; src/main_mod.rs is out of scope), cross-checked with RUN.md and the PtrTrans metadata jsonl (Verfi_Tag: the two Fixed_5_Compile_Failed stub reverts, the Free_Function elision, the ee_expr and lil_parse_value multi-name units), plus greps of the crate for Drop impls / free functions / _lil_t constructors. STUB decided from the Rust body, not the tag: two No_Fix_Compile_Success units (lil_to_string, lil_list_get) are constant-None placeholders and are labelled STUB; find_cmd and lil_find_local_var also return None on every path but port the search logic and are kept as counterparts (flagged for review).",
     "date": "2026-09-02",
-    "reviewed_by_user": false,
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
     "artifact_status": "PARTIAL",
     "artifact_status_note": "PtrTrans crashed at unit 95 of 131 (fnc_write#lil.c#3484; 807,401-token prompt rejected by OpenAI, RUN.md 'Completion state'); 36 units were never attempted (-> NONE rows here), 12 functions are signature-only stub reverts (fnc_store + the 11-function lil_parse_value SCC, Verfi_Tag Fixed_5_Compile_Failed), lil_free is elided (Free_Function). The archived partial crate passes cargo check. Scored on the separate PARTIAL line, never in the primary table (RUN.md)."
    },
@@ -620,7 +608,8 @@
     "labeler": "claude (main session + 3 subagents, one per 79/79/77-row slice of the C function list)",
     "method": "per C function: read C body (lodepng.c), inspect every candidate Rust fn (same-name, tool_claim, matcher_forced/deploy, grep of distinctive constants/strings/loops over dataset/Trans_C-Rust-KG/lodepng/src/**); truth=Rust fn only when a body implementing the C logic exists; STUB:x when the crate contains only a signature-only placeholder x for the C fn; AMBIGUOUS when two duplicate empty stubs (CamelCase + snake_case) claim the same C fn; NONE when no counterpart or the counterpart is absent from the rust-analyzer inventory",
     "date": "2026-09-01",
-    "reviewed_by_user": false,
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
     "crate_note": "shipped PtrTrans lodepng crate is a stub shell: ~8 functions with real logic, the rest signature-only placeholders; many duplicate same-name definitions (crate cannot compile)"
    },
    "forced": {
@@ -762,7 +751,8 @@
     "labeler": "Claude (claude-fable-5-1), session 6278f822",
     "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
     "date": "2026-09-01",
-    "reviewed_by_user": false
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09."
    },
    "forced": {
     "matched": 3,
@@ -854,7 +844,8 @@
     "labeler": "Claude (claude-fable-5-1), session 6278f822",
     "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
     "date": "2026-09-01",
-    "reviewed_by_user": false
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09."
    },
    "forced": {
     "matched": 17,
@@ -943,7 +934,8 @@
     "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
     "method": "manual code reading of each C function body (url.h / test.c) against every candidate Rust function (same name, tool claim, matcher forced proposal, and every other function in the 20-entry Rust inventory) plus a grep of the whole crate for url_free / Drop impls and a check of the PtrTrans metadata Verfi_Tag / trans_rust_code for the reverted and elided units",
     "date": "2026-09-02",
-    "reviewed_by_user": false
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09."
    },
    "forced": {
     "matched": 20,
@@ -1071,7 +1063,8 @@
     "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
     "method": "manual reading of each of the 32 Rust bodies in assembled_unidiomatic.rs (27 SACTOR-verified files from run2_result/<tu>/translated_code_unidiomatic/functions/, 5 log-extracted last attempts from run2_extracted_rust/) against the C body at the sheet's c_line in the crown_dataset bzip2 sources (blocksort.c, bzlib.c, compress.c, decompress.c, huffman.c; the run input differs only by the neutral relocation of crctable.c/randtable.c into bzlib.c, so the crown_dataset line numbers are used); SACTOR provenance per function taken from unidiomatic_failure_info.json (status/attempts/last rustc error), run2_extracted_rust/index.json, run2.log and relink_evidence/; the 32 absent functions were confirmed absent from rust_inventory.csv, from every unidiomatic_failure_info.json and from run2_extracted_rust/, and located in the per-TU `Function order` lists in run2.log (lines 38, 1359, 20374, 22140) after the unit at which each TU aborted. Labels decided by body reading, not by SACTOR's verdict: every Rust fn keeps its C name and every body carries that C function's logic (no silent swap, no placeholder), so none is a STUB; BZ2_bzflush is a constant `0` because the C body is `return 0`, counted as genuine. Added null guards in init_RL, isempty_RL, BZ2_bsInitWrite, flush_RL, makeMaps_e/d and the size_t wrapping multiply in default_bzalloc were noted as benign deviations. Notes assembled by scratchpad gen_sactor_bzip2_labels.py from hand-written per-function findings.",
     "date": "2026-09-02",
-    "reviewed_by_user": false,
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
     "artifact_status": "PARTIAL",
     "artifact_status_note": "32 of 64 library C functions have Rust; all from the UNIDIOMATIC phase (the idiomatic phase was reached only for huffman.c and died immediately on the same cross-TU order error, so there is no function_name_map.json / tool map; every Rust fn keeps its C name). Of the 32: 27 SACTOR-verified (23 on attempt 1; 4 on 2-4 attempts: copy_output_until_stop 2, unRLE_obuf_to_output_FAST 2, BZ2_indexIntoF 2, BZ2_hbMakeCodeLengths 4; unidiomatic_failure_info.json status success; each compiled, linked and passed the 4 driver samples), 3 failed 6 of 6 attempts (status failure) on tool-side scaffold conflicts -- BZ2_bzReadGetUnused: every attempt E0277 `bz_stream doesn't implement Debug` (SACTOR's harness derives/prints the struct it scaffolded); BZ2_bzerror: the same plus E0277 `*const i8 cannot be shared between threads safely`; BZ2_bzCompressInit: E0255 `the name size_t is defined multiple times` (scaffold `use libc::size_t` vs the LLM's typedef) -- their attempt-6 bodies are real translations and are labeled by body as genuine pairs; and 2 (flush_RL in bzlib.c, bsPutUInt32 in compress.c; status untranslated) compiled but failed SACTOR's per-function link step because the cdylib references add_pair_to_block/init_RL and bsW, which are `static` in the C files and not exported from the C objects SACTOR links against (run2.log:20351, :22117; relink_evidence/run2__*_relink.txt); SACTOR treats a link failure as fatal for the TU, so bzlib.c stopped at unit 20 of 41 and compress.c at unit 5 of 9. The remaining 32 library functions were never attempted: 21 in bzlib.c (units 21-41) and 4 in compress.c (units 6-9) after those aborts, 6 in blocksort.c (units 4-9, incl. BZ2_blockSort) and 1 in decompress.c (unit 2, BZ2_decompress) because SACTOR's cross-TU dependency check rejected a callee that lived in a TU not yet translated (BZ2_bz__AssertH__fail in bzlib.c, BZ2_hbCreateDecodeTables in huffman.c; run2.log:1334, :22646); huffman.c itself verified all 3 of its functions. driver.c (`main`) was never reached (batch_summary.json: dependency BZ2_bzBuffToBuffCompress untranslated). The crate does not build (non-building artifact); scored on a separate PARTIAL line, never pooled with complete artifacts (RUN.md 'Cell status'). Sources: RUN.md, run2_result/batch_summary.json, run2_result/*/unidiomatic_failure_info.json, run2_extracted_rust/index.json, run2.log, relink_evidence/, assembled_unidiomatic.rs header."
    },
@@ -1165,7 +1158,8 @@
     "labeler": "Claude (claude-fable-5-1), session 6278f822",
     "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
     "date": "2026-09-01",
-    "reviewed_by_user": false
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09."
    },
    "forced": {
     "matched": 15,
@@ -1252,7 +1246,8 @@
     "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
     "method": "manual reading of each of the 74 Rust bodies in assembled_unidiomatic.rs (53 SACTOR-verified files from run1_result/lodepng.c__06d02e56/translated_code_unidiomatic/functions/, 21 log-extracted last attempts from run1_extracted_rust/) against the C body at the sheet's c_line in input/lodepng.c; SACTOR provenance per function taken from unidiomatic_failure_info.json (status/attempts/last rustc error) and run1_extracted_rust/index.json; the 161 absent functions were confirmed absent from rust_inventory.csv, from unidiomatic_failure_info.json and from run1_extracted_rust/, and located after lodepng_gtofl (unit 74) in the 235-entry `Function order` list at run1.log:23; lodepng_error_text's 102 strings were compared programmatically. Labels decided by body reading, not by SACTOR's verdict: every log-extracted last attempt carries the C function's real logic, so none is a STUB. NONE-row notes were templated from a hand-written one-line C description plus the run facts (scratchpad gen_sactor_lodepng_labels.py).",
     "date": "2026-09-02",
-    "reviewed_by_user": false,
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
     "artifact_status": "PARTIAL",
     "artifact_status_note": "74 of 235 C functions have Rust; all from the UNIDIOMATIC phase (the idiomatic phase was never reached, so there is no function_name_map.json / tool map; every Rust fn keeps its C name). Of the 74: 53 SACTOR-verified (42 on attempt 1, 11 on attempt 2; unidiomatic_failure_info.json status success; each compiled, linked and passed the 4 encode->decode samples), 20 failed 6 of 6 attempts (status failure) on a tool-side scaffold conflict -- every attempt died in SACTOR's embedding crate with E0428 `the name LodePNGColorType is defined multiple times` (+E0117, E0599) because the harness emits both `pub type LodePNGColorType = c_uint` and the translated `enum LodePNGColorType` (the same duplicate is visible inside assembled_unidiomatic.rs at lines 14 and 560); their attempt-6 bodies are real translations and are labeled as genuine pairs -- and 1 (lodepng_gtofl, status untranslated) compiled but failed SACTOR's per-function link step (`undefined reference to lodepng_addofl`, a `static` C helper not exported from the linked C object; run1.log:60143), which SACTOR treats as fatal for the TU. The remaining 161 functions (units 75-235 of SACTOR's dependency order, run1.log:23) were never attempted and are NONE. Count note: RUN.md says '75th function' / '160 never attempted'; the log's order list puts lodepng_gtofl at position 74 and 235 - 74 = 161 rows have no Rust (rust_inventory.csv has exactly 74 entries), so 161 is the number used here. driver.c was never reached (batch_summary.json: dependency lodepng_encode32 untranslated). The crate does not build (non-building artifact); scored on a separate PARTIAL line, never pooled with complete artifacts (RUN.md 'Cell status'). Sources: RUN.md, run1_result/batch_summary.json, run1_result/lodepng.c__06d02e56/unidiomatic_failure_info.json, run1_extracted_rust/index.json, assembled_unidiomatic.rs header."
    },
@@ -1340,7 +1335,8 @@
     "labeler": "Claude (claude-fable-5-1), session 6278f822",
     "method": "manual code reading of the C function body against every candidate Rust function (same name, tool claim, snake_case variant, matcher proposal) plus a search of the whole Rust artifact for unmatched functions",
     "date": "2026-09-01",
-    "reviewed_by_user": false
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09."
    },
    "forced": {
     "matched": 3,
@@ -1434,7 +1430,8 @@
     "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
     "method": "manual reading of each C body (input/{point,bounds,node,quadtree}.c + quadtree.h) against every Rust function in assembled_unidiomatic.rs (same name, matcher proposal; no tool map exists), cross-checked with RUN.md, run1_result/batch_summary.json, per-TU {unidiomatic,idiomatic}_failure_info.json and run1.log (refusal at :2670/:2680, driver link failure at :2835) to decide which C functions SACTOR never emitted; verified that each of the 12 translated_code_unidiomatic/functions/*.rs files appears verbatim in assembled_unidiomatic.rs and that every translated function passed SACTOR's 12-sample harness (run1.log 'Test 0..11 passed successfully')",
     "date": "2026-09-02",
-    "reviewed_by_user": false,
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
     "artifact_status": "PARTIAL",
     "artifact_status_note": "12 of 24 C functions have Rust; all 12 come from the UNIDIOMATIC phase, which is the scored phase (RUN.md 'Cell status'). Per run1_result/batch_summary.json: point.c success (2 fns, also reached the idiomatic phase \u2014 not scored), bounds.c success in the unidiomatic phase (3 fns; idiomatic phase blocked: struct quadtree_bounds failed 6/6, bounds.c__ea3019ab/idiomatic_failure_info.json), node.c 'failed' only in the idiomatic phase (unidiomatic 7/7 fns success in node.c__baf530fc/unidiomatic_failure_info.json; idiomatic died with `Dependency 'quadtree_bounds_new' of type 'function' should have been translated before use`), quadtree.c REFUSED before any LLM call (`Circular dependencies for functions is not supported yet`, run1.log:2670/2680 \u2014 insert_ <-> split_node_ mutual recursion, quadtree.c:76/109; result dir quadtree.c__047ce83c holds only config.json), driver.c failed (`Failed to link project-level harness for function lcg_next`, run1.log:2835; harness needs quadtree_new/insert/search/free from the refused TU). So the 12 quadtree.c functions have no Rust at all and are NONE; the crate does not build (libc paths unresolved). Scored on a separate PARTIAL line, never pooled with complete artifacts (RUN.md)."
    },
@@ -1524,7 +1521,8 @@
     "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
     "method": "manual reading of each of the 69 emitted Rust bodies (assembled_unidiomatic.rs, verbatim from the run-1 log) against the C body at the sheet's c_file:c_line (tools/frameworks/tulipindicators/{indicators.c,utils/buffer.c,indicators/*.c}; SIMPLE1/SIMPLE2 macro expansions read from indicators/simple1.h, simple2.h); the 200 absent functions were confirmed absent from rust_inventory.csv and attributed to their TU's failure class in run1_result/batch_summary.json / RUN.md by a script (scratchpad gen_sactor_tulip_labels.py). Truth for an emitted function is its own translation (provenance: SACTOR emitted it under that name from that TU, index.json), even though many _start bodies are behaviourally identical clones (13x `return 0`, 8x `return 1`, 12x `options[0]`, 18x `options[0]-1`, ...) \u2014 see reviewer note in the final report.",
     "date": "2026-09-02",
-    "reviewed_by_user": false,
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
     "artifact_status": "PARTIAL",
     "artifact_status_note": "69 of 269 C functions emitted (70 LLM translations, one per TU = the first function in SACTOR's dependency order: 67 ti_X_start + ti_version + ti_buffer_new), 0 verified: every TU that reached the LLM died at \"Failed to link project-level harness\" because sample.c reaches the indicators through the ti_indicators[] function-pointer table, which lies outside SACTOR's per-function link closure (RUN.md, 69 TUs). 37 TUs (the SIMPLE1/dx.h family) never reached the LLM (gcc cannot find simple1.h in SACTOR's relocated expanded TU), candles.c died at parse (Struct 'tc_result' not found), sample.c on an untranslated dependency. Rust exists only as log-extracted unidiomatic bodies (run1_extracted_rust/, assembled_unidiomatic.rs); no tool name map. Scored on the PARTIAL line only."
    },
@@ -1717,7 +1715,8 @@
     "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
     "method": "manual reading of each C body (run4_input/driver.c + url.h) against every Rust function in assembled_idiomatic.rs (same name, tool map, matcher proposal), cross-checked with RUN.md and run4_result/driver.c__585b2fa3/{unidiomatic,idiomatic}_failure_info.json to decide which C functions SACTOR never emitted",
     "date": "2026-09-02",
-    "reviewed_by_user": false,
+    "reviewed_by_user": true,
+    "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
     "artifact_status": "PARTIAL",
     "artifact_status_note": "7 of 22 C functions were emitted in the scored (idiomatic) phase; SACTOR failed 5x on the global URL_SCHEMES / url_is_protocol and never attempted the 13 dependents, and get_part only reached the unidiomatic phase (RUN.md)."
    },

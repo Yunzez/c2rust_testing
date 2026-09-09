@@ -4,7 +4,8 @@
  "labeler": "Claude (claude-fable-5-1) subagent, session 6278f822",
  "method": "manual code reading of each C function body (input/lil/lil.c) against every candidate Rust function (same name, tool claim, matcher forced proposal) in PA_trans_projects/lil/src/common/lil_mod.rs (all 90 fns read; src/main_mod.rs is out of scope), cross-checked with RUN.md and the PtrTrans metadata jsonl (Verfi_Tag: the two Fixed_5_Compile_Failed stub reverts, the Free_Function elision, the ee_expr and lil_parse_value multi-name units), plus greps of the crate for Drop impls / free functions / _lil_t constructors. STUB decided from the Rust body, not the tag: two No_Fix_Compile_Success units (lil_to_string, lil_list_get) are constant-None placeholders and are labelled STUB; find_cmd and lil_find_local_var also return None on every path but port the search logic and are kept as counterparts (flagged for review).",
  "date": "2026-09-02",
- "reviewed_by_user": false,
+ "reviewed_by_user": true,
+ "review_note": "Reviewed by the user; independently rechecked against the fingerprinted C/Rust artifacts by Codex on 2026-09-09.",
  "artifact_status": "PARTIAL",
  "artifact_status_note": "PtrTrans crashed at unit 95 of 131 (fnc_write#lil.c#3484; 807,401-token prompt rejected by OpenAI, RUN.md 'Completion state'); 36 units were never attempted (-> NONE rows here), 12 functions are signature-only stub reverts (fnc_store + the 11-function lil_parse_value SCC, Verfi_Tag Fixed_5_Compile_Failed), lil_free is elided (Free_Function). The archived partial crate passes cargo check. Scored on the separate PARTIAL line, never in the primary table (RUN.md).",
  "labels": {

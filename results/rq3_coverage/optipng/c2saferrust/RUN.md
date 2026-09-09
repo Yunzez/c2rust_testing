@@ -378,11 +378,11 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | `png_safecat` | 149 / 149 | ub_associated 149 | 1 |
 | `pngx_gif_error` | 3 / 3 | ub_associated 3 | 1 |
 | `pngx_tiff_error` | 3 / 3 | ub_associated 3 | 1 |
-| `uncompress` | 282 / 582 | confirmed_divergence 169, confirmed_termination 83, not_reproducible 30 | 3 |
+| `uncompress` | 282 / 582 | confirmed_divergence 169, confirmed_termination 52, instrument_only 31, not_reproducible 30 | 3 |
 | `zError` | 25 / 25 | ub_associated 5, ub_associated_termination 20 | 6 |
 | `zcalloc` | 1 / 1 | ub_associated 1 | 1 |
 
-Total: confirmed_divergence 397, confirmed_termination 802, inconclusive 28, not_reproducible 94, ub_associated 1374, ub_associated_termination 47
+Total: confirmed_divergence 397, confirmed_termination 771, inconclusive 28, instrument_only 31, not_reproducible 94, ub_associated 1374, ub_associated_termination 47  *(re-classified offline 2026-09-09: 31 rows `confirmed_termination` → `instrument_only`, no-sanitizer replay normal; see §7)*
 
 <!-- prose -->
 ## 7. Prose (2026-09-09)
@@ -399,19 +399,29 @@ than 74 fail to build — 79 exported, corpus 1 792; reach 144/564 functions (0.
 `opng_optimize_impl`, `panic`, `opng_print_fsize_*`, `opng_free`, plus the five contract-terminators
 shared with c2rust): pre-accepted so the campaign could run, each adjudicated individually below.
 
-The sample confirms **802 `confirmed_termination` + 397 `confirmed_divergence` on 11 boundaries**.
-Read at root-cause level (N clusters ≠ N defects):
-* `opng_free` 3/3 termination — `free(ptr)` became `drop(Box::from_raw(ptr))`; free(NULL) is a
-  no-op in C. **Manifest C13** (evidence covers the NULL contract only).
-* `opng_strcasecmp` 55/55 divergence — byte-wise `tolower` comparison replaced by a lossy UTF-8
-  decode; any byte ≥ 0x80 changes the result. **Manifest S16**.
-* `crc32` 26/26 divergence — `crc32` hands its whole buffer to `crc32_z`, whose `is_null → is_empty`
-  rewrite is catalogued **S1: re-found**, not a new entry.
-* `compress` (201 t + 1 d), `compress2` (197 t + 99 d), `uncompress` (83 t + 169 d),
-  `optimize_cmf` (200 t), `bmp_memset_bytes` (117 t), `adler32` (1 + 1), `crc32_combine` and
-  `crc32_combine64` (23 d each, beside 201 C-side stack overflows adjudicated `ub_associated`):
-  **confirmed but NOT root-caused**, so not in the manifest. They are candidates for triage; the
-  zlib ones are likely few root causes (the translation is E3's CRASH-ALL trio member).
+The sample confirms **771 `confirmed_termination` + 397 `confirmed_divergence` on 11 boundaries** (31
+further rows panicked only in the ASan build and were re-classified `instrument_only` on 2026-09-09,
+when the classifier was fixed to require the no-sanitizer replay to trap). Every row was read to its
+root cause — `TRIAGE.md` in this directory carries the table. Six defects and two non-defects:
+* **S1 re-found** — `crc32` 26/26 divergence through `crc32_z`'s `is_null → is_empty`.
+* **S2 re-found** — `adler32_z`'s rewritten block loop: index-out-of-bounds when fewer than 8 bytes
+  remain after a 16-byte step, wrong sums otherwise (`compress2` 169 + 99, `compress` 1 + 1, `adler32`
+  1 + 1).
+* **S19 (new)** — `send_bits`' flush shifts a `u16` by `bi_valid == 16` (C promotes to int):
+  `compress` 200, `compress2` 28 panics under overflow checks; a corrupted stream in release.
+* **S20 (new)** — inflate's `if (state->offset > copy)` became a comparison of the state POINTER with
+  the byte count: `uncompress` 169 divergence on `destLen` (false `invalid distance too far back`)
+  + 4 NULL dereferences.
+* **C15 (new)** — `inflate_fast` lost `from = out - dist`; the direct-copy branch builds a slice over
+  NULL: `uncompress` 48 no-sanitizer panics.
+* **S21 (new)** — `crc32_combine_`: `gf2_matrix_square` squares the wrong matrix and the loop swaps
+  `even`/`odd`: 23 + 23 divergence on the return value.
+* **C13**, **S16** — `opng_free` 3/3, `opng_strcasecmp` 55/55, as promoted on 2026-09-09.
+* **Not defects**: `optimize_cmf` 200 (`--z_cinfo` on unsigned 0 is a defined wrap in C and identical in
+  a Rust release build; only the overflow check differs) and `bmp_memset_bytes` 117 (harness
+  input-model gap: `memset(ptr + offset, …)` with an unbounded `offset`; both sides compute an
+  out-of-bounds pointer).
 
-**Not established.** The number of distinct defects behind the un-triaged 1 100 rows; whether the
-allocator-mismatch half of `opng_free` (Rust allocator releasing malloc memory) is observable.
+**Not established.** Whether the allocator-mismatch half of `opng_free` (Rust allocator releasing
+malloc memory) is observable; S19's release-build corruption is read from the source, the sample only
+shows the debug panic.

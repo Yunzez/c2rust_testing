@@ -293,9 +293,18 @@ def classify(a_c: dict, b_rust: dict, c_comb: dict, d_nosan: dict | None = None)
     if c_comb["outcome"] == "divergence":
         return "confirmed_divergence", f"ladder: {c_comb.get('reported')} at phase {c_comb['phase']}"
     if c_comb["outcome"] == "panic":
-        if (c_comb["phase"] or 0) >= 2:
-            return "confirmed_termination", "C returned normally, the translation panicked"
-        return "inconclusive", "panic before the C call completed"
+        if (c_comb["phase"] or 0) < 2:
+            return "inconclusive", "panic before the C call completed"
+        # The panic must survive WITHOUT a sanitizer to be the program's own. 2026-09-09: 234 rows
+        # (optipng x Laertes uncompress 200, optipng x C2SaferRust uncompress 31, tulip x
+        # C2SaferRust ti_adx_start 3) panicked only in the ASan build -- an index computed from
+        # uninitialised heap that ASan fills with 0xBE, an overlapping memcpy the interceptor
+        # rejects -- and returned normally with no sanitizer. Those are instrument_only.
+        if d_nosan is not None and not _program_trap(d_nosan):
+            return "instrument_only", ("the translation panics only in the sanitizer build; with no "
+                                       "sanitizer it returns normally (the failure is the instrument's, "
+                                       "not a termination difference)")
+        return "confirmed_termination", "C returned normally, the translation panicked"
     if c_comb["outcome"] in ("signal", "nonzero-exit"):
         if b_rust["outcome"] in ("signal", "nonzero-exit") or b_rust["sanitizer"]:
             if d_nosan is not None:

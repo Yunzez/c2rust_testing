@@ -365,11 +365,11 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | `png_safecat` | 152 / 152 | ub_associated 152 | 1 |
 | `pngx_gif_error` | 3 / 3 | ub_associated 3 | 1 |
 | `pngx_tiff_error` | 3 / 3 | ub_associated 3 | 1 |
-| `uncompress` | 204 / 504 | confirmed_divergence 4, confirmed_termination 200 | 2 |
+| `uncompress` | 204 / 504 | confirmed_divergence 4, instrument_only 200 | 2 |
 | `zError` | 3 / 3 | ub_associated_termination 3 | 1 |
 | `zcalloc` | 1 / 1 | ub_associated 1 | 1 |
 
-Total: confirmed_divergence 97, confirmed_termination 200, inconclusive 73, instrument_only 210, ub_associated 412, ub_associated_termination 6, ub_associated_value 1
+Total: confirmed_divergence 97, inconclusive 73, instrument_only 410, ub_associated 412, ub_associated_termination 6, ub_associated_value 1  *(re-classified offline 2026-09-09: 200 rows `confirmed_termination` → `instrument_only`, no-sanitizer replay normal; see §7)*
 
 <!-- prose -->
 ## 7. Prose (2026-09-09)
@@ -383,16 +383,18 @@ units as c2rust), 48 exported, corpus 999; reach 71/820 functions (0.087), 6 611
 fraction is not comparable with the other two optipng cells; the only-ours counts are. Six
 pre-accepted C-side crash-alls (the five contract-terminators and `png_format_number`).
 
-Sample: **97 `confirmed_divergence` + 200 `confirmed_termination`, every one the severed-init law**
+Sample: **97 `confirmed_divergence`, every one the severed-init law** (the 200 `uncompress` rows that had read as terminations were re-classified `instrument_only` on 2026-09-09: they panic only in the ASan build, see below)
 (178 `laertes_init_*` defined in this crate, 0 called):
 * `crc32` 23/23, `crc32_z` 23/23 — `crc_table` zero: **S4 re-found**; `compress` 13/13 and
   `compress2` 15/16 divergence are deflate's zeroed tables, the same law, recorded under S4.
 * `opng_path_make_backup` 19/19 divergence — `bak_extname` (".bak") zero, the backup path equals
   the input path. **Manifest S17**.
-* `uncompress` 200 termination (+ 4 divergence) — inflate's `order[19]` zero, `lens[1..18]` never
-  written, `inflate_table` indexes `count[16]` with garbage (backtrace uncompress → uncompress2 →
-  inflate → inflate_table; C returns normally). **Manifest C14**.
-The other verdicts: 412 `ub_associated`, 210 `instrument_only`, 73 `inconclusive`,
+* `uncompress` 4 divergence (+ 200 sanitizer-only panics) — inflate's `order[19]` zero, `lens[1..18]`
+  never written, so `inflate_table` reads whatever the heap holds: ASan's fill pattern 0xBEBE = 48830
+  indexes `count[16]` out of bounds (backtrace uncompress → uncompress2 → inflate → inflate_table),
+  a zeroed heap gives a silently wrong result — every one of the 200 no-sanitizer replays returned
+  normally. Termination is instrument-dependent; the defect is semantic. **Manifest S18** (was C14).
+The other verdicts: 412 `ub_associated`, 410 `instrument_only` (210 + the 200 above), 73 `inconclusive`,
 6 `ub_associated_termination`, 1 `ub_associated_value`.
 
 **Not established.** Nothing beyond the initialization family was reached: every deeper boundary

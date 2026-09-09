@@ -402,7 +402,7 @@ shared with c2rust): pre-accepted so the campaign could run, each adjudicated in
 The sample confirms **771 `confirmed_termination` + 397 `confirmed_divergence` on 11 boundaries** (31
 further rows panicked only in the ASan build and were re-classified `instrument_only` on 2026-09-09,
 when the classifier was fixed to require the no-sanitizer replay to trap). Every row was read to its
-root cause — `TRIAGE.md` in this directory carries the table. Six defects and two non-defects:
+root cause — `TRIAGE.md` in this directory carries the table. Seven defects and one non-defect:
 * **S1 re-found** — `crc32` 26/26 divergence through `crc32_z`'s `is_null → is_empty`.
 * **S2 re-found** — `adler32_z`'s rewritten block loop: index-out-of-bounds when fewer than 8 bytes
   remain after a 16-byte step, wrong sums otherwise (`compress2` 169 + 99, `compress` 1 + 1, `adler32`
@@ -417,10 +417,12 @@ root cause — `TRIAGE.md` in this directory carries the table. Six defects and 
 * **S21 (new)** — `crc32_combine_`: `gf2_matrix_square` squares the wrong matrix and the loop swaps
   `even`/`odd`: 23 + 23 divergence on the return value.
 * **C13**, **S16** — `opng_free` 3/3, `opng_strcasecmp` 55/55, as promoted on 2026-09-09.
-* **Not defects**: `optimize_cmf` 200 (`--z_cinfo` on unsigned 0 is a defined wrap in C and identical in
-  a Rust release build; only the overflow check differs) and `bmp_memset_bytes` 117 (harness
-  input-model gap: `memset(ptr + offset, …)` with an unbounded `offset`; both sides compute an
-  out-of-bounds pointer).
+* **C16 (new, profile-dependent)** — `optimize_cmf`'s `--z_cinfo` on unsigned 0: a defined wrap in C,
+  checked `-=` in the translation (c2rust: `wrapping_sub`). 200 panics under the crate's debug profile;
+  a deterministic probe with the valid header `08 1d` (TRIAGE.md) shows C returns, Rust with overflow
+  checks panics, Rust without them matches C.
+* **Not a defect**: `bmp_memset_bytes` 117 (harness input-model gap: `memset(ptr + offset, …)` with
+  an unbounded `offset`; both sides compute an out-of-bounds pointer).
 
 **Not established.** Whether the allocator-mismatch half of `opng_free` (Rust allocator releasing
 malloc memory) is observable; S19's release-build corruption is read from the source, the sample only

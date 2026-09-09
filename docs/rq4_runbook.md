@@ -103,12 +103,19 @@ in RUN.md.
   heap gives a silent wrong result), optipng × C2SaferRust `uncompress` 31 (an overlapping
   `copy_from_slice` memcpy the interceptor rejects), tulip × C2SaferRust `ti_adx_start` 3. All
   re-classified offline to `instrument_only`; C14 became S18 (semantic) because its termination
-  evidence was the instrument's. **Check on every cell: `confirmed_termination` rows must have
-  `rust_no_sanitizer.outcome != normal`.**
-- **Two things that look like confirmed terminations and are not defects** (optipng × C2SaferRust
-  triage, `results/rq3_coverage/optipng/c2saferrust/TRIAGE.md`): (a) an *overflow check on a wrap C
-  defines* — `optimize_cmf`'s `--z_cinfo` on unsigned 0 is defined in C and identical in a Rust
-  release build; the debug panic is the instrument's (200 rows, not promoted); (b) a *harness
+  evidence was the instrument's. The rule as fixed: channel D **normal** → `instrument_only`;
+  **panic** → `confirmed_termination`; **signal** → `confirmed_termination` only on the zero page,
+  else `out_of_contract_access`; **timeout** or **no replay** → `inconclusive` (never swallowed as
+  instrument-only). lil × CROWN's 2 `lil_parse` rows with a no-sanitizer timeout went to
+  `inconclusive` the same day. **Check on every cell: a `confirmed_termination` row has
+  `rust_no_sanitizer.outcome` = panic, or signal on the zero page.**
+- **An overflow check on a wrap C defines is still a defect when the C is in contract**
+  (optipng × C2SaferRust `optimize_cmf`, C16, 2026-09-09): `--z_cinfo` on unsigned 0 wraps in C,
+  c2rust emits `wrapping_sub`, C2SaferRust emits checked `-=`: the translation panics under the
+  crate's debug profile and matches C only in release. Decide with a deterministic probe on a
+  VALID input (header 08 1d, FCHECK ok), not by "release happens to agree".
+- **A harness input-model gap that looks like a confirmed termination** (optipng × C2SaferRust
+  triage, `results/rq3_coverage/optipng/c2saferrust/TRIAGE.md`): a *harness
   input-model gap* — `bmp_memset_bytes(ptr, offset, ch, len)` passes `ptr + offset` to `memset`, the
   planner does not model libc sinks, so `offset` is an unbounded scalar and both sides compute an
   out-of-bounds pointer (C silently, Rust's `ptr::offset` debug precondition traps; 117 rows,

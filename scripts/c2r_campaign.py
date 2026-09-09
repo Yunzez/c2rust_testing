@@ -300,11 +300,26 @@ def classify(a_c: dict, b_rust: dict, c_comb: dict, d_nosan: dict | None = None)
         # C2SaferRust ti_adx_start 3) panicked only in the ASan build -- an index computed from
         # uninitialised heap that ASan fills with 0xBE, an overlapping memcpy the interceptor
         # rejects -- and returned normally with no sanitizer. Those are instrument_only.
-        if d_nosan is not None and not _program_trap(d_nosan):
+        if d_nosan is None:
+            return "inconclusive", ("the translation panicked beside a clean C, but no sanitizer-free "
+                                    "replay exists (--nosan-bin) to show the panic is the program's own")
+        if _program_trap(d_nosan):
+            return "confirmed_termination", "C returned normally, the translation panicked"
+        if d_nosan["outcome"] == "normal":
             return "instrument_only", ("the translation panics only in the sanitizer build; with no "
                                        "sanitizer it returns normally (the failure is the instrument's, "
                                        "not a termination difference)")
-        return "confirmed_termination", "C returned normally, the translation panicked"
+        if d_nosan["outcome"] == "timeout":
+            return "inconclusive", ("the translation panics in the sanitizer build and times out "
+                                    "without one: no sanitizer-free termination to compare")
+        if d_nosan.get("null_page") or b_rust.get("null_page"):
+            return "confirmed_termination", (
+                "C returned normally; without a sanitizer the translation faults on the ZERO PAGE "
+                "(a NULL dereference), deterministic on every memory layout")
+        return "out_of_contract_access", (
+            f"the translation panics in the sanitizer build and takes a {d_nosan['outcome']} without "
+            f"one; a wild read faults only if its page is unmapped, so the outcome is memory-layout "
+            f"luck on both sides")
     if c_comb["outcome"] in ("signal", "nonzero-exit"):
         if b_rust["outcome"] in ("signal", "nonzero-exit") or b_rust["sanitizer"]:
             if d_nosan is not None:

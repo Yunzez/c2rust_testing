@@ -921,7 +921,7 @@
    "root_cause": "inflate's `static const unsigned short order[19]` (inflate.c:642, the code-length permutation) is emitted as 19 zeros with `laertes_init_order()` (optipng_laertes.rs:88687-88688) never called. In the TABLE state `state->lens[order[state->have++]] = ...` (inflate.c:941/945 -> rs:89122) writes every code-length code into lens[0] and leaves lens[1..18] unwritten, so inflate_table's `count[lens[sym]]++` (inftrees.c:110 -> rs:90608) indexes a 16-entry array with whatever the allocation held",
    "family": "initialization loss or corruption",
    "symptom": "inflate_table reads `lens[1..18]` that inflate never wrote (only lens[0] is written when order[] is all zero): the result depends on the heap contents. In the ASan build the fill pattern 0xBEBE = 48830 indexes a 16-entry array -> `index out of bounds` panic (200 sampled rows); with NO sanitizer the same inputs return normally with a wrong result (all 200 no-sanitizer replays normal; 4 sampled confirmed_divergence on the written length destLen). Termination is therefore instrument-dependent and the entry is semantic, not crash; C writes all 19 entries and returns normally",
-   "boundary": "function (uncompress) / crash",
+   "boundary": "function (uncompress: return value and destLen; an uninitialised read whose visible symptom depends on the heap contents)",
    "obs_cell": null,
    "obs": {
     "O-R": "not run",
@@ -935,7 +935,7 @@
    "align": "no",
    "provenance": "exact-source",
    "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_laertes/translated/optipng_laertes.rs:88687-88688 (order), :89122 (lens fill), :90608 (count index, inflate_table def at :90403); C from the pair's source/zlib/inflate.c:642, :941, :945 and zlib/inftrees.c:110. The vendored zlib is the one the translation consumed (pair PROVENANCE.json)",
-   "evidence": "results/rq3_coverage/optipng/laertes/ (RQ4 cell, 3600 s, seed 42, rerun 2026-09-09): confirm_sample uncompress 204/504 = 4 confirmed_divergence (destLen) + 200 rows that panic only in the ASan build (re-classified instrument_only 2026-09-09 after the no-sanitizer replay returned normally on every one); RUST_BACKTRACE replay of candidates_sample/uncompress/crash-0101020c... under ASan gives inflate_table <- inflate <- uncompress2 <- uncompress with index 48830 = 0xBEBE",
+   "evidence": "results/rq3_coverage/optipng/laertes/ (RQ4 cell, 3600 s, seed 42, rerun 2026-09-09): confirm_sample uncompress 204/504 = 4 confirmed_divergence (destLen) + 200 rows that panic only in the ASan build (re-classified instrument_only 2026-09-09 after the no-sanitizer replay returned normally on every one); RUST_BACKTRACE replay of candidates_sample/uncompress/crash-0101020c... under ASan gives inflate_table <- inflate <- uncompress2 <- uncompress with index 48830 = 0xBEBE; UNSANITIZED COMBINED replay 2026-09-09 (no sanitizer on either side, both sides running, confirm_sample/unsanitized_combined_uncompress.json): the 4 archived divergence inputs diverge again on the return value, the 20 archived sanitizer-only inputs in the sample agree with C (both sides fail the stream the same way) -- the value difference is real and instrument-free, the panic was the instrument's",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
   {
@@ -985,7 +985,7 @@
    "align": "no",
    "provenance": "exact-source",
    "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:81095-81147 (inflate, MATCH); C from the pair's source/zlib/inflate.c:1146-1165",
-   "evidence": "results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample uncompress 169 confirmed_divergence (ladder phase 4, written length destLen) + 4 confirmed_termination (null pointer dereference at harness lib.rs:81147); TRIAGE.md",
+   "evidence": "results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample uncompress 169 confirmed_divergence (ladder phase 4, written length destLen) + 4 confirmed_termination (null pointer dereference at harness lib.rs:81147); TRIAGE.md; UNSANITIZED COMBINED replay 2026-09-09 (confirm_sample/unsanitized_combined_uncompress.json): of 88 archived destLen divergences in the sample 76 diverge again with no sanitizer on either side, 6 agree, 6 panic (C15's NULL slice on the same path); 5 archived not_reproducible inputs diverge unsanitized",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
   {
@@ -1010,7 +1010,7 @@
    "align": "no",
    "provenance": "exact-source",
    "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:75453-75640 (inflate_fast: no `from =` assignment between the declaration and the copy); C from the pair's source/zlib/inffast.c 'copy direct from output'",
-   "evidence": "results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample uncompress 48 confirmed_termination at harness lib.rs:75626 (no-sanitizer panic, c_only normal); TRIAGE.md",
+   "evidence": "results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample uncompress 48 confirmed_termination at harness lib.rs:75626 (no-sanitizer panic, c_only normal); TRIAGE.md; UNSANITIZED COMBINED replay 2026-09-09: 4 of the 6 sampled termination inputs panic again with both sides running and no sanitizer, 2 return",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   },
   {
@@ -1036,6 +1036,31 @@
    "provenance": "exact-source",
    "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:64882-64962; C from the pair's source/zlib/crc32.c:344-420",
    "evidence": "results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample crc32_combine 23 + crc32_combine64 23 confirmed_divergence (ladder phase 4, return value), c_only clean under ASan+UBSan; TRIAGE.md",
+   "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
+  },
+  {
+   "id": "C16",
+   "library": "optipng (libpng)",
+   "tool": "C2SaferRust",
+   "kind": "crash",
+   "root_cause": "optimize_cmf's `--z_cinfo` on `unsigned int` (pngwutil.c:251-289; for CINFO = 0 the decrement wraps, which C defines) is emitted as checked `z_cinfo -= 1` on u32 (optipng_c2saferrust.rs:47840-47869) instead of `wrapping_sub` (which c2rust emits, optipng_c2rust.rs:53918). Profile-dependent: with overflow checks (the crate's debug profile, the campaign's -C debug-assertions) it panics; a release build wraps identically to C",
+   "family": "semantic computation substitution",
+   "symptom": "`attempt to subtract with overflow` panic on any zlib header with CINFO = 0 and data_size <= 128 (200/200 sampled confirmed_termination, no-sanitizer replay panics; C returns). Deterministic probe with the VALID header 08 1d (FCHECK 0x081d % 31 == 0): C -> 88 1a / e8 02 / f8 1d for data_size 1 / 64 / 100, Rust with overflow checks PANIC on all, Rust without them identical to C. CINFO = 0 is a legal RFC 1950 header that zlib's inflate accepts (window 256); zlib's own deflate never emits it (windowBits >= 9), so the input is unusual but inside the function's stated contract (`data` is a zlib stream)",
+   "boundary": "function (optimize_cmf) / crash under overflow checks",
+   "obs_cell": null,
+   "obs": {
+    "O-R": "not run",
+    "O-P(silent)": "not run",
+    "O-P(print)": "not run",
+    "O-S": "not run",
+    "O-F": "not run"
+   },
+   "records": "n/a (no OBS cell)",
+   "attr": "no",
+   "align": "no",
+   "provenance": "exact-source",
+   "provenance_note": "Rust quoted from benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:47840-47869; C from the pair's source/libpng/pngwutil.c:251-289; probe scratchpad/cmf_probe (probe.c under UBSan, probe.rs with -C overflow-checks=on/off, nightly-2025-09-01), recorded in TRIAGE.md",
+   "evidence": "results/rq3_coverage/optipng/c2saferrust/ (RQ4 cell, 3600 s, seed 42, 2026-09-08): confirm_sample optimize_cmf 200/500 confirmed_termination at harness lib.rs:47856 (`attempt to subtract with overflow`, no-sanitizer replay panics, c_only normal); TRIAGE.md probe table",
    "status": "confirmed (results/rq4_effectiveness/bugs_detailed.md)"
   }
  ],
@@ -1123,8 +1148,8 @@
  ],
  "summary": {
   "counting_units": "Two units, never mixed (U1): DEFECTS (root-cause level) and DIVERGENT/VALID RECORDS (per-cell strength). Record counts are per OBS cell and are NOT summable across cells or across defects sharing a cell (C6+S13 share tulip_c2saferrust; S7+S8+S9 share cjson_ptrtrans).",
-  "defects_total": 35,
-  "crash": 14,
+  "defects_total": 36,
+  "crash": 15,
   "semantic": 21,
   "defects_per_family": {
    "control-flow preservation failure": {
@@ -1180,13 +1205,14 @@
     ]
    },
    "semantic computation substitution": {
-    "count": 5,
+    "count": 6,
     "ids": [
      "S15",
      "S14",
      "S19",
      "S20",
-     "S21"
+     "S21",
+     "C16"
     ]
    },
    "interface-contract loss": {
@@ -1222,7 +1248,7 @@
    ]
   },
   "obs_not_run_defects": {
-   "count": 26,
+   "count": 27,
    "ids": [
     "C2",
     "C3",
@@ -1249,7 +1275,8 @@
     "S19",
     "S20",
     "C15",
-    "S21"
+    "S21",
+    "C16"
    ]
   },
   "obs_run_crash_defects": [
@@ -1408,12 +1435,12 @@
    }
   },
   "per_channel_note": "Booleans, single seed 42, one run per cell (pilot). Crash defects (C1, C6) are recovered by every channel as Rust-failure (O-R sees NO-RETURN). O-P(silent)=yes only for the two crash defects and for S13 (CLI boundary, exit status IS the externalised state) - U3 wording: process-output sensitivity is determined by the driver's externalization policy; never 'O-P-silent is universally zero'.",
-  "family_note": "Families record one primary root-cause mechanism per defect, so the counts sum to 35. Cross-cutting symptoms may be discussed separately but do not create additional memberships. The cJSON non-UTF-8 rejection (S9) is grouped with the four C2SaferRust byte-string restrictions because all five narrow a C byte-string domain to valid UTF-8.",
-  "attr_coverage": "No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: results/ablations/attribution/urlparser/result.json; lil: results/ablations/attribution/lil/result.json) are UB-exclusion / certificate cells with 0 confirmed translation divergences (CONTRACT P2/P3). ATTR coverage of the confirmed defects = 0/35.",
-  "align_coverage": "ALIGN pilot exists for one defect (S6, results/rq1_matching/align_qsort_ptrtrans/). ALIGN coverage of the confirmed defects = 1/35. No buildable wrong-map witness exists (P5).",
+  "family_note": "Families record one primary root-cause mechanism per defect, so the counts sum to 36. Cross-cutting symptoms may be discussed separately but do not create additional memberships. The cJSON non-UTF-8 rejection (S9) is grouped with the four C2SaferRust byte-string restrictions because all five narrow a C byte-string domain to valid UTF-8.",
+  "attr_coverage": "No confirmed defect is covered by an ATTR pilot: both ATTR cells (urlparser: results/ablations/attribution/urlparser/result.json; lil: results/ablations/attribution/lil/result.json) are UB-exclusion / certificate cells with 0 confirmed translation divergences (CONTRACT P2/P3). ATTR coverage of the confirmed defects = 0/36.",
+  "align_coverage": "ALIGN pilot exists for one defect (S6, results/rq1_matching/align_qsort_ptrtrans/). ALIGN coverage of the confirmed defects = 1/36. No buildable wrong-map witness exists (P5).",
   "provenance_counts": {
    "exact-source": {
-    "count": 21,
+    "count": 22,
     "ids": [
      "C1",
      "C2",
@@ -1435,7 +1462,8 @@
      "S19",
      "S20",
      "C15",
-     "S21"
+     "S21",
+     "C16"
     ]
    },
    "unknown": {

@@ -17,7 +17,7 @@ instrumented objects (Laertes' includes its runtime, so its fraction is not comp
 | tool | planned / built of 552 | exported | corpus | fn ours | reg ours | confirmed (sample) |
 |---|---:|---:|---:|---|---|---|
 | **c2rust** | 128 / 54 | 47 | 2 134 | 106 / 555 (0.191) | 9 970 / 37 840 (0.263) | **0** (436 ub_associated, 208 instrument_only, 42 not reproducible, 21 inconclusive, 3 ub_associated_termination) |
-| **C2SaferRust** | 121 / 96 | 79 | 1 792 | 144 / 564 (0.255) | 9 815 / 37 297 (0.263) | **771 `confirmed_termination` + 397 `confirmed_divergence`** on 11 boundaries, all triaged (`c2saferrust/TRIAGE.md`) → **S19, S20, C15, S21, C13, S16** new; **S1, S2** re-found; 2 non-defects |
+| **C2SaferRust** | 121 / 96 | 79 | 1 792 | 144 / 564 (0.255) | 9 815 / 37 297 (0.263) | **771 `confirmed_termination` + 397 `confirmed_divergence`** on 11 boundaries, all triaged (`c2saferrust/TRIAGE.md`) → **S19, S20, C15, S21, C16, C13, S16** new; **S1, S2** re-found; 1 non-defect |
 | **Laertes** | 121 / 55 | 48 | 999 | 71 / 820 (0.087) | 6 611 / 49 009 (0.135) | **97 `confirmed_divergence`** (+ 200 sanitizer-only panics, `instrument_only`) → **S4 re-found, S17, S18** |
 
 ## What this library says
@@ -30,17 +30,19 @@ instrumented objects (Laertes' includes its runtime, so its fraction is not comp
    macros). `-fcommon` would raise the built count but changes the pair's frozen build condition, so it
    was **not** applied; if ever, as a separate sensitivity run over all three cells.
 2. **c2rust confirms nothing on the largest artifact** — the negative control holds for a ninth library.
-3. **C2SaferRust: 1 168 confirmed rows on 11 boundaries, every one read to its root cause**
+3. **C2SaferRust: 1 168 confirmed outcomes (of 1 199 records) on 11 boundaries, every one read to its root cause**
    (`c2saferrust/TRIAGE.md`). Six defects: **S19** (`send_bits` shifts a `u16` by 16 where C promotes
    to int: 228 panics under overflow checks, a corrupted stream in release), **S20** (inflate compares
    the state POINTER with the byte count instead of `state->offset`: 169 `destLen` divergences + 4 NULL
    dereferences), **C15** (`inflate_fast` lost `from = out - dist`, slices over NULL: 48 panics),
    **S21** (`crc32_combine_` squares the wrong matrix and swaps `even`/`odd`: 23 + 23 divergences),
    **C13** (`opng_free`), **S16** (`opng_strcasecmp`); two re-finds, **S1** (`crc32` through `crc32_z`)
-   and **S2** (the `adler32_z` rewrite behind `compress2`'s 169 panics + 99 divergences). Two clusters
-   are not defects: `optimize_cmf` (200: an overflow check on a wrap C defines, identical in release)
-   and `bmp_memset_bytes` (117: a harness input-model gap, `offset` unbounded before `memset`). 31
-   `uncompress` rows failed only under ASan and are `instrument_only`.
+   and **S2** (the `adler32_z` rewrite behind `compress2`'s 169 panics + 99 divergences). **C16**
+   (`optimize_cmf`, 200) is profile-dependent: C's unsigned wrap is defined, the translation's checked
+   `-=` panics under the crate's debug profile and matches C only in release — settled by a
+   deterministic probe on the valid header `08 1d`. One cluster is not a defect: `bmp_memset_bytes`
+   (117: a harness input-model gap, `offset` unbounded before `memset`). 31 `uncompress` rows failed
+   only under ASan and are `instrument_only`.
 4. **Laertes: every confirmed row is the severed-init law** (178 `laertes_init_*` defined, 0 called).
    `crc32`/`crc32_z` 23/23 = **S4 re-found** (deflate's zeroed tables behind `compress`/`compress2` are
    the same law, recorded under S4); two new sites join the family: **S17** `opng_path_make_backup`
@@ -67,4 +69,4 @@ instrumented objects (Laertes' includes its runtime, so its fraction is not comp
 [+ recovery.json on c2rust], divergences/, confirm_sample/, confirmed_inputs/, candidates_sample/,
 corpus.tar.gz, harness_exports.tar.gz, artifact_hashes.json, raw/denominator.json). Pairs:
 `benchmark/pairs/rq4/optipng_{c2rust,c2saferrust,laertes}/` (+ `preflight_accept.txt`, `PROVENANCE.json`,
-`optipng_multi.c`). Manifest: **C13, S16, S17, S18, S19, S20, C15, S21** (new), **S1, S2, S4** re-found. Triage: `c2saferrust/TRIAGE.md`.
+`optipng_multi.c`). Manifest: **C13, S16, S17, S18, S19, S20, C15, S21, C16** (new), **S1, S2, S4** re-found. Triage: `c2saferrust/TRIAGE.md`.

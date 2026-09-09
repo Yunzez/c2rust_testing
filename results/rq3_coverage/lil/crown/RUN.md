@@ -152,10 +152,10 @@ Outcome tally over every saved corpus input, C reference beside the translation,
 | `get_dollarpart` | 3 / 3 | ub_associated_termination 3 | 1 |
 | `lil_alloc_double` | 137 / 137 | ub_associated 137 | 1 |
 | `lil_new` | 1 / 1 | not_reproducible 1 | 1 |
-| `lil_parse` | 244 / 473 | confirmed_termination 69, inconclusive 42, instrument_only 61, ub_associated 55, ub_associated_termination 17 | 12 |
+| `lil_parse` | 244 / 473 | confirmed_termination 67, inconclusive 44, instrument_only 61, ub_associated 55, ub_associated_termination 17 | 12 |
 | `next_word` | 3 / 3 | ub_associated_termination 3 | 1 |
 
-Total: confirmed_termination 69, inconclusive 42, instrument_only 61, not_reproducible 1, ub_associated 192, ub_associated_termination 26
+Total: confirmed_termination 67, inconclusive 44, instrument_only 61, not_reproducible 1, ub_associated 192, ub_associated_termination 26  *(2 lil_parse rows re-classified `inconclusive` 2026-09-09: no-sanitizer replay timed out; C10 had already excluded them)*
 
 <!-- prose -->
 ## 7. Deviations, and what this cell is

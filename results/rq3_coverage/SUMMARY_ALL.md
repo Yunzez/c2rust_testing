@@ -18,9 +18,9 @@ Assembled by `scripts/rq4/summary_all.py` from every library's `cells.json` (its
 | cjson | c2rust | 58 | 39 | 39 | 39 | 39 | 8796 | 99999 | 0 |
 | cjson | PtrTrans | 113 | 15 | 9 | 9 | 9 | 20 | 0 | 18 |
 | lil | c2rust | 145 | 51 | 50 | 50 | 9 | 4761 | 1703 | 7 |
-| lil | Laertes | 145 | 51 | 51 | 51 | 48 | 4907 | 5112 | 7 |
 | lil | C2SaferRust | 145 | 47 | 47 | 47 | 24 | 340 | 3670 | 27 |
 | lil | CROWN | 145 | 42 | 42 | 42 | 39 | 1859 | 617 | 3 |
+| lil | Laertes | 145 | 51 | 51 | 51 | 48 | 4907 | 5112 | 7 |
 | tulip | c2rust | 213 | 213 | 212 | 212 | 212 | 1903 | 1149 | 0 |
 | tulip | C2SaferRust | 213 | 212 | 212 | 212 | 212 | 1776 | 1038 | 9 |
 | tulip | CROWN | 213 | 213 | 212 | 212 | 212 | 1814 | 1076 | 0 |
@@ -64,9 +64,9 @@ Fractions are of the cell's universe (the passing suite's instrumented build whe
 | cjson | c2rust | TEST-UNAVAILABLE | — | 49/59 (0.831) | 49 | — | 1816/2237 (0.812) | 1816 |
 | cjson | PtrTrans | TEST-UNAVAILABLE | — | 10/121 (0.083) | 10 | — | 68/2125 (0.032) | 68 |
 | lil | c2rust | TEST-UNAVAILABLE | — | 143/151 (0.947) | 143 | — | 4999/5730 (0.872) | 4999 |
-| lil | Laertes | TEST-UNAVAILABLE | — | 144/183 (0.787) | 144 | — | 5028/6143 (0.818) | 5028 |
 | lil | C2SaferRust | TEST-UNAVAILABLE | — | 25/154 (0.162) | 25 | — | 362/5751 (0.063) | 362 |
 | lil | CROWN | TEST-UNAVAILABLE | — | 127/134 (0.948) | 127 | — | 5294/6409 (0.826) | 5294 |
+| lil | Laertes | TEST-UNAVAILABLE | — | 144/183 (0.787) | 144 | — | 5028/6143 (0.818) | 5028 |
 | tulip | c2rust | PASS | 213/213 (1.000) | 212/213 (0.995) | 0 | 8616/9298 (0.927) | 3197/9298 (0.344) | 73 |
 | tulip | C2SaferRust | TEST-FAILS | — | 212/213 (0.995) | 212 | — | 3167/9306 (0.340) | 3167 |
 | tulip | CROWN | PASS | 213/213 (1.000) | 212/213 (0.995) | 0 | 8616/9219 (0.935) | 3197/9219 (0.347) | 73 |
@@ -108,9 +108,9 @@ Confirmation totals are the cell's labelled sample (or its full confirmation whe
 | cjson | c2rust | 0 | 0 | 3729 | 0 | 115 | — |
 | cjson | PtrTrans | 18 | 0 | 0 | 0 | 0 | CAND-5 (candidate) |
 | lil | c2rust | 0 | 0 | 647 | 53 | 116 | — |
-| lil | Laertes | 0 | 0 | 662 | 52 | 102 | — |
 | lil | C2SaferRust | 0 | 57 | 413 | 3 | 1 | C9 |
-| lil | CROWN | 0 | 69 | 218 | 61 | 43 | C10 |
+| lil | CROWN | 0 | 67 | 218 | 61 | 45 | C10 |
+| lil | Laertes | 0 | 0 | 662 | 52 | 102 | — |
 | tulip | c2rust | 0 | 0 | 243 | 0 | 0 | — |
 | tulip | C2SaferRust | 5 | 4 | 242 | 3 | 4 | S15 |
 | tulip | CROWN | 0 | 0 | 243 | 0 | 1 | — |
@@ -131,10 +131,10 @@ Confirmation totals are the cell's labelled sample (or its full confirmation whe
 | lodepng | c2rust | 0 | 0 | 1837 | 0 | 7 | — |
 | lodepng | CROWN | 0 | 0 | 1870 | 0 | 7 | — |
 | optipng | c2rust | 0 | 0 | 439 | 208 | 63 | — |
-| optipng | C2SaferRust | 397 | 771 | 1421 | 31 | 122 | S1, S2, C13, S16, S19, S20, C15, S21 |
+| optipng | C2SaferRust | 397 | 771 | 1421 | 31 | 122 | S1, S2, C13, S16, S19, S20, C15, S21, C16 |
 | optipng | Laertes | 97 | 0 | 419 | 410 | 73 | S4, S17, S18 |
 
-Confirmed across all cells: 1169 value divergences, 1158 terminations, before clustering (one site = one defect; a producer's crash counts once and blocks its dependants).
+Confirmed across all cells: 1169 value divergences, 1156 terminations, before clustering (one site = one defect; a producer's crash counts once and blocks its dependants).
 
 ## 4. Defects the RQ4 cells found or re-found
 
@@ -164,4 +164,5 @@ Confirmed across all cells: 1169 value divergences, 1158 terminations, before cl
 | S20 | optipng (zlib) × C2SaferRust | semantic computation substitution | NEW — found by the RQ4 plan pipeline |
 | C15 | optipng (zlib) × C2SaferRust | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
 | S21 | optipng (zlib) × C2SaferRust | semantic computation substitution | NEW — found by the RQ4 plan pipeline |
+| C16 | optipng (libpng) × C2SaferRust | semantic computation substitution | NEW — found by the RQ4 plan pipeline |
 

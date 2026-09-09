@@ -26,7 +26,7 @@ CONFIRMED = ("confirmed_divergence", "confirmed_termination")
 # every other id tied to a cell was catalogued earlier and re-found there.
 # 2026-09-09: the ten-library campaign added C11, S15 (tulip), C12 (urlparser x Laertes), C13, S16
 # (optipng x C2SaferRust), S17, C14 (optipng x Laertes). Everything else with RQ4 evidence is a re-find.
-NEW_IN_RQ4 = {"C8", "C9", "C10", "C11", "S15", "C12", "C13", "S16", "S17", "S18", "S19", "S20", "C15", "S21"}
+NEW_IN_RQ4 = {"C8", "C9", "C10", "C11", "S15", "C12", "C13", "S16", "S17", "S18", "S19", "S20", "C15", "S21", "C16"}
 NOISE = ("ub_associated", "ub_associated_termination", "ub_associated_value", "ub_gated",
          "out_of_contract_access", "instrument_only", "inconclusive", "inconclusive_wild_address",
          "not_reproducible")

@@ -394,6 +394,9 @@ Sample: **97 `confirmed_divergence`, every one the severed-init law** (the 200 `
   indexes `count[16]` out of bounds (backtrace uncompress → uncompress2 → inflate → inflate_table),
   a zeroed heap gives a silently wrong result — every one of the 200 no-sanitizer replays returned
   normally. Termination is instrument-dependent; the defect is semantic. **Manifest S18** (was C14).
+  Unsanitized combined replay (2026-09-09, `confirm_sample/unsanitized_combined_uncompress.json`): the
+  4 divergence inputs diverge again with no sanitizer on either side; 20 sampled sanitizer-only inputs
+  agree with C.
 The other verdicts: 412 `ub_associated`, 410 `instrument_only` (210 + the 200 above), 73 `inconclusive`,
 6 `ub_associated_termination`, 1 `ub_associated_value`.
 

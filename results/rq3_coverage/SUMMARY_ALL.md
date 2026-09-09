@@ -144,8 +144,8 @@ Confirmed across all cells: 1169 value divergences, 1392 terminations, before cl
 | C8 | bzip2 × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
 | C9 | lil × C2SaferRust | byte-string domain narrowing | NEW — found by the RQ4 plan pipeline |
 | C10 | lil × CROWN | null/empty conflation | NEW — found by the RQ4 plan pipeline |
-| S15 | tulipindicators × C2SaferRust | semantic computation substitution | catalogued earlier; re-found by the RQ4 cell |
-| C11 | tulipindicators × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
+| S15 | tulipindicators × C2SaferRust | semantic computation substitution | NEW — found by the RQ4 plan pipeline |
+| C11 | tulipindicators × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
 | S1 | optipng (zlib) × C2SaferRust | null/empty conflation | catalogued earlier; re-found by the RQ4 cell |
 | S3 | bzip2 × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
 | S4 | optipng (zlib) × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
@@ -154,9 +154,9 @@ Confirmed across all cells: 1169 value divergences, 1392 terminations, before cl
 | S10 | bzip2 × CROWN | ownership-state corruption | catalogued earlier; re-found by the RQ4 cell |
 | S11 | bzip2 × CROWN | ownership-state corruption | catalogued earlier; re-found by the RQ4 cell |
 | S14 | bzip2 × C2SaferRust | semantic computation substitution | catalogued earlier; re-found by the RQ4 cell |
-| C12 | urlparser × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
-| C13 | optipng × C2SaferRust | null/empty conflation | catalogued earlier; re-found by the RQ4 cell |
-| S16 | optipng × C2SaferRust | byte-string domain narrowing | catalogued earlier; re-found by the RQ4 cell |
-| S17 | optipng × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
-| C14 | optipng (zlib) × Laertes | initialization loss or corruption | catalogued earlier; re-found by the RQ4 cell |
+| C12 | urlparser × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
+| C13 | optipng × C2SaferRust | null/empty conflation | NEW — found by the RQ4 plan pipeline |
+| S16 | optipng × C2SaferRust | byte-string domain narrowing | NEW — found by the RQ4 plan pipeline |
+| S17 | optipng × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
+| C14 | optipng (zlib) × Laertes | initialization loss or corruption | NEW — found by the RQ4 plan pipeline |
 

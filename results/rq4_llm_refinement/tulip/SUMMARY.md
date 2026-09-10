@@ -64,22 +64,27 @@ corpora: see the section below.
 
 ## Combined replay and confirmation of the grid corpora
 
-**Outcome: no new defect on any of the four seeded corpora; S15 (C2SaferRust) and C11 (Laertes) re-found on their own boundaries; the two faithful translations are clean. Every `confirmed_divergence` on c2rust and CROWN — and all but S15's on the other two — is a NaN blind spot of the generated oracle, verified per input.**
+Every grid corpus was replayed C-and-Rust side by side (`replay_cell.py`) and its candidates plus the campaign's
+rust-only crash artifacts adjudicated by the four-channel confirmation (`confirm_cell.py --sample 200`). The first
+pass, under generator 0.8, returned 86 `confirmed_divergence` verdicts across the four cells; a per-input probe
+(`nan_probe.py`) showed every one outside S15 to be a NaN artefact of the generated oracle — f64 rows compared
+by bits (C keeps an input NaN's payload, Rust emits the canonical NaN) and read-only arrays compared with `!=`.
+That rule is now executable: generator **0.9** compares numeric float outputs NaN-equivalently and reports
+`nan_equivalent` when that was the only difference. The corpora were then re-replayed and re-confirmed under 0.9
+without re-fuzzing (`<cell>/grid/replay_gen09/`); this is the adjudication of record:
 
-Every grid corpus is replayed C-and-Rust side by side (`replay_cell.py`) and its candidates plus the campaign's
-rust-only crash artifacts are adjudicated by the four-channel confirmation (`confirm_cell.py --sample 200`),
-exactly as for the 37 cells. Per cell (details in each cell's README):
-
-| translation | replay: normal / ub-gated / divergence / signal | confirmation (sample) | adjudication |
+| translation | replay (0.9): normal / ub-gated / nan_equivalent / signal (+panic, divergence) | confirmation (0.9, sample) | verdict |
 |---|---|---|---|
-| c2rust | 3 366 / 51 / 20 / 16 | 3 720 `ub_associated_termination`, 20 `ub_associated`, 4 not reproducible, 20 `confirmed_divergence` | **0 defects**: all 20 are NaN artefacts of the oracle (18 NaN-payload differences in f64 rows, 2 `!=` on bit-identical NaN options), verified element by element with `nan_probe.py` |
-| Laertes | 3 256 / 39 / 23 / 17 | 3 880 `ub_associated_termination`, 20 `ub_associated`, 23 `confirmed_divergence`, 3 `confirmed_termination` | **0 new defects; C11 re-found** (the 3 terminations: `ti_find_indicator`, `strcmp` on the zero page); the 23 divergences are the NaN family, verified |
-| C2SaferRust | 3 370 / 47 / 35 / 19 (+ 6 panic) | 3 767 `ub_associated_termination`, 21 `ub_associated`, 64 not reproducible, 41 `confirmed_divergence`, 4 `confirmed_termination`, 8 `instrument_only`, 1 `out_of_contract_access` | **0 new defects; S15 re-found** (`ti_adx_start` 16 divergences + 3 terminations, `ti_adx` 1 termination: the pointer-to-`i32` cast); the other 25 divergences are the NaN family, verified |
-| CROWN | 3 276 / 41 / 18 / 16 | 3 911 `ub_associated_termination`, 20 `ub_associated`, 18 `confirmed_divergence` | **0 defects**; all 18 are the NaN family, verified |
+| c2rust | 3368 / 51 / 18 / 16 | 3720 `ub_associated_termination`, 20 `ub_associated`, 4 not reproducible | **0 defects** |
+| Laertes | 3258 / 39 / 21 / 17 | 3880 `ub_associated_termination`, 20 `ub_associated`, **3 `confirmed_termination`** | **C11 re-found** (`ti_find_indicator`, zero-page `strcmp`); nothing else |
+| C2SaferRust | 3372 / 47 / 23 / 16 (+12 panic, 7 divergence) | 3767 `ub_associated_termination`, 21 `ub_associated`, 64 not reproducible, **18 `confirmed_divergence` + 5 `confirmed_termination`** (+5 instrument_only, 1 out_of_contract) | **S15 re-found**, all on `ti_adx_start` / `ti_adx` (the options pointer cast to `i32`; panic-vs-divergence split varies with ASLR); nothing else |
+| CROWN | 3278 / 41 / 16 / 16 | 3911 `ub_associated_termination`, 20 `ub_associated` | **0 defects** |
 
-The NaN blind spots (f64 rows compared by bits; read-only arrays compared with `!=`) never fired in the archived
-campaigns because random options trip the C-side float-cast UB gate before any comparison; legal options let the
-comparison run on rows holding NaN filler. Fix recorded for the next generator version (`docs/rq4_runbook.md`).
+Per cell, `nan_equivalent` + 2 equals the 0.8 pass's NaN-family count (the 2 are `ti_ultosc_start` inputs whose
+`options` are bit-identical NaNs, now `normal`). The `ub_associated` rows are the C reference faulting under ASan
+on the input (`ti_dpo`, `ti_zlema`, `ti_linreg`, `ti_linregintercept`): a harness input-model gap, not a
+translation difference. The 37 archived cells are not re-run: their verdicts were all UB-gated or on integer
+and byte outputs, and they stay bound to generator 0.8's hashes.
 
 ## Files
 

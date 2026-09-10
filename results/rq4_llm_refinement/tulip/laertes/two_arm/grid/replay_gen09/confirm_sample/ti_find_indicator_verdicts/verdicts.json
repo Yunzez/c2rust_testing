@@ -1,0 +1,218 @@
+[
+ {
+  "artifact": "crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7",
+  "size": 64,
+  "verdict": "confirmed_termination",
+  "why": "no UB check fired on C alone; the translation alone faults on the ZERO PAGE (a NULL dereference), with and without a sanitizer -- deterministic on every memory layout, so not layout luck",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __interceptor_strcmp sanitizer_common_interceptors.inc:501",
+    "#1 ti_find_indicator lib.rs:19602",
+    "#2 tulip_laertes_ft::_::__libfuzzer_sys_run tulip_laertes_ft.rs:161",
+    "#3 rust_fuzzer_test_input lib.rs:276"
+   ],
+   "stderr_tail": "bdbb61362206cd3d66d2dcb)\n    #10 0x563df061fd16  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0x1cfd16) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb)\n    #11 0x7f697d62a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #12 0x7f697d62a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #13 0x563df04f9224  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0xa9224) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb)\n\n==2209873==Register values:\nrax = 0x0000000000000001  rbx = 0x0000000000000000  rcx = 0x002b1ef82e100740  rdx = 0x000000000000001d  \nrdi = 0x00007c297c7e0040  rsi = 0x0000000000000000  rbp = 0x00007fff299e8fb0  rsp = 0x00007fff299e8750  \n r8 = 0x0000000000000000   r9 = 0x0000000000000001  r10 = 0x0000000000200000  r11 = 0x0000000000000001  \nr12 = 0x0000563df0c11660  r13 = 0x0000000000000000  r14 = 0x00007c297c7e0040  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0xbd795) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb) \n==2209873==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __interceptor_strcmp ??:?",
+    "#1 ti_find_indicator ??:?",
+    "#2 tulip_laertes_ft::_::__libfuzzer_sys_run ??:?",
+    "#3 rust_fuzzer_test_input ??:?"
+   ],
+   "stderr_tail": "31dfebe143dc09202b2ce387056461cdf08)\n    #10 0x556fdb600c56  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0x1b5c56) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08)\n    #11 0x7fc545e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #12 0x7fc545e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #13 0x556fdb4e45e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0x995e4) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08)\n\n==2209877==Register values:\nrax = 0x0000000000000001  rbx = 0x0000000000000000  rcx = 0x002ab7edad513740  rdx = 0x00000000000000dd  \nrdi = 0x00007c8544fe0040  rsi = 0x0000000000000000  rbp = 0x00007ffcdef6cfd0  rsp = 0x00007ffcdef6c770  \n r8 = 0x0000000000000000   r9 = 0x0000000000000001  r10 = 0x0000000000080000  r11 = 0x00000aae7b68ad01  \nr12 = 0x0000556fdbbe9c60  r13 = 0x0000000000000000  r14 = 0x00007c8544fe0040  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0xadb55) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08) \n==2209877==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 3342765635\nINFO: Loaded 1 modules   (7376 inline 8-bit counters): 7376 [0x55b77a70c830, 0x55b77a70e500), \nINFO: Loaded 1 PC tables (7376 PCs): 7376 [0x55b77a70e500,0x55b77a72b200), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/confirm_sample/ti_find_indicator_cands/crash-c6138d514ffa2135bfce0ed0b8fac65669917ec7\n==2209880== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "crash-da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "size": 0,
+  "verdict": "confirmed_termination",
+  "why": "no UB check fired on C alone; the translation alone faults on the ZERO PAGE (a NULL dereference), with and without a sanitizer -- deterministic on every memory layout, so not layout luck",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __interceptor_strcmp sanitizer_common_interceptors.inc:501",
+    "#1 ti_find_indicator lib.rs:19602",
+    "#2 tulip_laertes_ft::_::__libfuzzer_sys_run tulip_laertes_ft.rs:161",
+    "#3 rust_fuzzer_test_input lib.rs:276"
+   ],
+   "stderr_tail": "bdbb61362206cd3d66d2dcb)\n    #10 0x55ec180f7d16  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0x1cfd16) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb)\n    #11 0x7f26f8e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #12 0x7f26f8e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #13 0x55ec17fd1224  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0xa9224) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb)\n\n==2209884==Register values:\nrax = 0x0000000000000001  rbx = 0x0000000000000000  rcx = 0x002af60c04d00740  rdx = 0x000000000000001d  \nrdi = 0x00007b46f7fe0070  rsi = 0x0000000000000000  rbp = 0x00007ffcefd26b30  rsp = 0x00007ffcefd262d0  \n r8 = 0x0000000000000000   r9 = 0x0000000000000001  r10 = 0x0000000000200000  r11 = 0x0000000000000001  \nr12 = 0x000055ec186e9660  r13 = 0x0000000000000000  r14 = 0x00007b46f7fe0070  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0xbd795) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb) \n==2209884==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __interceptor_strcmp ??:?",
+    "#1 ti_find_indicator ??:?",
+    "#2 tulip_laertes_ft::_::__libfuzzer_sys_run ??:?",
+    "#3 rust_fuzzer_test_input ??:?"
+   ],
+   "stderr_tail": "31dfebe143dc09202b2ce387056461cdf08)\n    #10 0x55e2a3e78c56  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0x1b5c56) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08)\n    #11 0x7f1a5882a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #12 0x7f1a5882a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #13 0x55e2a3d5c5e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0x995e4) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08)\n\n==2209886==Register values:\nrax = 0x0000000000000001  rbx = 0x0000000000000000  rcx = 0x002af151f1113740  rdx = 0x00000000000000dd  \nrdi = 0x00007b3a579e0070  rsi = 0x0000000000000000  rbp = 0x00007ffecdc4c1f0  rsp = 0x00007ffecdc4b990  \n r8 = 0x0000000000000000   r9 = 0x0000000000000001  r10 = 0x0000000000080000  r11 = 0x00000abcd4799d01  \nr12 = 0x000055e2a4461c60  r13 = 0x0000000000000000  r14 = 0x00007b3a579e0070  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0xadb55) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08) \n==2209886==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 3455187655\nINFO: Loaded 1 modules   (7376 inline 8-bit counters): 7376 [0x55dd3ee13830, 0x55dd3ee15500), \nINFO: Loaded 1 PC tables (7376 PCs): 7376 [0x55dd3ee15500,0x55dd3ee32200), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/confirm_sample/ti_find_indicator_cands/crash-da39a3ee5e6b4b0d3255bfef95601890afd80709\n==2209888== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ },
+ {
+  "artifact": "signal-seed_fixed",
+  "size": 64,
+  "verdict": "confirmed_termination",
+  "why": "no UB check fired on C alone; the translation alone faults on the ZERO PAGE (a NULL dereference), with and without a sanitizer -- deterministic on every memory layout, so not layout luck",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __interceptor_strcmp sanitizer_common_interceptors.inc:501",
+    "#1 ti_find_indicator lib.rs:19602",
+    "#2 tulip_laertes_ft::_::__libfuzzer_sys_run tulip_laertes_ft.rs:161",
+    "#3 rust_fuzzer_test_input lib.rs:276"
+   ],
+   "stderr_tail": "bdbb61362206cd3d66d2dcb)\n    #10 0x55f952c85d16  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0x1cfd16) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb)\n    #11 0x7f8fdaa2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #12 0x7f8fdaa2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #13 0x55f952b5f224  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0xa9224) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb)\n\n==2209892==Register values:\nrax = 0x0000000000000001  rbx = 0x0000000000000000  rcx = 0x002afca961400740  rdx = 0x000000000000001d  \nrdi = 0x00007c4fd9be0040  rsi = 0x0000000000000000  rbp = 0x00007ffd860089f0  rsp = 0x00007ffd86008190  \n r8 = 0x0000000000000000   r9 = 0x0000000000000001  r10 = 0x0000000000100000  r11 = 0x0000000000000001  \nr12 = 0x000055f953277660  r13 = 0x0000000000000000  r14 = 0x00007c4fd9be0040  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_san.bin+0xbd795) (BuildId: 5bf49adc8c8ea0598bdbb61362206cd3d66d2dcb) \n==2209892==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "SEGV on unknown address",
+   "wild_address": false,
+   "null_page": true,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __interceptor_strcmp ??:?",
+    "#1 ti_find_indicator ??:?",
+    "#2 tulip_laertes_ft::_::__libfuzzer_sys_run ??:?",
+    "#3 rust_fuzzer_test_input ??:?"
+   ],
+   "stderr_tail": "31dfebe143dc09202b2ce387056461cdf08)\n    #10 0x556c7fd88c56  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0x1b5c56) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08)\n    #11 0x7f5b5382a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #12 0x7f5b5382a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #13 0x556c7fc6c5e4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0x995e4) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08)\n\n==2209894==Register values:\nrax = 0x0000000000000001  rbx = 0x0000000000000000  rcx = 0x002ab63fe9913740  rdx = 0x00000000000000dd  \nrdi = 0x00007c1b529e0040  rsi = 0x0000000000000000  rbp = 0x00007ffe608fd1f0  rsp = 0x00007ffe608fc990  \n r8 = 0x0000000000000000   r9 = 0x0000000000000001  r10 = 0x0000000000100000  r11 = 0x00000aae0ff7bd01  \nr12 = 0x0000556c80371c60  r13 = 0x0000000000000000  r14 = 0x00007c1b529e0040  r15 = 0x0000000000000000  \nAddressSanitizer can not provide additional info.\nSUMMARY: AddressSanitizer: SEGV (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator.bin+0xadb55) (BuildId: dbdeb31dfebe143dc09202b2ce387056461cdf08) \n==2209894==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "WARNING: Failed to find function \"__sanitizer_acquire_crash_state\".\nWARNING: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 3568604498\nINFO: Loaded 1 modules   (7376 inline 8-bit counters): 7376 [0x55648117d830, 0x55648117f500), \nINFO: Loaded 1 PC tables (7376 PCs): 7376 [0x55648117f500,0x55648119c200), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/harnesses/ti_find_indicator_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_laertes/confirm_sample/ti_find_indicator_cands/signal-seed_fixed\n==2209896== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ }
+]

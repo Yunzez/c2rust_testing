@@ -1,0 +1,15 @@
+confirmed_divergence   divergence-seed_3                              ladder: divergence at phase 4
+instrument_only        divergence-seed_4                              the translation panics only in the sanitizer build; with no sanitizer it returns
+confirmed_termination  divergence-seed_5                              C returned normally, the translation panicked
+out_of_contract_access panic-seed_1                                   the translation panics in the sanitizer build and takes a signal without one; a 
+confirmed_termination  panic-seed_2                                   C returned normally, the translation panicked
+not_reproducible       slow-unit-6b72637276e93a50a6bd95a26e57c616f3   no UB check fired on C; the ladder agrees on replay
+
+6 candidates -> 5 clusters
+      2x  confirmed_termination  #0 __sanitizer_print_stack_trace ??:?
+      1x  confirmed_divergence   #0 __sanitizer_print_stack_trace ??:?
+      1x  instrument_only        #0 __sanitizer_print_stack_trace ??:?
+      1x  out_of_contract_access #0 __sanitizer_print_stack_trace ??:?
+      1x  not_reproducible       <no frame>
+{"confirmed_divergence": 1, "instrument_only": 1, "confirmed_termination": 2, "out_of_contract_access": 1, "not_reproducible": 1}
+wrote /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2saferrust/confirm_sample/ti_adx_verdicts/verdicts.json and /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2saferrust/confirm_sample/ti_adx_verdicts/clusters.json

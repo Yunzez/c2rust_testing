@@ -48,3 +48,11 @@ Confirmation (sample 200) over those and the 4 689 rust-only artifacts: **3 767 
 - The remaining 25 divergences are the NaN family (ti_kvo 16, ti_kama 2, ti_bbands / ti_dema / ti_fisher /
   ti_hma / ti_tema 1 each, ti_ultosc_start 2), verified with `nan_probe.json` exactly as on c2rust: NaN payload
   differences in f64 rows, and `!=` on bit-identical NaN options. **0 new defects.**
+
+## Re-adjudication under generator 0.9 (NaN-equivalent oracle, 2026-09-10)
+
+The harness binaries were rebuilt with generator 0.9 (`replay_gen09/funnel.json` records its hash) and the SAME
+archived grid corpus and rust-only artifacts were replayed and confirmed again, without re-fuzzing. Replay:
+3372 `normal`, 47 `ub-gated`, 23 `nan_equivalent`, 16 `signal`, 12 `panic`, 7 `divergence`. Confirmation (sample 200): 3767 `ub_associated_termination`, 64 `not_reproducible`, 21 `ub_associated`, 18 `confirmed_divergence`, 5 `instrument_only`, 5 `confirmed_termination`, 1 `out_of_contract_access`. Every NaN-only difference now reports `nan_equivalent`
+instead of `confirmed_divergence`; the verdict table above (0.8 oracle) is kept for provenance, this one is the
+adjudication of record. Files: `grid/replay_gen09/` (divergences, confirm_sample, funnel.json, replay.log).

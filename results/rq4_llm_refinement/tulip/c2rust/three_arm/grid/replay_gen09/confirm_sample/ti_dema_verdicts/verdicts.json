@@ -1,0 +1,69 @@
+[
+ {
+  "artifact": "crash-45ee1a5336fdd602f6b13a7163cb10661ef27347",
+  "size": 8230,
+  "verdict": "ub_associated_termination",
+  "why": "C alone: signal (runtime error: 1.54984e+298 is outside the range of representable values of type 'int'); the translation PANICS on its own, with no sanitizer",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "runtime error: 1.54984e+298 is outside the range of representable values of type 'int'",
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 2601906528\nINFO: Loaded 1 modules   (1222 inline 8-bit counters): 1222 [0x563f1f33e1b0, 0x563f1f33e676), \nINFO: Loaded 1 PC tables (1222 PCs): 1222 [0x563f1f33e678,0x563f1f3432d8), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_san.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/confirm_sample/ti_dema_cands/crash-45ee1a5336fdd602f6b13a7163cb10661ef27347\nc/indicators/dema.c:36:24: runtime error: 1.54984e+298 is outside the range of representable values of type 'int'\nSUMMARY: UndefinedBehaviorSanitizer: undefined-behavior c/indicators/dema.c:36:24 \n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_san.bin+0x13da7c) (BuildId: cce90a656e0af547c42b1e653576fcbe8457a1c0)\n    #24 0x55ac9df5fb95  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_san.bin+0x15bb95) (BuildId: cce90a656e0af547c42b1e653576fcbe8457a1c0)\n    #25 0x55ac9df6d021  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_san.bin+0x169021) (BuildId: cce90a656e0af547c42b1e653576fcbe8457a1c0)\n    #26 0x55ac9df5b616  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_san.bin+0x157616) (BuildId: cce90a656e0af547c42b1e653576fcbe8457a1c0)\n    #27 0x7f33be22a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #28 0x7f33be22a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #29 0x55ac9de6d224  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_san.bin+0x69224) (BuildId: cce90a656e0af547c42b1e653576fcbe8457a1c0)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "ub-gated",
+   "reported": "ub-gated",
+   "phase": 1,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "INFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 2954258068\nINFO: Loaded 1 modules   (1277 inline 8-bit counters): 1277 [0x56107cfaf7f0, 0x56107cfafced), \nINFO: Loaded 1 PC tables (1277 PCs): 1277 [0x56107cfafcf0,0x56107cfb4cc0), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/confirm_sample/ti_dema_cands/crash-45ee1a5336fdd602f6b13a7163cb10661ef27347\nC2R_OUTCOME kind=ub-gated phase=1 detail=\nC2R_OUTCOME kind=ub-gated phase=1 detail=\nExecuted /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/confirm_sample/ti_dema_cands/crash-45ee1a5336fdd602f6b13a7163cb10661ef27347 in 1 ms\n***\n*** NOTE: fuzzing was not performed, you have only\n***       executed the target code on a fixed set of inputs.\n***\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "panic",
+   "reported": "panic",
+   "phase": 3,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": "G: Failed to find function \"__sanitizer_print_stack_trace\".\nWARNING: Failed to find function \"__sanitizer_set_death_callback\".\nINFO: Running with entropic power schedule (0xFF, 100).\nINFO: Seed: 2984474499\nINFO: Loaded 1 modules   (680 inline 8-bit counters): 680 [0x5645bfccbdd0, 0x5645bfccc078), \nINFO: Loaded 1 PC tables (680 PCs): 680 [0x5645bfccc078,0x5645bfcceaf8), \n/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_nosan.bin: Running 1 inputs 1 time(s) each.\nRunning: /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/confirm_sample/ti_dema_cands/crash-45ee1a5336fdd602f6b13a7163cb10661ef27347\nC2R_OUTCOME kind=panic phase=3 detail=panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_nosan/src/lib.rs:2343:12: attempt to multiply with overflow\n\nthread '<unnamed>' (2017605) panicked at /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/rereplay09_c2rust/harnesses/ti_dema_nosan/src/lib.rs:2343:12:\nattempt to multiply with overflow\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n==2017605== ERROR: libFuzzer: deadly signal\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  }
+ }
+]

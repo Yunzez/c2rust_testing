@@ -52,3 +52,11 @@ input-model gap), **23 `confirmed_divergence`**, **3 `confirmed_termination`**.
   ti_kvo 13, ti_kama 3, ti_bbands / ti_dema / ti_fisher / ti_hma / ti_tema 1 each — every differing element NaN
   on both sides (payload only); ti_ultosc_start 2 — bit-identical `options` containing NaN, compared with `!=`.
   **0 new defects; C11 re-found.**
+
+## Re-adjudication under generator 0.9 (NaN-equivalent oracle, 2026-09-10)
+
+The harness binaries were rebuilt with generator 0.9 (`replay_gen09/funnel.json` records its hash) and the SAME
+archived grid corpus and rust-only artifacts were replayed and confirmed again, without re-fuzzing. Replay:
+3258 `normal`, 39 `ub-gated`, 21 `nan_equivalent`, 17 `signal`. Confirmation (sample 200): 3880 `ub_associated_termination`, 20 `ub_associated`, 3 `confirmed_termination`. Every NaN-only difference now reports `nan_equivalent`
+instead of `confirmed_divergence`; the verdict table above (0.8 oracle) is kept for provenance, this one is the
+adjudication of record. Files: `grid/replay_gen09/` (divergences, confirm_sample, funnel.json, replay.log).

@@ -55,3 +55,11 @@ options let the comparison run on rows that contain NaN filler. **Verdict: 0 def
 20 oracle artefacts (NaN).** Fix for the next generator version: floats compare equal iff bits are equal or both
 are NaN, for rows and plan arrays alike (`docs/rq4_runbook.md`). The 20 verdicts stay `confirmed_divergence`
 in `confirm_sample/` as the pipeline produced them; this section is the adjudication.
+
+## Re-adjudication under generator 0.9 (NaN-equivalent oracle, 2026-09-10)
+
+The harness binaries were rebuilt with generator 0.9 (`replay_gen09/funnel.json` records its hash) and the SAME
+archived grid corpus and rust-only artifacts were replayed and confirmed again, without re-fuzzing. Replay:
+3368 `normal`, 51 `ub-gated`, 18 `nan_equivalent`, 16 `signal`. Confirmation (sample 200): 3720 `ub_associated_termination`, 20 `ub_associated`, 4 `not_reproducible`. Every NaN-only difference now reports `nan_equivalent`
+instead of `confirmed_divergence`; the verdict table above (0.8 oracle) is kept for provenance, this one is the
+adjudication of record. Files: `grid/replay_gen09/` (divergences, confirm_sample, funnel.json, replay.log).

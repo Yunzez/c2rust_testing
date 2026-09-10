@@ -33,3 +33,11 @@ Replay of the 3 351 final-corpus inputs: **3 276 normal, 41 ub-gated, 18 diverge
 ti_kama 3, ti_bbands / ti_dema / ti_fisher / ti_hma / ti_tema 1 each, ti_ultosc_start 2), verified element by
 element (`nan_probe.json`): NaN payload differences in f64 rows and `!=` on bit-identical NaN options.
 **0 defects** — the second faithful translation is as clean as c2rust on the seeded corpus.
+
+## Re-adjudication under generator 0.9 (NaN-equivalent oracle, 2026-09-10)
+
+The harness binaries were rebuilt with generator 0.9 (`replay_gen09/funnel.json` records its hash) and the SAME
+archived grid corpus and rust-only artifacts were replayed and confirmed again, without re-fuzzing. Replay:
+3278 `normal`, 41 `ub-gated`, 16 `nan_equivalent`, 16 `signal`. Confirmation (sample 200): 3911 `ub_associated_termination`, 20 `ub_associated`. Every NaN-only difference now reports `nan_equivalent`
+instead of `confirmed_divergence`; the verdict table above (0.8 oracle) is kept for provenance, this one is the
+adjudication of record. Files: `grid/replay_gen09/` (divergences, confirm_sample, funnel.json, replay.log).

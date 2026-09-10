@@ -41,7 +41,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
 # different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
-GEN_VERSION = "0.9"   # 2026-09-10: numeric float outputs compare NaN-equivalently (c2r_feq*/c2r_fslice*) and a run whose only differences were NaN payloads reports `nan_equivalent`; found by the tulip seeded corpora (results/rq4_llm_refinement/tulip). 0.8, 2026-09-07: the `nullable owned object` producer-bridge family --
+DECODE_DUMP = False   # test-only (--decode-dump): the harness prints every decoded value and returns before any call
+GEN_VERSION = "0.9.1"   # 2026-09-10 (later): test-only --decode-dump flag for the Seed IR round-trip; emitted harnesses identical to 0.9 (golden). 0.9, 2026-09-10: numeric float outputs compare NaN-equivalently (c2r_feq*/c2r_fslice*) and a run whose only differences were NaN payloads reports `nan_equivalent`; found by the tulip seeded corpora (results/rq4_llm_refinement/tulip). 0.8, 2026-09-07: the `nullable owned object` producer-bridge family --
 # a produced object whose Rust owner is `Option<Box<R>>` (CROWN and PtrTrans quadtree), lent to the
 # target as a borrowed view. Frozen scope in docs/producer_bridge_pilot.md.
 _GEN_VERSION_0_7 = "0.7"   # 2026-09-04: HARNESS PLAN path (--plan). The InputPlan is derived from the
@@ -2042,6 +2043,7 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "    C2R_NAN_EQ.store(false, std::sync::atomic::Ordering::Relaxed);",
         "    let mut cur = Cur::new(data);",
         *decode,
+        *_decode_dump_lines(items),
         "    let _c2r_m = c2r_mode();",
         "    unsafe {",
         "        if _c2r_m == C2R_C_ONLY {",
@@ -2083,6 +2085,39 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "});",
         "",
     ]).replace('panic!("divergence: ', 'c2r_div("')
+
+
+def _decode_dump_lines(items: list[dict]) -> list[str]:
+    """--decode-dump: print every decoded value as a SEMANTIC value (never an address) and return.
+    Emits nothing unless the flag is set, so campaign harnesses are byte-identical."""
+    if not DECODE_DUMP:
+        return []
+    out = []
+    def _fmt(expr: str, ty: str, is_vec: bool) -> str:
+        if ty in ("f32", "f64"):
+            return f"{expr}.iter().map(|x| x.to_bits()).collect::<Vec<_>>()" if is_vec else f"{expr}.to_bits()"
+        return expr
+    for it in items:
+        n, role = it["name"], it["role"]
+        if role == "scalar":
+            out.append(f'    eprintln!("DUMP {n} {{:?}}", {_fmt(n, it["rust"], False)});')
+        elif role == "plan_arr":
+            out.append(f'    eprintln!("DUMP {n} {{:?}}", {_fmt(f"{n}_c", it["elem"], True)});')
+        elif role == "buf_table":
+            for k in range(len(it["rows"])):
+                out.append(f'    eprintln!("DUMP {n}[{k}] {{:?}}", {_fmt(f"{n}__{k}_c", it["elem"], True)});')
+        elif role in ("in_buf", "in_str", "in_arr"):
+            out.append(f'    eprintln!("DUMP {n} len={{}}", {n}_buf.len());')
+        elif role == "io_buf":
+            out.append(f'    eprintln!("DUMP {n} len={{}}", {n}_c.len());')
+        elif role in ("in_table", "in_str_table"):
+            out.append(f'    eprintln!("DUMP {n} rows={{}}", {n}_data.len());')
+        elif role in ("null_ptr", "out_scalar", "out_arr", "out_buf_cap"):
+            out.append(f'    eprintln!("DUMP {n} zero");')
+        else:
+            out.append(f'    eprintln!("DUMP {n} OPAQUE {role}");')
+    out.append('    eprintln!("DUMP_END"); return;')
+    return out
 
 
 def expose_entry(rs_text: str, entry: str) -> tuple[str, bool]:
@@ -2208,11 +2243,17 @@ def main() -> int:
                     help="in-loop UB-free gate: UBSan-instrument the C oracle and reject "
                     "(skip comparison on) inputs where C hits UB, so divergences are reported "
                     "only on UB-free input (vs post-hoc per-artifact exclusion)")
+    ap.add_argument("--decode-dump", action="store_true",
+                    help="TEST ONLY: emit a harness variant that decodes the input, prints every decoded "
+                         "value (DUMP <name> <value>; floats as bits) and returns without calling either side. "
+                         "Never used for a campaign; the Seed IR round-trip regression's oracle.")
     ap.add_argument("--rust-only", action="store_true",
                     help="E3 depth mode: emit a PURE-RUST harness (no C oracle, no build.rs, no "
                     "differential compare) that only drives translated::<entry>. For per-function "
                     "hit-depth measurement; correctness is E1's job.")
     args = ap.parse_args()
+    global DECODE_DUMP
+    DECODE_DUMP = bool(args.decode_dump)
 
     pair = Path(args.pair)
     name = pair.name

@@ -46,7 +46,7 @@ import sys
 from pathlib import Path
 
 # The outcome vocabulary is fixed and shared with the emitted harness (gen_diff_harness.py).
-OUTCOMES = ("normal", "divergence", "panic", "ub-gated", "signal", "nonzero-exit", "timeout")
+OUTCOMES = ("normal", "nan_equivalent", "divergence", "panic", "ub-gated", "signal", "nonzero-exit", "timeout")
 
 _SAN = re.compile(r"(ERROR: AddressSanitizer: [a-z\-]+|ERROR: libFuzzer: [a-z ]+|"
                   r"runtime error: [^\n]{0,120}|SEGV on unknown address)")
@@ -100,7 +100,7 @@ def run_once(binary: Path, mode: str, inp: Path, timeout_s: float, out_dir: Path
 
     if timed_out:
         outcome = "timeout"
-    elif reported in ("divergence", "panic", "ub-gated"):
+    elif reported in ("divergence", "panic", "ub-gated", "nan_equivalent"):
         outcome = reported
     elif rc is not None and rc < 0:
         outcome = "signal"
@@ -290,6 +290,10 @@ def classify(a_c: dict, b_rust: dict, c_comb: dict, d_nosan: dict | None = None)
         # The in-loop gate saw UB that ASan cannot: an out-of-range double->int cast, a signed
         # overflow. Not a finding, and not `ub_associated` either -- nothing was compared.
         return "ub_gated", "the in-loop UB gate rejected the input"
+    if c_comb["outcome"] == "nan_equivalent":
+        # generator 0.9: the numeric float outputs differed only in NaN payload -- both sides NaN,
+        # the same value. Recorded as its own outcome so it never reads as a confirmed divergence.
+        return "nan_equivalent", "numeric float outputs differ only in NaN payload (both sides NaN)"
     if c_comb["outcome"] == "divergence":
         return "confirmed_divergence", f"ladder: {c_comb.get('reported')} at phase {c_comb['phase']}"
     if c_comb["outcome"] == "panic":

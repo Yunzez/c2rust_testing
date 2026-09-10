@@ -41,7 +41,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
 # different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
-GEN_VERSION = "0.8"   # 2026-09-07: the `nullable owned object` producer-bridge family --
+GEN_VERSION = "0.9"   # 2026-09-10: numeric float outputs compare NaN-equivalently (c2r_feq*/c2r_fslice*) and a run whose only differences were NaN payloads reports `nan_equivalent`; found by the tulip seeded corpora (results/rq4_llm_refinement/tulip). 0.8, 2026-09-07: the `nullable owned object` producer-bridge family --
 # a produced object whose Rust owner is `Option<Box<R>>` (CROWN and PtrTrans quadtree), lent to the
 # target as a borrowed view. Frozen scope in docs/producer_bridge_pilot.md.
 _GEN_VERSION_0_7 = "0.7"   # 2026-09-04: HARNESS PLAN path (--plan). The InputPlan is derived from the
@@ -1080,13 +1080,23 @@ def _rust_struct_literal(sd: dict, prefix: str = "translated::") -> str:
 
 def _struct_field_cmp(name: str, sd: dict) -> str:
     """`a.f != b.f || ...` over all fields (scalars and [T;N] both impl PartialEq)."""
-    return " || ".join(f"{name}_c.{f['name']} != {name}_r.{f['name']}" for f in sd["fields"])
+    return " || ".join(_field_ne(f"{name}_c", f"{name}_r", f) for f in sd["fields"])
+
+
+def _field_ne(a: str, b: str, f: dict) -> str:
+    """`a.f != b.f`, NaN-equivalent for float scalars and float arrays."""
+    d, n = f["desc"], f["name"]
+    if d["kind"] == "scalar" and d["rust"] in _FLOAT_W:
+        return f"!c2r_feq{_FLOAT_W[d['rust']]}({a}.{n}, {b}.{n})"
+    if d["kind"] == "array" and d["elem"]["kind"] == "scalar" and d["elem"]["rust"] in _FLOAT_W:
+        return f"!c2r_fslice{_FLOAT_W[d['elem']['rust']]}(&{a}.{n}, &{b}.{n})"
+    return f"{a}.{n} != {b}.{n}"
 
 
 def _struct_arr_cmp(name: str, sd: dict) -> str:
     """Element-wise, field-wise comparison of two struct arrays (c2rust structs don't derive
     PartialEq, so Vec<T> != Vec<T> is unavailable — compare lengths then each field per element)."""
-    fields = " || ".join(f"a.{f['name']} != b.{f['name']}" for f in sd["fields"])
+    fields = " || ".join(_field_ne("a", "b", f) for f in sd["fields"])
     return (f"{name}_c.len() != {name}_r.len() || "
             f"{name}_c.iter().zip({name}_r.iter()).any(|(a, b)| {fields})")
 
@@ -1096,6 +1106,24 @@ def _len_cast(it: dict) -> str:
     lengths so existing entries stay byte-identical; ` as u32` etc. for real libs using `unsigned int`."""
     lr = it.get("len_rust") or "usize"
     return "" if lr == "usize" else f" as {lr}"
+
+
+_FLOAT_W = {"f64": "64", "f32": "32"}
+
+
+def _cmp_slices(lhs: str, rhs: str, elem: str, what: str, indent: str = "    ") -> str:
+    """Post-call comparison of two numeric sequences. Float elements go through the NaN-equivalent
+    helpers of the prelude (two NaNs are the same value whatever their payload); everything else --
+    integers, raw bytes -- keeps the exact `!=` text it always had."""
+    if elem in _FLOAT_W:
+        return f'{indent}if !c2r_fslice{_FLOAT_W[elem]}(&{lhs}, &{rhs}) {{ c2r_div("{what}"); }}'
+    return f'{indent}if {lhs} != {rhs} {{ panic!("divergence: {what}"); }}'
+
+
+def _cmp_scalars(lhs: str, rhs: str, elem: str, what: str, indent: str = "    ") -> str:
+    if elem in _FLOAT_W:
+        return f'{indent}if !c2r_feq{_FLOAT_W[elem]}({lhs}, {rhs}) {{ c2r_div("{what}"); }}'
+    return f'{indent}if {lhs} != {rhs} {{ panic!("divergence: {what}"); }}'
 
 
 def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
@@ -1153,7 +1181,7 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             decode.append(f"    let mut {n}_r = {n}_c.clone();")
             for _side in ("c", "r"):        # sentinel past len on BOTH copies (see in_buf)
                 decode.append(f"    {n}_{_side}.reserve(1); unsafe {{ *{n}_{_side}.as_mut_ptr().add({n}_{_side}.len()) = 0 as {it['elem']}; }}")
-            post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: buffer {n}"); }}')
+            post.append(_cmp_slices(f"{n}_c", f"{n}_r", it["elem"], f"buffer {n}"))
         elif it["role"] == "out_buf_cap":
             # RQ4: output buffer whose capacity is passed by pointer. Both sides get their own
             # zeroed allocation of `cap` elements and their own capacity cell seeded with `cap`.
@@ -1167,7 +1195,7 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             decode.append(f"    let mut {cn}_r: {cr} = {c} as {cr};")
             post.append(f'    if {cn}_c != {cn}_r {{ panic!("divergence: written length {cn}"); }}')
             post.append(f"    {{ let _n = ({cn}_c as usize).min({c});")
-            post.append(f'      if {n}_c[.._n] != {n}_r[.._n] {{ panic!("divergence: output buffer {n}"); }} }}')
+            post.append(_cmp_slices(f"{n}_c[.._n]", f"{n}_r[.._n]", it["elem"], f"output buffer {n}", "      ") + " }")
         elif it["role"] == "produced":
             # the producer's inputs are decoded here exactly like a target's (namespaced); the two
             # objects are built in the body, one per side. Their post-call comparison, when a
@@ -1177,13 +1205,13 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
         elif it["role"] == "out_scalar":
             decode.append(f"    let mut {n}_c: {it['elem']} = 0 as {it['elem']};")
             decode.append(f"    let mut {n}_r: {it['elem']} = 0 as {it['elem']};")
-            post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: out param {n}"); }}')
+            post.append(_cmp_scalars(f"{n}_c", f"{n}_r", it["elem"], f"out param {n}"))
         elif it["role"] == "out_arr":
             # output / inout array sized to a fixed cap (>= any bounded index) so dst[i] / a[lo..hi]
             # stay in bounds; both sides start zeroed, compare the whole buffer after the call.
             decode.append(f"    let mut {n}_c: Vec<{it['elem']}> = vec![0 as {it['elem']}; {it['cap']}];")
             decode.append(f"    let mut {n}_r: Vec<{it['elem']}> = vec![0 as {it['elem']}; {it['cap']}];")
-            post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: out array {n}"); }}')
+            post.append(_cmp_slices(f"{n}_c", f"{n}_r", it["elem"], f"out array {n}"))
         elif it["role"] == "plan_arr":
             e = it["elem"]
             decode.append(f"    let {n}_n: usize = {it['elems']};")
@@ -1193,7 +1221,7 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             else:
                 decode.append(f"    let mut {n}_c: Vec<{e}> = vec![0 as {e}; {n}_n];")
             decode.append(f"    let mut {n}_r: Vec<{e}> = {n}_c.clone();")
-            post.append(f'    if {n}_c != {n}_r {{ panic!("divergence: array {n}"); }}')
+            post.append(_cmp_slices(f"{n}_c", f"{n}_r", e, f"array {n}"))
         elif it["role"] == "buf_table":
             e = it["elem"]
             _pk = "const" if it.get("inner_const") else "mut"
@@ -1208,14 +1236,10 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
                     decode.append(f"    let mut {rn}_c: Vec<{e}> = vec![0 as {e}; {rn}_n];")
                 decode.append(f"    let mut {rn}_r: Vec<{e}> = {rn}_c.clone();")
                 if row["written"]:
-                    if e in ("f32", "f64"):
-                        # bit-for-bit: `!=` on floats calls NaN != NaN, which would report a
-                        # divergence both sides produced identically
-                        post.append(f'    if {rn}_c.len() != {rn}_r.len() || {rn}_c.iter().zip({rn}_r.iter())'
-                                    f'.any(|(x, y)| x.to_bits() != y.to_bits()) '
-                                    f'{{ panic!("divergence: table {n} row {k}"); }}')
-                    else:
-                        post.append(f'    if {rn}_c != {rn}_r {{ panic!("divergence: table {n} row {k}"); }}')
+                    # floats: NaN-equivalent (a bit-for-bit compare called NaNs of different
+                    # payload a divergence -- C keeps an input NaN's payload, Rust emits the
+                    # canonical NaN; 86 false confirmed divergences on the tulip seeded corpora)
+                    post.append(_cmp_slices(f"{rn}_c", f"{rn}_r", e, f"table {n} row {k}"))
             for side in ("c", "r"):
                 decode.append(f"    let {n}_tab_{side}: Vec<*{_pk} {e}> = vec!["
                               + ", ".join(f"{n}__{k}_{side}.{_as}()" for k in range(len(it["rows"])))
@@ -1246,7 +1270,11 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
                 decode.append(f"    let mut {n}_back_{side} = {n}_data.clone();")
                 decode.append(f"    let mut {n}_tab_{side}: Vec<*mut {el}> = "
                               f"{n}_back_{side}.iter_mut().map(|row| row.as_mut_ptr()).collect();")
-            post.append(f'    if {n}_back_c != {n}_back_r {{ panic!("divergence: table {n}"); }}')
+            if el in _FLOAT_W:
+                post.append(f'    if {n}_back_c.len() != {n}_back_r.len() || {n}_back_c.iter().zip({n}_back_r.iter())'
+                            f'.any(|(a, b)| !c2r_fslice{_FLOAT_W[el]}(a, b)) {{ c2r_div("table {n}"); }}')
+            else:
+                post.append(f'    if {n}_back_c != {n}_back_r {{ panic!("divergence: table {n}"); }}')
         elif it["role"] == "in_str_table":
             el, cm, ln = it["elem"], it["count_max"], it["len_name"]
             _lr = it.get("len_rust") or "usize"
@@ -1824,6 +1852,8 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
             cmp = "(c_ret != 0) != r_ret"
         elif _rr and _rr != ret and ret in _INT_TYPES and _rr in _INT_TYPES:
             cmp = "(c_ret as i128) != (r_ret as i128)"
+        elif ret in _FLOAT_W:
+            cmp = f"!c2r_feq{_FLOAT_W[ret]}(c_ret, r_ret)"
         else:
             cmp = "c_ret != r_ret"
         ret_cmp = f'        if {cmp} {{ panic!("divergence: return value"); }}'
@@ -1982,6 +2012,16 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "    c2r_outcome(\"divergence\", what);",
         "    std::process::abort();",
         "}",
+        "// Numeric floating-point outputs compare NaN-equivalently: two NaNs are the same value whatever",
+        "// their payload (C carries an input NaN's payload through arithmetic, Rust emits the canonical",
+        "// NaN), a NaN against a number is a divergence, and raw byte buffers / plugin canonical forms",
+        "// stay byte-for-byte. A run whose only differences were NaN payloads reports `nan_equivalent`",
+        "// instead of `normal` (generator 0.9, 2026-09-10: 86 false confirmed divergences on tulip).",
+        "static C2R_NAN_EQ: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);",
+        "fn c2r_feq64(a: f64, b: f64) -> bool { if a.to_bits() == b.to_bits() { true } else if a.is_nan() && b.is_nan() { C2R_NAN_EQ.store(true, std::sync::atomic::Ordering::Relaxed); true } else { false } }",
+        "fn c2r_feq32(a: f32, b: f32) -> bool { if a.to_bits() == b.to_bits() { true } else if a.is_nan() && b.is_nan() { C2R_NAN_EQ.store(true, std::sync::atomic::Ordering::Relaxed); true } else { false } }",
+        "fn c2r_fslice64(a: &[f64], b: &[f64]) -> bool { a.len() == b.len() && a.iter().zip(b.iter()).all(|(x, y)| c2r_feq64(*x, *y)) }",
+        "fn c2r_fslice32(a: &[f32], b: &[f32]) -> bool { a.len() == b.len() && a.iter().zip(b.iter()).all(|(x, y)| c2r_feq32(*x, *y)) }",
         "",
         *_interior_helper,
         *_extractor,
@@ -1999,6 +2039,7 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "    let _ = cd();",
         "    c2r_install_panic_hook();",
         "    c2r_phase(C2R_PH_DECODE);",
+        "    C2R_NAN_EQ.store(false, std::sync::atomic::Ordering::Relaxed);",
         "    let mut cur = Cur::new(data);",
         *decode,
         "    let _c2r_m = c2r_mode();",
@@ -2037,6 +2078,7 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "        }",
         "    }",
         "    c2r_phase(C2R_PH_COMPARED);",
+        "    if C2R_NAN_EQ.swap(false, std::sync::atomic::Ordering::Relaxed) { c2r_outcome(\"nan_equivalent\", \"numeric float outputs differ only in NaN payload\"); }",
         "    c2r_outcome(\"normal\", \"\");",
         "});",
         "",

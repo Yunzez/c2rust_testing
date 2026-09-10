@@ -69,7 +69,7 @@ def main() -> int:
             r = C.run_once(binp, "combined", inp, a.timeout, work, f"{b}_{i:04d}")
             k = r["outcome"]
             tally[k] = tally.get(k, 0) + 1
-            if k != "normal":
+            if k not in ("normal", "nan_equivalent"):
                 shutil.copy(inp, kept / f"{k}-{inp.name}")
                 details.append({"input": inp.name, "outcome": k, "reported": r["reported"],
                                 "phase": r["phase"], "sanitizer": r["sanitizer"],
@@ -79,7 +79,7 @@ def main() -> int:
         (kept / "_outcomes.json").write_text(json.dumps(details, indent=1) + "\n")
         report.append({"boundary": b, "inputs": len(inputs), "tally": tally,
                        "candidates": sum(v for k, v in tally.items()
-                                         if k not in ("normal", "ub-gated")),
+                                         if k not in ("normal", "ub-gated", "nan_equivalent")),
                        "seconds": round(time.time() - t0)})
         print(f"{b:28s} {len(inputs):5d} inputs  {json.dumps(tally)}  {round(time.time()-t0)}s",
               flush=True)

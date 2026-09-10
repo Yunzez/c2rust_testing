@@ -138,6 +138,8 @@ gives the plan-guided / fallback split; the paper states it in one aggregate sen
 
 ## Status log
 
+- 2026-09-10 (later): order revised by review — (1) commit checkpoint d5577c49 done; (2) NaN oracle fixed FIRST: generator 0.9 (`c2r_feq*`, `nan_equivalent` outcome/verdict; golden re-frozen), tulip corpora re-replayed under 0.9 without re-fuzzing; (3) then the partial Seed IR; (4) seeds-only census; (5) component-analysis use unless the census shows broad gains (then uniform reruns of every plan-guided cell, never a subset).
+
 - 2026-09-10 morning: first version (complete Decode IR) recorded, then superseded the same day by this partial
   Seed IR version after review. tulip × c2rust (three arms), × Laertes, × C2SaferRust done; × CROWN running;
   replay + confirmation of the four grid corpora queued.

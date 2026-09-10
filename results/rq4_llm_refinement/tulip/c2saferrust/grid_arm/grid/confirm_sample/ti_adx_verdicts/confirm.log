@@ -1,0 +1,14 @@
+confirmed_termination  panic-seed_1                                   no UB check fired on C alone; the translation PANICS on its own, with no sanitiz
+out_of_contract_access panic-seed_3                                   with no sanitizer the translation takes a signal rather than panicking; a wild r
+instrument_only        signal-seed_2                                  with no sanitizer the translation does not fail either; the failure is the instr
+instrument_only        signal-seed_4                                  the translation panics only in the sanitizer build; with no sanitizer it returns
+instrument_only        signal-seed_5                                  the translation panics only in the sanitizer build; with no sanitizer it returns
+not_reproducible       slow-unit-6b72637276e93a50a6bd95a26e57c616f3   no UB check fired on C; the ladder agrees on replay
+
+6 candidates -> 4 clusters
+      3x  instrument_only        #0 __sanitizer_print_stack_trace ??:?
+      1x  confirmed_termination  #0 __sanitizer_print_stack_trace ??:?
+      1x  out_of_contract_access #0 __sanitizer_print_stack_trace ??:?
+      1x  not_reproducible       <no frame>
+{"confirmed_termination": 1, "out_of_contract_access": 1, "instrument_only": 3, "not_reproducible": 1}
+wrote /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/confirm_sample/ti_adx_verdicts/verdicts.json and /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/confirm_sample/ti_adx_verdicts/clusters.json

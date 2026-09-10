@@ -1,0 +1,31 @@
+confirmed_divergence   crash-1489f923c4dca729178b3e3233458550d8dddf   ladder: divergence at phase 4
+confirmed_divergence   crash-3cdf2936da2fc556bfa533ab1eb59ce710ac80   ladder: divergence at phase 4
+confirmed_divergence   crash-3eafb06982d26cb8d0847b681f31c9055684ee   ladder: divergence at phase 4
+instrument_only        crash-5ba93c9db0cff93f52b521d7420e43f6eda278   the translation panics only in the sanitizer build; with no sanitizer it returns
+confirmed_divergence   crash-74e7a2e25f56b01d8ab6b8c9eba3c2b5ed5570   ladder: divergence at phase 4
+instrument_only        crash-8f688ce4f038910963d1ad1e934d3141cb7300   the translation panics only in the sanitizer build; with no sanitizer it returns
+confirmed_termination  crash-b4cefc24dd2adb2729d7b35826e6230c68ef50   C returned normally, the translation panicked
+confirmed_termination  crash-c35a2a47490059fc1025c217d84c3f14377696   C returned normally, the translation panicked
+confirmed_divergence   crash-da39a3ee5e6b4b0d3255bfef95601890afd807   ladder: divergence at phase 4
+confirmed_divergence   crash-f86f0aa72b960ca2114741ba51caec7a7368c4   ladder: divergence at phase 4
+confirmed_divergence   divergence-11375f4f67f0a803d33b43e5e212b5ab9   ladder: divergence at phase 4
+confirmed_divergence   divergence-20e6bc0fb8727b961b7d771724d84ed41   ladder: divergence at phase 4
+confirmed_divergence   divergence-3cdf2936da2fc556bfa533ab1eb59ce71   ladder: divergence at phase 4
+confirmed_divergence   divergence-8ccc57ba27750276c97e7fd208d1e4356   ladder: divergence at phase 4
+instrument_only        divergence-ebe771233e14125ab440db4f44b23a75c   the translation panics only in the sanitizer build; with no sanitizer it returns
+confirmed_divergence   divergence-seed_1                              ladder: divergence at phase 4
+confirmed_divergence   divergence-seed_2                              ladder: divergence at phase 4
+confirmed_divergence   divergence-seed_3                              ladder: divergence at phase 4
+confirmed_divergence   divergence-seed_5                              ladder: divergence at phase 4
+confirmed_divergence   divergence-seed_fixed                          ladder: divergence at phase 4
+instrument_only        panic-000d7597be7fbc50f9c46ff81d31b4a1c66f9f   the translation panics only in the sanitizer build; with no sanitizer it returns
+confirmed_termination  panic-322b85aa0cbf23b00a12207c53492764a69710   C returned normally, the translation panicked
+confirmed_divergence   panic-seed_0                                   ladder: divergence at phase 4
+instrument_only        panic-seed_4                                   the translation panics only in the sanitizer build; with no sanitizer it returns
+
+24 candidates -> 3 clusters
+     16x  confirmed_divergence   #0 __sanitizer_print_stack_trace ??:?
+      5x  instrument_only        #0 __sanitizer_print_stack_trace ??:?
+      3x  confirmed_termination  #0 __sanitizer_print_stack_trace ??:?
+{"confirmed_divergence": 16, "instrument_only": 5, "confirmed_termination": 3}
+wrote /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/confirm_sample/ti_adx_start_verdicts/verdicts.json and /tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/confirm_sample/ti_adx_start_verdicts/clusters.json

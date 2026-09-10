@@ -396,3 +396,8 @@ sentinel · a `None` template must fail construction, not fall through to an add
   (`period = (int)options[0]; if (period < 1) return`) is not a parameter guard the planner can
   see; that is the concrete input-model limit this library exposes, recorded, not patched.
 
+## Seed refinement (2026-09-10)
+
+Global deterministic seeding policy, shared codec with the generator, census and rerun rule: `docs/seeding_policy_plan.md`. tulip results: `results/rq4_llm_refinement/tulip/`.
+
+**Oracle NaN blind spots (found 2026-09-10 by the tulip grid-corpus replay, next generator version):** the f64 row compare (`to_bits`) reports NaNs with different payloads as a divergence (C keeps an input NaN's payload, Rust emits the canonical NaN), and the read-only `plan_arr` compare uses `Vec<f64> !=`, so identical NaNs compare unequal. Rule to implement: floats are equal iff bits are equal or both are NaN. Until then, any `confirmed_divergence` whose differing elements are all NaN is an oracle artefact — check with `scripts/rq4/seed_experiment/nan_probe.py`.

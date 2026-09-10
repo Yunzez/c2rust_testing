@@ -1,0 +1,434 @@
+[
+ {
+  "artifact": "signal-seed_0",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: libFuzzer: deadly signal)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "a874f3c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x13df3c) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #16 0x562a4a893055  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x15c055) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #17 0x562a4a8a04e1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x1694e1) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #18 0x562a4a88ead6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x157ad6) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #19 0x7f07dd02a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7f07dd02a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x562a4a7a0424  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x69424) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace ??:?",
+    "#1 fuzzer::PrintStackTrace() ??:?",
+    "#2 fuzzer::Fuzzer::CrashCallback() ??:?",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "9d8)\n    #15 0x564f4d01dcbc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x139cbc) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #16 0x564f4d03bdd5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x157dd5) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #17 0x564f4d049261  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x165261) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #18 0x564f4d037856  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x153856) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #19 0x7fbf8562a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7fbf8562a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x564f4cf4baa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x67aa4) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "signal-seed_1",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: libFuzzer: deadly signal)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "5080f3c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x13df3c) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #16 0x55ad6509f055  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x15c055) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #17 0x55ad650ac4e1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x1694e1) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #18 0x55ad6509aad6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x157ad6) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #19 0x7fa4b1e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7fa4b1e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x55ad64fac424  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x69424) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace ??:?",
+    "#1 fuzzer::PrintStackTrace() ??:?",
+    "#2 fuzzer::Fuzzer::CrashCallback() ??:?",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "9d8)\n    #15 0x55b920f84cbc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x139cbc) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #16 0x55b920fa2dd5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x157dd5) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #17 0x55b920fb0261  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x165261) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #18 0x55b920f9e856  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x153856) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #19 0x7f7a4222a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7f7a4222a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x55b920eb2aa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x67aa4) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "signal-seed_2",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: libFuzzer: deadly signal)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "fc8df3c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x13df3c) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #16 0x55e50fcac055  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x15c055) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #17 0x55e50fcb94e1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x1694e1) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #18 0x55e50fca7ad6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x157ad6) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #19 0x7fe71e62a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7fe71e62a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x55e50fbb9424  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x69424) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace ??:?",
+    "#1 fuzzer::PrintStackTrace() ??:?",
+    "#2 fuzzer::Fuzzer::CrashCallback() ??:?",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "9d8)\n    #15 0x55bfd4949cbc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x139cbc) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #16 0x55bfd4967dd5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x157dd5) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #17 0x55bfd4975261  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x165261) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #18 0x55bfd4963856  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x153856) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #19 0x7fb9c7c2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7fb9c7c2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x55bfd4877aa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x67aa4) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "signal-seed_3",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: libFuzzer: deadly signal)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "f0d7f3c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x13df3c) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #16 0x5578df0f6055  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x15c055) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #17 0x5578df1034e1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x1694e1) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #18 0x5578df0f1ad6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x157ad6) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #19 0x7f767782a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7f767782a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x5578df003424  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x69424) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace ??:?",
+    "#1 fuzzer::PrintStackTrace() ??:?",
+    "#2 fuzzer::Fuzzer::CrashCallback() ??:?",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "9d8)\n    #15 0x55bdfaf2ecbc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x139cbc) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #16 0x55bdfaf4cdd5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x157dd5) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #17 0x55bdfaf5a261  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x165261) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #18 0x55bdfaf48856  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x153856) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #19 0x7f5255e2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7f5255e2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x55bdfae5caa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x67aa4) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "signal-seed_4",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: libFuzzer: deadly signal)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "bd64f3c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x13df3c) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #16 0x55ff6bd83055  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x15c055) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #17 0x55ff6bd904e1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x1694e1) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #18 0x55ff6bd7ead6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x157ad6) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #19 0x7f68a322a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7f68a322a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x55ff6bc90424  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x69424) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace ??:?",
+    "#1 fuzzer::PrintStackTrace() ??:?",
+    "#2 fuzzer::Fuzzer::CrashCallback() ??:?",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "9d8)\n    #15 0x5644f38bbcbc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x139cbc) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #16 0x5644f38d9dd5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x157dd5) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #17 0x5644f38e7261  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x165261) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #18 0x5644f38d5856  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x153856) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #19 0x7ff42762a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7ff42762a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x5644f37e9aa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x67aa4) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "signal-seed_5",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: libFuzzer: deadly signal)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace asan_stack.cpp:87",
+    "#1 fuzzer::PrintStackTrace() FuzzerUtil.cpp:210",
+    "#2 fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "6ee9f3c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x13df3c) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #16 0x556176f08055  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x15c055) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #17 0x556176f154e1  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x1694e1) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #18 0x556176f03ad6  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x157ad6) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n    #19 0x7f52cda2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7f52cda2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x556176e15424  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg_san.bin+0x69424) (BuildId: d52f03638bc69490e238fb865c0193dddd05f063)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace ??:?",
+    "#1 fuzzer::PrintStackTrace() ??:?",
+    "#2 fuzzer::Fuzzer::CrashCallback() ??:?",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "9d8)\n    #15 0x5634acce7cbc  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x139cbc) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #16 0x5634acd05dd5  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x157dd5) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #17 0x5634acd13261  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x165261) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #18 0x5634acd01856  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x153856) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n    #19 0x7fd8e1c2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #20 0x7fd8e1c2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)\n    #21 0x5634acc15aa4  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_crown/harnesses/ti_linreg.bin+0x67aa4) (BuildId: 9800031a2c6610245968f3ff32de5674a88f79d8)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ }
+]

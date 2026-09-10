@@ -1,0 +1,136 @@
+[
+ {
+  "artifact": "divergence-4be23f32772e3b65fc5e392f7ccdbd7b04a7b010",
+  "size": 32780,
+  "verdict": "confirmed_divergence",
+  "why": "ladder: divergence at phase 4",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "divergence",
+   "reported": "divergence",
+   "phase": 4,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace ??:?",
+    "#1 fuzzer::PrintStackTrace() ??:?",
+    "#2 fuzzer::Fuzzer::CrashCallback() ??:?",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "613037c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x13b37c) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n    #15 0x5644b614e495  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x159495) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n    #16 0x5644b615b921  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x166921) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n    #17 0x5644b6149f16  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x154f16) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n    #18 0x7fd1b742a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #19 0x7fd1b742a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #20 0x5644b605d324  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x68324) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "divergence-seed_1",
+  "size": 32780,
+  "verdict": "confirmed_divergence",
+  "why": "ladder: divergence at phase 4",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "divergence",
+   "reported": "divergence",
+   "phase": 4,
+   "returncode": 77,
+   "signal": null,
+   "sanitizer": "ERROR: libFuzzer: deadly signal",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [
+    "#0 __sanitizer_print_stack_trace ??:?",
+    "#1 fuzzer::PrintStackTrace() ??:?",
+    "#2 fuzzer::Fuzzer::CrashCallback() ??:?",
+    "#3 __GI___sigaction :?"
+   ],
+   "stderr_tail": "e03e37c  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x13b37c) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n    #15 0x55612e05c495  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x159495) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n    #16 0x55612e069921  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x166921) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n    #17 0x55612e057f16  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x154f16) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n    #18 0x7f2b80a2a600  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a600) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #19 0x7f2b80a2a717  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a717) (BuildId: 240c8909736b31f963346aca80667fd00c551e32)\n    #20 0x55612df6b324  (/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad/replay_c2saferrust/harnesses/ti_kama.bin+0x68324) (BuildId: f5d463566c15477da131c8f244f4a1f006464fe9)\n\nNOTE: libFuzzer has rudimentary signal handlers.\n      Combine libFuzzer with AddressSanitizer or similar for better crash reports.\nSUMMARY: libFuzzer: deadly signal\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ }
+]

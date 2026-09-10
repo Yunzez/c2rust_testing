@@ -1,0 +1,372 @@
+[
+ {
+  "artifact": "crash-54db464d5aa888396a2aa80314764223dea38658",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 c_ti_zlema zlema.c:46",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run tulip_c2saferrust_ft.rs:157",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "harnesses/ti_zlema_san.bin+0x1347ce) (BuildId: 7b7dd6f28d45323f7196bf29cb881ab8aa09c3d0) \nShadow bytes around the buggy address:\n  0x7ddeb19f4100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ddeb19f4180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ddeb19f4200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ddeb19f4280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ddeb19f4300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7ddeb19f4380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7ddeb19f4400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ddeb19f4480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ddeb19f4500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ddeb19f4580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ddeb19f4600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342868==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 ti_zlema lib.rs:9776",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run tulip_c2saferrust_ft.rs:162",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "harnesses/ti_zlema_san.bin+0x133fbc) (BuildId: 7b7dd6f28d45323f7196bf29cb881ab8aa09c3d0) \nShadow bytes around the buggy address:\n  0x7e2e497fe100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e2e497fe180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e2e497fe200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e2e497fe280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e2e497fe300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7e2e497fe380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7e2e497fe400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e2e497fe480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e2e497fe500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e2e497fe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e2e497fe600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342871==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 ti_zlema ??:?",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run ??:?",
+    "#2 rust_fuzzer_test_input ??:?",
+    "#3 std::panicking::catch_unwind::do_call ??:?"
+   ],
+   "stderr_tail": "ust/harnesses/ti_zlema.bin+0x12fa1c) (BuildId: 239e2bdad57f19ebeb1e829b7698d33e9bf8b5ae) \nShadow bytes around the buggy address:\n  0x7e0feebfe100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e0feebfe180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e0feebfe200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e0feebfe280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e0feebfe300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7e0feebfe380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7e0feebfe400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e0feebfe480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e0feebfe500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e0feebfe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e0feebfe600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342874==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "crash-94d0f5768069bf4cbb62a1479d9bbc02aa14528c",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 c_ti_zlema zlema.c:46",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run tulip_c2saferrust_ft.rs:157",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "harnesses/ti_zlema_san.bin+0x1347ce) (BuildId: 7b7dd6f28d45323f7196bf29cb881ab8aa09c3d0) \nShadow bytes around the buggy address:\n  0x7e01723f4100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e01723f4180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e01723f4200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e01723f4280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e01723f4300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7e01723f4380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7e01723f4400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e01723f4480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e01723f4500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e01723f4580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e01723f4600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342879==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 ti_zlema lib.rs:9776",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run tulip_c2saferrust_ft.rs:162",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "harnesses/ti_zlema_san.bin+0x133fbc) (BuildId: 7b7dd6f28d45323f7196bf29cb881ab8aa09c3d0) \nShadow bytes around the buggy address:\n  0x7e353cffe100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e353cffe180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e353cffe200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e353cffe280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e353cffe300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7e353cffe380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7e353cffe400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e353cffe480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e353cffe500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e353cffe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e353cffe600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342881==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 ti_zlema ??:?",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run ??:?",
+    "#2 rust_fuzzer_test_input ??:?",
+    "#3 std::panicking::catch_unwind::do_call ??:?"
+   ],
+   "stderr_tail": "ust/harnesses/ti_zlema.bin+0x12fa1c) (BuildId: 239e2bdad57f19ebeb1e829b7698d33e9bf8b5ae) \nShadow bytes around the buggy address:\n  0x7e524cdfe100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e524cdfe180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e524cdfe200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e524cdfe280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e524cdfe300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7e524cdfe380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7e524cdfe400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e524cdfe480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e524cdfe500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e524cdfe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e524cdfe600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342883==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "signal-seed_0",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 c_ti_zlema zlema.c:46",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run tulip_c2saferrust_ft.rs:157",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "harnesses/ti_zlema_san.bin+0x1347ce) (BuildId: 7b7dd6f28d45323f7196bf29cb881ab8aa09c3d0) \nShadow bytes around the buggy address:\n  0x7dfaf39f4100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7dfaf39f4180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7dfaf39f4200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7dfaf39f4280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7dfaf39f4300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7dfaf39f4380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7dfaf39f4400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7dfaf39f4480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7dfaf39f4500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7dfaf39f4580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7dfaf39f4600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342887==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 ti_zlema lib.rs:9776",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run tulip_c2saferrust_ft.rs:162",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "harnesses/ti_zlema_san.bin+0x133fbc) (BuildId: 7b7dd6f28d45323f7196bf29cb881ab8aa09c3d0) \nShadow bytes around the buggy address:\n  0x7e60f35fe100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e60f35fe180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e60f35fe200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e60f35fe280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e60f35fe300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7e60f35fe380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7e60f35fe400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e60f35fe480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e60f35fe500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e60f35fe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e60f35fe600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342889==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 ti_zlema ??:?",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run ??:?",
+    "#2 rust_fuzzer_test_input ??:?",
+    "#3 std::panicking::catch_unwind::do_call ??:?"
+   ],
+   "stderr_tail": "ust/harnesses/ti_zlema.bin+0x12fa1c) (BuildId: 239e2bdad57f19ebeb1e829b7698d33e9bf8b5ae) \nShadow bytes around the buggy address:\n  0x7ec32affe100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ec32affe180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ec32affe200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ec32affe280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7ec32affe300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7ec32affe380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7ec32affe400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ec32affe480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ec32affe500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ec32affe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7ec32affe600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342891==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "signal-seed_1",
+  "size": 32780,
+  "verdict": "ub_associated",
+  "why": "C alone: signal (ERROR: AddressSanitizer: heap-buffer-overflow)",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 c_ti_zlema zlema.c:46",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run tulip_c2saferrust_ft.rs:157",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "harnesses/ti_zlema_san.bin+0x1347ce) (BuildId: 7b7dd6f28d45323f7196bf29cb881ab8aa09c3d0) \nShadow bytes around the buggy address:\n  0x7e156fff4100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e156fff4180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e156fff4200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e156fff4280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e156fff4300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7e156fff4380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7e156fff4400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e156fff4480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e156fff4500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e156fff4580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e156fff4600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342895==ABORTING\n"
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 ti_zlema lib.rs:9776",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run tulip_c2saferrust_ft.rs:162",
+    "#2 rust_fuzzer_test_input lib.rs:276",
+    "#3 std::panicking::catch_unwind::do_call lib.rs:62"
+   ],
+   "stderr_tail": "harnesses/ti_zlema_san.bin+0x133fbc) (BuildId: 7b7dd6f28d45323f7196bf29cb881ab8aa09c3d0) \nShadow bytes around the buggy address:\n  0x7e7d64ffe100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e7d64ffe180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e7d64ffe200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e7d64ffe280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7e7d64ffe300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7e7d64ffe380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7e7d64ffe400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e7d64ffe480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e7d64ffe500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e7d64ffe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7e7d64ffe600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342897==ABORTING\n"
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "signal",
+   "reported": null,
+   "phase": null,
+   "returncode": 1,
+   "signal": null,
+   "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+   "wild_address": true,
+   "null_page": false,
+   "oob_distance": 8,
+   "top_frames": [
+    "#0 ti_zlema ??:?",
+    "#1 tulip_c2saferrust_ft::_::__libfuzzer_sys_run ??:?",
+    "#2 rust_fuzzer_test_input ??:?",
+    "#3 std::panicking::catch_unwind::do_call ??:?"
+   ],
+   "stderr_tail": "ust/harnesses/ti_zlema.bin+0x12fa1c) (BuildId: 239e2bdad57f19ebeb1e829b7698d33e9bf8b5ae) \nShadow bytes around the buggy address:\n  0x7dfd115fe100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7dfd115fe180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7dfd115fe200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7dfd115fe280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x7dfd115fe300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n=>0x7dfd115fe380: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa[fa]\n  0x7dfd115fe400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7dfd115fe480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7dfd115fe500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7dfd115fe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x7dfd115fe600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==1342899==ABORTING\n"
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ },
+ {
+  "artifact": "slow-unit-3486d0a77f149f9498b449d9e3f6a94ca1485b28",
+  "size": 7169,
+  "verdict": "not_reproducible",
+  "why": "no UB check fired on C; the ladder agrees on replay",
+  "c_only": {
+   "mode": "c-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "rust_only": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "combined": {
+   "mode": "combined",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  },
+  "rust_no_sanitizer": {
+   "mode": "rust-only",
+   "outcome": "normal",
+   "reported": "normal",
+   "phase": 5,
+   "returncode": 0,
+   "signal": null,
+   "sanitizer": null,
+   "wild_address": false,
+   "null_page": false,
+   "oob_distance": null,
+   "top_frames": [],
+   "stderr_tail": ""
+  }
+ }
+]

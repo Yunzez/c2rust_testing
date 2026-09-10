@@ -7,12 +7,16 @@ set -u
 LIB=$1; TOOL=$2; CSRC=$3; E=$4
 W=/home/yunzez/c2rust_seedir; R=/home/yunzez/c2rust_testing; P=$R/benchmark/pairs/rq4/${LIB}_${TOOL}; A=$R/results/rq3_coverage/$LIB/$TOOL
 S=/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad
-universe() { [ -f $A/raw/tests_coverage.json ] && [ "$(python3 -c "import json;print(json.load(open('$A/analysis/result.json'))['tests_side'])" 2>/dev/null | grep -c PASS)" = 1 ] && echo "--tests $A/raw/tests_coverage.json" || echo "--denominator $A/raw/denominator.json"; }
+universe() {   # the archived cell's universe: the tests build when one was measured, else the rlib / bin-route denominator (possibly inside a tarball)
+  if [ -f $A/raw/tests_coverage.json ]; then echo "--tests $A/raw/tests_coverage.json";
+  elif [ -f $A/raw/denominator.json ]; then echo "--denominator $A/raw/denominator.json";
+  else T=$(ls $A/raw/denom_*.tar.gz 2>/dev/null | head -1); mkdir -p $E/universe; tar xzf $T -C $E/universe 2>/dev/null; echo "--denominator $(find $E/universe -name denominator.json | head -1)"; fi; }
 PLUG=""; [ "$LIB" = cjson ] && PLUG="--plugins $R/plugins/cjson/plugin.toml"
 step() { echo "##### $LIB x $TOOL $* — $(date +%H:%M:%S), files $(find $S -type f | wc -l)"; }
 rm -rf $E; mkdir -p $E/seeds
-step "policy seeds"; python3 $W/scripts/rq4/seed_policy.py --plans $A/plans.json --pair $P --out $E/seeds/policy | tail -1
 step "rebuild bins"; python3 $W/scripts/rq4/seed_experiment/rebuild_bins.py --pair $P --lib $LIB --tool $TOOL --out $E/base --c-source $CSRC --shim $R/benchmark/pairs/rq4/darwin_shims.c --defs $P/translated/${LIB}_${TOOL}.rs.defs.json $PLUG > $E/rebuild.log 2>&1; grep -o "built [0-9/]*" $E/rebuild.log
+# seeds are lowered from the plans the rebuilt harnesses were generated from (base/plans.json), never from the archived plans
+step "policy seeds"; python3 $W/scripts/rq4/seed_policy.py --plans $E/base/plans.json --pair $P --out $E/seeds/policy | tail -1
 python3 - <<PY
 import json, pathlib, shutil
 E=pathlib.Path("$E"); man=json.load(open(E/"seeds/policy/manifest.json")); rows=json.load(open(E/"base/funnel.json"))

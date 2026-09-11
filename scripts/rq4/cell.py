@@ -104,6 +104,12 @@ def build_one(a, pair, entry, private, out_dir, target, sanitize=False, nosan=Fa
         cmd += ["--c-source", a.c_source]
     for p in (a.plugins or []):
         cmd += ["--plugins", p]
+    # resource-realization manifests (docs/construction_recipe_plugin_plan.md): a boundary the
+    # generic planner abstains on is only PLANNED with them, so every harness of the cell --
+    # campaign, _san and _nosan -- has to be generated with the same manifests or the plan the
+    # funnel recorded is not the plan that was built.
+    for p in (getattr(a, "realization_plugins", None) or []):
+        cmd += ["--realization-plugins", p]
     if private:
         cmd += ["--expose-entry"]
     if sanitize:
@@ -373,6 +379,9 @@ def main() -> int:
     ap.add_argument("--tool", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--plugins", action="append")
+    ap.add_argument("--realization-plugins", action="append",
+                    help="resource-realization manifest(s) (a different namespace from the "
+                         "comparator --plugins); reach obtained with one is PLUGIN-ASSISTED")
     ap.add_argument("--c-source")
     ap.add_argument("--shim")
     ap.add_argument("--defs")
@@ -403,7 +412,7 @@ def main() -> int:
     (out / "harnesses").mkdir(parents=True, exist_ok=True)
     target = out / "target"
 
-    plans = F.plan_all(pair, out)
+    plans = F.plan_all(pair, out, a.realization_plugins)
 
     plans = [p for p in plans if p["boundary"] not in F.pair_excludes(pair)]
     if a.only:
@@ -503,7 +512,8 @@ def main() -> int:
     (out / "campaign_params.json").write_text(json.dumps(
         {"mode": "rust-only", "fork": 1, "max_total_time_s": a.seconds, "seed": 42,
          "timeout_s": 25, "rss_limit_mb": 2048, "max_len": MAX_LEN,
-         "ignore": ["crashes", "timeouts", "ooms"], "snapshots_s": [60, 300, 600, 1800]},
+         "ignore": ["crashes", "timeouts", "ooms"], "snapshots_s": [60, 300, 600, 1800],
+         "realization_plugins": a.realization_plugins or []},
         indent=1) + "\n")
     print(f"\nwrote {out/'funnel.json'} and {len(list((out/'ours').glob('*.json')))} exports")
     print("CELL_DONE")

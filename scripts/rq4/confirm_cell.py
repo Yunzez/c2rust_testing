@@ -44,6 +44,9 @@ def main() -> int:
     ap.add_argument("--cell", required=True)
     ap.add_argument("--pair", required=True)
     ap.add_argument("--plugins", action="append")
+    # forwarded to CELL.build_one -> gen_diff_harness.py: the _san / _nosan adjudication harnesses
+    # must be generated from the SAME plan as the discovery binary they adjudicate.
+    ap.add_argument("--realization-plugins", action="append")
     ap.add_argument("--c-source")
     ap.add_argument("--shim")
     ap.add_argument("--defs")

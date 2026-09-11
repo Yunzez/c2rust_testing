@@ -198,6 +198,14 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
         if mod and srcs and lib.exists():
             text = lib.read_text()
             modpath = mod.replace("/", "::")
+            # A single-file translation declares no module to re-export FROM: cJSON x c2rust keeps
+            # `pub struct cJSON` at the crate root with no `mod cJSON { .. }`, so the root already
+            # provides every type and `pub use crate::cJSON::cJSON;` is E0432 (32/39 cJSON x c2rust
+            # rebuilds failed on 2026-09-11 after this block was added on 2026-09-06 for the
+            # per-file crates). Same guard as the `static` re-export above: only a declared module.
+            leaf = mod.rpartition("/")[2]
+            if re.search(rf'(?m)^\s*(?:pub\s+)?mod\s+{re.escape(leaf)}\s*\{{', text) is None:
+                srcs = []
             m = re.search(rf'(?m)^pub use crate::((?:\w+::)*){re.escape(modpath)}::\w+;', text)
             prefix = m.group(1) if m else ""
             names = set()

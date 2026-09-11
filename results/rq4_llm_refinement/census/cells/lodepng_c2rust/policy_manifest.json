@@ -1,0 +1,8015 @@
+{
+ "policy": "docs/seeding_policy_plan.md section 3 (frozen 2026-09-10)",
+ "plans_sha256": "5ba2febe844ef11b1d905f25eee0cdb24b4ec987a2c13513a1ec42b7a9edd3f0",
+ "prng_seed": 7,
+ "max_seeds": 16,
+ "max_bytes": 2097152,
+ "boundaries": {
+  "Adam7_deinterlace": {
+   "kind": "plan-guided",
+   "fields": [
+    "w",
+    "h",
+    "bpp"
+   ],
+   "first_opaque": "in_",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "w": 0,
+      "h": 0,
+      "bpp": 0
+     },
+     "length": 268,
+     "sha256": "b5ae8cd245e6a417",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "w": 1,
+      "h": 1,
+      "bpp": 1
+     },
+     "length": 268,
+     "sha256": "98bd6c78209db6c3",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "w": 2047,
+      "h": 2,
+      "bpp": 512
+     },
+     "length": 268,
+     "sha256": "8c4e907e84d8f9e0",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "w": 4094,
+      "h": 3,
+      "bpp": 1023
+     },
+     "length": 268,
+     "sha256": "a1457b4bfc27e168",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "w": 4095,
+      "h": 5,
+      "bpp": 1024
+     },
+     "length": 268,
+     "sha256": "5d4a48ebda2647de",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "w": 0,
+      "h": 10,
+      "bpp": 0
+     },
+     "length": 268,
+     "sha256": "064d40e8ba5bfc61",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "w": 1,
+      "h": 20,
+      "bpp": 1
+     },
+     "length": 268,
+     "sha256": "3d8ffbb841550285",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "w",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "h",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bpp",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "in_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "out",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "Adam7_getpassvalues": {
+   "kind": "plan-guided",
+   "fields": [
+    "w",
+    "h",
+    "bpp"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "w": 0,
+      "h": 0,
+      "bpp": 0
+     },
+     "length": 131084,
+     "sha256": "3a34d4155a6e0d82",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "passw": [
+       12,
+       16384
+      ],
+      "passh": [
+       16396,
+       16384
+      ],
+      "filter_passstart": [
+       32780,
+       32768
+      ],
+      "padded_passstart": [
+       65548,
+       32768
+      ],
+      "passstart": [
+       98316,
+       32768
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "w": 1,
+      "h": 1,
+      "bpp": 1
+     },
+     "length": 131084,
+     "sha256": "d7563c3aaba05b21",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "passw": [
+       12,
+       16384
+      ],
+      "passh": [
+       16396,
+       16384
+      ],
+      "filter_passstart": [
+       32780,
+       32768
+      ],
+      "padded_passstart": [
+       65548,
+       32768
+      ],
+      "passstart": [
+       98316,
+       32768
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "w": 2,
+      "h": 2,
+      "bpp": 2
+     },
+     "length": 131084,
+     "sha256": "4fb303a9236d7d13",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "passw": [
+       12,
+       16384
+      ],
+      "passh": [
+       16396,
+       16384
+      ],
+      "filter_passstart": [
+       32780,
+       32768
+      ],
+      "padded_passstart": [
+       65548,
+       32768
+      ],
+      "passstart": [
+       98316,
+       32768
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "w": 3,
+      "h": 3,
+      "bpp": 3
+     },
+     "length": 131084,
+     "sha256": "6f4836b8fca8d31a",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "passw": [
+       12,
+       16384
+      ],
+      "passh": [
+       16396,
+       16384
+      ],
+      "filter_passstart": [
+       32780,
+       32768
+      ],
+      "padded_passstart": [
+       65548,
+       32768
+      ],
+      "passstart": [
+       98316,
+       32768
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "w": 5,
+      "h": 5,
+      "bpp": 5
+     },
+     "length": 131084,
+     "sha256": "b6d80563651cb490",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "passw": [
+       12,
+       16384
+      ],
+      "passh": [
+       16396,
+       16384
+      ],
+      "filter_passstart": [
+       32780,
+       32768
+      ],
+      "padded_passstart": [
+       65548,
+       32768
+      ],
+      "passstart": [
+       98316,
+       32768
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "w": 10,
+      "h": 10,
+      "bpp": 10
+     },
+     "length": 131084,
+     "sha256": "98a02848ba04443b",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "passw": [
+       12,
+       16384
+      ],
+      "passh": [
+       16396,
+       16384
+      ],
+      "filter_passstart": [
+       32780,
+       32768
+      ],
+      "padded_passstart": [
+       65548,
+       32768
+      ],
+      "passstart": [
+       98316,
+       32768
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "w": 20,
+      "h": 20,
+      "bpp": 20
+     },
+     "length": 131084,
+     "sha256": "97f742756e284cf4",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "passw": [
+       12,
+       16384
+      ],
+      "passh": [
+       16396,
+       16384
+      ],
+      "filter_passstart": [
+       32780,
+       32768
+      ],
+      "padded_passstart": [
+       65548,
+       32768
+      ],
+      "passstart": [
+       98316,
+       32768
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "w",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "h",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bpp",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "passw",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "passh",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "filter_passstart",
+     "elem": "usize",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "padded_passstart",
+     "elem": "usize",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "passstart",
+     "elem": "usize",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "Adam7_interlace": {
+   "kind": "plan-guided",
+   "fields": [
+    "w",
+    "h",
+    "bpp"
+   ],
+   "first_opaque": "in_",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "w": 0,
+      "h": 0,
+      "bpp": 0
+     },
+     "length": 268,
+     "sha256": "a39fa0092f732693",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "w": 1,
+      "h": 1,
+      "bpp": 1
+     },
+     "length": 268,
+     "sha256": "af067d11483710c4",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "w": 2,
+      "h": 2,
+      "bpp": 512
+     },
+     "length": 268,
+     "sha256": "3bd112ccff26620b",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "w": 3,
+      "h": 3,
+      "bpp": 1023
+     },
+     "length": 268,
+     "sha256": "2bbd533da0f80e4a",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "w": 5,
+      "h": 5,
+      "bpp": 1024
+     },
+     "length": 268,
+     "sha256": "a3f23d8fcd656a76",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "w": 10,
+      "h": 10,
+      "bpp": 0
+     },
+     "length": 268,
+     "sha256": "73061203d0dfb4ef",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "w": 20,
+      "h": 20,
+      "bpp": 1
+     },
+     "length": 268,
+     "sha256": "4ec437bad8ba63c4",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "w",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "h",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bpp",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "in_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "out",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "addColorBits": {
+   "kind": "plan-guided",
+   "fields": [
+    "index",
+    "bits",
+    "in_"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "index": 0,
+      "bits": 0,
+      "in_": 0
+     },
+     "length": 16,
+     "sha256": "374708fff7719dd5",
+     "layout": {
+      "index": [
+       0,
+       8
+      ],
+      "bits": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "index": 1,
+      "bits": 1,
+      "in_": 1
+     },
+     "length": 16,
+     "sha256": "c942b58bc8713f38",
+     "layout": {
+      "index": [
+       0,
+       8
+      ],
+      "bits": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "index": 2047,
+      "bits": 2047,
+      "in_": 2
+     },
+     "length": 16,
+     "sha256": "470f564eab813e23",
+     "layout": {
+      "index": [
+       0,
+       8
+      ],
+      "bits": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "index": 4094,
+      "bits": 4094,
+      "in_": 3
+     },
+     "length": 16,
+     "sha256": "1bf2454deef81b8f",
+     "layout": {
+      "index": [
+       0,
+       8
+      ],
+      "bits": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "index": 4095,
+      "bits": 4095,
+      "in_": 5
+     },
+     "length": 16,
+     "sha256": "9ebd0b4ad9ab1b74",
+     "layout": {
+      "index": [
+       0,
+       8
+      ],
+      "bits": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "index": 0,
+      "bits": 0,
+      "in_": 10
+     },
+     "length": 16,
+     "sha256": "4cf31ec60581138b",
+     "layout": {
+      "index": [
+       0,
+       8
+      ],
+      "bits": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "index": 1,
+      "bits": 1,
+      "in_": 20
+     },
+     "length": 16,
+     "sha256": "840c110e1ebd9e61",
+     "layout": {
+      "index": [
+       0,
+       8
+      ],
+      "bits": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "index",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bits",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "in_",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Zero",
+     "name": "out",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "addPaddingBits": {
+   "kind": "plan-guided",
+   "fields": [
+    "olinebits",
+    "ilinebits",
+    "h"
+   ],
+   "first_opaque": "in_",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "olinebits": 0,
+      "ilinebits": 0,
+      "h": 0
+     },
+     "length": 276,
+     "sha256": "09f24095c2b22e86",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "olinebits": 1,
+      "ilinebits": 1,
+      "h": 1
+     },
+     "length": 276,
+     "sha256": "3be86aa835324a63",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "olinebits": 2,
+      "ilinebits": 512,
+      "h": 512
+     },
+     "length": 276,
+     "sha256": "d69041dfd53cc5b3",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "olinebits": 3,
+      "ilinebits": 1023,
+      "h": 1023
+     },
+     "length": 276,
+     "sha256": "fbdbce76af9e96b0",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "olinebits": 5,
+      "ilinebits": 1024,
+      "h": 1024
+     },
+     "length": 276,
+     "sha256": "c40e7d6c37f95200",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "olinebits": 10,
+      "ilinebits": 0,
+      "h": 0
+     },
+     "length": 276,
+     "sha256": "fd280a8222def807",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "olinebits": 20,
+      "ilinebits": 1,
+      "h": 1
+     },
+     "length": 276,
+     "sha256": "e08e2c280965fce1",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "olinebits",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "ilinebits",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "h",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "in_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "out",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "adler32": {
+   "kind": "fallback",
+   "why": "first opaque: data: input_buffer (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "data",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "alloc_string": {
+   "kind": "fallback",
+   "why": "first opaque: in_: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "in_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "alloc_string_sized": {
+   "kind": "plan-guided",
+   "fields": [
+    "insize"
+   ],
+   "first_opaque": "in_",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "insize": 0
+     },
+     "length": 264,
+     "sha256": "bf0ea8e4350e3753",
+     "layout": {
+      "insize": [
+       0,
+       8
+      ],
+      "in_": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "insize": 1
+     },
+     "length": 264,
+     "sha256": "4adce6af0f2e7067",
+     "layout": {
+      "insize": [
+       0,
+       8
+      ],
+      "in_": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "insize": 512
+     },
+     "length": 264,
+     "sha256": "f527d91b1af3c0d9",
+     "layout": {
+      "insize": [
+       0,
+       8
+      ],
+      "in_": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "insize": 1023
+     },
+     "length": 264,
+     "sha256": "4351029757943462",
+     "layout": {
+      "insize": [
+       0,
+       8
+      ],
+      "in_": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "insize": 1024
+     },
+     "length": 264,
+     "sha256": "5f751806cc4b87d2",
+     "layout": {
+      "insize": [
+       0,
+       8
+      ],
+      "in_": [
+       8,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "insize",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "in_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "checkColorValidity": {
+   "kind": "plan-guided",
+   "fields": [
+    "colortype",
+    "bd"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "colortype": 0,
+      "bd": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bd": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "colortype": 1,
+      "bd": 1
+     },
+     "length": 8,
+     "sha256": "64ed86b909d6d050",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bd": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "colortype": 2,
+      "bd": 2
+     },
+     "length": 8,
+     "sha256": "41d805e613efbe1a",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bd": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "colortype": 3,
+      "bd": 3
+     },
+     "length": 8,
+     "sha256": "f9815db16d8d228c",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bd": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "colortype": 5,
+      "bd": 5
+     },
+     "length": 8,
+     "sha256": "a23a868b85672de9",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bd": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "colortype": 10,
+      "bd": 10
+     },
+     "length": 8,
+     "sha256": "df4877f08b83167c",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bd": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "colortype": 20,
+      "bd": 20
+     },
+     "length": 8,
+     "sha256": "dac6ac5672b274b5",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bd": [
+       4,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "colortype",
+     "rust": "LodePNGColorType",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bd",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "countZeros": {
+   "kind": "plan-guided",
+   "fields": [
+    "pos"
+   ],
+   "first_opaque": "data",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "pos": 0
+     },
+     "length": 264,
+     "sha256": "eb31fe4b5f9e145b",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "pos": 1
+     },
+     "length": 264,
+     "sha256": "3804ca3bdf68e8c0",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "pos": 2
+     },
+     "length": 264,
+     "sha256": "c85b7a99f9e88be1",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "pos": 3
+     },
+     "length": 264,
+     "sha256": "e2110618ff66eecd",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "pos": 5
+     },
+     "length": 264,
+     "sha256": "9cc3d1b67371ac5b",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "pos": 10
+     },
+     "length": 264,
+     "sha256": "d65d9b302a28a961",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "pos": 20
+     },
+     "length": 264,
+     "sha256": "dadf5bec339b46f1",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "pos",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "data",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "filterScanline": {
+   "kind": "plan-guided",
+   "fields": [
+    "bytewidth",
+    "filterType"
+   ],
+   "first_opaque": "scanline",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "bytewidth": 0,
+      "filterType": 0
+     },
+     "length": 265,
+     "sha256": "2dd523ba19828548",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "scanline": [
+       9,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "bytewidth": 1,
+      "filterType": 1
+     },
+     "length": 265,
+     "sha256": "0a31c0757648aa4e",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "scanline": [
+       9,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "bytewidth": 512,
+      "filterType": 2
+     },
+     "length": 265,
+     "sha256": "378639476b9cd8bf",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "scanline": [
+       9,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "bytewidth": 1023,
+      "filterType": 3
+     },
+     "length": 265,
+     "sha256": "251918a6cdb5556f",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "scanline": [
+       9,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "bytewidth": 1024,
+      "filterType": 5
+     },
+     "length": 265,
+     "sha256": "28a8e96cf82b0048",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "scanline": [
+       9,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "bytewidth": 0,
+      "filterType": 10
+     },
+     "length": 265,
+     "sha256": "c54f126e328dc139",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "scanline": [
+       9,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "bytewidth": 1,
+      "filterType": 20
+     },
+     "length": 265,
+     "sha256": "6c2a1fa9b69889f6",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "scanline": [
+       9,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "bytewidth",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "filterType",
+     "rust": "std::os::raw::c_uchar",
+     "width": 1,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "scanline",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Opaque",
+     "name": "prevline",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "out",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "getHash": {
+   "kind": "plan-guided",
+   "fields": [
+    "pos"
+   ],
+   "first_opaque": "data",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "pos": 0
+     },
+     "length": 264,
+     "sha256": "f14b185414da8e44",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "pos": 1
+     },
+     "length": 264,
+     "sha256": "51fba59f1d262297",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "pos": 2047
+     },
+     "length": 264,
+     "sha256": "d6a99fb3598fef3a",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "pos": 4094
+     },
+     "length": 264,
+     "sha256": "25f0f7251c30569c",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "pos": 4095
+     },
+     "length": 264,
+     "sha256": "6a0834723eb64e03",
+     "layout": {
+      "pos": [
+       0,
+       8
+      ],
+      "data": [
+       8,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "pos",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "data",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "getNumColorChannels": {
+   "kind": "plan-guided",
+   "fields": [
+    "colortype"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "colortype": 0
+     },
+     "length": 4,
+     "sha256": "df3f619804a92fdb",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "colortype": 1
+     },
+     "length": 4,
+     "sha256": "67abdd721024f0ff",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "colortype": 2
+     },
+     "length": 4,
+     "sha256": "26b25d457597a7b0",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "colortype": 3
+     },
+     "length": 4,
+     "sha256": "9d9f290527a6be62",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "colortype": 5
+     },
+     "length": 4,
+     "sha256": "2594b6a92ebfb1c3",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "colortype": 10
+     },
+     "length": 4,
+     "sha256": "075de2b906dbd706",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "colortype": 20
+     },
+     "length": 4,
+     "sha256": "447e12701a0d03cf",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "colortype",
+     "rust": "LodePNGColorType",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "getValueRequiredBits": {
+   "kind": "plan-guided",
+   "fields": [
+    "value"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "value": 0
+     },
+     "length": 1,
+     "sha256": "6e340b9cffb37a98",
+     "layout": {
+      "value": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "value": 1
+     },
+     "length": 1,
+     "sha256": "4bf5122f344554c5",
+     "layout": {
+      "value": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "value": 2
+     },
+     "length": 1,
+     "sha256": "dbc1b4c900ffe48d",
+     "layout": {
+      "value": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "value": 3
+     },
+     "length": 1,
+     "sha256": "084fed08b978af4d",
+     "layout": {
+      "value": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "value": 5
+     },
+     "length": 1,
+     "sha256": "e77b9a9ae9e30b0d",
+     "layout": {
+      "value": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "value": 10
+     },
+     "length": 1,
+     "sha256": "01ba4719c80b6fe9",
+     "layout": {
+      "value": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "value": 20
+     },
+     "length": 1,
+     "sha256": "83891d7fe85c33e5",
+     "layout": {
+      "value": [
+       0,
+       1
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "value",
+     "rust": "std::os::raw::c_uchar",
+     "width": 1,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "ilog2": {
+   "kind": "plan-guided",
+   "fields": [
+    "i"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "i": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "i": 1
+     },
+     "length": 8,
+     "sha256": "7c9fa136d4413fa6",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "i": 2
+     },
+     "length": 8,
+     "sha256": "d86e8112f3c4c444",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "i": 3
+     },
+     "length": 8,
+     "sha256": "35be322d094f9d15",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "i": 5
+     },
+     "length": 8,
+     "sha256": "f13ee6ed54ea2aae",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "i": 10
+     },
+     "length": 8,
+     "sha256": "a111f275cc2e7588",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "i": 20
+     },
+     "length": 8,
+     "sha256": "0c27700c82d333aa",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "i",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "ilog2i": {
+   "kind": "plan-guided",
+   "fields": [
+    "i"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "i": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "i": 1
+     },
+     "length": 8,
+     "sha256": "7c9fa136d4413fa6",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "i": 2
+     },
+     "length": 8,
+     "sha256": "d86e8112f3c4c444",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "i": 3
+     },
+     "length": 8,
+     "sha256": "35be322d094f9d15",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "i": 5
+     },
+     "length": 8,
+     "sha256": "f13ee6ed54ea2aae",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "i": 10
+     },
+     "length": 8,
+     "sha256": "a111f275cc2e7588",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "i": 20
+     },
+     "length": 8,
+     "sha256": "0c27700c82d333aa",
+     "layout": {
+      "i": [
+       0,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "i",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "isGrayICCProfile": {
+   "kind": "plan-guided",
+   "fields": [
+    "size"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "size": 0
+     },
+     "length": 24,
+     "sha256": "425990a5fa1898a8",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "size": 1
+     },
+     "length": 24,
+     "sha256": "89e8964229f20ac0",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "size": 2
+     },
+     "length": 24,
+     "sha256": "dc5228c9a63026f0",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "size": 3
+     },
+     "length": 24,
+     "sha256": "69b73dd66c6d28d8",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "size": 5
+     },
+     "length": 24,
+     "sha256": "db1e140dc746a92c",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "size": 10
+     },
+     "length": 24,
+     "sha256": "f67e2e2c65210ab9",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "size": 20
+     },
+     "length": 24,
+     "sha256": "4a1fe480b3ea9fe4",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "size",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "profile",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 20,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "isRGBICCProfile": {
+   "kind": "plan-guided",
+   "fields": [
+    "size"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "size": 0
+     },
+     "length": 24,
+     "sha256": "5e4c81cecc1f0353",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "size": 1
+     },
+     "length": 24,
+     "sha256": "ff977b82a95262c4",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "size": 2
+     },
+     "length": 24,
+     "sha256": "40acb8f3ad9c1b47",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "size": 3
+     },
+     "length": 24,
+     "sha256": "00fb9982d56e70ec",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "size": 5
+     },
+     "length": 24,
+     "sha256": "1ea9bba45ce42f74",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "size": 10
+     },
+     "length": 24,
+     "sha256": "88f584bd606d73bc",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "size": 20
+     },
+     "length": 24,
+     "sha256": "f36d1dccb3bd2f9e",
+     "layout": {
+      "size": [
+       0,
+       4
+      ],
+      "profile": [
+       4,
+       20
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "size",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "profile",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 20,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_addofl": {
+   "kind": "plan-guided",
+   "fields": [
+    "a",
+    "b",
+    "result"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "a": 0,
+      "b": 0,
+      "result": [
+       0
+      ]
+     },
+     "length": 24,
+     "sha256": "9d908ecfb6b256de",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "a": 1,
+      "b": 1,
+      "result": [
+       1
+      ]
+     },
+     "length": 24,
+     "sha256": "605390e5a369ee56",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "a": 2,
+      "b": 2,
+      "result": [
+       2
+      ]
+     },
+     "length": 24,
+     "sha256": "f1475481fd56adb8",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "a": 3,
+      "b": 3,
+      "result": [
+       3
+      ]
+     },
+     "length": 24,
+     "sha256": "88ac623e7ce72a57",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "a": 5,
+      "b": 5,
+      "result": [
+       5
+      ]
+     },
+     "length": 24,
+     "sha256": "3de8a3fbff37f28e",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "a": 10,
+      "b": 10,
+      "result": [
+       10
+      ]
+     },
+     "length": 24,
+     "sha256": "cc264d0972df4729",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "a": 20,
+      "b": 20,
+      "result": [
+       20
+      ]
+     },
+     "length": 24,
+     "sha256": "bdf2f34d24e79ec2",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "a",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "b",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "result",
+     "elem": "usize",
+     "count": {
+      "kind": "const",
+      "value": 1,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_ancillary": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 5,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_check_crc": {
+   "kind": "fallback",
+   "why": "first opaque: chunk: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "chunk",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "lodepng_chunk_data": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 9,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_data_const": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 9,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_find": {
+   "kind": "fallback",
+   "why": "first opaque: type_: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "type_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Zero",
+     "name": "end",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "lodepng_chunk_find_const": {
+   "kind": "fallback",
+   "why": "first opaque: chunk: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "chunk",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Opaque",
+     "name": "end",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Opaque",
+     "name": "type_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "lodepng_chunk_generate_crc": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 5,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_length": {
+   "kind": "plan-guided",
+   "fields": [
+    "chunk"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "chunk": [
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "length": 4,
+     "sha256": "df3f619804a92fdb",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "chunk": [
+       1,
+       1,
+       1,
+       1
+      ]
+     },
+     "length": 4,
+     "sha256": "27ecd0a598e76f8a",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "chunk": [
+       2,
+       2,
+       2,
+       2
+      ]
+     },
+     "length": 4,
+     "sha256": "bb72b4e4eb29dc59",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "chunk": [
+       3,
+       3,
+       3,
+       3
+      ]
+     },
+     "length": 4,
+     "sha256": "5d7c2f3d96131219",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "chunk": [
+       5,
+       5,
+       5,
+       5
+      ]
+     },
+     "length": 4,
+     "sha256": "991f7ac5a7e4709d",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "chunk": [
+       10,
+       10,
+       10,
+       10
+      ]
+     },
+     "length": 4,
+     "sha256": "545c38b0922de197",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "chunk": [
+       20,
+       20,
+       20,
+       20
+      ]
+     },
+     "length": 4,
+     "sha256": "390aeeb2f30c59cb",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "chunk": [
+       1,
+       0,
+       0,
+       0
+      ]
+     },
+     "length": 4,
+     "sha256": "67abdd721024f0ff",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 8,
+     "assignments": {
+      "chunk": [
+       0,
+       1,
+       0,
+       0
+      ]
+     },
+     "length": 4,
+     "sha256": "bf5e8ffa51a9e748",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 9,
+     "assignments": {
+      "chunk": [
+       0,
+       0,
+       1,
+       0
+      ]
+     },
+     "length": 4,
+     "sha256": "6b1e73a0094b7b81",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 10,
+     "assignments": {
+      "chunk": [
+       0,
+       0,
+       0,
+       1
+      ]
+     },
+     "length": 4,
+     "sha256": "b40711a88c703975",
+     "layout": {
+      "chunk": [
+       0,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_next": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 8,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Zero",
+     "name": "end",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "lodepng_chunk_next_const": {
+   "kind": "fallback",
+   "why": "first opaque: end: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "end",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 8,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_private": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 7,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_safetocopy": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 8,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_chunk_type": {
+   "kind": "fallback",
+   "why": "first opaque: chunk: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "chunk",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "type_",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "lodepng_chunk_type_equals": {
+   "kind": "fallback",
+   "why": "first opaque: type_: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "type_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Repeat",
+     "name": "chunk",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 8,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_color_mode_make": {
+   "kind": "plan-guided",
+   "fields": [
+    "colortype",
+    "bitdepth"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "colortype": 0,
+      "bitdepth": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "colortype": 1,
+      "bitdepth": 1
+     },
+     "length": 8,
+     "sha256": "64ed86b909d6d050",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "colortype": 2,
+      "bitdepth": 2
+     },
+     "length": 8,
+     "sha256": "41d805e613efbe1a",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "colortype": 3,
+      "bitdepth": 3
+     },
+     "length": 8,
+     "sha256": "f9815db16d8d228c",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "colortype": 5,
+      "bitdepth": 5
+     },
+     "length": 8,
+     "sha256": "a23a868b85672de9",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "colortype": 10,
+      "bitdepth": 10
+     },
+     "length": 8,
+     "sha256": "df4877f08b83167c",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "colortype": 20,
+      "bitdepth": 20
+     },
+     "length": 8,
+     "sha256": "dac6ac5672b274b5",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "colortype",
+     "rust": "LodePNGColorType",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bitdepth",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_color_stats_add": {
+   "kind": "fallback",
+   "why": "first opaque: stats: struct value (POD fields decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "stats",
+     "why": "struct value (POD fields decoded in place; not modelled)"
+    },
+    {
+     "node": "Scalar",
+     "name": "r",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "g",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "b",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "a",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_color_stats_init": {
+   "kind": "fallback",
+   "why": "first opaque: stats: struct value (POD fields decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "stats",
+     "why": "struct value (POD fields decoded in place; not modelled)"
+    }
+   ]
+  },
+  "lodepng_crc32": {
+   "kind": "fallback",
+   "why": "first opaque: data: input_buffer (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "data",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "lodepng_error_text": {
+   "kind": "plan-guided",
+   "fields": [
+    "code"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "code": 0
+     },
+     "length": 4,
+     "sha256": "df3f619804a92fdb",
+     "layout": {
+      "code": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "code": 1
+     },
+     "length": 4,
+     "sha256": "67abdd721024f0ff",
+     "layout": {
+      "code": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "code": 2
+     },
+     "length": 4,
+     "sha256": "26b25d457597a7b0",
+     "layout": {
+      "code": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "code": 3
+     },
+     "length": 4,
+     "sha256": "9d9f290527a6be62",
+     "layout": {
+      "code": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "code": 5
+     },
+     "length": 4,
+     "sha256": "2594b6a92ebfb1c3",
+     "layout": {
+      "code": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "code": 10
+     },
+     "length": 4,
+     "sha256": "075de2b906dbd706",
+     "layout": {
+      "code": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "code": 20
+     },
+     "length": 4,
+     "sha256": "447e12701a0d03cf",
+     "layout": {
+      "code": [
+       0,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "code",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_free": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "ptr",
+     "why": "null pointer"
+    }
+   ]
+  },
+  "lodepng_get_bpp_lct": {
+   "kind": "plan-guided",
+   "fields": [
+    "colortype",
+    "bitdepth"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "colortype": 0,
+      "bitdepth": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "colortype": 1,
+      "bitdepth": 1
+     },
+     "length": 8,
+     "sha256": "64ed86b909d6d050",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "colortype": 2,
+      "bitdepth": 2
+     },
+     "length": 8,
+     "sha256": "41d805e613efbe1a",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "colortype": 3,
+      "bitdepth": 3
+     },
+     "length": 8,
+     "sha256": "f9815db16d8d228c",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "colortype": 5,
+      "bitdepth": 5
+     },
+     "length": 8,
+     "sha256": "a23a868b85672de9",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "colortype": 10,
+      "bitdepth": 10
+     },
+     "length": 8,
+     "sha256": "df4877f08b83167c",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "colortype": 20,
+      "bitdepth": 20
+     },
+     "length": 8,
+     "sha256": "dac6ac5672b274b5",
+     "layout": {
+      "colortype": [
+       0,
+       4
+      ],
+      "bitdepth": [
+       4,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "colortype",
+     "rust": "LodePNGColorType",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bitdepth",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_get_raw_size_idat": {
+   "kind": "plan-guided",
+   "fields": [
+    "w",
+    "h",
+    "bpp"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "w": 0,
+      "h": 0,
+      "bpp": 0
+     },
+     "length": 12,
+     "sha256": "15ec7bf0b50732b4",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "w": 1,
+      "h": 1,
+      "bpp": 1
+     },
+     "length": 12,
+     "sha256": "11047585fe102fbb",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "w": 2,
+      "h": 2,
+      "bpp": 2
+     },
+     "length": 12,
+     "sha256": "636952d3023d8cf5",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "w": 3,
+      "h": 3,
+      "bpp": 3
+     },
+     "length": 12,
+     "sha256": "02433989dc22cf3b",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "w": 5,
+      "h": 5,
+      "bpp": 5
+     },
+     "length": 12,
+     "sha256": "0a389783af9ac112",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "w": 10,
+      "h": 10,
+      "bpp": 10
+     },
+     "length": 12,
+     "sha256": "989294c90ad95529",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "w": 20,
+      "h": 20,
+      "bpp": 20
+     },
+     "length": 12,
+     "sha256": "d9d70f873329ba81",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "w",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "h",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bpp",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_get_raw_size_lct": {
+   "kind": "plan-guided",
+   "fields": [
+    "w",
+    "h",
+    "colortype",
+    "bitdepth"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "w": 0,
+      "h": 0,
+      "colortype": 0,
+      "bitdepth": 0
+     },
+     "length": 16,
+     "sha256": "374708fff7719dd5",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "colortype": [
+       8,
+       4
+      ],
+      "bitdepth": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "w": 1,
+      "h": 1,
+      "colortype": 1,
+      "bitdepth": 1
+     },
+     "length": 16,
+     "sha256": "1b897dddd4c151e2",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "colortype": [
+       8,
+       4
+      ],
+      "bitdepth": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "w": 2,
+      "h": 2,
+      "colortype": 2,
+      "bitdepth": 2
+     },
+     "length": 16,
+     "sha256": "141253dc2e6542a7",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "colortype": [
+       8,
+       4
+      ],
+      "bitdepth": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "w": 3,
+      "h": 3,
+      "colortype": 3,
+      "bitdepth": 3
+     },
+     "length": 16,
+     "sha256": "0b2f373e42eac64c",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "colortype": [
+       8,
+       4
+      ],
+      "bitdepth": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "w": 5,
+      "h": 5,
+      "colortype": 5,
+      "bitdepth": 5
+     },
+     "length": 16,
+     "sha256": "7de254eac3599095",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "colortype": [
+       8,
+       4
+      ],
+      "bitdepth": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "w": 10,
+      "h": 10,
+      "colortype": 10,
+      "bitdepth": 10
+     },
+     "length": 16,
+     "sha256": "7e2e737352e44139",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "colortype": [
+       8,
+       4
+      ],
+      "bitdepth": [
+       12,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "w": 20,
+      "h": 20,
+      "colortype": 20,
+      "bitdepth": 20
+     },
+     "length": 16,
+     "sha256": "01d5a5e538ee1e78",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "colortype": [
+       8,
+       4
+      ],
+      "bitdepth": [
+       12,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "w",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "h",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "colortype",
+     "rust": "LodePNGColorType",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bitdepth",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_gtofl": {
+   "kind": "plan-guided",
+   "fields": [
+    "a",
+    "b",
+    "c"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "a": 0,
+      "b": 0,
+      "c": 0
+     },
+     "length": 24,
+     "sha256": "9d908ecfb6b256de",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "c": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "a": 1,
+      "b": 1,
+      "c": 1
+     },
+     "length": 24,
+     "sha256": "605390e5a369ee56",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "c": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "a": 2,
+      "b": 2,
+      "c": 2
+     },
+     "length": 24,
+     "sha256": "f1475481fd56adb8",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "c": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "a": 3,
+      "b": 3,
+      "c": 3
+     },
+     "length": 24,
+     "sha256": "88ac623e7ce72a57",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "c": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "a": 5,
+      "b": 5,
+      "c": 5
+     },
+     "length": 24,
+     "sha256": "3de8a3fbff37f28e",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "c": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "a": 10,
+      "b": 10,
+      "c": 10
+     },
+     "length": 24,
+     "sha256": "cc264d0972df4729",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "c": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "a": 20,
+      "b": 20,
+      "c": 20
+     },
+     "length": 24,
+     "sha256": "bdf2f34d24e79ec2",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "c": [
+       16,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "a",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "b",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "c",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_huffman_code_lengths": {
+   "kind": "plan-guided",
+   "fields": [
+    "numcodes",
+    "maxbitlen"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "numcodes": 0,
+      "maxbitlen": 0
+     },
+     "length": 32780,
+     "sha256": "21bd9dac76621a16",
+     "layout": {
+      "numcodes": [
+       0,
+       8
+      ],
+      "maxbitlen": [
+       8,
+       4
+      ],
+      "lengths": [
+       12,
+       16384
+      ],
+      "frequencies": [
+       16396,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "numcodes": 1,
+      "maxbitlen": 1
+     },
+     "length": 32780,
+     "sha256": "30ed5bd3b070888d",
+     "layout": {
+      "numcodes": [
+       0,
+       8
+      ],
+      "maxbitlen": [
+       8,
+       4
+      ],
+      "lengths": [
+       12,
+       16384
+      ],
+      "frequencies": [
+       16396,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "numcodes": 512,
+      "maxbitlen": 512
+     },
+     "length": 32780,
+     "sha256": "8e2697054d1258da",
+     "layout": {
+      "numcodes": [
+       0,
+       8
+      ],
+      "maxbitlen": [
+       8,
+       4
+      ],
+      "lengths": [
+       12,
+       16384
+      ],
+      "frequencies": [
+       16396,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "numcodes": 1023,
+      "maxbitlen": 1023
+     },
+     "length": 32780,
+     "sha256": "db9dc121735dbe48",
+     "layout": {
+      "numcodes": [
+       0,
+       8
+      ],
+      "maxbitlen": [
+       8,
+       4
+      ],
+      "lengths": [
+       12,
+       16384
+      ],
+      "frequencies": [
+       16396,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "numcodes": 1024,
+      "maxbitlen": 1024
+     },
+     "length": 32780,
+     "sha256": "2a800664960949a6",
+     "layout": {
+      "numcodes": [
+       0,
+       8
+      ],
+      "maxbitlen": [
+       8,
+       4
+      ],
+      "lengths": [
+       12,
+       16384
+      ],
+      "frequencies": [
+       16396,
+       16384
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "numcodes",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "maxbitlen",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "lengths",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "frequencies",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_malloc": {
+   "kind": "plan-guided",
+   "fields": [
+    "size"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "size": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "size": 1
+     },
+     "length": 8,
+     "sha256": "7c9fa136d4413fa6",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "size": 2
+     },
+     "length": 8,
+     "sha256": "d86e8112f3c4c444",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "size": 3
+     },
+     "length": 8,
+     "sha256": "35be322d094f9d15",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "size": 5
+     },
+     "length": 8,
+     "sha256": "f13ee6ed54ea2aae",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "size": 10
+     },
+     "length": 8,
+     "sha256": "a111f275cc2e7588",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "size": 20
+     },
+     "length": 8,
+     "sha256": "0c27700c82d333aa",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "size",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_memcpy": {
+   "kind": "plan-guided",
+   "fields": [
+    "size"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "size": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "size": 1
+     },
+     "length": 8,
+     "sha256": "7c9fa136d4413fa6",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "size": 512
+     },
+     "length": 8,
+     "sha256": "01f629f0807a547c",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "size": 1023
+     },
+     "length": 8,
+     "sha256": "5ce0fabd6443e12e",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "size": 1024
+     },
+     "length": 8,
+     "sha256": "fef02424157f106b",
+     "layout": {
+      "size": [
+       0,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "dst",
+     "why": "null pointer"
+    },
+    {
+     "node": "Zero",
+     "name": "src",
+     "why": "null pointer"
+    },
+    {
+     "node": "Scalar",
+     "name": "size",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    }
+   ]
+  },
+  "lodepng_memset": {
+   "kind": "plan-guided",
+   "fields": [
+    "value",
+    "num"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "value": 0,
+      "num": 0
+     },
+     "length": 12,
+     "sha256": "15ec7bf0b50732b4",
+     "layout": {
+      "value": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "value": 1,
+      "num": 1
+     },
+     "length": 12,
+     "sha256": "7d450465ceb49083",
+     "layout": {
+      "value": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "value": 2,
+      "num": 512
+     },
+     "length": 12,
+     "sha256": "cf39b4f688cc4ab4",
+     "layout": {
+      "value": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "value": 3,
+      "num": 1023
+     },
+     "length": 12,
+     "sha256": "7faf3ef14d94e81f",
+     "layout": {
+      "value": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "value": 5,
+      "num": 1024
+     },
+     "length": 12,
+     "sha256": "a5795e40e7393e6b",
+     "layout": {
+      "value": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "value": 10,
+      "num": 0
+     },
+     "length": 12,
+     "sha256": "596c0ad17b38f4bf",
+     "layout": {
+      "value": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "value": 20,
+      "num": 1
+     },
+     "length": 12,
+     "sha256": "f7e3b4f204d8a36f",
+     "layout": {
+      "value": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       8
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "value": -1,
+      "num": 512
+     },
+     "length": 12,
+     "sha256": "380a5d272798f69f",
+     "layout": {
+      "value": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "dst",
+     "why": "null pointer"
+    },
+    {
+     "node": "Scalar",
+     "name": "value",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "num",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    }
+   ]
+  },
+  "lodepng_mulofl": {
+   "kind": "plan-guided",
+   "fields": [
+    "a",
+    "b",
+    "result"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "a": 0,
+      "b": 0,
+      "result": [
+       0
+      ]
+     },
+     "length": 24,
+     "sha256": "9d908ecfb6b256de",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "a": 1,
+      "b": 1,
+      "result": [
+       1
+      ]
+     },
+     "length": 24,
+     "sha256": "605390e5a369ee56",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "a": 2,
+      "b": 2,
+      "result": [
+       2
+      ]
+     },
+     "length": 24,
+     "sha256": "f1475481fd56adb8",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "a": 3,
+      "b": 3,
+      "result": [
+       3
+      ]
+     },
+     "length": 24,
+     "sha256": "88ac623e7ce72a57",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "a": 5,
+      "b": 5,
+      "result": [
+       5
+      ]
+     },
+     "length": 24,
+     "sha256": "3de8a3fbff37f28e",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "a": 10,
+      "b": 10,
+      "result": [
+       10
+      ]
+     },
+     "length": 24,
+     "sha256": "cc264d0972df4729",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "a": 20,
+      "b": 20,
+      "result": [
+       20
+      ]
+     },
+     "length": 24,
+     "sha256": "bdf2f34d24e79ec2",
+     "layout": {
+      "a": [
+       0,
+       8
+      ],
+      "b": [
+       8,
+       8
+      ],
+      "result": [
+       16,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "a",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "b",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "result",
+     "elem": "usize",
+     "count": {
+      "kind": "const",
+      "value": 1,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_read32bitInt": {
+   "kind": "plan-guided",
+   "fields": [
+    "buffer"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "buffer": [
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "length": 4,
+     "sha256": "df3f619804a92fdb",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "buffer": [
+       1,
+       1,
+       1,
+       1
+      ]
+     },
+     "length": 4,
+     "sha256": "27ecd0a598e76f8a",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "buffer": [
+       2,
+       2,
+       2,
+       2
+      ]
+     },
+     "length": 4,
+     "sha256": "bb72b4e4eb29dc59",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "buffer": [
+       3,
+       3,
+       3,
+       3
+      ]
+     },
+     "length": 4,
+     "sha256": "5d7c2f3d96131219",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "buffer": [
+       5,
+       5,
+       5,
+       5
+      ]
+     },
+     "length": 4,
+     "sha256": "991f7ac5a7e4709d",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "buffer": [
+       10,
+       10,
+       10,
+       10
+      ]
+     },
+     "length": 4,
+     "sha256": "545c38b0922de197",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "buffer": [
+       20,
+       20,
+       20,
+       20
+      ]
+     },
+     "length": 4,
+     "sha256": "390aeeb2f30c59cb",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "buffer": [
+       1,
+       0,
+       0,
+       0
+      ]
+     },
+     "length": 4,
+     "sha256": "67abdd721024f0ff",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 8,
+     "assignments": {
+      "buffer": [
+       0,
+       1,
+       0,
+       0
+      ]
+     },
+     "length": 4,
+     "sha256": "bf5e8ffa51a9e748",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 9,
+     "assignments": {
+      "buffer": [
+       0,
+       0,
+       1,
+       0
+      ]
+     },
+     "length": 4,
+     "sha256": "6b1e73a0094b7b81",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 10,
+     "assignments": {
+      "buffer": [
+       0,
+       0,
+       0,
+       1
+      ]
+     },
+     "length": 4,
+     "sha256": "b40711a88c703975",
+     "layout": {
+      "buffer": [
+       0,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Repeat",
+     "name": "buffer",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "lodepng_realloc": {
+   "kind": "plan-guided",
+   "fields": [
+    "new_size"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "new_size": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "new_size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "new_size": 1
+     },
+     "length": 8,
+     "sha256": "7c9fa136d4413fa6",
+     "layout": {
+      "new_size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "new_size": 2
+     },
+     "length": 8,
+     "sha256": "d86e8112f3c4c444",
+     "layout": {
+      "new_size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "new_size": 3
+     },
+     "length": 8,
+     "sha256": "35be322d094f9d15",
+     "layout": {
+      "new_size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "new_size": 5
+     },
+     "length": 8,
+     "sha256": "f13ee6ed54ea2aae",
+     "layout": {
+      "new_size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "new_size": 10
+     },
+     "length": 8,
+     "sha256": "a111f275cc2e7588",
+     "layout": {
+      "new_size": [
+       0,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "new_size": 20
+     },
+     "length": 8,
+     "sha256": "0c27700c82d333aa",
+     "layout": {
+      "new_size": [
+       0,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "ptr",
+     "why": "null pointer"
+    },
+    {
+     "node": "Scalar",
+     "name": "new_size",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "lodepng_set32bitInt": {
+   "kind": "plan-guided",
+   "fields": [
+    "value"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "value": 0
+     },
+     "length": 4,
+     "sha256": "df3f619804a92fdb",
+     "layout": {
+      "value": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "value": 1
+     },
+     "length": 4,
+     "sha256": "67abdd721024f0ff",
+     "layout": {
+      "value": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "value": 2
+     },
+     "length": 4,
+     "sha256": "26b25d457597a7b0",
+     "layout": {
+      "value": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "value": 3
+     },
+     "length": 4,
+     "sha256": "9d9f290527a6be62",
+     "layout": {
+      "value": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "value": 5
+     },
+     "length": 4,
+     "sha256": "2594b6a92ebfb1c3",
+     "layout": {
+      "value": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "value": 10
+     },
+     "length": 4,
+     "sha256": "075de2b906dbd706",
+     "layout": {
+      "value": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "value": 20
+     },
+     "length": 4,
+     "sha256": "447e12701a0d03cf",
+     "layout": {
+      "value": [
+       0,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "value",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Zero",
+     "name": "buffer",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "lodepng_strlen": {
+   "kind": "fallback",
+   "why": "first opaque: a: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "a",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "paethPredictor": {
+   "kind": "plan-guided",
+   "fields": [
+    "a",
+    "b",
+    "c"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "a": 0,
+      "b": 0,
+      "c": 0
+     },
+     "length": 6,
+     "sha256": "b0f66adc83641586",
+     "layout": {
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       2,
+       2
+      ],
+      "c": [
+       4,
+       2
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "a": 1,
+      "b": 1,
+      "c": 1
+     },
+     "length": 6,
+     "sha256": "cd0bae01d0980381",
+     "layout": {
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       2,
+       2
+      ],
+      "c": [
+       4,
+       2
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "a": 2,
+      "b": 2,
+      "c": 2
+     },
+     "length": 6,
+     "sha256": "f83f849f36d103bd",
+     "layout": {
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       2,
+       2
+      ],
+      "c": [
+       4,
+       2
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "a": 3,
+      "b": 3,
+      "c": 3
+     },
+     "length": 6,
+     "sha256": "cdb8957ce0b75eda",
+     "layout": {
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       2,
+       2
+      ],
+      "c": [
+       4,
+       2
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "a": 5,
+      "b": 5,
+      "c": 5
+     },
+     "length": 6,
+     "sha256": "16fb6add48b8e3bc",
+     "layout": {
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       2,
+       2
+      ],
+      "c": [
+       4,
+       2
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "a": 10,
+      "b": 10,
+      "c": 10
+     },
+     "length": 6,
+     "sha256": "f81bec9c8d009827",
+     "layout": {
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       2,
+       2
+      ],
+      "c": [
+       4,
+       2
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "a": 20,
+      "b": 20,
+      "c": 20
+     },
+     "length": 6,
+     "sha256": "40abeae2d8bb6af8",
+     "layout": {
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       2,
+       2
+      ],
+      "c": [
+       4,
+       2
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "a": -1,
+      "b": -1,
+      "c": -1
+     },
+     "length": 6,
+     "sha256": "ce8bee525d6736e9",
+     "layout": {
+      "a": [
+       0,
+       2
+      ],
+      "b": [
+       2,
+       2
+      ],
+      "c": [
+       4,
+       2
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "a",
+     "rust": "std::os::raw::c_short",
+     "width": 2,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "b",
+     "rust": "std::os::raw::c_short",
+     "width": 2,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "c",
+     "rust": "std::os::raw::c_short",
+     "width": 2,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "readBitFromReversedStream": {
+   "kind": "fallback",
+   "why": "first opaque: bitstream: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "bitstream",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Repeat",
+     "name": "bitpointer",
+     "elem": "usize",
+     "count": {
+      "kind": "const",
+      "value": 1,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "readBitsFromReversedStream": {
+   "kind": "plan-guided",
+   "fields": [
+    "nbits"
+   ],
+   "first_opaque": "bitstream",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "nbits": 0
+     },
+     "length": 264,
+     "sha256": "8620deee2eafe658",
+     "layout": {
+      "nbits": [
+       0,
+       8
+      ],
+      "bitstream": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "nbits": 1
+     },
+     "length": 264,
+     "sha256": "36605c31776fd97c",
+     "layout": {
+      "nbits": [
+       0,
+       8
+      ],
+      "bitstream": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "nbits": 512
+     },
+     "length": 264,
+     "sha256": "5f60ebef2c158712",
+     "layout": {
+      "nbits": [
+       0,
+       8
+      ],
+      "bitstream": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "nbits": 1023
+     },
+     "length": 264,
+     "sha256": "82523e42b7284c30",
+     "layout": {
+      "nbits": [
+       0,
+       8
+      ],
+      "bitstream": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "nbits": 1024
+     },
+     "length": 264,
+     "sha256": "7c41973fd3156c61",
+     "layout": {
+      "nbits": [
+       0,
+       8
+      ],
+      "bitstream": [
+       8,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "nbits",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "bitstream",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Repeat",
+     "name": "bitpointer",
+     "elem": "usize",
+     "count": {
+      "kind": "const",
+      "value": 1,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "removePaddingBits": {
+   "kind": "plan-guided",
+   "fields": [
+    "olinebits",
+    "ilinebits",
+    "h"
+   ],
+   "first_opaque": "in_",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "olinebits": 0,
+      "ilinebits": 0,
+      "h": 0
+     },
+     "length": 276,
+     "sha256": "7d8b120a2ed601c1",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "olinebits": 1,
+      "ilinebits": 1,
+      "h": 1
+     },
+     "length": 276,
+     "sha256": "0dee55f64cda2298",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "olinebits": 512,
+      "ilinebits": 2,
+      "h": 512
+     },
+     "length": 276,
+     "sha256": "d044ddaee1f739e8",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "olinebits": 1023,
+      "ilinebits": 3,
+      "h": 1023
+     },
+     "length": 276,
+     "sha256": "deb43ef37b7c14fb",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "olinebits": 1024,
+      "ilinebits": 5,
+      "h": 1024
+     },
+     "length": 276,
+     "sha256": "4ca3b12104a5e3e9",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "olinebits": 0,
+      "ilinebits": 10,
+      "h": 0
+     },
+     "length": 276,
+     "sha256": "28fc4fc2b04980c1",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "olinebits": 1,
+      "ilinebits": 20,
+      "h": 1
+     },
+     "length": 276,
+     "sha256": "94a64fc8d745ad64",
+     "layout": {
+      "olinebits": [
+       0,
+       8
+      ],
+      "ilinebits": [
+       8,
+       8
+      ],
+      "h": [
+       16,
+       4
+      ],
+      "in_": [
+       20,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "olinebits",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "ilinebits",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "h",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "in_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "out",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "reverseBits": {
+   "kind": "plan-guided",
+   "fields": [
+    "bits",
+    "num"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "bits": 0,
+      "num": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "bits": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "bits": 1,
+      "num": 1
+     },
+     "length": 8,
+     "sha256": "64ed86b909d6d050",
+     "layout": {
+      "bits": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "bits": 2,
+      "num": 512
+     },
+     "length": 8,
+     "sha256": "b19729aaa1174fc0",
+     "layout": {
+      "bits": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "bits": 3,
+      "num": 1023
+     },
+     "length": 8,
+     "sha256": "1fe9dfb41df117ae",
+     "layout": {
+      "bits": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "bits": 5,
+      "num": 1024
+     },
+     "length": 8,
+     "sha256": "d8fd12db5ea64f43",
+     "layout": {
+      "bits": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "bits": 10,
+      "num": 0
+     },
+     "length": 8,
+     "sha256": "a111f275cc2e7588",
+     "layout": {
+      "bits": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "bits": 20,
+      "num": 1
+     },
+     "length": 8,
+     "sha256": "74ac2ae4ebcd9f54",
+     "layout": {
+      "bits": [
+       0,
+       4
+      ],
+      "num": [
+       4,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "bits",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "num",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    }
+   ]
+  },
+  "searchCodeIndex": {
+   "kind": "plan-guided",
+   "fields": [
+    "value"
+   ],
+   "first_opaque": "array",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "value": 0
+     },
+     "length": 264,
+     "sha256": "d0d1d2b7d5e78f05",
+     "layout": {
+      "value": [
+       0,
+       8
+      ],
+      "array": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "value": 1
+     },
+     "length": 264,
+     "sha256": "1eda5b71c8d93627",
+     "layout": {
+      "value": [
+       0,
+       8
+      ],
+      "array": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "value": 2
+     },
+     "length": 264,
+     "sha256": "759a8bc20275a026",
+     "layout": {
+      "value": [
+       0,
+       8
+      ],
+      "array": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "value": 3
+     },
+     "length": 264,
+     "sha256": "5f20555e49e3ee83",
+     "layout": {
+      "value": [
+       0,
+       8
+      ],
+      "array": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "value": 5
+     },
+     "length": 264,
+     "sha256": "82f8be6767164204",
+     "layout": {
+      "value": [
+       0,
+       8
+      ],
+      "array": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "value": 10
+     },
+     "length": 264,
+     "sha256": "00c9549361a748a4",
+     "layout": {
+      "value": [
+       0,
+       8
+      ],
+      "array": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "value": 20
+     },
+     "length": 264,
+     "sha256": "caa819ae16da6e12",
+     "layout": {
+      "value": [
+       0,
+       8
+      ],
+      "array": [
+       8,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "value",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "array",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "setBitOfReversedStream": {
+   "kind": "plan-guided",
+   "fields": [
+    "bit",
+    "bitpointer"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "bit": 0,
+      "bitpointer": [
+       0
+      ]
+     },
+     "length": 9,
+     "sha256": "3e7077fd2f66d689",
+     "layout": {
+      "bit": [
+       0,
+       1
+      ],
+      "bitpointer": [
+       1,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "bit": 1,
+      "bitpointer": [
+       1
+      ]
+     },
+     "length": 9,
+     "sha256": "46f8ec5a439c92e1",
+     "layout": {
+      "bit": [
+       0,
+       1
+      ],
+      "bitpointer": [
+       1,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "bit": 2,
+      "bitpointer": [
+       2
+      ]
+     },
+     "length": 9,
+     "sha256": "51c2ad44dc8d1515",
+     "layout": {
+      "bit": [
+       0,
+       1
+      ],
+      "bitpointer": [
+       1,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "bit": 3,
+      "bitpointer": [
+       3
+      ]
+     },
+     "length": 9,
+     "sha256": "adc95ff0ddbbd81c",
+     "layout": {
+      "bit": [
+       0,
+       1
+      ],
+      "bitpointer": [
+       1,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "bit": 5,
+      "bitpointer": [
+       5
+      ]
+     },
+     "length": 9,
+     "sha256": "80fa4084d737a4d1",
+     "layout": {
+      "bit": [
+       0,
+       1
+      ],
+      "bitpointer": [
+       1,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "bit": 10,
+      "bitpointer": [
+       10
+      ]
+     },
+     "length": 9,
+     "sha256": "00656884e49ec6d2",
+     "layout": {
+      "bit": [
+       0,
+       1
+      ],
+      "bitpointer": [
+       1,
+       8
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "bit": 20,
+      "bitpointer": [
+       20
+      ]
+     },
+     "length": 9,
+     "sha256": "c4bc3c679f8ae550",
+     "layout": {
+      "bit": [
+       0,
+       1
+      ],
+      "bitpointer": [
+       1,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "bit",
+     "rust": "std::os::raw::c_uchar",
+     "width": 1,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "bitpointer",
+     "elem": "usize",
+     "count": {
+      "kind": "const",
+      "value": 1,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Zero",
+     "name": "bitstream",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "ucvector_init": {
+   "kind": "fallback",
+   "why": "first opaque: buffer: input_buffer (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "buffer",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "uivector_cleanup": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "p",
+     "why": "null pointer"
+    }
+   ]
+  },
+  "unfilter": {
+   "kind": "plan-guided",
+   "fields": [
+    "w",
+    "h",
+    "bpp"
+   ],
+   "first_opaque": "in_",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "w": 0,
+      "h": 0,
+      "bpp": 0
+     },
+     "length": 268,
+     "sha256": "437873be461a61dd",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "w": 1,
+      "h": 1,
+      "bpp": 1
+     },
+     "length": 268,
+     "sha256": "f940db5c1e9409ba",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "w": 2047,
+      "h": 512,
+      "bpp": 2047
+     },
+     "length": 268,
+     "sha256": "1a862cfd381cc7b1",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "w": 4094,
+      "h": 1023,
+      "bpp": 4094
+     },
+     "length": 268,
+     "sha256": "c050915bec38ab1b",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "w": 4095,
+      "h": 1024,
+      "bpp": 4095
+     },
+     "length": 268,
+     "sha256": "6b8aff8f4883badd",
+     "layout": {
+      "w": [
+       0,
+       4
+      ],
+      "h": [
+       4,
+       4
+      ],
+      "bpp": [
+       8,
+       4
+      ],
+      "in_": [
+       12,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "w",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "h",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "bpp",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "in_",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Repeat",
+     "name": "out",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "unfilterScanline": {
+   "kind": "plan-guided",
+   "fields": [
+    "bytewidth",
+    "filterType",
+    "length"
+   ],
+   "first_opaque": "scanline",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "bytewidth": 0,
+      "filterType": 0,
+      "length": 0
+     },
+     "length": 273,
+     "sha256": "dcac7fbd7f507584",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "length": [
+       9,
+       8
+      ],
+      "scanline": [
+       17,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "bytewidth": 1,
+      "filterType": 1,
+      "length": 1
+     },
+     "length": 273,
+     "sha256": "f8b6d8230eecf725",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "length": [
+       9,
+       8
+      ],
+      "scanline": [
+       17,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "bytewidth": 512,
+      "filterType": 2,
+      "length": 512
+     },
+     "length": 273,
+     "sha256": "d92737c616f1eefe",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "length": [
+       9,
+       8
+      ],
+      "scanline": [
+       17,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "bytewidth": 1023,
+      "filterType": 3,
+      "length": 1023
+     },
+     "length": 273,
+     "sha256": "bf6944bf7430fdb9",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "length": [
+       9,
+       8
+      ],
+      "scanline": [
+       17,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "bytewidth": 1024,
+      "filterType": 5,
+      "length": 1024
+     },
+     "length": 273,
+     "sha256": "3f8d7d881a6ad685",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "length": [
+       9,
+       8
+      ],
+      "scanline": [
+       17,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "bytewidth": 0,
+      "filterType": 10,
+      "length": 0
+     },
+     "length": 273,
+     "sha256": "bd713e4d1e7e47de",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "length": [
+       9,
+       8
+      ],
+      "scanline": [
+       17,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "bytewidth": 1,
+      "filterType": 20,
+      "length": 1
+     },
+     "length": 273,
+     "sha256": "9e83e3b27f64bf75",
+     "layout": {
+      "bytewidth": [
+       0,
+       8
+      ],
+      "filterType": [
+       8,
+       1
+      ],
+      "length": [
+       9,
+       8
+      ],
+      "scanline": [
+       17,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "bytewidth",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "filterType",
+     "rust": "std::os::raw::c_uchar",
+     "width": 1,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "length",
+     "rust": "size_t",
+     "width": 8,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "scanline",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Opaque",
+     "name": "precon",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Repeat",
+     "name": "recon",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "update_adler32": {
+   "kind": "plan-guided",
+   "fields": [
+    "adler"
+   ],
+   "first_opaque": "data",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "adler": 0
+     },
+     "length": 260,
+     "sha256": "105f5da2c6f982a8",
+     "layout": {
+      "adler": [
+       0,
+       4
+      ],
+      "data": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "adler": 1
+     },
+     "length": 260,
+     "sha256": "f305cb9a16fb0458",
+     "layout": {
+      "adler": [
+       0,
+       4
+      ],
+      "data": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "adler": 2
+     },
+     "length": 260,
+     "sha256": "22d327b341a61396",
+     "layout": {
+      "adler": [
+       0,
+       4
+      ],
+      "data": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "adler": 3
+     },
+     "length": 260,
+     "sha256": "57dd676ae6329738",
+     "layout": {
+      "adler": [
+       0,
+       4
+      ],
+      "data": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "adler": 5
+     },
+     "length": 260,
+     "sha256": "bf75a49023ca8dcd",
+     "layout": {
+      "adler": [
+       0,
+       4
+      ],
+      "data": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "adler": 10
+     },
+     "length": 260,
+     "sha256": "682e2be9a379f3bc",
+     "layout": {
+      "adler": [
+       0,
+       4
+      ],
+      "data": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "adler": 20
+     },
+     "length": 260,
+     "sha256": "17988c04937de19e",
+     "layout": {
+      "adler": [
+       0,
+       4
+      ],
+      "data": [
+       4,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "adler",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "data",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  }
+ },
+ "summary": {
+  "plan_guided": 41,
+  "fallback": 23
+ }
+}

@@ -1,0 +1,738 @@
+{
+ "policy": "docs/seeding_policy_plan.md section 3 (frozen 2026-09-10)",
+ "plans_sha256": "293c395e7972432b6eba2c82876663a28466fcc5367e3631535d448d695cba9c",
+ "prng_seed": 7,
+ "max_seeds": 16,
+ "max_bytes": 2097152,
+ "boundaries": {
+  "elision_": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "key",
+     "why": "null pointer"
+    }
+   ]
+  },
+  "find_": {
+   "kind": "fallback",
+   "why": "first opaque: node: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "node",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    },
+    {
+     "node": "Scalar",
+     "name": "x",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "y",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    }
+   ]
+  },
+  "get_quadrant_": {
+   "kind": "fallback",
+   "why": "first opaque: root: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "root",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    },
+    {
+     "node": "Opaque",
+     "name": "point",
+     "why": "struct value (POD fields decoded in place; not modelled)"
+    }
+   ]
+  },
+  "node_contains_": {
+   "kind": "fallback",
+   "why": "first opaque: outer: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "outer",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    },
+    {
+     "node": "Opaque",
+     "name": "it",
+     "why": "struct value (POD fields decoded in place; not modelled)"
+    }
+   ]
+  },
+  "quadtree_bounds_new": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": []
+  },
+  "quadtree_new": {
+   "kind": "plan-guided",
+   "fields": [
+    "minx",
+    "miny",
+    "maxx",
+    "maxy"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "minx": 0.0,
+      "miny": 0.0,
+      "maxx": 0.0,
+      "maxy": 0.0
+     },
+     "length": 32,
+     "sha256": "66687aadf862bd77",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "minx": 0.5,
+      "miny": 0.5,
+      "maxx": 0.5,
+      "maxy": 0.5
+     },
+     "length": 32,
+     "sha256": "5e5c794534608bdc",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "minx": 1.0,
+      "miny": 1.0,
+      "maxx": 1.0,
+      "maxy": 1.0
+     },
+     "length": 32,
+     "sha256": "c914e8188e43fff1",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "minx": 2.0,
+      "miny": 2.0,
+      "maxx": 2.0,
+      "maxy": 2.0
+     },
+     "length": 32,
+     "sha256": "cd34cc32a2fbe922",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "minx": 5.0,
+      "miny": 5.0,
+      "maxx": 5.0,
+      "maxy": 5.0
+     },
+     "length": 32,
+     "sha256": "a3bf9eea2fa12d85",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "minx": -1.0,
+      "miny": -1.0,
+      "maxx": -1.0,
+      "maxy": -1.0
+     },
+     "length": 32,
+     "sha256": "b9cb9f435b7b679d",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "minx",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "miny",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "maxx",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "maxy",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    }
+   ]
+  },
+  "quadtree_node_isempty": {
+   "kind": "fallback",
+   "why": "first opaque: node: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "node",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    }
+   ]
+  },
+  "quadtree_node_isleaf": {
+   "kind": "fallback",
+   "why": "first opaque: node: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "node",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    }
+   ]
+  },
+  "quadtree_node_ispointer": {
+   "kind": "fallback",
+   "why": "first opaque: node: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "node",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    }
+   ]
+  },
+  "quadtree_node_new": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": []
+  },
+  "quadtree_node_with_bounds": {
+   "kind": "plan-guided",
+   "fields": [
+    "minx",
+    "miny",
+    "maxx",
+    "maxy"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "minx": 0.0,
+      "miny": 0.0,
+      "maxx": 0.0,
+      "maxy": 0.0
+     },
+     "length": 32,
+     "sha256": "66687aadf862bd77",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "minx": 0.5,
+      "miny": 0.5,
+      "maxx": 0.5,
+      "maxy": 0.5
+     },
+     "length": 32,
+     "sha256": "5e5c794534608bdc",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "minx": 1.0,
+      "miny": 1.0,
+      "maxx": 1.0,
+      "maxy": 1.0
+     },
+     "length": 32,
+     "sha256": "c914e8188e43fff1",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "minx": 2.0,
+      "miny": 2.0,
+      "maxx": 2.0,
+      "maxy": 2.0
+     },
+     "length": 32,
+     "sha256": "cd34cc32a2fbe922",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "minx": 5.0,
+      "miny": 5.0,
+      "maxx": 5.0,
+      "maxy": 5.0
+     },
+     "length": 32,
+     "sha256": "a3bf9eea2fa12d85",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "minx": -1.0,
+      "miny": -1.0,
+      "maxx": -1.0,
+      "maxy": -1.0
+     },
+     "length": 32,
+     "sha256": "b9cb9f435b7b679d",
+     "layout": {
+      "minx": [
+       0,
+       8
+      ],
+      "miny": [
+       8,
+       8
+      ],
+      "maxx": [
+       16,
+       8
+      ],
+      "maxy": [
+       24,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "minx",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "miny",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "maxx",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "maxy",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    }
+   ]
+  },
+  "quadtree_point_new": {
+   "kind": "plan-guided",
+   "fields": [
+    "x",
+    "y"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "x": 0.0,
+      "y": 0.0
+     },
+     "length": 16,
+     "sha256": "374708fff7719dd5",
+     "layout": {
+      "x": [
+       0,
+       8
+      ],
+      "y": [
+       8,
+       8
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "x": 0.5,
+      "y": 0.5
+     },
+     "length": 16,
+     "sha256": "606e5166986dd9f1",
+     "layout": {
+      "x": [
+       0,
+       8
+      ],
+      "y": [
+       8,
+       8
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "x": 1.0,
+      "y": 1.0
+     },
+     "length": 16,
+     "sha256": "5f07eef034c5a21f",
+     "layout": {
+      "x": [
+       0,
+       8
+      ],
+      "y": [
+       8,
+       8
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "x": 2.0,
+      "y": 2.0
+     },
+     "length": 16,
+     "sha256": "f266388db081c554",
+     "layout": {
+      "x": [
+       0,
+       8
+      ],
+      "y": [
+       8,
+       8
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "x": 5.0,
+      "y": 5.0
+     },
+     "length": 16,
+     "sha256": "50f862ecafeed113",
+     "layout": {
+      "x": [
+       0,
+       8
+      ],
+      "y": [
+       8,
+       8
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "x": -1.0,
+      "y": -1.0
+     },
+     "length": 16,
+     "sha256": "e077172409ed971e",
+     "layout": {
+      "x": [
+       0,
+       8
+      ],
+      "y": [
+       8,
+       8
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "x",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "y",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    }
+   ]
+  },
+  "quadtree_search": {
+   "kind": "fallback",
+   "why": "first opaque: tree: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "tree",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    },
+    {
+     "node": "Scalar",
+     "name": "x",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    },
+    {
+     "node": "Scalar",
+     "name": "y",
+     "rust": "libc::c_double",
+     "width": 8,
+     "bounds": null,
+     "float": true
+    }
+   ]
+  }
+ },
+ "summary": {
+  "plan_guided": 3,
+  "fallback": 10
+ }
+}

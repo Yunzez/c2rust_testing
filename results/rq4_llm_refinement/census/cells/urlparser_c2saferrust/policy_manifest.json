@@ -1,0 +1,328 @@
+{
+ "policy": "docs/seeding_policy_plan.md section 3 (frozen 2026-09-10)",
+ "plans_sha256": "65b258cd62efc4da910898ca83fc55426592d52091b1cf956cc76df15cd0a967",
+ "prng_seed": 7,
+ "max_seeds": 16,
+ "max_bytes": 2097152,
+ "boundaries": {
+  "get_part": {
+   "kind": "plan-guided",
+   "fields": [
+    "l"
+   ],
+   "first_opaque": "format",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "l": 0
+     },
+     "length": 260,
+     "sha256": "535522575fa1c68b",
+     "layout": {
+      "l": [
+       0,
+       4
+      ],
+      "format": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "l": 1
+     },
+     "length": 260,
+     "sha256": "b5d4ca3f5afe1507",
+     "layout": {
+      "l": [
+       0,
+       4
+      ],
+      "format": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "l": 512
+     },
+     "length": 260,
+     "sha256": "2b45839e11758800",
+     "layout": {
+      "l": [
+       0,
+       4
+      ],
+      "format": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "l": 1023
+     },
+     "length": 260,
+     "sha256": "cfe8e554e4c73192",
+     "layout": {
+      "l": [
+       0,
+       4
+      ],
+      "format": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "l": 1024
+     },
+     "length": 260,
+     "sha256": "b419c821f734aaa5",
+     "layout": {
+      "l": [
+       0,
+       4
+      ],
+      "format": [
+       4,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "l",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "format",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "main": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": []
+  },
+  "strdup": {
+   "kind": "fallback",
+   "why": "first opaque: str: input_string (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "str",
+     "why": "input_string (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "strff": {
+   "kind": "fallback",
+   "why": "first opaque: ptr: inout_buffer (length-prefixed / rest-taking; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "ptr",
+     "why": "inout_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "url_data_inspect": {
+   "kind": "fallback",
+   "why": "first opaque: data: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "data",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    }
+   ]
+  },
+  "url_free": {
+   "kind": "fallback",
+   "why": "first opaque: data: produced object (producer parameters decoded in place; not modelled); no placeable scalar or small array",
+   "ir": [
+    {
+     "node": "Opaque",
+     "name": "data",
+     "why": "produced object (producer parameters decoded in place; not modelled)"
+    }
+   ]
+  },
+  "url_get_auth": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_hash": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_host": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_hostname": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_path": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_pathname": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_port": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_protocol": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_query": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_get_search": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_is_protocol": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "str",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_is_ssh": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "str",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "url_parse": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "url",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  }
+ },
+ "summary": {
+  "plan_guided": 1,
+  "fallback": 18
+ }
+}

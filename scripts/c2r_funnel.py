@@ -101,13 +101,18 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
             # `static find_` as a `pub fn`, so the Rust-driven `private` flag was False, the oracle
             # kept its `static`, and the harness failed to LINK (`undefined symbol: c_find_`).
             # On a non-static definition the substitution simply does not match.
-            text, changed = gdh.strip_static_c(text, entry)
+            # ORDER MATTERS (2026-09-10): the `static\n__inline__\n` shape (bzip2's blocksort.c: mmed3,
+            # mainGtU, fallbackSimpleSort) must be handled FIRST. strip_static_c alone drops `static`
+            # and leaves a bare `__inline__`, which under C99/gnu11 provides no external definition,
+            # so `c_mmed3` was undefined at link time -- a regression against the archived bzip2 cells
+            # introduced when strip_static_c was put in front of this pattern for PtrTrans's find_.
+            pat = re.compile(
+                rf'(?m)^[ \t]*static[ \t]*\n(?:[ \t]*(?:__inline__|inline)[ \t]*\n)?'
+                rf'([ \t]*[A-Za-z_][\w \t\*]*\b{re.escape(entry)}[ \t]*\()')
+            text, n = pat.subn(r'\1', text, count=1)
+            changed = bool(n)
             if not changed:
-                pat = re.compile(
-                    rf'(?m)^[ \t]*static[ \t]*\n(?:[ \t]*(?:__inline__|inline)[ \t]*\n)?'
-                    rf'([ \t]*[A-Za-z_][\w \t\*]*\b{re.escape(entry)}[ \t]*\()')
-                text, n = pat.subn(r'\1', text, count=1)
-                changed = bool(n)
+                text, changed = gdh.strip_static_c(text, entry)
             if changed:
                 stripped = str(rel)
             (out_dir / "c" / rel).parent.mkdir(parents=True, exist_ok=True)
@@ -193,6 +198,14 @@ def fixups(a, pair: Path, out_dir: Path, entry: str, private: bool, defs: dict) 
         if mod and srcs and lib.exists():
             text = lib.read_text()
             modpath = mod.replace("/", "::")
+            # A single-file translation declares no module to re-export FROM: cJSON x c2rust keeps
+            # `pub struct cJSON` at the crate root with no `mod cJSON { .. }`, so the root already
+            # provides every type and `pub use crate::cJSON::cJSON;` is E0432 (32/39 cJSON x c2rust
+            # rebuilds failed on 2026-09-11 after this block was added on 2026-09-06 for the
+            # per-file crates). Same guard as the `static` re-export above: only a declared module.
+            leaf = mod.rpartition("/")[2]
+            if re.search(rf'(?m)^\s*(?:pub\s+)?mod\s+{re.escape(leaf)}\s*\{{', text) is None:
+                srcs = []
             m = re.search(rf'(?m)^pub use crate::((?:\w+::)*){re.escape(modpath)}::\w+;', text)
             prefix = m.group(1) if m else ""
             names = set()

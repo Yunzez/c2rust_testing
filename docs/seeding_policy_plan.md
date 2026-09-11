@@ -138,6 +138,8 @@ gives the plan-guided / fallback split; the paper states it in one aggregate sen
 
 ## Status log
 
+- 2026-09-10 (evening): partial Seed IR implemented on branch `seed-ir` — `tools/stu_selector/seed_ir.py` (Scalar / Repeat / Zero / Opaque; order = C declaration order from the generator's parser, rank-sorted like the harness; typedef aliases resolved from the translation), `scripts/rq4/seed_policy.py` (frozen policy, manifest), generator 0.9.1 `--decode-dump` (test-only), `scripts/rq4/seed_experiment/test_seed_ir_roundtrip.py` **passes 40/40** on seven shapes. Census with the IR (plan-guided / planned): bzip2 16/19, lodepng 41/64, optipng 63–64/121–128, tulip 162/213, qsort 3/3, cJSON 6/39, genann 5/10, lil 5/51, quadtree 3/17, urlparser 1/21. `census_cell.sh` ready; seeds-only census runs after the generator-0.9 re-replay of the tulip corpora.
+
 - 2026-09-10 (later): order revised by review — (1) commit checkpoint d5577c49 done; (2) NaN oracle fixed FIRST: generator 0.9 (`c2r_feq*`, `nan_equivalent` outcome/verdict; golden re-frozen), tulip corpora re-replayed under 0.9 without re-fuzzing; (3) then the partial Seed IR; (4) seeds-only census; (5) component-analysis use unless the census shows broad gains (then uniform reruns of every plan-guided cell, never a subset).
 
 - 2026-09-10 morning: first version (complete Decode IR) recorded, then superseded the same day by this partial

@@ -35,6 +35,7 @@ PY
 step "t0 pass (coverage build per harness, both seed sets)"; python3 $W/scripts/rq4/seed_experiment/t0_pass_census.py $E > $E/t0_pass.log 2>&1; echo "t0 rc=$?"
 python3 $W/scripts/rq4/seed_experiment/t0_fix.py $E base,policy > $E/t0_fix.log 2>&1; echo "t0fix rc=$?"
 for arm in base policy; do
+  find $E/t0/$arm/ours -size 0 -delete 2>/dev/null   # an empty llvm-cov export (replay produced no profile) carries no coverage and breaks the JSON load
   python3 $R/scripts/c2r_coverage.py --linemap $P/translated/${LIB}_${TOOL}.rs.linemap.json --ours $E/t0/$arm/ours $(universe) --out $E/t0/$arm/analysis --corpus-root $E/t0/$arm/corpus > $E/t0/$arm/analysis.log 2>&1
   python3 -c "
 import json;r=json.load(open('$E/t0/$arm/analysis/result.json'));a=json.load(open('$A/analysis/result.json'))

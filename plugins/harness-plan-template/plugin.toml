@@ -1,0 +1,104 @@
+# TEMPLATE -- HarnessPlan resource-realization plugin manifest.
+#
+# Copy this directory to plugins/<library>-harness-plan/, fill in every <placeholder>, delete the
+# placeholder comments, then run the build-and-replay test in README.md.  Everything here is a
+# DECLARATION the core generator verifies; nothing here is code.  Read
+# docs/construction_recipe_plugin_plan.md first, in particular section 3 (trust boundary) and
+# section 8 (when to STOP instead of writing a plugin).
+#
+# When to write one: the generic planner abstained on a boundary with
+#     signature: struct-invariant param <p>: <T> ... ; no producer returns <T>*; no in-place initializer declared
+# AND the library establishes a caller-owned <T> in place (`T x; t_init(&x); ... t_cleanup(&x);`).
+# When NOT to write one (plan section 8): the translated initializer is stubbed or returns a
+# different resource; safe cleanup cannot be shown; one side would have to be read to build the
+# other; the state needs a callback / file / socket / object graph; a format-specific seed or a
+# multi-operation state machine would be needed.  Those are requests for a later plugin/API version,
+# not a reason to hand-write the resource.
+
+[plugin]
+# Fixed.  Any other value (or a comparator manifest, which has c_source/rust_source) is rejected.
+kind = "harness-plan-resource-realization"
+# The library this manifest is about (free text, used in reports).
+library = "<library>"
+# Identity of this plugin: [A-Za-z0-9_.-]+ and an integer manifest version (currently 1).  The plan
+# records name, version and the sha256 of this file, so any edit changes the recorded provenance.
+name = "<library>-<resource>"
+version = 1
+description = "<one line: which resource, which initializer, which cleanup>"
+
+[resource]
+# The C struct the boundary's parameter points to, as the planner names it (typedef or tag name
+# without `struct`).  Must equal the name in the abstention message.
+c_type = "<T>"
+# Fixed in version 1: a resource the caller owns and the library initialises in place.
+logical_role = "initialized-resource"
+
+# ---- C representation --------------------------------------------------------------------------
+[resource.c]
+# `<T> *` (optionally `const`, optionally `struct`).  Must name c_type.  sizeof/alignof are taken from
+# the C AST by the core, never declared here.
+parameter_type = "<T> *"
+# Fixed in version 1: the harness allocates the object side-locally (zero-filled) and passes its
+# address.  Heap storage is not a version-1 option.
+storage = "stack"
+# The in-place initializer: `void <initializer>(<T> *)`.  Version 1 realizes single-argument, void
+# lifecycle functions only.  REMOVE both initializer keys and the manifest is rejected with
+# `construction unsupported: check 3` -- the plugin supplies the materialization, not the views.
+initializer = "<t_init>"
+# C views are exactly `raw-mut` (T *) and `raw-const` (const T *); they must match the parameter's
+# constness on each function.
+initializer_view = "raw-mut"
+# How the TARGET receives the object.  Must match the boundary parameter's constness.
+target_view = "raw-mut"
+# Optional cleanup `void <cleanup>(<T> *)`, emitted AFTER the target (FREE phase).  Omit both keys
+# when the library has none; then the plan records `lifecycle: not claimed (no cleanup declared)`.
+cleanup = "<t_cleanup>"
+cleanup_view = "raw-mut"
+
+# ---- Rust representation(s) --------------------------------------------------------------------
+# One `[[resource.rust]]` table per translated representation you want to bind (a single
+# `[resource.rust]` table is the one-binding form).  The planner verifies each declared binding
+# against the translation's signatures and takes the FIRST that fits; the others are recorded as
+# rejected alternatives.  Several bindings need distinct `binding` labels.
+#
+# Rust views -- the emitter's closed vocabulary; the translation's parameter type must normalise to
+# exactly this shape of `type` (module paths, lifetimes and C-ABI aliases are resolved first):
+#     raw-mut            *mut T
+#     raw-const          *const T
+#     borrow             &T
+#     mut-borrow         &mut T
+#     option-borrow      Option<&T>
+#     option-mut-borrow  Option<&mut T>
+# Any other name is rejected when the manifest is LOADED (before any planning or emission).  A
+# by-value / Box / owning shape is not a view: the harness must keep the object to compare and
+# release it, so such a translation is `construction unsupported`.
+[[resource.rust]]
+binding = "<label, e.g. raw-mut-lifecycle>"
+# The translation's struct name.  The core checks that all-zero bytes are a valid value of it
+# (scalars, raw pointers, Option<_>, arrays and translation structs of those); a Box / reference /
+# Vec / String field makes the binding unsupported.
+type = "<T>"
+storage = "stack"
+initializer = "<t_init>"
+initializer_view = "raw-mut"
+target_view = "raw-mut"
+cleanup = "<t_cleanup>"
+cleanup_view = "raw-mut"
+
+# [[resource.rust]]
+# binding = "option-mut-borrow-lifecycle"
+# type = "<T>"
+# storage = "stack"
+# initializer = "<t_init>"
+# initializer_view = "option-mut-borrow"
+# target_view = "raw-mut"
+# cleanup = "<t_cleanup>"
+# cleanup_view = "option-mut-borrow"
+
+# ---- Compatibility requirements ----------------------------------------------------------------
+# Every function a binding names must be listed here; the core checks that each C name is defined
+# in the pair's translation unit and each Rust name is a public fn of the translation.  A missing
+# one is `construction unsupported: check 3`.
+[requires]
+c_functions = ["<t_init>", "<t_cleanup>"]
+rust_functions = ["<t_init>", "<t_cleanup>"]

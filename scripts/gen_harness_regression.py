@@ -50,6 +50,7 @@ def build_manifest():
     for case in PLAN_CASES:
         pair, entry, c_src = case[:3]
         plugin = case[3] if len(case) > 3 else None
+        realization = case[4] if len(case) > 4 else None    # resource-realization manifest (a different namespace)
         pdir = ROOT / "benchmark" / "pairs" / "rq4" / pair
         if not pdir.exists():
             out["entries"][f"plan:{pair}/{entry}"] = {"error": "pair not in repo"}
@@ -58,7 +59,8 @@ def build_manifest():
             r = subprocess.run(
                 [sys.executable, str(GEN), "--pair", str(pdir), "--entry", entry, "--rust-entry", entry,
                  "--plan", "--ub-free", "--c-source", c_src, "--out", td]
-                + (["--plugins", str(ROOT / plugin)] if plugin else []),
+                + (["--plugins", str(ROOT / plugin)] if plugin else [])
+                + (["--realization-plugins", str(ROOT / realization)] if realization else []),
                 capture_output=True, text=True, cwd=str(ROOT))
             if r.returncode != 0:
                 out["entries"][f"plan:{pair}/{entry}"] = {"error": (r.stderr or r.stdout).strip()[-200:]}
@@ -87,6 +89,12 @@ PLAN_CASES = [
     ("quadtree_crown", "quadtree_search", "quadtree_all.c"),       # boxed owner -> Option<&mut T> view, CONSUMING destructor (quadtree_free)
     ("quadtree_ptrtrans", "quadtree_search", "quadtree_all.c"),    # boxed owner -> Option<&T> view, no destructor -> the box's own Drop
     ("quadtree_ptrtrans", "quadtree_node_isleaf", "quadtree_all.c"),  # boxed owner + C `int` vs Rust `bool` return
+    # resource-realization plugin (docs/construction_recipe_plugin_plan.md): the SAME boundary the
+    # generic planner abstains on, planned through the reference manifest -- the raw-pointer control
+    # and the two-view (Option<&mut T> lifecycle, *mut T target) binding. Frozen so the plugin path
+    # cannot drift silently either; the 33 no-plugin entries above are unaffected by it.
+    ("lodepng_c2rust", "lodepng_inspect", "lodepng.c", None, "plugins/lodepng-harness-plan/plugin.toml"),
+    ("lodepng_crown", "lodepng_inspect", "lodepng.c", None, "plugins/lodepng-harness-plan/plugin.toml"),
 ]
 
 

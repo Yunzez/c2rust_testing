@@ -1,0 +1,35 @@
+# Deliberately INVALID manifest, used by scripts/realization_plugin_test.py to show that a view
+# outside the closed vocabulary is rejected when the manifest is loaded -- before any plan is built
+# and before any harness code is emitted.  Do not "fix" it.
+[plugin]
+kind = "harness-plan-resource-realization"
+library = "lodepng"
+name = "lodepng-state-invalid"
+version = 1
+
+[resource]
+c_type = "LodePNGState"
+logical_role = "initialized-resource"
+
+[resource.c]
+parameter_type = "LodePNGState *"
+storage = "stack"
+initializer = "lodepng_state_init"
+initializer_view = "raw-mut"
+target_view = "raw-mut"
+cleanup = "lodepng_state_cleanup"
+cleanup_view = "raw-mut"
+
+[resource.rust]
+type = "LodePNGState"
+storage = "stack"
+initializer = "lodepng_state_init"
+# `box-by-value` is not a view the emitter knows; there is no way to supply the conversion code.
+initializer_view = "box-by-value"
+target_view = "raw-mut"
+cleanup = "lodepng_state_cleanup"
+cleanup_view = "raw-mut"
+
+[requires]
+c_functions = ["lodepng_state_init", "lodepng_state_cleanup"]
+rust_functions = ["lodepng_state_init", "lodepng_state_cleanup"]

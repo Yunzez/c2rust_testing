@@ -40,9 +40,10 @@ def sh(cmd, **kw):
     return subprocess.run(cmd, capture_output=True, text=True, errors="replace", **kw)
 
 
-def plan_all(pair: Path, out: Path) -> list[dict]:
+def plan_all(pair: Path, out: Path, realization_plugins: list[str] | None = None) -> list[dict]:
     r = sh([sys.executable, str(ROOT / "tools/stu_selector/harness_plan.py"),
-            "--pair", str(pair), "--all", "--json", str(out / "plans.json")],
+            "--pair", str(pair), "--all", "--json", str(out / "plans.json")]
+           + [x for pl in (realization_plugins or []) for x in ("--realization-plugins", pl)],
            cwd=str(ROOT), timeout=1800)
     (out / "plan.log").write_text(r.stdout + r.stderr)
     return json.loads((out / "plans.json").read_text())
@@ -74,6 +75,8 @@ def generate(a, pair: Path, entry: str, out_dir: Path, private: bool) -> tuple[b
         cmd += ["--c-source", a.c_source]
     for pl in (a.plugins or []):
         cmd += ["--plugins", pl]
+    for pl in (getattr(a, "realization_plugins", None) or []):
+        cmd += ["--realization-plugins", pl]
     if private:
         cmd += ["--expose-entry"]
     r = sh(cmd, cwd=str(ROOT), timeout=900)
@@ -269,6 +272,10 @@ def main() -> int:
     ap.add_argument("--out", required=True)
     ap.add_argument("--seconds", type=int, default=20)
     ap.add_argument("--plugins", action="append")
+    ap.add_argument("--realization-plugins", action="append",
+                    help="resource-realization manifest(s) (docs/construction_recipe_plugin_plan.md); "
+                         "a boundary planned through one is counted as `planned (plugin)`, never as "
+                         "the automatic planner's")
     ap.add_argument("--c-source")
     ap.add_argument("--shim")
     ap.add_argument("--defs", help="<translated>.rs.defs.json: which entries are C `static`")
@@ -286,7 +293,7 @@ def main() -> int:
     _rs = next(iter(sorted((pair / "translated").glob("*.rs"))), None)
     _rs_text = _rs.read_text(encoding="utf-8", errors="replace") if _rs else ""
 
-    plans = plan_all(pair, out)
+    plans = plan_all(pair, out, a.realization_plugins)
     plans = [p for p in plans if p["boundary"] not in pair_excludes(pair)]
     if a.only:
         keep = {s.strip() for s in a.only.split(",")}
@@ -301,7 +308,10 @@ def main() -> int:
                           _rs_text) is None)
         row = {"boundary": b, "planned": p["status"] == "planned", "c_static": is_private,
                "plan_failure": (p["failures"][0] if p["failures"] else None),
-               "inputs": len(p["inputs"])}
+               "inputs": len(p["inputs"]),
+               # `auto` = the generic planner; `plugin` = a resource-realization manifest supplied
+               # the materialization (plan origin record). The main table counts only `auto`.
+               "planned_by": ("plugin" if p.get("origin") else "auto") if p["status"] == "planned" else None}
         if row["planned"]:
             d = out / "harnesses" / b
             shutil.rmtree(d, ignore_errors=True)
@@ -333,11 +343,13 @@ def main() -> int:
     (out / "funnel.json").write_text(json.dumps(rows, indent=1) + "\n")
     n = len(rows)
     planned = [r for r in rows if r["planned"]]
+    by_plugin = [r for r in planned if r.get("planned_by") == "plugin"]
     built = [r for r in planned if r.get("built")]
     ran = [r for r in built if (r.get("executions") or 0) > 0]
     prod = [r for r in ran if (r.get("executions") or 0) >= 100]
-    print(f"\nboundaries {n} | planned {len(planned)} | built {len(built)} | "
-          f"executed {len(ran)} | >=100 executions {len(prod)} | {time.time()-t0:.0f}s")
+    print(f"\nboundaries {n} | planned {len(planned)}"
+          + (f" (auto {len(planned) - len(by_plugin)}, plugin {len(by_plugin)})" if by_plugin else "")
+          + f" | built {len(built)} | executed {len(ran)} | >=100 executions {len(prod)} | {time.time()-t0:.0f}s")
     return 0
 
 

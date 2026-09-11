@@ -42,7 +42,7 @@ ROOT = Path(__file__).resolve().parents[2]
 # Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
 # different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
 DECODE_DUMP = False   # test-only (--decode-dump): the harness prints every decoded value and returns before any call
-GEN_VERSION = "0.9.2"   # 2026-09-11: --c-coverage build.rs flag for the same-corpus C reach diagnostic (docs/c_reach_plan.md); emitted harnesses identical to 0.9.1 without it (golden). 0.9.1, 2026-09-10 (later): test-only --decode-dump flag for the Seed IR round-trip; emitted harnesses identical to 0.9 (golden). 0.9, 2026-09-10: numeric float outputs compare NaN-equivalently (c2r_feq*/c2r_fslice*) and a run whose only differences were NaN payloads reports `nan_equivalent`; found by the tulip seeded corpora (results/rq4_llm_refinement/tulip). 0.8, 2026-09-07: the `nullable owned object` producer-bridge family --
+GEN_VERSION = "0.10"   # 2026-09-11 (later): resource-realization plugins (--realization-plugins, docs/construction_recipe_plugin_plan.md): a manifest-declared in-place initializer materialises a struct-with-pointers parameter over side-local storage (PRODUCER/FREE phases, the C UB gate); emitted harnesses identical to 0.9.2 without one (golden). 0.9.2, 2026-09-11: --c-coverage build.rs flag for the same-corpus C reach diagnostic (docs/c_reach_plan.md); emitted harnesses identical to 0.9.1 without it (golden). 0.9.1, 2026-09-10 (later): test-only --decode-dump flag for the Seed IR round-trip; emitted harnesses identical to 0.9 (golden). 0.9, 2026-09-10: numeric float outputs compare NaN-equivalently (c2r_feq*/c2r_fslice*) and a run whose only differences were NaN payloads reports `nan_equivalent`; found by the tulip seeded corpora (results/rq4_llm_refinement/tulip). 0.8, 2026-09-07: the `nullable owned object` producer-bridge family --
 # a produced object whose Rust owner is `Option<Box<R>>` (CROWN and PtrTrans quadtree), lent to the
 # target as a borrowed view. Frozen scope in docs/producer_bridge_pilot.md.
 _GEN_VERSION_0_7 = "0.7"   # 2026-09-04: HARNESS PLAN path (--plan). The InputPlan is derived from the
@@ -747,6 +747,19 @@ def items_from_schema(schema: dict) -> list[dict]:
                           "const": bool(p.get("const")), "struct": p["struct"],
                           "params_abi": pabi,
                           "params_items": items_from_schema({"params": pabi})})
+        elif role == "realized_resource":
+            # docs/construction_recipe_plugin_plan.md: the object is ESTABLISHED IN PLACE on each
+            # side by the library's own initializer over storage the harness owns (a sibling of the
+            # producer bridge, for a resource no function returns). Views are names from the
+            # closed vocabulary (realization_plugin.RUST_VIEWS); nothing is decoded for it.
+            items.append({"kind": "realized", "role": "realized", "name": p["name"],
+                          "struct": p["struct"], "c_struct": p.get("c_struct", p["struct"]),
+                          "rust_struct": p["rust_struct"],
+                          "c_size": int(p["c_size"]), "c_align": int(p["c_align"]),
+                          "initializer": p["initializer"], "cleanup": p.get("cleanup"),
+                          "target_view": p["target_view"], "consumed": bool(p.get("consumed")),
+                          "seed_reset": p.get("seed_reset", "none"), "seed": int(p.get("seed", 42)),
+                          "const": bool(p.get("const")), "plugin": p.get("plugin") or {}})
         elif role == "plan_array":
             # HarnessPlan lowering: an allocation the harness owns, sized by a plan expression
             # (a constant, or a usize expression over already-decoded parameters), filled from the
@@ -1204,6 +1217,18 @@ def _decode_and_post(items: list[dict]) -> tuple[list[str], list[str]]:
             # comparator plugin knows the type, is emitted in the body too, not here.
             d2, _p2 = _decode_and_post(list(it["params_items"]))
             decode.extend(d2)
+        elif it["role"] == "realized":
+            # Side-local storage for a realized resource, zero-filled on BOTH sides before the
+            # initializer runs (PRODUCER phase, in the body). The C side is an opaque, 8-byte
+            # aligned block of sizeof(T) bytes from the C AST -- never read by the harness; the
+            # Rust side is the translation's own type, whose all-zero value the planner verified.
+            words = (int(it["c_size"]) + 7) // 8
+            pl = it.get("plugin") or {}
+            decode.append(f"    // realized resource {n}: {it['c_struct']} established in place by "
+                          f"{it['initializer']['c']}() on each side (plugin {pl.get('name')}@{pl.get('version')}, "
+                          f"sha256 {str(pl.get('content_hash', ''))[:16]})")
+            decode.append(f"    let mut {n}_c: [u64; {words}] = [0u64; {words}];  // C storage: sizeof({it['c_struct']}) = {it['c_size']}, alignof = {it['c_align']}")
+            decode.append(f"    let mut {n}_r: translated::{it['rust_struct']} = unsafe {{ core::mem::zeroed() }};")
         elif it["role"] == "out_scalar":
             decode.append(f"    let mut {n}_c: {it['elem']} = 0 as {it['elem']};")
             decode.append(f"    let mut {n}_r: {it['elem']} = 0 as {it['elem']};")
@@ -1458,6 +1483,12 @@ def _call_and_decl(abi: list[dict]) -> tuple[list[str], list[str], list[str]]:
                 # in the target's signature); the raw-pointer cast lets rustc infer the target's
                 # spelling and is the identity when they already agree.
                 r_pairs.append((n, f"{n}_r as *mut _" if want_mut else f"{n}_r as *const _"))
+        elif role == "realized_resource":
+            import realization_plugin as _rp
+            cst = "const" if p.get("const") else "mut"
+            c_args.append(f"{n}_c.as_mut_ptr() as *{cst} core::ffi::c_void")
+            decl.append(f"{n}: *{cst} core::ffi::c_void")
+            r_pairs.append((n, _rp.rust_view_expr(p["target_view"]["rust"], f"{n}_r")))
         elif role == "plan_array" and p.get("one_elem") and (
                 rty.startswith("&mut") or rty.startswith("Option<&mut") or rty.startswith("&")
                 or rty.startswith("Option<&")):
@@ -1726,7 +1757,32 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
                             f"        if let Some(_b) = {n}_r.take() {{ translated::{ds}(_b); }}"]
             else:
                 _free_r += ["        c2r_phase(C2R_PH_FREE);", f"        drop({n}_r.take());"]
-    if any(it["seed_reset"] == "libc" for it in _produced):
+    # Realized resources (docs/construction_recipe_plugin_plan.md): the same three slots as the
+    # producer bridge -- PRODUCER phase for the initializer (C side inside the UB gate), the target,
+    # FREE phase for the cleanup -- over the side-local storage declared in the decode section.
+    # There is no nullness step: the storage always exists.
+    _realized = [it for it in items if it.get("role") == "realized"]
+    for it in _realized:
+        import realization_plugin as _rp
+        n, ini, cl = it["name"], it["initializer"], it.get("cleanup")
+        seed = ([f"        srand({it['seed']} as core::ffi::c_uint);"] if it["seed_reset"] == "libc" else [])
+
+        def _cptr(view, n=n):
+            return f"{n}_c.as_mut_ptr() as *{'const' if _rp.c_view_is_const(view) else 'mut'} core::ffi::c_void"
+        _prod_externs.append(f"    fn c_{ini['c']}(p: *{'const' if _rp.c_view_is_const(ini['c_view']) else 'mut'} core::ffi::c_void);")
+        _prod_c += ["        c2r_phase(C2R_PH_PRODUCER);", *seed,
+                    *(["        c2r_ub_reset();"] if ub_free else []),
+                    f"        c_{ini['c']}({_cptr(ini['c_view'])});",
+                    *(['        if _c2r_m == C2R_GATED && c2r_ub_get() != 0 { c2r_outcome("ub-gated", ""); return; }  // C initializer hit UB -> reject']
+                      if ub_free else [])]
+        _prod_r += ["        c2r_phase(C2R_PH_PRODUCER);", *seed,
+                    f"        translated::{ini['rust']}({_rp.rust_view_expr(ini['rust_view'], f'{n}_r')});"]
+        if cl and not it.get("consumed"):
+            _prod_externs.append(f"    fn c_{cl['c']}(p: *{'const' if _rp.c_view_is_const(cl['c_view']) else 'mut'} core::ffi::c_void);")
+            _free_c += ["        c2r_phase(C2R_PH_FREE);", f"        c_{cl['c']}({_cptr(cl['c_view'])});"]
+            _free_r += ["        c2r_phase(C2R_PH_FREE);",
+                        f"        translated::{cl['rust']}({_rp.rust_view_expr(cl['rust_view'], f'{n}_r')});"]
+    if any(it["seed_reset"] == "libc" for it in _produced + _realized):
         _prod_externs.append("    fn srand(seed: core::ffi::c_uint);")
     _ind = lambda ls: [l.replace("        ", "            ", 1) for l in ls]
     # UB-free gate: reset before C, reject (return) if C tripped UB, then call Rust.
@@ -1960,7 +2016,7 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "const C2R_PH_DECODE: u8 = 0; const C2R_PH_C: u8 = 1; const C2R_PH_C_DONE: u8 = 2;",
         "const C2R_PH_RUST: u8 = 3; const C2R_PH_RUST_DONE: u8 = 4; const C2R_PH_COMPARED: u8 = 5;",
         *(["// producer bridge: the step of the init -> target -> free sequence an outcome happened in",
-           "const C2R_PH_PRODUCER: u8 = 6; const C2R_PH_FREE: u8 = 7;"] if _produced else []),
+           "const C2R_PH_PRODUCER: u8 = 6; const C2R_PH_FREE: u8 = 7;"] if (_produced or _realized) else []),
         # --c-coverage: clang >= 16 no longer references __llvm_profile_runtime from instrumented
         # objects (its DRIVER adds `-u __llvm_profile_runtime` at link time); rustc links this
         # binary, so without a reference from an object that is always linked -- this target --
@@ -2241,6 +2297,13 @@ def main() -> int:
                     help="comparator plugin manifest (plugins/<lib>/plugin.toml); repeatable. "
                          "A plugin extends OUTPUT comparison only and never touches the InputPlan; "
                          "a boundary whose return type it covers gets oracle_strength=structured-state.")
+    ap.add_argument("--realization-plugins", action="append", default=None,
+                    help="resource-realization plugin manifest (kind harness-plan-resource-realization, "
+                         "plugins/<lib>-harness-plan/plugin.toml); repeatable; --plan only. A DIFFERENT "
+                         "namespace from --plugins: it declares how a struct-with-pointers parameter the "
+                         "generic planner abstains on is established in place (initializer/cleanup + views "
+                         "from the closed vocabulary) and never touches comparison. Absent: byte-identical "
+                         "output (docs/construction_recipe_plugin_plan.md).")
     ap.add_argument("--c-coverage", dest="c_coverage", action="store_true",
                     help="C-REACH build (docs/c_reach_plan.md): compile the C oracle with "
                          "-fprofile-instr-generate -fcoverage-mapping so a C2R_MODE=c-only replay of the "
@@ -2304,6 +2367,12 @@ def main() -> int:
         _rs_text = rs.read_text(encoding="utf-8", errors="replace")
         global _RUST_ALIASES, _PLUGINS_OK, _PLUGINS_DEGRADED
         _RUST_ALIASES = hp.rust_type_aliases(_rs_text)
+        if args.realization_plugins:
+            import realization_plugin as _rp
+            try:
+                hp.set_realizations(_rp.load_realization_plugins(args.realization_plugins))
+            except _rp.RealizationManifestError as e:
+                raise SystemExit(str(e))
         _PLUGINS_OK, _PLUGINS_DEGRADED = [], {}
         for _pl in load_plugins(args.plugins):
             _why = plugin_compat(_pl, _rs_text)
@@ -2318,8 +2387,7 @@ def main() -> int:
                                           rust_aliases=hp.rust_type_aliases(_rs_text),
                                           rust_text=_rs_text)
         if args.plan_json:
-            from dataclasses import asdict as _asdict
-            Path(args.plan_json).write_text(json.dumps(_asdict(plan), indent=1) + "\n")
+            Path(args.plan_json).write_text(json.dumps(hp.plan_dict(plan), indent=1) + "\n")
         if lowered is None:
             print(f"harness construction failed: {'; '.join(plan.failures)}")
             return 2
@@ -2329,6 +2397,12 @@ def main() -> int:
         assert seen == [q["name"] for q in params], f"lowering lost ABI order: {seen}"
         print(f"  plan: {len(plan.inputs)} inputs; bridges "
               + ", ".join(f"{i['param']}={i['rust_bridge']}" for i in plan.inputs))
+        if plan.origin:
+            _o = plan.origin
+            print(f"  plan origin: plugin {_o['plugin']['name']}@{_o['plugin']['version']} "
+                  f"(sha256 {_o['plugin']['content_hash'][:16]}) realizes {_o['resource']['c']['type']} "
+                  f"in place: {_o['hooks'].get('initializer', {}).get('c')} -> target -> "
+                  f"{(_o['hooks'].get('cleanup') or {}).get('c')}; views C {_o['views']['c']} Rust {_o['views']['rust']}")
         # The return value is not a construction gate: the fixed ladder decides what about it is
         # comparable (void -> nothing, scalar -> value, pointer -> nullness, or a plugin).
         _rd = parse_entry_signature(cc, args.entry, with_return_desc=True, allow_nonpod=True)[3]

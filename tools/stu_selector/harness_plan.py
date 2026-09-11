@@ -1486,6 +1486,12 @@ def apply_rust_bridges(plan: InputPlan, rust_types: list[str] | None,
     folded = set()
     for s in plan.specs:
         ty = by_pos.get(s.param)
+        if s.c_decoder == "realized_resource":
+            # The view was SELECTED by the manifest and VERIFIED against this very parameter type
+            # in _realize_with (check 2); the bridge only records it.
+            s.rust_type = ty
+            s.rust_bridge = "view:" + s.detail["target_view"]["rust"]
+            continue
         one = (s.detail.get("alloc_elems") == 1
                or (s.detail.get("extent") or {}).get("v") == 1)
         _own = ((s.detail.get("producer_owner"), s.detail.get("producer_rust_owner"))
@@ -1555,6 +1561,12 @@ _LEN_SUFFIXES = ("len", "length", "size", "count", "cap", "capacity", "n", "num"
 def _name_pairs(buf: str, num: str) -> bool:
     """Uniform (not per-library) name relation between a buffer and its length parameter."""
     b, n = buf.lower(), num.lower()
+    # The generator escapes a C parameter whose name is a Rust keyword (`in` -> `in_`,
+    # gdh.safe_name); the relation is between the C NAMES, so the escape is undone here or
+    # lodepng's `(const unsigned char* in, size_t insize)` never pairs and `insize` is decoded as
+    # a free scalar the callee trusts past the buffer.
+    if b.endswith("_") and b[:-1] in gdh.RUST_KEYWORDS:
+        b = b[:-1]
     if n.startswith(b) and n[len(b):].lstrip("_") in _LEN_SUFFIXES:
         return True
     if n.endswith(b) and n[: -len(b)].rstrip("_") in _LEN_SUFFIXES:
@@ -2024,6 +2036,28 @@ class HarnessPlan:
     failures: list
     policy: dict
     plan_version: int = PLAN_VERSION
+    # Plan-origin record when a resource-realization plugin supplied a materialization
+    # (docs/construction_recipe_plugin_plan.md section 5); None for every automatically planned
+    # boundary, and then OMITTED from the serialised plan (`plan_dict`) so no-plugin output is
+    # byte-identical to before the extension point existed.
+    origin: dict | None = None
+
+
+def plan_dict(plan: "HarnessPlan") -> dict:
+    d = asdict(plan)
+    if d.get("origin") is None:
+        d.pop("origin", None)
+    return d
+
+
+# Accepted resource-realization manifests for this run (`--realization-plugins`), consulted by
+# build_plan ONLY after the generic producer search abstained (plan check 10). Empty = the
+# extension point is never consulted and planning is unchanged.
+_REALIZATIONS: list = []
+
+
+def set_realizations(manifests: list) -> None:
+    _REALIZATIONS[:] = list(manifests or [])
 
 
 _SIG_CACHE: dict = {}
@@ -2258,8 +2292,12 @@ def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolic
                        "driver": driver_evidence(cc_dir, entry).get(f, 0),
                        "lowered": lowered, "frt": frt or None, "seed_reset": seed_reset})
     if not viable:
-        why = "; ".join(f"{x['fn']}: {x['excluded']}" for x in alternatives if x["fn"] in considered) or "no function returns it"
-        return None, base_reason + f"; no producer for {tname}*: {why}"
+        # The abstention names the extension point (docs/construction_recipe_plugin_plan.md
+        # section 5): a resource-realization plugin may declare the in-place initializer the
+        # library establishes this resource with; build_plan consults it after this return.
+        why = "; ".join(f"{x['fn']}: {x['excluded']}" for x in alternatives if x["fn"] in considered)
+        return None, base_reason + f"; no producer returns {tname}*" + (f" ({why})" if why else "") \
+            + "; no in-place initializer declared"
     # Ordering (docs/producer_bridge_pilot.md section 2, cJSON generalisation): a producer whose
     # object carries fuzz-controlled state first (cJSON_Parse's string over CreateObject's nothing),
     # then the one the shipped drivers feed to this target, then the fewest parameters. Every
@@ -2343,6 +2381,525 @@ def _plan_producer(cc_dir: Path, param: dict, entry: str, policy: GeneratorPolic
     return spec, None
 
 
+# ---------------------------------------------------------------------------
+# Resource-realization plugins (docs/construction_recipe_plugin_plan.md).
+#
+# A sibling materialization of the producer bridge: the resource is not RETURNED by a producer
+# but ESTABLISHED IN PLACE by an initializer over side-local storage the harness owns
+# (`stack T -> init(T*) -> target(T*) -> cleanup(T*)`).  The manifest (realization_plugin.py)
+# names the type, the lifecycle functions and the argument views; everything below is the
+# planner's own verification of that declaration against the C AST and the translation, and the
+# lowering into the SAME plan concepts the producer bridge uses (PRODUCER / FREE phases, the C UB
+# gate around the C-side calls).  Nothing here interpolates manifest text into generated code:
+# the emitter receives identifiers that were checked against the translation and view NAMES from
+# the closed vocabulary.
+# ---------------------------------------------------------------------------
+# The harness's C-side storage for a realized resource is a `[u64; N]` (8-byte aligned).
+_REALIZED_STORAGE_ALIGN = 8
+
+
+def _c_param_layout(cc_dir: Path, entry: str, idx: int) -> tuple[int, int, dict] | None:
+    """(sizeof, alignof, evidence) of the pointee of the entry's idx-th parameter, from the C AST."""
+    cur, _tu = entry_cursor(cc_dir, entry)
+    if cur is None:
+        return None
+    args = list(cur.get_arguments())
+    if idx >= len(args):
+        return None
+    t = args[idx].type
+    seen = 0
+    while t.kind in (TypeKind.TYPEDEF, TypeKind.ELABORATED) and seen < 8:
+        t = t.get_canonical()
+        seen += 1
+    if t.kind != TypeKind.POINTER:
+        return None
+    pointee = t.get_pointee()
+    size, align = pointee.get_size(), pointee.get_align()
+    if size <= 0 or align <= 0:
+        return None
+    return size, align, _ev("c_struct_layout_from_ast", args[idx],
+                            f"sizeof({pointee.spelling}) = {size}, alignof = {align} (libclang)")
+
+
+_MEMBER_CACHE: dict = {}
+
+
+def _member_access(fn_cursor, pname: str, cc_dir: Path | None = None, depth: int = 0) -> dict:
+    """{top-level field: {read, written, address_taken, partial_write, partial_address, ev}} for the
+    accesses `pname->field...` in the function's body, plus `all_established` when the body zeroes
+    the whole object (memset/bzero). Conservative: a write or address-of that reaches only a
+    SUB-field (`p->a.b = x`, `&p->a.b`) is recorded as partial and does not establish `a`.
+    Depth-1 callee summaries: a callee that receives `pname` itself contributes its own accesses."""
+    key = (str(fn_cursor.translation_unit.spelling), fn_cursor.spelling, pname, depth)
+    if key in _MEMBER_CACHE:
+        return _MEMBER_CACHE[key]
+    out: dict = {}
+
+    def note(field: str, ctx: str, node, top: bool):
+        d = out.setdefault(field, {"read": False, "written": False, "address_taken": False,
+                                   "partial_write": False, "partial_address": False, "ev": None})
+        if ctx == "read":
+            d["read"] = True
+        elif ctx == "write":
+            d["written" if top else "partial_write"] = True
+        elif ctx == "addr":
+            d["address_taken" if top else "partial_address"] = True
+        if d["ev"] is None:
+            d["ev"] = _ev("member_access_in_body", node,
+                          f"{pname}->{field} {ctx}{'' if top else ' (sub-field)'}")
+
+    def is_param(expr) -> bool:
+        e = _peel(expr)
+        if e is not None and e.kind == CursorKind.UNARY_OPERATOR:      # `(*p).f`
+            toks = [t.spelling for t in e.get_tokens()]
+            ch = list(e.get_children())
+            if toks and toks[0] == "*" and ch:
+                e = _peel(ch[0])
+        n, r = _ref_name(e) if e is not None else (None, None)
+        return n == pname and r is not None and r.kind == CursorKind.PARM_DECL
+
+    def walk(node, ctx: str, top: bool):
+        kind = node.kind
+        kids = list(node.get_children())
+        if kind == CursorKind.MEMBER_REF_EXPR and kids:
+            if is_param(kids[0]):
+                note(node.spelling, ctx, node, top)
+            else:
+                walk(kids[0], ctx, False)
+            return
+        if kind == CursorKind.BINARY_OPERATOR and _binop(node) in _ASSIGN_OPS and len(kids) == 2:
+            walk(kids[0], "write", True)
+            walk(kids[1], "read", True)
+            return
+        if kind == CursorKind.COMPOUND_ASSIGNMENT_OPERATOR and len(kids) == 2:
+            walk(kids[0], "read", True)          # `p->f += x` reads f before it writes it
+            walk(kids[0], "write", True)
+            walk(kids[1], "read", True)
+            return
+        if kind == CursorKind.UNARY_OPERATOR and kids:
+            toks = [t.spelling for t in node.get_tokens()]
+            if toks and toks[0] == "&":
+                walk(kids[0], "addr", True)
+                return
+            if "++" in toks or "--" in toks:
+                walk(kids[0], "read", True)
+                walk(kids[0], "write", True)
+                return
+        if kind == CursorKind.ARRAY_SUBSCRIPT_EXPR and len(kids) == 2:
+            walk(kids[0], ctx, False)
+            walk(kids[1], "read", True)
+            return
+        if kind == CursorKind.CALL_EXPR:
+            callee = node.spelling or ""
+            args = list(node.get_arguments())
+            if callee in ("memset", "bzero") and args and is_param(args[0]):
+                out["all_established"] = _ev("whole_object_zeroed_in_body", node,
+                                             f"{callee}({pname}, ..) establishes every byte")
+            elif depth < 1 and cc_dir is not None and callee:
+                cdef = gdh.definition_index(cc_dir).get(callee)
+                if cdef is not None:
+                    cparams = [a.spelling for a in cdef[0].get_arguments()]
+                    for q, a in zip(cparams, args):
+                        if is_param(a):
+                            sub = _member_access(cdef[0], q, cc_dir, depth + 1)
+                            for f2, d2 in sub.items():
+                                if f2 == "all_established":
+                                    out.setdefault("all_established", d2)
+                                    continue
+                                d = out.setdefault(f2, {"read": False, "written": False,
+                                                        "address_taken": False, "partial_write": False,
+                                                        "partial_address": False, "ev": None})
+                                for k in ("read", "written", "address_taken", "partial_write",
+                                          "partial_address"):
+                                    d[k] = d[k] or d2[k]
+                                if d["ev"] is None:
+                                    d["ev"] = _ev("member_access_via_callee", node,
+                                                  f"{pname} is passed to {callee}({q}), which "
+                                                  f"accesses {q}->{f2}")
+        for c in kids:
+            if kind in _PEEL:
+                walk(c, ctx, top)
+            else:
+                walk(c, "read", True)
+
+    body = next((c for c in fn_cursor.get_children() if c.kind == CursorKind.COMPOUND_STMT), None)
+    if body is not None:
+        walk(body, "read", True)
+    _MEMBER_CACHE[key] = out
+    return out
+
+
+def _split_top_level(s: str) -> list[str]:
+    """Split on commas outside <> [] (), treating `->` as an arrow, not a closing bracket."""
+    parts, depth, cur, i = [], 0, "", 0
+    while i < len(s):
+        ch = s[i]
+        if ch == "-" and s[i + 1:i + 2] == ">":
+            cur += "->"
+            i += 2
+            continue
+        if ch in "<[(":
+            depth += 1
+        elif ch in ">])":
+            depth -= 1
+        if ch == "," and depth == 0:
+            parts.append(cur)
+            cur = ""
+        else:
+            cur += ch
+        i += 1
+    if cur.strip():
+        parts.append(cur)
+    return [p.strip() for p in parts if p.strip()]
+
+
+def _rust_struct_fields(rust_text: str, name: str) -> list[tuple[str, str]] | None:
+    """[(field, type)] of `pub struct/union name { .. }` in the translation, or None."""
+    m = re.search(rf'(?m)^\s*pub\s+(?:struct|union)\s+{re.escape(name)}\s*(?:<[^>{{]*>)?\s*\{{',
+                  rust_text or "")
+    if not m:
+        return None
+    i, depth, start = m.end(), 1, m.end()
+    while i < len(rust_text) and depth:
+        if rust_text[i] == "{":
+            depth += 1
+        elif rust_text[i] == "}":
+            depth -= 1
+        i += 1
+    body = rust_text[start:i - 1]
+    body = re.sub(r"(?m)^\s*#\[[^\]]*\]\s*$", "", body)          # per-field attributes
+    body = re.sub(r"//[^\n]*", "", body)
+    out = []
+    for part in _split_top_level(body):
+        part = re.sub(r"^\s*pub(?:\([^)]*\))?\s+", "", part)
+        if ":" not in part:
+            continue
+        fname, fty = part.split(":", 1)
+        out.append((fname.strip(), fty.strip()))
+    return out
+
+
+def _rust_zeroable(rust_text: str, ty: str, aliases: dict | None, seen: set | None = None) -> str | None:
+    """Reason all-zero bytes are NOT known to be a valid value of `ty` (None when they are).
+
+    The harness's side-local Rust storage is `core::mem::zeroed()`; that is sound only for a type
+    every field of which accepts zero: integers, floats, bool, raw pointers, `Option<_>` (None),
+    arrays of those, and translation-defined structs/unions of those.  A `Box`, a reference, a
+    `Vec`/`String`, a `NonNull` or a bare fn pointer has no zero value, so such a translated
+    representation is refused rather than fabricated."""
+    seen = seen if seen is not None else set()
+    t = _norm_ty(ty, aliases)
+    if t in _INT_RUST or t in _FLOAT_RUST or t in ("bool", "()", "c_void"):
+        return None
+    if t.startswith("*mut") or t.startswith("*const"):
+        return None
+    if t.startswith("Option<") or t.startswith("Option::<"):
+        return None
+    m = re.fullmatch(r"\[(.+);([^;\]]+)\]", t)
+    if m:
+        return _rust_zeroable(rust_text, m.group(1), aliases, seen)
+    if t.startswith(("Box<", "&", "Vec<", "String", "NonNull<", "fn(", "unsafefn", "unsafeextern",
+                     "extern", "Rc<", "Arc<", "(")):
+        return f"{ty}: no all-zero value (owning/borrowing/non-nullable representation)"
+    if not re.fullmatch(r"[A-Za-z_]\w*", t):
+        return f"{ty}: unrecognised type shape"
+    if t in seen:
+        return None
+    fields = _rust_struct_fields(rust_text, t)
+    if fields is None:
+        return f"{ty}: not a struct/union defined in the translation"
+    seen.add(t)
+    for fname, fty in fields:
+        r = _rust_zeroable(rust_text, fty, aliases, seen)
+        if r:
+            return f"{t}.{fname} -> {r}"
+    return None
+
+
+_RUST_PUB_FN = r'(?m)^\s*(?:#\[no_mangle\]\s*)?pub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{name}\b'
+
+
+def _plan_realization(cc_dir: Path, param: dict, pidx: int, entry: str, policy: GeneratorPolicy,
+                      rust_text: str | None, rust_aliases: dict | None,
+                      rust_types: list[str] | None, facts: BodyFacts, generic_reason: str):
+    """Consult the accepted resource-realization manifests for `param` (a `T*` whose struct carries
+    pointers) AFTER the generic producer search abstained. Returns (InputSpec, None, origin) or
+    (None, "construction unsupported: ..", None). Checks are numbered as in
+    docs/construction_recipe_plugin_plan.md section 5."""
+    import realization_plugin as rp
+    st = param["struct"]
+    tname, cname = st["name"], st.get("c_name", st["name"])
+    rejected: list[dict] = [{"kind": "generic-producer", "reason": generic_reason}]
+    applicable = [m for m in _REALIZATIONS if m.c_type == tname]
+    for m in _REALIZATIONS:
+        if m.c_type != tname:
+            rejected.append({"kind": "plugin", "plugin": m.ident,
+                             "reason": f"declares resource {m.c_type}, not {tname}"})
+    if not applicable:
+        return None, None, None
+    reasons: list[str] = []
+    todo = [(m, rb) for m in applicable for rb in m.rust]
+    for k, (m, rb) in enumerate(todo):
+        label = f"{m.ident}" + (f"[{rb.binding}]" if rb.binding else "")
+        try:
+            spec, origin = _realize_with(cc_dir, m, rb, param, pidx, entry, policy, rust_text,
+                                         rust_aliases, rust_types, facts, list(rejected))
+            for m2, rb2 in todo[k + 1:]:       # declared but never tried: recorded, not silently dropped
+                origin["rejected_alternatives"].append({
+                    "kind": "plugin-binding",
+                    "plugin": f"{m2.ident}" + (f"[{rb2.binding}]" if rb2.binding else ""),
+                    "reason": f"not tried: the earlier declared binding {label} fits this translation"})
+            return spec, None, origin
+        except _Unsupported as e:
+            reasons.append(f"{label}: {e}")
+            rejected.append({"kind": "plugin-binding", "plugin": label, "reason": str(e)})
+    return None, "construction unsupported: " + " | ".join(reasons), None
+
+
+class _Unsupported(Exception):
+    pass
+
+
+def _realize_with(cc_dir: Path, m, rb, param: dict, pidx: int, entry: str, policy: GeneratorPolicy,
+                  rust_text: str | None, rust_aliases: dict | None, rust_types: list[str] | None,
+                  facts: BodyFacts, rejected: list[dict]):
+    """One manifest x one declared Rust binding `rb`; raises _Unsupported with the failing check."""
+    import realization_plugin as rp
+    st = param["struct"]
+    tname, cname = st["name"], st.get("c_name", st["name"])
+    pname = param["name"]
+    validation: list[dict] = []
+    assumptions: list[str] = []
+
+    def ok(check: int, what: str, ev=None):
+        validation.append({"check": check, "what": what, "ok": True,
+                           **({"evidence": ev} if ev is not None else {})})
+
+    def fail(check: int, why: str):
+        validation.append({"check": check, "what": why, "ok": False})
+        raise _Unsupported(f"check {check}: {why}")
+
+    if rust_text is None:
+        fail(2, "no Rust text to verify the translated representation against")
+    rn_rust = _rn  # renames map (matcher output for renaming translators)
+
+    # --- check 1: the C target parameter resolves to the declared C type and role -------------
+    if m.c_type != tname:
+        fail(1, f"manifest resource {m.c_type} is not the parameter's type {tname}")
+    c_target_view = m.c.target_view
+    if rp.c_view_is_const(c_target_view) != bool(param.get("const")):
+        fail(1, f"C target takes {'const ' if param.get('const') else ''}{cname}* but the manifest "
+                f"declares target_view {c_target_view!r}")
+    layout = _c_param_layout(cc_dir, entry, pidx)
+    if layout is None:
+        fail(1, f"could not derive sizeof/alignof of {cname} from the C AST")
+    c_size, c_align, layout_ev = layout
+    if c_align > _REALIZED_STORAGE_ALIGN:
+        fail(1, f"{cname} needs {c_align}-byte alignment; the harness's side-local storage is "
+                f"{_REALIZED_STORAGE_ALIGN}-byte aligned")
+    ok(1, f"C target parameter {pname} is {cname}* ({'const' if param.get('const') else 'mutable'}); "
+          f"sizeof={c_size} alignof={c_align}; view {c_target_view}", layout_ev)
+
+    # --- check 2: the Rust target parameter resolves to the declared Rust type and view --------
+    if rust_types is None or pidx >= len(rust_types):
+        fail(2, f"the translation's signature of {rn_rust(entry)} has no parameter at position {pidx}")
+    r_target_ty = _norm_ty(rust_types[pidx], rust_aliases)
+    r_view = rb.target_view
+    if not rp.rust_view_pattern(r_view, rb.type).fullmatch(r_target_ty):
+        fail(2, f"Rust target parameter {pidx} is {rust_types[pidx]!r}, which is not the declared "
+                f"view {r_view!r} of {rb.type}")
+    zero_why = _rust_zeroable(rust_text, rb.type, rust_aliases)
+    if zero_why:
+        fail(2, f"Rust storage for {rb.type} cannot be zero-established: {zero_why}")
+    ok(2, f"Rust target parameter {pidx} is {rust_types[pidx]} = view {r_view} of {rb.type}; "
+          f"all-zero bytes are a valid {rb.type} (every field is scalar / raw pointer / Option / "
+          f"array / translation struct of those)")
+
+    # --- check 3: initializer and cleanup exist on both sides ---------------------------------
+    if not m.c.initializer or not rb.initializer:
+        fail(3, f"the manifest declares no in-place initializer for {tname} on "
+                f"{'C' if not m.c.initializer else 'Rust'}: the plugin supplies the materialization, "
+                f"not the views")
+    if bool(m.c.cleanup) != bool(rb.cleanup):
+        fail(3, "cleanup is declared on one side only; the lifecycle must be claimed on both or neither")
+    hooks: dict = {}
+    defs = gdh.definition_index(cc_dir)
+    for role, cfn, rfn in (("initializer", m.c.initializer, rb.initializer),
+                           ("cleanup", m.c.cleanup, rb.cleanup)):
+        if not cfn:
+            continue
+        if cfn not in defs:
+            fail(3, f"C {role} {cfn} is not defined in the pair's translation unit")
+        if not _rust_fn_exists(rust_text, rfn):
+            fail(3, f"Rust {role} {rfn} is not present in the translation")
+        if not re.search(_RUST_PUB_FN.format(name=re.escape(rn_rust(rfn))), rust_text):
+            fail(3, f"Rust {role} {rfn} is not public in the translation; the harness cannot call it")
+        hooks[role] = {"c": cfn, "rust": rn_rust(rfn),
+                       "c_location": _ev("lifecycle_function_defined", defs[cfn][0], f"{cfn} definition")}
+    for cf in m.requires.get("c_functions", []):
+        if cf not in defs:
+            fail(3, f"[requires] C function {cf} is not defined in the pair's translation unit")
+    for rf in m.requires.get("rust_functions", []):
+        if not _rust_fn_exists(rust_text, rf):
+            fail(3, f"[requires] Rust function {rf} is not present in the translation")
+    ok(3, "initializer" + (" and cleanup" if m.c.cleanup else "") + " defined on both sides; "
+          f"[requires] satisfied: C {m.requires.get('c_functions')}, Rust {m.requires.get('rust_functions')}")
+
+    # --- check 4 (+6): the normalised signatures accept the declared side-specific views ------
+    # v1 realizes SINGLE-argument lifecycle functions returning void: `init(T*)`. Every input of
+    # the initializer is then constructible by definition (check 6), and nothing about the call
+    # is compared, so a value-returning initializer is refused rather than left unobserved.
+    for role, cview, rview in (("initializer", m.c.initializer_view, rb.initializer_view),
+                               ("cleanup", m.c.cleanup_view, rb.cleanup_view)):
+        h = hooks.get(role)
+        if not h:
+            continue
+        try:
+            hp_, hret, _f, _d = _sig(cc_dir, h["c"])
+        except SystemExit as e:
+            fail(4, f"C {role} {h['c']}: signature: {e}")
+        if hret != "void":
+            fail(4, f"C {role} {h['c']} returns {hret}; v1 realizes void lifecycle functions only")
+        if len(hp_) != 1:
+            fail(4, f"C {role} {h['c']} takes {len(hp_)} parameters; v1 realizes `{role}({cname}*)` only")
+        q = hp_[0]
+        if q.get("kind") not in ("ptr_struct_nonpod", "ptr_struct") or q["struct"].get("name") != tname:
+            fail(4, f"C {role} {h['c']} does not take {cname}*")
+        if q.get("const") and not rp.c_view_is_const(cview):
+            fail(4, f"C {role} {h['c']} takes const {cname}* but the manifest declares view {cview!r}")
+        if rp.c_view_is_const(cview) and not q.get("const"):
+            fail(4, f"C {role} {h['c']} takes {cname}* (mutable) but the manifest declares view {cview!r}")
+        rts = gdh.parse_rust_param_types(rust_text, h["rust"])
+        if len(rts) != 1:
+            fail(4, f"Rust {role} {h['rust']} takes {len(rts)} parameters; v1 realizes one-argument "
+                    f"lifecycle functions only")
+        rt = _norm_ty(rts[0], rust_aliases)
+        if not rp.rust_view_pattern(rview, rb.type).fullmatch(rt):
+            fail(4, f"Rust {role} {h['rust']} takes {rts[0]!r}, which is not the declared view "
+                    f"{rview!r} of {rb.type}")
+        rret = gdh.parse_rust_ret_type(rust_text, h["rust"])
+        if rret not in (None, "()"):
+            fail(4, f"Rust {role} {h['rust']} returns {rret}; v1 realizes void lifecycle functions only")
+        h["c_view"], h["rust_view"] = cview, rview
+        h["c_signature"] = f"void {h['c']}({'const ' if q.get('const') else ''}{cname}*)"
+        h["rust_signature"] = f"fn {h['rust']}({rts[0]})"
+        ok(4, f"{role}: C `{h['c_signature']}` accepts view {cview}; Rust `{h['rust_signature']}` "
+              f"accepts view {rview}")
+    ok(6, "the initializer's only input is the resource itself (v1: single-argument lifecycle "
+          "functions), so its inputs are constructible by construction")
+
+    # --- check 5: the target's view neither clones, leaks nor narrows ------------------------
+    if rp.RUST_VIEWS[r_view]["owning"]:
+        fail(5, f"view {r_view} would move the resource into the target")
+    ok(5, f"target view {r_view} lends the side-local object (non-owning); C passes its address; "
+          f"no narrowing: the resource is not decoded from fuzz bytes")
+
+    # --- check 7: deterministic initialization (or the producer bridge's seed-reset rule) -----
+    rand_fns, eff_fns = random_functions(cc_dir), effectful_functions(cc_dir)
+    seed_reset = "none"
+    for role, h in hooks.items():
+        if h["c"] in eff_fns:
+            fail(7, f"C {role} {h['c']} reaches an effectful call (file/process/network)")
+        if h["c"] in rand_fns:
+            if re.search(r'\b(?:libc::)?s?rand\s*\(', rust_text) or re.search(r'fn\s+s?rand\s*\(', rust_text):
+                seed_reset = "libc"
+            else:
+                fail(7, f"C {role} {h['c']} reaches rand() but the Rust side has no libc randomness to re-seed")
+    ok(7, "initializer" + (" and cleanup" if m.c.cleanup else "") + " reach no randomness and no "
+          "effectful call" if seed_reset == "none" else
+          "initializer reaches rand(); both sides re-seed with the producer bridge's libc rule")
+
+    # --- check 8: cleanup cannot consume or free the resource before the target call ---------
+    # The storage is the harness's own (stack): a lifecycle function or the target that hands the
+    # resource POINTER to free()/realloc() would free memory nobody allocated. Cleanup is emitted
+    # only after the target, in the FREE phase, by construction of the lowering.
+    consumed = (entry == m.c.cleanup)
+    freed = facts.escape_callees.get(pname, set()) & {"free", "realloc"}
+    if freed:
+        fail(8, f"the target passes {pname} itself to {sorted(freed)}; a side-local resource cannot be freed")
+    for role, h in hooks.items():
+        cur = defs[h["c"]][0]
+        cp = [a.spelling for a in cur.get_arguments()]
+        try:
+            hf = BodyAnalyzer(cur, set(cp)).run()
+        except Exception as e:
+            fail(8, f"C {role} {h['c']}: body analysis failed: {e}")
+        f2 = hf.escape_callees.get(cp[0], set()) & {"free", "realloc"}
+        if f2:
+            fail(8, f"C {role} {h['c']} passes the resource pointer itself to {sorted(f2)}")
+    ok(8, "neither the target nor a lifecycle function passes the resource pointer to free()/realloc()"
+          + (f"; the target IS the cleanup, so no second cleanup is emitted" if consumed else
+             "; cleanup is emitted after the target (FREE phase)"))
+    assumptions.append("plugin-owned: the cleanup releases only members the initializer/target "
+                       "allocated, never the resource's own storage (depth-1 escape check only)")
+
+    # --- check 9: conservative BodyFacts field check --------------------------------------
+    tcur = entry_cursor(cc_dir, entry)[0]
+    icur = defs[m.c.initializer][0]
+    ip = [a.spelling for a in icur.get_arguments()][0]
+    t_acc = _member_access(tcur, pname, cc_dir)
+    i_acc = _member_access(icur, ip, cc_dir)
+    target_fields = sorted(f for f in t_acc if f != "all_established")
+    if "all_established" in i_acc:
+        established = set(target_fields)
+        via_callee: list[str] = []
+    else:
+        established = {f for f, d in i_acc.items() if f != "all_established" and (d["written"] or d["address_taken"])}
+        via_callee = sorted(f for f, d in i_acc.items() if f != "all_established"
+                            and d["address_taken"] and not d["written"])
+    unestablished = [f for f in target_fields if f not in established]
+    if unestablished:
+        fail(9, f"the target reads {pname}->{{{', '.join(unestablished)}}} but {m.c.initializer} "
+                f"neither writes nor hands out the address of {'it' if len(unestablished) == 1 else 'them'}")
+    ok(9, f"target accesses {pname}->{{{', '.join(target_fields)}}}; every one is written by "
+          f"{m.c.initializer} or has its address passed to a callee there"
+          + (f" (via callee: {', '.join(via_callee)})" if via_callee else ""),
+       [d["ev"] for f, d in sorted(t_acc.items()) if f != "all_established" and d.get("ev")])
+    assumptions.append(f"plugin-owned: {m.c.initializer} establishes the {tname} invariant"
+                       + (f"; fields {', '.join(via_callee)} are established by the callees it passes "
+                          f"their addresses to" if via_callee else "")
+                       + "; storage is zero-filled on both sides before the initializer runs, so an "
+                         "unestablished field reads as zero (defined), and this check guards the "
+                         "invariant, not definedness")
+
+    # --- check 10: the plugin does not override a usable generic plan ------------------------
+    ok(10, "consulted only after the generic producer search abstained: " + rejected[0]["reason"])
+
+    resource = {"c": {"type": cname, "parameter_type": m.c.parameter_type, "storage": m.c.storage,
+                      "size": c_size, "align": c_align},
+                "rust": {"type": rb.type, "storage": rb.storage,
+                         "zero_established": True}}
+    views = {"owner": "harness (side-local)",
+             "c": {"initializer": m.c.initializer_view, "target": c_target_view,
+                   "cleanup": m.c.cleanup_view},
+             "rust": {"initializer": rb.initializer_view, "target": r_view,
+                      "cleanup": rb.cleanup_view}}
+    origin = rp.origin_record(m, resource, views, hooks, validation, assumptions, rejected)
+    origin["binding"] = rb.binding
+    detail = {"realization": "in_place_initializer",
+              "plugin": m.identity(),
+              "struct": tname, "c_struct": cname, "rust_struct": rb.type,
+              "c_size": c_size, "c_align": c_align, "storage": "stack",
+              "initializer": {"c": hooks["initializer"]["c"], "rust": hooks["initializer"]["rust"],
+                              "c_view": m.c.initializer_view, "rust_view": rb.initializer_view},
+              "cleanup": ({"c": hooks["cleanup"]["c"], "rust": hooks["cleanup"]["rust"],
+                           "c_view": m.c.cleanup_view, "rust_view": rb.cleanup_view}
+                          if "cleanup" in hooks else None),
+              "target_view": {"c": c_target_view, "rust": r_view},
+              "consumed_by_target": consumed,
+              "lifecycle": ("init -> target -> cleanup" if "cleanup" in hooks and not consumed else
+                            "init -> target (target is the cleanup)" if consumed else
+                            "not claimed (no cleanup declared)"),
+              "seed_reset": seed_reset, "seed": 42,
+              "const": bool(param.get("const")), "elem": tname}
+    spec = InputSpec(param=pname, c_decoder="realized_resource", detail=detail,
+                     evidence=[{"rule": "resource_realization_plugin", "file": m.path, "line": 0, "col": 0,
+                                "snippet": f"{m.ident} sha256:{m.content_hash[:16]}",
+                                "note": f"{pname} is established in place by {m.c.initializer}() on each "
+                                        f"side; see docs/construction_recipe_plugin_plan.md"}, layout_ev])
+    return spec, origin
+
+
 def build_plan(cc_dir: Path, entry: str, policy: GeneratorPolicy = POLICY,
                rust_types: list[str] | None = None,
                rust_aliases: dict | None = None,
@@ -2392,9 +2949,20 @@ def build_plan(cc_dir: Path, entry: str, policy: GeneratorPolicy = POLICY,
     # A `T*` whose struct carries pointers is not decodable from bytes; the pilot builds it with
     # the library's own producer (docs/producer_bridge_pilot.md) or fails with the reason.
     n_produced = 0
-    for p in params:
+    origin = None
+    for pidx, p in enumerate(params):
         if p.get("kind") == "ptr_struct_nonpod":
             spec, why = _plan_producer(cc_dir, p, entry, policy, rust_text, rust_aliases)
+            if spec is None and _REALIZATIONS and allow_producer:
+                # Extension point (docs/construction_recipe_plugin_plan.md): a resource-realization
+                # plugin may declare the in-place initializer; it is consulted only here, after the
+                # generic search abstained, and validated against the C AST and the translation.
+                spec, why2, origin2 = _plan_realization(cc_dir, p, pidx, entry, policy, rust_text,
+                                                        rust_aliases, rust_types, facts, why)
+                if spec is not None:
+                    origin = origin2
+                elif why2:
+                    why = why.replace("; no in-place initializer declared", "") + "; " + why2
             if spec is None:
                 failures.append(f"signature: {why}")
             else:
@@ -2426,6 +2994,7 @@ def build_plan(cc_dir: Path, entry: str, policy: GeneratorPolicy = POLICY,
         liveness=iplan.liveness,
         failures=failures,
         policy=policy.as_dict(),
+        origin=(origin if status == "planned" else None),
     )
 
 
@@ -2515,6 +3084,24 @@ def lower_to_schema(plan: HarnessPlan, params: list[dict], program: str, ret_rus
                         "seed_reset": d.get("seed_reset", "none"),
                         "seed": int(d.get("seed", 42)), "const": bool(d.get("const")),
                         "struct": d["struct"], "c_struct": d.get("c_struct", d["struct"]),
+                        "rust_pty": spec.get("rust_type"), "bridge": spec.get("rust_bridge")})
+        elif a == "realized_resource":
+            # Resource-realization plugin (docs/construction_recipe_plugin_plan.md): side-local
+            # zero-filled storage on each side, established by the library's own in-place
+            # initializer under the manifest's view, handed to the target under the target view,
+            # released by the cleanup after the target. Identifiers were verified against the
+            # translation; views are names from the closed vocabulary.
+            out.append({"name": n, "role": "realized_resource", "decode": "in_place_initializer",
+                        "struct": d["struct"], "c_struct": d.get("c_struct", d["struct"]),
+                        "rust_struct": d["rust_struct"],
+                        "c_size": int(d["c_size"]), "c_align": int(d["c_align"]),
+                        "initializer": dict(d["initializer"]),
+                        "cleanup": (dict(d["cleanup"]) if d.get("cleanup") else None),
+                        "target_view": dict(d["target_view"]),
+                        "consumed": bool(d.get("consumed_by_target")),
+                        "seed_reset": d.get("seed_reset", "none"), "seed": int(d.get("seed", 42)),
+                        "const": bool(d.get("const")),
+                        "plugin": dict(d.get("plugin") or {}),
                         "rust_pty": spec.get("rust_type"), "bridge": spec.get("rust_bridge")})
         elif a == "scalar":
             out.append({"name": n, "role": "scalar", "decode": "scalar",
@@ -2637,12 +3224,24 @@ def main() -> int:
     ap.add_argument("--rust-entry", help="name of the entry in the Rust translation, if renamed")
     ap.add_argument("--no-rust", action="store_true",
                     help="skip bridge derivation (C-ABI assumed) -- diagnostics only")
+    ap.add_argument("--realization-plugins", action="append", default=None,
+                    help="resource-realization plugin manifest (plugins/<lib>-harness-plan/plugin.toml, "
+                         "kind harness-plan-resource-realization); repeatable. Consulted ONLY for a "
+                         "boundary the generic planner abstains on with `no producer returns T*; no "
+                         "in-place initializer declared`; the plan then records origin=plugin. "
+                         "Absent: planning is unchanged. Not the comparator --plugins namespace.")
     ap.add_argument("--out-dir")
     ap.add_argument("--json")
     a = ap.parse_args()
 
     cc = Path(a.pair) / "build"
     _RENAMES.update(load_renames(Path(a.pair)))
+    if a.realization_plugins:
+        import realization_plugin as rp
+        try:
+            set_realizations(rp.load_realization_plugins(a.realization_plugins))
+        except rp.RealizationManifestError as e:
+            raise SystemExit(str(e))
     if a.all:
         entries = _all_entries(cc)
     elif a.entries:
@@ -2668,13 +3267,14 @@ def main() -> int:
         p = build_plan(cc, e, rust_types=(rt or None), rust_aliases=aliases, rust_text=rs_text)
         plans.append(p)
         if outdir:
-            (outdir / f"{e}.plan.json").write_text(json.dumps(asdict(p), indent=1) + "\n")
+            (outdir / f"{e}.plan.json").write_text(json.dumps(plan_dict(p), indent=1) + "\n")
         mark = "OK " if p.status == "planned" else "FAIL"
-        print(f"{mark} {e:30s} inputs={len(p.inputs):2d}")
+        print(f"{mark} {e:30s} inputs={len(p.inputs):2d}"
+              + (f"  origin=plugin {p.origin['plugin']['name']}@{p.origin['plugin']['version']}" if p.origin else ""))
         for f in p.failures:
             print(f"       - {f}")
     if a.json:
-        Path(a.json).write_text(json.dumps([asdict(p) for p in plans], indent=1) + "\n")
+        Path(a.json).write_text(json.dumps([plan_dict(p) for p in plans], indent=1) + "\n")
     ok = sum(1 for p in plans if p.status == "planned")
     print(f"\nplanned {ok} / {len(plans)}")
     return 0

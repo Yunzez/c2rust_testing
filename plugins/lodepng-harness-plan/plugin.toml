@@ -1,0 +1,81 @@
+# Resource-realization plugin manifest -- LodePNG `LodePNGState` (reference plugin).
+#
+# docs/construction_recipe_plugin_plan.md.  This is a DECLARATION, not code: it says that the C
+# `LodePNGState *` a boundary takes, the Rust `LodePNGState` behind `*mut` (c2rust) or behind the
+# `Option<&mut LodePNGState>` the lifecycle functions take (CROWN), are views of ONE side-local
+# logical resource that the library establishes IN PLACE:
+#
+#     C:    stack T -> lodepng_state_init(T*)               -> target(T*)  -> lodepng_state_cleanup(T*)
+#     Rust: stack T -> lodepng_state_init(<initializer_view>) -> target(<target_view>) -> cleanup(<cleanup_view>)
+#
+# The generic planner abstains on this shape with `no producer returns LodePNGState*; no in-place
+# initializer declared` (no function RETURNS a LodePNGState*; the library initialises one the caller
+# owns).  The plugin supplies the materialization; the planner verifies every binding against the C
+# AST and the translation (checks 1-10 of the plan) and the unchanged emitter lowers it into the
+# producer bridge's PRODUCER / FREE phases with the C UB gate around the C-side calls.
+#
+# Pass it with:  gen_diff_harness.py --plan --realization-plugins plugins/lodepng-harness-plan/plugin.toml
+# (a different namespace from the comparator `--plugins`).  Results obtained with it are reported
+# as PLUGIN-ASSISTED reach, never as the automatic generator's.
+#
+# Trust boundary (plan section 3): this manifest asserts that the two representations denote the
+# same logical resource and that `lodepng_state_init` establishes its invariant.  It cannot call
+# the target, read one side to build the other, or touch comparison -- there is no place in a
+# manifest to do so.
+
+[plugin]
+kind = "harness-plan-resource-realization"
+library = "lodepng"
+name = "lodepng-state"
+version = 1
+description = "LodePNGState established in place by lodepng_state_init / released by lodepng_state_cleanup"
+
+[resource]
+c_type = "LodePNGState"
+logical_role = "initialized-resource"
+
+# C representation: the parameter type, the storage the harness allocates (sizeof/alignof are taken
+# from the C AST, never declared here), and how the address is passed to each function.
+[resource.c]
+parameter_type = "LodePNGState *"
+storage = "stack"
+initializer = "lodepng_state_init"
+initializer_view = "raw-mut"
+target_view = "raw-mut"
+cleanup = "lodepng_state_cleanup"
+cleanup_view = "raw-mut"
+
+# Rust representation(s).  The views name shapes from the emitter's closed vocabulary; the planner
+# checks that the translation's signatures really have exactly that shape and takes the first
+# declared binding that fits, recording the others as rejected alternatives in the plan.  A
+# translation that fits none is `construction unsupported`.  (A single `[resource.rust]` table,
+# as in the plan's section 4, is the one-binding form of the same declaration.)
+
+# CROWN: `lodepng_state_init(Option<&mut LodePNGState>)`, `lodepng_inspect(.., *mut LodePNGState, ..)`.
+# The same resource appears under two views in one harness; both are emitter vocabulary.
+[[resource.rust]]
+binding = "option-mut-borrow-lifecycle"
+type = "LodePNGState"
+storage = "stack"
+initializer = "lodepng_state_init"
+initializer_view = "option-mut-borrow"
+target_view = "raw-mut"
+cleanup = "lodepng_state_cleanup"
+cleanup_view = "option-mut-borrow"
+
+# c2rust: the mechanical lift keeps `*mut LodePNGState` throughout (the raw-pointer control).
+[[resource.rust]]
+binding = "raw-mut-lifecycle"
+type = "LodePNGState"
+storage = "stack"
+initializer = "lodepng_state_init"
+initializer_view = "raw-mut"
+target_view = "raw-mut"
+cleanup = "lodepng_state_cleanup"
+cleanup_view = "raw-mut"
+
+# Everything the manifest binds must be listed here; the planner checks each name exists on its side
+# (a C name in the pair's translation unit, a Rust name as a public fn of the translation).
+[requires]
+c_functions = ["lodepng_state_init", "lodepng_state_cleanup"]
+rust_functions = ["lodepng_state_init", "lodepng_state_cleanup"]

@@ -8,7 +8,7 @@ LIB=$1; TOOL=$2; CSRC=$3; E=$4
 W=/home/yunzez/c2rust_seedir; R=/home/yunzez/c2rust_testing; P=$R/benchmark/pairs/rq4/${LIB}_${TOOL}; A=$R/results/rq3_coverage/$LIB/$TOOL
 S=/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132b29/scratchpad
 universe() {   # the archived cell's universe: the tests build when one was measured, else the rlib / bin-route denominator (possibly inside a tarball)
-  if [ -f $A/raw/tests_coverage.json ]; then echo "--tests $A/raw/tests_coverage.json";
+  if [ -s $A/raw/tests_coverage.json ]; then echo "--tests $A/raw/tests_coverage.json";   # -s: a failed tests build leaves an EMPTY file (quadtree x crown) -> denominator
   elif [ -f $A/raw/denominator.json ]; then echo "--denominator $A/raw/denominator.json";
   else T=$(ls $A/raw/denom_*.tar.gz 2>/dev/null | head -1); mkdir -p $E/universe; tar xzf $T -C $E/universe 2>/dev/null; D=$(find $E/universe -name denominator.json | head -1)
        # the old bin-route export records the denom crate's ABSOLUTE lib.rs path of the day; map it onto the extracted copy

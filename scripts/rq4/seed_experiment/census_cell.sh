@@ -10,7 +10,10 @@ S=/tmp/claude-1000/-home-yunzez-c2rust-testing/6278f822-c4c5-451c-94c6-d3a713132
 universe() {   # the archived cell's universe: the tests build when one was measured, else the rlib / bin-route denominator (possibly inside a tarball)
   if [ -f $A/raw/tests_coverage.json ]; then echo "--tests $A/raw/tests_coverage.json";
   elif [ -f $A/raw/denominator.json ]; then echo "--denominator $A/raw/denominator.json";
-  else T=$(ls $A/raw/denom_*.tar.gz 2>/dev/null | head -1); mkdir -p $E/universe; tar xzf $T -C $E/universe 2>/dev/null; echo "--denominator $(find $E/universe -name denominator.json | head -1)"; fi; }
+  else T=$(ls $A/raw/denom_*.tar.gz 2>/dev/null | head -1); mkdir -p $E/universe; tar xzf $T -C $E/universe 2>/dev/null; D=$(find $E/universe -name denominator.json | head -1)
+       # the old bin-route export records the denom crate's ABSOLUTE lib.rs path of the day; map it onto the extracted copy
+       OLD=$(python3 -c "import json,os;d=json.load(open('$D'));p=[f['filenames'][0] for f in d['data'][0]['functions'] if f['filenames'][0].endswith('src/lib.rs')][0];print(os.path.dirname(os.path.dirname(p)))")
+       echo "--denominator $D --path-map $OLD=$(dirname $D)"; fi; }
 PLUG=""; [ "$LIB" = cjson ] && PLUG="--plugins $R/plugins/cjson/plugin.toml"
 step() { echo "##### $LIB x $TOOL $* — $(date +%H:%M:%S), files $(find $S -type f | wc -l)"; }
 rm -rf $E; mkdir -p $E/seeds
@@ -36,6 +39,6 @@ for arm in base policy; do
   python3 -c "
 import json;r=json.load(open('$E/t0/$arm/analysis/result.json'));a=json.load(open('$A/analysis/result.json'))
 print('$LIB x $TOOL t0 $arm | fn', r['function']['covered_ours'], '/', r['function']['total_in_scope'], '| reg', r['region']['covered_ours'], '/', r['region']['total_in_scope'], round(r['region']['ours_coverage'],3), '| archived campaign reg', a['region']['covered_ours'], round(a['region']['ours_coverage'],3))"
-  rm -rf $E/t0/$arm/ours
+  [ -f $E/t0/$arm/analysis/result.json ] && rm -rf $E/t0/$arm/ours   # exports consumed; kept when the analysis failed
 done
 step "pack"; rm -rf $E/base/harnesses $E/base/target $E/t0/base/corpus $E/t0/policy/corpus; echo "$LIB x $TOOL CENSUS_CELL_DONE"

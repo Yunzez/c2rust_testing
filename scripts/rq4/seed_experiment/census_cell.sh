@@ -35,11 +35,16 @@ PY
 step "t0 pass (coverage build per harness, both seed sets)"; python3 $W/scripts/rq4/seed_experiment/t0_pass_census.py $E > $E/t0_pass.log 2>&1; echo "t0 rc=$?"
 python3 $W/scripts/rq4/seed_experiment/t0_fix.py $E base,policy > $E/t0_fix.log 2>&1; echo "t0fix rc=$?"
 for arm in base policy; do
-  find $E/t0/$arm/ours -size 0 -delete 2>/dev/null   # an empty llvm-cov export (replay produced no profile) carries no coverage and breaks the JSON load
+  python3 - <<PY   # an export that is empty or not JSON (the replay produced no usable profile) carries no coverage and would abort the analysis
+import json, pathlib
+for f in pathlib.Path("$E/t0/$arm/ours").glob("*.json"):
+    try: json.load(open(f))
+    except Exception: print("dropping unreadable export", f.name); f.unlink()
+PY
   python3 $R/scripts/c2r_coverage.py --linemap $P/translated/${LIB}_${TOOL}.rs.linemap.json --ours $E/t0/$arm/ours $(universe) --out $E/t0/$arm/analysis --corpus-root $E/t0/$arm/corpus > $E/t0/$arm/analysis.log 2>&1
   python3 -c "
 import json;r=json.load(open('$E/t0/$arm/analysis/result.json'));a=json.load(open('$A/analysis/result.json'))
 print('$LIB x $TOOL t0 $arm | fn', r['function']['covered_ours'], '/', r['function']['total_in_scope'], '| reg', r['region']['covered_ours'], '/', r['region']['total_in_scope'], round(r['region']['ours_coverage'],3), '| archived campaign reg', a['region']['covered_ours'], round(a['region']['ours_coverage'],3))"
   [ -f $E/t0/$arm/analysis/result.json ] && rm -rf $E/t0/$arm/ours   # exports consumed; kept when the analysis failed
 done
-step "pack"; rm -rf $E/base/harnesses $E/base/target $E/t0/base/corpus $E/t0/policy/corpus; echo "$LIB x $TOOL CENSUS_CELL_DONE"
+step "pack"; if [ -f $E/t0/base/analysis/result.json ] && [ -f $E/t0/policy/analysis/result.json ]; then rm -rf $E/base/harnesses; fi; rm -rf $E/base/target $E/t0/base/corpus $E/t0/policy/corpus; echo "$LIB x $TOOL CENSUS_CELL_DONE"

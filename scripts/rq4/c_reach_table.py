@@ -33,14 +33,14 @@ def main(root, out):
          "`C2R_MODE=c-only` through harnesses rebuilt with `--c-coverage`. Side-specific reach is reported per side and",
          "never subtracted. The four sets are over accepted correspondence pairs (matcher `deployment`) ∩ C scope ∩",
          "Rust scope; ambiguous and unmatched functions are separate columns. A C-side `completed` is reach, not",
-         "C-definedness. Negative control: on c2rust cells the exclusive sets `C only` and `Rust only` should be ~0.", "",
-         "| library × tool | boundaries | C fn | C reg | Rust fn (archived) | Rust reg (archived) | pairs | both | C only | Rust only | neither | ambig. | C unm. (reached) | Rust unm. (reached) | inputs completed / crash / timeout |",
+         "C-definedness. Negative control: on c2rust cells the exclusive sets `C only` and `Rust only` should be ~0 once the\nterminated cases are set aside. Parentheses: `C only` functions reached only through boundaries on whose inputs the Rust\nside TERMINATED (crash / panic / timeout; its reach there is unmeasured), and `Rust only` functions reached only where every\nC-side input crashed. A termination is a translation defect or UB-associated according to the cell's confirmation verdict, never this replay.", "",
+         "| library × tool | boundaries | C fn | C reg | Rust fn (archived) | Rust reg (archived) | pairs | both | C only (Rust terminated) | Rust only (C terminated) | neither | ambig. | C unm. (reached) | Rust unm. (reached) | inputs completed / crash / timeout |",
          "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for x in rows:
         m = x["m"]
         if m:
             cn = m["counts"]
-            ms = (f"{m['accepted_pairs']} | {cn['both']} | {cn['c_only']} | {cn['rust_only']} | {cn['neither']} | {m['ambiguous']} | "
+            ms = (f"{m['accepted_pairs']} | {cn['both']} | {cn['c_only']} ({cn.get('c_only_rust_terminated', 0)}) | {cn['rust_only']} ({cn.get('rust_only_c_terminated', 0)}) | {cn['neither']} | {m['ambiguous']} | "
                   f"{m['c_unmatched']} ({m['c_unmatched_reached']}) | {m['rust_unmatched']} ({m['rust_unmatched_reached']})")
         else:
             ms = "no map | – | – | – | – | – | – | –"

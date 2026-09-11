@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import cell as CELL
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import c2r_funnel as F
+import c2r_coverage as CC
 
 ROOT = Path(__file__).resolve().parents[2]
 HELPER_FILES = {"ubshim.c", "shims.c", "c2r_plugin.c", "c2r_extract.c", "darwin_shims.c", "c2r_profref.c"}
@@ -223,6 +224,11 @@ def extract_c(export_json: Path, csrc_dir: Path, source_root: Path):
     d = json.load(open(export_json))["data"][0]
     funcs, regions = {}, {}
     maps = {}
+    # Region identities live in the files that DEFINE functions. Macro-body code regions attributed to
+    # headers that define nothing (bzlib_private.h) vary per boundary with the fixups' header edits and
+    # inflated the bzip2 universe (2356 vs 2304); a header-only library (urlparser's url.h) still counts
+    # because its functions are defined there.
+    def_files = {os.path.basename(fn["filenames"][0]) for fn in d["functions"] if fn["filenames"] and in_scope(fn["filenames"][0])}
     for fn in d["functions"]:
         files = fn["filenames"]
         f0 = files[0] if files else ""
@@ -241,6 +247,8 @@ def extract_c(export_json: Path, csrc_dir: Path, source_root: Path):
             if kind != 0 or fid >= len(files) or not in_scope(files[fid]):
                 continue
             fb = os.path.basename(files[fid])
+            if fb not in def_files:
+                continue
             if lm is not None:
                 if l1 not in lm or l2 not in lm:
                     continue          # a line with no canonical counterpart (the edited signature line)
@@ -300,17 +308,58 @@ def load_map(lib: str, tool: str):
     return None
 
 
-def four_sets(c_funcs: dict, r_uni: set, r_cov: set, cmap):
+def rust_per_boundary(cell: Path) -> dict:
+    """boundary -> Rust functions reached from its corpus, from the archived per-harness llvm-cov exports
+    (harness_exports.tar.gz, ours/<b>.json); names decoded as in rust_name."""
+    out = {}
+    tp = cell / "harness_exports.tar.gz"
+    if not tp.exists():
+        return out
+    with tarfile.open(tp) as tf:
+        for m in tf.getmembers():
+            if m.name.startswith("ours/") and m.name.endswith(".json") and m.isfile():
+                try:
+                    d = json.load(tf.extractfile(m))["data"][0]
+                except Exception:
+                    continue
+                out[m.name[5:-5]] = {rust_name(CC.demangle(f["name"])) for f in d["functions"]
+                                     if f["count"] > 0 and f["filenames"] and CC.is_lib(f["filenames"][0])}
+    return out
+
+
+def four_sets(c_funcs: dict, r_uni: set, r_cov: set, cmap, per_b_funcs=None, rust_cov_status=None,
+              per_b_rust=None, c_outcomes=None):
+    """per_b_funcs: boundary -> set of C functions reached from its corpus; rust_cov_status: boundary -> the
+    archived cell's `coverage` field. A `c_only` function reached ONLY through boundaries whose archived
+    Rust replay lost its profile (`failed rc=..`, the Rust side crashed on the input) is tagged
+    rust_terminated: the Rust side TERMINATED (crash / panic / timeout) on those inputs while C went on,
+    so its reach there is unmeasured rather than measured-unreached. Whether that termination is a
+    translation defect (lil x C2SaferRust: construction crash, C9) or UB-associated (urlparser x c2rust
+    get_part: C silently out of contract, Rust trapped) is the cell's CONFIRMATION verdict, never this
+    replay's. Symmetrically a `rust_only` function reached on the Rust side (archived per-harness
+    exports, per_b_rust) only through boundaries whose EVERY input crashed or timed out in the C-only
+    replay (c_outcomes) is tagged c_terminated (quadtree x PtrTrans find_/get_quadrant_/quadtree_search)."""
     if cmap is None:
         return None
     c_uni = set(c_funcs)
     acc = [(c, r) for c, r in cmap["deployment"] if c in c_uni and r in r_uni]
     out_of_scope = [(c, r) for c, r in cmap["deployment"] if not (c in c_uni and r in r_uni)]
     sets = {"both": [], "c_only": [], "rust_only": [], "neither": []}
+    prov = {}
     for c, r in acc:
         cc, rc = c_funcs[c], r in r_cov
         key = "both" if cc and rc else "c_only" if cc else "rust_only" if rc else "neither"
         sets[key].append([c, r])
+        if key == "c_only" and per_b_funcs is not None:
+            via = sorted(b for b, fs in per_b_funcs.items() if c in fs)
+            st = {b: (rust_cov_status or {}).get(b) for b in via}
+            lost = bool(via) and all(not str(s).startswith(("batch", "per-input")) for s in st.values())
+            prov[c] = {"reached_via": via, "archived_rust_coverage": st, "rust_terminated": lost}
+        if key == "rust_only" and per_b_rust is not None:
+            via = sorted(b for b, fs in per_b_rust.items() if r in fs)
+            oc = {b: (c_outcomes or {}).get(b, {}) for b in via}
+            lost = bool(via) and all(o.get("completed", 0) == 0 for o in oc.values())
+            prov[r] = {"side": "rust_only", "reached_via_rust": via, "c_outcomes_of_those": oc, "c_terminated": lost}
     amb = [[c, r, {"c": c_funcs.get(c), "rust": (r in r_cov) if r in r_uni else None}] for c, r in cmap["ambiguous"]]
     paired_c = {c for c, _ in acc} | {c for c, _ in cmap["ambiguous"]}
     paired_r = {r for _, r in acc} | {r for _, r in cmap["ambiguous"]}
@@ -318,7 +367,10 @@ def four_sets(c_funcs: dict, r_uni: set, r_cov: set, cmap):
     r_un = sorted(r for r in r_uni if r not in paired_r)
     return {"map": cmap["path"], "config": cmap["config"], "accepted_pairs": len(acc),
             "accepted_pairs_out_of_scope": out_of_scope, "sets": sets,
-            "counts": {k: len(v) for k, v in sets.items()},
+            "counts": {k: len(v) for k, v in sets.items()} | {
+                "c_only_rust_terminated": sum(1 for v in prov.values() if v.get("rust_terminated")),
+                "rust_only_c_terminated": sum(1 for v in prov.values() if v.get("c_terminated"))},
+            "exclusive_provenance": prov,
             "ambiguous": amb, "c_unmatched": c_un, "rust_unmatched": r_un,
             "c_unmatched_reached": sorted(c for c in c_un if c_funcs[c]),
             "rust_unmatched_reached": sorted(r for r in r_un if r in r_cov)}
@@ -330,6 +382,8 @@ def main():
     ap.add_argument("--lib", required=True); ap.add_argument("--tool", required=True)
     ap.add_argument("--work", required=True); ap.add_argument("--out", required=True)
     ap.add_argument("--only"); ap.add_argument("--keep-work", action="store_true")
+    ap.add_argument("--analyze-only", action="store_true",
+                    help="no rebuild / replay: recompute the analysis from <out>/c_exports, <out>/csrc and <out>/per_input.json")
     a = ap.parse_args()
     lib, tool = a.lib, a.tool
     cell = ROOT / "results/rq3_coverage" / lib / tool
@@ -366,9 +420,26 @@ def main():
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     rows, per_input_all = [], {}
-    c_funcs_u, c_regs_u = {}, {}
+    c_funcs_u, c_regs_u, per_b_funcs = {}, {}, {}
     target = W / "target"
-    for b in built:
+    if a.analyze_only:
+        old = json.load(open(O / "result.json"))
+        per_input_all = json.load(open(O / "per_input.json"))
+        for row in old["rows"]:
+            if not str(row.get("status", "")).startswith("ok"):
+                rows.append(row); continue
+            b = row["boundary"]
+            ex = W / f"export_{b}.json"
+            ex.write_text(gzip.open(O / "c_exports" / f"{b}.json.gz", "rt").read())
+            funcs, regs = extract_c(ex, O / "csrc" / b, pair / "source")
+            per_b_funcs[b] = {k for k, v in funcs.items() if v}
+            for k, v in funcs.items(): c_funcs_u[k] = c_funcs_u.get(k, False) or v
+            for k, v in regs.items(): c_regs_u[k] = c_regs_u.get(k, False) or v
+            row.update({"c_functions_reached": sum(funcs.values()), "c_functions_total": len(funcs),
+                        "c_regions_reached": sum(regs.values()), "c_regions_total": len(regs)})
+            rows.append(row)
+        built = [r["boundary"] for r in rows]
+    for b in ([] if a.analyze_only else built):
         corpus = corpus_root / b
         if not corpus.exists():
             rows.append({"boundary": b, "status": "no archived corpus"}); continue
@@ -388,6 +459,15 @@ def main():
         if not st.startswith("ok"):
             rows.append({"boundary": b, "status": st, "corpus": len(per_input)}); log(f"  {b:30s} {st}"); continue
         funcs, regs = extract_c(W / f"export_{b}.json", W / "harness" / "csrc" / b, pair / "source")
+        per_b_funcs[b] = {k for k, v in funcs.items() if v}
+        # keep the compiled C copies that DIFFER from the pair's source (the fixups' edited files), so
+        # the line alignment can be redone with --analyze-only; identical copies are not archived
+        for f in (W / "harness" / "csrc" / b).rglob("*"):
+            if f.is_file() and f.name not in HELPER_FILES:
+                cn = next(iter((pair / "source").rglob(f.name)), None)
+                if cn is not None and cn.read_bytes() != f.read_bytes():
+                    dst = O / "csrc" / b / f.relative_to(W / "harness" / "csrc" / b)
+                    dst.parent.mkdir(parents=True, exist_ok=True); shutil.copy(f, dst)
         for k, v in funcs.items(): c_funcs_u[k] = c_funcs_u.get(k, False) or v
         for k, v in regs.items(): c_regs_u[k] = c_regs_u.get(k, False) or v
         with gzip.open(O / "c_exports" / f"{b}.json.gz", "wt") as gz:
@@ -406,7 +486,11 @@ def main():
     r_uni, r_cov = rust_sets(cell / "analysis")
     arch = json.load(open(cell / "analysis" / "result.json"))
     cmap = load_map(lib, tool)
-    fs = four_sets(c_funcs_u, r_uni, r_cov, cmap)
+    c_out = {}
+    for b, pi in per_input_all.items():
+        for v in pi.values(): c_out.setdefault(b, {})[v["outcome"]] = c_out.setdefault(b, {}).get(v["outcome"], 0) + 1
+    fs = four_sets(c_funcs_u, r_uni, r_cov, cmap, per_b_funcs, {x["boundary"]: x.get("coverage") for x in funnel},
+                   rust_per_boundary(cell), c_out)
     tot_oc = {}
     for pi in per_input_all.values():
         for r in pi.values(): tot_oc[r["outcome"]] = tot_oc.get(r["outcome"], 0) + 1
@@ -419,12 +503,13 @@ def main():
                  "function_reach": (sum(c_funcs_u.values()) / len(c_funcs_u)) if c_funcs_u else None,
                  "region_reach": (sum(c_regs_u.values()) / len(c_regs_u)) if c_regs_u else None,
                  "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
-                 "region_kind": "llvm-cov CodeRegion (kind 0) only; lines aligned to the pair's source when --expose-entry edited the file"},
+                 "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"},
            "rust_archived": {"functions_total": arch["function"]["total_in_scope"], "functions_reached": arch["function"]["covered_ours"],
                              "regions_total": arch["region"]["total_in_scope"], "regions_reached": arch["region"]["covered_ours"],
                              "function_reach": arch["function"]["covered_ours"] / arch["function"]["total_in_scope"] if arch["function"]["total_in_scope"] else None,
                              "region_reach": arch["region"]["ours_coverage"], "names_in_scope": len(r_uni), "names_reached": len(r_cov)},
            "matched": ({k: v for k, v in fs.items() if k in ("map", "config", "accepted_pairs", "counts")} | {
+                        "exclusive_provenance": fs["exclusive_provenance"],
                         "ambiguous": len(fs["ambiguous"]), "c_unmatched": len(fs["c_unmatched"]), "rust_unmatched": len(fs["rust_unmatched"]),
                         "c_unmatched_reached": len(fs["c_unmatched_reached"]), "rust_unmatched_reached": len(fs["rust_unmatched_reached"]),
                         "accepted_pairs_out_of_scope": len(fs["accepted_pairs_out_of_scope"])}) if fs else None,
@@ -461,8 +546,8 @@ def write_run_md(O: Path, res, fs, rows):
         L += ["## Matched functions — accepted pairs ∩ C scope ∩ Rust scope", "",
               f"Map: `{fs['map']}` (`deployment`, {fs['config']}); accepted pairs in both scopes: {fs['accepted_pairs']}"
               f" (out of scope: {len(fs['accepted_pairs_out_of_scope'])}).", "",
-              "| both | C only | Rust only | neither | ambiguous | C unmatched (reached) | Rust unmatched (reached) |", "|---|---|---|---|---|---|---|",
-              f"| {cn['both']} | {cn['c_only']} | {cn['rust_only']} | {cn['neither']} | {len(fs['ambiguous'])} | "
+              "| both | C only (Rust terminated) | Rust only (C terminated) | neither | ambiguous | C unmatched (reached) | Rust unmatched (reached) |", "|---|---|---|---|---|---|---|",
+              f"| {cn['both']} | {cn['c_only']} ({cn.get('c_only_rust_terminated', 0)}) | {cn['rust_only']} ({cn.get('rust_only_c_terminated', 0)}) | {cn['neither']} | {len(fs['ambiguous'])} | "
               f"{len(fs['c_unmatched'])} ({len(fs['c_unmatched_reached'])}) | {len(fs['rust_unmatched'])} ({len(fs['rust_unmatched_reached'])}) |", ""]
         for k in ("c_only", "rust_only"):
             if fs["sets"][k]:

@@ -1,0 +1,139 @@
+{
+ "map": "results/rq1_matching/raw/group_a/urlparser__crown/matcher_output.json",
+ "config": {
+  "topo": true,
+  "abstain_eps": 0.01
+ },
+ "accepted_pairs": 18,
+ "accepted_pairs_out_of_scope": [],
+ "sets": {
+  "both": [
+   [
+    "strdup",
+    "strdup"
+   ],
+   [
+    "strff",
+    "strff"
+   ],
+   [
+    "url_parse",
+    "url_parse"
+   ],
+   [
+    "url_is_protocol",
+    "url_is_protocol"
+   ],
+   [
+    "url_is_ssh",
+    "url_is_ssh"
+   ],
+   [
+    "url_get_protocol",
+    "url_get_protocol"
+   ],
+   [
+    "url_get_auth",
+    "url_get_auth"
+   ]
+  ],
+  "c_only": [
+   [
+    "get_part",
+    "get_part"
+   ]
+  ],
+  "rust_only": [],
+  "neither": [
+   [
+    "url_get_host",
+    "url_get_host"
+   ],
+   [
+    "url_get_pathname",
+    "url_get_pathname"
+   ],
+   [
+    "url_get_path",
+    "url_get_path"
+   ],
+   [
+    "url_get_search",
+    "url_get_search"
+   ],
+   [
+    "url_get_query",
+    "url_get_query"
+   ],
+   [
+    "url_get_hash",
+    "url_get_hash"
+   ],
+   [
+    "url_inspect",
+    "url_inspect"
+   ],
+   [
+    "url_data_inspect",
+    "url_data_inspect"
+   ],
+   [
+    "url_free",
+    "url_free"
+   ],
+   [
+    "main",
+    "main_0"
+   ]
+  ]
+ },
+ "counts": {
+  "both": 7,
+  "c_only": 1,
+  "rust_only": 0,
+  "neither": 10,
+  "c_only_rust_terminated": 1,
+  "rust_only_c_terminated": 0
+ },
+ "exclusive_provenance": {
+  "get_part": {
+   "reached_via": [
+    "get_part"
+   ],
+   "archived_rust_coverage": {
+    "get_part": "failed rc=1"
+   },
+   "rust_terminated": true
+  }
+ },
+ "ambiguous": [
+  [
+   "strrwd",
+   "strrwd",
+   {
+    "c": true,
+    "rust": false
+   }
+  ],
+  [
+   "url_get_hostname",
+   "url_get_hostname",
+   {
+    "c": false,
+    "rust": false
+   }
+  ],
+  [
+   "url_get_port",
+   "url_get_port",
+   {
+    "c": false,
+    "rust": false
+   }
+  ]
+ ],
+ "c_unmatched": [],
+ "rust_unmatched": [],
+ "c_unmatched_reached": [],
+ "rust_unmatched_reached": []
+}

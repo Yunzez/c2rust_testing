@@ -1,0 +1,269 @@
+{
+ "cell": "quadtree_ptrtrans",
+ "generator": "fd1f75b4716a1d45",
+ "c_source": "quadtree_all.c",
+ "mode": "c-only",
+ "build": "cargo fuzz build --sanitizer none; C: -O1 -g sancov + ub-free + -fprofile-instr-generate -fcoverage-mapping",
+ "boundaries_archived_built": 11,
+ "boundaries_measured": 11,
+ "rows": [
+  {
+   "boundary": "find_",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 9,
+   "outcomes": {
+    "crash": 9
+   },
+   "profiles": 9,
+   "c_functions_reached": 0,
+   "c_functions_total": 24,
+   "c_regions_reached": 0,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_bounds_extend",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 6,
+   "outcomes": {
+    "completed": 6
+   },
+   "profiles": 1,
+   "c_functions_reached": 3,
+   "c_functions_total": 24,
+   "c_regions_reached": 12,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_bounds_new",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 24,
+   "c_regions_reached": 11,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_new",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 11,
+   "outcomes": {
+    "completed": 11
+   },
+   "profiles": 1,
+   "c_functions_reached": 6,
+   "c_functions_total": 24,
+   "c_regions_reached": 33,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_node_isempty",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 11,
+   "outcomes": {
+    "completed": 11
+   },
+   "profiles": 1,
+   "c_functions_reached": 7,
+   "c_functions_total": 24,
+   "c_regions_reached": 42,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_node_isleaf",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 11,
+   "outcomes": {
+    "completed": 11
+   },
+   "profiles": 1,
+   "c_functions_reached": 6,
+   "c_functions_total": 24,
+   "c_regions_reached": 29,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_node_ispointer",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 11,
+   "outcomes": {
+    "completed": 11
+   },
+   "profiles": 1,
+   "c_functions_reached": 6,
+   "c_functions_total": 24,
+   "c_regions_reached": 36,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_node_new",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 24,
+   "c_regions_reached": 10,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_node_with_bounds",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 11,
+   "outcomes": {
+    "completed": 11
+   },
+   "profiles": 1,
+   "c_functions_reached": 5,
+   "c_functions_total": 24,
+   "c_regions_reached": 27,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_point_new",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 6,
+   "outcomes": {
+    "completed": 6
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 24,
+   "c_regions_reached": 3,
+   "c_regions_total": 198
+  },
+  {
+   "boundary": "quadtree_search",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 9,
+   "outcomes": {
+    "crash": 9
+   },
+   "profiles": 9,
+   "c_functions_reached": 0,
+   "c_functions_total": 24,
+   "c_regions_reached": 0,
+   "c_regions_total": 198
+  }
+ ],
+ "inputs": {
+  "crash": 18,
+  "completed": 69
+ },
+ "c": {
+  "functions_total": 24,
+  "functions_reached": 9,
+  "regions_total": 198,
+  "regions_reached": 57,
+  "function_reach": 0.375,
+  "region_reach": 0.2878787878787879,
+  "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+  "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+ },
+ "rust_archived": {
+  "functions_total": 19,
+  "functions_reached": 13,
+  "regions_total": 407,
+  "regions_reached": 134,
+  "function_reach": 0.6842105263157895,
+  "region_reach": 0.329238,
+  "names_in_scope": 17,
+  "names_reached": 12
+ },
+ "matched": {
+  "map": "results/rq1_matching/raw/group_b/ptrtrans_quadtree/matcher_output.json",
+  "config": {
+   "topo": true,
+   "abstain_eps": 0.01
+  },
+  "accepted_pairs": 11,
+  "counts": {
+   "both": 4,
+   "c_only": 0,
+   "rust_only": 3,
+   "neither": 4,
+   "c_only_rust_terminated": 0,
+   "rust_only_c_terminated": 3
+  },
+  "exclusive_provenance": {
+   "get_quadrant_": {
+    "side": "rust_only",
+    "reached_via_rust": [
+     "find_",
+     "quadtree_search"
+    ],
+    "c_outcomes_of_those": {
+     "find_": {
+      "crash": 9
+     },
+     "quadtree_search": {
+      "crash": 9
+     }
+    },
+    "c_terminated": true
+   },
+   "find_": {
+    "side": "rust_only",
+    "reached_via_rust": [
+     "find_",
+     "quadtree_search"
+    ],
+    "c_outcomes_of_those": {
+     "find_": {
+      "crash": 9
+     },
+     "quadtree_search": {
+      "crash": 9
+     }
+    },
+    "c_terminated": true
+   },
+   "quadtree_search": {
+    "side": "rust_only",
+    "reached_via_rust": [
+     "quadtree_search"
+    ],
+    "c_outcomes_of_those": {
+     "quadtree_search": {
+      "crash": 9
+     }
+    },
+    "c_terminated": true
+   }
+  },
+  "ambiguous": 6,
+  "c_unmatched": 7,
+  "rust_unmatched": 0,
+  "c_unmatched_reached": 0,
+  "rust_unmatched_reached": 0,
+  "accepted_pairs_out_of_scope": 0
+ },
+ "seconds": 0
+}

@@ -1,0 +1,871 @@
+{
+ "cell": "optipng_c2rust",
+ "generator": "fd1f75b4716a1d45",
+ "c_source": "optipng_multi.c",
+ "mode": "c-only",
+ "build": "cargo fuzz build --sanitizer none; C: -O1 -g sancov + ub-free + -fprofile-instr-generate -fcoverage-mapping",
+ "boundaries_archived_built": 54,
+ "boundaries_measured": 54,
+ "rows": [
+  {
+   "boundary": "DefaultError",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 552,
+   "c_regions_reached": 0,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "DefaultWarning",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 16,
+   "outcomes": {
+    "completed": 16
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 2,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "ErrorAlloc",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 552,
+   "c_regions_reached": 0,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "add_one_chunk",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 5,
+   "outcomes": {
+    "completed": 5
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 8,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "adler32",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 32,
+   "outcomes": {
+    "completed": 32
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 552,
+   "c_regions_reached": 31,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "adler32_combine",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 10,
+   "outcomes": {
+    "completed": 10
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 552,
+   "c_regions_reached": 14,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "adler32_combine64",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 10,
+   "outcomes": {
+    "completed": 10
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 552,
+   "c_regions_reached": 14,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "compress",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 411,
+   "outcomes": {
+    "completed": 411
+   },
+   "profiles": 1,
+   "c_functions_reached": 39,
+   "c_functions_total": 552,
+   "c_regions_reached": 583,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "compress2",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 488,
+   "outcomes": {
+    "completed": 488
+   },
+   "profiles": 1,
+   "c_functions_reached": 40,
+   "c_functions_total": 552,
+   "c_regions_reached": 672,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "compressBound",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 8,
+   "outcomes": {
+    "completed": 8
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "crc32",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 30,
+   "outcomes": {
+    "completed": 30
+   },
+   "profiles": 1,
+   "c_functions_reached": 3,
+   "c_functions_total": 552,
+   "c_regions_reached": 22,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "crc32_combine",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 68,
+   "outcomes": {
+    "crash": 28,
+    "completed": 40
+   },
+   "profiles": 68,
+   "c_functions_reached": 4,
+   "c_functions_total": 552,
+   "c_regions_reached": 27,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "crc32_combine64",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 68,
+   "outcomes": {
+    "crash": 28,
+    "completed": 40
+   },
+   "profiles": 68,
+   "c_functions_reached": 4,
+   "c_functions_total": 552,
+   "c_regions_reached": 27,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "default_error_handler",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 552,
+   "c_regions_reached": 0,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "default_warning_handler",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 16,
+   "outcomes": {
+    "completed": 16
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 2,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "get_crc_table",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "get_ulong_i",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 5,
+   "outcomes": {
+    "completed": 5
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "get_ulong_m",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 5,
+   "outcomes": {
+    "completed": 5
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "get_ushort_i",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 3,
+   "outcomes": {
+    "completed": 3
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "get_ushort_m",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 3,
+   "outcomes": {
+    "completed": 3
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_bitset_count",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 8,
+   "outcomes": {
+    "completed": 8
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 3,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_bitset_find_first",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 32,
+   "outcomes": {
+    "completed": 32
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 6,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_bitset_find_last",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 33,
+   "outcomes": {
+    "completed": 33
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 6,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_bitset_find_next",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 12,
+   "outcomes": {
+    "completed": 12
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 9,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_bitset_find_prev",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 11,
+   "outcomes": {
+    "completed": 11
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 10,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_get_alpha_row",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 552,
+   "c_regions_reached": 0,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_os_test",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 44,
+   "outcomes": {
+    "completed": 44
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 34,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_os_test_eq",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 42,
+   "outcomes": {
+    "completed": 42
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 13,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_path_make_backup",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 20,
+   "outcomes": {
+    "completed": 20
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 6,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_path_replace_dir",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 58,
+   "outcomes": {
+    "completed": 58
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 17,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_path_replace_ext",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 64,
+   "outcomes": {
+    "completed": 64
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 26,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "opng_strparse_rangeset_to_bitset",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 90,
+   "outcomes": {
+    "completed": 90
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 53,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_access_version_number",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_do_write_interlace",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 28,
+   "outcomes": {
+    "completed": 28
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 19,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_gt",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 6,
+   "outcomes": {
+    "completed": 6
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_safecat",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 11,
+   "outcomes": {
+    "completed": 11
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 13,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_save_int_32",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 5,
+   "outcomes": {
+    "completed": 5
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 552,
+   "c_regions_reached": 2,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_save_uint_16",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 5,
+   "outcomes": {
+    "completed": 5
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_save_uint_32",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 5,
+   "outcomes": {
+    "completed": 5
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_zalloc",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 8,
+   "outcomes": {
+    "completed": 8
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 5,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "png_zfree",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 552,
+   "c_regions_reached": 6,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "pngx_gif_error",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 552,
+   "c_regions_reached": 0,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "pngx_gif_warning",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 16,
+   "outcomes": {
+    "completed": 16
+   },
+   "profiles": 1,
+   "c_functions_reached": 3,
+   "c_functions_total": 552,
+   "c_regions_reached": 11,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "pngx_tiff_error",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 552,
+   "c_regions_reached": 0,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "pngx_tiff_warning",
+   "status": "ok",
+   "c_static": true,
+   "objects": 53,
+   "corpus": 15,
+   "outcomes": {
+    "completed": 15
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 4,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "pnm_is_valid",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 29,
+   "outcomes": {
+    "completed": 29
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 25,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "pnm_mem_size",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 32,
+   "outcomes": {
+    "completed": 32
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 15,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "pnm_raw_sample_size",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 21,
+   "outcomes": {
+    "completed": 21
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 16,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "uncompress",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 347,
+   "outcomes": {
+    "completed": 347
+   },
+   "profiles": 1,
+   "c_functions_reached": 18,
+   "c_functions_total": 552,
+   "c_regions_reached": 561,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "zError",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 552,
+   "c_regions_reached": 0,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "zcalloc",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 3,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "zcfree",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "zlibCompileFlags",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 9,
+   "c_regions_total": 10394
+  },
+  {
+   "boundary": "zlibVersion",
+   "status": "ok",
+   "c_static": false,
+   "objects": 53,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 552,
+   "c_regions_reached": 1,
+   "c_regions_total": 10394
+  }
+ ],
+ "inputs": {
+  "crash": 63,
+  "completed": 2071
+ },
+ "c": {
+  "functions_total": 552,
+  "functions_reached": 105,
+  "regions_total": 10394,
+  "regions_reached": 1591,
+  "function_reach": 0.19021739130434784,
+  "region_reach": 0.15306907831441216,
+  "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+  "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+ },
+ "rust_archived": {
+  "functions_total": 555,
+  "functions_reached": 106,
+  "regions_total": 37840,
+  "regions_reached": 9970,
+  "function_reach": 0.19099099099099098,
+  "region_reach": 0.263478,
+  "names_in_scope": 548,
+  "names_reached": 101
+ },
+ "matched": {
+  "map": "results/rq1_matching/raw/group_a/optipng__c2rust/matcher_output.json",
+  "config": {
+   "topo": true,
+   "abstain_eps": 0.01
+  },
+  "accepted_pairs": 417,
+  "counts": {
+   "both": 81,
+   "c_only": 0,
+   "rust_only": 0,
+   "neither": 336,
+   "c_only_rust_terminated": 0,
+   "rust_only_c_terminated": 0
+  },
+  "exclusive_provenance": {},
+  "ambiguous": 131,
+  "c_unmatched": 4,
+  "rust_unmatched": 2,
+  "c_unmatched_reached": 4,
+  "rust_unmatched_reached": 1,
+  "accepted_pairs_out_of_scope": 4
+ },
+ "seconds": 61
+}

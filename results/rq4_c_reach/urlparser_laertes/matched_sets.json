@@ -1,0 +1,234 @@
+{
+ "map": "results/rq1_matching/raw/group_a/urlparser__laertes/matcher_output.json",
+ "config": {
+  "topo": true,
+  "abstain_eps": 0.01
+ },
+ "accepted_pairs": 10,
+ "accepted_pairs_out_of_scope": [
+  [
+   "url_data_inspect",
+   "owned_as_mut"
+  ]
+ ],
+ "sets": {
+  "both": [
+   [
+    "strdup",
+    "strdup"
+   ],
+   [
+    "url_is_ssh",
+    "url_is_ssh"
+   ]
+  ],
+  "c_only": [
+   [
+    "get_part",
+    "get_part"
+   ],
+   [
+    "url_parse",
+    "url_parse"
+   ],
+   [
+    "url_is_protocol",
+    "url_is_protocol"
+   ],
+   [
+    "url_get_protocol",
+    "url_get_protocol"
+   ],
+   [
+    "url_get_auth",
+    "url_get_auth"
+   ]
+  ],
+  "rust_only": [],
+  "neither": [
+   [
+    "url_get_pathname",
+    "url_get_pathname"
+   ],
+   [
+    "url_get_path",
+    "url_get_path"
+   ],
+   [
+    "url_inspect",
+    "url_inspect"
+   ]
+  ]
+ },
+ "counts": {
+  "both": 2,
+  "c_only": 5,
+  "rust_only": 0,
+  "neither": 3,
+  "c_only_rust_terminated": 5,
+  "rust_only_c_terminated": 0
+ },
+ "exclusive_provenance": {
+  "get_part": {
+   "reached_via": [
+    "get_part"
+   ],
+   "archived_rust_coverage": {
+    "get_part": "failed rc=1"
+   },
+   "rust_terminated": true
+  },
+  "url_parse": {
+   "reached_via": [
+    "url_data_inspect",
+    "url_free",
+    "url_parse"
+   ],
+   "archived_rust_coverage": {
+    "url_data_inspect": "failed rc=1",
+    "url_free": "failed rc=1",
+    "url_parse": "failed rc=1"
+   },
+   "rust_terminated": true
+  },
+  "url_is_protocol": {
+   "reached_via": [
+    "url_data_inspect",
+    "url_free",
+    "url_get_auth",
+    "url_get_protocol",
+    "url_is_protocol",
+    "url_parse"
+   ],
+   "archived_rust_coverage": {
+    "url_data_inspect": "failed rc=1",
+    "url_free": "failed rc=1",
+    "url_get_auth": "failed rc=1",
+    "url_get_protocol": "failed rc=1",
+    "url_is_protocol": "failed rc=1",
+    "url_parse": "failed rc=1"
+   },
+   "rust_terminated": true
+  },
+  "url_get_protocol": {
+   "reached_via": [
+    "url_data_inspect",
+    "url_free",
+    "url_get_auth",
+    "url_get_protocol",
+    "url_parse"
+   ],
+   "archived_rust_coverage": {
+    "url_data_inspect": "failed rc=1",
+    "url_free": "failed rc=1",
+    "url_get_auth": "failed rc=1",
+    "url_get_protocol": "failed rc=1",
+    "url_parse": "failed rc=1"
+   },
+   "rust_terminated": true
+  },
+  "url_get_auth": {
+   "reached_via": [
+    "url_get_auth"
+   ],
+   "archived_rust_coverage": {
+    "url_get_auth": "failed rc=1"
+   },
+   "rust_terminated": true
+  }
+ },
+ "ambiguous": [
+  [
+   "strff",
+   "strff",
+   {
+    "c": true,
+    "rust": true
+   }
+  ],
+  [
+   "strrwd",
+   "strrwd",
+   {
+    "c": true,
+    "rust": false
+   }
+  ],
+  [
+   "url_get_hostname",
+   "url_get_hostname",
+   {
+    "c": false,
+    "rust": false
+   }
+  ],
+  [
+   "url_get_host",
+   "url_get_host",
+   {
+    "c": false,
+    "rust": false
+   }
+  ],
+  [
+   "url_get_search",
+   "url_get_search",
+   {
+    "c": false,
+    "rust": false
+   }
+  ],
+  [
+   "url_get_query",
+   "url_get_query",
+   {
+    "c": false,
+    "rust": false
+   }
+  ],
+  [
+   "url_get_hash",
+   "url_get_hash",
+   {
+    "c": false,
+    "rust": false
+   }
+  ],
+  [
+   "url_get_port",
+   "url_get_port",
+   {
+    "c": false,
+    "rust": false
+   }
+  ],
+  [
+   "url_free",
+   "url_free",
+   {
+    "c": false,
+    "rust": false
+   }
+  ],
+  [
+   "main",
+   "main_0",
+   {
+    "c": false,
+    "rust": false
+   }
+  ]
+ ],
+ "c_unmatched": [
+  "url_data_inspect"
+ ],
+ "rust_unmatched": [
+  "default",
+  "laertes_init_URL_SCHEMES",
+  "main",
+  "new",
+  "url_data_inspect"
+ ],
+ "c_unmatched_reached": [],
+ "rust_unmatched_reached": []
+}

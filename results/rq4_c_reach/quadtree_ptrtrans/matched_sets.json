@@ -1,0 +1,178 @@
+{
+ "map": "results/rq1_matching/raw/group_b/ptrtrans_quadtree/matcher_output.json",
+ "config": {
+  "topo": true,
+  "abstain_eps": 0.01
+ },
+ "accepted_pairs": 11,
+ "accepted_pairs_out_of_scope": [],
+ "sets": {
+  "both": [
+   [
+    "quadtree_bounds_extend",
+    "quadtree_bounds_extend"
+   ],
+   [
+    "quadtree_bounds_new",
+    "quadtree_bounds_new"
+   ],
+   [
+    "quadtree_node_with_bounds",
+    "quadtree_node_with_bounds"
+   ],
+   [
+    "quadtree_new",
+    "quadtree_new"
+   ]
+  ],
+  "c_only": [],
+  "rust_only": [
+   [
+    "get_quadrant_",
+    "get_quadrant_"
+   ],
+   [
+    "find_",
+    "find_"
+   ],
+   [
+    "quadtree_search",
+    "quadtree_search"
+   ]
+  ],
+  "neither": [
+   [
+    "node_contains_",
+    "node_contains_"
+   ],
+   [
+    "split_node_",
+    "split_node_"
+   ],
+   [
+    "insert_",
+    "insert_"
+   ],
+   [
+    "quadtree_insert",
+    "quadtree_insert"
+   ]
+  ]
+ },
+ "counts": {
+  "both": 4,
+  "c_only": 0,
+  "rust_only": 3,
+  "neither": 4,
+  "c_only_rust_terminated": 0,
+  "rust_only_c_terminated": 3
+ },
+ "exclusive_provenance": {
+  "get_quadrant_": {
+   "side": "rust_only",
+   "reached_via_rust": [
+    "find_",
+    "quadtree_search"
+   ],
+   "c_outcomes_of_those": {
+    "find_": {
+     "crash": 9
+    },
+    "quadtree_search": {
+     "crash": 9
+    }
+   },
+   "c_terminated": true
+  },
+  "find_": {
+   "side": "rust_only",
+   "reached_via_rust": [
+    "find_",
+    "quadtree_search"
+   ],
+   "c_outcomes_of_those": {
+    "find_": {
+     "crash": 9
+    },
+    "quadtree_search": {
+     "crash": 9
+    }
+   },
+   "c_terminated": true
+  },
+  "quadtree_search": {
+   "side": "rust_only",
+   "reached_via_rust": [
+    "quadtree_search"
+   ],
+   "c_outcomes_of_those": {
+    "quadtree_search": {
+     "crash": 9
+    }
+   },
+   "c_terminated": true
+  }
+ },
+ "ambiguous": [
+  [
+   "quadtree_node_ispointer",
+   "quadtree_node_isempty",
+   {
+    "c": true,
+    "rust": true
+   }
+  ],
+  [
+   "quadtree_node_isempty",
+   "quadtree_node_ispointer",
+   {
+    "c": true,
+    "rust": true
+   }
+  ],
+  [
+   "quadtree_node_isleaf",
+   "quadtree_node_isleaf",
+   {
+    "c": true,
+    "rust": true
+   }
+  ],
+  [
+   "quadtree_node_new",
+   "quadtree_node_new",
+   {
+    "c": true,
+    "rust": true
+   }
+  ],
+  [
+   "quadtree_point_new",
+   "quadtree_point_new",
+   {
+    "c": true,
+    "rust": true
+   }
+  ],
+  [
+   "quadtree_walk",
+   "quadtree_walk",
+   {
+    "c": false,
+    "rust": false
+   }
+  ]
+ ],
+ "c_unmatched": [
+  "elision_",
+  "quadtree_bounds_free",
+  "quadtree_free",
+  "quadtree_node_free",
+  "quadtree_node_reset",
+  "quadtree_point_free",
+  "reset_node_"
+ ],
+ "rust_unmatched": [],
+ "c_unmatched_reached": [],
+ "rust_unmatched_reached": []
+}

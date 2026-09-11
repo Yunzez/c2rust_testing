@@ -1,7 +1,7 @@
 # Same-corpus C reach — a paired reach diagnostic for the RQ4 cells
 
-Status: PLAN, 2026-09-11. Nothing measured yet. Implementation starts after the seeds-only census
-lane finishes (no generator edit while a lane executes it).
+Status: DONE for the same-corpus diagnostic (37 cells, `results/rq4_c_reach/`, 2026-09-11) and a three-cell
+C-guided companion pilot (section 8). Decision on a formal 37-cell C-guided run pending with the user.
 
 ## 1. The question, and what this is not
 
@@ -199,3 +199,15 @@ replay. The per-input `crash` count here is a reach statistic, not a UB verdict.
 4. Negative control is stated on the exclusive sets, not on the coverages.
 5. C-only `normal` is reach, not C-definedness; reference-limited needs the sanitizer confirmation.
 6. The C denominator comes from all instrumented C object files, not from the linked binary.
+
+## 8. C-guided companion campaign (added 2026-09-11 after the sweep)
+
+The sweep cannot say "C and Rust reach the same": the corpus is Rust-guided. `scripts/rq4/c_guided_cell.py`
+runs the same harnesses, seed, parameters and budget with `C2R_MODE=c-only` — the C oracle already carries
+sancov instrumentation, so no new instrumentation is needed — and measures both sides on the C-guided corpus CC,
+reporting the 2×2 (corpus × side) and the four sets on CR, CC and CR ∪ CC. Pilot (lil × C2SaferRust, lil ×
+c2rust, lodepng × c2rust) in `results/rq4_c_reach/c_guided_pilot/` and SUMMARY.md: C guidance takes lil ×
+C2SaferRust's C reach from 0.20 to 0.82 with Rust unchanged; the control makes no false asymmetry; lodepng is
+unchanged (construction limit). Exclusive-set tags are `rust_terminated` / `c_terminated` (the other side
+crashed on every reaching input), never "profile lost": whether a termination is a defect or UB-associated is the
+confirmation verdict.

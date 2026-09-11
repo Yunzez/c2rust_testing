@@ -42,7 +42,7 @@ ROOT = Path(__file__).resolve().parents[2]
 # Generator capability stamp — recorded on every harvested dataset row so v1/v2 (built with
 # different generator coverage) are never confused. Bump GEN_VERSION when adding a boundary shape.
 DECODE_DUMP = False   # test-only (--decode-dump): the harness prints every decoded value and returns before any call
-GEN_VERSION = "0.9.1"   # 2026-09-10 (later): test-only --decode-dump flag for the Seed IR round-trip; emitted harnesses identical to 0.9 (golden). 0.9, 2026-09-10: numeric float outputs compare NaN-equivalently (c2r_feq*/c2r_fslice*) and a run whose only differences were NaN payloads reports `nan_equivalent`; found by the tulip seeded corpora (results/rq4_llm_refinement/tulip). 0.8, 2026-09-07: the `nullable owned object` producer-bridge family --
+GEN_VERSION = "0.9.2"   # 2026-09-11: --c-coverage build.rs flag for the same-corpus C reach diagnostic (docs/c_reach_plan.md); emitted harnesses identical to 0.9.1 without it (golden). 0.9.1, 2026-09-10 (later): test-only --decode-dump flag for the Seed IR round-trip; emitted harnesses identical to 0.9 (golden). 0.9, 2026-09-10: numeric float outputs compare NaN-equivalently (c2r_feq*/c2r_fslice*) and a run whose only differences were NaN payloads reports `nan_equivalent`; found by the tulip seeded corpora (results/rq4_llm_refinement/tulip). 0.8, 2026-09-07: the `nullable owned object` producer-bridge family --
 # a produced object whose Rust owner is `Option<Box<R>>` (CROWN and PtrTrans quadtree), lent to the
 # target as a borrowed view. Frozen scope in docs/producer_bridge_pilot.md.
 _GEN_VERSION_0_7 = "0.7"   # 2026-09-04: HARNESS PLAN path (--plan). The InputPlan is derived from the
@@ -503,6 +503,7 @@ def plugin_compat(pl: dict, rust_text: str) -> str | None:
 
 
 _PLUGINS_OK: list | None = None      # plugins compatible with the translation being generated for
+_C_COVERAGE = False                  # --c-coverage: the target keeps the LLVM profile runtime linked
 _PLUGINS_DEGRADED: dict = {}         # library -> reason, for the verdict and the log
 
 
@@ -1960,6 +1961,15 @@ def gen_target(entry: str, items: list[dict], abi: list[dict], ret: str, crate: 
         "const C2R_PH_RUST: u8 = 3; const C2R_PH_RUST_DONE: u8 = 4; const C2R_PH_COMPARED: u8 = 5;",
         *(["// producer bridge: the step of the init -> target -> free sequence an outcome happened in",
            "const C2R_PH_PRODUCER: u8 = 6; const C2R_PH_FREE: u8 = 7;"] if _produced else []),
+        # --c-coverage: clang >= 16 no longer references __llvm_profile_runtime from instrumented
+        # objects (its DRIVER adds `-u __llvm_profile_runtime` at link time); rustc links this
+        # binary, so without a reference from an object that is always linked -- this target --
+        # the runtime's atexit writer is never pulled out of libclang_rt.profile and no .profraw is
+        # written (bzip2 pilot, 2026-09-11). A C-side reference does not work: it sits in the same
+        # static archive and is itself never pulled.
+        *(["extern \"C\" { static __llvm_profile_runtime: core::ffi::c_int; }",
+           "#[used] static C2R_PROFILE_RUNTIME_REF: &core::ffi::c_int = unsafe { &__llvm_profile_runtime };"]
+          if _C_COVERAGE else []),
         "static C2R_PHASE: std::sync::atomic::AtomicU8 = std::sync::atomic::AtomicU8::new(0);",
         "fn c2r_phase(p: u8) { C2R_PHASE.store(p, std::sync::atomic::Ordering::Relaxed); }",
         "fn c2r_outcome_file() -> Option<&\'static str> {",
@@ -2231,6 +2241,11 @@ def main() -> int:
                     help="comparator plugin manifest (plugins/<lib>/plugin.toml); repeatable. "
                          "A plugin extends OUTPUT comparison only and never touches the InputPlan; "
                          "a boundary whose return type it covers gets oracle_strength=structured-state.")
+    ap.add_argument("--c-coverage", dest="c_coverage", action="store_true",
+                    help="C-REACH build (docs/c_reach_plan.md): compile the C oracle with "
+                         "-fprofile-instr-generate -fcoverage-mapping so a C2R_MODE=c-only replay of the "
+                         "archived corpus yields llvm-cov coverage of the ORIGINAL C. Changes build.rs only; "
+                         "the profile runtime is already linked. Off by default (emitted harnesses unchanged).")
     ap.add_argument("--c-sanitize", "--c-asan", dest="c_sanitize", action="store_true",
                     help="CONFIRMATION build: compile the C oracle with -fsanitize=address,undefined "
                          "so BOTH a C-side memory error and value-level UB are detected. ASan alone "
@@ -2252,6 +2267,8 @@ def main() -> int:
                     "differential compare) that only drives translated::<entry>. For per-function "
                     "hit-depth measurement; correctness is E1's job.")
     args = ap.parse_args()
+    global _C_COVERAGE
+    _C_COVERAGE = bool(args.c_coverage)
     global DECODE_DUMP
     DECODE_DUMP = bool(args.decode_dump)
 
@@ -2487,6 +2504,12 @@ doc = false
         _cflags = ["-fsanitize=address,undefined",
                    "-fsanitize=float-cast-overflow,pointer-overflow,return,vla-bound",
                    "-fno-sanitize-recover=all"]
+    if args.c_coverage:
+        # C-reach build: source-level coverage of the C oracle. Per-function counters are inserted
+        # before inlining, so -O1 stays as in every other build. Not combined with --c-sanitize
+        # (its -fno-sanitize-recover=all aborts on the first UB hit and truncates the profile).
+        _cflags = list(_cflags) + ["-fprofile-instr-generate", "-fcoverage-mapping"]
+        # the profile runtime is kept linked by a reference emitted in the target (gen_target)
     ub_flags = "".join(f'\n        .flag("{f}")' for f in _cflags)
     ub_file = f'\n    build.file("c/ubshim.c");' if args.ub_free else ""
     (out / "build.rs").write_text(f'''fn main() {{

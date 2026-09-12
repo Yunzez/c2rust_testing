@@ -60,6 +60,13 @@ cell is divided into deterministic boundary batches; each boundary still gets
 the full archived campaign budget, and coverage is unioned only after every
 batch validates.
 
+The completion controller is `scripts/rq4/run_c_only_manifest.py`.  It keeps
+the archived funnel order and partitions it into consecutive batches of at
+most 28 boundaries.  Each batch persists the exact C function and region
+identities (not only aggregate counts) in `c_identities.json.gz`; application
+coverage is the Boolean union of those identities after all batch-level
+checks pass.  Percentages and aggregate counts are never added across batches.
+
 ## Resource and persistence rules
 
 - Concurrent boundary fuzzers across all running units must never exceed 28.
@@ -74,6 +81,9 @@ batch validates.
   to `FINAL`.
 - No running script is edited.  A valid attempt is renamed to `FINAL` only
   after its `DONE.json` checks are independently inspected.
+- Before every batch, the controller rechecks the full hashes of itself and
+  the C-only driver, verifies the frozen C-source hash for the realization,
+  and refuses to start while any external libFuzzer fork supervisor is live.
 
 ## Completion
 
@@ -82,3 +92,8 @@ Completion requires every unit in the finalized manifest to have a valid
 region universes, archived C coverage exports, and an aggregate table generated
 from those final records.  Partial snapshots, smoke runs, and earlier Claude
 pilots are not formal results.
+
+The full-manifest controller writes `SUMMARY.json`, `SUMMARY.md`, and finally
+`MANIFEST_DONE.json` only after it verifies 12/12 valid units, one C export per
+boundary, C-only protocols throughout, and a recorded maximum of no more than
+28 concurrent boundary fuzzers.

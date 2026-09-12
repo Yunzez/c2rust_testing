@@ -34,10 +34,31 @@ initial small-application batch is frozen as:
 | genann (2015 C) | c2rust | 10 |
 | quadtree | c2rust | 17 |
 
-The full manifest is finalized from C-source and C-input-realization
-fingerprints before larger applications run.  In particular, genann × SACTOR
-and cJSON × PtrTrans use different C sources from their sibling cells and are
-not silently merged.
+The full manifest below uses one representative with the widest archived-built
+boundary set for each C source version (qsort keeps SACTOR, the preselected
+low-Rust-reach diagnostic).  The hash is of the compiled C source named by the
+cell, not of translation-specific support files.
+
+| unit | representative | C-source SHA-256 prefix | boundaries |
+|---|---|---|---:|
+| bzip2 | c2rust | `d4378051f781` | 19 |
+| cJSON, compact source | c2rust | `aa1b902f9408` | 39 |
+| cJSON, PtrTrans source | PtrTrans | `298581a04a36` | 9 |
+| genann, 2015 source | c2rust | `49128acbe4fa` | 10 |
+| genann, 1.0.0 source | SACTOR | `df0dee7dc389` | 13 |
+| lil | Laertes | `abd896337a4a` | 51 |
+| lodepng | c2rust | `19efa9e42f8a` | 54 |
+| optipng | C2SaferRust | `493775c01168` | 96 |
+| qsort | SACTOR | `b857f308fbdb` | 3 |
+| quadtree | c2rust | `19871b2aaea0` | 17 |
+| tulip | c2rust | `d174602cb962` | 212 |
+| urlparser | c2rust | `68fc1ce6d2bb` | 20 |
+
+The two cJSON sources and two genann sources are distinct units and are never
+silently merged.  For applications with more than 28 boundaries, the same
+cell is divided into deterministic boundary batches; each boundary still gets
+the full archived campaign budget, and coverage is unioned only after every
+batch validates.
 
 ## Resource and persistence rules
 

@@ -71,6 +71,7 @@ def build_manifest():
 
 PLAN_CASES = [
     ("bzip2_c2rust", "BZ2_bzBuffToBuffCompress", "bzip2lib.c"),      # plan lowering, plan_array + bounded scalars
+    ("bzip2_c2rust", "BZ2_hbCreateDecodeTables", "bzip2lib.c"),     # indexed integer pointer stays a buffer, never a capacity slot
     ("bzip2_c2saferrust", "BZ2_bzlibVersion", "bzip2lib.c"),         # reshaped return: `&str` for `const char*`
     ("genann_c2rust", "genann_run", "genann.c"),                     # producer bridge, raw-pointer target
     ("genann_crown", "genann_run", "genann.c"),                      # producer bridge, Option<&mut T> target

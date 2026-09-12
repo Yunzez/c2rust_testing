@@ -1779,7 +1779,17 @@ def analyze_inputs(params: list[dict], facts: BodyFacts, policy: GeneratorPolicy
                 continue
             q = by_name[names[j]]
             is_int_val = q["kind"] == "scalar"
-            is_int_ptr = q["kind"] == "ptr" and q.get("elem") in (_SIGNED | _UNSIGNED)
+            # A capacity passed by pointer is a scalar slot (for example
+            # ``size_t *out_size``), not another array.  Merely having an
+            # integer element type is insufficient: bzip2's adjacent
+            # ``UChar *length`` is itself indexed as ``length[j]`` and must
+            # remain a buffer sized by ``alphaSize``.  Treating it as the
+            # capacity of ``perm`` erased that relationship and emitted an
+            # unbound ``alphaSize`` in the harness.
+            is_int_ptr = (q["kind"] == "ptr"
+                          and q.get("elem") in (_SIGNED | _UNSIGNED)
+                          and q["name"] not in _subs
+                          and q["name"] not in facts.advanced)
             if (is_int_val or is_int_ptr) and _name_pairs(pn, q["name"]):
                 length_of[pn] = q["name"]
                 pair_src[pn] = "heuristic_name_and_adjacency"

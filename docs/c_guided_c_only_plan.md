@@ -9,7 +9,7 @@ Rust remeasurement and 37-cell scheduling steps.
 
 For each selected C realization:
 
-1. rebuild exactly the archived-built boundary set with generator 0.9.2 and
+1. rebuild exactly the archived-built boundary set with generator 0.9.3 and
    `--c-coverage`;
 2. recover the archived campaign parameters and its non-generated initial
    inputs;
@@ -92,6 +92,14 @@ Completion requires every unit in the finalized manifest to have a valid
 region universes, archived C coverage exports, and an aggregate table generated
 from those final records.  Partial snapshots, smoke runs, and earlier Claude
 pilots are not formal results.
+
+Generator 0.9.3 differs from 0.9.2 by one soundness guard discovered by the
+formal bzip2 exact-build gate: an indexed integer pointer is an array and cannot
+simultaneously be inferred as an adjacent output buffer's scalar capacity slot.
+Without the guard, `BZ2_hbCreateDecodeTables` emitted an unbound `alphaSize` and
+failed to build.  The failed attempt is retained; the golden suite includes the
+boundary.  The guard leaves the harnesses of the three already completed small
+units byte-identical, which is checked before their 0.9.2 results are retained.
 
 The full-manifest controller writes `SUMMARY.json`, `SUMMARY.md`, and finally
 `MANIFEST_DONE.json` only after it verifies 12/12 valid units, one C export per

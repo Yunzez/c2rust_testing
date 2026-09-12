@@ -489,8 +489,15 @@ def main() -> int:
     archive.mkdir(parents=True, exist_ok=True)
     driver = ROOT / "scripts/rq4/c_guided_cell.py"
     controller = Path(__file__).resolve()
-    files = {str(driver.relative_to(ROOT)): sha256(driver),
-             str(controller.relative_to(ROOT)): sha256(controller)}
+    frozen_files = [
+        driver,
+        controller,
+        ROOT / "scripts/rq4/c_reach.py",
+        ROOT / "scripts/rq4/cell.py",
+        ROOT / "tools/stu_selector/gen_diff_harness.py",
+        ROOT / "tools/stu_selector/harness_plan.py",
+    ]
+    files = {str(path.relative_to(ROOT)): sha256(path) for path in frozen_files}
     selected = UNITS
     if args.units:
         wanted = set(args.units.split(","))

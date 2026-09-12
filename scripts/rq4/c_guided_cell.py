@@ -70,6 +70,19 @@ def wtar(path: Path, src_dir: Path, arcname: str) -> None:
     fsync_dir(path.parent)
 
 
+def wgzip_json(path: Path, obj) -> None:
+    """Atomically persist a compact JSON document inside a gzip member."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    with gzip.open(tmp, "wt") as fh:
+        json.dump(obj, fh, separators=(",", ":"))
+        fh.write("\n")
+    with open(tmp, "rb") as fh:
+        os.fsync(fh.fileno())
+    os.replace(tmp, path)
+    fsync_dir(path.parent)
+
+
 def fsync_dir(path: Path) -> None:
     """Make the preceding rename durable across a sudden reboot."""
     fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
@@ -604,6 +617,18 @@ def main():
         cdata = c_measure(E, pair, measured, corpus_roots["c"], "c", O, empty_pd)
         wjson(O / "per_input_c.json", cdata[3])
         wjson(O / "c_rows.json", {"c": cdata[4]})
+        identities = {
+            "schema": 1,
+            "functions": [
+                {"id": identity, "covered": covered}
+                for identity, covered in sorted(cdata[0].items())
+            ],
+            "regions": [
+                {"id": list(identity), "covered": covered}
+                for identity, covered in sorted(cdata[1].items())
+            ],
+        }
+        wgzip_json(O / "c_identities.json.gz", identities)
         marker(O, "C_MEASURE_DONE")
         same_corpus_path = ROOT / "results/rq4_c_reach" / f"{lib}_{tool}" / "result.json"
         archived_c = None
@@ -620,6 +645,7 @@ def main():
             "fuzzer_cap_respected": len(measured) <= a.max_fuzzers,
             "c_measurement_nonempty": len(cdata[0]) > 0,
             "c_input_count_exact": sum(c_inputs.values()) == sum(campaigns["c"]["corpus_sizes"].values()),
+            "c_identities_persisted": (O / "c_identities.json.gz").is_file(),
         }
         valid = all(checks.values())
         result = {

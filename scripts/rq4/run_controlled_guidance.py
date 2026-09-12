@@ -18,6 +18,11 @@ PILOTS = [
     ("lil", "c2saferrust", "rust,c"),
     ("tulip", "c2rust", "c,rust"),
 ]
+C_COMPANION_PILOTS = [
+    ("qsort", "sactor", "c"),
+    ("genann", "c2rust", "c"),
+    ("quadtree", "c2rust", "c"),
+]
 
 
 def sha256(path: Path) -> str:
@@ -52,6 +57,8 @@ def main() -> int:
     ap.add_argument("--archive", default=str(DEFAULT_ARCHIVE))
     ap.add_argument("--seconds", type=int, help="smoke-only override; omit for archived full budget")
     ap.add_argument("--cells", help="comma-separated lib/tool subset of the frozen pilot list")
+    ap.add_argument("--single-c-companion", action="store_true",
+                    help="run the frozen small-app C-only companion queue")
     args = ap.parse_args()
     archive = Path(args.archive)
     archive.mkdir(parents=True, exist_ok=True)
@@ -62,21 +69,25 @@ def main() -> int:
         print("another controlled-guidance controller is active", file=sys.stderr)
         return 4
 
-    selected = PILOTS
+    pool = C_COMPANION_PILOTS if args.single_c_companion else PILOTS
+    selected = pool
     if args.cells:
         wanted = set(args.cells.split(","))
-        selected = [x for x in PILOTS if f"{x[0]}/{x[1]}" in wanted]
+        selected = [x for x in pool if f"{x[0]}/{x[1]}" in wanted]
         unknown = wanted - {f"{x[0]}/{x[1]}" for x in selected}
         if unknown:
             print(f"not in frozen pilot manifest: {sorted(unknown)}", file=sys.stderr)
             return 2
     driver = ROOT / "scripts/rq4/c_guided_cell.py"
     controller = Path(__file__).resolve()
-    queue_path = archive / ("smoke_queue.json" if args.seconds is not None else "formal_queue.json")
+    queue_name = "c_companion_queue.json" if args.single_c_companion else ("smoke_queue.json" if args.seconds is not None else "formal_queue.json")
+    queue_path = archive / queue_name
     queue = {
         "schema": 1,
         "created": time.strftime("%Y-%m-%dT%H:%M:%S"),
-        "policy": "strictly serial; one cell owns the controller; arms sequential",
+        "policy": ("strictly serial cells; only C is fuzzed; CC is replayed on both sides"
+                   if args.single_c_companion else
+                   "strictly serial; one cell owns the controller; arms sequential"),
         "seconds_override": args.seconds,
         "files": {str(driver.relative_to(ROOT)): sha256(driver),
                   str(controller.relative_to(ROOT)): sha256(controller)},
@@ -99,7 +110,9 @@ def main() -> int:
         atomic_json(queue_path, queue)
         work = Path("/tmp") / f"cg_controlled_{lib}_{tool}"
         cmd = [sys.executable, str(driver), "--lib", lib, "--tool", tool,
-               "--work", str(work), "--out", str(attempt), "--arm-order", order]
+               "--work", str(work), "--out", str(attempt), "--arm-order", "c,rust"]
+        if args.single_c_companion:
+            cmd += ["--single-c-companion", "--max-fuzzers", "28"]
         if args.seconds is not None:
             cmd += ["--seconds", str(args.seconds)]
         with open(attempt / "cell.log", "a") as log:

@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-"""C-guided companion campaign for one archived RQ4 cell (docs/c_reach_plan.md, section 8).
+"""Controlled C/Rust-guided reach experiment for one archived RQ4 cell.
 
-The archived campaign was Rust-guided (C2R_MODE=rust-only): libFuzzer saw only the translation's edges, so
-its corpus CR grew only where the Rust side let it. This runs the SAME harnesses, seed, budget and libFuzzer
-parameters with C2R_MODE=c-only -- the C oracle is already sancov-instrumented in every build.rs, so the
-fuzzer is now guided by C's edges alone -- producing a C-guided corpus CC, then measures BOTH sides on CC and
-reports the 2x2 (corpus x side) plus the matched-function four sets on CR, CC and CR ∪ CC (function level;
-C regions unioned by identity; Rust regions on CC only).
+The archived campaign supplies parameters and initial seed files only. This
+driver rebuilds the archived-built boundary set once, grows fresh rust-only and
+c-only corpora sequentially on that frozen harness set, and replays both corpora
+on both implementations. See docs/c_guided_controlled_plan.md.
 
-Reach only: candidates found by the C-guided campaign are NOT adjudicated here (a divergence needs the full
-confirmation channel before it means anything). Side-specific percentages are never subtracted.
+Reboot safety (the 2026-09-12 reboot erased a day of /tmp): every stage writes its products to <out> on /home
+atomically and drops a marker (BUILD_DONE, CAMPAIGN_DONE, C_MEASURE_DONE, RUST_MEASURE_DONE); DONE.json is written
+LAST and is the only completion signal. A rerun restores each completed arm
+from its persisted corpus instead of fuzzing it again. The work directory in
+/tmp holds only rebuildable products.
 
-usage: c_guided_cell.py --lib L --tool T --work E --out O --cr <sweep out dir of the same cell>
-                        [--seconds 3600] [--only b1,b2] [--keep-work]
+Reach only: candidates found by the C-guided campaign are NOT adjudicated here.
+
+usage: c_guided_cell.py --lib L --tool T --work E --out O [--seconds N] [--only b1,b2] [--keep-work]
 """
-import argparse, gzip, hashlib, json, os, re, shutil, subprocess, sys, tarfile, time
+import argparse, fcntl, gzip, hashlib, json, os, re, shutil, subprocess, sys, tarfile, time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -24,15 +26,99 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import c2r_funnel as F
 
 ROOT = Path(__file__).resolve().parents[2]
+SHA1 = re.compile(r"^[0-9a-f]{40}$")
+ORACLE_LINES = re.compile(r"llvm_profile_runtime|C2R_PROFILE_RUNTIME_REF|C2R_NAN_EQ|c2r_feq|c2r_fslice|nan_equivalent|NaN")
 
 
 def log(*a):
     print(*a, flush=True)
 
 
+# ----------------------------------------------------------------------------- atomic persistence
+def wjson(path: Path, obj) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    with open(tmp, "w") as fh:
+        json.dump(obj, fh, indent=1)
+        fh.write("\n"); fh.flush(); os.fsync(fh.fileno())
+    os.replace(tmp, path)
+    fsync_dir(path.parent)
+
+
+def wtext(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    with open(tmp, "w") as fh:
+        fh.write(text); fh.flush(); os.fsync(fh.fileno())
+    os.replace(tmp, path)
+    fsync_dir(path.parent)
+
+
+def wtar(path: Path, src_dir: Path, arcname: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    with tarfile.open(tmp, "w:gz") as tf:
+        tf.add(src_dir, arcname=arcname)
+    with open(tmp, "rb") as fh:
+        os.fsync(fh.fileno())
+    os.replace(tmp, path)
+    fsync_dir(path.parent)
+
+
+def fsync_dir(path: Path) -> None:
+    """Make the preceding rename durable across a sudden reboot."""
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def file_sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def marker(O: Path, name: str, extra=None) -> None:
+    wjson(O / name, {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), **(extra or {})})
+
+
+# ----------------------------------------------------------------------------- archived parameters
+def archived_params(cell: Path) -> dict:
+    """The archived campaign's libFuzzer parameters: campaign_params.json when present, else the
+    `libFuzzer parameters:` line of RUN.md; cell.py's defaults otherwise (recorded as such)."""
+    p = cell / "campaign_params.json"
+    if p.exists():
+        d = json.load(open(p)); d["source"] = "campaign_params.json"; return d
+    d = {"max_total_time_s": 3600, "seed": 42, "timeout_s": 25, "rss_limit_mb": 2048, "max_len": CELL.MAX_LEN, "source": "cell.py defaults"}
+    run = cell / "RUN.md"
+    if run.exists():
+        t = run.read_text(errors="replace")
+        m = re.search(r"libFuzzer parameters:.*", t)
+        if m:
+            line = m.group(0); d["source"] = "RUN.md"
+            for k, key in (("max_total_time_s", "max_total_time_s"), ("seed", "seed"), ("timeout_s", "timeout_s"),
+                           ("rss_limit_mb", "rss_limit_mb"), ("max_len", "max_len")):
+                mm = re.search(rf"{k}=(\d+)", line)
+                if mm:
+                    d[key] = int(mm.group(1))
+    return d
+
+
+def initial_corpus(cr_root: Path, b: Path) -> list[str]:
+    """The archived campaign's INITIAL inputs for a boundary = the archived corpus files that are not
+    libFuzzer-generated (sha1 names): `seed_fixed` and the shipped samples (bzip2 `words_*`, ...)."""
+    d = cr_root / b
+    return sorted(f.name for f in d.iterdir() if f.is_file() and not SHA1.match(f.name)) if d.exists() else []
+
+
+# ----------------------------------------------------------------------------- build
 def build_keep(a, pair: Path, entry: str, private: bool, hd: Path, target: Path, base: Path):
-    """Generate (--c-coverage) + fixups + `cargo fuzz build` with the campaign's default sanitizer; keep the
-    harness TREE (the Rust coverage build needs it), the unstripped binary, the C objects, edited C copies."""
+    """Generate (--c-coverage) + fixups + `cargo fuzz build` (the campaign's default sanitizer); keep the harness
+    TREE (the Rust coverage build needs it), the stripped binary, the C objects and the edited C copies."""
     shutil.rmtree(hd, ignore_errors=True)
     cmd = [sys.executable, str(ROOT / "tools/stu_selector/gen_diff_harness.py"),
            "--pair", str(pair), "--entry", entry, "--rust-entry", F.rust_name(pair, entry),
@@ -62,6 +148,8 @@ def build_keep(a, pair: Path, entry: str, private: bool, hd: Path, target: Path,
     keep = base / "bins" / f"{entry}.bin"
     keep.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(bins[0], keep)
+    # the C coverage export reads the OBJECT files, never this binary; its debug info only costs tmpfs
+    subprocess.run(["strip", "--strip-debug", str(keep)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     outs = sorted((target / "x86_64-unknown-linux-gnu" / "release" / "build").glob("*/out/libc_oracle.a"),
                   key=lambda p: p.stat().st_mtime)
     od = base / "objs" / entry
@@ -80,28 +168,52 @@ def build_keep(a, pair: Path, entry: str, private: bool, hd: Path, target: Path,
     return keep, None
 
 
-def campaign_c_only(binaries: dict, corpus_root: Path, art_root: Path, seconds: int, snap_root: Path) -> dict:
-    """cell.campaign() with C2R_MODE=c-only: same seed, fork mode, parameters, snapshots. The in-loop UB
-    gate is inert in c-only, so C is explored wherever its own edges lead (C-side crashes are ignored and
-    restarted exactly as Rust-side ones were)."""
+def harness_drift(cell: Path, hd: Path, entry: str) -> dict:
+    """Regenerated fuzz target vs the archived one, ignoring the lines the --c-coverage flag and the 0.9 NaN
+    oracle add: identical means the decoder/materialization the archived corpus was fuzzed under is the one
+    both corpora are replayed under now."""
+    arch = next(iter((cell / "harnesses" / entry).glob("*_ft.rs")), None)
+    gen = next(iter((hd / "fuzz" / "fuzz_targets").glob("*.rs")), None)
+    if not arch or not gen:
+        return {"archived_source": arch is not None, "regenerated_source": gen is not None}
+    A = [l for l in arch.read_text(errors="replace").splitlines() if l.strip() and not l.strip().startswith("//") and not ORACLE_LINES.search(l)]
+    G = [l for l in gen.read_text(errors="replace").splitlines() if l.strip() and not l.strip().startswith("//") and not ORACLE_LINES.search(l)]
+    import difflib
+    diff = [l for l in difflib.unified_diff(A, G, lineterm="", n=0) if l.startswith(("+", "-")) and not l.startswith(("+++", "---"))]
+    return {"identical_modulo_oracle": not diff, "diff_lines": len(diff), "sample": diff[:6]}
+
+
+# ----------------------------------------------------------------------------- campaign
+def campaign_guided(binaries: dict, corpus_root: Path, art_root: Path, params: dict, snap_root: Path,
+                    seeds: dict, O: Path, mode: str, tag: str) -> dict:
+    """Run one fresh guidance arm on the frozen build.
+
+    ``mode`` is rust-only or c-only. Both arms receive byte-identical initial
+    corpora and archived campaign parameters. Snapshots are persisted under
+    the arm tag; they are evidence checkpoints, not resume points.
+    """
+    if mode not in {"rust-only", "c-only"}:
+        raise ValueError(f"unsupported guidance mode: {mode}")
     procs, logs = {}, {}
     sb = CELL.sandbox_dir(corpus_root.parent)
+    seconds = int(params["max_total_time_s"])
     for entry, b in binaries.items():
         c = corpus_root / entry
         c.mkdir(parents=True, exist_ok=True)
-        seed = c / "seed_fixed"
-        if not seed.exists():
-            seed.write_bytes(bytes(range(64)))
+        for name, data in seeds.get(entry, {}).items():
+            (c / name).write_bytes(data)
+        if not (c / "seed_fixed").exists():
+            (c / "seed_fixed").write_bytes(bytes(range(64)))
         art = art_root / entry
         art.mkdir(parents=True, exist_ok=True)
-        env = dict(os.environ, C2R_MODE="c-only", ASAN_OPTIONS="detect_leaks=0")
+        env = dict(os.environ, C2R_MODE=mode, ASAN_OPTIONS="detect_leaks=0")
         env.pop("C2R_OUTCOME_FILE", None); env.pop("LLVM_PROFILE_FILE", None)
         lg = open(art_root / f"{entry}.fuzz.log", "wb")
         logs[entry] = lg
         procs[entry] = subprocess.Popen(
             [str(b), str(c), "-fork=1", "-ignore_crashes=1", "-ignore_timeouts=1", "-ignore_ooms=1",
-             f"-max_total_time={seconds}", "-timeout=25", f"-max_len={CELL.MAX_LEN}", "-rss_limit_mb=2048",
-             "-seed=42", f"-artifact_prefix={art}/"],
+             f"-max_total_time={seconds}", f"-timeout={params['timeout_s']}", f"-max_len={params['max_len']}",
+             f"-rss_limit_mb={params['rss_limit_mb']}", f"-seed={params['seed']}", f"-artifact_prefix={art}/"],
             env=env, stdout=lg, stderr=subprocess.STDOUT, cwd=str(sb))
     checkpoints = [c for c in (60, 300, 600, 1800, 3600) if c < seconds] if seconds > 120 else []
     t0 = time.time()
@@ -113,6 +225,10 @@ def campaign_c_only(binaries: dict, corpus_root: Path, art_root: Path, seconds: 
             dst = snap_root / f"{e}@{cp}s"
             if not dst.exists():
                 subprocess.run(["cp", "-al", str(corpus_root / e), str(dst)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        try:
+            wtar(O / "snapshots" / f"{tag}_snapshot@{cp}s.tar.gz", corpus_root, "corpus")
+        except Exception as ex:
+            log(f"  snapshot persistence at {cp}s failed: {ex}")
     deadline = t0 + seconds + 240
     for entry, p in procs.items():
         try:
@@ -124,16 +240,41 @@ def campaign_c_only(binaries: dict, corpus_root: Path, art_root: Path, seconds: 
     return {e: len(list((corpus_root / e).iterdir())) for e in binaries}
 
 
-def universe_args(cell: Path, E: Path) -> list[str]:
-    """The archived cell's universe, as the census driver chose it: the tests build when one was measured
-    (a non-empty tests_coverage.json), else raw/denominator.json, else the tarballed bin-route denominator
-    relocated with --path-map."""
+def campaign_c_only(binaries: dict, corpus_root: Path, art_root: Path, params: dict, snap_root: Path,
+                    seeds: dict, O: Path) -> dict:
+    """Compatibility wrapper for older one-arm callers."""
+    return campaign_guided(binaries, corpus_root, art_root, params, snap_root, seeds, O, "c-only", "c")
+
+
+# ----------------------------------------------------------------------------- universe / rust
+def _lib_path_map(export: Path, pair: Path, tag: str) -> list[str]:
+    """c2r_coverage aligns every export's lines through the `src/lib.rs` the export names. The archived
+    universe exports name the tests/denom crate under the OLD scratchpad (/tmp, wiped by the 2026-09-12 reboot).
+    That crate compiled the pair's flattened translation unchanged, so a stand-in dir on /home holding a copy
+    of `translated/<pair>.rs` as src/lib.rs gives the same (identity) alignment; mapped with --path-map."""
+    try:
+        j = json.load(open(export))
+        p = next(f["filenames"][0] for f in j["data"][0]["functions"] if f["filenames"][0].endswith("src/lib.rs"))
+    except Exception:
+        return []
+    old = os.path.dirname(os.path.dirname(p))
+    if os.path.exists(p):
+        return []
+    rs = next(iter(sorted((pair / "translated").glob("*.rs"))))
+    stand = Path("/home/yunzez/c2rust_archive/universe_libs") / f"{tag}_{pair.name}" / "src"
+    stand.mkdir(parents=True, exist_ok=True)
+    if not (stand / "lib.rs").exists() or (stand / "lib.rs").read_bytes() != rs.read_bytes():
+        shutil.copy(rs, stand / "lib.rs")
+    return ["--path-map", f"{old}={stand.parent}"]
+
+
+def universe_args(cell: Path, E: Path, pair: Path | None = None) -> list[str]:
     tc = cell / "raw" / "tests_coverage.json"
     if tc.exists() and tc.stat().st_size > 0:
-        return ["--tests", str(tc)]
+        return ["--tests", str(tc)] + (_lib_path_map(tc, pair, "tests") if pair else [])
     dn = cell / "raw" / "denominator.json"
     if dn.exists():
-        return ["--denominator", str(dn)]
+        return ["--denominator", str(dn)] + (_lib_path_map(dn, pair, "denom") if pair else [])
     tars = sorted((cell / "raw").glob("denom_*.tar.gz"))
     if not tars:
         sys.exit(f"no universe for {cell}")
@@ -147,34 +288,115 @@ def universe_args(cell: Path, E: Path) -> list[str]:
     return ["--denominator", str(d), "--path-map", f"{old}={d.parent}"]
 
 
-def rust_measure(E: Path, cell: Path, pair: Path, lib: str, tool: str, boundaries, corpus_root: Path, out_dir: Path) -> dict:
-    """Rust reach of a corpus: cell.collect() per harness (the archived procedure: cargo fuzz coverage batch,
-    per-input fallback), then c2r_coverage.py against the archived universe. Returns funnel-style status."""
-    ours = out_dir / "ours"; ours.mkdir(parents=True, exist_ok=True)
-    status = {}
+def _per_input(cov: Path, corpus: Path, per: Path, env: dict, cwd: Path):
+    shutil.rmtree(per, ignore_errors=True); per.mkdir(parents=True)
+    ok = 0; files = sorted(p for p in corpus.iterdir() if p.is_file())
+    for f in files:
+        e2 = dict(env, LLVM_PROFILE_FILE=str(per / "%m-%p.profraw"))
+        try:
+            if subprocess.run([str(cov), "-runs=1", "-timeout=25", str(f)], env=e2, stdout=subprocess.DEVNULL,
+                              stderr=subprocess.DEVNULL, timeout=60, cwd=str(cwd)).returncode == 0:
+                ok += 1
+        except subprocess.TimeoutExpired:
+            pass
+    raws = list(per.glob("*.profraw"))
+    if not raws:
+        return None, f"per-input (0/{len(files)} completed, no profile)"
+    pd = per / "coverage.profdata"
+    subprocess.run([str(CELL.TC / "llvm-profdata"), "merge", "-sparse", *map(str, raws), "-o", str(pd)],
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=600)
+    return (pd if pd.exists() else None), f"per-input ({ok}/{len(files)} completed)"
+
+
+def rust_measure_two(E: Path, cell: Path, pair: Path, lib: str, tool: str, boundaries, corpora: dict, out_root: Path, O: Path):
+    """Rust reach of SEVERAL corpora on the SAME rebuilt harness: one `cargo fuzz coverage` build per harness
+    (its batch replay serves the first corpus), the other corpora replayed on that instrumented binary
+    (-runs=0 batch, per-input fallback); c2r_coverage.py per corpus against the archived universe. Exports are
+    persisted to <out>/rust_<tag>/ours as they are produced."""
+    status = {tag: {} for tag in corpora}
     for b in boundaries:
         hd = E / "base" / "harnesses" / b
-        corpus = corpus_root / b
-        if not corpus.exists() or not any(corpus.iterdir()):
-            status[b] = "empty-corpus"; continue
-        status[b] = CELL.collect(b, hd, corpus, ours / f"{b}.json", E / "target")
-        log(f"  rust coverage {b:30s} {status[b]}")
-        for junk in ("target", "fuzz/target", "fuzz/coverage", "percov"):
-            shutil.rmtree(hd / junk, ignore_errors=True)
-    for f in list(ours.glob("*.json")):
+        name = next(p.stem for p in (hd / "fuzz" / "fuzz_targets").glob("*.rs"))
+        env = dict(os.environ, RUSTUP_TOOLCHAIN=CELL.TOOLCHAIN, C2R_MODE="rust-only",
+                   CARGO_TARGET_DIR=str(E / "target"), ASAN_OPTIONS="detect_leaks=0")
+        covdir = hd / "target" / "x86_64-unknown-linux-gnu" / "coverage"
+        cov = covdir / "x86_64-unknown-linux-gnu" / "release" / name
+        built = False
         try:
-            json.load(open(f))
-        except Exception:
-            f.unlink()
-    cmd = [sys.executable, str(ROOT / "scripts/c2r_coverage.py"), "--linemap", str(pair / "translated" / f"{lib}_{tool}.rs.linemap.json"),
-           "--ours", str(ours), *universe_args(cell, E), "--out", str(out_dir / "analysis"), "--corpus-root", str(corpus_root)]
-    r = subprocess.run(cmd, capture_output=True, text=True, errors="replace")
-    (out_dir / "analysis.log").write_text(r.stdout + r.stderr)
+            for tag, root in corpora.items():
+                corpus = root / b
+                outj = out_root / f"rust_{tag}" / "ours" / f"{b}.json"; outj.parent.mkdir(parents=True, exist_ok=True)
+                if not corpus.exists() or not any(p.is_file() for p in corpus.iterdir()):
+                    status[tag][b] = "empty-corpus"; continue
+                pd = None
+                if not built:
+                    r = subprocess.run(["cargo", "fuzz", "coverage", name, str(corpus), "--", "-timeout=25"], cwd=str(hd), env=env,
+                                       capture_output=True, text=True, errors="replace", timeout=1800)
+                    built = cov.exists()
+                    pd0 = hd / "fuzz" / "coverage" / name / "coverage.profdata"
+                    if r.returncode == 0 and built and pd0.exists():
+                        pd, st = pd0, "batch"
+                    elif built:
+                        pd, st = _per_input(cov, corpus, hd / f"per_{tag}", env, CELL.sandbox_dir(hd))
+                    else:
+                        status[tag][b] = f"coverage build failed rc={r.returncode}"; continue
+                else:
+                    per = hd / f"batch_{tag}"; shutil.rmtree(per, ignore_errors=True); per.mkdir()
+                    e2 = dict(env, LLVM_PROFILE_FILE=str(per / "%m-%p.profraw"))
+                    try:
+                        rr = subprocess.run([str(cov), "-runs=0", "-timeout=25", str(corpus)], env=e2, cwd=str(CELL.sandbox_dir(hd)),
+                                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=900).returncode
+                    except subprocess.TimeoutExpired:
+                        rr = 124
+                    raws = list(per.glob("*.profraw"))
+                    if rr == 0 and raws:
+                        pd = per / "coverage.profdata"
+                        subprocess.run([str(CELL.TC / "llvm-profdata"), "merge", "-sparse", *map(str, raws), "-o", str(pd)],
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=600)
+                        st = "batch"
+                        if not pd.exists():
+                            pd = None
+                    if pd is None:
+                        pd, st = _per_input(cov, corpus, hd / f"per_{tag}", env, CELL.sandbox_dir(hd))
+                if pd is None:
+                    status[tag][b] = st; continue
+                with open(outj, "w") as fh:
+                    subprocess.run([str(CELL.TC / "llvm-cov"), "export", str(cov), f"-instr-profile={pd}"], stdout=fh,
+                                   stderr=subprocess.DEVNULL, timeout=1800)
+                status[tag][b] = st if outj.stat().st_size > 0 else "empty-export"
+                (O / f"rust_exports_{tag}").mkdir(parents=True, exist_ok=True)
+                tmpg = O / f"rust_exports_{tag}" / f"{b}.json.gz.tmp"
+                with gzip.open(tmpg, "wt") as gz:
+                    gz.write(outj.read_text())
+                os.replace(tmpg, O / f"rust_exports_{tag}" / f"{b}.json.gz")
+            log(f"  rust coverage {b:30s} " + " ".join(f"{tag}={status[tag].get(b)}" for tag in corpora))
+        finally:
+            # keep src/lib.rs (c2r_coverage aligns lines through the export's own lib.rs path); drop the rest
+            for child in list(hd.iterdir()):
+                if child.name != "src":
+                    shutil.rmtree(child, ignore_errors=True) if child.is_dir() else child.unlink(missing_ok=True)
+            for child in list((hd / "src").iterdir()) if (hd / "src").exists() else []:
+                if child.name != "lib.rs":
+                    shutil.rmtree(child, ignore_errors=True) if child.is_dir() else child.unlink(missing_ok=True)
+    for tag, root in corpora.items():
+        ours = out_root / f"rust_{tag}" / "ours"
+        for f in list(ours.glob("*.json")):
+            try:
+                json.load(open(f))
+            except Exception:
+                f.unlink()
+        cmd = [sys.executable, str(ROOT / "scripts/c2r_coverage.py"), "--linemap", str(pair / "translated" / f"{lib}_{tool}.rs.linemap.json"),
+               "--ours", str(ours), *universe_args(cell, E, pair), "--out", str(out_root / f"rust_{tag}" / "analysis"), "--corpus-root", str(root)]
+        r = subprocess.run(cmd, capture_output=True, text=True, errors="replace")
+        wtext(O / f"rust_{tag}_analysis.log", r.stdout + r.stderr)
+        an = out_root / f"rust_{tag}" / "analysis"
+        if an.exists():
+            shutil.copytree(an, O / f"rust_{tag}_analysis", dirs_exist_ok=True)
     return status
 
 
+# ----------------------------------------------------------------------------- C
 def c_measure(E: Path, pair: Path, boundaries, corpus_root: Path, tag: str, O: Path, empty_pd: Path):
-    """C reach of a corpus with the C-coverage binaries: c_reach's replay + export + extract per boundary."""
     funcs_u, regs_u, per_b, per_input_all, rows = {}, {}, {}, {}, {}
     (O / f"c_exports_{tag}").mkdir(parents=True, exist_ok=True)
     for b in boundaries:
@@ -191,29 +413,18 @@ def c_measure(E: Path, pair: Path, boundaries, corpus_root: Path, tag: str, O: P
         per_b[b] = {k for k, v in funcs.items() if v}
         for k, v in funcs.items(): funcs_u[k] = funcs_u.get(k, False) or v
         for k, v in regs.items(): regs_u[k] = regs_u.get(k, False) or v
-        with gzip.open(O / f"c_exports_{tag}" / f"{b}.json.gz", "wt") as gz:
+        tmp = O / f"c_exports_{tag}" / f"{b}.json.gz.tmp"
+        with gzip.open(tmp, "wt") as gz:
             gz.write((E / f"export_{tag}_{b}.json").read_text())
+        os.replace(tmp, O / f"c_exports_{tag}" / f"{b}.json.gz")
         (E / f"export_{tag}_{b}.json").unlink(); shutil.rmtree(E / f"prof_{tag}" / b, ignore_errors=True)
         per_input_all[b] = per_input
         oc = {}
         for r in per_input.values(): oc[r["outcome"]] = oc.get(r["outcome"], 0) + 1
-        rows[b] = {"status": st, "corpus": len(per_input), "outcomes": oc, "c_functions_reached": sum(funcs.values()), "c_regions_reached": sum(regs.values())}
+        rows[b] = {"status": st, "corpus": len(per_input), "outcomes": oc, "c_functions_reached": sum(funcs.values()),
+                   "c_functions_total": len(funcs), "c_regions_reached": sum(regs.values()), "c_regions_total": len(regs)}
         log(f"  C {tag} {b:30s} corpus {len(per_input):5d} {oc} | fn {sum(funcs.values())}/{len(funcs)} reg {sum(regs.values())}/{len(regs)}")
     return funcs_u, regs_u, per_b, per_input_all, rows
-
-
-def c_sets_from_exports(exp_dir: Path, csrc_dir: Path, source_root: Path, tmp: Path):
-    """C function/region reach recomputed from a sweep's archived per-boundary exports (the CR arm)."""
-    funcs_u, regs_u, per_b = {}, {}, {}
-    for gz in sorted(exp_dir.glob("*.json.gz")):
-        b = gz.name[:-8]
-        ex = tmp / f"cr_{b}.json"; ex.write_text(gzip.open(gz, "rt").read())
-        funcs, regs = CR.extract_c(ex, csrc_dir / b, source_root)
-        ex.unlink()
-        per_b[b] = {k for k, v in funcs.items() if v}
-        for k, v in funcs.items(): funcs_u[k] = funcs_u.get(k, False) or v
-        for k, v in regs.items(): regs_u[k] = regs_u.get(k, False) or v
-    return funcs_u, regs_u, per_b
 
 
 def side(fn_u, reg_u):
@@ -223,26 +434,78 @@ def side(fn_u, reg_u):
             "region_reach": sum(reg_u.values()) / len(reg_u) if reg_u else None}
 
 
+def rust_side(an: Path):
+    p = an / "result.json"
+    if not p.exists():
+        return None
+    r = json.load(open(p))
+    return {"functions_total": r["function"]["total_in_scope"], "functions_reached": r["function"]["covered_ours"],
+            "regions_total": r["region"]["total_in_scope"], "regions_reached": r["region"]["covered_ours"],
+            "region_reach": r["region"]["ours_coverage"]}
+
+
+# ----------------------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--lib", required=True); ap.add_argument("--tool", required=True)
     ap.add_argument("--work", required=True); ap.add_argument("--out", required=True)
-    ap.add_argument("--cr", required=True, help="the same-corpus sweep's output dir for this cell (CR arm)")
-    ap.add_argument("--seconds", type=int, default=3600); ap.add_argument("--only"); ap.add_argument("--keep-work", action="store_true")
+    ap.add_argument("--seconds", type=int, default=None, help="override the archived budget (default: the archived value)")
+    ap.add_argument("--only"); ap.add_argument("--keep-work", action="store_true")
+    ap.add_argument("--arm-order", default="rust,c", choices=("rust,c", "c,rust"),
+                    help="both arms always run; this controls their sequential order")
     a = ap.parse_args()
     lib, tool = a.lib, a.tool
     cell = ROOT / "results/rq3_coverage" / lib / tool
     pair = ROOT / "benchmark/pairs/rq4" / f"{lib}_{tool}"
-    E, O, CRD = Path(a.work), Path(a.out), Path(a.cr)
-    shutil.rmtree(E, ignore_errors=True); E.mkdir(parents=True); O.mkdir(parents=True, exist_ok=True)
+    E, O = Path(a.work), Path(a.out)
+    O.mkdir(parents=True, exist_ok=True)
+    lock_fh = open(O.parent / ".controlled-guidance.lock", "a+")
+    try:
+        fcntl.flock(lock_fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        log(f"another controlled run owns {O.parent}")
+        return 4
+    if (O / "DONE.json").exists():
+        done = json.load(open(O / "DONE.json"))
+        if done.get("valid"):
+            log(f"{lib} x {tool}: valid DONE.json present in {O}; nothing to do")
+            return 0
+        log(f"refusing to reuse invalid DONE.json in {O}")
+        return 3
+
+    shutil.rmtree(E, ignore_errors=True); E.mkdir(parents=True)
     t0 = time.time()
     CELL.GEN_HASH = CELL.generator_hash()
-    log(f"c_guided {lib} x {tool}: generator {CELL.GEN_HASH}, budget {a.seconds}s")
+    driver_files = [Path(__file__), ROOT / "scripts/rq4/c_reach.py", ROOT / "scripts/rq4/cell.py",
+                    ROOT / "tools/stu_selector/gen_diff_harness.py"]
+    provenance = {"git_head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+                  "generator": CELL.GEN_HASH,
+                  "files": {str(p.relative_to(ROOT)): file_sha256(p) for p in driver_files}}
+    params = archived_params(cell)
+    if a.seconds is not None:
+        params["max_total_time_s"] = a.seconds; params["budget_override"] = True
+    log(f"controlled guidance {lib} x {tool}: {provenance}; params {params}")
+
     funnel = json.load(open(cell / "funnel.json"))
-    built = [r["boundary"] for r in funnel if r.get("built")]
+    expected = [r["boundary"] for r in funnel if r.get("built")]
     if a.only:
-        built = [b for b in built if b in set(a.only.split(","))]
-    csrc_name = CR.c_source_of(cell, built)
+        requested = set(a.only.split(","))
+        expected = [b for b in expected if b in requested]
+    if not expected:
+        wjson(O / "FAILED.json", {"reason": "no archived-built boundaries selected", "provenance": provenance})
+        return 3
+
+    # The archived automatic corpus supplies only the initial seed files. It is
+    # never used as either experimental arm.
+    with tarfile.open(cell / "corpus.tar.gz") as tf:
+        tf.extractall(E / "archived")
+    archived_root = E / "archived" / "corpus"
+    seeds = {b: {n: (archived_root / b / n).read_bytes() for n in initial_corpus(archived_root, b)}
+             for b in expected}
+    seed_manifest = {b: {n: hashlib.sha256(v).hexdigest() for n, v in sorted(xs.items())}
+                     for b, xs in seeds.items()}
+
+    csrc_name = CR.c_source_of(cell, expected)
     defs_path = pair / "translated" / f"{lib}_{tool}.rs.defs.json"
     defs = json.loads(defs_path.read_text()) if defs_path.exists() else {}
     private = set(defs.get("private", []))
@@ -253,129 +516,224 @@ def main():
                             shim=str(ROOT / "benchmark/pairs/rq4/darwin_shims.c"), pair=str(pair))
     empty_txt = E / "empty.proftext"; empty_txt.write_text("")
     empty_pd = E / "empty.profdata"
-    subprocess.run([str(CELL.TC / "llvm-profdata"), "merge", "-o", str(empty_pd), str(empty_txt)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run([str(CELL.TC / "llvm-profdata"), "merge", "-o", str(empty_pd), str(empty_txt)],
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
-    # 1. build (harness trees kept)
-    bins, build_rows = {}, []
-    for b in built:
+    # Build exactly the archived-built boundary set once. Any loss invalidates
+    # the whole cell instead of silently improving the denominator.
+    bins, build_rows, drift = {}, [], {}
+    for b in expected:
         is_priv = b in private or (bool(rs_text) and not defs and re.search(
             rf'(?m)^\s*pub\s+(?:unsafe\s+)?(?:extern\s+"C"\s+)?fn\s+{re.escape(b)}\b', rs_text) is None)
-        binp, err = build_keep(ba, pair, b, is_priv, E / "base" / "harnesses" / b, E / "target", E / "base")
-        build_rows.append({"boundary": b, "built": binp is not None, "error": err, "c_static": is_priv})
-        log(f"  build {b:30s} {'OK' if binp else 'FAIL ' + (err or '')[:80]}")
+        binp, err = build_keep(ba, pair, b, is_priv, E / "base/harnesses" / b, E / "target", E / "base")
+        build_rows.append({"boundary": b, "built": binp is not None, "error": err,
+                           "c_static": is_priv, "initial_corpus": sorted(seeds.get(b, {}))})
         if binp:
             bins[b] = binp
-    (E / "base" / "funnel.json").write_text(json.dumps(build_rows, indent=1) + "\n")
+            drift[b] = harness_drift(cell, E / "base/harnesses" / b, b)
+        log(f"  build {b:30s} {'OK' if binp else 'FAIL ' + (err or '')[:80]}")
+    build_record = {"provenance": provenance, "expected": expected, "rows": build_rows,
+                    "harness_drift": drift, "seed_manifest": seed_manifest}
+    wjson(O / "build.json", build_record)
+    if set(bins) != set(expected):
+        wjson(O / "FAILED.json", {"reason": "rebuilt boundary set differs from archived-built set",
+                                   "missing": sorted(set(expected) - set(bins)), "provenance": provenance})
+        log("build-set mismatch; cell invalid")
+        return 3
+    marker(O, "BUILD_DONE", {"built": len(bins), "expected": len(expected)})
     measured = sorted(bins)
 
-    # 2. the C-guided campaign
-    log(f"##### c-only campaign, {len(bins)} harnesses, {a.seconds}s — {time.strftime('%H:%M:%S')}")
-    sizes = campaign_c_only(bins, E / "campaign" / "corpus", E / "campaign" / "candidates", a.seconds, E / "campaign" / "snapshots")
-    fuzz = {b: CELL.fuzz_status(E / "campaign" / "candidates" / f"{b}.fuzz.log") for b in bins}
-    snaps = {}
-    for d in sorted((E / "campaign" / "snapshots").glob("*@*s")):
-        e, cp = d.name.rsplit("@", 1); snaps.setdefault(cp[:-1], {})[e] = len(list(d.iterdir()))
-    log(f"campaign done: corpus sizes {sum(sizes.values())} inputs over {len(sizes)} boundaries")
+    arm_defs = {"rust": "rust-only", "c": "c-only"}
+    order = a.arm_order.split(",")
+    campaigns, corpus_roots = {}, {}
+    for tag in order:
+        mode = arm_defs[tag]
+        root = E / f"arm_{tag}/corpus"
+        corpus_roots[tag] = root
+        tar_path, json_path = O / f"{tag}_corpus.tar.gz", O / f"{tag}_campaign.json"
+        done_path = O / f"{tag.upper()}_CAMPAIGN_DONE"
+        if done_path.exists() and tar_path.exists() and json_path.exists():
+            camp = json.load(open(json_path))
+            if camp.get("provenance") != provenance or camp.get("boundaries") != measured:
+                wjson(O / "FAILED.json", {"reason": f"{tag} checkpoint provenance mismatch"})
+                return 3
+            with tarfile.open(tar_path) as tf:
+                tf.extractall(E / f"arm_{tag}")
+            log(f"restored {tag} arm from {tar_path}")
+        else:
+            log(f"##### {mode}, {len(bins)} harnesses, {params['max_total_time_s']}s — {time.strftime('%H:%M:%S')}")
+            sizes = campaign_guided(bins, root, E / f"arm_{tag}/candidates", params,
+                                    E / f"arm_{tag}/snapshots", seeds, O, mode, tag)
+            fuzz = {b: CELL.fuzz_status(E / f"arm_{tag}/candidates/{b}.fuzz.log") for b in measured}
+            snaps = {}
+            for d in sorted((E / f"arm_{tag}/snapshots").glob("*@*s")):
+                entry, cp = d.name.rsplit("@", 1)
+                snaps.setdefault(cp[:-1], {})[entry] = len(list(d.iterdir()))
+            camp = {"mode": mode, "fork": 1, "boundaries": measured, "provenance": provenance,
+                    **{k: params[k] for k in ("max_total_time_s", "seed", "timeout_s", "rss_limit_mb", "max_len")},
+                    "params_source": params.get("source"), "budget_override": params.get("budget_override", False),
+                    "initial_corpus": {b: sorted(seeds.get(b, {})) for b in measured},
+                    "seed_manifest": seed_manifest, "corpus_sizes": sizes, "fuzz_status": fuzz, "snapshots": snaps}
+            wtar(tar_path, root, "corpus")
+            wjson(json_path, camp)
+            marker(O, done_path.name, {"inputs": sum(sizes.values()), "mode": mode})
+        campaigns[tag] = camp
+        if tag not in corpus_roots:
+            corpus_roots[tag] = E / f"arm_{tag}/corpus"
 
-    # 3. C side on CC; CR recomputed from the sweep's exports
-    cc_fn, cc_reg, cc_per_b, cc_per_input, cc_rows = c_measure(E, pair, measured, E / "campaign" / "corpus", "cc", O, empty_pd)
-    cr_fn, cr_reg, cr_per_b = c_sets_from_exports(CRD / "c_exports", CRD / "csrc", pair / "source", E)
-    un_fn = {k: cr_fn.get(k, False) or cc_fn.get(k, False) for k in set(cr_fn) | set(cc_fn)}
-    un_reg = {k: cr_reg.get(k, False) or cc_reg.get(k, False) for k in set(cr_reg) | set(cc_reg)}
+    # Measure both fresh corpora on both sides of the same build.
+    cdata = {}
+    for tag in ("rust", "c"):
+        cdata[tag] = c_measure(E, pair, measured, corpus_roots[tag], tag, O, empty_pd)
+        wjson(O / f"per_input_{tag}.json", cdata[tag][3])
+    wjson(O / "c_rows.json", {tag: cdata[tag][4] for tag in ("rust", "c")})
+    marker(O, "C_MEASURE_DONE")
+    rstatus = rust_measure_two(E, cell, pair, lib, tool, measured,
+                               {tag: corpus_roots[tag] for tag in ("rust", "c")}, E / "rust", O)
+    marker(O, "RUST_MEASURE_DONE")
 
-    # 4. Rust side on CC (archived procedure), CR = the archived cell
-    log(f"##### rust coverage on CC — {time.strftime('%H:%M:%S')}")
-    rstatus = rust_measure(E, cell, pair, lib, tool, measured, E / "campaign" / "corpus", E / "rust_cc")
-    r_cc_uni, r_cc_cov = CR.rust_sets(E / "rust_cc" / "analysis")
-    r_cr_uni, r_cr_cov = CR.rust_sets(cell / "analysis")
-    r_cc = json.load(open(E / "rust_cc" / "analysis" / "result.json")) if (E / "rust_cc" / "analysis" / "result.json").exists() else None
-    r_cr = json.load(open(cell / "analysis" / "result.json"))
-    r_un_cov = r_cr_cov | r_cc_cov; r_un_uni = r_cr_uni | r_cc_uni
-
-    # 5. four sets per arm
+    rust_sets = {tag: CR.rust_sets(E / f"rust/rust_{tag}/analysis") for tag in ("rust", "c")}
+    union_fn = {k: cdata["rust"][0].get(k, False) or cdata["c"][0].get(k, False)
+                for k in set(cdata["rust"][0]) | set(cdata["c"][0])}
+    union_reg = {k: cdata["rust"][1].get(k, False) or cdata["c"][1].get(k, False)
+                 for k in set(cdata["rust"][1]) | set(cdata["c"][1])}
+    r_union_uni = rust_sets["rust"][0] | rust_sets["c"][0]
+    r_union_cov = rust_sets["rust"][1] | rust_sets["c"][1]
     cmap = CR.load_map(lib, tool)
-    rust_pb = CR.rust_per_boundary(cell)
-    c_out = {}
-    for b, pi in cc_per_input.items():
-        for v in pi.values(): c_out.setdefault(b, {})[v["outcome"]] = c_out.setdefault(b, {}).get(v["outcome"], 0) + 1
-    arch_status = {x["boundary"]: x.get("coverage") for x in funnel}
-    sets = {"cr": CR.four_sets(cr_fn, r_cr_uni, r_cr_cov, cmap, cr_per_b, arch_status),
-            "cc": CR.four_sets(cc_fn, r_cc_uni, r_cc_cov, cmap, cc_per_b, rstatus, None, c_out),
-            "union": CR.four_sets(un_fn, r_un_uni, r_un_cov, cmap,
-                                  {b: cr_per_b.get(b, set()) | cc_per_b.get(b, set()) for b in set(cr_per_b) | set(cc_per_b)},
-                                  # a boundary's Rust side is "measured" on the union if either arm's replay produced a profile
-                                  {b: (rstatus.get(b) if str(rstatus.get(b, "")).startswith(("batch", "per-input")) else arch_status.get(b))
-                                   for b in set(cr_per_b) | set(cc_per_b)})}
-    for k, v in sets.items():
-        (O / f"matched_sets_{k}.json").write_text(json.dumps(v, indent=1) + "\n")
-    tot_oc = {}
-    for pi in cc_per_input.values():
-        for r in pi.values(): tot_oc[r["outcome"]] = tot_oc.get(r["outcome"], 0) + 1
-    res = {"cell": f"{lib}_{tool}", "generator": CELL.GEN_HASH, "budget_s": a.seconds, "boundaries": measured,
-           "build": build_rows, "campaign": {"mode": "c-only", "fork": 1, "seed": 42, "timeout_s": 25, "max_len": CELL.MAX_LEN,
-                                            "corpus_sizes": sizes, "fuzz_status": fuzz, "snapshots": snaps},
-           "matrix": {
-               "CR": {"C": side(cr_fn, cr_reg), "Rust": {"functions_total": r_cr["function"]["total_in_scope"], "functions_reached": r_cr["function"]["covered_ours"],
-                                                        "regions_total": r_cr["region"]["total_in_scope"], "regions_reached": r_cr["region"]["covered_ours"],
-                                                        "region_reach": r_cr["region"]["ours_coverage"]}},
-               "CC": {"C": side(cc_fn, cc_reg), "Rust": ({"functions_total": r_cc["function"]["total_in_scope"], "functions_reached": r_cc["function"]["covered_ours"],
-                                                         "regions_total": r_cc["region"]["total_in_scope"], "regions_reached": r_cc["region"]["covered_ours"],
-                                                         "region_reach": r_cc["region"]["ours_coverage"]} if r_cc else None),
-                      "C_inputs": tot_oc, "rust_coverage_status": rstatus},
-               "CR_union_CC": {"C": side(un_fn, un_reg), "Rust_functions_reached": len(r_un_cov), "Rust_functions_in_scope": len(r_un_uni),
-                               "note": "function level BY NAME (two identities sharing a name count once, so this can be below the "
-                                       "identity-level count of a single arm); union of per-input reach is exact; Rust regions not unioned"}},
-           "matched": {k: ({"accepted_pairs": v["accepted_pairs"], "counts": v["counts"], "ambiguous": len(v["ambiguous"]),
-                            "c_unmatched": len(v["c_unmatched"]), "rust_unmatched": len(v["rust_unmatched"])} if v else None) for k, v in sets.items()},
-           "seconds": round(time.time() - t0)}
-    (O / "result.json").write_text(json.dumps(res, indent=1) + "\n")
-    (O / "per_input_cc.json").write_text(json.dumps(cc_per_input) + "\n")
-    (O / "c_rows_cc.json").write_text(json.dumps(cc_rows, indent=1) + "\n")
-    write_run_md(O, res, sets)
+
+    def outcomes(per_input):
+        out = {}
+        for b, rows in per_input.items():
+            for row in rows.values():
+                d = out.setdefault(b, {}); d[row["outcome"]] = d.get(row["outcome"], 0) + 1
+        return out
+
+    sets = {}
+    for tag in ("rust", "c"):
+        sets[tag] = CR.four_sets(cdata[tag][0], *rust_sets[tag], cmap, cdata[tag][2], rstatus[tag],
+                                 None, outcomes(cdata[tag][3]))
+    sets["union"] = CR.four_sets(
+        union_fn, r_union_uni, r_union_cov, cmap,
+        {b: cdata["rust"][2].get(b, set()) | cdata["c"][2].get(b, set()) for b in measured},
+        {b: rstatus["c"].get(b) if str(rstatus["c"].get(b, "")).startswith(("batch", "per-input"))
+         else rstatus["rust"].get(b) for b in measured})
+    for tag, value in sets.items():
+        wjson(O / f"matched_sets_{tag}.json", value)
+
+    def totals(per_input):
+        out = {}
+        for rows in per_input.values():
+            for row in rows.values(): out[row["outcome"]] = out.get(row["outcome"], 0) + 1
+        return out
+
+    matrix = {}
+    for tag in ("rust", "c"):
+        matrix[tag] = {"C": side(cdata[tag][0], cdata[tag][1]),
+                       "Rust": rust_side(E / f"rust/rust_{tag}/analysis"),
+                       "C_inputs": totals(cdata[tag][3]), "rust_coverage_status": rstatus[tag]}
+    matrix["union"] = {"C": side(union_fn, union_reg), "Rust_functions_reached": len(r_union_cov),
+                       "Rust_functions_in_scope": len(r_union_uni),
+                       "note": "function-level union; side-specific regions are not structurally unioned"}
+    archived = json.load(open(cell / "analysis/result.json"))
+    matrix["archived_reference"] = {
+        "functions_total": archived["function"]["total_in_scope"],
+        "functions_reached": archived["function"]["covered_ours"],
+        "regions_total": archived["region"]["total_in_scope"],
+        "regions_reached": archived["region"]["covered_ours"],
+        "region_reach": archived["region"]["ours_coverage"],
+        "note": "old-harness Rust-guided result; reference only, never an experimental arm"}
+
+    checks = {"build_set_exact": set(measured) == set(expected), "arm_boundaries_equal": True,
+              "campaign_params_equal": all({k: campaigns["rust"][k] for k in ("seed", "timeout_s", "rss_limit_mb", "max_len", "max_total_time_s")} ==
+                                           {k: campaigns["c"][k] for k in ("seed", "timeout_s", "rss_limit_mb", "max_len", "max_total_time_s")} for _ in [0]),
+              "initial_seeds_equal": campaigns["rust"]["seed_manifest"] == campaigns["c"]["seed_manifest"],
+              "c_measurements_nonempty": all(matrix[tag]["C"]["functions_total"] > 0 for tag in ("rust", "c")),
+              "rust_measurements_nonempty": all(matrix[tag]["Rust"] is not None for tag in ("rust", "c")),
+              "c_input_counts_exact": all(sum(matrix[tag]["C_inputs"].values()) == sum(campaigns[tag]["corpus_sizes"].values())
+                                          for tag in ("rust", "c"))}
+    valid = all(checks.values())
+    control = None
+    if tool == "c2rust" and cmap is not None:
+        control = {tag: sets[tag]["counts"] for tag in ("rust", "c", "union")}
+
+    result = {"schema": 2, "cell": f"{lib}_{tool}", "provenance": provenance, "boundaries": measured,
+              "arm_order": order, "seed_source": "archived automatic campaign's non-SHA1 initial files",
+              "tulip_seed_note": "automatic seed_fixed baseline; not the later grid-refined campaign" if lib == "tulip" else None,
+              "harness_drift_reference_only": {"identical_modulo_oracle": sum(bool(x.get("identical_modulo_oracle")) for x in drift.values()),
+                                               "differing": sorted(b for b, x in drift.items() if not x.get("identical_modulo_oracle"))},
+              "campaigns": campaigns, "matrix": matrix, "checks": checks, "c2rust_control": control,
+              "matched": {k: ({"accepted_pairs": v["accepted_pairs"], "counts": v["counts"],
+                                "ambiguous": len(v["ambiguous"]), "c_unmatched": len(v["c_unmatched"]),
+                                "rust_unmatched": len(v["rust_unmatched"])} if v else None) for k, v in sets.items()},
+              "seconds": round(time.time() - t0)}
+    wjson(O / "result.json", result)
+    wtext(O / "RUN.md", run_md(result, sets))
+    wjson(O / "DONE.json", {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "valid": valid,
+                             "checks": checks, "provenance": provenance})
     if not a.keep_work:
         shutil.rmtree(E, ignore_errors=True)
-    m = res["matrix"]
-    log(f"C_GUIDED_DONE {lib} x {tool}: C(CR) {m['CR']['C']['functions_reached']}/{m['CR']['C']['functions_total']} R(CR) {m['CR']['Rust']['functions_reached']}/{m['CR']['Rust']['functions_total']} | "
-        f"C(CC) {m['CC']['C']['functions_reached']}/{m['CC']['C']['functions_total']} R(CC) {m['CC']['Rust'] and m['CC']['Rust']['functions_reached']} | "
-        f"sets cr {sets['cr'] and sets['cr']['counts']} cc {sets['cc'] and sets['cc']['counts']} union {sets['union'] and sets['union']['counts']}")
+    log(f"CONTROLLED_GUIDANCE_DONE {lib} x {tool}: valid={valid}; "
+        f"rust={matrix['rust']['Rust'] and matrix['rust']['Rust']['functions_reached']} "
+        f"c={matrix['c']['Rust'] and matrix['c']['Rust']['functions_reached']}")
+    return 0 if valid else 3
 
 
-def write_run_md(O: Path, res, sets):
+def run_md(res, sets) -> str:
     m = res["matrix"]
-    def fr(s):
-        return f"{s['functions_reached']} / {s['functions_total']}" if s else "–"
-    def rr(s):
-        return (f"{s['regions_reached']} / {s['regions_total']} ({s['region_reach']:.3f})" if s and s.get("region_reach") is not None else "–")
-    L = [f"# C-guided companion campaign — {res['cell']}", "",
-         f"Same harnesses (generator `{res['generator']}`, `--c-coverage`), same seed and libFuzzer parameters as the archived",
-         f"campaign, `C2R_MODE=c-only`, budget {res['budget_s']} s, {len(res['boundaries'])} boundaries. CR = the archived Rust-guided corpus,",
-         "CC = this C-guided corpus. Reach only; no candidate from CC is adjudicated here.", "",
-         "## 2 x 2 (corpus x side); percentages are side-specific and never subtracted", "",
-         "| corpus | C functions | C regions | Rust functions | Rust regions |", "|---|---|---|---|---|",
-         f"| Rust-guided CR | {fr(m['CR']['C'])} | {rr(m['CR']['C'])} | {fr(m['CR']['Rust'])} | {rr(m['CR']['Rust'])} |",
-         f"| C-guided CC | {fr(m['CC']['C'])} | {rr(m['CC']['C'])} | {fr(m['CC']['Rust'])} | {rr(m['CC']['Rust'])} |",
-         f"| CR ∪ CC | {fr(m['CR_union_CC']['C'])} | {rr(m['CR_union_CC']['C'])} | {m['CR_union_CC']['Rust_functions_reached']} / {m['CR_union_CC']['Rust_functions_in_scope']} | – |", "",
-         f"C-side inputs on CC: {m['CC']['C_inputs']}; corpus sizes {sum(res['campaign']['corpus_sizes'].values())} inputs.", "",
-         "## Matched-function sets (accepted pairs ∩ C scope ∩ Rust scope)", "",
-         "| corpus | pairs | both | C only (Rust terminated) | Rust only (C terminated) | neither | ambiguous |", "|---|---|---|---|---|---|---|"]
-    for k, name in (("cr", "CR"), ("cc", "CC"), ("union", "CR ∪ CC")):
-        s = sets[k]
-        if s:
-            cn = s["counts"]
-            L.append(f"| {name} | {s['accepted_pairs']} | {cn['both']} | {cn['c_only']} ({cn.get('c_only_rust_terminated', 0)}) | {cn['rust_only']} ({cn.get('rust_only_c_terminated', 0)}) | {cn['neither']} | {len(s['ambiguous'])} |")
-        else:
-            L.append(f"| {name} | no map | – | – | – | – | – |")
-    for k, name in (("cc", "CC"), ("union", "CR ∪ CC")):
-        s = sets[k]
-        if s and s["sets"]["c_only"]:
-            L += ["", f"`c_only` on {name}: " + ", ".join(c for c, _ in s["sets"]["c_only"][:60]) + (" …" if len(s["sets"]["c_only"]) > 60 else "")]
-    L += ["", "## Campaign", "", "| boundary | corpus | jobs | cov | crash | timeout |", "|---|---|---|---|---|---|"]
-    for b in res["boundaries"]:
-        f = res["campaign"]["fuzz_status"].get(b, {})
-        L.append(f"| {b} | {res['campaign']['corpus_sizes'].get(b, '')} | {f.get('jobs', '')} | {f.get('cov', '')} | {f.get('crash', '')} | {f.get('timeout', '')} |")
-    L += ["", "## Procedure, deviations, and what is not established", "", "<!-- prose -->", ""]
-    (O / "RUN.md").write_text("\n".join(L))
+
+    def fr(side):
+        return f"{side['functions_reached']} / {side['functions_total']}" if side else "–"
+
+    def rr(side):
+        if not side or side.get("region_reach") is None:
+            return "–"
+        return f"{side['regions_reached']} / {side['regions_total']} ({side['region_reach']:.3f})"
+
+    lines = [
+        f"# Controlled C/Rust-guided reach — {res['cell']}", "",
+        "Both corpora were generated afresh on the same rebuilt harness set. The archived campaign is reference-only.",
+        f"Arm order: `{' → '.join(res['arm_order'])}`. Initial seeds: {res['seed_source']}.",
+        f"Checks: `{res['checks']}`.", "",
+        "## Corpus × execution side", "",
+        "| guidance | C functions | C regions | Rust functions | Rust regions |",
+        "|---|---:|---:|---:|---:|",
+        f"| Rust-guided | {fr(m['rust']['C'])} | {rr(m['rust']['C'])} | {fr(m['rust']['Rust'])} | {rr(m['rust']['Rust'])} |",
+        f"| C-guided | {fr(m['c']['C'])} | {rr(m['c']['C'])} | {fr(m['c']['Rust'])} | {rr(m['c']['Rust'])} |",
+        f"| union | {fr(m['union']['C'])} | {rr(m['union']['C'])} | {m['union']['Rust_functions_reached']} / {m['union']['Rust_functions_in_scope']} | – |",
+        "", "The C and Rust region denominators are side-specific and are never subtracted.",
+        "The C-guided arm is a reach diagnostic; its candidates are not promoted without the normal confirmation pipeline.",
+        "", "## Matched-function sets", "",
+        "| guidance | pairs | both | C only | Rust only | neither | ambiguous |",
+        "|---|---:|---:|---:|---:|---:|---:|"
+    ]
+    for tag, label in (("rust", "Rust-guided"), ("c", "C-guided"), ("union", "union")):
+        value = sets[tag]
+        if value is None:
+            lines.append(f"| {label} | no map | – | – | – | – | – |")
+            continue
+        counts = value["counts"]
+        lines.append(f"| {label} | {value['accepted_pairs']} | {counts['both']} | {counts['c_only']} | "
+                     f"{counts['rust_only']} | {counts['neither']} | {len(value['ambiguous'])} |")
+    lines += ["", "## Campaigns", ""]
+    for tag, label in (("rust", "Rust-guided"), ("c", "C-guided")):
+        camp = res["campaigns"][tag]
+        lines += [f"### {label}", "",
+                  f"Mode `{camp['mode']}`, {camp['max_total_time_s']} s wall per cell, max_len {camp['max_len']}, "
+                  f"seed {camp['seed']}, timeout {camp['timeout_s']} s, RSS limit {camp['rss_limit_mb']} MB.", "",
+                  "| boundary | initial files | final corpus | jobs | cov | crash | timeout |",
+                  "|---|---|---:|---:|---:|---:|---:|"]
+        for boundary in res["boundaries"]:
+            stat = camp["fuzz_status"].get(boundary, {})
+            lines.append(f"| {boundary} | {', '.join(camp['initial_corpus'].get(boundary, []))} | "
+                         f"{camp['corpus_sizes'].get(boundary, '')} | {stat.get('jobs', '')} | "
+                         f"{stat.get('cov', '')} | {stat.get('crash', '')} | {stat.get('timeout', '')} |")
+        lines.append("")
+    lines += ["## Interpretation boundary", "",
+              "This experiment compares guidance under a fixed application-level wall-clock campaign. "
+              "It does not establish a theoretical reach maximum or that C-side executions are defined. "
+              "Any exclusive reach caused by termination requires the existing UB-aware confirmation channels.", ""]
+    return "\n".join(lines)
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

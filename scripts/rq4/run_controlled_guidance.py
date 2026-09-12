@@ -85,7 +85,7 @@ def main() -> int:
     queue = {
         "schema": 1,
         "created": time.strftime("%Y-%m-%dT%H:%M:%S"),
-        "policy": ("strictly serial cells; only C is fuzzed; CC is replayed on both sides"
+        "policy": ("strictly serial cells; only C is fuzzed; only C coverage is measured"
                    if args.single_c_companion else
                    "strictly serial; one cell owns the controller; arms sequential"),
         "seconds_override": args.seconds,

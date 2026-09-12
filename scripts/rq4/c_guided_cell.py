@@ -7,16 +7,16 @@ c-only corpora sequentially on that frozen harness set, and replays both corpora
 on both implementations. See docs/c_guided_controlled_plan.md.
 
 Reboot safety (the 2026-09-12 reboot erased a day of /tmp): every stage writes its products to <out> on /home
-atomically and drops a marker (BUILD_DONE, CAMPAIGN_DONE, C_MEASURE_DONE, RUST_MEASURE_DONE); DONE.json is written
-LAST and is the only completion signal. A rerun restores each completed arm
+atomically and drops a marker; DONE.json is written LAST and is the only
+completion signal. A rerun restores each completed arm
 from its persisted corpus instead of fuzzing it again. The work directory in
 /tmp holds only rebuildable products.
 
 Reach only: candidates found by the C-guided campaign are NOT adjudicated here.
 
-The ``--single-c-companion`` mode grows only a fresh C-guided corpus.  It uses
-the archived Rust-guided result as the baseline and replays the new corpus on
-both C and Rust; it never launches a fresh Rust-guided fuzzing arm.
+The ``--single-c-companion`` mode grows only a fresh C-guided corpus and
+measures that corpus only on C.  It neither launches a Rust-guided arm nor
+recalculates Rust coverage.
 
 usage: c_guided_cell.py --lib L --tool T --work E --out O [--seconds N]
                         [--only b1,b2] [--single-c-companion] [--keep-work]
@@ -457,7 +457,7 @@ def main():
     ap.add_argument("--seconds", type=int, default=None, help="override the archived budget (default: the archived value)")
     ap.add_argument("--only"); ap.add_argument("--keep-work", action="store_true")
     ap.add_argument("--single-c-companion", action="store_true",
-                    help="fuzz only C; replay the resulting corpus on C and Rust")
+                    help="fuzz C and measure C coverage only")
     ap.add_argument("--max-fuzzers", type=int, default=28,
                     help="hard upper bound on concurrently launched boundary fuzzers")
     ap.add_argument("--arm-order", default="rust,c", choices=("rust,c", "c,rust"),
@@ -598,38 +598,13 @@ def main():
             corpus_roots[tag] = E / f"arm_{tag}/corpus"
 
     if a.single_c_companion:
-        # The archived campaign is the Rust-guided baseline.  The only new
-        # fuzzing above was c-only; below, the same saved CC bytes are replayed
-        # on both implementations for side-specific reach.
+        # The only new fuzzing above was c-only.  Measure that saved corpus on
+        # C and stop: the archived Rust result is deliberately not rebuilt or
+        # replayed in this protocol.
         cdata = c_measure(E, pair, measured, corpus_roots["c"], "c", O, empty_pd)
         wjson(O / "per_input_c.json", cdata[3])
         wjson(O / "c_rows.json", {"c": cdata[4]})
         marker(O, "C_MEASURE_DONE")
-        rstatus_all = rust_measure_two(E, cell, pair, lib, tool, measured,
-                                       {"c": corpus_roots["c"]}, E / "rust", O)
-        rstatus = rstatus_all["c"]
-        marker(O, "RUST_MEASURE_DONE")
-
-        r_uni, r_cov = CR.rust_sets(E / "rust/rust_c/analysis")
-        cmap = CR.load_map(lib, tool)
-        out_by_boundary = {}
-        for boundary, rows in cdata[3].items():
-            for row in rows.values():
-                d = out_by_boundary.setdefault(boundary, {})
-                d[row["outcome"]] = d.get(row["outcome"], 0) + 1
-        matched = CR.four_sets(cdata[0], r_uni, r_cov, cmap, cdata[2], rstatus,
-                               None, out_by_boundary)
-        if matched is not None:
-            wjson(O / "matched_sets_c.json", matched)
-
-        archived = json.load(open(cell / "analysis/result.json"))
-        archived_rust = {
-            "functions_total": archived["function"]["total_in_scope"],
-            "functions_reached": archived["function"]["covered_ours"],
-            "regions_total": archived["region"]["total_in_scope"],
-            "regions_reached": archived["region"]["covered_ours"],
-            "region_reach": archived["region"]["ours_coverage"],
-        }
         same_corpus_path = ROOT / "results/rq4_c_reach" / f"{lib}_{tool}" / "result.json"
         archived_c = None
         if same_corpus_path.exists():
@@ -639,13 +614,11 @@ def main():
         for rows in cdata[3].values():
             for row in rows.values():
                 c_inputs[row["outcome"]] = c_inputs.get(row["outcome"], 0) + 1
-        cc_rust = rust_side(E / "rust/rust_c/analysis")
         checks = {
             "build_set_exact": set(measured) == set(expected),
             "only_c_was_fuzzed": list(campaigns) == ["c"],
             "fuzzer_cap_respected": len(measured) <= a.max_fuzzers,
             "c_measurement_nonempty": len(cdata[0]) > 0,
-            "rust_replay_nonempty": cc_rust is not None,
             "c_input_count_exact": sum(c_inputs.values()) == sum(campaigns["c"]["corpus_sizes"].values()),
         }
         valid = all(checks.values())
@@ -659,16 +632,12 @@ def main():
             "max_fuzzers": a.max_fuzzers,
             "campaign": campaigns["c"],
             "matrix": {
-                "archived_rust_guided": {"C": archived_c, "Rust": archived_rust},
-                "new_c_guided": {"C": side(cdata[0], cdata[1]), "Rust": cc_rust,
-                                  "C_inputs": c_inputs},
+                "archived_rust_guided_c_replay": archived_c,
+                "new_c_guided": {"C": side(cdata[0], cdata[1]), "C_inputs": c_inputs},
             },
-            "matched_c_guided": ({"accepted_pairs": matched["accepted_pairs"],
-                                   "counts": matched["counts"],
-                                   "ambiguous": len(matched["ambiguous"])} if matched else None),
             "checks": checks,
             "seconds": round(time.time() - t0),
-            "interpretation": "CC is newly C-guided; CR is the archived Rust-guided baseline. Rust(CC) is replay, not a Rust fuzzing arm.",
+            "interpretation": "CC is newly C-guided and measured on C only. The archived CR-to-C replay is reference-only; Rust coverage was not recalculated.",
         }
         wjson(O / "result.json", result)
         wtext(O / "RUN.md", single_c_run_md(result))
@@ -678,8 +647,7 @@ def main():
         if not a.keep_work:
             shutil.rmtree(E, ignore_errors=True)
         log(f"C_COMPANION_DONE {lib} x {tool}: valid={valid}; "
-            f"C={result['matrix']['new_c_guided']['C']['functions_reached']} "
-            f"Rust={cc_rust and cc_rust['functions_reached']}")
+            f"C={result['matrix']['new_c_guided']['C']['functions_reached']}")
         return 0 if valid else 3
 
     # Measure both fresh corpora on both sides of the same build.
@@ -845,16 +813,16 @@ def single_c_run_md(res) -> str:
         ratio = side.get("function_reach" if unit == "functions" else "region_reach")
         return f"{reached} / {total}" + (f" ({ratio:.3f})" if ratio is not None else "")
 
-    old = res["matrix"]["archived_rust_guided"]
+    old = res["matrix"]["archived_rust_guided_c_replay"]
     new = res["matrix"]["new_c_guided"]
     return "\n".join([
         f"# C-guided companion — {res['cell']}", "",
-        "Only the C side was fuzzed in this run. The resulting corpus was then replayed on both C and Rust.",
-        "The archived Rust-guided campaign is a labelled baseline; it was not rerun.", "",
+        "Only the C side was fuzzed and measured in this run. Rust coverage was not recalculated.",
+        "The earlier C replay of the archived Rust-guided corpus is a labelled reference.", "",
         f"Concurrent boundary fuzzers: {res['concurrent_fuzzers']} (hard cap {res['max_fuzzers']}).", "",
-        "| corpus | C functions | C regions | Rust functions | Rust regions |", "|---|---:|---:|---:|---:|",
-        f"| archived Rust-guided | {fmt(old['C'], 'functions')} | {fmt(old['C'], 'regions')} | {fmt(old['Rust'], 'functions')} | {fmt(old['Rust'], 'regions')} |",
-        f"| new C-guided | {fmt(new['C'], 'functions')} | {fmt(new['C'], 'regions')} | {fmt(new['Rust'], 'functions')} | {fmt(new['Rust'], 'regions')} |",
+        "| corpus | C functions | C regions |", "|---|---:|---:|",
+        f"| archived Rust-guided, replayed on C | {fmt(old, 'functions')} | {fmt(old, 'regions')} |",
+        f"| new C-guided | {fmt(new['C'], 'functions')} | {fmt(new['C'], 'regions')} |",
         "", f"Checks: `{res['checks']}`.", "",
         "This is a reach diagnostic. C-side completion is not proof of defined behavior, and new candidates are not defects without confirmation.", "",
     ])

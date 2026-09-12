@@ -5,6 +5,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -59,10 +60,15 @@ def main() -> int:
     ap.add_argument("--cells", help="comma-separated lib/tool subset of the frozen pilot list")
     ap.add_argument("--single-c-companion", action="store_true",
                     help="run the frozen small-app C-only companion queue")
+    ap.add_argument("--lane", default="serial",
+                    help="independent pre-packed lane name (letters, digits, dash, underscore)")
     args = ap.parse_args()
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", args.lane):
+        print(f"invalid lane name: {args.lane!r}", file=sys.stderr)
+        return 2
     archive = Path(args.archive)
     archive.mkdir(parents=True, exist_ok=True)
-    lock = open(archive / ".controller.lock", "a+")
+    lock = open(archive / f".controller.{args.lane}.lock", "a+")
     try:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
@@ -80,11 +86,13 @@ def main() -> int:
             return 2
     driver = ROOT / "scripts/rq4/c_guided_cell.py"
     controller = Path(__file__).resolve()
-    queue_name = "c_companion_queue.json" if args.single_c_companion else ("smoke_queue.json" if args.seconds is not None else "formal_queue.json")
+    base_name = "c_companion_queue" if args.single_c_companion else ("smoke_queue" if args.seconds is not None else "formal_queue")
+    queue_name = f"{base_name}.{args.lane}.json"
     queue_path = archive / queue_name
     queue = {
         "schema": 1,
         "created": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "lane": args.lane,
         "policy": ("strictly serial cells; only C is fuzzed; only C coverage is measured"
                    if args.single_c_companion else
                    "strictly serial; one cell owns the controller; arms sequential"),

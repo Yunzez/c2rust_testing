@@ -171,17 +171,20 @@ def chunks(items: list[str], size: int = MAX_FUZZERS) -> list[list[str]]:
 
 
 def next_attempt(unit_root: Path, run_id: dict) -> Path:
+    """Allocate a fresh attempt without mutating interrupted evidence.
+
+    ``docs/c_guided_c_only_plan.md`` makes attempts immutable: an interrupted
+    or invalid attempt remains evidence and is never resumed or promoted.  The
+    driver persists campaign snapshots for recovery/audit, but explicitly does
+    not treat those snapshots as resume points.  Consequently even a
+    byte-identical ``MANIFEST_RUN.json`` must receive a new attempt number.
+
+    ``run_id`` remains in the signature because callers construct it before
+    choosing the attempt; keeping it here also makes the no-resume policy
+    explicit at that boundary.
+    """
+    del run_id
     attempts = sorted(unit_root.glob("attempt-*"), key=lambda p: int(p.name.split("-")[-1]))
-    # Resume only attempts created by this controller with byte-identical inputs.
-    for attempt in reversed(attempts):
-        manifest = attempt / "MANIFEST_RUN.json"
-        if (attempt / "DONE.json").exists() or not manifest.exists():
-            continue
-        try:
-            if json.load(open(manifest)) == run_id:
-                return attempt
-        except json.JSONDecodeError:
-            pass
     number = max([int(p.name.split("-")[-1]) for p in attempts] or [0]) + 1
     return unit_root / f"attempt-{number}"
 

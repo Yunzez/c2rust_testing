@@ -2686,6 +2686,12 @@ def _realize_with(cc_dir: Path, m, rb, param: dict, pidx: int, entry: str, polic
     # --- check 1: the C target parameter resolves to the declared C type and role -------------
     if m.c_type != tname:
         fail(1, f"manifest resource {m.c_type} is not the parameter's type {tname}")
+    # The target must not be the lifecycle function itself: the harness would call c_<name> both as the
+    # initializer/cleanup and as the target and define the extern twice (E0428 on lodepng_state_init in
+    # the 2026-09-11 pilot); a lifecycle function is exercised through the targets it serves.
+    if entry in (m.c.initializer, m.c.cleanup):
+        fail(1, f"the target {entry} is the realization's own lifecycle function; it cannot be both the "
+                f"initializer/cleanup and the target of one harness")
     c_target_view = m.c.target_view
     if rp.c_view_is_const(c_target_view) != bool(param.get("const")):
         fail(1, f"C target takes {'const ' if param.get('const') else ''}{cname}* but the manifest "

@@ -418,3 +418,15 @@ initializer mutation that only changes state -- without a comparator for
 target (phase 4), which is the correct attribution for what is observable;
 the field check (9) is depth-1 and top-level-field granular and records what
 it cannot decide as a plugin-owned assumption.
+
+### 9.1 Defect pilot and close-out (2026-09-11/12)
+
+The unlocked boundaries were run through the full RQ4 pipeline on CROWN and on the c2rust control
+(`results/rq4_extensibility/lodepng_realization_pilot/NOTE.md`): plugin-assisted planned/built/executed
+2/2/2 (CROWN) and 4/3/3 (c2rust); no defect — the 190/192 `confirmed_termination` verdicts on
+`lodepng_inspect_chunk` appear identically on the faithful control and are UB-associated (`in + pos` with
+`pos ≥ 2^63`). Three generic gaps recorded (offset-into-buffer input role; definedness channel blind to
+non-wrapping out-of-bounds pointer arithmetic; no post-state comparison of the realized resource). Fixed:
+a target that is the realization's own lifecycle function is refused at check 1. User decision: stop here,
+record only, paper unchanged.
+

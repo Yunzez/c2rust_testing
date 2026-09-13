@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "defect": "C6",
+  "baseline": "rustassure",
+  "target": "sample_main_packet",
+  "adapter_kind": "documented_individual_function_input_with_argv_contract_surface",
+  "semantic_rewrite": false,
+  "sources": {
+    "c_library": "benchmark/pairs/rq4/tulip_c2saferrust/source",
+    "c_sample_commit": "41e59fb33cef5bc97b03d2751dab2b006525c23f",
+    "c_sample_path": "sample.c",
+    "c_sample_sha256": "8752f447be4c8b7ed00bcbfa6a4bc634494bd0b5f7054bacc5a6f2da80ff4b49",
+    "rust_crate": "tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_WIP",
+    "rust_sample": "tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_WIP/sample.rs"
+  },
+  "identity_evidence": [
+    "sample.c is byte-identical from Tulip commit 41e59fb3 through 0bc8dfc4",
+    "the frozen base c2rust sample reports TI_VERSION 0.8.4 and TI_BUILD 1537377628 and preserves the historical sample.c guards and messages",
+    "the C2SaferRust WIP sample retains the same constants and computation but moves the argv[1] read before the argc guard"
+  ],
+  "notes": [
+    "The exact historical C sample main and exact C2SaferRust WIP main_0 are retained with their complete library dependency closures.",
+    "A generated selector ranges over argc 1..4; four independently generated 32-byte strings are only final-byte NUL terminated and assembled into a valid argv.",
+    "No argc value, indicator name, option, or known defect witness is fixed.",
+    "The Rust translation's original nightly crate attributes are retained; a released RustAssure compiler failure must be scored rather than repaired."
+  ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i -v REPO:/repo:ro c2r-baseline-rustassure:39618406 clang -E -P -x c -I TULIP_PAIR_SOURCE -",
+    "purpose": "RustAssure requires a preprocessed .i input; the exact frozen Clang 14 is used"
+  },
+  "input_sha256": {
+    "sample_main_packet.i": "e33bebd870152ee8ae247bcd553ed98a61fce3780b2f8bda38dbb13d48b1f560",
+    "sample_main_packet.rs": "1ad3fd11c569f86f6f5cef6cee1e5c02aa2c5118e5561dd36a1cb729aa5e100d",
+    "argument_order_map.json": "55e32ee5f40fddbee4e45405bc08fc1c5dde91d0c7ae75dad620a252e40ceea9"
+  }
+}

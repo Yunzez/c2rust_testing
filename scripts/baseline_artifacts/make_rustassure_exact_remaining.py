@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build fresh exact-source RustAssure inputs for four remaining defects.
+"""Build fresh exact-source RustAssure inputs for remaining defects.
 
 These inputs are deliberately not derived from earlier FLOURINE workarounds.
 Each package retains the frozen C and Rust target bodies and adds only a small
@@ -11,7 +11,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import subprocess
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -91,6 +93,10 @@ LIL_R = ROOT / "benchmark/pairs/rq4/lil_c2saferrust/translated/lil_c2saferrust.r
 CJSON_C = ROOT / "benchmark/pairs/rq4/cjson_ptrtrans/source/cJSON.c"
 CJSON_H = ROOT / "benchmark/pairs/rq4/cjson_ptrtrans/source/cJSON.h"
 CJSON_R = ROOT / "benchmark/pairs/rq4/cjson_ptrtrans/translated/cjson_ptrtrans.rs"
+TULIP_REPO = ROOT / "tools/frameworks/tulipindicators"
+TULIP_WIP = ROOT / "tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_WIP"
+TULIP_PAIR_C = ROOT / "benchmark/pairs/rq4/tulip_c2saferrust/source"
+TULIP_SOURCE_COMMIT = "41e59fb33cef5bc97b03d2751dab2b006525c23f"
 
 
 PACKAGES = (
@@ -292,10 +298,187 @@ def emit_s8_direct() -> None:
     (out / "adapter.json").write_text(json.dumps(record, indent=2) + "\n")
 
 
+def emit_c6_cli() -> None:
+    """Package the exact Tulip 0.8.4 sample driver and C2SaferRust main_0.
+
+    The surface supplies a small but complete C argv: argc is generated in
+    1..4, argv[0] is always present, argv[argc] is NULL, and all backing strings
+    are independently generated except for their final NUL.  In particular,
+    argc is not fixed to the known failing value.
+
+    The Rust input deliberately retains the translation crate's original
+    nightly feature attributes.  Removing them after a released RustAssure
+    compiler failure would be a forbidden baseline workaround.
+    """
+    defect = "C6"
+    target = "sample_main_packet"
+    out = OUT_ROOT / defect
+    input_dir = out / "input"
+    input_dir.mkdir(parents=True, exist_ok=True)
+    for path in input_dir.iterdir():
+        if path.is_file():
+            path.unlink()
+
+    historical_sample = subprocess.run(
+        ["git", "-C", str(TULIP_REPO), "show", f"{TULIP_SOURCE_COMMIT}:sample.c"],
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout
+    c_surface = r"""
+int sample_main_packet(unsigned char argc_selector,
+                       signed char arg0[32], signed char arg1[32],
+                       signed char arg2[32], signed char arg3[32])
+{
+    char *argv[5];
+    int argc;
+    arg0[31] = 0;
+    arg1[31] = 0;
+    arg2[31] = 0;
+    arg3[31] = 0;
+    argv[0] = (char *)arg0;
+    argv[1] = (char *)arg1;
+    argv[2] = (char *)arg2;
+    argv[3] = (char *)arg3;
+    argv[4] = 0;
+    argc = 1 + (argc_selector % 4);
+    argv[argc] = 0;
+    return sample_main_impl(argc, argv);
+}
+"""
+    combined_c = (
+        f'#include "/repo/{TULIP_PAIR_C.relative_to(ROOT)}/tulip.c"\n'
+        "#define main sample_main_impl\n"
+        + historical_sample
+        + "\n#undef main\n"
+        + c_surface
+    )
+    completed = subprocess.run(
+        [
+            "docker", "run", "--rm", "--cpus", "1", "-i",
+            "-v", f"{ROOT}:/repo:ro", RUSTASSURE_IMAGE,
+            "clang", "-E", "-P", "-x", "c",
+            "-I", f"/repo/{TULIP_PAIR_C.relative_to(ROOT)}", "-",
+        ],
+        input=combined_c,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    c_path = input_dir / f"{target}.i"
+    c_path.write_text(completed.stdout)
+
+    rust_surface = r"""
+#[no_mangle]
+pub fn sample_main_packet(
+    argc_selector: u8,
+    arg0: &mut [i8; 32],
+    arg1: &mut [i8; 32],
+    arg2: &mut [i8; 32],
+    arg3: &mut [i8; 32],
+) -> std::os::raw::c_int {
+    arg0[31] = 0;
+    arg1[31] = 0;
+    arg2[31] = 0;
+    arg3[31] = 0;
+    let mut argv = [
+        arg0.as_mut_ptr(), arg1.as_mut_ptr(), arg2.as_mut_ptr(),
+        arg3.as_mut_ptr(), std::ptr::null_mut(),
+    ];
+    let argc = 1 + (argc_selector as i32 % 4);
+    argv[argc as usize] = std::ptr::null_mut();
+    unsafe { main_0(argc, argv.as_mut_ptr()) }
+}
+"""
+    with tempfile.TemporaryDirectory() as temporary:
+        stage = Path(temporary)
+        for name in ("example1.rs", "example2.rs", "fuzzer.rs", "indicators_index.rs"):
+            shutil.copy2(TULIP_WIP / name, stage / name)
+        shutil.copytree(TULIP_WIP / "indicators", stage / "indicators")
+        shutil.copytree(TULIP_WIP / "utils", stage / "utils")
+        (stage / "sample.rs").write_text(
+            (TULIP_WIP / "sample.rs").read_text() + "\n" + rust_surface
+        )
+        modules = [
+            "example1", "example2", "fuzzer", "indicators_index", "utils/buffer",
+            *[f"indicators/{path.stem}" for path in sorted((stage / "indicators").glob("*.rs"))],
+        ]
+        flattened = stage / f"{target}.rs"
+        subprocess.run(
+            [
+                "python3", str(ROOT / "scripts/flatten_translation.py"),
+                str(stage), str(flattened),
+                "--lib-modules", ",".join(modules),
+                "--extra-modules", "sample",
+            ],
+            check=True,
+        )
+        original_attributes = []
+        for line in (TULIP_WIP / "c2rust-lib.rs").read_text().splitlines():
+            if line.startswith("#!["):
+                original_attributes.append(line)
+            elif line.startswith("pub mod"):
+                break
+        flattened_lines = flattened.read_text().splitlines()
+        first_module = next(
+            index for index, line in enumerate(flattened_lines)
+            if line.startswith("pub mod ")
+        )
+        rust_path = input_dir / f"{target}.rs"
+        rust_path.write_text(
+            "\n".join(original_attributes)
+            + "\n"
+            + "\n".join(flattened_lines[first_module:])
+            + "\n"
+        )
+
+    map_path = out / "argument_order_map.json"
+    map_path.write_text(
+        json.dumps({target: {str(index): str(index) for index in range(5)}}, indent=2)
+        + "\n"
+    )
+    source_sample_sha = hashlib.sha256(historical_sample.encode()).hexdigest()
+    copied = (c_path, rust_path, map_path)
+    record = {
+        "schema_version": 1,
+        "defect": defect,
+        "baseline": "rustassure",
+        "target": target,
+        "adapter_kind": "documented_individual_function_input_with_argv_contract_surface",
+        "semantic_rewrite": False,
+        "sources": {
+            "c_library": str(TULIP_PAIR_C.relative_to(ROOT)),
+            "c_sample_commit": TULIP_SOURCE_COMMIT,
+            "c_sample_path": "sample.c",
+            "c_sample_sha256": source_sample_sha,
+            "rust_crate": str(TULIP_WIP.relative_to(ROOT)),
+            "rust_sample": str((TULIP_WIP / "sample.rs").relative_to(ROOT)),
+        },
+        "identity_evidence": [
+            "sample.c is byte-identical from Tulip commit 41e59fb3 through 0bc8dfc4",
+            "the frozen base c2rust sample reports TI_VERSION 0.8.4 and TI_BUILD 1537377628 and preserves the historical sample.c guards and messages",
+            "the C2SaferRust WIP sample retains the same constants and computation but moves the argv[1] read before the argc guard",
+        ],
+        "notes": [
+            "The exact historical C sample main and exact C2SaferRust WIP main_0 are retained with their complete library dependency closures.",
+            "A generated selector ranges over argc 1..4; four independently generated 32-byte strings are only final-byte NUL terminated and assembled into a valid argv.",
+            "No argc value, indicator name, option, or known defect witness is fixed.",
+            "The Rust translation's original nightly crate attributes are retained; a released RustAssure compiler failure must be scored rather than repaired.",
+        ],
+        "preprocessing": {
+            "command": "docker run --rm --cpus 1 -i -v REPO:/repo:ro c2r-baseline-rustassure:39618406 clang -E -P -x c -I TULIP_PAIR_SOURCE -",
+            "purpose": "RustAssure requires a preprocessed .i input; the exact frozen Clang 14 is used",
+        },
+        "input_sha256": {path.name: sha256(path) for path in copied},
+    }
+    (out / "adapter.json").write_text(json.dumps(record, indent=2) + "\n")
+
+
 def main() -> None:
     for package in PACKAGES:
         emit(package)
     emit_s8_direct()
+    emit_c6_cli()
 
 
 if __name__ == "__main__":

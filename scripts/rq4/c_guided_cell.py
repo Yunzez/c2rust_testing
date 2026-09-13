@@ -21,7 +21,7 @@ recalculates Rust coverage.
 usage: c_guided_cell.py --lib L --tool T --work E --out O [--seconds N]
                         [--only b1,b2] [--single-c-companion] [--keep-work]
 """
-import argparse, fcntl, gzip, hashlib, json, os, re, shutil, subprocess, sys, tarfile, time
+import argparse, fcntl, gzip, hashlib, json, os, re, shutil, signal, subprocess, sys, tarfile, time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -202,6 +202,59 @@ def harness_drift(cell: Path, hd: Path, entry: str) -> dict:
 
 
 # ----------------------------------------------------------------------------- campaign
+def _process_group_exists(pgid: int) -> bool:
+    """Whether a private campaign group still has a live (non-zombie) member."""
+    for entry in Path("/proc").iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            # ``comm`` may contain spaces and parentheses.  Fields after its
+            # final ')' begin with state, ppid, pgrp.
+            _, sep, rest = entry.joinpath("stat").read_text().rpartition(")")
+            fields = rest.split()
+            if sep and fields[0] != "Z" and int(fields[2]) == pgid:
+                return True
+        except (FileNotFoundError, PermissionError, ProcessLookupError, IndexError, ValueError):
+            continue
+    return False
+
+
+def _terminate_process_group(proc: subprocess.Popen, grace_s: float = 5.0) -> None:
+    """Reap a fork supervisor and every worker it created.
+
+    The supervisor is launched with ``start_new_session=True``, so its PID is
+    also the process-group id.  Cleaning only the supervisor can orphan a
+    libFuzzer worker when a watchdog expires; kill the whole private group and
+    check the group even when the supervisor has already exited.
+    """
+    pgid = proc.pid
+    try:
+        os.killpg(pgid, signal.SIGTERM)
+    except ProcessLookupError:
+        try:
+            proc.wait(timeout=0)
+        except (subprocess.TimeoutExpired, ChildProcessError):
+            pass
+        return
+
+    deadline = time.monotonic() + grace_s
+    while _process_group_exists(pgid) and time.monotonic() < deadline:
+        try:
+            proc.wait(timeout=min(0.05, max(0.0, deadline - time.monotonic())))
+        except (subprocess.TimeoutExpired, ChildProcessError):
+            pass
+        time.sleep(0.01)
+    if _process_group_exists(pgid):
+        try:
+            os.killpg(pgid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    try:
+        proc.wait(timeout=max(1.0, grace_s))
+    except (subprocess.TimeoutExpired, ChildProcessError):
+        pass
+
+
 def campaign_guided(binaries: dict, corpus_root: Path, art_root: Path, params: dict, snap_root: Path,
                     seeds: dict, O: Path, mode: str, tag: str) -> dict:
     """Run one fresh guidance arm on the frozen build.
@@ -232,29 +285,35 @@ def campaign_guided(binaries: dict, corpus_root: Path, art_root: Path, params: d
             [str(b), str(c), "-fork=1", "-ignore_crashes=1", "-ignore_timeouts=1", "-ignore_ooms=1",
              f"-max_total_time={seconds}", f"-timeout={params['timeout_s']}", f"-max_len={params['max_len']}",
              f"-rss_limit_mb={params['rss_limit_mb']}", f"-seed={params['seed']}", f"-artifact_prefix={art}/"],
-            env=env, stdout=lg, stderr=subprocess.STDOUT, cwd=str(sb))
+            env=env, stdout=lg, stderr=subprocess.STDOUT, cwd=str(sb), start_new_session=True)
     checkpoints = [c for c in (60, 300, 600, 1800, 3600) if c < seconds] if seconds > 120 else []
     t0 = time.time()
-    for cp in checkpoints:
-        wait = cp - (time.time() - t0)
-        if wait > 0:
-            time.sleep(wait)
-        for e in binaries:
-            dst = snap_root / f"{e}@{cp}s"
-            if not dst.exists():
-                subprocess.run(["cp", "-al", str(corpus_root / e), str(dst)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        try:
-            wtar(O / "snapshots" / f"{tag}_snapshot@{cp}s.tar.gz", corpus_root, "corpus")
-        except Exception as ex:
-            log(f"  snapshot persistence at {cp}s failed: {ex}")
-    deadline = t0 + seconds + 240
-    for entry, p in procs.items():
-        try:
-            p.wait(timeout=max(10, deadline - time.time()))
-        except subprocess.TimeoutExpired:
-            p.kill()
-    for f in logs.values():
-        f.close()
+    try:
+        for cp in checkpoints:
+            wait = cp - (time.time() - t0)
+            if wait > 0:
+                time.sleep(wait)
+            for e in binaries:
+                dst = snap_root / f"{e}@{cp}s"
+                if not dst.exists():
+                    subprocess.run(["cp", "-al", str(corpus_root / e), str(dst)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            try:
+                wtar(O / "snapshots" / f"{tag}_snapshot@{cp}s.tar.gz", corpus_root, "corpus")
+            except Exception as ex:
+                log(f"  snapshot persistence at {cp}s failed: {ex}")
+        deadline = t0 + seconds + 240
+        for p in procs.values():
+            try:
+                p.wait(timeout=max(10, deadline - time.time()))
+            except subprocess.TimeoutExpired:
+                _terminate_process_group(p)
+    finally:
+        # A supervisor can exit just before wait() while one fork worker is
+        # still alive.  Always check and clear its private process group.
+        for p in procs.values():
+            _terminate_process_group(p)
+        for f in logs.values():
+            f.close()
     return {e: len(list((corpus_root / e).iterdir())) for e in binaries}
 
 

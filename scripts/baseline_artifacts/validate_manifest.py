@@ -60,30 +60,34 @@ def main() -> int:
 
     if results_path.exists() and adapter_policy_path.exists():
         records = read_json(results_path)["records"]
-        flourine_policy = read_json(adapter_policy_path)["flourine"]
-        scored = {
-            record["defect_id"]: record
-            for record in records
-            if record["baseline"] == "flourine"
-            and record["outcome"] not in ("not_run", "unsupported_input")
-        }
-        assert set(scored) == set(flourine_policy), (
-            "FLOURINE adapter audit must cover every submitted result exactly"
-        )
-        for defect_id, record in scored.items():
-            audit = flourine_policy[defect_id]
-            if audit["scored_class"] == "released_baseline_failure":
-                assert record["outcome"] == audit["outcome"], (
-                    f"{defect_id}: baseline workaround must not replace scored failure"
-                )
-                assert not record["gates"]["detected"], (
-                    f"{defect_id}: failure record cannot be scored as detected"
-                )
-            else:
-                assert record["adapter"], f"{defect_id}: scored adapter is missing"
-                assert (repo / record["adapter"]).is_file(), (
-                    f"{defect_id}: scored adapter metadata is missing"
-                )
+        policies = read_json(adapter_policy_path)
+        for baseline in ("rustassure", "flourine"):
+            policy = policies[baseline]
+            scored = {
+                record["defect_id"]: record
+                for record in records
+                if record["baseline"] == baseline
+                and record["outcome"] not in ("not_run", "unsupported_input")
+            }
+            assert set(scored) == set(policy), (
+                f"{baseline}: adapter audit must cover every submitted result exactly"
+            )
+            for defect_id, record in scored.items():
+                audit = policy[defect_id]
+                if audit["scored_class"] == "released_baseline_failure":
+                    assert record["outcome"] == audit["outcome"], (
+                        f"{baseline}/{defect_id}: baseline workaround must not replace scored failure"
+                    )
+                    assert not record["gates"]["detected"], (
+                        f"{baseline}/{defect_id}: failure record cannot be scored as detected"
+                    )
+                else:
+                    assert record["adapter"], (
+                        f"{baseline}/{defect_id}: scored adapter is missing"
+                    )
+                    assert (repo / record["adapter"]).is_file(), (
+                        f"{baseline}/{defect_id}: scored adapter metadata is missing"
+                    )
 
     if args.initialize:
         output = results_path

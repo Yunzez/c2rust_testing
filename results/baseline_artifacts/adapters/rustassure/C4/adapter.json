@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "defect": "C4",
+  "baseline": "rustassure",
+  "target": "ends_in_bz2_valid",
+  "adapter_kind": "documented_individual_function_input_reusing_audited_exact_source_package",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "tools/frameworks/crown/c-code/bzip2/bzip2recover.c",
+    "rust": "tools/frameworks/c2saferrust/laertes_benchmarks/bzip2_WIP/bzip2recover.rs"
+  },
+  "notes": [
+    "The C computation, Rust computation, and wrapper are byte-identical to the audited FLOURINE package for the same defect.",
+    "Only FLOURINE's JSON container is flattened into RustAssure's documented individual-function .i file; the argument map is positional identity."
+  ],
+  "input_sha256": {
+    "ends_in_bz2_valid.i": "193cc7e3db25016607eb95e5f2683e8c2e70714941c93c7de7ae79188c284ea8",
+    "ends_in_bz2_valid.rs": "be43a9f250e6f1dd2aa7943bf37b923d9f1e59f37218e84d1f7e7a753c64ef73",
+    "ends_in_bz2_valid_raw.inc": "45d6f2fa7271055298f1bdab6a15692030b0b4d59efa30c14469a22dfb8bb7c1",
+    "argument_order_map.json": "19f67f8b35678e89a1880724b747484ae86ec9bbcea42d2d4a502b31ce61983a"
+  }
+}

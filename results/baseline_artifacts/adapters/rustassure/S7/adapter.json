@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "defect": "S7",
+  "baseline": "rustassure",
+  "target": "parse_string_ascii",
+  "adapter_kind": "documented_individual_function_input_reusing_audited_exact_source_package",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/cjson_ptrtrans/source/cJSON.c",
+    "c_header": "benchmark/pairs/rq4/cjson_ptrtrans/source/cJSON.h",
+    "rust": "benchmark/pairs/rq4/cjson_ptrtrans/translated/cjson_ptrtrans.rs"
+  },
+  "notes": [
+    "The C computation, Rust computation, and wrapper are byte-identical to the audited FLOURINE package for the same defect.",
+    "Only FLOURINE's JSON container is flattened into RustAssure's documented individual-function .i file; the argument map is positional identity."
+  ],
+  "input_sha256": {
+    "parse_string_ascii.i": "c5bb74eee204ae7a9e59c972c39a750d2f5f8d7cae91a6fc6316dd7092eeb30c",
+    "parse_string_ascii.rs": "4041218f07942372dfa51ea2334d83dc8487ec051e9db5124664cbc55d92861f",
+    "parse_string_ascii_raw.inc": "6447186a0e67df12d3b7ba0240e69c94fe4523ab007ed4a3fc0741bf55b1b63f",
+    "argument_order_map.json": "f53e6ade20f89e8ac060dfa1e671fa85eaf5049c93f1f320a08a627c448b2e6b"
+  }
+}

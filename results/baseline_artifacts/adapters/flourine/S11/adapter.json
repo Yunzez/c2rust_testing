@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "defect": "S11",
+  "baseline": "flourine",
+  "target": "bzbuff_decompress_observe",
+  "adapter_kind": "documented_per_function_json_with_bounded_buffer_wrapper",
+  "semantic_rewrite": false,
+  "known_witness_encoded": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/bzip2_crown/source/bzlib.c",
+    "rust": "benchmark/pairs/rq4/bzip2_crown/translated/bzip2_crown.rs"
+  },
+  "wrapper_contract": "Use generated source and destination bytes, derive source length in [1,192] and small in {0,1}, provide 256 bytes of destination capacity, and expose the original return, destination length, and destination bytes.",
+  "input_sha256": {
+    "bzbuff_decompress_observe.json": "247d5393c652d047a4743d01dc097131913c053ae037235055b950be07286c1d",
+    "bzbuff_decompress_observe.rs": "89be07881f66c995ceca5a508d64fbba4209025b6d4b2bb4f1510ff16e2882c7",
+    "bzbuff_decompress_observe_raw.inc": "009c0a3c5d72307a66fef841c8a8327a49dcbfb4976ca45cd3a16408ac963672"
+  }
+}

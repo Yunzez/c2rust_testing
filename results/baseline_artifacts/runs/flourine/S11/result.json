@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S11",
+  "target": "bzbuff_decompress_observe",
+  "gates": {
+    "submitted": true,
+    "accepted": false,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "analysis_failure",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S11/attempt-001",
+  "hashes": {
+    "input.sha256": "057f11a01e98429aebff48c1749b5888e809de0edfafe9bd527b90c8888e484b",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "64e9f281e890b7ef4ef2bc054080644a970caf6f5728f3cbc73d48ec36b0fd85",
+    "instrument-rust.log": "7024d3ef550fa5741e4ebe6d815557f1959bd7a3944fc2137a034f7549d5bddf",
+    "console.log": "408af7d2049dcad693f7f5a76a5877d8228eb939a6c4d54ada5f64b23bae7d54",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  },
+  "failure_stage": "rust_instrumentation",
+  "interpretation": "The released C instrumenter accepted and compiled the submitted dependency closure, but the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`. No parser workaround or source reduction is attempted."
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "C1",
+  "target": "quickSort",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "compile_failure",
+  "artifact_native_symbolic_analysis": false,
+  "formal_attempt": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_C1_direct/workdir",
+  "exploratory_retry": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_C1",
+  "hashes": {
+    "test_llvm_bitcode_emitter_logger.log": "a9ec22da8712c5a44821ee91caa0b9d0e47ac2f83b2ae6f0160214f26925ed60",
+    "testcase/Rust/quickSort.rs": "9a6a9f714cd11f077288e4ca8b89c4ab032bd6ea05c290fb9230222c6d5dc28a",
+    "testcase/C/quickSort.i": "d7a7db90d82dcbc3c51238c20a84e2fb685b4f47b37948bef20bcd41613554c4"
+  },
+  "interpretation": "The released RustAssure emitter accepted the submitted pair but its pinned stable Rust compiler compiled 0/1 Rust functions. The later retry that removes crate-level nightly attributes is exploratory and cannot replace this scored compile failure."
+}

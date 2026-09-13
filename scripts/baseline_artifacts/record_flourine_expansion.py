@@ -148,6 +148,43 @@ def detected(
     return payload
 
 
+def released_rust_parser_failure(
+    defect: str, target: str, external_slug: str | None = None
+) -> dict:
+    """Record an unretried released Rust-instrumenter rejection."""
+    attempt = EXTERNAL / f"pilot_{external_slug or defect}/attempt-001"
+    rust_log = attempt / "instrument-rust.log"
+    if text(rust_log).strip() != "Error: expected square brackets":
+        raise RuntimeError(f"{defect}: released parser-failure evidence changed")
+    if "Built target ground_truth" not in text(attempt / "cmake-build.log"):
+        raise RuntimeError(f"{defect}: C ground truth did not compile")
+    payload = base(
+        defect,
+        target,
+        {
+            "submitted": True,
+            "accepted": False,
+            "compiled": False,
+            "completed": False,
+            "detected": False,
+        },
+        "analysis_failure",
+        external_slug=external_slug,
+    )
+    payload.update(
+        {
+            "failure_stage": "rust_instrumentation",
+            "interpretation": (
+                "The released C instrumenter accepted and compiled the submitted "
+                "dependency closure, but the released Rust instrumenter rejected "
+                "the frozen Rust input with `Error: expected square brackets`. "
+                "No parser workaround or source reduction is attempted."
+            ),
+        }
+    )
+    return payload
+
+
 def record_all() -> dict[str, dict]:
     payloads: dict[str, dict] = {}
     payloads["S1"] = detected(
@@ -466,6 +503,20 @@ def record_all() -> dict[str, dict]:
             ),
         }
     )
+    for defect, target, external_slug in (
+        ("C7", "bzbuff_compress_observe", None),
+        ("S10", "bzbuff_compress_observe", "C7"),
+        ("C8", "bzbuff_compress_observe", None),
+        ("S3", "bzbuff_compress_observe", "C8"),
+        ("S11", "bzbuff_decompress_observe", None),
+    ):
+        slug = external_slug or defect
+        if (EXTERNAL / f"pilot_{slug}/attempt-001").is_dir():
+            payloads[defect] = released_rust_parser_failure(
+                defect, target, external_slug
+            )
+            if external_slug:
+                payloads[defect]["shared_submission_with"] = external_slug
     return payloads
 
 

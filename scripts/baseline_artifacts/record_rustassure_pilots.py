@@ -88,8 +88,63 @@ def record(defect: str) -> dict | None:
     return payload
 
 
+def record_c1_direct_failure() -> dict:
+    """Record C1's first released-artifact result, never its adapted retry.
+
+    RustAssure's pinned stable compiler rejected the submitted Rust file before
+    symbolic comparison.  A later file with crate-level nightly attributes
+    removed is retained only as exploratory evidence; it must not replace this
+    scored failure.
+    """
+    attempt = EXTERNAL / "pilot_C1_direct/workdir"
+    logger = attempt / "test_llvm_bitcode_emitter_logger.log"
+    rust_input = attempt / "testcase/Rust/quickSort.rs"
+    c_input = attempt / "testcase/C/quickSort.i"
+    text = logger.read_text()
+    assert "Compilation failed for testcase/Rust/quickSort.rs" in text
+    assert "Out of 1 total Rust files 0 compiled" in text
+    payload = {
+        "schema_version": 1,
+        "baseline": "rustassure",
+        "defect_id": "C1",
+        "target": "quickSort",
+        "gates": {
+            "submitted": True,
+            "accepted": True,
+            "compiled": False,
+            "completed": False,
+            "detected": False,
+        },
+        "outcome": "compile_failure",
+        "artifact_native_symbolic_analysis": False,
+        "formal_attempt": str(attempt),
+        "exploratory_retry": str(EXTERNAL / "pilot_C1"),
+        "hashes": {
+            str(path.relative_to(attempt)): sha256(path)
+            for path in (logger, rust_input, c_input)
+        },
+        "interpretation": (
+            "The released RustAssure emitter accepted the submitted pair but "
+            "its pinned stable Rust compiler compiled 0/1 Rust functions. "
+            "The later retry that removes crate-level nightly attributes is "
+            "exploratory and cannot replace this scored compile failure."
+        ),
+    }
+    out = RUN_ROOT / "C1"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "result.json").write_text(json.dumps(payload, indent=2) + "\n")
+    return payload
+
+
 def main() -> None:
-    payloads = {defect: payload for defect in ["C1", "S6", "S21", "S17", "C12"] if (payload := record(defect))}
+    payloads = {"C1": record_c1_direct_failure()}
+    payloads.update(
+        {
+            defect: payload
+            for defect in ["S6", "S21", "S17", "C12"]
+            if (payload := record(defect))
+        }
+    )
     data = json.loads(RESULTS.read_text())
     for row in data["records"]:
         defect = row["defect_id"]

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Record completed released-RustAssure pilot analyses without guessing timeouts."""
+"""Record manually adjudicated released-RustAssure pilot analyses.
+
+The released artifact's graph distances and termination rows are candidate
+signals, not scored detections.  This recorder therefore refuses to score a
+completed analysis unless ``scoring_decisions/rustassure.json`` contains an
+explicit source-level adjudication for that defect.
+"""
 
 from __future__ import annotations
 
@@ -13,6 +19,7 @@ ROOT = Path("/home/yunzez/c2rust_testing")
 EXTERNAL = Path("/home/yunzez/c2rust_baselines/runs/rustassure")
 RESULTS = ROOT / "results/baseline_artifacts/results.json"
 RUN_ROOT = ROOT / "results/baseline_artifacts/runs/rustassure"
+DECISIONS = ROOT / "results/baseline_artifacts/scoring_decisions/rustassure.json"
 
 
 def sha256(path: Path) -> str:
@@ -38,7 +45,25 @@ def parse_distances(path: Path) -> list[dict]:
     return rows
 
 
-def record(defect: str) -> dict | None:
+def numeric_nonzero(value: str | None) -> bool:
+    if value in (None, ""):
+        return False
+    try:
+        return float(value) != 0.0
+    except ValueError:
+        return True
+
+
+def termination_signal(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    with path.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    fields = ("reach_max_cases", "dump_error_counts", "terminate_error", "time_out")
+    return any(any(numeric_nonzero(row.get(field)) for field in fields) for row in rows)
+
+
+def record(defect: str, decisions: dict[str, dict]) -> dict | None:
     attempt = attempt_dir(defect)
     if attempt is None:
         return None
@@ -47,8 +72,33 @@ def record(defect: str) -> dict | None:
     distances = parse_distances(attempt / "edit_distance/best_edit_distances.csv")
     compiled = int(summary["total_rust_functions_compiled"]) > 0 and summary["c_coverage"] != ""
     completed = compiled and bool(distances)
-    detected = completed and any(row["best_edit_distances"] != 0.0 for row in distances)
-    outcome = "detected" if detected else "missed" if completed else "compile_failure"
+    if not completed:
+        raise RuntimeError(
+            f"{defect}: this recorder only accepts completed analyses; classify the "
+            "released-artifact failure separately"
+        )
+
+    distance_signal = any(row["best_edit_distances"] != 0.0 for row in distances)
+    has_baseline_signal = distance_signal or termination_signal(
+        attempt / "rust_klee_terminate_results.csv"
+    ) or termination_signal(attempt / "c_klee_terminate_results.csv")
+    if defect not in decisions:
+        raise RuntimeError(
+            f"{defect}: completed output has not been manually adjudicated in {DECISIONS}"
+        )
+    decision = decisions[defect]
+    outcome = decision["outcome"]
+    if outcome not in {"detected", "missed"}:
+        raise ValueError(f"{defect}: invalid completed-analysis outcome {outcome!r}")
+    matches = decision["baseline_signal_matches_defect"]
+    if (outcome == "detected") != matches:
+        raise ValueError(f"{defect}: outcome and baseline_signal_matches_defect disagree")
+    if matches and not has_baseline_signal:
+        raise ValueError(f"{defect}: a detection decision requires an artifact signal")
+    for required in ("source_level_validation", "c_oracle_status", "reviewed_by"):
+        if not decision.get(required):
+            raise ValueError(f"{defect}: manual decision lacks {required}")
+    detected = outcome == "detected"
     payload = {
         "schema_version": 1,
         "baseline": "rustassure",
@@ -63,8 +113,10 @@ def record(defect: str) -> dict | None:
         },
         "outcome": outcome,
         "artifact_native_symbolic_analysis": True,
+        "has_baseline_signal": has_baseline_signal,
         "distances": distances,
         "summary": summary,
+        "manual_validation": decision,
         "external_directory": str(attempt),
         "hashes": {
             str(path.relative_to(attempt)): sha256(path)
@@ -76,11 +128,7 @@ def record(defect: str) -> dict | None:
             ]
             if path.is_file()
         },
-        "interpretation": (
-            "At least one RustAssure symbolic-value graph has nonzero C/Rust edit distance."
-            if detected
-            else "All symbolic argument and return graphs reported by RustAssure have zero C/Rust edit distance."
-        ),
+        "interpretation": decision["paper_summary"],
     }
     out = RUN_ROOT / defect
     out.mkdir(parents=True, exist_ok=True)
@@ -137,12 +185,15 @@ def record_c1_direct_failure() -> dict:
 
 
 def main() -> None:
+    decision_doc = json.loads(DECISIONS.read_text())
+    assert decision_doc["baseline"] == "rustassure"
+    decisions = decision_doc["decisions"]
     payloads = {"C1": record_c1_direct_failure()}
     payloads.update(
         {
             defect: payload
             for defect in ["S6", "S21", "S17", "C12"]
-            if (payload := record(defect))
+            if (payload := record(defect, decisions))
         }
     )
     data = json.loads(RESULTS.read_text())

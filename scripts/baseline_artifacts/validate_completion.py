@@ -14,6 +14,7 @@ RESULTS = ROOT / "results/baseline_artifacts/results.json"
 MANIFEST = ROOT / "results/rq4_effectiveness/defect_manifest.json"
 SUMMARIZER = ROOT / "scripts/baseline_artifacts/summarize.py"
 BASELINES = {"rustassure", "flourine", "vert"}
+SCORING_DECISIONS = ROOT / "results/baseline_artifacts/scoring_decisions"
 GATES = ("submitted", "accepted", "compiled", "completed", "detected")
 OUTCOMES = {
     "detected", "missed", "unsupported_input", "analysis_failure",
@@ -69,6 +70,23 @@ def validate_record(record: dict) -> None:
             assert payload["defect_id"] == defect, label
             assert payload["outcome"] == outcome, label
             assert payload["gates"] == gates, label
+
+            # RustAssure emits graph-distance and termination signals, neither
+            # of which identifies a catalogued defect by itself.  Every
+            # completed RustAssure score must therefore be backed by a separate
+            # source-level adjudication, and the generated result must embed
+            # that exact decision rather than infer one from the signal.
+            if baseline == "rustassure" and outcome in {"detected", "missed"}:
+                decision_doc = load(SCORING_DECISIONS / "rustassure.json")
+                decision = decision_doc["decisions"].get(defect)
+                assert decision, f"missing manual scoring decision: {label}"
+                assert decision["outcome"] == outcome, label
+                assert decision["baseline_signal_matches_defect"] == (
+                    outcome == "detected"
+                ), label
+                assert payload.get("manual_validation") == decision, label
+                for path in decision.get("evidence", []):
+                    assert (ROOT / path).is_file(), f"missing decision evidence: {label}: {path}"
 
 
 def validate_generated(records: list[dict]) -> None:

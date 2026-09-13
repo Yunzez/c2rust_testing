@@ -12,6 +12,7 @@
   },
   "outcome": "missed",
   "artifact_native_symbolic_analysis": true,
+  "has_baseline_signal": false,
   "distances": [
     {
       "function_name": "opng_path_make_backup",
@@ -48,6 +49,19 @@
     "c_coverage": "100.0",
     "execution_time": "0m"
   },
+  "manual_validation": {
+    "outcome": "missed",
+    "baseline_signal_matches_defect": false,
+    "source_level_validation": "The released analysis completed, but all three argument graphs and the return graph have edit distance 0 and neither termination report contains a candidate signal. It therefore supplied no discrepancy to validate against S17.",
+    "c_oracle_status": "The adapter realizes the original path, output-buffer, capacity, and C-string preconditions; no C-side invalidity was observed by the released analysis.",
+    "reviewed_by": "authors",
+    "paper_summary": "RustAssure completed on S17 but emitted no graph-distance or termination signal, so the output-buffer defect is recorded as missed.",
+    "evidence": [
+      "results/baseline_artifacts/runs/rustassure/S17/result.json",
+      "results/baseline_artifacts/adapters/rustassure/S17/adapter.json",
+      "results/rq4_effectiveness/defect_manifest.json"
+    ]
+  },
   "external_directory": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_S17/attempt-002",
   "hashes": {
     "result.csv": "abf2b82fe1f072575936587246d15281815aa3f8b066c268949395c266fb6af3",
@@ -55,5 +69,5 @@
     "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
     "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5"
   },
-  "interpretation": "All symbolic argument and return graphs reported by RustAssure have zero C/Rust edit distance."
+  "interpretation": "RustAssure completed on S17 but emitted no graph-distance or termination signal, so the output-buffer defect is recorded as missed."
 }

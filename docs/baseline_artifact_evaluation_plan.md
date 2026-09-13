@@ -36,6 +36,13 @@ than reimplementing a paper's method.
    patching generated/baseline code. Such experiments may be retained as
    exploratory evidence, but are explicitly unscored. The scored outcome remains
    the released artifact's original failure.
+9. A graph distance, counterexample, crash, or asymmetric termination emitted by
+   a baseline is a candidate signal, not automatically a detected defect. Before
+   promotion, source-level review must link the signal to the catalogued root
+   cause and establish that the relevant C execution satisfies the target's input
+   contract. The explicit decisions are archived under
+   `results/baseline_artifacts/scoring_decisions/`; extraction scripts cannot
+   update the canonical score matrix.
 
 ## Frozen artifacts
 

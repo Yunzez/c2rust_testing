@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "rule": "A released-artifact signal is scored as detected only after source-level review establishes that it corresponds to the catalogued defect on an input within the C target's contract. Signal extraction alone never updates the canonical result matrix.",
+  "decisions": {
+    "C12": {
+      "outcome": "detected",
+      "baseline_signal_matches_defect": true,
+      "source_level_validation": "RustAssure reports edit distance 1 for url_is_protocol's return graph. The submitted exact C package initializes URL_SCHEMES, while the frozen Rust translation leaves the corresponding table NULL; this is the catalogued C12 initialization-loss root cause reached by the analyzed target.",
+      "c_oracle_status": "The adapter supplies a NUL-terminated generated string to the original const-char-pointer interface; the reviewed C execution is within that interface contract.",
+      "reviewed_by": "authors",
+      "paper_summary": "RustAssure detected C12: its nonzero return-graph distance was manually traced to the catalogued lost URL_SCHEMES initialization on a contract-valid C input.",
+      "evidence": [
+        "results/baseline_artifacts/runs/rustassure/C12/result.json",
+        "results/baseline_artifacts/adapters/rustassure/C12/adapter.json",
+        "results/rq4_effectiveness/defect_manifest.json"
+      ]
+    },
+    "S17": {
+      "outcome": "missed",
+      "baseline_signal_matches_defect": false,
+      "source_level_validation": "The released analysis completed, but all three argument graphs and the return graph have edit distance 0 and neither termination report contains a candidate signal. It therefore supplied no discrepancy to validate against S17.",
+      "c_oracle_status": "The adapter realizes the original path, output-buffer, capacity, and C-string preconditions; no C-side invalidity was observed by the released analysis.",
+      "reviewed_by": "authors",
+      "paper_summary": "RustAssure completed on S17 but emitted no graph-distance or termination signal, so the output-buffer defect is recorded as missed.",
+      "evidence": [
+        "results/baseline_artifacts/runs/rustassure/S17/result.json",
+        "results/baseline_artifacts/adapters/rustassure/S17/adapter.json",
+        "results/rq4_effectiveness/defect_manifest.json"
+      ]
+    }
+  }
+}

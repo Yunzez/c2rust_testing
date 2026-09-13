@@ -13,3 +13,8 @@ tables. No baseline implementation is vendored or patched here.
 realization and source packaging from interface changes that work around a
 released baseline failure. The latter may remain under an adapter's `history/`
 directory, but never contributes a detection.
+
+`scoring_decisions/` separates released-artifact signals from scored outcomes.
+Inspectors only extract graph distances, counterexamples, crashes, and gate
+status. A recorder may mark `detected` only when a committed decision explicitly
+links that signal to the catalogued root cause on a contract-valid C execution.

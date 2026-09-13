@@ -21,6 +21,7 @@ test -f "$ADAPTER/argument_order_map.json"
 mkdir -p "$RUN"
 
 docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
+set +e
 docker run --rm --name "$CONTAINER" \
   --cpus "$CPU_LIMIT" \
   --volume "$ADAPTER/input:/input:ro" \
@@ -42,3 +43,7 @@ docker run --rm --name "$CONTAINER" \
     trap archive_run EXIT
     python3 performSymbolExecution.py --src=/input
   ' 2>&1 | tee "$RUN/console.log"
+status=${PIPESTATUS[0]}
+set -e
+printf '%s\n' "$status" > "$RUN/exit_code.txt"
+exit "$status"

@@ -21,7 +21,7 @@ test -f "$ADAPTER/argument_order_map.json"
 mkdir -p "$RUN"
 
 docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
-docker run --name "$CONTAINER" \
+docker run --rm --name "$CONTAINER" \
   --cpus "$CPU_LIMIT" \
   --volume "$ADAPTER/input:/input:ro" \
   --volume "$ADAPTER/argument_order_map.json:$OFFICIAL_MAP:ro" \

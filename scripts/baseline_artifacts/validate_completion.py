@@ -76,16 +76,23 @@ def validate_record(record: dict) -> None:
             # completed RustAssure score must therefore be backed by a separate
             # source-level adjudication, and the generated result must embed
             # that exact decision rather than infer one from the signal.
-            if baseline == "rustassure" and outcome in {"detected", "missed"}:
-                decision_doc = load(SCORING_DECISIONS / "rustassure.json")
+            if baseline in {"rustassure", "flourine"} and outcome in {"detected", "missed"}:
+                decision_doc = load(SCORING_DECISIONS / f"{baseline}.json")
+                assert decision_doc["baseline"] == baseline, label
                 decision = decision_doc["decisions"].get(defect)
                 assert decision, f"missing manual scoring decision: {label}"
                 assert decision["outcome"] == outcome, label
                 assert decision["baseline_signal_matches_defect"] == (
                     outcome == "detected"
                 ), label
-                assert payload.get("manual_validation") == decision, label
-                for path in decision.get("evidence", []):
+                if baseline == "rustassure":
+                    assert payload.get("manual_validation") == decision, label
+                for field in (
+                    "source_level_validation", "c_oracle_status",
+                    "reviewed_by", "paper_summary", "evidence",
+                ):
+                    assert decision.get(field), f"incomplete scoring decision: {label}: {field}"
+                for path in decision["evidence"]:
                     assert (ROOT / path).is_file(), f"missing decision evidence: {label}: {path}"
 
 

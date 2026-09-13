@@ -1,0 +1,125 @@
+{
+ "schema": 4,
+ "cell": "bzip2_c2rust",
+ "protocol": "single-c-companion-batched",
+ "boundaries": [
+  "BZ2_bzBuffToBuffCompress",
+  "BZ2_bzBuffToBuffDecompress",
+  "BZ2_bz__AssertH__fail",
+  "BZ2_bzlibVersion",
+  "BZ2_hbAssignCodes",
+  "BZ2_hbCreateDecodeTables",
+  "BZ2_hbMakeCodeLengths",
+  "BZ2_indexIntoF",
+  "bz_config_ok",
+  "default_bzalloc",
+  "default_bzfree",
+  "fallbackQSort3",
+  "fallbackSimpleSort",
+  "fallbackSort",
+  "mainGtU",
+  "mainQSort3",
+  "mainSimpleSort",
+  "mainSort",
+  "mmed3"
+ ],
+ "batch_size": 28,
+ "batch_count": 1,
+ "max_concurrent_fuzzers": 19,
+ "campaign_params": {
+  "max_total_time_s": 3600,
+  "seed": 42,
+  "timeout_s": 25,
+  "rss_limit_mb": 2048,
+  "max_len": 4096
+ },
+ "batches": [
+  {
+   "batch": 0,
+   "boundaries": [
+    "BZ2_bzBuffToBuffCompress",
+    "BZ2_bzBuffToBuffDecompress",
+    "BZ2_bz__AssertH__fail",
+    "BZ2_bzlibVersion",
+    "BZ2_hbAssignCodes",
+    "BZ2_hbCreateDecodeTables",
+    "BZ2_hbMakeCodeLengths",
+    "BZ2_indexIntoF",
+    "bz_config_ok",
+    "default_bzalloc",
+    "default_bzfree",
+    "fallbackQSort3",
+    "fallbackSimpleSort",
+    "fallbackSort",
+    "mainGtU",
+    "mainQSort3",
+    "mainSimpleSort",
+    "mainSort",
+    "mmed3"
+   ],
+   "corpus_sizes": {
+    "BZ2_bzBuffToBuffCompress": 403,
+    "BZ2_bzBuffToBuffDecompress": 549,
+    "BZ2_bz__AssertH__fail": 1,
+    "BZ2_bzlibVersion": 1,
+    "BZ2_hbAssignCodes": 46,
+    "BZ2_hbCreateDecodeTables": 48,
+    "BZ2_hbMakeCodeLengths": 7,
+    "BZ2_indexIntoF": 31,
+    "bz_config_ok": 1,
+    "default_bzalloc": 1,
+    "default_bzfree": 1,
+    "fallbackQSort3": 26,
+    "fallbackSimpleSort": 35,
+    "fallbackSort": 55,
+    "mainGtU": 44,
+    "mainQSort3": 40,
+    "mainSimpleSort": 28,
+    "mainSort": 1,
+    "mmed3": 5
+   },
+   "inputs": {
+    "completed": 1318,
+    "crash": 4,
+    "timeout": 1
+   },
+   "seconds": 4253,
+   "identity_sha256": "6c8d85735ec9be8fb3940da7ef17ad1c7239ab737b292b50fcb4cfdc557f2c25"
+  }
+ ],
+ "matrix": {
+  "archived_rust_guided_c_replay": {
+   "functions_total": 64,
+   "functions_reached": 46,
+   "regions_total": 2212,
+   "regions_reached": 1599,
+   "function_reach": 0.71875,
+   "region_reach": 0.722875226039783,
+   "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+   "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+  },
+  "new_c_guided": {
+   "C": {
+    "functions_total": 64,
+    "functions_reached": 46,
+    "regions_total": 2212,
+    "regions_reached": 1677,
+    "function_reach": 0.71875,
+    "region_reach": 0.7581374321880651
+   },
+   "C_inputs": {
+    "completed": 1318,
+    "crash": 4,
+    "timeout": 1
+   }
+  }
+ },
+ "checks": {
+  "all_batches_valid": true,
+  "boundary_union_exact": true,
+  "fuzzer_cap_respected": true,
+  "only_c_was_fuzzed": true,
+  "c_measurement_nonempty": true
+ },
+ "interpretation": "Only C was fuzzed and measured; coverage is the identity union of validated batches."
+}

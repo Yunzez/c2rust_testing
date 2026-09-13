@@ -1,0 +1,193 @@
+{
+ "schema": 4,
+ "cell": "cjson_c2rust",
+ "protocol": "single-c-companion-batched",
+ "boundaries": [
+  "cJSON_CreateArray",
+  "cJSON_CreateBool",
+  "cJSON_CreateDoubleArray",
+  "cJSON_CreateFalse",
+  "cJSON_CreateFloatArray",
+  "cJSON_CreateIntArray",
+  "cJSON_CreateNull",
+  "cJSON_CreateNumber",
+  "cJSON_CreateObject",
+  "cJSON_CreateString",
+  "cJSON_CreateStringArray",
+  "cJSON_CreateTrue",
+  "cJSON_Delete",
+  "cJSON_DeleteItemFromArray",
+  "cJSON_DeleteItemFromObject",
+  "cJSON_DetachItemFromArray",
+  "cJSON_DetachItemFromObject",
+  "cJSON_Duplicate",
+  "cJSON_GetArrayItem",
+  "cJSON_GetArraySize",
+  "cJSON_GetErrorPtr",
+  "cJSON_GetObjectItem",
+  "cJSON_Minify",
+  "cJSON_New_Item",
+  "cJSON_Parse",
+  "cJSON_Print",
+  "cJSON_PrintBuffered",
+  "cJSON_PrintUnformatted",
+  "cJSON_strcasecmp",
+  "cJSON_strdup",
+  "create_reference",
+  "parse_array",
+  "parse_hex4",
+  "parse_number",
+  "parse_object",
+  "parse_string",
+  "parse_value",
+  "pow2gt",
+  "skip"
+ ],
+ "batch_size": 28,
+ "batch_count": 2,
+ "max_concurrent_fuzzers": 28,
+ "campaign_params": {
+  "max_total_time_s": 3600,
+  "seed": 42,
+  "timeout_s": 25,
+  "rss_limit_mb": 2048,
+  "max_len": 4096
+ },
+ "batches": [
+  {
+   "batch": 0,
+   "boundaries": [
+    "cJSON_CreateArray",
+    "cJSON_CreateBool",
+    "cJSON_CreateDoubleArray",
+    "cJSON_CreateFalse",
+    "cJSON_CreateFloatArray",
+    "cJSON_CreateIntArray",
+    "cJSON_CreateNull",
+    "cJSON_CreateNumber",
+    "cJSON_CreateObject",
+    "cJSON_CreateString",
+    "cJSON_CreateStringArray",
+    "cJSON_CreateTrue",
+    "cJSON_Delete",
+    "cJSON_DeleteItemFromArray",
+    "cJSON_DeleteItemFromObject",
+    "cJSON_DetachItemFromArray",
+    "cJSON_DetachItemFromObject",
+    "cJSON_Duplicate",
+    "cJSON_GetArrayItem",
+    "cJSON_GetArraySize",
+    "cJSON_GetErrorPtr",
+    "cJSON_GetObjectItem",
+    "cJSON_Minify",
+    "cJSON_New_Item",
+    "cJSON_Parse",
+    "cJSON_Print",
+    "cJSON_PrintBuffered",
+    "cJSON_PrintUnformatted"
+   ],
+   "corpus_sizes": {
+    "cJSON_CreateArray": 1,
+    "cJSON_CreateBool": 5,
+    "cJSON_CreateDoubleArray": 27,
+    "cJSON_CreateFalse": 1,
+    "cJSON_CreateFloatArray": 25,
+    "cJSON_CreateIntArray": 15,
+    "cJSON_CreateNull": 1,
+    "cJSON_CreateNumber": 9,
+    "cJSON_CreateObject": 1,
+    "cJSON_CreateString": 16,
+    "cJSON_CreateStringArray": 38,
+    "cJSON_CreateTrue": 1,
+    "cJSON_Delete": 593,
+    "cJSON_DeleteItemFromArray": 608,
+    "cJSON_DeleteItemFromObject": 651,
+    "cJSON_DetachItemFromArray": 602,
+    "cJSON_DetachItemFromObject": 646,
+    "cJSON_Duplicate": 545,
+    "cJSON_GetArrayItem": 608,
+    "cJSON_GetArraySize": 601,
+    "cJSON_GetErrorPtr": 1,
+    "cJSON_GetObjectItem": 644,
+    "cJSON_Minify": 138,
+    "cJSON_New_Item": 1,
+    "cJSON_Parse": 612,
+    "cJSON_Print": 677,
+    "cJSON_PrintBuffered": 752,
+    "cJSON_PrintUnformatted": 718
+   },
+   "inputs": {
+    "completed": 8537
+   },
+   "seconds": 3890,
+   "identity_sha256": "ffab1d2291b10e6d98919562e280a2345006a9706782e9c445b90dbd9d184d52"
+  },
+  {
+   "batch": 1,
+   "boundaries": [
+    "cJSON_strcasecmp",
+    "cJSON_strdup",
+    "create_reference",
+    "parse_array",
+    "parse_hex4",
+    "parse_number",
+    "parse_object",
+    "parse_string",
+    "parse_value",
+    "pow2gt",
+    "skip"
+   ],
+   "corpus_sizes": {
+    "cJSON_strcasecmp": 46,
+    "cJSON_strdup": 16,
+    "create_reference": 620,
+    "parse_array": 614,
+    "parse_hex4": 26,
+    "parse_number": 599,
+    "parse_object": 622,
+    "parse_string": 632,
+    "parse_value": 642,
+    "pow2gt": 5,
+    "skip": 23
+   },
+   "inputs": {
+    "completed": 3845
+   },
+   "seconds": 3761,
+   "identity_sha256": "107f6e32eb4b70e821235b55e864ff936f717da9907b0360a00cc823ec54885b"
+  }
+ ],
+ "matrix": {
+  "archived_rust_guided_c_replay": {
+   "functions_total": 58,
+   "functions_reached": 49,
+   "regions_total": 926,
+   "regions_reached": 708,
+   "function_reach": 0.8448275862068966,
+   "region_reach": 0.7645788336933045,
+   "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+   "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+  },
+  "new_c_guided": {
+   "C": {
+    "functions_total": 58,
+    "functions_reached": 49,
+    "regions_total": 926,
+    "regions_reached": 759,
+    "function_reach": 0.8448275862068966,
+    "region_reach": 0.8196544276457883
+   },
+   "C_inputs": {
+    "completed": 12382
+   }
+  }
+ },
+ "checks": {
+  "all_batches_valid": true,
+  "boundary_union_exact": true,
+  "fuzzer_cap_respected": true,
+  "only_c_was_fuzzed": true,
+  "c_measurement_nonempty": true
+ },
+ "interpretation": "Only C was fuzzed and measured; coverage is the identity union of validated batches."
+}

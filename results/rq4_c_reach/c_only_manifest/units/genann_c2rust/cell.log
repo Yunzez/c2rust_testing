@@ -1,0 +1,23 @@
+controlled guidance genann x c2rust: {'git_head': '4a2eba380850834e18c5840d05fdb7e7b52b9579', 'generator': 'fd1f75b4716a1d45', 'protocol': 'single-c-companion', 'files': {'scripts/rq4/c_guided_cell.py': '69c5692b73aa6fb476e2a0c5c14fc96217aa5d54106eafa1725c54c5e4d9be8d', 'scripts/rq4/c_reach.py': 'bf15745952cc2321ab2d3fc03ffbb47adac12cd20987ad30947d874d75e01a52', 'scripts/rq4/cell.py': '9ef8e4fe14c4e97917d5d16cde12c292c89738812e4cfd29f53c1ba8e915346a', 'tools/stu_selector/gen_diff_harness.py': 'bf3437734d5d79cb24c88668e2dc8b96dd118833c7a592f4523bc9f3a9f45da4'}}; params {'max_total_time_s': 3600, 'seed': 42, 'timeout_s': 25, 'rss_limit_mb': 2048, 'max_len': 4096, 'source': 'cell.py defaults'}
+  build genann_act_linear              OK
+  build genann_act_sigmoid             OK
+  build genann_act_sigmoid_cached      OK
+  build genann_act_threshold           OK
+  build genann_copy                    OK
+  build genann_free                    OK
+  build genann_init                    OK
+  build genann_randomize               OK
+  build genann_run                     OK
+  build genann_train                   OK
+##### c-only, 10 harnesses, 3600s — 05:49:07
+  C c genann_act_linear              corpus     8 {'completed': 8} | fn 1/12 reg 1/172
+  C c genann_act_sigmoid             corpus    10 {'completed': 10} | fn 1/12 reg 7/172
+  C c genann_act_sigmoid_cached      corpus    10 {'completed': 10} | fn 2/12 reg 18/172
+  C c genann_act_threshold           corpus     8 {'completed': 8} | fn 1/12 reg 1/172
+  C c genann_copy                    corpus    13 {'completed': 13} | fn 4/12 reg 29/172
+  C c genann_free                    corpus    15 {'completed': 15} | fn 3/12 reg 26/172
+  C c genann_init                    corpus    29 {'completed': 28, 'crash': 1} | fn 2/12 reg 28/172
+  C c genann_randomize               corpus    14 {'completed': 14} | fn 3/12 reg 26/172
+  C c genann_run                     corpus    45 {'completed': 45} | fn 6/12 reg 71/172
+  C c genann_train                   corpus    59 {'completed': 59} | fn 7/12 reg 130/172
+C_COMPANION_DONE genann x c2rust: valid=True; C=10

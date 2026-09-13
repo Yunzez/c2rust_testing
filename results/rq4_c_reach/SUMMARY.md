@@ -1,5 +1,10 @@
 # Same-corpus C reach — 37 cells, plus a three-cell C-guided companion pilot (2026-09-11)
 
+The subsequently completed 12-unit formal C-guided, C-only manifest is archived
+separately in [`c_only_manifest/`](c_only_manifest/).  The material below remains
+the earlier same-corpus diagnostic and pilot; it is not overwritten by the
+formal manifest.
+
 Plan and definitions: `docs/c_reach_plan.md`. Study table: `table.md` (regenerate with
 `scripts/rq4/c_reach_table.py <root> table.md`). Per cell `<lib>_<tool>/`: `result.json` (side-specific reach, per-input
 outcomes, matched counts), `matched_sets.json` (the four sets with names, ambiguous / unmatched lists, and for every

@@ -44,6 +44,7 @@ def main() -> None:
     args = parser.parse_args()
 
     workdir = args.workdir.resolve()
+    runner_root = workdir.parent if workdir.name == "workdir" else workdir
     summary_rows = csv_rows(workdir / "result.csv")
     distances = csv_rows(workdir / "edit_distance/best_edit_distances.csv")
     rust_termination = csv_rows(workdir / "rust_klee_terminate_results.csv")
@@ -76,12 +77,19 @@ def main() -> None:
         workdir / "c_klee_terminate_results.csv",
         workdir / "test_llvm_bitcode_emitter_logger.log",
         workdir / "symbol_execution_error.log",
+        runner_root / "exit_code.txt",
+        runner_root / "console.log",
     ]
     report = {
         "schema_version": 1,
         "baseline": "rustassure",
         "defect_id": args.defect_id,
         "workdir": str(workdir),
+        "runner_exit_code": (
+            int((runner_root / "exit_code.txt").read_text().strip())
+            if (runner_root / "exit_code.txt").is_file()
+            else None
+        ),
         "provisional_gates": {
             "submitted": True,
             "accepted": True,
@@ -103,7 +111,11 @@ def main() -> None:
         ),
         "scored_outcome": None,
         "hashes": {
-            str(path.relative_to(workdir)): sha256(path)
+            (
+                str(path.relative_to(workdir))
+                if path.is_relative_to(workdir)
+                else "runner/" + path.name
+            ): sha256(path)
             for path in evidence_paths
             if path.is_file()
         },

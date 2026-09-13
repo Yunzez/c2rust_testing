@@ -86,9 +86,31 @@ OPTIPNG_C = ROOT / "benchmark/pairs/rq4/optipng_c2saferrust/source"
 OPTIPNG_R = ROOT / "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs"
 BZIP2_C = ROOT / "benchmark/pairs/rq4/bzip2_c2saferrust/source/blocksort.c"
 BZIP2_R = ROOT / "benchmark/pairs/rq4/bzip2_c2saferrust/translated/bzip2_c2saferrust.rs"
+LIL_C = ROOT / "tools/frameworks/crown/c-code/lil/main.c"
+LIL_R = ROOT / "benchmark/pairs/rq4/lil_c2saferrust/translated/lil_c2saferrust.rs"
+CJSON_C = ROOT / "benchmark/pairs/rq4/cjson_ptrtrans/source/cJSON.c"
+CJSON_H = ROOT / "benchmark/pairs/rq4/cjson_ptrtrans/source/cJSON.h"
+CJSON_R = ROOT / "benchmark/pairs/rq4/cjson_ptrtrans/translated/cjson_ptrtrans.rs"
 
 
 PACKAGES = (
+    Package(
+        defect="C3",
+        target="do_system_two",
+        arity=2,
+        c_source=LIL_C,
+        rust_source=LIL_R,
+        c_marker="static char* do_system(",
+        rust_marker="fn do_system(",
+        c_prelude="""#include <stddef.h>\n#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/types.h>""",
+        c_surface="""char *do_system_two(int8_t first[16], int8_t second[16])\n{\n    char *argv[2];\n    first[15] = 0;\n    second[15] = 0;\n    argv[0] = (char *)first;\n    argv[1] = (char *)second;\n    return do_system(2, argv);\n}""",
+        rust_surface="""#[no_mangle]\npub fn do_system_two(first: &mut [i8; 16], second: &mut [i8; 16]) -> *mut std::os::raw::c_char {\n    first[15] = 0;\n    second[15] = 0;\n    let mut argv = [first.as_mut_ptr(), second.as_mut_ptr()];\n    do_system(2, argv.as_mut_ptr())\n}""",
+        notes=(
+            "The exact do_system bodies are copied from the frozen C source and C2SaferRust translation.",
+            "Two unconstrained byte arrays are terminated only at their final byte and assembled into the original argc/argv contract.",
+            "The adapter does not replace or mock popen/system-command execution; any released-analyzer limitation at that call remains visible.",
+        ),
+    ),
     Package(
         defect="C16",
         target="optimize_cmf_packet",
@@ -218,9 +240,62 @@ def emit(package: Package) -> None:
     (out / "adapter.json").write_text(json.dumps(record, indent=2) + "\n")
 
 
+def emit_s8_direct() -> None:
+    """Submit parse_string directly so RustAssure, not an adapter, observes state."""
+    defect = "S8"
+    target = "parse_string"
+    out = OUT_ROOT / defect
+    input_dir = out / "input"
+    input_dir.mkdir(parents=True, exist_ok=True)
+    for path in input_dir.iterdir():
+        if path.is_file():
+            path.unlink()
+
+    source = CJSON_C.read_text()
+    include_lines = ('#include "cJSON.h"', "#include <cJSON.h>")
+    source = "\n".join(
+        line for line in source.splitlines() if line.strip() not in include_lines
+    ) + "\n"
+    c_path = input_dir / f"{target}.i"
+    rust_path = input_dir / f"{target}.rs"
+    c_path.write_text(preprocess_c(CJSON_H.read_text() + "\n" + source))
+    rust_path.write_bytes(CJSON_R.read_bytes())
+
+    map_path = out / "argument_order_map.json"
+    map_path.write_text(
+        json.dumps({target: {"0": "0", "1": "1"}}, indent=2) + "\n"
+    )
+    copied = (c_path, rust_path, map_path)
+    record = {
+        "schema_version": 1,
+        "defect": defect,
+        "baseline": "rustassure",
+        "target": target,
+        "adapter_kind": "documented_direct_individual_function_input",
+        "semantic_rewrite": False,
+        "sources": {
+            "c": str(CJSON_C.relative_to(ROOT)),
+            "c_header": str(CJSON_H.relative_to(ROOT)),
+            "rust": str(CJSON_R.relative_to(ROOT)),
+        },
+        "notes": [
+            "The original parse_string signature, return value, mutable cJSON argument, and parse_buffer argument are submitted without an observation wrapper.",
+            "This leaves construction of recursive Rust references, allocator hooks, and post-call argument-state observation entirely to released RustAssure.",
+            "No known witness or output proxy is added; a compiler or symbolizer failure is scored as released-baseline failure.",
+        ],
+        "preprocessing": {
+            "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+            "purpose": "RustAssure documents preprocessed .i files as its C input format; the local cJSON header is concatenated before preprocessing",
+        },
+        "input_sha256": {path.name: sha256(path) for path in copied},
+    }
+    (out / "adapter.json").write_text(json.dumps(record, indent=2) + "\n")
+
+
 def main() -> None:
     for package in PACKAGES:
         emit(package)
+    emit_s8_direct()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S4",
+  "target": "crc32_z_packet",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-002",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S4/attempt-002",
+  "hashes": {
+    "input.sha256": "c6de3f2b475abd41d3f15735edbaafaffee7af87df88009e23fe6576efadcc3a",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "63391d6e9a8720c446f419577709b53888464406a69273f75f977942cfe14ec6",
+    "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target.txt": "af4ee6a0524581b9394157540b806e3dd0293dde70802e4c00607d731d565b24",
+    "verify.log": "4f99e3c18e0d3fd9d1d9ba107fb4e3dfcc101dbee75a42551d109734d63398fe",
+    "console.log": "70d1fe029e76eb06e36852fe858f12f147b5a6ba7b4e73c2373911ad895a3b13",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "crashes": {
+      "verification/src/__fuzz__/test__crc32_z_packet/crashes/crash-1aeb6224528c1904cc5eacbe45f502726ca4a1dd": "27a6f019c3a2bbf2532a23ee94cfaf1e35def65fbb55c9c2ea1e18e2d55838c3"
+    }
+  },
+  "interpretation": "Using the same generated CRC-state/bytes/length packet shape as S1, FLOURINE reported scalar return discrepancies caused by Laertes' uninitialized CRC table.",
+  "prior_attempts": [
+    {
+      "attempt": "attempt-001",
+      "outcome": "adapter_setup_failure",
+      "reason": "the adapter generator initially selected a forward declaration instead of the C function definition",
+      "hashes": {
+        "input.sha256": "f97d0433ff810fd323ac9712a9ea23b38d66003121ee7784e544921cd8b1b6cd",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "cd3a6cb3c9625782b4336f492b2da20c31b2524c2c812a98c1ffe5f3c919b40d",
+        "console.log": "3754473de247f54ed2768b98c28876b7bcfca96dbe100ed1820891ccf8092557",
+        "exit_code.txt": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+      }
+    }
+  ]
+}

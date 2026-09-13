@@ -1,0 +1,18 @@
+{
+  "Includes": [
+    "#include <stdint.h>"
+  ],
+  "Defines": [
+    "#define TI_REAL double"
+  ],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "int ti_adx_start_valid(double options[1]);"
+  ],
+  "Function Implementations": [
+    "int ti_adx_start(TI_REAL const *options) {\n    return ((int)options[0]-1) * 2;\n}\n\nint ti_adx_start_valid(double options[1]) { return ti_adx_start(options); }"
+  ],
+  "Enums": []
+}

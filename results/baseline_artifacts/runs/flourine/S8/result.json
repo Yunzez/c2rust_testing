@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S8",
+  "target": "parse_string",
+  "gates": {
+    "submitted": false,
+    "accepted": false,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "unsupported_input",
+  "unsupported_dimension": "observation",
+  "interpretation": "S8 preserves parse_string's return value and changes only the valuestring field of an object allocated inside the input adapter. The released FLOURINE oracle compares termination, the original return value, and submitted arguments after the call; that local heap state is not an observable. Exposing it would require a new state comparator or a return-value rewrite, both forbidden by the frozen baseline policy.",
+  "oracle_evidence": {
+    "generated_file": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_C4/attempt-001/verification/src/lib.rs",
+    "sha256": "2acdd84e92f49dce0e15dbdf0cf7de7e7b3c83d3ab6f10be2d799e16c8df3828",
+    "relevant_lines": "223-279 compare C/Rust termination, return, and input0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "Includes": [
+    "#include <stddef.h>",
+    "#include <stdint.h>"
+  ],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "void optimize_cmf_valid(uint8_t data[2]);"
+  ],
+  "Function Implementations": [
+    "typedef uint8_t png_byte; typedef png_byte *png_bytep; typedef size_t png_alloc_size_t;\noptimize_cmf(png_bytep data, png_alloc_size_t data_size)\n{\n   /* Optimize the CMF field in the zlib stream.  The resultant zlib stream is\n    * still compliant to the stream specification.\n    */\n   if (data_size <= 16384) /* else windowBits must be 15 */\n   {\n      unsigned int z_cmf = data[0];  /* zlib compression method and flags */\n\n      if ((z_cmf & 0x0f) == 8 && (z_cmf & 0xf0) <= 0x70)\n      {\n         unsigned int z_cinfo;\n         unsigned int half_z_window_size;\n\n         z_cinfo = z_cmf >> 4;\n         half_z_window_size = 1U << (z_cinfo + 7);\n\n         if (data_size <= half_z_window_size) /* else no change */\n         {\n            unsigned int tmp;\n\n            do\n            {\n               half_z_window_size >>= 1;\n               --z_cinfo;\n            }\n            while (z_cinfo > 0 && data_size <= half_z_window_size);\n\n            z_cmf = (z_cmf & 0x0f) | (z_cinfo << 4);\n\n            data[0] = (png_byte)z_cmf;\n            tmp = data[1] & 0xe0;\n            tmp += 0x1f - ((z_cmf << 8) + tmp) % 0x1f;\n            data[1] = (png_byte)tmp;\n         }\n      }\n   }\n}\n\nvoid optimize_cmf_valid(uint8_t data[2]) { optimize_cmf(data, 2); }"
+  ],
+  "Enums": []
+}

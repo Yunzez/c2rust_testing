@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "C12",
+  "target": "url_is_protocol_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "detection": "The native fuzz process terminated by signal while executing the Rust call. The generated harness catches C-side signals separately; the C table is initialized, whereas the frozen Rust table is all NULL and url_is_protocol dereferences it through strcmp.",
+  "executions_before_signal_upper_bound": 1437,
+  "attempts": [
+    {
+      "name": "attempt-001",
+      "outcome": "adapter_packaging_failure",
+      "detail": "The first source extractor matched a prototype and copied an unterminated conditional block."
+    },
+    {
+      "name": "attempt-002",
+      "outcome": "detected",
+      "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_C12/attempt-002",
+      "status_interpretation": "Rust-side signal (Unix ExitStatus had no numeric code); FLOURINE's generated harness wraps only the C call in its signal-to-longjmp handler.",
+      "hashes": {
+        "input.sha256": "c81c60e22841f18f641d6ba0fe05f73c5749b090e8e615e1e2e92c5e1f18d1d0",
+        "target.txt": "91f5e2e853ffbefbc22b1a7532c5b7763c986f1e46c2cef62383fdd3de18644c",
+        "verify.log": "790ff3fb2c5d5807f23869bfd030278b15576edd0c895fd366c83a28fb8a45a2",
+        "console.log": "37738410a99fdc11df727833bc7ee68e2c42292daa771ff27e4258dc37146271"
+      }
+    }
+  ]
+}

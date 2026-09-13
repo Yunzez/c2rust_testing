@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S17",
+  "target": "opng_path_make_backup_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": false
+  },
+  "outcome": "missed",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "executions": 412116,
+  "miss_argument": "The valid wrapper forces NUL termination and capacity 32. C appends the four-byte .bak suffix; the frozen Laertes target uses its all-zero uninitialized bak_extname and does not append it. Thus the submitted mutable output buffer contains a discrepancy within the generated domain, but the released run reported none.",
+  "attempts": [
+    {
+      "name": "attempt-001",
+      "outcome": "compile_failure",
+      "detail": "The released C serializer does not support char array elements."
+    },
+    {
+      "name": "attempt-002",
+      "outcome": "analysis_failure",
+      "detail": "A raw-pointer helper appeared as a syntactic top-level function outside the accepted C signature set."
+    },
+    {
+      "name": "attempt-003",
+      "outcome": "analysis_failure",
+      "detail": "The first hidden-helper package retained crate attributes that the released parser rejected."
+    },
+    {
+      "name": "attempt-004",
+      "outcome": "compile_failure",
+      "detail": "The artifact's pinned serde version cannot serialize arrays longer than 32 elements."
+    },
+    {
+      "name": "attempt-005",
+      "outcome": "missed",
+      "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S17/attempt-005",
+      "adapter": "two fixed int8_t arrays of lengths 32 and 16; exact raw-pointer target included unchanged; both strings forced NUL-terminated",
+      "hashes": {
+        "input.sha256": "fdc9597a68d844f42ec9456ad050a6c61d1c27235ac44b0317fd4bc3712f0bdd",
+        "target.txt": "4532521eb36ecd473e2e2bc89976a4d9cfe65072c99448bf89c8e367d1132dc8",
+        "verify.log": "215e1f4b134d7d279d1cdd862a00edf5edb218436c1f0b07bd5d6a564c1354e1",
+        "console.log": "cbdb1c2b5a3471d9297f6ff3a21eb720337d7c270fc3d3da41c61c8735b3c53c"
+      }
+    }
+  ]
+}

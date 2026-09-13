@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "defect": "C1",
+  "baseline": "flourine",
+  "target": "quickSort",
+  "adapter_kind": "documented_per_function_json_and_rust_source",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "results/rq4_effectiveness/bugs/qsort_c2saferrust/source/qsort.c",
+    "rust": "results/baseline_artifacts/adapters/rustassure/C1/input/quickSort.rs"
+  },
+  "notes": [
+    "C and Rust computation bodies are copied from the frozen defect evidence.",
+    "An unused crate-level lint attribute is omitted so FLOURINE can embed the file's AST; function bodies and signatures are unchanged."
+  ],
+  "alternative_input_adapters": {
+    "input_fixed_64": {
+      "purpose": "Give FLOURINE's released wrapper generator the storage extent that an unsized C array parameter omits.",
+      "semantic_rewrite": false,
+      "c_language_note": "In a function parameter, int arr[64] is adjusted by C to int *arr; the computation body and callable C type are unchanged.",
+      "capacity": 64,
+      "input_sha256": {
+        "quickSort.json": "ed26f01643f05e57a15075caba0d8cfb5ccaaad21d6ec355d8398ca23da8fd72",
+        "quickSort.rs": "274eaec50e5e67c87542180daa880fbc58e39d8662b53cdf9b724912934889a7"
+      }
+    },
+    "input_valid_16": {
+      "purpose": "Realize qsort's valid-call precondition while leaving all array elements under artifact-native generation.",
+      "semantic_rewrite": false,
+      "known_witness_encoded": false,
+      "precondition": "The array has 16 elements and qsort is called on the inclusive range [0, 15].",
+      "input_sha256": {
+        "quickSort_valid.json": "eaa18a11c1de28abbb67103b08cdfed35124ff86f908274b189438116d61207d",
+        "quickSort_valid.rs": "274d64f22e25159bbdb7c8122ce353874e7397d31fd2c49031c877f7afa99a7a"
+      }
+    }
+  },
+  "input_sha256": {
+    "quickSort.json": "c7b51cb5a90911a2db52c4905525043f23b2bfa485139cebbb8cffd111e5909b",
+    "quickSort.rs": "274eaec50e5e67c87542180daa880fbc58e39d8662b53cdf9b724912934889a7"
+  }
+}

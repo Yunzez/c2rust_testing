@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "C4",
+  "target": "ends_in_bz2_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_C4/attempt-001",
+  "hashes": {
+    "input.sha256": "d01478b655962b455176f8fccf48cace412f9a09a502039517e29faa2b0cc67a",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "b0e2548eb1e395fd83eaa8ed8b11fedf982c1754c629eb642c8468de71ca5a54",
+    "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target.txt": "d2c277653a0ed5e0445a79db6d5fbe2927c381ec09723f32baeff50fc4b3bb35",
+    "verify.log": "789a40ed643926e559986c406520496f2cdd06f66b36f23fe72920e0bbf9dbee",
+    "console.log": "95f910194c23dc6cc77611e89cde55eef9a323afa13c9084c41087c7fe94e9a2",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "crashes": {
+      "verification/src/__fuzz__/test__ends_in_bz2_valid/crashes/crash-baf7b935a04346defc1d5d1ba90b3106fa0df4d3": "c27b5cf999f6f926cac7f67fd6db9aff9726ca1e620725af45d5d2dda10ed1f4"
+    }
+  },
+  "interpretation": "FLOURINE generated a NUL-terminated filename containing non-UTF-8 bytes; the original C target returned normally while the translated Rust target terminated during UTF-8 validation.",
+  "adapter_record": "results/baseline_artifacts/adapters/flourine/C4/adapter.json",
+  "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh C4",
+  "witness": {
+    "generated_argument": [
+      8,
+      45,
+      14,
+      8,
+      8,
+      -60,
+      -60,
+      -60,
+      -60,
+      -60,
+      -60,
+      45,
+      14,
+      45,
+      14,
+      45
+    ],
+    "nul_terminated_filename_bytes": [
+      8,
+      45,
+      14,
+      8,
+      8,
+      196,
+      196,
+      196,
+      196,
+      196,
+      196,
+      45,
+      14,
+      45,
+      14,
+      0
+    ],
+    "actual_rust": "termination",
+    "expected_c": 0
+  },
+  "witness_search_check": "The adapter fixes only the final NUL terminator; every preceding filename byte is independently generated, and no known witness or suffix is encoded."
+}

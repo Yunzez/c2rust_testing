@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "C13",
+  "target": "opng_free_null",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "compile_failure",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_C13/attempt-001",
+  "hashes": {
+    "input.sha256": "3df9a9e2f15433919f1803a969e7e265fa0f4885085f5292b9e19a6c95f99357",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "5d900fd97689f9c14a10aa5ea3d2af5ecc01ce1ad21e36f05a6b7c50901dca1d",
+    "console.log": "492b9bf17db022cf0ab77dd59695139787bd97240b49562d70247854f156edcf"
+  },
+  "failure_stage": "compile",
+  "interpretation": "For the original zero-argument target, the released C emitter generated the invalid declaration `void extern_input0`. No workaround is scored.",
+  "exploratory_unscored": [
+    {
+      "attempt": "attempt-002",
+      "outcome": "packaging_failure",
+      "reason": "both historical and retry inputs were present in the single-input glob",
+      "hashes": {
+        "input.sha256": "a40fb698d9ec83fa78551e5953fb9dac7b28a4a93cd206ba9d1ecf8d2e8a0177",
+        "instrument-c.log": "0a4555222093a3ae3ff77a6b8ae6c5ce6553c921b1bdcc08b2226505108a0cf0",
+        "console.log": "0a4555222093a3ae3ff77a6b8ae6c5ce6553c921b1bdcc08b2226505108a0cf0",
+        "exit_code.txt": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+      }
+    },
+    {
+      "attempt": "attempt-003",
+      "outcome": "detected_after_interface_workaround",
+      "reason": "an ignored byte argument bypassed the released zero-argument emitter failure",
+      "hashes": {
+        "input.sha256": "ff430662e73fbc2969fab3c826718abefc070504eee01f794cb22c178cc93607",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "85b350db57c4ed3791958bdbdff4371fa1406f89fa6fa4b0a9e9260c69f5fec3",
+        "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "target.txt": "8ff625cb93f1b4f1a924388a4e8ef4aa210856f07a305d992e251a8302b04549",
+        "verify.log": "05cc15f478851b5a93d07d1575f84253988a2f84aa04a0c16dd38aea1c259680",
+        "console.log": "dfaffe13edba7dcb5dd2f1e56c1f581847ada088dbcf6b639f12ddbf1985f4f3",
+        "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "crashes": {
+          "verification/src/__fuzz__/test__opng_free_null_packet/crashes/crash-adc83b19e793491b1c6ea0fd8b46cd9f32e592fc": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+        }
+      }
+    }
+  ]
+}

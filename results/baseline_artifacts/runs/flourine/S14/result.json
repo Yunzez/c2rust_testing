@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S14",
+  "target": "mmed3_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "analysis_failure",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S14/attempt-001",
+  "hashes": {
+    "input.sha256": "2cc8a48a3964ac2e1add6d7673f6f2749fa65dcdd089a37cd4dfac2d965a7877",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "257f0b7754883f0125eab6b9871e95ff2bc56d59ff6a778a67427e8b61590c79",
+    "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target.txt": "d3e226d84e9f00a10b63905764af3a9cfc28b3b4c9c3f4cb538948be11c9dd91",
+    "verify.log": "ee6636555a81ca097f1a7495d82182b5f432b189895ecb1e96cfa977989c9422",
+    "console.log": "e71953027d7363e41b46955bc83322f862cc36168b2651264cc1942544407489",
+    "crashes": {
+      "verification/src/__fuzz__/test__mmed3_valid/crashes/crash-6128c8b4fa2f372d209b91fafc0bfeaa27dc1420": "661396833668e1426bfd33e727fa4e485d284dc15957bb665f1f780b3acbcd83"
+    }
+  },
+  "failure_stage": "execution",
+  "interpretation": "The released artifact emitted incompatible ABIs for the original primitive signature: Rust calls u8,u8,u8->u8 while the generated C symbol is a JSON char*,char*,char*->char* wrapper. No workaround is scored.",
+  "exploratory_unscored": [
+    {
+      "attempt": "attempt-002",
+      "outcome": "packaging_failure",
+      "reason": "both historical and retry inputs were present in the single-input glob",
+      "hashes": {
+        "input.sha256": "81a0202bc11ac1dfab553d3898aef9cbdb7ee5463c7353ddb4950b0823ebaba8",
+        "instrument-c.log": "9de09cff4d87d399ba7045482d92fb857520c56057c8f3262a3c03b8004e33a0",
+        "console.log": "9de09cff4d87d399ba7045482d92fb857520c56057c8f3262a3c03b8004e33a0",
+        "exit_code.txt": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+      }
+    },
+    {
+      "attempt": "attempt-003",
+      "outcome": "analysis_failure",
+      "reason": "released char-return ABI mismatch",
+      "hashes": {
+        "input.sha256": "29ecc5649beaa0cd594c8a7f0a2fbf8c42db5753b4d4789dd9b51bce7c6c334a",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "bae5f9664cc978735e304b0d71e78a9bcc7fce8d550d3ee0cf47987d0a775260",
+        "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "target.txt": "a2ed03193aaf0f4edce4dfc3349e9ae690852e8ac86ada45bd0164641205dd2a",
+        "verify.log": "5f44ae2b21fd4b288964d305b4aebb3451e99f5e189e0b844b1837dbd8e4aa76",
+        "console.log": "f8e2cdd6fe6289848d3681ea5aa94036f45674e8dd449d64d28e2491b3a5eadb",
+        "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "crashes": {
+          "verification/src/__fuzz__/test__mmed3_packet/crashes/crash-48a0ef60aa0fef4e3f314b1ea0af36778d74f849": "7e33ecdf695bd1ac4561ce6c3e6b9c0a76341c55f7f488efa3bf1b2790bfa6f3"
+        }
+      }
+    },
+    {
+      "attempt": "attempt-004",
+      "outcome": "detected_after_interface_workaround",
+      "reason": "fixed-array argument bundling plus lossless u8-to-u32 return widening bypassed both released emitter failures",
+      "hashes": {
+        "input.sha256": "36fc2b208a2f6072b75d182426694c6f265b449540ee92a6c00121e54c1a33dd",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "bae5f9664cc978735e304b0d71e78a9bcc7fce8d550d3ee0cf47987d0a775260",
+        "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "target.txt": "a2ed03193aaf0f4edce4dfc3349e9ae690852e8ac86ada45bd0164641205dd2a",
+        "verify.log": "a057ad51029c85a57ee448d14c2c86e14b701fe5ed53ab46156eb879ade82342",
+        "console.log": "6f282a06f4064d933f818910455aa1d55dbf433705a08882233f91ef4c79cd62",
+        "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "crashes": {
+          "verification/src/__fuzz__/test__mmed3_packet/crashes/crash-3281af96f81eb8bbc0769f606d2ebbaa8fb6705d": "d4bfc3853e6f8a716d0c63d4c5aa214507da3f7ea98a32aa8aec5ed762ed66e3"
+        }
+      }
+    }
+  ]
+}

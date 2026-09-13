@@ -1,0 +1,20 @@
+{
+  "Includes": [
+    "#include <stdbool.h>",
+    "#include <stdint.h>",
+    "#include <string.h>"
+  ],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [
+    "char *URL_SCHEMES[] = {\n  // official IANA registered schemes\n  \"aaa\", \"aaas\", \"about\", \"acap\", \"acct\", \"adiumxtra\", \"afp\", \"afs\", \"aim\", \"apt\", \"attachment\", \"aw\",\n  \"beshare\", \"bitcoin\", \"bolo\", \"callto\", \"cap\", \"chrome\", \"crome-extension\", \"com-evenbrite-attendee\",\n  \"cid\", \"coap\", \"coaps\",\"content\", \"crid\", \"cvs\", \"data\", \"dav\", \"dict\", \"lna-playsingle\", \"dln-playcontainer\",\n  \"dns\", \"dtn\", \"dvb\", \"ed2k\", \"facetime\", \"fax\", \"feed\", \"file\", \"finger\", \"fish\",\"ftp\", \"geo\", \"gg\",\"git\",\n  \"gizmoproject\", \"go\", \"gopher\", \"gtalk\", \"h323\", \"hcp\", \"http\", \"https\", \"iax\", \"icap\", \"icon\",\"im\",\n  \"imap\", \"info\", \"ipn\", \"ipp\", \"irc\", \"irc6\", \"ircs\", \"iris\", \"iris.beep\", \"iris.xpc\", \"iris.xpcs\",\"iris.lws\",\n  \"itms\", \"jabber\", \"jar\", \"jms\", \"keyparc\", \"lastfm\", \"ldap\", \"ldaps\", \"magnet\", \"mailserver\",\"mailto\",\n  \"maps\", \"market\", \"message\", \"mid\", \"mms\", \"modem\", \"ms-help\", \"mssettings-power\", \"msnim\", \"msrp\",\n  \"msrps\", \"mtqp\", \"mumble\", \"mupdate\", \"mvn\", \"news\", \"nfs\", \"ni\", \"nih\", \"nntp\", \"notes\",\"oid\",\n  \"paquelocktoken\", \"pack\", \"palm\", \"paparazzi\", \"pkcs11\", \"platform\", \"pop\", \"pres\", \"prospero\", \"proxy\",\n  \"psyc\",\"query\", \"reload\", \"res\", \"resource\", \"rmi\", \"rsync\", \"rtmp\",\"rtsp\",  \"secondlife\", \"service\",\"session\",\n  \"sftp\", \"sgn\", \"shttp\", \"sieve\", \"sip\", \"sips\", \"skype\", \"smb\", \"sms\", \"snews\", \"snmp\", \"soap.beep\",\"soap.beeps\",\n  \"soldat\", \"spotify\", \"ssh\", \"steam\", \"svn\", \"tag\", \"teamspeak\", \"tel\", \"telnet\", \"tftp\", \"things\",\"thismessage\",\n  \"tn3270\", \"tip\", \"tv\", \"udp\", \"unreal\", \"urn\", \"ut2004\", \"vemmi\",\"ventrilo\", \"videotex\", \"view-source\", \"wais\",\"webcal\",\n  \"ws\", \"wss\", \"wtai\", \"wyciwyg\", \"xcon\", \"xcon-userid\", \"xfire\",\"xmlrpc.beep\",  \"xmlrpc.beeps\", \"xmpp\", \"xri\",\"ymsgr\",\n\n  // unofficial schemes\n  \"javascript\", \"jdbc\", \"doi\"\n};"
+  ],
+  "Structs": [],
+  "Function Declarations": [
+    "bool url_is_protocol_valid(int8_t str[16]);"
+  ],
+  "Function Implementations": [
+    "bool\nurl_is_protocol (char *str) {\n  int count = sizeof(URL_SCHEMES) / sizeof(URL_SCHEMES[0]);\n\n  for (int i = 0; i < count; ++i) {\n    if (0 == strcmp(URL_SCHEMES[i], str)) {\n      return true;\n    }\n  }\n\n  return false;\n}\n\nbool url_is_protocol_valid(int8_t str[16])\n{\n    str[15] = '\\0';\n    return url_is_protocol((char *)str);\n}"
+  ],
+  "Enums": []
+}

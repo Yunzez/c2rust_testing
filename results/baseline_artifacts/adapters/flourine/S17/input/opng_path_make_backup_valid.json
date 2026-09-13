@@ -1,0 +1,20 @@
+{
+  "Includes": [
+    "#include <stddef.h>",
+    "#include <stdint.h>",
+    "#include <string.h>"
+  ],
+  "Defines": [
+    "#define OPNG_PATH_EXTSEP_STR \".\""
+  ],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "void opng_path_make_backup_valid(int8_t buffer[32], int8_t path[16]);"
+  ],
+  "Function Implementations": [
+    "char *\nopng_path_make_backup(char *buffer, size_t bufsize, const char *path)\n{\n    static const char bak_extname[] = OPNG_PATH_EXTSEP_STR \"bak\";\n\n    if (strlen(path) + sizeof(bak_extname) > bufsize)\n        return NULL;\n\n#if defined OPNG_OS_DOS\n\n    return opng_path_replace_ext(buffer, bufsize, path, bak_extname);\n\n#else  /* OPNG_OS_UNIX and others */\n\n    strcpy(buffer, path);\n    strcat(buffer, bak_extname);\n    return buffer;\n\n#endif\n}\n\nvoid opng_path_make_backup_valid(int8_t buffer[32], int8_t path[16])\n{\n    buffer[0] = '\\0';\n    path[15] = '\\0';\n    (void)opng_path_make_backup((char *)buffer, 32, (const char *)path);\n}"
+  ],
+  "Enums": []
+}

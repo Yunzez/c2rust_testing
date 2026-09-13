@@ -1,0 +1,16 @@
+{
+  "Includes": [
+    "#include <stdlib.h>"
+  ],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "void opng_free_null_packet(unsigned char ignored[1]);"
+  ],
+  "Function Implementations": [
+    "opng_free(void *ptr)\n{\n    /* This deallocator must be compatible with libpng's memory allocation\n     * routines, png_malloc() and png_free().\n     * If those routines change, this one must be changed accordingly.\n     */\n    free(ptr);\n}\nvoid opng_free_null_packet(unsigned char ignored[1]) { (void)ignored; opng_free(NULL); }"
+  ],
+  "Enums": []
+}

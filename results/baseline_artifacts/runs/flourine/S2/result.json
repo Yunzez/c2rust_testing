@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S2",
+  "target": "adler32_z_packet",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S2/attempt-001",
+  "hashes": {
+    "input.sha256": "5a6ac3a584fabc4080c7aa73a3824918a5bbebc23db1cf9475c1be5aba572540",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "c63a87a41ec20d38411d333407380a622e629130968cd037ec6a8424559fa5dd",
+    "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target.txt": "06ba887d164062fa717aa3ca6541fda3435623963f9fdc2f14b3113d969cc7dd",
+    "verify.log": "9536e8aaa032002c8de4a9693700c13407064d3a2b3f6f509fb227e93f28e179",
+    "console.log": "86684833bc4867f59e1ec87dfc18c2857bc3528003f7f77f7db400cb405bcff5",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "crashes": {
+      "verification/src/__fuzz__/test__adler32_z_packet/crashes/crash-1c78abfc331a46a9c968f0332aacaf1177eca6c9": "b5f01d23c556f199ebb83f84a0ba6ae583e2379a6228a1f9d57749fc49dd1e5d"
+    }
+  },
+  "interpretation": "FLOURINE generated a fixed packet encoding Adler state, bytes, and a valid length, then reported scalar return discrepancies in the translated adler32_z computation."
+}

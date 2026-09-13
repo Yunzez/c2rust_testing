@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S9",
+  "target": "parse_string_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-005",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_cjson_parse_string/attempt-005",
+  "hashes": {
+    "input.sha256": "6b12598c551946ba91ae13448d4a00e833363827a8ff45ac164b0f7829062d97",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "ef7a1c97dd32e349b25fd9fe71892238256f44c4c64f229ac5fac812665bfbb1",
+    "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target.txt": "0ddd4014b7ad50aaf21c2093f8b56b157fa1eae8d62d1026d7867e3917a917a0",
+    "verify.log": "8e2114d989523bb63b64bfb2160fd513d46cd43db347a31d2986ebb30cab86b0",
+    "console.log": "8470cfdcede9eb569a21a3ff6afc6ecf04ef08923b939d6c12d9f75e9ed822d5",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "crashes": {
+      "verification/src/__fuzz__/test__parse_string_valid/crashes/crash-e3b479454fec3b6e6222bbb51637c7fe3b83bd17": "e64aa1c3549e9c523ace365f1d5b748f10ec09d409c5cc66de9cd691b5609b90"
+    }
+  },
+  "interpretation": "FLOURINE generated a quoted byte string containing non-UTF-8 bytes and reported the translated parser returning failure where the original C parser returned success.",
+  "adapter_record": "results/baseline_artifacts/adapters/flourine/cjson_parse_string/adapter.json",
+  "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh S7",
+  "witness": {
+    "base64": "Ch///x9KHA8sLP//LSwsLCwsLCwsLCwsLCwsLCzjSgLA",
+    "interpretation": "After the symmetric wrapper inserts quotes and a terminator, the payload contains 0xff bytes and is invalid UTF-8. C returns 1 and Rust returns 0, matching S9."
+  },
+  "prior_attempts": [
+    {
+      "attempt": "attempt-001",
+      "outcome": "adapter_setup_failure",
+      "reason": "system includes were embedded after FLOURINE's allocator macros",
+      "hashes": {
+        "input.sha256": "183efde2db237fae34dc3ab29937af5c89d925fb01d3c8cb3f88849562a19340",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "c07b5f34293a862fd4b9ff7848b3308d33744aa0407dcbae969359b51d1963f8",
+        "console.log": "3a2899f3188f5185312fb000c2ae8e4ba2ccd8ec9d10f7cc76c604144e79fb3a",
+        "exit_code.txt": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+      }
+    },
+    {
+      "attempt": "attempt-002",
+      "outcome": "adapter_setup_failure",
+      "reason": "the submitted wrapper was hidden inside include!, so the documented surface parser could not see its entry",
+      "hashes": {
+        "input.sha256": "cd10a4287a0a569e632a750212c01e98bf1f7251794ce1773eedd92c4858fcdd",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "ef7a1c97dd32e349b25fd9fe71892238256f44c4c64f229ac5fac812665bfbb1",
+        "instrument-rust.log": "67b6fbe95f5584ade8c873b085392d5412331112628d21075fc770c732ef9192",
+        "console.log": "3b62496545ac828469dcbc6c9d259d3fbbb43afc3c9e4facec1ebbafea632725",
+        "exit_code.txt": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c"
+      }
+    },
+    {
+      "attempt": "attempt-003",
+      "outcome": "adapter_setup_failure",
+      "reason": "the complete translated dependency unit was exposed as the surface AST rather than compiled through include!",
+      "hashes": {
+        "input.sha256": "e534407b84fe18c400432f5b35f6de05dd2748a83d93aeb5cefc65f0daffcc72",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "ef7a1c97dd32e349b25fd9fe71892238256f44c4c64f229ac5fac812665bfbb1",
+        "instrument-rust.log": "74487f061c7a7f1427faae88798c11d66bbf0748a85079c7d944bf4ff3f10394",
+        "console.log": "8ec7cb4cf2c908043b5330ef2be9c2d613bff54f39cca995937108a1b05c6645",
+        "exit_code.txt": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c"
+      }
+    },
+    {
+      "attempt": "attempt-004",
+      "outcome": "adapter_induced_false_positive",
+      "reason": "the C wrapper mutated the submitted byte array while the Rust wrapper initially mutated only a copy; this asymmetry was corrected and is not scored",
+      "hashes": {
+        "input.sha256": "8f72de29ebcbf0c0e5a7025a58a1032a7d10a75ed0113a712791babba3ae2292",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "ef7a1c97dd32e349b25fd9fe71892238256f44c4c64f229ac5fac812665bfbb1",
+        "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "target.txt": "0ddd4014b7ad50aaf21c2093f8b56b157fa1eae8d62d1026d7867e3917a917a0",
+        "verify.log": "19575aa1f5d8c78d143b776fa271c9bc74564e48e09f565f6364fae5ace1ec73",
+        "console.log": "d393371438afe58d4c67e54bc1ce316db923992cf0173e8f55d077ce056b665c",
+        "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "crashes": {
+          "verification/src/__fuzz__/test__parse_string_valid/crashes/crash-b9148ee8638fa95419bd27990de71c83293c2aa8": "70bde3bf08179eb7fa1b3b13bf67ee56221fffb562976e4471e160ea03b32bf3"
+        }
+      }
+    }
+  ]
+}

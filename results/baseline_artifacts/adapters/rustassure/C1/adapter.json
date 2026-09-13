@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "defect": "C1",
+  "baseline": "rustassure",
+  "target": "quickSort",
+  "adapter_kind": "documented_individual_function_input_manual_argument_order_and_syntax_only_crate_attribute_strip",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "results/rq4_effectiveness/bugs/qsort_c2saferrust/source/qsort.c",
+    "rust": "results/rq4_effectiveness/bugs/qsort_c2saferrust/translated/c2saferrust_WIP.rs"
+  },
+  "input_sha256": {
+    "quickSort.i": "d7a7db90d82dcbc3c51238c20a84e2fb685b4f47b37948bef20bcd41613554c4",
+    "quickSort.rs_original": "6183bddc71a27f6dee7f8be1740788a397e2788dbc6604de5fb88cd0ff9e361c",
+    "quickSort.rs_adapted": "66c6ad4f8f6af6b8e5fdfdc382aed7e51791c8ec5a40e64431ce68d6caded791"
+  },
+  "notes": [
+    "The exact frozen function bodies are copied unchanged.",
+    "The direct file failed under RustAssure's stable Rust 1.64 because it carried unused crate-level nightly feature attributes. The adapted retry removes only those attributes; no function, type, expression, or ABI annotation is changed.",
+    "The manual argument map is positional identity because all three logical arguments remain in the same order.",
+    "The map is bind-mounted over RustAssure's model-specific map input; no analysis source is modified."
+  ]
+}

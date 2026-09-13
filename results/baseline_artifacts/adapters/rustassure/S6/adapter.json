@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "defect": "S6",
+  "baseline": "rustassure",
+  "target": "quick_sort",
+  "adapter_kind": "documented_individual_function_input_manual_argument_order",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "results/rq4_effectiveness/bugs/qsort_ptrtrans/original_qsort.c",
+    "rust": "results/rq4_effectiveness/bugs/qsort_ptrtrans/translated_qsort.rs"
+  },
+  "notes": [
+    "The C name adapter forwards the three arguments unchanged because the frozen Rust translation renamed quickSort to quick_sort.",
+    "The qsort bodies are copied unchanged; the positional map is identity."
+  ],
+  "input_sha256": {
+    "quick_sort.i": "cb8ae43d7c32ca49e7cb4c7c038eac822ccfc55aa095521f6ccdd92c4902d8fb",
+    "quick_sort.rs": "717008ffbf94a38247847918821e86487d004b5fd09c32f9335788570b3d876c",
+    "argument_order_map.json": "9217e8545611e14edeecde0f03a033c23c0dfb047e948de935e27482e9e5d5dc"
+  }
+}

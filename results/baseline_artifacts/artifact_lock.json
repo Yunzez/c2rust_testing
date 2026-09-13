@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "retrieved_at_utc": "2026-09-13",
+  "rustassure": {
+    "url": "https://github.com/davsec-lab/rustassure.git",
+    "commit": "39618406bd0c6acb1c5ca2cd697c3781a8e4c296",
+    "ref_at_retrieval": "refs/heads/configurations",
+    "dependency": {
+      "name": "rustify-klee",
+      "url": "https://github.com/davsec-lab/rustify-klee.git",
+      "commit": "d880ceb4a521126a243e6126430e39a215abed06",
+      "reason": "RustAssure documents a KLEE checkout but its released .gitmodules does not map one; this is the authors' public KLEE fork containing --target-function-name."
+    }
+  },
+  "flourine": {
+    "url": "https://d34gtk3knhjgeg.cloudfront.net/artifact.tar.gz",
+    "sha256": "87e570d4ee6dabd6905d6573f8da10d1645051e521d5ee9d6a19704cd87f0a32",
+    "bytes": 54106065,
+    "etag": "35c16ed52193dc8ce4a7dbccbcd26274-7",
+    "last_modified": "Mon, 25 Mar 2024 20:35:58 GMT"
+  },
+  "vert": {
+    "record": "https://zenodo.org/records/10927704",
+    "doi": "10.5281/zenodo.10927704",
+    "file": "vert.7z",
+    "bytes": 1352612895,
+    "checksum": "md5:b8ba269dc09b0974691e35014462784f",
+    "omitted_generation_dependencies": {
+      "rwasm": {
+        "url": "https://github.com/secure-foundations/rWasm.git",
+        "commit": "e43a4f58cecea33e6903f3574a53c57e6eedaae1",
+        "reason": "The Zenodo scripts reference /rWasm but the deposit omits it. This initial-release revision reproduces the deposited ADD_1_TO_A_GIVEN_NUMBER generated Rust source byte-for-byte."
+      },
+      "wasi_sdk": {
+        "url": "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-linux.tar.gz",
+        "version": "12.0",
+        "sha256": "fa47694d75bf6fce98fbe7927193298b25ee03dade27fca453d7dd530378973a",
+        "reason": "The Zenodo scripts reference /wasi-sdk-12.0 but the deposit omits it."
+      }
+    }
+  }
+}

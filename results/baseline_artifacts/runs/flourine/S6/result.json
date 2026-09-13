@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S6",
+  "target": "quick_sort_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "observation": "FLOURINE compared the mutable array after both void-returning calls and reported different permutations.",
+  "shrunk_input": "[\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    -2147483648,\n]",
+  "attempts": [
+    {
+      "name": "attempt-001",
+      "outcome": "compile_failure",
+      "detail": "The released C emitter generated an incomplete unsized array declaration."
+    },
+    {
+      "name": "attempt-002",
+      "outcome": "compile_failure",
+      "detail": "The released Rust emitter introduced an undeclared elided lifetime for Option<&mut [i32]>."
+    },
+    {
+      "name": "attempt-003",
+      "outcome": "runner_invocation_failure",
+      "detail": "A relative host volume path was rejected by Docker before submission."
+    },
+    {
+      "name": "attempt-004",
+      "outcome": "detected",
+      "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S6/attempt-004",
+      "adapter": "fixed 16-element array with the valid inclusive range [0,15]; array contents remain artifact-generated",
+      "hashes": {
+        "input.sha256": "fae7f9b6a619b566a613d18e0f3d3c628aa58b939a7d5aa38cc33cb1921eb9f8",
+        "target.txt": "80f65fa8215300766f8a898e6127a5a95bc29582d84b1bee4919ba4d8429e1c3",
+        "verify.log": "03885e94b4d6cd39086decff1d5008ac3ae1b98039c9238c7e6f6d1ad7dcd16c",
+        "console.log": "cbf8aa701d547b7e01212efea10d451217a9c056336fbdb3079a39d9155d0092"
+      }
+    }
+  ]
+}

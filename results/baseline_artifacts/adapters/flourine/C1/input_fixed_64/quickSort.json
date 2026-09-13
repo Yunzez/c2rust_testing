@@ -1,0 +1,14 @@
+{
+  "Includes": [],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "void quickSort(int arr[64], int low, int high);"
+  ],
+  "Function Implementations": [
+    "void swap(int* a, int* b)\n{\n    int t = *a;\n    *a = *b;\n    *b = t;\n}\n\nint partition (int* arr, int low, int high)\n{\n    int pivot = arr[high];\n    int i = low - 1;\n\n    for (int j = low; j <= high - 1; j++) {\n        if (arr[j] <= pivot) {\n            i++;\n            swap(&arr[i], &arr[j]);\n        }\n    }\n    swap(&arr[i + 1], &arr[high]);\n    return i + 1;\n}\n\nvoid quickSort(int* arr, int low, int high)\n{\n    if (low < high) {\n        int i = partition(arr, low, high);\n        quickSort(arr, low, i - 1);\n        quickSort(arr, i + 1, high);\n    }\n}\n"
+  ],
+  "Enums": []
+}

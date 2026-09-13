@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "defect": "S6",
+  "baseline": "flourine",
+  "target": "quick_sort",
+  "adapter_kind": "documented_per_function_json_and_rust_source",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "results/rq4_effectiveness/bugs/qsort_ptrtrans/original_qsort.c",
+    "rust": "results/rq4_effectiveness/bugs/qsort_ptrtrans/translated_qsort.rs"
+  },
+  "notes": [
+    "C and Rust computation bodies are copied from the frozen defect evidence.",
+    "A C name adapter quick_sort calls quickSort because FLOURINE has no correspondence-map input; it changes no arguments, state, or result."
+  ],
+  "alternative_input_adapters": {
+    "input_fixed_64": {
+      "purpose": "Give FLOURINE's released wrapper generator the storage extent that an unsized C array parameter omits.",
+      "semantic_rewrite": false,
+      "c_language_note": "In a function parameter, int arr[64] is adjusted by C to int *arr; the computation body and callable C type are unchanged.",
+      "capacity": 64,
+      "input_sha256": {
+        "quick_sort.json": "d6a78548988f6594e83829bbc8fc668979a2b2f543a29ed89383a3b57a565dd3",
+        "quick_sort.rs": "717008ffbf94a38247847918821e86487d004b5fd09c32f9335788570b3d876c"
+      }
+    },
+    "input_valid_16": {
+      "purpose": "Realize qsort's valid-call precondition while leaving all array elements under artifact-native generation.",
+      "semantic_rewrite": false,
+      "known_witness_encoded": false,
+      "precondition": "The array has 16 elements and qsort is called on the inclusive range [0, 15].",
+      "input_sha256": {
+        "quick_sort_valid.json": "f856201267e23e9f5524bd57c6e5558e7c01fa3cb252cddd1b64a9f3ed89902d",
+        "quick_sort_valid.rs": "e39384ca3c9ce6489d8dc9ba13ef5cd9f2a0f598d212f32b4dbef74b34eda5ca"
+      }
+    }
+  },
+  "input_sha256": {
+    "quick_sort.json": "e7d657115a0b0a1ad1c1999e6ff8f626783efa855e8f7cb308abf0c9e2e88ccf",
+    "quick_sort.rs": "717008ffbf94a38247847918821e86487d004b5fd09c32f9335788570b3d876c"
+  }
+}

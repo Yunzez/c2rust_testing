@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S12",
+  "target": "bzbuff_compress_packet",
+  "gates": {
+    "submitted": true,
+    "accepted": false,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "analysis_failure",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S12/attempt-001",
+  "hashes": {
+    "input.sha256": "80a08f9a6889ea9a73abf85633dcf2fe5a9aef320b5ae9483584cf0d26dde19a",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "f3c625b0813d328bbd11a473d97f2f7303b2778e0d0f7c00fb12fe65fb822150",
+    "instrument-rust.log": "7024d3ef550fa5741e4ebe6d815557f1959bd7a3944fc2137a034f7549d5bddf",
+    "console.log": "00cde6e105a894394eb36e8adadf8eb548b22bce8888dbb4b48a454e2ed70ed9",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  },
+  "failure_stage": "rust_instrumentation",
+  "adapter_record": "results/baseline_artifacts/adapters/flourine/S12/adapter.json",
+  "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh S12",
+  "interpretation": "The released C instrumenter accepted and compiled the exact bzip2 dependency closure, but the released Rust instrumenter rejected the original dependency-bearing Rust input with `Error: expected square brackets`. Per the frozen policy, no parser workaround or source reduction is attempted."
+}

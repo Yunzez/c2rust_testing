@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "defect": "S21",
+  "baseline": "flourine",
+  "target": "crc32_combine",
+  "adapter_kind": "documented_per_function_json_and_rust_source",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/optipng_c2saferrust/source/zlib/crc32.c",
+    "rust": "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs"
+  },
+  "added_scaffolding": [
+    "C typedefs and empty zlib linkage macros needed outside crc32.c",
+    "Rust aliases for the translated c_ulong, uLong, and off_t names",
+    "the target prototype required by FLOURINE's C JSON schema"
+  ],
+  "notes": [
+    "All helper and target computation bodies are copied byte-for-byte from the frozen pair.",
+    "crc32_combine64 is omitted so FLOURINE's call-graph entry selection has one top-level target."
+  ],
+  "input_sha256": {
+    "crc32_combine.json": "6c0c5830fbb12e1245196b6e4ed69ab6834499951b624d0194f39c4e8a2d337c",
+    "crc32_combine.rs": "c9f5e0328b5dd5b60251891ad95e4663b1b2639694b6372324452af29a1f9b2e"
+  }
+}

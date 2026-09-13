@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S5",
+  "target": "genann_cached_initialized",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-003",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S5/attempt-003",
+  "hashes": {
+    "input.sha256": "5d6a910b144f68094feeb60497cc0b43c53a98f0260923ce9027178b894be6a6",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "951d9cf88bb1200105c955caa09f6d6d7c5fffef43a29b638d04eb2ff6a0e749",
+    "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target.txt": "ff992a626bf7825987451dd9f985d6cf2a19b36bd964289ed10bc36f182ff805",
+    "verify.log": "bfc8b77b4db36e31a7377aadc3dbfbb6b39c1cc643120ec6a4123b21747caf65",
+    "console.log": "d45006d3d74c0ee89a9824e5041c020aba05e6b99107375dec09f7d6c2da2edc",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "crashes": {
+      "verification/src/__fuzz__/test__genann_cached_initialized/crashes/crash-be673e8a56eaa9d8c1d35064866701c11ef8e089": "12a3ae445661ce5dee78d0650d33362dec29c4f82af05e7e57fb595bbbacf0ca"
+    }
+  },
+  "interpretation": "FLOURINE generated an f64 input, completed the C call, and then terminated when the translated initializer wrote through a cast into its immutable lookup static. This is the confirmed S5 initialization-corruption root cause.",
+  "adapter_record": "results/baseline_artifacts/adapters/flourine/S5/adapter.json",
+  "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh S5",
+  "witness": {
+    "base64": "//////////8=",
+    "generated_f64_bits": "0xffffffffffffffff",
+    "effective_argument": 0.0,
+    "actual_rust": "termination during genann_init_sigmoid_lookup",
+    "expected_c": "normal return"
+  },
+  "witness_search_check": "The adapter maps only NaN to 0.0 on both sides to satisfy the target's explicit non-NaN precondition; it does not encode the immutable-static defect.",
+  "prior_attempts": [
+    {
+      "attempt": "attempt-001",
+      "outcome": "adapter_setup_failure",
+      "reason": "the adapter generator removed the dependency header before inlining it",
+      "hashes": {
+        "input.sha256": "2f4bdaad611dd1618b0ea0e6f50c904f5a1fb776d0d06e8135f22943418de2ff",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "b72ee43a76aeefd0a1f697f3b1c3456d6d7b4427da3893155f7e642fa8007e40",
+        "console.log": "b9dddbbf39c9e3dd2ba0e216142997aef1a4d8f1fff8e6b8f9d0fb3ca9d338c9",
+        "exit_code.txt": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+      }
+    },
+    {
+      "attempt": "attempt-002",
+      "outcome": "adapter_out_of_contract",
+      "reason": "the initial adapter admitted NaN despite the target's explicit assert(!isnan(a)) precondition",
+      "hashes": {
+        "input.sha256": "900910826732a05edde6dac3fc25c40fa4bad1b1ff571ddc72c978d8c88de6f4",
+        "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cmake-build.log": "951d9cf88bb1200105c955caa09f6d6d7c5fffef43a29b638d04eb2ff6a0e749",
+        "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "target.txt": "ff992a626bf7825987451dd9f985d6cf2a19b36bd964289ed10bc36f182ff805",
+        "verify.log": "657ab81d5ed8fd473f88715c95ad69ec019bd3a327a6011f9aa2539343cc9aee",
+        "console.log": "2fadce41208d453ff1584ae3c69dedc55debd1696ae44757cd36fb8fb38949d7",
+        "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "crashes": {
+          "verification/src/__fuzz__/test__genann_cached_initialized/crashes/crash-c066e82115336f010aafaef103252b7a4dbd2983": "30f29fb37e15199bd2dd43d840de036ae36dfe85e0533f0402bfc3004db15b62"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "example": "__uint32_identity",
+  "source": "official checkout src/python/inputs-complex/libcsv/archive/individual-funcs_gpt-4o_2025-07-02_14-41-02__complete",
+  "image": "c2r-baseline-rustassure:39618406",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected_difference": false
+  },
+  "comparison": {
+    "arg_value_0_edit_distance": 0.0,
+    "return_value_edit_distance": 0.0,
+    "c_instruction_coverage_percent": 100.0,
+    "rust_instruction_coverage_percent": 100.0
+  },
+  "input_sha256": {
+    "__uint32_identity.i": "8a49210bf6f1827121e1336f0a1deb1c46e22c4fe6ac851e9ba8259a7997669b",
+    "__uint32_identity.rs": "7f5adc3054909a6f475d3e9eeda6a0b7e8410458760793b5cdfdd76f8c0129e7"
+  },
+  "evidence": {
+    "external_directory": "/home/yunzez/c2rust_baselines/runs/rustassure/shipped_uint32_identity",
+    "console_sha256": "0c4fc1eb7cb2cd3efa989e8ed97970b20363cc819b653af7e9c3a13753b59ea3",
+    "result_csv_sha256": "1404c6c73fe7acac41acde20ba41a0def8331ad3e2b0381edf7a6f182c864021",
+    "best_edit_distances_sha256": "9084dd911793bae0b5887a8ca0ebbdb8029500f3b421e9db7585e6291ecc881e"
+  },
+  "setup_note": "Do not install the unrelated PyPI package named distance. RustAssure intentionally imports its repository-local src/python/distance.py; the PyPI package shadows it and breaks KqueryGrapher's transitive imports. The container self-test checks this import path."
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S1",
+  "target": "crc32_z_packet",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S1/attempt-001",
+  "hashes": {
+    "input.sha256": "ed197a18ebafed3ce9c5a341b54aa2d3d938d597ae63c76a295bc4d8f877bd82",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "63391d6e9a8720c446f419577709b53888464406a69273f75f977942cfe14ec6",
+    "instrument-rust.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target.txt": "af4ee6a0524581b9394157540b806e3dd0293dde70802e4c00607d731d565b24",
+    "verify.log": "ce217f6b1196c3a484766e87a2af8b79ac0390eef32b560c422b00e325ca4239",
+    "console.log": "b8fde43528cd8d06f358863d92505bc38f28fab3471ddaa95e189a2652cb1eec",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "crashes": {
+      "verification/src/__fuzz__/test__crc32_z_packet/crashes/crash-a883b794b153be4c3907fa278642818c06332f8b": "f5818f397a0a1148c80681cd8e8d2a0a7edc65357238f6a4043b9aaa573054b9"
+    }
+  },
+  "interpretation": "FLOURINE generated a fixed packet encoding CRC state, bytes, and a valid length, then reported scalar return discrepancies in the translated crc32_z computation."
+}

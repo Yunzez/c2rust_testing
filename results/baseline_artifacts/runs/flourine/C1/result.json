@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "C1",
+  "target": "quickSort_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "detection": "Rust stack overflow on a fixed 16-element valid qsort range; the corresponding C recursion is bounded.",
+  "executions_before_detection_upper_bound": 6722,
+  "attempts": [
+    {
+      "name": "attempt-001",
+      "outcome": "compile_failure",
+      "detail": "The released C emitter generated an incomplete unsized array declaration."
+    },
+    {
+      "name": "attempt-002",
+      "outcome": "analysis_failure",
+      "detail": "Independent arbitrary low/high values drove the C reference outside its input contract and triggered the artifact crash handler."
+    },
+    {
+      "name": "attempt-003",
+      "outcome": "detected",
+      "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_C1/attempt-003",
+      "adapter": "fixed 16-element array with the valid inclusive range [0,15]; array contents remain artifact-generated",
+      "hashes": {
+        "input.sha256": "8169bf071c74bf8fbf59c16d3a9dedbcaad87b34353d1cbf52fe7bdc04af8198",
+        "target.txt": "ddf041a46b9ea3240179032ff61c402c70bc56941d8976fa3acd6d80a05e9457",
+        "verify.log": "0774cd57982812221ed4ae2c8008f44034176407b4b6f79679b6663b4037c15a",
+        "console.log": "1fbe3afbe4251441b786dca0355be7ae8a97f2d2f4cc03bc74ff90ddc4c092ce"
+      }
+    }
+  ]
+}

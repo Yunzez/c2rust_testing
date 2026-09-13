@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S21",
+  "target": "crc32_combine",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "target_selected_by_artifact": "test::fuzz_crc32_combine",
+  "counterexamples_reported": 1021,
+  "clean_witness": {
+    "args": [
+      "9",
+      "18376938279485308928",
+      "1375164313167"
+    ],
+    "rust_result": "18376938279485308928",
+    "c_result": "18376938283359342172",
+    "c_definedness_argument": "crc1=9 has no bit above position 3, so C's gf2_matrix_times consumes four entries of its initialized 32-entry matrix; len2 is positive and all arithmetic is unsigned or in-range signed shifting."
+  },
+  "attempts": [
+    {
+      "name": "attempt-001",
+      "outcome": "adapter_packaging_failure",
+      "detail": "FLOURINE's C JSON emitter dropped static from helper prototypes, conflicting with the verbatim static definitions. Helper prototypes were unnecessary because the copied functions are dependency ordered; only the target prototype was retained."
+    },
+    {
+      "name": "attempt-002",
+      "outcome": "detected",
+      "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S21/attempt-002",
+      "process_status": 1,
+      "status_interpretation": "expected detector termination after the artifact's multi-example threshold",
+      "hashes": {
+        "input.sha256": "cdba2590b1d5c84f511744c9db3192c360a6a694c925ce8e495dcf0e5e417434",
+        "target.txt": "59aea4eef9881232889829297f6fccdc8774374c8ff8c408e9806dc293228f1e",
+        "verify.log": "03f49582be12049daf8c8ab4fbae580f9d1f871a12130fa68793b84b1da6d8c5",
+        "console.log": "8e93ace653a9711886e943f1b1790d55c93d3724eb1add944be505e592ce42c8"
+      }
+    }
+  ]
+}

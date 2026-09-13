@@ -1,0 +1,14 @@
+{
+  "Includes": [],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "unsigned char mmed3_valid(unsigned char a, unsigned char b, unsigned char c);"
+  ],
+  "Function Implementations": [
+    "typedef unsigned char UChar;\nUChar mmed3 ( UChar a, UChar b, UChar c )\n{\n   UChar t;\n   if (a > b) { t = a; a = b; b = t; };\n   if (b > c) { \n      b = c;\n      if (a > b) b = a;\n   }\n   return b;\n}\n\nunsigned char mmed3_valid(unsigned char a, unsigned char b, unsigned char c) { return mmed3(a,b,c); }"
+  ],
+  "Enums": []
+}

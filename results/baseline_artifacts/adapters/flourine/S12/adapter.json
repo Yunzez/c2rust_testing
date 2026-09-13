@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "defect": "S12",
+  "baseline": "flourine",
+  "target": "bzbuff_compress_packet",
+  "adapter_kind": "documented_per_function_json_with_bounded_length_wrapper",
+  "semantic_rewrite": false,
+  "known_witness_encoded": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/bzip2_c2saferrust/source/bzip2lib.c",
+    "rust": "benchmark/pairs/rq4/bzip2_c2saferrust/translated/bzip2_c2saferrust.rs"
+  },
+  "wrapper_contract": "Provide 128 bytes of destination storage and up to 31 generated source bytes. The source length is generated as packet[0] modulo 32; the remaining legal compression parameters are fixed identically on both sides.",
+  "input_sha256": {
+    "bzbuff_compress_packet.json": "baaf52d07680e83efb32b65d54a85d63af3edd4f4d159870829979f5edafd8eb",
+    "bzbuff_compress_packet.rs": "8700a02f1c30cd68c2cb8182c3833d15731f1e3a962960831b4f6f9646d24c9f",
+    "bzbuff_compress_packet_raw.inc": "ac643f6c61ed23919ccea1ae06dafd837bac2d05f4c4db4ace32c523246f0da2"
+  }
+}

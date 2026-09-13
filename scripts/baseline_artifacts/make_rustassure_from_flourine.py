@@ -26,12 +26,18 @@ OUT_ROOT = ROOT / "results/baseline_artifacts/adapters/rustassure"
 CASES = {
     "C2": ("C2", 1),
     "C4": ("C4", 1),
+    "C7": ("C7", 1),
+    "C8": ("C8", 1),
+    "C11": ("C11", 1),
     "S1": ("S1", 1),
     "S2": ("S2", 1),
+    "S3": ("C8", 1),
     "S4": ("S4", 1),
     "S5": ("S5", 1),
     "S7": ("cjson_parse_string_ascii", 1),
     "S9": ("cjson_parse_string", 1),
+    "S10": ("C7", 1),
+    "S11": ("S11", 1),
     "S15": ("S15", 1),
 }
 

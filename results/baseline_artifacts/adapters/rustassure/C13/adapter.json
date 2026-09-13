@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "defect": "C13",
+  "baseline": "rustassure",
+  "target": "opng_free_choice",
+  "adapter_kind": "documented_individual_function_input_with_contract_surface",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/optipng_c2saferrust/source/optipng/optim.c",
+    "rust": "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs"
+  },
+  "notes": [
+    "The exact opng_free bodies are copied from the frozen C2SaferRust pair.",
+    "A symbolic scalar selects either NULL or a valid one-byte heap allocation, covering both branches of free's original contract without hard-coding the defect witness."
+  ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
+  "input_sha256": {
+    "opng_free_choice.i": "a8627f83f747446165dc58db4d8a79f9f97fec9c7f57f3ca5c0c9d218ced66bf",
+    "opng_free_choice.rs": "3c7f5795577173c2a3f7a8c52cb9aa231f66b3c759a87b137cd9454485959cfd",
+    "opng_free_choice_raw.inc": "1225553778373aef63f042450e0aa15c6126b9aec0568508c905b3eedd791ab6",
+    "argument_order_map.json": "6602f58d0eac15be6c34b6a1fc1fce9d837d7a99fe24b6d893ec6d27ae7af818"
+  }
+}

@@ -10,11 +10,15 @@
     "rust": "tools/frameworks/c2saferrust/laertes_benchmarks/bzip2_WIP/bzip2recover.rs"
   },
   "notes": [
-    "The C computation, Rust computation, and wrapper are byte-identical to the audited FLOURINE package for the same defect.",
-    "Only FLOURINE's JSON container is flattened into RustAssure's documented individual-function .i file; the argument map is positional identity."
+    "The C computation and wrapper are the documented preprocessed rendition of the audited exact-source FLOURINE package; the Rust computation and wrapper are copied byte-for-byte.",
+    "FLOURINE's JSON container is flattened and preprocessed with gcc -E -P -x c into RustAssure's documented individual-function .i input; the argument map is positional identity."
   ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
   "input_sha256": {
-    "ends_in_bz2_valid.i": "193cc7e3db25016607eb95e5f2683e8c2e70714941c93c7de7ae79188c284ea8",
+    "ends_in_bz2_valid.i": "ddcd4924f8e60ac2b05ed5da795924401b17cc0e2d36cf4168dc7517b73db6b9",
     "ends_in_bz2_valid.rs": "be43a9f250e6f1dd2aa7943bf37b923d9f1e59f37218e84d1f7e7a753c64ef73",
     "ends_in_bz2_valid_raw.inc": "45d6f2fa7271055298f1bdab6a15692030b0b4d59efa30c14469a22dfb8bb7c1",
     "argument_order_map.json": "19f67f8b35678e89a1880724b747484ae86ec9bbcea42d2d4a502b31ce61983a"

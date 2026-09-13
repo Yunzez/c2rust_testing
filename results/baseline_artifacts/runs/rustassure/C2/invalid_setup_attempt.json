@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "defect_id": "C2",
+  "baseline": "rustassure",
+  "attempt": "invalid-unpreprocessed-i",
+  "scored": false,
+  "started_at": "2026-09-13T20:44:30Z",
+  "stopped_at": "2026-09-13T20:58:40Z",
+  "reason": "The submitted C file retained #include directives instead of being the preprocessed .i file required by the released RustAssure README. The released C emitter consequently compiled no C target while the Rust-side analysis continued.",
+  "disposition": "Retained as an invalid setup attempt, not a baseline analysis failure and not a scored submission.",
+  "external_archive": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_C2/attempt-invalid-unpreprocessed-i",
+  "evidence": {
+    "compile_log": "workdir/all_logs/python3_.._.._python_llvmBitcodeEmitter.py_testcase_C.log",
+    "exact_error": "Compilation failed for testcase/C/url_is_ssh_valid.i"
+  }
+}

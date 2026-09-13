@@ -10,11 +10,15 @@
     "rust": "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs"
   },
   "notes": [
-    "The C computation, Rust computation, and wrapper are byte-identical to the audited FLOURINE package for the same defect.",
-    "Only FLOURINE's JSON container is flattened into RustAssure's documented individual-function .i file; the argument map is positional identity."
+    "The C computation and wrapper are the documented preprocessed rendition of the audited exact-source FLOURINE package; the Rust computation and wrapper are copied byte-for-byte.",
+    "FLOURINE's JSON container is flattened and preprocessed with gcc -E -P -x c into RustAssure's documented individual-function .i input; the argument map is positional identity."
   ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
   "input_sha256": {
-    "zlib_uncompress_observe.i": "44adad4fbeb3969a2347ee2bdfe5f9aa8b32b14f8842ea21201a42f340b77445",
+    "zlib_uncompress_observe.i": "b5b3bd46a4f9d652940adc9426adccc4e8212162e67f450fc44dfc6e5a4077b6",
     "zlib_uncompress_observe.rs": "35372a6f0e1043392149788167fb50b5a2827f6e400c5b788ed2ba7d3b52f48d",
     "zlib_uncompress_observe_raw.inc": "df856d76fc6dfa878a281924632e22487051907ee237dad636d17665d6cacce4",
     "argument_order_map.json": "9fa619e67e5462ffce2431ef10b581f949fa37096201da217ef11b5177d801fe"

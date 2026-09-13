@@ -10,11 +10,15 @@
     "rust": "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs"
   },
   "notes": [
-    "The C computation, Rust computation, and wrapper are byte-identical to the audited FLOURINE package for the same defect.",
-    "Only FLOURINE's JSON container is flattened into RustAssure's documented individual-function .i file; the argument map is positional identity."
+    "The C computation and wrapper are the documented preprocessed rendition of the audited exact-source FLOURINE package; the Rust computation and wrapper are copied byte-for-byte.",
+    "FLOURINE's JSON container is flattened and preprocessed with gcc -E -P -x c into RustAssure's documented individual-function .i input; the argument map is positional identity."
   ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
   "input_sha256": {
-    "adler32_z_packet.i": "c5a8e383a9a57a1bb5a1047e440813a3ecf9c46cc7bbef58acd91fc2885d4a45",
+    "adler32_z_packet.i": "c65aca459419d9ac366ec5e0d36e4beba2dd3537d9f436e5676fa2c45f83babc",
     "adler32_z_packet.rs": "0faceed832f25537032db7e5c3f6809e1837eed0237a8c3f6851038290e84312",
     "adler32_z_packet_raw.inc": "309a0b91828329e7e9ff717952707ae0f125d05f3a010d6c5b7e8db13f221d1c",
     "argument_order_map.json": "6dd90f78322904c038030dbf55f5465e0f7f297ac3b1264e575b169875b5a8f5"

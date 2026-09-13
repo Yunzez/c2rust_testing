@@ -1,253 +1,1314 @@
-#include <ctype.h>
-#include <inttypes.h>
-#include <math.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+typedef unsigned char __u_char;
+typedef unsigned short int __u_short;
+typedef unsigned int __u_int;
+typedef unsigned long int __u_long;
+typedef signed char __int8_t;
+typedef unsigned char __uint8_t;
+typedef signed short int __int16_t;
+typedef unsigned short int __uint16_t;
+typedef signed int __int32_t;
+typedef unsigned int __uint32_t;
+typedef signed long int __int64_t;
+typedef unsigned long int __uint64_t;
+typedef __int8_t __int_least8_t;
+typedef __uint8_t __uint_least8_t;
+typedef __int16_t __int_least16_t;
+typedef __uint16_t __uint_least16_t;
+typedef __int32_t __int_least32_t;
+typedef __uint32_t __uint_least32_t;
+typedef __int64_t __int_least64_t;
+typedef __uint64_t __uint_least64_t;
+typedef long int __quad_t;
+typedef unsigned long int __u_quad_t;
+typedef long int __intmax_t;
+typedef unsigned long int __uintmax_t;
+typedef unsigned long int __dev_t;
+typedef unsigned int __uid_t;
+typedef unsigned int __gid_t;
+typedef unsigned long int __ino_t;
+typedef unsigned long int __ino64_t;
+typedef unsigned int __mode_t;
+typedef unsigned long int __nlink_t;
+typedef long int __off_t;
+typedef long int __off64_t;
+typedef int __pid_t;
+typedef struct { int __val[2]; } __fsid_t;
+typedef long int __clock_t;
+typedef unsigned long int __rlim_t;
+typedef unsigned long int __rlim64_t;
+typedef unsigned int __id_t;
+typedef long int __time_t;
+typedef unsigned int __useconds_t;
+typedef long int __suseconds_t;
+typedef long int __suseconds64_t;
+typedef int __daddr_t;
+typedef int __key_t;
+typedef int __clockid_t;
+typedef void * __timer_t;
+typedef long int __blksize_t;
+typedef long int __blkcnt_t;
+typedef long int __blkcnt64_t;
+typedef unsigned long int __fsblkcnt_t;
+typedef unsigned long int __fsblkcnt64_t;
+typedef unsigned long int __fsfilcnt_t;
+typedef unsigned long int __fsfilcnt64_t;
+typedef long int __fsword_t;
+typedef long int __ssize_t;
+typedef long int __syscall_slong_t;
+typedef unsigned long int __syscall_ulong_t;
+typedef __off64_t __loff_t;
+typedef char *__caddr_t;
+typedef long int __intptr_t;
+typedef unsigned int __socklen_t;
+typedef int __sig_atomic_t;
+enum
+{
+  _ISupper = ((0) < 8 ? ((1 << (0)) << 8) : ((1 << (0)) >> 8)),
+  _ISlower = ((1) < 8 ? ((1 << (1)) << 8) : ((1 << (1)) >> 8)),
+  _ISalpha = ((2) < 8 ? ((1 << (2)) << 8) : ((1 << (2)) >> 8)),
+  _ISdigit = ((3) < 8 ? ((1 << (3)) << 8) : ((1 << (3)) >> 8)),
+  _ISxdigit = ((4) < 8 ? ((1 << (4)) << 8) : ((1 << (4)) >> 8)),
+  _ISspace = ((5) < 8 ? ((1 << (5)) << 8) : ((1 << (5)) >> 8)),
+  _ISprint = ((6) < 8 ? ((1 << (6)) << 8) : ((1 << (6)) >> 8)),
+  _ISgraph = ((7) < 8 ? ((1 << (7)) << 8) : ((1 << (7)) >> 8)),
+  _ISblank = ((8) < 8 ? ((1 << (8)) << 8) : ((1 << (8)) >> 8)),
+  _IScntrl = ((9) < 8 ? ((1 << (9)) << 8) : ((1 << (9)) >> 8)),
+  _ISpunct = ((10) < 8 ? ((1 << (10)) << 8) : ((1 << (10)) >> 8)),
+  _ISalnum = ((11) < 8 ? ((1 << (11)) << 8) : ((1 << (11)) >> 8))
+};
+extern const unsigned short int **__ctype_b_loc (void)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern const __int32_t **__ctype_tolower_loc (void)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern const __int32_t **__ctype_toupper_loc (void)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern int isalnum (int) __attribute__ ((__nothrow__ ));
+extern int isalpha (int) __attribute__ ((__nothrow__ ));
+extern int iscntrl (int) __attribute__ ((__nothrow__ ));
+extern int isdigit (int) __attribute__ ((__nothrow__ ));
+extern int islower (int) __attribute__ ((__nothrow__ ));
+extern int isgraph (int) __attribute__ ((__nothrow__ ));
+extern int isprint (int) __attribute__ ((__nothrow__ ));
+extern int ispunct (int) __attribute__ ((__nothrow__ ));
+extern int isspace (int) __attribute__ ((__nothrow__ ));
+extern int isupper (int) __attribute__ ((__nothrow__ ));
+extern int isxdigit (int) __attribute__ ((__nothrow__ ));
+extern int tolower (int __c) __attribute__ ((__nothrow__ ));
+extern int toupper (int __c) __attribute__ ((__nothrow__ ));
+extern int isblank (int) __attribute__ ((__nothrow__ ));
+extern int isascii (int __c) __attribute__ ((__nothrow__ ));
+extern int toascii (int __c) __attribute__ ((__nothrow__ ));
+extern int _toupper (int) __attribute__ ((__nothrow__ ));
+extern int _tolower (int) __attribute__ ((__nothrow__ ));
+struct __locale_struct
+{
+  struct __locale_data *__locales[13];
+  const unsigned short int *__ctype_b;
+  const int *__ctype_tolower;
+  const int *__ctype_toupper;
+  const char *__names[13];
+};
+typedef struct __locale_struct *__locale_t;
+
+typedef __locale_t locale_t;
+extern int isalnum_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isalpha_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int iscntrl_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isdigit_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int islower_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isgraph_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isprint_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int ispunct_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isspace_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isupper_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isxdigit_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isblank_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int __tolower_l (int __c, locale_t __l) __attribute__ ((__nothrow__ ));
+extern int tolower_l (int __c, locale_t __l) __attribute__ ((__nothrow__ ));
+extern int __toupper_l (int __c, locale_t __l) __attribute__ ((__nothrow__ ));
+extern int toupper_l (int __c, locale_t __l) __attribute__ ((__nothrow__ ));
+
+typedef __int8_t int8_t;
+typedef __int16_t int16_t;
+typedef __int32_t int32_t;
+typedef __int64_t int64_t;
+typedef __uint8_t uint8_t;
+typedef __uint16_t uint16_t;
+typedef __uint32_t uint32_t;
+typedef __uint64_t uint64_t;
+typedef __int_least8_t int_least8_t;
+typedef __int_least16_t int_least16_t;
+typedef __int_least32_t int_least32_t;
+typedef __int_least64_t int_least64_t;
+typedef __uint_least8_t uint_least8_t;
+typedef __uint_least16_t uint_least16_t;
+typedef __uint_least32_t uint_least32_t;
+typedef __uint_least64_t uint_least64_t;
+typedef signed char int_fast8_t;
+typedef long int int_fast16_t;
+typedef long int int_fast32_t;
+typedef long int int_fast64_t;
+typedef unsigned char uint_fast8_t;
+typedef unsigned long int uint_fast16_t;
+typedef unsigned long int uint_fast32_t;
+typedef unsigned long int uint_fast64_t;
+typedef long int intptr_t;
+typedef unsigned long int uintptr_t;
+typedef __intmax_t intmax_t;
+typedef __uintmax_t uintmax_t;
+typedef int __gwchar_t;
+typedef struct
+  {
+    long int quot;
+    long int rem;
+  } imaxdiv_t;
+extern intmax_t imaxabs (intmax_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern imaxdiv_t imaxdiv (intmax_t __numer, intmax_t __denom)
+      __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern intmax_t strtoimax (const char *__restrict __nptr,
+      char **__restrict __endptr, int __base) __attribute__ ((__nothrow__ ));
+extern uintmax_t strtoumax (const char *__restrict __nptr,
+       char ** __restrict __endptr, int __base) __attribute__ ((__nothrow__ ));
+extern intmax_t wcstoimax (const __gwchar_t *__restrict __nptr,
+      __gwchar_t **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ ));
+extern uintmax_t wcstoumax (const __gwchar_t *__restrict __nptr,
+       __gwchar_t ** __restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ ));
+typedef float _Float32;
+typedef double _Float64;
+typedef double _Float32x;
+typedef long double _Float64x;
+typedef float float_t;
+typedef double double_t;
+extern int __fpclassify (double __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+extern int __signbit (double __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+extern int __isinf (double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __finite (double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __isnan (double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __iseqsig (double __x, double __y) __attribute__ ((__nothrow__ ));
+extern int __issignaling (double __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+ extern double acos (double __x) __attribute__ ((__nothrow__ )); extern double __acos (double __x) __attribute__ ((__nothrow__ ));
+ extern double asin (double __x) __attribute__ ((__nothrow__ )); extern double __asin (double __x) __attribute__ ((__nothrow__ ));
+ extern double atan (double __x) __attribute__ ((__nothrow__ )); extern double __atan (double __x) __attribute__ ((__nothrow__ ));
+ extern double atan2 (double __y, double __x) __attribute__ ((__nothrow__ )); extern double __atan2 (double __y, double __x) __attribute__ ((__nothrow__ ));
+ extern double cos (double __x) __attribute__ ((__nothrow__ )); extern double __cos (double __x) __attribute__ ((__nothrow__ ));
+ extern double sin (double __x) __attribute__ ((__nothrow__ )); extern double __sin (double __x) __attribute__ ((__nothrow__ ));
+ extern double tan (double __x) __attribute__ ((__nothrow__ )); extern double __tan (double __x) __attribute__ ((__nothrow__ ));
+ extern double cosh (double __x) __attribute__ ((__nothrow__ )); extern double __cosh (double __x) __attribute__ ((__nothrow__ ));
+ extern double sinh (double __x) __attribute__ ((__nothrow__ )); extern double __sinh (double __x) __attribute__ ((__nothrow__ ));
+ extern double tanh (double __x) __attribute__ ((__nothrow__ )); extern double __tanh (double __x) __attribute__ ((__nothrow__ ));
+ extern double acosh (double __x) __attribute__ ((__nothrow__ )); extern double __acosh (double __x) __attribute__ ((__nothrow__ ));
+ extern double asinh (double __x) __attribute__ ((__nothrow__ )); extern double __asinh (double __x) __attribute__ ((__nothrow__ ));
+ extern double atanh (double __x) __attribute__ ((__nothrow__ )); extern double __atanh (double __x) __attribute__ ((__nothrow__ ));
+ extern double exp (double __x) __attribute__ ((__nothrow__ )); extern double __exp (double __x) __attribute__ ((__nothrow__ ));
+extern double frexp (double __x, int *__exponent) __attribute__ ((__nothrow__ )); extern double __frexp (double __x, int *__exponent) __attribute__ ((__nothrow__ ));
+extern double ldexp (double __x, int __exponent) __attribute__ ((__nothrow__ )); extern double __ldexp (double __x, int __exponent) __attribute__ ((__nothrow__ ));
+ extern double log (double __x) __attribute__ ((__nothrow__ )); extern double __log (double __x) __attribute__ ((__nothrow__ ));
+ extern double log10 (double __x) __attribute__ ((__nothrow__ )); extern double __log10 (double __x) __attribute__ ((__nothrow__ ));
+extern double modf (double __x, double *__iptr) __attribute__ ((__nothrow__ )); extern double __modf (double __x, double *__iptr) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+ extern double expm1 (double __x) __attribute__ ((__nothrow__ )); extern double __expm1 (double __x) __attribute__ ((__nothrow__ ));
+ extern double log1p (double __x) __attribute__ ((__nothrow__ )); extern double __log1p (double __x) __attribute__ ((__nothrow__ ));
+extern double logb (double __x) __attribute__ ((__nothrow__ )); extern double __logb (double __x) __attribute__ ((__nothrow__ ));
+ extern double exp2 (double __x) __attribute__ ((__nothrow__ )); extern double __exp2 (double __x) __attribute__ ((__nothrow__ ));
+ extern double log2 (double __x) __attribute__ ((__nothrow__ )); extern double __log2 (double __x) __attribute__ ((__nothrow__ ));
+ extern double pow (double __x, double __y) __attribute__ ((__nothrow__ )); extern double __pow (double __x, double __y) __attribute__ ((__nothrow__ ));
+extern double sqrt (double __x) __attribute__ ((__nothrow__ )); extern double __sqrt (double __x) __attribute__ ((__nothrow__ ));
+ extern double hypot (double __x, double __y) __attribute__ ((__nothrow__ )); extern double __hypot (double __x, double __y) __attribute__ ((__nothrow__ ));
+ extern double cbrt (double __x) __attribute__ ((__nothrow__ )); extern double __cbrt (double __x) __attribute__ ((__nothrow__ ));
+extern double ceil (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern double __ceil (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern double fabs (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern double __fabs (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern double floor (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern double __floor (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern double fmod (double __x, double __y) __attribute__ ((__nothrow__ )); extern double __fmod (double __x, double __y) __attribute__ ((__nothrow__ ));
+extern int isinf (double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int finite (double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern double drem (double __x, double __y) __attribute__ ((__nothrow__ )); extern double __drem (double __x, double __y) __attribute__ ((__nothrow__ ));
+extern double significand (double __x) __attribute__ ((__nothrow__ )); extern double __significand (double __x) __attribute__ ((__nothrow__ ));
+extern double copysign (double __x, double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern double __copysign (double __x, double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern double nan (const char *__tagb) __attribute__ ((__nothrow__ )); extern double __nan (const char *__tagb) __attribute__ ((__nothrow__ ));
+extern int isnan (double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern double j0 (double) __attribute__ ((__nothrow__ )); extern double __j0 (double) __attribute__ ((__nothrow__ ));
+extern double j1 (double) __attribute__ ((__nothrow__ )); extern double __j1 (double) __attribute__ ((__nothrow__ ));
+extern double jn (int, double) __attribute__ ((__nothrow__ )); extern double __jn (int, double) __attribute__ ((__nothrow__ ));
+extern double y0 (double) __attribute__ ((__nothrow__ )); extern double __y0 (double) __attribute__ ((__nothrow__ ));
+extern double y1 (double) __attribute__ ((__nothrow__ )); extern double __y1 (double) __attribute__ ((__nothrow__ ));
+extern double yn (int, double) __attribute__ ((__nothrow__ )); extern double __yn (int, double) __attribute__ ((__nothrow__ ));
+ extern double erf (double) __attribute__ ((__nothrow__ )); extern double __erf (double) __attribute__ ((__nothrow__ ));
+ extern double erfc (double) __attribute__ ((__nothrow__ )); extern double __erfc (double) __attribute__ ((__nothrow__ ));
+extern double lgamma (double) __attribute__ ((__nothrow__ )); extern double __lgamma (double) __attribute__ ((__nothrow__ ));
+extern double tgamma (double) __attribute__ ((__nothrow__ )); extern double __tgamma (double) __attribute__ ((__nothrow__ ));
+extern double gamma (double) __attribute__ ((__nothrow__ )); extern double __gamma (double) __attribute__ ((__nothrow__ ));
+extern double lgamma_r (double, int *__signgamp) __attribute__ ((__nothrow__ )); extern double __lgamma_r (double, int *__signgamp) __attribute__ ((__nothrow__ ));
+extern double rint (double __x) __attribute__ ((__nothrow__ )); extern double __rint (double __x) __attribute__ ((__nothrow__ ));
+extern double nextafter (double __x, double __y) __attribute__ ((__nothrow__ )); extern double __nextafter (double __x, double __y) __attribute__ ((__nothrow__ ));
+extern double nexttoward (double __x, long double __y) __attribute__ ((__nothrow__ )); extern double __nexttoward (double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern double remainder (double __x, double __y) __attribute__ ((__nothrow__ )); extern double __remainder (double __x, double __y) __attribute__ ((__nothrow__ ));
+extern double scalbn (double __x, int __n) __attribute__ ((__nothrow__ )); extern double __scalbn (double __x, int __n) __attribute__ ((__nothrow__ ));
+extern int ilogb (double __x) __attribute__ ((__nothrow__ )); extern int __ilogb (double __x) __attribute__ ((__nothrow__ ));
+extern double scalbln (double __x, long int __n) __attribute__ ((__nothrow__ )); extern double __scalbln (double __x, long int __n) __attribute__ ((__nothrow__ ));
+extern double nearbyint (double __x) __attribute__ ((__nothrow__ )); extern double __nearbyint (double __x) __attribute__ ((__nothrow__ ));
+extern double round (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern double __round (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern double trunc (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern double __trunc (double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern double remquo (double __x, double __y, int *__quo) __attribute__ ((__nothrow__ )); extern double __remquo (double __x, double __y, int *__quo) __attribute__ ((__nothrow__ ));
+extern long int lrint (double __x) __attribute__ ((__nothrow__ )); extern long int __lrint (double __x) __attribute__ ((__nothrow__ ));
+__extension__
+extern long long int llrint (double __x) __attribute__ ((__nothrow__ )); extern long long int __llrint (double __x) __attribute__ ((__nothrow__ ));
+extern long int lround (double __x) __attribute__ ((__nothrow__ )); extern long int __lround (double __x) __attribute__ ((__nothrow__ ));
+__extension__
+extern long long int llround (double __x) __attribute__ ((__nothrow__ )); extern long long int __llround (double __x) __attribute__ ((__nothrow__ ));
+extern double fdim (double __x, double __y) __attribute__ ((__nothrow__ )); extern double __fdim (double __x, double __y) __attribute__ ((__nothrow__ ));
+extern double fmax (double __x, double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern double __fmax (double __x, double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern double fmin (double __x, double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern double __fmin (double __x, double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern double fma (double __x, double __y, double __z) __attribute__ ((__nothrow__ )); extern double __fma (double __x, double __y, double __z) __attribute__ ((__nothrow__ ));
+extern double scalb (double __x, double __n) __attribute__ ((__nothrow__ )); extern double __scalb (double __x, double __n) __attribute__ ((__nothrow__ ));
+extern int __fpclassifyf (float __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+extern int __signbitf (float __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+extern int __isinff (float __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __finitef (float __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __isnanf (float __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __iseqsigf (float __x, float __y) __attribute__ ((__nothrow__ ));
+extern int __issignalingf (float __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+ extern float acosf (float __x) __attribute__ ((__nothrow__ )); extern float __acosf (float __x) __attribute__ ((__nothrow__ ));
+ extern float asinf (float __x) __attribute__ ((__nothrow__ )); extern float __asinf (float __x) __attribute__ ((__nothrow__ ));
+ extern float atanf (float __x) __attribute__ ((__nothrow__ )); extern float __atanf (float __x) __attribute__ ((__nothrow__ ));
+ extern float atan2f (float __y, float __x) __attribute__ ((__nothrow__ )); extern float __atan2f (float __y, float __x) __attribute__ ((__nothrow__ ));
+ extern float cosf (float __x) __attribute__ ((__nothrow__ )); extern float __cosf (float __x) __attribute__ ((__nothrow__ ));
+ extern float sinf (float __x) __attribute__ ((__nothrow__ )); extern float __sinf (float __x) __attribute__ ((__nothrow__ ));
+ extern float tanf (float __x) __attribute__ ((__nothrow__ )); extern float __tanf (float __x) __attribute__ ((__nothrow__ ));
+ extern float coshf (float __x) __attribute__ ((__nothrow__ )); extern float __coshf (float __x) __attribute__ ((__nothrow__ ));
+ extern float sinhf (float __x) __attribute__ ((__nothrow__ )); extern float __sinhf (float __x) __attribute__ ((__nothrow__ ));
+ extern float tanhf (float __x) __attribute__ ((__nothrow__ )); extern float __tanhf (float __x) __attribute__ ((__nothrow__ ));
+ extern float acoshf (float __x) __attribute__ ((__nothrow__ )); extern float __acoshf (float __x) __attribute__ ((__nothrow__ ));
+ extern float asinhf (float __x) __attribute__ ((__nothrow__ )); extern float __asinhf (float __x) __attribute__ ((__nothrow__ ));
+ extern float atanhf (float __x) __attribute__ ((__nothrow__ )); extern float __atanhf (float __x) __attribute__ ((__nothrow__ ));
+ extern float expf (float __x) __attribute__ ((__nothrow__ )); extern float __expf (float __x) __attribute__ ((__nothrow__ ));
+extern float frexpf (float __x, int *__exponent) __attribute__ ((__nothrow__ )); extern float __frexpf (float __x, int *__exponent) __attribute__ ((__nothrow__ ));
+extern float ldexpf (float __x, int __exponent) __attribute__ ((__nothrow__ )); extern float __ldexpf (float __x, int __exponent) __attribute__ ((__nothrow__ ));
+ extern float logf (float __x) __attribute__ ((__nothrow__ )); extern float __logf (float __x) __attribute__ ((__nothrow__ ));
+ extern float log10f (float __x) __attribute__ ((__nothrow__ )); extern float __log10f (float __x) __attribute__ ((__nothrow__ ));
+extern float modff (float __x, float *__iptr) __attribute__ ((__nothrow__ )); extern float __modff (float __x, float *__iptr) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+ extern float expm1f (float __x) __attribute__ ((__nothrow__ )); extern float __expm1f (float __x) __attribute__ ((__nothrow__ ));
+ extern float log1pf (float __x) __attribute__ ((__nothrow__ )); extern float __log1pf (float __x) __attribute__ ((__nothrow__ ));
+extern float logbf (float __x) __attribute__ ((__nothrow__ )); extern float __logbf (float __x) __attribute__ ((__nothrow__ ));
+ extern float exp2f (float __x) __attribute__ ((__nothrow__ )); extern float __exp2f (float __x) __attribute__ ((__nothrow__ ));
+ extern float log2f (float __x) __attribute__ ((__nothrow__ )); extern float __log2f (float __x) __attribute__ ((__nothrow__ ));
+ extern float powf (float __x, float __y) __attribute__ ((__nothrow__ )); extern float __powf (float __x, float __y) __attribute__ ((__nothrow__ ));
+extern float sqrtf (float __x) __attribute__ ((__nothrow__ )); extern float __sqrtf (float __x) __attribute__ ((__nothrow__ ));
+ extern float hypotf (float __x, float __y) __attribute__ ((__nothrow__ )); extern float __hypotf (float __x, float __y) __attribute__ ((__nothrow__ ));
+ extern float cbrtf (float __x) __attribute__ ((__nothrow__ )); extern float __cbrtf (float __x) __attribute__ ((__nothrow__ ));
+extern float ceilf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern float __ceilf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern float fabsf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern float __fabsf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern float floorf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern float __floorf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern float fmodf (float __x, float __y) __attribute__ ((__nothrow__ )); extern float __fmodf (float __x, float __y) __attribute__ ((__nothrow__ ));
+extern int isinff (float __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int finitef (float __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern float dremf (float __x, float __y) __attribute__ ((__nothrow__ )); extern float __dremf (float __x, float __y) __attribute__ ((__nothrow__ ));
+extern float significandf (float __x) __attribute__ ((__nothrow__ )); extern float __significandf (float __x) __attribute__ ((__nothrow__ ));
+extern float copysignf (float __x, float __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern float __copysignf (float __x, float __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern float nanf (const char *__tagb) __attribute__ ((__nothrow__ )); extern float __nanf (const char *__tagb) __attribute__ ((__nothrow__ ));
+extern int isnanf (float __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern float j0f (float) __attribute__ ((__nothrow__ )); extern float __j0f (float) __attribute__ ((__nothrow__ ));
+extern float j1f (float) __attribute__ ((__nothrow__ )); extern float __j1f (float) __attribute__ ((__nothrow__ ));
+extern float jnf (int, float) __attribute__ ((__nothrow__ )); extern float __jnf (int, float) __attribute__ ((__nothrow__ ));
+extern float y0f (float) __attribute__ ((__nothrow__ )); extern float __y0f (float) __attribute__ ((__nothrow__ ));
+extern float y1f (float) __attribute__ ((__nothrow__ )); extern float __y1f (float) __attribute__ ((__nothrow__ ));
+extern float ynf (int, float) __attribute__ ((__nothrow__ )); extern float __ynf (int, float) __attribute__ ((__nothrow__ ));
+ extern float erff (float) __attribute__ ((__nothrow__ )); extern float __erff (float) __attribute__ ((__nothrow__ ));
+ extern float erfcf (float) __attribute__ ((__nothrow__ )); extern float __erfcf (float) __attribute__ ((__nothrow__ ));
+extern float lgammaf (float) __attribute__ ((__nothrow__ )); extern float __lgammaf (float) __attribute__ ((__nothrow__ ));
+extern float tgammaf (float) __attribute__ ((__nothrow__ )); extern float __tgammaf (float) __attribute__ ((__nothrow__ ));
+extern float gammaf (float) __attribute__ ((__nothrow__ )); extern float __gammaf (float) __attribute__ ((__nothrow__ ));
+extern float lgammaf_r (float, int *__signgamp) __attribute__ ((__nothrow__ )); extern float __lgammaf_r (float, int *__signgamp) __attribute__ ((__nothrow__ ));
+extern float rintf (float __x) __attribute__ ((__nothrow__ )); extern float __rintf (float __x) __attribute__ ((__nothrow__ ));
+extern float nextafterf (float __x, float __y) __attribute__ ((__nothrow__ )); extern float __nextafterf (float __x, float __y) __attribute__ ((__nothrow__ ));
+extern float nexttowardf (float __x, long double __y) __attribute__ ((__nothrow__ )); extern float __nexttowardf (float __x, long double __y) __attribute__ ((__nothrow__ ));
+extern float remainderf (float __x, float __y) __attribute__ ((__nothrow__ )); extern float __remainderf (float __x, float __y) __attribute__ ((__nothrow__ ));
+extern float scalbnf (float __x, int __n) __attribute__ ((__nothrow__ )); extern float __scalbnf (float __x, int __n) __attribute__ ((__nothrow__ ));
+extern int ilogbf (float __x) __attribute__ ((__nothrow__ )); extern int __ilogbf (float __x) __attribute__ ((__nothrow__ ));
+extern float scalblnf (float __x, long int __n) __attribute__ ((__nothrow__ )); extern float __scalblnf (float __x, long int __n) __attribute__ ((__nothrow__ ));
+extern float nearbyintf (float __x) __attribute__ ((__nothrow__ )); extern float __nearbyintf (float __x) __attribute__ ((__nothrow__ ));
+extern float roundf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern float __roundf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern float truncf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern float __truncf (float __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern float remquof (float __x, float __y, int *__quo) __attribute__ ((__nothrow__ )); extern float __remquof (float __x, float __y, int *__quo) __attribute__ ((__nothrow__ ));
+extern long int lrintf (float __x) __attribute__ ((__nothrow__ )); extern long int __lrintf (float __x) __attribute__ ((__nothrow__ ));
+__extension__
+extern long long int llrintf (float __x) __attribute__ ((__nothrow__ )); extern long long int __llrintf (float __x) __attribute__ ((__nothrow__ ));
+extern long int lroundf (float __x) __attribute__ ((__nothrow__ )); extern long int __lroundf (float __x) __attribute__ ((__nothrow__ ));
+__extension__
+extern long long int llroundf (float __x) __attribute__ ((__nothrow__ )); extern long long int __llroundf (float __x) __attribute__ ((__nothrow__ ));
+extern float fdimf (float __x, float __y) __attribute__ ((__nothrow__ )); extern float __fdimf (float __x, float __y) __attribute__ ((__nothrow__ ));
+extern float fmaxf (float __x, float __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern float __fmaxf (float __x, float __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern float fminf (float __x, float __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern float __fminf (float __x, float __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern float fmaf (float __x, float __y, float __z) __attribute__ ((__nothrow__ )); extern float __fmaf (float __x, float __y, float __z) __attribute__ ((__nothrow__ ));
+extern float scalbf (float __x, float __n) __attribute__ ((__nothrow__ )); extern float __scalbf (float __x, float __n) __attribute__ ((__nothrow__ ));
+extern int __fpclassifyl (long double __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+extern int __signbitl (long double __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+extern int __isinfl (long double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __finitel (long double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __isnanl (long double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int __iseqsigl (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern int __issignalingl (long double __value) __attribute__ ((__nothrow__ ))
+     __attribute__ ((__const__));
+ extern long double acosl (long double __x) __attribute__ ((__nothrow__ )); extern long double __acosl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double asinl (long double __x) __attribute__ ((__nothrow__ )); extern long double __asinl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double atanl (long double __x) __attribute__ ((__nothrow__ )); extern long double __atanl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double atan2l (long double __y, long double __x) __attribute__ ((__nothrow__ )); extern long double __atan2l (long double __y, long double __x) __attribute__ ((__nothrow__ ));
+ extern long double cosl (long double __x) __attribute__ ((__nothrow__ )); extern long double __cosl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double sinl (long double __x) __attribute__ ((__nothrow__ )); extern long double __sinl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double tanl (long double __x) __attribute__ ((__nothrow__ )); extern long double __tanl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double coshl (long double __x) __attribute__ ((__nothrow__ )); extern long double __coshl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double sinhl (long double __x) __attribute__ ((__nothrow__ )); extern long double __sinhl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double tanhl (long double __x) __attribute__ ((__nothrow__ )); extern long double __tanhl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double acoshl (long double __x) __attribute__ ((__nothrow__ )); extern long double __acoshl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double asinhl (long double __x) __attribute__ ((__nothrow__ )); extern long double __asinhl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double atanhl (long double __x) __attribute__ ((__nothrow__ )); extern long double __atanhl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double expl (long double __x) __attribute__ ((__nothrow__ )); extern long double __expl (long double __x) __attribute__ ((__nothrow__ ));
+extern long double frexpl (long double __x, int *__exponent) __attribute__ ((__nothrow__ )); extern long double __frexpl (long double __x, int *__exponent) __attribute__ ((__nothrow__ ));
+extern long double ldexpl (long double __x, int __exponent) __attribute__ ((__nothrow__ )); extern long double __ldexpl (long double __x, int __exponent) __attribute__ ((__nothrow__ ));
+ extern long double logl (long double __x) __attribute__ ((__nothrow__ )); extern long double __logl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double log10l (long double __x) __attribute__ ((__nothrow__ )); extern long double __log10l (long double __x) __attribute__ ((__nothrow__ ));
+extern long double modfl (long double __x, long double *__iptr) __attribute__ ((__nothrow__ )); extern long double __modfl (long double __x, long double *__iptr) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+ extern long double expm1l (long double __x) __attribute__ ((__nothrow__ )); extern long double __expm1l (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double log1pl (long double __x) __attribute__ ((__nothrow__ )); extern long double __log1pl (long double __x) __attribute__ ((__nothrow__ ));
+extern long double logbl (long double __x) __attribute__ ((__nothrow__ )); extern long double __logbl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double exp2l (long double __x) __attribute__ ((__nothrow__ )); extern long double __exp2l (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double log2l (long double __x) __attribute__ ((__nothrow__ )); extern long double __log2l (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double powl (long double __x, long double __y) __attribute__ ((__nothrow__ )); extern long double __powl (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern long double sqrtl (long double __x) __attribute__ ((__nothrow__ )); extern long double __sqrtl (long double __x) __attribute__ ((__nothrow__ ));
+ extern long double hypotl (long double __x, long double __y) __attribute__ ((__nothrow__ )); extern long double __hypotl (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+ extern long double cbrtl (long double __x) __attribute__ ((__nothrow__ )); extern long double __cbrtl (long double __x) __attribute__ ((__nothrow__ ));
+extern long double ceill (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern long double __ceill (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern long double fabsl (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern long double __fabsl (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern long double floorl (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern long double __floorl (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern long double fmodl (long double __x, long double __y) __attribute__ ((__nothrow__ )); extern long double __fmodl (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern int isinfl (long double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern int finitel (long double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern long double dreml (long double __x, long double __y) __attribute__ ((__nothrow__ )); extern long double __dreml (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern long double significandl (long double __x) __attribute__ ((__nothrow__ )); extern long double __significandl (long double __x) __attribute__ ((__nothrow__ ));
+extern long double copysignl (long double __x, long double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern long double __copysignl (long double __x, long double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern long double nanl (const char *__tagb) __attribute__ ((__nothrow__ )); extern long double __nanl (const char *__tagb) __attribute__ ((__nothrow__ ));
+extern int isnanl (long double __value) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__const__));
+extern long double j0l (long double) __attribute__ ((__nothrow__ )); extern long double __j0l (long double) __attribute__ ((__nothrow__ ));
+extern long double j1l (long double) __attribute__ ((__nothrow__ )); extern long double __j1l (long double) __attribute__ ((__nothrow__ ));
+extern long double jnl (int, long double) __attribute__ ((__nothrow__ )); extern long double __jnl (int, long double) __attribute__ ((__nothrow__ ));
+extern long double y0l (long double) __attribute__ ((__nothrow__ )); extern long double __y0l (long double) __attribute__ ((__nothrow__ ));
+extern long double y1l (long double) __attribute__ ((__nothrow__ )); extern long double __y1l (long double) __attribute__ ((__nothrow__ ));
+extern long double ynl (int, long double) __attribute__ ((__nothrow__ )); extern long double __ynl (int, long double) __attribute__ ((__nothrow__ ));
+ extern long double erfl (long double) __attribute__ ((__nothrow__ )); extern long double __erfl (long double) __attribute__ ((__nothrow__ ));
+ extern long double erfcl (long double) __attribute__ ((__nothrow__ )); extern long double __erfcl (long double) __attribute__ ((__nothrow__ ));
+extern long double lgammal (long double) __attribute__ ((__nothrow__ )); extern long double __lgammal (long double) __attribute__ ((__nothrow__ ));
+extern long double tgammal (long double) __attribute__ ((__nothrow__ )); extern long double __tgammal (long double) __attribute__ ((__nothrow__ ));
+extern long double gammal (long double) __attribute__ ((__nothrow__ )); extern long double __gammal (long double) __attribute__ ((__nothrow__ ));
+extern long double lgammal_r (long double, int *__signgamp) __attribute__ ((__nothrow__ )); extern long double __lgammal_r (long double, int *__signgamp) __attribute__ ((__nothrow__ ));
+extern long double rintl (long double __x) __attribute__ ((__nothrow__ )); extern long double __rintl (long double __x) __attribute__ ((__nothrow__ ));
+extern long double nextafterl (long double __x, long double __y) __attribute__ ((__nothrow__ )); extern long double __nextafterl (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern long double nexttowardl (long double __x, long double __y) __attribute__ ((__nothrow__ )); extern long double __nexttowardl (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern long double remainderl (long double __x, long double __y) __attribute__ ((__nothrow__ )); extern long double __remainderl (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern long double scalbnl (long double __x, int __n) __attribute__ ((__nothrow__ )); extern long double __scalbnl (long double __x, int __n) __attribute__ ((__nothrow__ ));
+extern int ilogbl (long double __x) __attribute__ ((__nothrow__ )); extern int __ilogbl (long double __x) __attribute__ ((__nothrow__ ));
+extern long double scalblnl (long double __x, long int __n) __attribute__ ((__nothrow__ )); extern long double __scalblnl (long double __x, long int __n) __attribute__ ((__nothrow__ ));
+extern long double nearbyintl (long double __x) __attribute__ ((__nothrow__ )); extern long double __nearbyintl (long double __x) __attribute__ ((__nothrow__ ));
+extern long double roundl (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern long double __roundl (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern long double truncl (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern long double __truncl (long double __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern long double remquol (long double __x, long double __y, int *__quo) __attribute__ ((__nothrow__ )); extern long double __remquol (long double __x, long double __y, int *__quo) __attribute__ ((__nothrow__ ));
+extern long int lrintl (long double __x) __attribute__ ((__nothrow__ )); extern long int __lrintl (long double __x) __attribute__ ((__nothrow__ ));
+__extension__
+extern long long int llrintl (long double __x) __attribute__ ((__nothrow__ )); extern long long int __llrintl (long double __x) __attribute__ ((__nothrow__ ));
+extern long int lroundl (long double __x) __attribute__ ((__nothrow__ )); extern long int __lroundl (long double __x) __attribute__ ((__nothrow__ ));
+__extension__
+extern long long int llroundl (long double __x) __attribute__ ((__nothrow__ )); extern long long int __llroundl (long double __x) __attribute__ ((__nothrow__ ));
+extern long double fdiml (long double __x, long double __y) __attribute__ ((__nothrow__ )); extern long double __fdiml (long double __x, long double __y) __attribute__ ((__nothrow__ ));
+extern long double fmaxl (long double __x, long double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern long double __fmaxl (long double __x, long double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern long double fminl (long double __x, long double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)); extern long double __fminl (long double __x, long double __y) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern long double fmal (long double __x, long double __y, long double __z) __attribute__ ((__nothrow__ )); extern long double __fmal (long double __x, long double __y, long double __z) __attribute__ ((__nothrow__ ));
+extern long double scalbl (long double __x, long double __n) __attribute__ ((__nothrow__ )); extern long double __scalbl (long double __x, long double __n) __attribute__ ((__nothrow__ ));
+extern int signgam;
+enum
+  {
+    FP_NAN =
+      0,
+    FP_INFINITE =
+      1,
+    FP_ZERO =
+      2,
+    FP_SUBNORMAL =
+      3,
+    FP_NORMAL =
+      4
+  };
+
+typedef long unsigned int size_t;
+typedef __builtin_va_list va_list;
+typedef __builtin_va_list __gnuc_va_list;
+typedef struct
+{
+  int __count;
+  union
+  {
+    unsigned int __wch;
+    char __wchb[4];
+  } __value;
+} __mbstate_t;
+typedef struct _G_fpos_t
+{
+  __off_t __pos;
+  __mbstate_t __state;
+} __fpos_t;
+typedef struct _G_fpos64_t
+{
+  __off64_t __pos;
+  __mbstate_t __state;
+} __fpos64_t;
+struct _IO_FILE;
+typedef struct _IO_FILE __FILE;
+struct _IO_FILE;
+typedef struct _IO_FILE FILE;
+struct _IO_FILE;
+struct _IO_marker;
+struct _IO_codecvt;
+struct _IO_wide_data;
+typedef void _IO_lock_t;
+struct _IO_FILE
+{
+  int _flags;
+  char *_IO_read_ptr;
+  char *_IO_read_end;
+  char *_IO_read_base;
+  char *_IO_write_base;
+  char *_IO_write_ptr;
+  char *_IO_write_end;
+  char *_IO_buf_base;
+  char *_IO_buf_end;
+  char *_IO_save_base;
+  char *_IO_backup_base;
+  char *_IO_save_end;
+  struct _IO_marker *_markers;
+  struct _IO_FILE *_chain;
+  int _fileno;
+  int _flags2;
+  __off_t _old_offset;
+  unsigned short _cur_column;
+  signed char _vtable_offset;
+  char _shortbuf[1];
+  _IO_lock_t *_lock;
+  __off64_t _offset;
+  struct _IO_codecvt *_codecvt;
+  struct _IO_wide_data *_wide_data;
+  struct _IO_FILE *_freeres_list;
+  void *_freeres_buf;
+  size_t __pad5;
+  int _mode;
+  char _unused2[15 * sizeof (int) - 4 * sizeof (void *) - sizeof (size_t)];
+};
+typedef __gnuc_va_list va_list;
+typedef __off_t off_t;
+typedef __ssize_t ssize_t;
+typedef __fpos_t fpos_t;
+extern FILE *stdin;
+extern FILE *stdout;
+extern FILE *stderr;
+extern int remove (const char *__filename) __attribute__ ((__nothrow__ ));
+extern int rename (const char *__old, const char *__new) __attribute__ ((__nothrow__ ));
+extern int renameat (int __oldfd, const char *__old, int __newfd,
+       const char *__new) __attribute__ ((__nothrow__ ));
+extern int fclose (FILE *__stream);
+extern FILE *tmpfile (void)
+  __attribute__ ((__malloc__)) ;
+extern char *tmpnam (char[20]) __attribute__ ((__nothrow__ )) ;
+extern char *tmpnam_r (char __s[20]) __attribute__ ((__nothrow__ )) ;
+extern char *tempnam (const char *__dir, const char *__pfx)
+   __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) ;
+extern int fflush (FILE *__stream);
+extern int fflush_unlocked (FILE *__stream);
+extern FILE *fopen (const char *__restrict __filename,
+      const char *__restrict __modes)
+  __attribute__ ((__malloc__)) ;
+extern FILE *freopen (const char *__restrict __filename,
+        const char *__restrict __modes,
+        FILE *__restrict __stream) ;
+extern FILE *fdopen (int __fd, const char *__modes) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__malloc__)) ;
+extern FILE *fmemopen (void *__s, size_t __len, const char *__modes)
+  __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) ;
+extern FILE *open_memstream (char **__bufloc, size_t *__sizeloc) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__malloc__)) ;
+extern void setbuf (FILE *__restrict __stream, char *__restrict __buf) __attribute__ ((__nothrow__ ));
+extern int setvbuf (FILE *__restrict __stream, char *__restrict __buf,
+      int __modes, size_t __n) __attribute__ ((__nothrow__ ));
+extern void setbuffer (FILE *__restrict __stream, char *__restrict __buf,
+         size_t __size) __attribute__ ((__nothrow__ ));
+extern void setlinebuf (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int fprintf (FILE *__restrict __stream,
+      const char *__restrict __format, ...);
+extern int printf (const char *__restrict __format, ...);
+extern int sprintf (char *__restrict __s,
+      const char *__restrict __format, ...) __attribute__ ((__nothrow__));
+extern int vfprintf (FILE *__restrict __s, const char *__restrict __format,
+       __gnuc_va_list __arg);
+extern int vprintf (const char *__restrict __format, __gnuc_va_list __arg);
+extern int vsprintf (char *__restrict __s, const char *__restrict __format,
+       __gnuc_va_list __arg) __attribute__ ((__nothrow__));
+extern int snprintf (char *__restrict __s, size_t __maxlen,
+       const char *__restrict __format, ...)
+     __attribute__ ((__nothrow__)) __attribute__ ((__format__ (__printf__, 3, 4)));
+extern int vsnprintf (char *__restrict __s, size_t __maxlen,
+        const char *__restrict __format, __gnuc_va_list __arg)
+     __attribute__ ((__nothrow__)) __attribute__ ((__format__ (__printf__, 3, 0)));
+extern int vdprintf (int __fd, const char *__restrict __fmt,
+       __gnuc_va_list __arg)
+     __attribute__ ((__format__ (__printf__, 2, 0)));
+extern int dprintf (int __fd, const char *__restrict __fmt, ...)
+     __attribute__ ((__format__ (__printf__, 2, 3)));
+extern int fscanf (FILE *__restrict __stream,
+     const char *__restrict __format, ...) ;
+extern int scanf (const char *__restrict __format, ...) ;
+extern int sscanf (const char *__restrict __s,
+     const char *__restrict __format, ...) __attribute__ ((__nothrow__ ));
+extern int fscanf (FILE *__restrict __stream, const char *__restrict __format, ...) __asm__ ("" "__isoc99_fscanf") ;
+extern int scanf (const char *__restrict __format, ...) __asm__ ("" "__isoc99_scanf") ;
+extern int sscanf (const char *__restrict __s, const char *__restrict __format, ...) __asm__ ("" "__isoc99_sscanf") __attribute__ ((__nothrow__ ));
+extern int vfscanf (FILE *__restrict __s, const char *__restrict __format,
+      __gnuc_va_list __arg)
+     __attribute__ ((__format__ (__scanf__, 2, 0))) ;
+extern int vscanf (const char *__restrict __format, __gnuc_va_list __arg)
+     __attribute__ ((__format__ (__scanf__, 1, 0))) ;
+extern int vsscanf (const char *__restrict __s,
+      const char *__restrict __format, __gnuc_va_list __arg)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__format__ (__scanf__, 2, 0)));
+extern int vfscanf (FILE *__restrict __s, const char *__restrict __format, __gnuc_va_list __arg) __asm__ ("" "__isoc99_vfscanf")
+     __attribute__ ((__format__ (__scanf__, 2, 0))) ;
+extern int vscanf (const char *__restrict __format, __gnuc_va_list __arg) __asm__ ("" "__isoc99_vscanf")
+     __attribute__ ((__format__ (__scanf__, 1, 0))) ;
+extern int vsscanf (const char *__restrict __s, const char *__restrict __format, __gnuc_va_list __arg) __asm__ ("" "__isoc99_vsscanf") __attribute__ ((__nothrow__ ))
+     __attribute__ ((__format__ (__scanf__, 2, 0)));
+extern int fgetc (FILE *__stream);
+extern int getc (FILE *__stream);
+extern int getchar (void);
+extern int getc_unlocked (FILE *__stream);
+extern int getchar_unlocked (void);
+extern int fgetc_unlocked (FILE *__stream);
+extern int fputc (int __c, FILE *__stream);
+extern int putc (int __c, FILE *__stream);
+extern int putchar (int __c);
+extern int fputc_unlocked (int __c, FILE *__stream);
+extern int putc_unlocked (int __c, FILE *__stream);
+extern int putchar_unlocked (int __c);
+extern int getw (FILE *__stream);
+extern int putw (int __w, FILE *__stream);
+extern char *fgets (char *__restrict __s, int __n, FILE *__restrict __stream)
+                                                         ;
+extern __ssize_t __getdelim (char **__restrict __lineptr,
+                             size_t *__restrict __n, int __delimiter,
+                             FILE *__restrict __stream) ;
+extern __ssize_t getdelim (char **__restrict __lineptr,
+                           size_t *__restrict __n, int __delimiter,
+                           FILE *__restrict __stream) ;
+extern __ssize_t getline (char **__restrict __lineptr,
+                          size_t *__restrict __n,
+                          FILE *__restrict __stream) ;
+extern int fputs (const char *__restrict __s, FILE *__restrict __stream);
+extern int puts (const char *__s);
+extern int ungetc (int __c, FILE *__stream);
+extern size_t fread (void *__restrict __ptr, size_t __size,
+       size_t __n, FILE *__restrict __stream) ;
+extern size_t fwrite (const void *__restrict __ptr, size_t __size,
+        size_t __n, FILE *__restrict __s);
+extern size_t fread_unlocked (void *__restrict __ptr, size_t __size,
+         size_t __n, FILE *__restrict __stream) ;
+extern size_t fwrite_unlocked (const void *__restrict __ptr, size_t __size,
+          size_t __n, FILE *__restrict __stream);
+extern int fseek (FILE *__stream, long int __off, int __whence);
+extern long int ftell (FILE *__stream) ;
+extern void rewind (FILE *__stream);
+extern int fseeko (FILE *__stream, __off_t __off, int __whence);
+extern __off_t ftello (FILE *__stream) ;
+extern int fgetpos (FILE *__restrict __stream, fpos_t *__restrict __pos);
+extern int fsetpos (FILE *__stream, const fpos_t *__pos);
+extern void clearerr (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int feof (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern int ferror (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern void clearerr_unlocked (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int feof_unlocked (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern int ferror_unlocked (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern void perror (const char *__s);
+extern int fileno (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern int fileno_unlocked (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern int pclose (FILE *__stream);
+extern FILE *popen (const char *__command, const char *__modes)
+  __attribute__ ((__malloc__)) ;
+extern char *ctermid (char *__s) __attribute__ ((__nothrow__ ))
+                                     ;
+extern void flockfile (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int ftrylockfile (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern void funlockfile (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int __uflow (FILE *);
+extern int __overflow (FILE *, int);
+typedef int wchar_t;
+typedef struct
+  {
+    int quot;
+    int rem;
+  } div_t;
+typedef struct
+  {
+    long int quot;
+    long int rem;
+  } ldiv_t;
+__extension__ typedef struct
+  {
+    long long int quot;
+    long long int rem;
+  } lldiv_t;
+extern size_t __ctype_get_mb_cur_max (void) __attribute__ ((__nothrow__ )) ;
+extern double atof (const char *__nptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+extern int atoi (const char *__nptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+extern long int atol (const char *__nptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+__extension__ extern long long int atoll (const char *__nptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+extern double strtod (const char *__restrict __nptr,
+        char **__restrict __endptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern float strtof (const char *__restrict __nptr,
+       char **__restrict __endptr) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern long double strtold (const char *__restrict __nptr,
+       char **__restrict __endptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern long int strtol (const char *__restrict __nptr,
+   char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern unsigned long int strtoul (const char *__restrict __nptr,
+      char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+__extension__
+extern long long int strtoq (const char *__restrict __nptr,
+        char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+__extension__
+extern unsigned long long int strtouq (const char *__restrict __nptr,
+           char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+__extension__
+extern long long int strtoll (const char *__restrict __nptr,
+         char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+__extension__
+extern unsigned long long int strtoull (const char *__restrict __nptr,
+     char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern char *l64a (long int __n) __attribute__ ((__nothrow__ )) ;
+extern long int a64l (const char *__s)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+typedef __u_char u_char;
+typedef __u_short u_short;
+typedef __u_int u_int;
+typedef __u_long u_long;
+typedef __quad_t quad_t;
+typedef __u_quad_t u_quad_t;
+typedef __fsid_t fsid_t;
+typedef __loff_t loff_t;
+typedef __ino_t ino_t;
+typedef __dev_t dev_t;
+typedef __gid_t gid_t;
+typedef __mode_t mode_t;
+typedef __nlink_t nlink_t;
+typedef __uid_t uid_t;
+typedef __pid_t pid_t;
+typedef __id_t id_t;
+typedef __daddr_t daddr_t;
+typedef __caddr_t caddr_t;
+typedef __key_t key_t;
+typedef __clock_t clock_t;
+
+typedef __clockid_t clockid_t;
+typedef __time_t time_t;
+typedef __timer_t timer_t;
+typedef unsigned long int ulong;
+typedef unsigned short int ushort;
+typedef unsigned int uint;
+typedef __uint8_t u_int8_t;
+typedef __uint16_t u_int16_t;
+typedef __uint32_t u_int32_t;
+typedef __uint64_t u_int64_t;
+typedef int register_t __attribute__ ((__mode__ (__word__)));
+static __inline __uint16_t
+__bswap_16 (__uint16_t __bsx)
+{
+  return ((__uint16_t) ((((__bsx) >> 8) & 0xff) | (((__bsx) & 0xff) << 8)));
+}
+static __inline __uint32_t
+__bswap_32 (__uint32_t __bsx)
+{
+  return ((((__bsx) & 0xff000000u) >> 24) | (((__bsx) & 0x00ff0000u) >> 8) | (((__bsx) & 0x0000ff00u) << 8) | (((__bsx) & 0x000000ffu) << 24));
+}
+__extension__ static __inline __uint64_t
+__bswap_64 (__uint64_t __bsx)
+{
+  return ((((__bsx) & 0xff00000000000000ull) >> 56) | (((__bsx) & 0x00ff000000000000ull) >> 40) | (((__bsx) & 0x0000ff0000000000ull) >> 24) | (((__bsx) & 0x000000ff00000000ull) >> 8) | (((__bsx) & 0x00000000ff000000ull) << 8) | (((__bsx) & 0x0000000000ff0000ull) << 24) | (((__bsx) & 0x000000000000ff00ull) << 40) | (((__bsx) & 0x00000000000000ffull) << 56));
+}
+static __inline __uint16_t
+__uint16_identity (__uint16_t __x)
+{
+  return __x;
+}
+static __inline __uint32_t
+__uint32_identity (__uint32_t __x)
+{
+  return __x;
+}
+static __inline __uint64_t
+__uint64_identity (__uint64_t __x)
+{
+  return __x;
+}
+typedef struct
+{
+  unsigned long int __val[(1024 / (8 * sizeof (unsigned long int)))];
+} __sigset_t;
+typedef __sigset_t sigset_t;
+struct timeval
+{
+  __time_t tv_sec;
+  __suseconds_t tv_usec;
+};
+
+struct timespec
+{
+  __time_t tv_sec;
+  __syscall_slong_t tv_nsec;
+};
+typedef __suseconds_t suseconds_t;
+typedef long int __fd_mask;
+typedef struct
+  {
+    __fd_mask __fds_bits[1024 / (8 * (int) sizeof (__fd_mask))];
+  } fd_set;
+typedef __fd_mask fd_mask;
+extern int select (int __nfds, fd_set *__restrict __readfds,
+     fd_set *__restrict __writefds,
+     fd_set *__restrict __exceptfds,
+     struct timeval *__restrict __timeout);
+extern int pselect (int __nfds, fd_set *__restrict __readfds,
+      fd_set *__restrict __writefds,
+      fd_set *__restrict __exceptfds,
+      const struct timespec *__restrict __timeout,
+      const __sigset_t *__restrict __sigmask);
+typedef __blksize_t blksize_t;
+typedef __blkcnt_t blkcnt_t;
+typedef __fsblkcnt_t fsblkcnt_t;
+typedef __fsfilcnt_t fsfilcnt_t;
+
+typedef union
+{
+  __extension__ unsigned long long int __value64;
+  struct
+  {
+    unsigned int __low;
+    unsigned int __high;
+  } __value32;
+} __atomic_wide_counter;
+typedef struct __pthread_internal_list
+{
+  struct __pthread_internal_list *__prev;
+  struct __pthread_internal_list *__next;
+} __pthread_list_t;
+typedef struct __pthread_internal_slist
+{
+  struct __pthread_internal_slist *__next;
+} __pthread_slist_t;
+struct __pthread_mutex_s
+{
+  int __lock;
+  unsigned int __count;
+  int __owner;
+  unsigned int __nusers;
+  int __kind;
+  short __spins;
+  short __elision;
+  __pthread_list_t __list;
+};
+struct __pthread_rwlock_arch_t
+{
+  unsigned int __readers;
+  unsigned int __writers;
+  unsigned int __wrphase_futex;
+  unsigned int __writers_futex;
+  unsigned int __pad3;
+  unsigned int __pad4;
+  int __cur_writer;
+  int __shared;
+  signed char __rwelision;
+  unsigned char __pad1[7];
+  unsigned long int __pad2;
+  unsigned int __flags;
+};
+struct __pthread_cond_s
+{
+  __atomic_wide_counter __wseq;
+  __atomic_wide_counter __g1_start;
+  unsigned int __g_refs[2] ;
+  unsigned int __g_size[2];
+  unsigned int __g1_orig_size;
+  unsigned int __wrefs;
+  unsigned int __g_signals[2];
+};
+typedef unsigned int __tss_t;
+typedef unsigned long int __thrd_t;
+typedef struct
+{
+  int __data ;
+} __once_flag;
+typedef unsigned long int pthread_t;
+typedef union
+{
+  char __size[4];
+  int __align;
+} pthread_mutexattr_t;
+typedef union
+{
+  char __size[4];
+  int __align;
+} pthread_condattr_t;
+typedef unsigned int pthread_key_t;
+typedef int pthread_once_t;
+union pthread_attr_t
+{
+  char __size[56];
+  long int __align;
+};
+typedef union pthread_attr_t pthread_attr_t;
+typedef union
+{
+  struct __pthread_mutex_s __data;
+  char __size[40];
+  long int __align;
+} pthread_mutex_t;
+typedef union
+{
+  struct __pthread_cond_s __data;
+  char __size[48];
+  __extension__ long long int __align;
+} pthread_cond_t;
+typedef union
+{
+  struct __pthread_rwlock_arch_t __data;
+  char __size[56];
+  long int __align;
+} pthread_rwlock_t;
+typedef union
+{
+  char __size[8];
+  long int __align;
+} pthread_rwlockattr_t;
+typedef volatile int pthread_spinlock_t;
+typedef union
+{
+  char __size[32];
+  long int __align;
+} pthread_barrier_t;
+typedef union
+{
+  char __size[4];
+  int __align;
+} pthread_barrierattr_t;
+extern long int random (void) __attribute__ ((__nothrow__ ));
+extern void srandom (unsigned int __seed) __attribute__ ((__nothrow__ ));
+extern char *initstate (unsigned int __seed, char *__statebuf,
+   size_t __statelen) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern char *setstate (char *__statebuf) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+struct random_data
+  {
+    int32_t *fptr;
+    int32_t *rptr;
+    int32_t *state;
+    int rand_type;
+    int rand_deg;
+    int rand_sep;
+    int32_t *end_ptr;
+  };
+extern int random_r (struct random_data *__restrict __buf,
+       int32_t *__restrict __result) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int srandom_r (unsigned int __seed, struct random_data *__buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern int initstate_r (unsigned int __seed, char *__restrict __statebuf,
+   size_t __statelen,
+   struct random_data *__restrict __buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2, 4)));
+extern int setstate_r (char *__restrict __statebuf,
+         struct random_data *__restrict __buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int rand (void) __attribute__ ((__nothrow__ ));
+extern void srand (unsigned int __seed) __attribute__ ((__nothrow__ ));
+extern int rand_r (unsigned int *__seed) __attribute__ ((__nothrow__ ));
+extern double drand48 (void) __attribute__ ((__nothrow__ ));
+extern double erand48 (unsigned short int __xsubi[3]) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern long int lrand48 (void) __attribute__ ((__nothrow__ ));
+extern long int nrand48 (unsigned short int __xsubi[3])
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern long int mrand48 (void) __attribute__ ((__nothrow__ ));
+extern long int jrand48 (unsigned short int __xsubi[3])
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern void srand48 (long int __seedval) __attribute__ ((__nothrow__ ));
+extern unsigned short int *seed48 (unsigned short int __seed16v[3])
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern void lcong48 (unsigned short int __param[7]) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+struct drand48_data
+  {
+    unsigned short int __x[3];
+    unsigned short int __old_x[3];
+    unsigned short int __c;
+    unsigned short int __init;
+    __extension__ unsigned long long int __a;
+  };
+extern int drand48_r (struct drand48_data *__restrict __buffer,
+        double *__restrict __result) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int erand48_r (unsigned short int __xsubi[3],
+        struct drand48_data *__restrict __buffer,
+        double *__restrict __result) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int lrand48_r (struct drand48_data *__restrict __buffer,
+        long int *__restrict __result)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int nrand48_r (unsigned short int __xsubi[3],
+        struct drand48_data *__restrict __buffer,
+        long int *__restrict __result)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int mrand48_r (struct drand48_data *__restrict __buffer,
+        long int *__restrict __result)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int jrand48_r (unsigned short int __xsubi[3],
+        struct drand48_data *__restrict __buffer,
+        long int *__restrict __result)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int srand48_r (long int __seedval, struct drand48_data *__buffer)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern int seed48_r (unsigned short int __seed16v[3],
+       struct drand48_data *__buffer) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int lcong48_r (unsigned short int __param[7],
+        struct drand48_data *__buffer)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern void *malloc (size_t __size) __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__))
+                                         ;
+extern void *calloc (size_t __nmemb, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) ;
+extern void *realloc (void *__ptr, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__warn_unused_result__)) ;
+extern void free (void *__ptr) __attribute__ ((__nothrow__ ));
+extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__warn_unused_result__))
+                       ;
+extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+     __attribute__ ((__nothrow__ )) ;
+extern void *alloca (size_t __size) __attribute__ ((__nothrow__ ));
+extern void *valloc (size_t __size) __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__))
+                                         ;
+extern int posix_memalign (void **__memptr, size_t __alignment, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1))) ;
+extern void *aligned_alloc (size_t __alignment, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) __attribute__ ((__alloc_align__ (1)))
+                                         ;
+extern void abort (void) __attribute__ ((__nothrow__ )) __attribute__ ((__noreturn__));
+extern int atexit (void (*__func) (void)) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int at_quick_exit (void (*__func) (void)) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int on_exit (void (*__func) (int __status, void *__arg), void *__arg)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern void exit (int __status) __attribute__ ((__nothrow__ )) __attribute__ ((__noreturn__));
+extern void quick_exit (int __status) __attribute__ ((__nothrow__ )) __attribute__ ((__noreturn__));
+extern void _Exit (int __status) __attribute__ ((__nothrow__ )) __attribute__ ((__noreturn__));
+extern char *getenv (const char *__name) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1))) ;
+extern int putenv (char *__string) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int setenv (const char *__name, const char *__value, int __replace)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern int unsetenv (const char *__name) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int clearenv (void) __attribute__ ((__nothrow__ ));
+extern char *mktemp (char *__template) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int mkstemp (char *__template) __attribute__ ((__nonnull__ (1))) ;
+extern int mkstemps (char *__template, int __suffixlen) __attribute__ ((__nonnull__ (1))) ;
+extern char *mkdtemp (char *__template) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1))) ;
+extern int system (const char *__command) ;
+extern char *realpath (const char *__restrict __name,
+         char *__restrict __resolved) __attribute__ ((__nothrow__ )) ;
+typedef int (*__compar_fn_t) (const void *, const void *);
+extern void *bsearch (const void *__key, const void *__base,
+        size_t __nmemb, size_t __size, __compar_fn_t __compar)
+     __attribute__ ((__nonnull__ (1, 2, 5))) ;
+extern void qsort (void *__base, size_t __nmemb, size_t __size,
+     __compar_fn_t __compar) __attribute__ ((__nonnull__ (1, 4)));
+extern int abs (int __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+extern long int labs (long int __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+__extension__ extern long long int llabs (long long int __x)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+extern div_t div (int __numer, int __denom)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+extern ldiv_t ldiv (long int __numer, long int __denom)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+__extension__ extern lldiv_t lldiv (long long int __numer,
+        long long int __denom)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+extern char *ecvt (double __value, int __ndigit, int *__restrict __decpt,
+     int *__restrict __sign) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4))) ;
+extern char *fcvt (double __value, int __ndigit, int *__restrict __decpt,
+     int *__restrict __sign) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4))) ;
+extern char *gcvt (double __value, int __ndigit, char *__buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3))) ;
+extern char *qecvt (long double __value, int __ndigit,
+      int *__restrict __decpt, int *__restrict __sign)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4))) ;
+extern char *qfcvt (long double __value, int __ndigit,
+      int *__restrict __decpt, int *__restrict __sign)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4))) ;
+extern char *qgcvt (long double __value, int __ndigit, char *__buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3))) ;
+extern int ecvt_r (double __value, int __ndigit, int *__restrict __decpt,
+     int *__restrict __sign, char *__restrict __buf,
+     size_t __len) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4, 5)));
+extern int fcvt_r (double __value, int __ndigit, int *__restrict __decpt,
+     int *__restrict __sign, char *__restrict __buf,
+     size_t __len) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4, 5)));
+extern int qecvt_r (long double __value, int __ndigit,
+      int *__restrict __decpt, int *__restrict __sign,
+      char *__restrict __buf, size_t __len)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4, 5)));
+extern int qfcvt_r (long double __value, int __ndigit,
+      int *__restrict __decpt, int *__restrict __sign,
+      char *__restrict __buf, size_t __len)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4, 5)));
+extern int mblen (const char *__s, size_t __n) __attribute__ ((__nothrow__ ));
+extern int mbtowc (wchar_t *__restrict __pwc,
+     const char *__restrict __s, size_t __n) __attribute__ ((__nothrow__ ));
+extern int wctomb (char *__s, wchar_t __wchar) __attribute__ ((__nothrow__ ));
+extern size_t mbstowcs (wchar_t *__restrict __pwcs,
+   const char *__restrict __s, size_t __n) __attribute__ ((__nothrow__ ))
+                                      ;
+extern size_t wcstombs (char *__restrict __s,
+   const wchar_t *__restrict __pwcs, size_t __n)
+     __attribute__ ((__nothrow__ ))
+                                    ;
+extern int rpmatch (const char *__response) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1))) ;
+extern int getsubopt (char **__restrict __optionp,
+        char *const *__restrict __tokens,
+        char **__restrict __valuep)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2, 3))) ;
+extern int getloadavg (double __loadavg[], int __nelem)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern void *memcpy (void *__restrict __dest, const void *__restrict __src,
+       size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern void *memmove (void *__dest, const void *__src, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern void *memccpy (void *__restrict __dest, const void *__restrict __src,
+        int __c, size_t __n)
+    __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2))) ;
+extern void *memset (void *__s, int __c, size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int memcmp (const void *__s1, const void *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int __memcmpeq (const void *__s1, const void *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern void *memchr (const void *__s, int __c, size_t __n)
+      __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strncpy (char *__restrict __dest,
+        const char *__restrict __src, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strcat (char *__restrict __dest, const char *__restrict __src)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strncat (char *__restrict __dest, const char *__restrict __src,
+        size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int strcmp (const char *__s1, const char *__s2)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int strncmp (const char *__s1, const char *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int strcoll (const char *__s1, const char *__s2)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern size_t strxfrm (char *__restrict __dest,
+         const char *__restrict __src, size_t __n)
+    __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2))) ;
+extern int strcoll_l (const char *__s1, const char *__s2, locale_t __l)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2, 3)));
+extern size_t strxfrm_l (char *__dest, const char *__src, size_t __n,
+    locale_t __l) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2, 4)))
+                                           ;
+extern char *strdup (const char *__s)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) __attribute__ ((__nonnull__ (1)));
+extern char *strndup (const char *__string, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) __attribute__ ((__nonnull__ (1)));
+extern char *strchr (const char *__s, int __c)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern char *strrchr (const char *__s, int __c)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern size_t strcspn (const char *__s, const char *__reject)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern size_t strspn (const char *__s, const char *__accept)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strpbrk (const char *__s, const char *__accept)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strstr (const char *__haystack, const char *__needle)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strtok (char *__restrict __s, const char *__restrict __delim)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern char *__strtok_r (char *__restrict __s,
+    const char *__restrict __delim,
+    char **__restrict __save_ptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2, 3)));
+extern char *strtok_r (char *__restrict __s, const char *__restrict __delim,
+         char **__restrict __save_ptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2, 3)));
+extern size_t strlen (const char *__s)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern size_t strnlen (const char *__string, size_t __maxlen)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern char *strerror (int __errnum) __attribute__ ((__nothrow__ ));
+extern int strerror_r (int __errnum, char *__buf, size_t __buflen) __asm__ ("" "__xpg_strerror_r") __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)))
+                                          ;
+extern char *strerror_l (int __errnum, locale_t __l) __attribute__ ((__nothrow__ ));
+extern int bcmp (const void *__s1, const void *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern void bcopy (const void *__src, void *__dest, size_t __n)
+  __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern void bzero (void *__s, size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern char *index (const char *__s, int __c)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern char *rindex (const char *__s, int __c)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern int ffs (int __i) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern int ffsl (long int __l) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+__extension__ extern int ffsll (long long int __ll)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern int strcasecmp (const char *__s1, const char *__s2)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int strncasecmp (const char *__s1, const char *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int strcasecmp_l (const char *__s1, const char *__s2, locale_t __loc)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2, 3)));
+extern int strncasecmp_l (const char *__s1, const char *__s2,
+     size_t __n, locale_t __loc)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2, 4)));
+extern void explicit_bzero (void *__s, size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)))
+                                                  ;
+extern char *strsep (char **__restrict __stringp,
+       const char *__restrict __delim)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strsignal (int __sig) __attribute__ ((__nothrow__ ));
+extern char *__stpcpy (char *__restrict __dest, const char *__restrict __src)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *stpcpy (char *__restrict __dest, const char *__restrict __src)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *__stpncpy (char *__restrict __dest,
+   const char *__restrict __src, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *stpncpy (char *__restrict __dest,
+        const char *__restrict __src, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
 
 int lil_new_probe(void);
-
-/*
- * LIL - Little Interpreted Language
- * Copyright (C) 2010-2013 Kostas Michalopoulos
- *
- * This software is provided 'as-is', without any express or implied
- * warranty.  In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- * 2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- * 3. This notice may not be removed or altered from any source distribution.
- *
- * Kostas Michalopoulos <badsector@runtimelegend.com>
- */
-
-#ifndef __LIL_H_INCLUDED__
-#define __LIL_H_INCLUDED__
-
-#define LIL_VERSION_STRING "0.1"
-
-#define LIL_SETVAR_GLOBAL 0
-#define LIL_SETVAR_LOCAL 1
-#define LIL_SETVAR_LOCAL_NEW 2
-#define LIL_SETVAR_LOCAL_ONLY 3
-
-#define LIL_CALLBACK_EXIT 0
-#define LIL_CALLBACK_WRITE 1
-#define LIL_CALLBACK_READ 2
-#define LIL_CALLBACK_STORE 3
-#define LIL_CALLBACK_SOURCE 4
-#define LIL_CALLBACK_ERROR 5
-#define LIL_CALLBACK_SETVAR 6
-#define LIL_CALLBACK_GETVAR 7
-
-#define LIL_EMBED_NOFLAGS 0x0000
-
-#if defined(LILDLL) && (defined(WIN32) || defined(_WIN32))
-#ifdef __LIL_C_FILE__
-#define LILAPI __declspec(dllexport __stdcall)
-#else
-#define LILAPI __declspec(dllimport __stdcall)
-#endif
-#define LILCALLBACK __declspec(__stdcall)
-#else
-#define LILAPI
-#define LILCALLBACK
-#endif
-
-#ifdef LILINT_LONGLONG
-typedef long long int lilint_t;
-#define LILINT_PRINTF "%lli"
-#else
-#ifdef LILINT_INT64
-typedef __int64 lilint_t;
-#define LILINT_PRINTF "%I64i"
-#else
-#ifndef LILINT_CUSTOM
-
-
 typedef int64_t lilint_t;
-#define LILINT_PRINTF "%"PRIi64
-#endif
-#endif
-#endif
-
 typedef struct _lil_value_t* lil_value_t;
 typedef struct _lil_func_t* lil_func_t;
 typedef struct _lil_var_t* lil_var_t;
 typedef struct _lil_env_t* lil_env_t;
 typedef struct _lil_list_t* lil_list_t;
 typedef struct _lil_t* lil_t;
-typedef LILCALLBACK lil_value_t (*lil_func_proc_t)(lil_t lil, size_t argc, lil_value_t* argv);
-typedef LILCALLBACK void (*lil_exit_callback_proc_t)(lil_t lil, lil_value_t arg);
-typedef LILCALLBACK void (*lil_write_callback_proc_t)(lil_t lil, const char* msg);
-typedef LILCALLBACK char* (*lil_read_callback_proc_t)(lil_t lil, const char* name);
-typedef LILCALLBACK char* (*lil_source_callback_proc_t)(lil_t lil, const char* name);
-typedef LILCALLBACK void (*lil_store_callback_proc_t)(lil_t lil, const char* name, const char* data);
-typedef LILCALLBACK void (*lil_error_callback_proc_t)(lil_t lil, size_t pos, const char* msg);
-typedef LILCALLBACK int (*lil_setvar_callback_proc_t)(lil_t lil, const char* name, lil_value_t* value);
-typedef LILCALLBACK int (*lil_getvar_callback_proc_t)(lil_t lil, const char* name, lil_value_t* value);
-typedef LILCALLBACK void (*lil_callback_proc_t)(void);
-
-LILAPI lil_t lil_new(void);
-LILAPI void lil_free(lil_t lil);
-
-LILAPI int lil_register(lil_t lil, const char* name, lil_func_proc_t proc);
-
-LILAPI lil_value_t lil_parse(lil_t lil, const char* code, size_t codelen, int funclevel);
-LILAPI lil_value_t lil_parse_value(lil_t lil, lil_value_t val, int funclevel);
-LILAPI lil_value_t lil_call(lil_t lil, const char* funcname, size_t argc, lil_value_t* argv);
-
-LILAPI void lil_callback(lil_t lil, int cb, lil_callback_proc_t proc);
-
-LILAPI void lil_set_error(lil_t lil, const char* msg);
-LILAPI void lil_set_error_at(lil_t lil, size_t pos, const char* msg);
-LILAPI int lil_error(lil_t lil, const char** msg, size_t* pos);
-
-LILAPI const char* lil_to_string(lil_value_t val);
-LILAPI double lil_to_double(lil_value_t val);
-LILAPI lilint_t lil_to_integer(lil_value_t val);
-LILAPI int lil_to_boolean(lil_value_t val);
-
-LILAPI lil_value_t lil_alloc_string(const char* str);
-LILAPI lil_value_t lil_alloc_double(double num);
-LILAPI lil_value_t lil_alloc_integer(lilint_t num);
-LILAPI void lil_free_value(lil_value_t val);
-
-LILAPI lil_value_t lil_clone_value(lil_value_t src);
-LILAPI int lil_append_char(lil_value_t val, char ch);
-LILAPI int lil_append_string(lil_value_t val, const char* s);
-LILAPI int lil_append_val(lil_value_t val, lil_value_t v);
-
-LILAPI lil_list_t lil_alloc_list(void);
-LILAPI void lil_free_list(lil_list_t list);
-LILAPI void lil_list_append(lil_list_t list, lil_value_t val);
-LILAPI size_t lil_list_size(lil_list_t list);
-LILAPI lil_value_t lil_list_get(lil_list_t list, size_t index);
-LILAPI lil_value_t lil_list_to_value(lil_list_t list, int do_escape);
-
-LILAPI lil_list_t lil_subst_to_list(lil_t lil, lil_value_t code);
-LILAPI lil_value_t lil_subst_to_value(lil_t lil, lil_value_t code);
-
-LILAPI lil_env_t lil_alloc_env(lil_env_t parent);
-LILAPI void lil_free_env(lil_env_t env);
-LILAPI lil_env_t lil_push_env(lil_t lil);
-LILAPI void lil_pop_env(lil_t lil);
-
-LILAPI lil_var_t lil_set_var(lil_t lil, const char* name, lil_value_t val, int local);
-LILAPI lil_value_t lil_get_var(lil_t lil, const char* name);
-LILAPI lil_value_t lil_get_var_or(lil_t lil, const char* name, lil_value_t defvalue);
-
-LILAPI lil_value_t lil_eval_expr(lil_t lil, lil_value_t code);
-LILAPI lil_value_t lil_unused_name(lil_t lil, const char* part);
-
-LILAPI lil_value_t lil_arg(lil_value_t* argv, size_t index);
-
-LILAPI void lil_set_data(lil_t lil, void* data);
-LILAPI void* lil_get_data(lil_t lil);
-
-LILAPI char* lil_embedded(lil_t lil, const char* code, unsigned int flags);
-LILAPI void lil_freemem(void* ptr);
-
-LILAPI void lil_write(lil_t lil, const char* msg);
-
-#endif
-
-
-/*
- * LIL - Little Interpreted Language
- * Copyright (C) 2010-2013 Kostas Michalopoulos
- *
- * This software is provided 'as-is', without any express or implied
- * warranty.  In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- * 2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- * 3. This notice may not be removed or altered from any source distribution.
- *
- * Kostas Michalopoulos <badsector@runtimelegend.com>
- */
-
-#define __LIL_C_FILE__
-
-
-
-
-
-
-/* Enable pools for reusing values, lists and environments. This will use more memory and
- * will rely on the runtime/OS to free the pools once the program ends, but will cause
- * considerably less memory fragmentation and improve the script execution performance. */
-/*#define LIL_ENABLE_POOLS*/
-
-/* Enable limiting recursive calls to lil_parse - this can be used to avoid call stack
- * overflows and is also useful when running through an automated fuzzer like AFL */
-/*#define LIL_ENABLE_RECLIMIT 10000*/
-
-/* Visual C++ does not have atoll (Pelles C does and thinks it is fully MSVC compatible) */
-#if defined(_MSC_VER) && !defined(__POCC__)
-#define atoll _atoi64
-/* disable warning about unsafe standard C calls */
-#pragma warning(disable:4996)
-/* disable float/int conversion warnings */
-#pragma warning(disable:4244)
-#endif
-
-#define ERROR_NOERROR 0
-#define ERROR_DEFAULT 1
-#define ERROR_FIXHEAD 2
-
-#define CALLBACKS 8
-#define MAX_CATCHER_DEPTH 16384
-#define HASHMAP_CELLS 256
-#define HASHMAP_CELLMASK 0xFF
-
-/* note: static lil_xxx functions might become public later */
-
+typedef lil_value_t (*lil_func_proc_t)(lil_t lil, size_t argc, lil_value_t* argv);
+typedef void (*lil_exit_callback_proc_t)(lil_t lil, lil_value_t arg);
+typedef void (*lil_write_callback_proc_t)(lil_t lil, const char* msg);
+typedef char* (*lil_read_callback_proc_t)(lil_t lil, const char* name);
+typedef char* (*lil_source_callback_proc_t)(lil_t lil, const char* name);
+typedef void (*lil_store_callback_proc_t)(lil_t lil, const char* name, const char* data);
+typedef void (*lil_error_callback_proc_t)(lil_t lil, size_t pos, const char* msg);
+typedef int (*lil_setvar_callback_proc_t)(lil_t lil, const char* name, lil_value_t* value);
+typedef int (*lil_getvar_callback_proc_t)(lil_t lil, const char* name, lil_value_t* value);
+typedef void (*lil_callback_proc_t)(void);
+       lil_t lil_new(void);
+       void lil_free(lil_t lil);
+       int lil_register(lil_t lil, const char* name, lil_func_proc_t proc);
+       lil_value_t lil_parse(lil_t lil, const char* code, size_t codelen, int funclevel);
+       lil_value_t lil_parse_value(lil_t lil, lil_value_t val, int funclevel);
+       lil_value_t lil_call(lil_t lil, const char* funcname, size_t argc, lil_value_t* argv);
+       void lil_callback(lil_t lil, int cb, lil_callback_proc_t proc);
+       void lil_set_error(lil_t lil, const char* msg);
+       void lil_set_error_at(lil_t lil, size_t pos, const char* msg);
+       int lil_error(lil_t lil, const char** msg, size_t* pos);
+       const char* lil_to_string(lil_value_t val);
+       double lil_to_double(lil_value_t val);
+       lilint_t lil_to_integer(lil_value_t val);
+       int lil_to_boolean(lil_value_t val);
+       lil_value_t lil_alloc_string(const char* str);
+       lil_value_t lil_alloc_double(double num);
+       lil_value_t lil_alloc_integer(lilint_t num);
+       void lil_free_value(lil_value_t val);
+       lil_value_t lil_clone_value(lil_value_t src);
+       int lil_append_char(lil_value_t val, char ch);
+       int lil_append_string(lil_value_t val, const char* s);
+       int lil_append_val(lil_value_t val, lil_value_t v);
+       lil_list_t lil_alloc_list(void);
+       void lil_free_list(lil_list_t list);
+       void lil_list_append(lil_list_t list, lil_value_t val);
+       size_t lil_list_size(lil_list_t list);
+       lil_value_t lil_list_get(lil_list_t list, size_t index);
+       lil_value_t lil_list_to_value(lil_list_t list, int do_escape);
+       lil_list_t lil_subst_to_list(lil_t lil, lil_value_t code);
+       lil_value_t lil_subst_to_value(lil_t lil, lil_value_t code);
+       lil_env_t lil_alloc_env(lil_env_t parent);
+       void lil_free_env(lil_env_t env);
+       lil_env_t lil_push_env(lil_t lil);
+       void lil_pop_env(lil_t lil);
+       lil_var_t lil_set_var(lil_t lil, const char* name, lil_value_t val, int local);
+       lil_value_t lil_get_var(lil_t lil, const char* name);
+       lil_value_t lil_get_var_or(lil_t lil, const char* name, lil_value_t defvalue);
+       lil_value_t lil_eval_expr(lil_t lil, lil_value_t code);
+       lil_value_t lil_unused_name(lil_t lil, const char* part);
+       lil_value_t lil_arg(lil_value_t* argv, size_t index);
+       void lil_set_data(lil_t lil, void* data);
+       void* lil_get_data(lil_t lil);
+       char* lil_embedded(lil_t lil, const char* code, unsigned int flags);
+       void lil_freemem(void* ptr);
+       void lil_write(lil_t lil, const char* msg);
 struct hashentry_t
 {
     char* k;
     void* v;
 };
-
 struct hashcell_t
 {
     struct hashentry_t* e;
     size_t c;
 };
-
 typedef struct _hashmap_t
 {
-    struct hashcell_t cell[HASHMAP_CELLS];
+    struct hashcell_t cell[256];
 } hashmap_t;
-
 struct _lil_value_t
 {
     size_t l;
-#ifdef LIL_ENABLE_POOLS
-    size_t c;
-#endif
     char* d;
 };
-
 struct _lil_var_t
 {
     char* n;
@@ -255,7 +1316,6 @@ struct _lil_var_t
     struct _lil_env_t* env;
     lil_value_t v;
 };
-
 struct _lil_env_t
 {
     struct _lil_env_t* parent;
@@ -268,14 +1328,12 @@ struct _lil_env_t
     int retval_set;
     int breakrun;
 };
-
 struct _lil_list_t
 {
     lil_value_t* v;
     size_t c;
     size_t cap;
 };
-
 struct _lil_func_t
 {
     char* name;
@@ -283,13 +1341,12 @@ struct _lil_func_t
     lil_list_t argnames;
     lil_func_proc_t proc;
 };
-
 struct _lil_t
 {
-    const char* code; /* need save on parse */
+    const char* code;
     const char* rootcode;
-    size_t clen; /* need save on parse */
-    size_t head; /* need save on parse */
+    size_t clen;
+    size_t head;
     int ignoreeol;
     lil_func_t* cmd;
     size_t cmds;
@@ -305,13 +1362,12 @@ struct _lil_t
     int error;
     size_t err_head;
     char* err_msg;
-    lil_callback_proc_t callback[CALLBACKS];
+    lil_callback_proc_t callback[8];
     size_t parse_depth;
     void* data;
     char* embed;
     size_t embedlen;
 };
-
 typedef struct _expreval_t
 {
     const char* code;
@@ -321,28 +1377,16 @@ typedef struct _expreval_t
     int type;
     int error;
 } expreval_t;
-
 static lil_value_t next_word(lil_t lil);
 static void register_stdcmds(lil_t lil);
-
-#ifdef LIL_ENABLE_POOLS
-static lil_value_t* pool;
-static int poolsize, poolcap;
-static lil_list_t* listpool;
-static size_t listpoolsize, listpoolcap;
-static lil_env_t* envpool;
-static size_t envpoolsize, envpoolcap;
-#endif
-
 static char* strclone(const char* s)
 {
     size_t len = strlen(s) + 1;
     char* ns = malloc(len);
-    if (!ns) return NULL;
+    if (!ns) return ((void*)0);
     memcpy(ns, s, len);
     return ns;
 }
-
 static unsigned long hm_hash(const char* key)
 {
     unsigned long hash = 5381;
@@ -350,25 +1394,22 @@ static unsigned long hm_hash(const char* key)
     while ((c = *key++)) hash = ((hash << 5) + hash) + c;
     return hash;
 }
-
 static void hm_init(hashmap_t* hm)
 {
     memset(hm, 0, sizeof(hashmap_t));
 }
-
 static void hm_destroy(hashmap_t* hm)
 {
     size_t i, j;
-    for (i=0; i<HASHMAP_CELLS; i++) {
+    for (i=0; i<256; i++) {
         for (j=0; j<hm->cell[i].c; j++)
             free(hm->cell[i].e[j].k);
         free(hm->cell[i].e);
     }
 }
-
 static void hm_put(hashmap_t* hm, const char* key, void* value)
 {
-    struct hashcell_t* cell = hm->cell + (hm_hash(key) & HASHMAP_CELLMASK);
+    struct hashcell_t* cell = hm->cell + (hm_hash(key) & 0xFF);
     size_t i;
     for (i=0; i<cell->c; i++)
         if (!strcmp(key, cell->e[i].k)) {
@@ -380,228 +1421,122 @@ static void hm_put(hashmap_t* hm, const char* key, void* value)
     cell->e[cell->c].v = value;
     cell->c++;
 }
-
 static void* hm_get(hashmap_t* hm, const char* key)
 {
-    struct hashcell_t* cell = hm->cell + (hm_hash(key) & HASHMAP_CELLMASK);
+    struct hashcell_t* cell = hm->cell + (hm_hash(key) & 0xFF);
     size_t i;
     for (i = 0; i<cell->c; i++)
         if (!strcmp(key, cell->e[i].k))
             return cell->e[i].v;
-    return NULL;
+    return ((void*)0);
 }
-
 static int hm_has(hashmap_t* hm, const char* key)
 {
-    struct hashcell_t* cell = hm->cell + (hm_hash(key) & HASHMAP_CELLMASK);
+    struct hashcell_t* cell = hm->cell + (hm_hash(key) & 0xFF);
     size_t i;
     for (i = 0; i < cell->c; i++)
         if (!strcmp(key, cell->e[i].k))
             return 1;
     return 0;
 }
-
-#ifdef LIL_ENABLE_POOLS
-static lil_value_t alloc_from_pool(void)
-{
-    if (poolsize > 0) {
-        poolsize--;
-        return pool[poolsize];
-    } else {
-        lil_value_t val = calloc(1, sizeof(struct _lil_value_t));
-        return val;
-    }
-}
-
-static void release_to_pool(lil_value_t val)
-{
-    if (poolsize == poolcap) {
-        poolcap = poolcap ? (poolcap + poolcap / 2) : 64;
-        pool = realloc(pool, sizeof(lil_value_t)*poolcap);
-    }
-    pool[poolsize++] = val;
-}
-
-static void ensure_capacity(lil_value_t val, size_t cap)
-{
-    if (val->c < cap) {
-        val->c = cap + 128;
-        val->d = realloc(val->d, val->c);
-    }
-}
-#endif
-
 static lil_value_t alloc_value_len(const char* str, size_t len)
 {
-#ifdef LIL_ENABLE_POOLS
-    lil_value_t val = alloc_from_pool();
-#else
     lil_value_t val = calloc(1, sizeof(struct _lil_value_t));
-#endif
-    if (!val) return NULL;
+    if (!val) return ((void*)0);
     if (str) {
         val->l = len;
-#ifdef LIL_ENABLE_POOLS
-        ensure_capacity(val, len + 1);
-#else
         val->d = malloc(len + 1);
         if (!val->d) {
             free(val);
-            return NULL;
+            return ((void*)0);
         }
-#endif
         memcpy(val->d, str, len);
         val->d[len] = 0;
     } else {
         val->l = 0;
-#ifdef LIL_ENABLE_POOLS
-        ensure_capacity(val, 1);
-        val->d[0] = '\0';
-#else
-        val->d = NULL;
-#endif
+        val->d = ((void*)0);
     }
     return val;
 }
-
 static lil_value_t alloc_value(const char* str)
 {
     return alloc_value_len(str, str ? strlen(str) : 0);
 }
-
 lil_value_t lil_clone_value(lil_value_t src)
 {
     lil_value_t val;
-    if (!src) return NULL;
-#ifdef LIL_ENABLE_POOLS
-    val = alloc_from_pool();
-#else
+    if (!src) return ((void*)0);
     val = calloc(1, sizeof(struct _lil_value_t));
-#endif
-    if (!val) return NULL;
+    if (!val) return ((void*)0);
     val->l = src->l;
     if (src->l) {
-#ifdef LIL_ENABLE_POOLS
-        ensure_capacity(val, val->l + 1);
-#else
         val->d = malloc(val->l + 1);
         if (!val->d) {
             free(val);
-            return NULL;
+            return ((void*)0);
         }
-#endif
         memcpy(val->d, src->d, val->l + 1);
     } else {
-#ifdef LIL_ENABLE_POOLS
-        ensure_capacity(val, 1);
-        val->d[0] = '\0';
-#else
-        val->d = NULL;
-#endif
+        val->d = ((void*)0);
     }
     return val;
 }
-
 int lil_append_char(lil_value_t val, char ch)
 {
-#ifdef LIL_ENABLE_POOLS
-    ensure_capacity(val, val->l + 2);
-    val->d[val->l++] = ch;
-    val->d[val->l] = '\0';
-#else
     char* new = realloc(val->d, val->l + 2);
     if (!new) return 0;
     new[val->l++] = ch;
     new[val->l] = 0;
     val->d = new;
-#endif
     return 1;
 }
-
 int lil_append_string_len(lil_value_t val, const char* s, size_t len)
 {
-#ifndef LIL_ENABLE_POOLS
     char* new;
-#endif
     if (!s || !s[0]) return 1;
-#ifdef LIL_ENABLE_POOLS
-    ensure_capacity(val, val->l + len + 1);
-    memcpy(val->d + val->l, s, len + 1);
-#else
     new = realloc(val->d, val->l + len + 1);
     if (!new) return 0;
     memcpy(new + val->l, s, len + 1);
     val->d = new;
-#endif
     val->l += len;
     return 1;
 }
-
 int lil_append_string(lil_value_t val, const char* s)
 {
     return lil_append_string_len(val, s, strlen(s));
 }
-
 int lil_append_val(lil_value_t val, lil_value_t v)
 {
-#ifndef LIL_ENABLE_POOLS
     char* new;
-#endif
     if (!v || !v->l) return 1;
-#ifdef LIL_ENABLE_POOLS
-    ensure_capacity(val, val->l + v->l + 1);
-    memcpy(val->d + val->l, v->d, v->l + 1);
-#else
     new = realloc(val->d, val->l + v->l + 1);
     if (!new) return 0;
     memcpy(new + val->l, v->d, v->l + 1);
     val->d = new;
-#endif
     val->l += v->l;
     return 1;
 }
-
 void lil_free_value(lil_value_t val)
 {
     if (!val) return;
-#ifdef LIL_ENABLE_POOLS
-    release_to_pool(val);
-#else
     free(val->d);
     free(val);
-#endif
 }
-
 lil_list_t lil_alloc_list(void)
 {
     lil_list_t list;
-#ifdef LIL_ENABLE_POOLS
-    if (listpoolsize > 0)
-        return listpool[--listpoolsize];
-#endif
     list = calloc(1, sizeof(struct _lil_list_t));
-    list->v = NULL;
+    list->v = ((void*)0);
     return list;
 }
-
 void lil_free_list(lil_list_t list)
 {
     size_t i;
     if (!list) return;
     for (i = 0; i<list->c; i++) lil_free_value(list->v[i]);
-#ifdef LIL_ENABLE_POOLS
-    list->c = 0;
-    if (listpoolsize == listpoolcap) {
-        listpoolcap = listpoolcap ? (listpoolcap + listpoolcap / 2) : 32;
-        listpool = realloc(listpool, sizeof(lil_list_t)*listpoolcap);
-    }
-    listpool[listpoolsize++] = list;
-#else
     free(list->v);
     free(list);
-#endif
 }
-
 void lil_list_append(lil_list_t list, lil_value_t val)
 {
     if (list->c == list->cap) {
@@ -613,29 +1548,25 @@ void lil_list_append(lil_list_t list, lil_value_t val)
     }
     list->v[list->c++] = val;
 }
-
 size_t lil_list_size(lil_list_t list)
 {
     return list->c;
 }
-
 lil_value_t lil_list_get(lil_list_t list, size_t index)
 {
-    return index >= list->c ? NULL : list->v[index];
+    return index >= list->c ? ((void*)0) : list->v[index];
 }
-
 static int needs_escape(const char* str)
 {
     size_t i;
     if (!str || !str[0]) return 1;
     for (i=0; str[i]; i++)
-        if (ispunct(str[i]) || isspace(str[i])) return 1;
+        if (((*__ctype_b_loc ())[(int) ((str[i]))] & (unsigned short int) _ISpunct) || ((*__ctype_b_loc ())[(int) ((str[i]))] & (unsigned short int) _ISspace)) return 1;
     return 0;
 }
-
 lil_value_t lil_list_to_value(lil_list_t list, int do_escape)
 {
-    lil_value_t val = alloc_value(NULL);
+    lil_value_t val = alloc_value(((void*)0));
     size_t i, j;
     for (i=0; i<list->c; i++) {
         int escape = do_escape ? needs_escape(lil_to_string(list->v[i])) : 0;
@@ -654,54 +1585,18 @@ lil_value_t lil_list_to_value(lil_list_t list, int do_escape)
     }
     return val;
 }
-
 lil_env_t lil_alloc_env(lil_env_t parent)
 {
     lil_env_t env;
-#ifdef LIL_ENABLE_POOLS
-    if (envpoolsize > 0) {
-        size_t i, j;
-        env = envpool[--envpoolsize];
-        env->parent = parent;
-        env->func = NULL;
-        env->catcher_for = NULL;
-        env->var = NULL;
-        env->vars = 0;
-        env->retval = NULL;
-        env->retval_set = 0;
-        env->breakrun = 0;
-        for (i = 0; i < HASHMAP_CELLS; i++) {
-            for (j = 0; j < env->varmap.cell[i].c; j++)
-                free(env->varmap.cell[i].e[j].k);
-            env->varmap.cell[i].c = 0;
-        }
-        return env;
-    }
-#endif
     env = calloc(1, sizeof(struct _lil_env_t));
     env->parent = parent;
     return env;
 }
-
 void lil_free_env(lil_env_t env)
 {
     size_t i;
     if (!env) return;
     lil_free_value(env->retval);
-#ifdef LIL_ENABLE_POOLS
-    for (i = 0; i<env->vars; i++) {
-        free(env->var[i]->n);
-        lil_free_value(env->var[i]->v);
-        free(env->var[i]->w);
-        free(env->var[i]);
-    }
-    free(env->var);
-    if (envpoolsize == envpoolcap) {
-        envpoolcap = envpoolcap ? (envpoolcap + envpoolcap / 2) : 64;
-        envpool = realloc(envpool, sizeof(lil_env_t)*envpoolcap);
-    }
-    envpool[envpoolsize++] = env;
-#else
     hm_destroy(&env->varmap);
     for (i=0; i<env->vars; i++) {
         free(env->var[i]->n);
@@ -711,49 +1606,20 @@ void lil_free_env(lil_env_t env)
     }
     free(env->var);
     free(env);
-#endif
 }
-
 static lil_var_t lil_find_local_var(lil_t lil, lil_env_t env, const char* name)
 {
-    #if 0
-    if (env->vars > 0) {
-        size_t i = env->vars - 1;
-        while (1) {
-            if (!strcmp(env->var[i]->n, name)) return env->var[i];
-            if (!i) break;
-            i--;
-        }
-    }
-    return NULL;
-    #else
     return hm_get(&env->varmap, name);
-    #endif
 }
-
 static lil_var_t lil_find_var(lil_t lil, lil_env_t env, const char* name)
 {
     lil_var_t r = lil_find_local_var(lil, env, name);
-    return r ? r : (env == lil->rootenv ? NULL : lil_find_var(lil, lil->rootenv, name));
+    return r ? r : (env == lil->rootenv ? ((void*)0) : lil_find_var(lil, lil->rootenv, name));
 }
-
 static lil_func_t find_cmd(lil_t lil, const char* name)
 {
-    #if 0
-    if (lil->cmds > 0) {
-        size_t i = lil->cmds - 1;
-        while (1) {
-            if (!strcmp(lil->cmd[i]->name, name)) return lil->cmd[i];
-            if (!i) break;
-            i--;
-        }
-    }
-    return NULL;
-    #else
     return hm_get(&lil->cmdmap, name);
-    #endif
 }
-
 static lil_func_t add_func(lil_t lil, const char* name)
 {
     lil_func_t cmd;
@@ -762,9 +1628,9 @@ static lil_func_t add_func(lil_t lil, const char* name)
     if (cmd) {
         if (cmd->argnames) lil_free_list(cmd->argnames);
         lil_free_value(cmd->code);
-        cmd->argnames = NULL;
-        cmd->code = NULL;   
-        cmd->proc = NULL;
+        cmd->argnames = ((void*)0);
+        cmd->code = ((void*)0);
+        cmd->proc = ((void*)0);
         return cmd;
     }
     cmd = calloc(1, sizeof(struct _lil_func_t));
@@ -772,14 +1638,13 @@ static lil_func_t add_func(lil_t lil, const char* name)
     ncmd = realloc(lil->cmd, sizeof(lil_func_t)*(lil->cmds + 1));
     if (!ncmd) {
         free(cmd);
-        return NULL;
+        return ((void*)0);
     }
     lil->cmd = ncmd;
     ncmd[lil->cmds++] = cmd;
     hm_put(&lil->cmdmap, name, cmd);
     return cmd;
 }
-
 static void del_func(lil_t lil, lil_func_t cmd)
 {
     size_t i, index = lil->cmds;
@@ -797,7 +1662,6 @@ static void del_func(lil_t lil, lil_func_t cmd)
     lil->cmds--;
     for (i=index; i < lil->cmds; i++) lil->cmd[i] = lil->cmd[i + 1];
 }
-
 int lil_register(lil_t lil, const char* name, lil_func_proc_t proc)
 {
     lil_func_t cmd = add_func(lil, name);
@@ -805,22 +1669,21 @@ int lil_register(lil_t lil, const char* name, lil_func_proc_t proc)
     cmd->proc = proc;
     return 1;
 }
-
 lil_var_t lil_set_var(lil_t lil, const char* name, lil_value_t val, int local)
 {
     lil_var_t* nvar;
-    lil_env_t env = local == LIL_SETVAR_GLOBAL ? lil->rootenv : lil->env;
+    lil_env_t env = local == 0 ? lil->rootenv : lil->env;
     int freeval = 0;
-    if (!name[0]) return NULL;
-    if (local != LIL_SETVAR_LOCAL_NEW) {
+    if (!name[0]) return ((void*)0);
+    if (local != 2) {
         lil_var_t var = lil_find_var(lil, env, name);
-        if (local == LIL_SETVAR_LOCAL_ONLY && var && var->env == lil->rootenv && var->env != env)
-            var = NULL;
-        if (((!var && env == lil->rootenv) || (var && var->env == lil->rootenv)) && lil->callback[LIL_CALLBACK_SETVAR]) {
-            lil_setvar_callback_proc_t proc = (lil_setvar_callback_proc_t)lil->callback[LIL_CALLBACK_SETVAR];
+        if (local == 3 && var && var->env == lil->rootenv && var->env != env)
+            var = ((void*)0);
+        if (((!var && env == lil->rootenv) || (var && var->env == lil->rootenv)) && lil->callback[6]) {
+            lil_setvar_callback_proc_t proc = (lil_setvar_callback_proc_t)lil->callback[6];
             lil_value_t newval = val;
             int r = proc(lil, name, &newval);
-            if (r < 0) return NULL;
+            if (r < 0) return ((void*)0);
             if (r) {
                 val = newval;
                 freeval = 1;
@@ -839,47 +1702,41 @@ lil_var_t lil_set_var(lil_t lil, const char* name, lil_value_t val, int local)
             return var;
         }
     }
-
     nvar = realloc(env->var, sizeof(lil_var_t)*(env->vars + 1));
     if (!nvar) {
-        /* TODO: report memory error */
-        return NULL;
+        return ((void*)0);
     }
     env->var = nvar;
     nvar[env->vars] = calloc(1, sizeof(struct _lil_var_t));
     nvar[env->vars]->n = strclone(name);
-    nvar[env->vars]->w = NULL;
+    nvar[env->vars]->w = ((void*)0);
     nvar[env->vars]->env = env;
     nvar[env->vars]->v = freeval ? val : lil_clone_value(val);
     hm_put(&env->varmap, name, nvar[env->vars]);
     return nvar[env->vars++];
 }
-
 lil_value_t lil_get_var(lil_t lil, const char* name)
 {
     return lil_get_var_or(lil, name, lil->empty);
 }
-
 lil_value_t lil_get_var_or(lil_t lil, const char* name, lil_value_t defvalue)
 {
     lil_var_t var = lil_find_var(lil, lil->env, name);
     lil_value_t retval = var ? var->v : defvalue;
-    if (lil->callback[LIL_CALLBACK_GETVAR] && (!var || var->env == lil->rootenv)) {
-        lil_getvar_callback_proc_t proc = (lil_getvar_callback_proc_t)lil->callback[LIL_CALLBACK_GETVAR];
+    if (lil->callback[7] && (!var || var->env == lil->rootenv)) {
+        lil_getvar_callback_proc_t proc = (lil_getvar_callback_proc_t)lil->callback[7];
         lil_value_t newretval = retval;
         if (proc(lil, name, &newretval))
             retval = newretval;
     }
     return retval;
 }
-
 lil_env_t lil_push_env(lil_t lil)
 {
     lil_env_t env = lil_alloc_env(lil->env);
     lil->env = env;
     return env;
 }
-
 void lil_pop_env(lil_t lil)
 {
     if (lil->env->parent) {
@@ -888,28 +1745,24 @@ void lil_pop_env(lil_t lil)
         lil->env = next;
     }
 }
-
 lil_t lil_new(void)
 {
     lil_t lil = calloc(1, sizeof(struct _lil_t));
-    lil->rootenv = lil->env = lil_alloc_env(NULL);
-    lil->empty = alloc_value(NULL);
+    lil->rootenv = lil->env = lil_alloc_env(((void*)0));
+    lil->empty = alloc_value(((void*)0));
     lil->dollarprefix = strclone("set ");
     hm_init(&lil->cmdmap);
     register_stdcmds(lil);
     return lil;
 }
-
 static int islilspecial(char ch)
 {
     return ch == '$' || ch == '{' || ch == '}' || ch == '[' || ch == ']' || ch == '"' || ch == '\'' || ch == ';';
 }
-
 static int ateol(lil_t lil)
 {
     return !(lil->ignoreeol) && (lil->code[lil->head] == '\n' || lil->code[lil->head] == '\r' || lil->code[lil->head] == ';');
 }
-
 static void skip_spaces(lil_t lil)
 {
     while (lil->head < lil->clen) {
@@ -932,16 +1785,15 @@ static void skip_spaces(lil_t lil)
         } else if (lil->code[lil->head] == '\r' || lil->code[lil->head] == '\n') {
             if (lil->ignoreeol) lil->head++;
             else break;
-        } else if (isspace(lil->code[lil->head]))
+        } else if (((*__ctype_b_loc ())[(int) ((lil->code[lil->head]))] & (unsigned short int) _ISspace))
             lil->head++;
         else break;
     }
 }
-
 static lil_value_t get_bracketpart(lil_t lil)
 {
     size_t cnt = 1;
-    lil_value_t val, cmd = alloc_value(NULL);
+    lil_value_t val, cmd = alloc_value(((void*)0));
     lil->head++;
     while (lil->head < lil->clen) {
         if (lil->code[lil->head] == '[') {
@@ -960,7 +1812,6 @@ static lil_value_t get_bracketpart(lil_t lil)
     lil_free_value(cmd);
     return val;
 }
-
 static lil_value_t get_dollarpart(lil_t lil)
 {
     lil_value_t val, name, tmp;
@@ -973,7 +1824,6 @@ static lil_value_t get_dollarpart(lil_t lil)
     lil_free_value(tmp);
     return val;
 }
-
 static lil_value_t next_word(lil_t lil)
 {
     lil_value_t val;
@@ -984,7 +1834,7 @@ static lil_value_t next_word(lil_t lil)
     } else if (lil->code[lil->head] == '{') {
         size_t cnt = 1;
         lil->head++;
-        val = alloc_value(NULL);
+        val = alloc_value(((void*)0));
         while (lil->head < lil->clen) {
             if (lil->code[lil->head] == '{') {
                 lil->head++;
@@ -1002,13 +1852,13 @@ static lil_value_t next_word(lil_t lil)
         val = get_bracketpart(lil);
     } else if (lil->code[lil->head] == '"' || lil->code[lil->head] == '\'') {
         char sc = lil->code[lil->head++];
-        val = alloc_value(NULL);
+        val = alloc_value(((void*)0));
         while (lil->head < lil->clen) {
             if (lil->code[lil->head] == '[' || lil->code[lil->head] == '$') {
                 lil_value_t tmp = lil->code[lil->head] == '$' ? get_dollarpart(lil) : get_bracketpart(lil);
                 lil_append_val(val, tmp);
                 lil_free_value(tmp);
-                lil->head--; /* avoid skipping the char below */
+                lil->head--;
             } else if (lil->code[lil->head] == '\\') {
                 lil->head++;
                 switch (lil->code[lil->head]) {
@@ -1034,41 +1884,36 @@ static lil_value_t next_word(lil_t lil)
         }
     } else {
         start = lil->head;
-        while (lil->head < lil->clen && !isspace(lil->code[lil->head]) && !islilspecial(lil->code[lil->head])) {
+        while (lil->head < lil->clen && !((*__ctype_b_loc ())[(int) ((lil->code[lil->head]))] & (unsigned short int) _ISspace) && !islilspecial(lil->code[lil->head])) {
             lil->head++;
         }
         val = alloc_value_len(lil->code + start, lil->head - start);
     }
-    return val ? val : alloc_value(NULL);
+    return val ? val : alloc_value(((void*)0));
 }
-
 static lil_list_t substitute(lil_t lil)
 {
     lil_list_t words = lil_alloc_list();
-
     skip_spaces(lil);
     while (lil->head < lil->clen && !ateol(lil) && !lil->error) {
-        lil_value_t w = alloc_value(NULL);
+        lil_value_t w = alloc_value(((void*)0));
         do {
             size_t head = lil->head;
             lil_value_t wp = next_word(lil);
-            if (head == lil->head) { /* something wrong, the parser can't proceed */
+            if (head == lil->head) {
                 lil_free_value(w);
                 lil_free_value(wp);
                 lil_free_list(words);
-                return NULL;
+                return ((void*)0);
             }
             lil_append_val(w, wp);
             lil_free_value(wp);
-        } while (lil->head < lil->clen && !ateol(lil) && !isspace(lil->code[lil->head]) && !lil->error);
+        } while (lil->head < lil->clen && !ateol(lil) && !((*__ctype_b_loc ())[(int) ((lil->code[lil->head]))] & (unsigned short int) _ISspace) && !lil->error);
         skip_spaces(lil);
-
         lil_list_append(words, w);
     }
-
     return words;
 }
-
 lil_list_t lil_subst_to_list(lil_t lil, lil_value_t code)
 {
     const char* save_code = lil->code;
@@ -1088,7 +1933,6 @@ lil_list_t lil_subst_to_list(lil_t lil, lil_value_t code)
     lil->ignoreeol = save_igeol;
     return words;
 }
-
 lil_value_t lil_subst_to_value(lil_t lil, lil_value_t code)
 {
     lil_list_t words = lil_subst_to_list(lil, code);
@@ -1097,48 +1941,39 @@ lil_value_t lil_subst_to_value(lil_t lil, lil_value_t code)
     lil_free_list(words);
     return val;
 }
-
 lil_value_t lil_parse(lil_t lil, const char* code, size_t codelen, int funclevel)
 {
     const char* save_code = lil->code;
     size_t save_clen = lil->clen;
     size_t save_head = lil->head;
-    lil_value_t val = NULL;
-    lil_list_t words = NULL;
+    lil_value_t val = ((void*)0);
+    lil_list_t words = ((void*)0);
     if (!save_code) lil->rootcode = code;
     lil->code = code;
     lil->clen = codelen ? codelen : strlen(code);
     lil->head = 0;
     skip_spaces(lil);
     lil->parse_depth++;
-#ifdef LIL_ENABLE_RECLIMIT
-    if (lil->parse_depth > LIL_ENABLE_RECLIMIT) {
-        lil_set_error(lil, "Too many recursive calls");
-        goto cleanup;
-    }
-#endif
     if (lil->parse_depth == 1) lil->error = 0;
     if (funclevel) lil->env->breakrun = 0;
     while (lil->head < lil->clen && !lil->error) {
         if (words) lil_free_list(words);
         if (val) lil_free_value(val);
-        val = NULL;
-
+        val = ((void*)0);
         words = substitute(lil);
         if (!words || lil->error) goto cleanup;
-
         if (words->c) {
             lil_func_t cmd = find_cmd(lil, lil_to_string(words->v[0]));
             if (!cmd) {
                 if (words->v[0]->l) {
                     if (lil->catcher) {
-                        if (lil->in_catcher < MAX_CATCHER_DEPTH) {
+                        if (lil->in_catcher < 16384) {
                             lil_value_t args;
                             lil->in_catcher++;
                             lil_push_env(lil);
                             lil->env->catcher_for = words->v[0];
                             args = lil_list_to_value(words, 1);
-                            lil_set_var(lil, "args", args, LIL_SETVAR_LOCAL_NEW);
+                            lil_set_var(lil, "args", args, 2);
                             lil_free_value(args);
                             val = lil_parse(lil, lil->catcher, 0, 1);
                             lil_pop_env(lil);
@@ -1163,8 +1998,8 @@ lil_value_t lil_parse(lil_t lil, const char* code, size_t codelen, int funclevel
                 if (cmd->proc) {
                     size_t shead = lil->head;
                     val = cmd->proc(lil, words->c - 1, words->v + 1);
-                    if (lil->error == ERROR_FIXHEAD) {
-                        lil->error = ERROR_DEFAULT;
+                    if (lil->error == 2) {
+                        lil->error = 1;
                         lil->err_head = shead;
                     }
                 } else {
@@ -1172,12 +2007,12 @@ lil_value_t lil_parse(lil_t lil, const char* code, size_t codelen, int funclevel
                     lil->env->func = cmd;
                     if (cmd->argnames->c == 1 && !strcmp(lil_to_string(cmd->argnames->v[0]), "args")) {
                         lil_value_t args = lil_list_to_value(words, 1);
-                        lil_set_var(lil, "args", args, LIL_SETVAR_LOCAL_NEW);
+                        lil_set_var(lil, "args", args, 2);
                         lil_free_value(args);
                     } else {
                         size_t i;
                         for (i=0; i<cmd->argnames->c; i++) {
-                            lil_set_var(lil, lil_to_string(cmd->argnames->v[i]), i < words->c - 1 ? words->v[i + 1] : lil->empty, LIL_SETVAR_LOCAL_NEW);
+                            lil_set_var(lil, lil_to_string(cmd->argnames->v[i]), i < words->c - 1 ? words->v[i + 1] : lil->empty, 2);
                         }
                     }
                     val = lil_parse_value(lil, cmd->code, 1);
@@ -1185,16 +2020,14 @@ lil_value_t lil_parse(lil_t lil, const char* code, size_t codelen, int funclevel
                 }
             }
         }
-
         if (lil->env->breakrun) goto cleanup;
-
         skip_spaces(lil);
         while (ateol(lil)) lil->head++;
         skip_spaces(lil);
     }
 cleanup:
-    if (lil->error && lil->callback[LIL_CALLBACK_ERROR] && lil->parse_depth == 1) {
-        lil_error_callback_proc_t proc = (lil_error_callback_proc_t)lil->callback[LIL_CALLBACK_ERROR];
+    if (lil->error && lil->callback[5] && lil->parse_depth == 1) {
+        lil_error_callback_proc_t proc = (lil_error_callback_proc_t)lil->callback[5];
         proc(lil, lil->err_head, lil->err_msg);
     }
     if (words) lil_free_list(words);
@@ -1204,24 +2037,22 @@ cleanup:
     if (funclevel && lil->env->retval_set) {
         if (val) lil_free_value(val);
         val = lil->env->retval;
-        lil->env->retval = NULL;
+        lil->env->retval = ((void*)0);
         lil->env->retval_set = 0;
         lil->env->breakrun = 0;
     }
     lil->parse_depth--;
-    return val ? val : alloc_value(NULL);
+    return val ? val : alloc_value(((void*)0));
 }
-
 lil_value_t lil_parse_value(lil_t lil, lil_value_t val, int funclevel)
 {
-    if (!val || !val->d || !val->l) return alloc_value(NULL);
+    if (!val || !val->d || !val->l) return alloc_value(((void*)0));
     return lil_parse(lil, val->d, val->l, funclevel);
 }
-
-LILAPI lil_value_t lil_call(lil_t lil, const char* funcname, size_t argc, lil_value_t* argv)
+       lil_value_t lil_call(lil_t lil, const char* funcname, size_t argc, lil_value_t* argv)
 {
     lil_func_t cmd = find_cmd(lil, funcname);
-    lil_value_t r = NULL;
+    lil_value_t r = ((void*)0);
     if (cmd) {
         if (cmd->proc)
             r = cmd->proc(lil, argc, argv);
@@ -1235,12 +2066,12 @@ LILAPI lil_value_t lil_call(lil_t lil, const char* funcname, size_t argc, lil_va
                 for (i=0; i<argc; i++)
                     lil_list_append(args, lil_clone_value(argv[i]));
                 argsval = lil_list_to_value(args, 0);
-                lil_set_var(lil, "args", argsval, LIL_SETVAR_LOCAL_NEW);
+                lil_set_var(lil, "args", argsval, 2);
                 lil_free_value(argsval);
                 lil_free_list(args);
             } else {
                 for (i=0; i<cmd->argnames->c; i++)
-                    lil_set_var(lil, lil_to_string(cmd->argnames->v[i]), i < argc ? argv[i] : NULL, LIL_SETVAR_LOCAL_NEW);
+                    lil_set_var(lil, lil_to_string(cmd->argnames->v[i]), i < argc ? argv[i] : ((void*)0), 2);
             }
             r = lil_parse_value(lil, cmd->code, 1);
             lil_pop_env(lil);
@@ -1248,74 +2079,58 @@ LILAPI lil_value_t lil_call(lil_t lil, const char* funcname, size_t argc, lil_va
     }
     return r;
 }
-
 void lil_callback(lil_t lil, int cb, lil_callback_proc_t proc)
 {
-    if (cb < 0 || cb > CALLBACKS) return;
+    if (cb < 0 || cb > 8) return;
     lil->callback[cb] = proc;
 }
-
 void lil_set_error(lil_t lil, const char* msg)
 {
     if (lil->error) return;
     free(lil->err_msg);
-    lil->error = ERROR_FIXHEAD;
+    lil->error = 2;
     lil->err_head = 0;
     lil->err_msg = strclone(msg ? msg : "");
 }
-
 void lil_set_error_at(lil_t lil, size_t pos, const char* msg)
 {
     if (lil->error) return;
     free(lil->err_msg);
-    lil->error = ERROR_DEFAULT;
+    lil->error = 1;
     lil->err_head = pos;
     lil->err_msg = strclone(msg ? msg : "");
 }
-
 int lil_error(lil_t lil, const char** msg, size_t* pos)
 {
     if (!lil->error) return 0;
     *msg = lil->err_msg;
     *pos = lil->err_head;
-    lil->error = ERROR_NOERROR;
+    lil->error = 0;
     return 1;
 }
-
-#define EE_INT 0
-#define EE_FLOAT 1
-#define EERR_NO_ERROR 0
-#define EERR_SYNTAX_ERROR 1
-#define EERR_INVALID_TYPE 2
-#define EERR_DIVISION_BY_ZERO 3
-#define EERR_INVALID_EXPRESSION 4
-
 static void ee_expr(expreval_t* ee);
-
 static int ee_invalidpunct(int ch)
 {
-    return ispunct(ch) && ch != '!' && ch != '~' && ch != '(' && ch != ')' && ch != '-' && ch != '+';
+    return ((*__ctype_b_loc ())[(int) ((ch))] & (unsigned short int) _ISpunct) && ch != '!' && ch != '~' && ch != '(' && ch != ')' && ch != '-' && ch != '+';
 }
-
 static void ee_skip_spaces(expreval_t* ee)
 {
-    while (ee->head < ee->len && isspace(ee->code[ee->head])) ee->head++;
+    while (ee->head < ee->len && ((*__ctype_b_loc ())[(int) ((ee->code[ee->head]))] & (unsigned short int) _ISspace)) ee->head++;
 }
-
 static void ee_numeric_element(expreval_t* ee)
 {
     lilint_t fpart = 0, fpartlen = 1;
-    ee->type = EE_INT;
+    ee->type = 0;
     ee_skip_spaces(ee);
     ee->ival = 0;
     ee->dval = 0;
     while (ee->head < ee->len) {
         if (ee->code[ee->head] == '.') {
-            if (ee->type == EE_FLOAT) break;
-            ee->type = EE_FLOAT;
+            if (ee->type == 1) break;
+            ee->type = 1;
             ee->head++;
-        } else if (!isdigit(ee->code[ee->head])) break;
-        if (ee->type == EE_INT)
+        } else if (!((*__ctype_b_loc ())[(int) ((ee->code[ee->head]))] & (unsigned short int) _ISdigit)) break;
+        if (ee->type == 0)
             ee->ival = ee->ival*10 + (ee->code[ee->head] - '0');
         else {
             fpart = fpart*10 + (ee->code[ee->head] - '0');
@@ -1323,25 +2138,19 @@ static void ee_numeric_element(expreval_t* ee)
         }
         ee->head++;
     }
-    if (ee->type == EE_FLOAT)
+    if (ee->type == 1)
         ee->dval = ee->ival + (double)fpart/(double)fpartlen;
 }
-
 static void ee_element(expreval_t* ee)
 {
-    if (isdigit(ee->code[ee->head])) {
+    if (((*__ctype_b_loc ())[(int) ((ee->code[ee->head]))] & (unsigned short int) _ISdigit)) {
         ee_numeric_element(ee);
         return;
     }
-
-    /* for anything else that might creep in (usually from strings), we set the
-     * value to 1 so that strings evaluate as "true" when used in conditional
-     * expressions */
-    ee->type = EE_INT;
+    ee->type = 0;
     ee->ival = 1;
-    ee->error = EERR_INVALID_EXPRESSION; /* special flag, will be cleared */
+    ee->error = 4;
 }
-
 static void ee_paren(expreval_t* ee)
 {
     ee_skip_spaces(ee);
@@ -1350,10 +2159,9 @@ static void ee_paren(expreval_t* ee)
         ee_expr(ee);
         ee_skip_spaces(ee);
         if (ee->code[ee->head] == ')') ee->head++;
-        else ee->error = EERR_SYNTAX_ERROR;
+        else ee->error = 1;
     } else ee_element(ee);
 }
-
 static void ee_unary(expreval_t* ee)
 {
     ee_skip_spaces(ee);
@@ -1368,44 +2176,43 @@ static void ee_unary(expreval_t* ee)
         switch (op) {
         case '-':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->dval = -ee->dval;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = -ee->ival;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case '+':
-            /* ignore it, doesn't change a thing */
             break;
         case '~':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = ~((lilint_t)ee->dval);
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = ~ee->ival;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case '!':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->dval = !ee->dval;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = !ee->ival;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
@@ -1414,7 +2221,6 @@ static void ee_unary(expreval_t* ee)
         ee_paren(ee);
     }
 }
-
 static void ee_muldiv(expreval_t* ee)
 {
     ee_unary(ee);
@@ -1427,97 +2233,96 @@ static void ee_muldiv(expreval_t* ee)
          ee->code[ee->head] == '%')) {
         double odval = ee->dval;
         lilint_t oival = ee->ival;
-
         switch (ee->code[ee->head]) {
         case '*':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->head++;
                 ee_unary(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->dval = ee->dval*odval;
                     break;
-                case EE_INT:
+                case 0:
                     ee->dval = ee->ival*odval;
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee->head++;
                 ee_unary(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->dval = ee->dval*oival;
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = ee->ival*oival;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case '%':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->head++;
                 ee_unary(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     if (ee->dval == 0.0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->dval = fmod(odval, ee->dval);
                     }
                     break;
-                case EE_INT:
+                case 0:
                     if (ee->ival == 0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->dval = fmod(odval, ee->ival);
                     }
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee->head++;
                 ee_unary(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     if (ee->dval == 0.0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->dval = fmod(oival, ee->dval);
                     }
                     break;
-                case EE_INT:
+                case 0:
                     if (ee->ival == 0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->ival = oival%ee->ival;
                     }
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
@@ -1525,53 +2330,53 @@ static void ee_muldiv(expreval_t* ee)
             break;
         case '/':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->head++;
                 ee_unary(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     if (ee->dval == 0.0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->dval = odval/ee->dval;
                     }
                     break;
-                case EE_INT:
+                case 0:
                     if (ee->ival == 0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->dval = odval/(double)ee->ival;
                     }
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee->head++;
                 ee_unary(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     if (ee->dval == 0.0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->dval = (double)oival/ee->dval;
                     }
                     break;
-                case EE_INT:
+                case 0:
                     if (ee->ival == 0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->dval = (double)oival/(double)ee->ival;
                     }
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
@@ -1579,67 +2384,65 @@ static void ee_muldiv(expreval_t* ee)
             break;
         case '\\':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->head++;
                 ee_unary(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     if (ee->dval == 0.0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->ival = (lilint_t)(odval/ee->dval);
                     }
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     if (ee->ival == 0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->ival = (lilint_t)(odval/(double)ee->ival);
                     }
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee->head++;
                 ee_unary(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     if (ee->dval == 0.0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->ival = (lilint_t)((double)oival/ee->dval);
                     }
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     if (ee->ival == 0) {
-                        ee->error = EERR_DIVISION_BY_ZERO;
+                        ee->error = 3;
                     } else {
                         ee->ival = oival/ee->ival;
                     }
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_addsub(expreval_t* ee)
 {
     ee_muldiv(ee);
@@ -1649,96 +2452,93 @@ static void ee_addsub(expreval_t* ee)
          ee->code[ee->head] == '-')) {
         double odval = ee->dval;
         lilint_t oival = ee->ival;
-
         switch (ee->code[ee->head]) {
         case '+':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->head++;
                 ee_muldiv(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->dval = ee->dval+odval;
                     break;
-                case EE_INT:
+                case 0:
                     ee->dval = ee->ival+odval;
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee->head++;
                 ee_muldiv(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->dval = ee->dval+oival;
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = ee->ival+oival;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case '-':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->head++;
                 ee_muldiv(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->dval = odval-ee->dval;
                     break;
-                case EE_INT:
+                case 0:
                     ee->dval = odval-ee->ival;
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee->head++;
                 ee_muldiv(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->dval = (double)oival-ee->dval;
-                    ee->type = EE_FLOAT;
+                    ee->type = 1;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = oival-ee->ival;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_shift(expreval_t* ee)
 {
     ee_addsub(ee);
@@ -1749,96 +2549,93 @@ static void ee_shift(expreval_t* ee)
         double odval = ee->dval;
         lilint_t oival = ee->ival;
         ee->head++;
-
         switch (ee->code[ee->head]) {
         case '<':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->head++;
                 ee_addsub(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (lilint_t)odval << (lilint_t)ee->dval;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (lilint_t)odval << ee->ival;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee->head++;
                 ee_addsub(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = oival << (lilint_t)ee->dval;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = oival << ee->ival;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case '>':
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->head++;
                 ee_addsub(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (lilint_t)odval >> (lilint_t)ee->dval;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (lilint_t)odval >> ee->ival;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee->head++;
                 ee_addsub(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = oival >> (lilint_t)ee->dval;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = oival >> ee->ival;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_compare(expreval_t* ee)
 {
     ee_shift(ee);
@@ -1854,172 +2651,168 @@ static void ee_compare(expreval_t* ee)
         if (ee->code[ee->head] == '<' && !ee_invalidpunct(ee->code[ee->head + 1])) op = 1;
         else if (ee->code[ee->head] == '>' && !ee_invalidpunct(ee->code[ee->head + 1])) op = 2;
         else if (ee->code[ee->head] == '<' && ee->code[ee->head + 1] == '=') op = 3;
-
         ee->head += op > 2 ? 2 : 1;
-
         switch (op) {
         case 1:
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee_shift(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (odval < ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (odval < ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee_shift(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (oival < ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (oival < ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case 2:
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee_shift(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (odval > ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (odval > ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee_shift(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (oival > ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (oival > ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case 3:
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee_shift(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (odval <= ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (odval <= ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee_shift(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (oival <= ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (oival <= ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case 4:
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee_shift(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (odval >= ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (odval >= ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee_shift(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (oival >= ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (oival >= ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_equals(expreval_t* ee)
 {
     ee_compare(ee);
@@ -2031,92 +2824,89 @@ static void ee_equals(expreval_t* ee)
         lilint_t oival = ee->ival;
         int op = ee->code[ee->head] == '=' ? 1 : 2;
         ee->head += 2;
-
         switch (op) {
         case 1:
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee_compare(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (odval == ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (odval == ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee_compare(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (oival == ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (oival == ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         case 2:
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee_compare(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (odval != ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (odval != ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
-            case EE_INT:
+            case 0:
                 ee_compare(ee);
                 if (ee->error) return;
                 switch (ee->type) {
-                case EE_FLOAT:
+                case 1:
                     ee->ival = (oival != ee->dval)?1:0;
-                    ee->type = EE_INT;
+                    ee->type = 0;
                     break;
-                case EE_INT:
+                case 0:
                     ee->ival = (oival != ee->ival)?1:0;
                     break;
                 default:
-                    ee->error = EERR_INVALID_TYPE;
+                    ee->error = 2;
                     break;
                 }
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_bitand(expreval_t* ee)
 {
     ee_equals(ee);
@@ -2126,49 +2916,46 @@ static void ee_bitand(expreval_t* ee)
         double odval = ee->dval;
         lilint_t oival = ee->ival;
         ee->head++;
-
         switch (ee->type) {
-        case EE_FLOAT:
+        case 1:
             ee_equals(ee);
             if (ee->error) return;
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = (lilint_t)odval & (lilint_t)ee->dval;
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = (lilint_t)odval & ee->ival;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
-        case EE_INT:
+        case 0:
             ee_equals(ee);
             if (ee->error) return;
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = oival & (lilint_t)ee->dval;
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = oival & ee->ival;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         default:
-            ee->error = EERR_INVALID_TYPE;
+            ee->error = 2;
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_bitor(expreval_t* ee)
 {
     ee_bitand(ee);
@@ -2178,49 +2965,46 @@ static void ee_bitor(expreval_t* ee)
         double odval = ee->dval;
         lilint_t oival = ee->ival;
         ee->head++;
-
         switch (ee->type) {
-        case EE_FLOAT:
+        case 1:
             ee_bitand(ee);
             if (ee->error) return;
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = (lilint_t)odval | (lilint_t)ee->dval;
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = (lilint_t)odval | ee->ival;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
-        case EE_INT:
+        case 0:
             ee_bitand(ee);
             if (ee->error) return;
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = oival | (lilint_t)ee->dval;
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = oival | ee->ival;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         default:
-            ee->error = EERR_INVALID_TYPE;
+            ee->error = 2;
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_logand(expreval_t* ee)
 {
     ee_bitor(ee);
@@ -2230,49 +3014,46 @@ static void ee_logand(expreval_t* ee)
         double odval = ee->dval;
         lilint_t oival = ee->ival;
         ee->head += 2;
-
         switch (ee->type) {
-        case EE_FLOAT:
+        case 1:
             ee_bitor(ee);
             if (ee->error) return;
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = (odval && ee->dval)?1:0;
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = (odval && ee->ival)?1:0;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
-        case EE_INT:
+        case 0:
             ee_bitor(ee);
             if (ee->error) return;
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = (oival && ee->dval)?1:0;
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = (oival && ee->ival)?1:0;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         default:
-            ee->error = EERR_INVALID_TYPE;
+            ee->error = 2;
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_logor(expreval_t* ee)
 {
     ee_logand(ee);
@@ -2282,68 +3063,60 @@ static void ee_logor(expreval_t* ee)
         double odval = ee->dval;
         lilint_t oival = ee->ival;
         ee->head += 2;
-
         switch (ee->type) {
-        case EE_FLOAT:
+        case 1:
             ee_logand(ee);
             if (ee->error) return;
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = (odval || ee->dval)?1:0;
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = (odval || ee->ival)?1:0;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
-        case EE_INT:
+        case 0:
             ee_logand(ee);
             if (ee->error) return;
             switch (ee->type) {
-            case EE_FLOAT:
+            case 1:
                 ee->ival = (oival || ee->dval)?1:0;
-                ee->type = EE_INT;
+                ee->type = 0;
                 break;
-            case EE_INT:
+            case 0:
                 ee->ival = (oival || ee->ival)?1:0;
                 break;
             default:
-                ee->error = EERR_INVALID_TYPE;
+                ee->error = 2;
                 break;
             }
             break;
         default:
-            ee->error = EERR_INVALID_TYPE;
+            ee->error = 2;
             break;
         }
-
         ee_skip_spaces(ee);
     }
 }
-
 static void ee_expr(expreval_t* ee)
 {
     ee_logor(ee);
-    /* invalid expression doesn't really matter, it is only used to stop
-     * the expression parsing. */
-    if (ee->error == EERR_INVALID_EXPRESSION) {
-        ee->error = EERR_NO_ERROR;
+    if (ee->error == 4) {
+        ee->error = 0;
         ee->ival = 1;
     }
 }
-
 lil_value_t lil_eval_expr(lil_t lil, lil_value_t code)
 {
     expreval_t ee;
     code = lil_subst_to_value(lil, code);
-    if (lil->error) return NULL;
+    if (lil->error) return ((void*)0);
     ee.code = lil_to_string(code);
-    /* an empty expression equals to 0 so that it can be used as a false value
-     * in conditionals */
     if (!ee.code[0]) {
         lil_free_value(code);
         return lil_alloc_integer(0);
@@ -2352,30 +3125,29 @@ lil_value_t lil_eval_expr(lil_t lil, lil_value_t code)
     ee.len = code->l;
     ee.ival = 0;
     ee.dval = 0;
-    ee.type = EE_INT;
+    ee.type = 0;
     ee.error = 0;
     ee_expr(&ee);
     lil_free_value(code);
     if (ee.error) {
         switch (ee.error) {
-        case EERR_DIVISION_BY_ZERO:
+        case 3:
             lil_set_error(lil, "division by zero in expression");
             break;
-        case EERR_INVALID_TYPE:
+        case 2:
             lil_set_error(lil, "mixing invalid types in expression");
             break;
-        case EERR_SYNTAX_ERROR:
+        case 1:
             lil_set_error(lil, "expression syntax error");
             break;
         }
-        return NULL;
+        return ((void*)0);
     }
-    if (ee.type == EE_INT)
+    if (ee.type == 0)
         return lil_alloc_integer(ee.ival);
     else
         return lil_alloc_double(ee.dval);
 }
-
 lil_value_t lil_unused_name(lil_t lil, const char* part)
 {
     char* name = malloc(strlen(part) + 64);
@@ -2389,29 +3161,24 @@ lil_value_t lil_unused_name(lil_t lil, const char* part)
         free(name);
         return val;
     }
-    return NULL;
+    return ((void*)0);
 }
-
 lil_value_t lil_arg(lil_value_t* argv, size_t index)
 {
-    return argv ? argv[index] : NULL;
+    return argv ? argv[index] : ((void*)0);
 }
-
 const char* lil_to_string(lil_value_t val)
 {
     return (val && val->l) ? val->d : "";
 }
-
 double lil_to_double(lil_value_t val)
 {
     return atof(lil_to_string(val));
 }
-
 lilint_t lil_to_integer(lil_value_t val)
 {
     return (lilint_t)atoll(lil_to_string(val));
 }
-
 int lil_to_boolean(lil_value_t val)
 {
     const char* s = lil_to_string(val);
@@ -2426,31 +3193,26 @@ int lil_to_boolean(lil_value_t val)
     }
     return 0;
 }
-
 lil_value_t lil_alloc_string(const char* str)
 {
     return alloc_value(str);
 }
-
 lil_value_t lil_alloc_string_len(const char* str, size_t len)
 {
     return alloc_value_len(str, len);
 }
-
 lil_value_t lil_alloc_double(double num)
 {
     char buff[128];
     sprintf(buff, "%f", num);
     return alloc_value(buff);
 }
-
 lil_value_t lil_alloc_integer(lilint_t num)
 {
     char buff[128];
-    sprintf(buff, LILINT_PRINTF, num);
+    sprintf(buff, "%""l" "i", num);
     return alloc_value(buff);
 }
-
 void lil_free(lil_t lil)
 {
     size_t i;
@@ -2475,41 +3237,35 @@ void lil_free(lil_t lil)
     free(lil->catcher);
     free(lil);
 }
-
-LILAPI void lil_set_data(lil_t lil, void* data)
+       void lil_set_data(lil_t lil, void* data)
 {
     lil->data = data;
 }
-
-LILAPI void* lil_get_data(lil_t lil)
+       void* lil_get_data(lil_t lil)
 {
     return lil->data;
 }
-
-static LILCALLBACK void fnc_embed_write(lil_t lil, const char* msg)
+static void fnc_embed_write(lil_t lil, const char* msg)
 {
     size_t len = strlen(msg) + 1;
     lil->embed = realloc(lil->embed, lil->embedlen + len);
     memcpy(lil->embed + lil->embedlen, msg, len);
     lil->embedlen += len - 1;
 }
-
 char* lil_embedded(lil_t lil, const char* code, unsigned int flags)
 {
     char* prev_embed = lil->embed;
     size_t prev_embedlen = lil->embedlen;
-    lil_callback_proc_t prev_write = lil->callback[LIL_CALLBACK_WRITE];
-    char* lilcode = NULL;
+    lil_callback_proc_t prev_write = lil->callback[1];
+    char* lilcode = ((void*)0);
     size_t lilcodelen = 0;
-    char* cont = NULL;
+    char* cont = ((void*)0);
     size_t contlen = 0;
     size_t head = 0, codelen = strlen(code);
     char* result;
-
-    lil->callback[LIL_CALLBACK_WRITE] = (lil_callback_proc_t)fnc_embed_write;
-    lil->embed = NULL;
+    lil->callback[1] = (lil_callback_proc_t)fnc_embed_write;
+    lil->embed = ((void*)0);
     lil->embedlen = 0;
-
     while (head < codelen) {
         if (head < codelen - 4 &&
             code[head] == '<' &&
@@ -2526,7 +3282,7 @@ char* lil_embedded(lil_t lil, const char* code, unsigned int flags)
                 lilcode[lilcodelen + contlen + 9] = '\n';
                 lilcodelen += contlen + 10;
                 free(cont);
-                cont = NULL;
+                cont = ((void*)0);
                 contlen = 0;
             }
             while (head < codelen) {
@@ -2567,54 +3323,48 @@ char* lil_embedded(lil_t lil, const char* code, unsigned int flags)
         lilcodelen += contlen + 10;
         free(cont);
     }
-
     lilcode = realloc(lilcode, lilcodelen + 1);
     lilcode[lilcodelen] = 0;
     lil_free_value(lil_parse(lil, lilcode, 0, 1));
     free(lilcode);
     result = lil->embed ? lil->embed : strclone("");
-
     lil->embed = prev_embed;
     lil->embedlen = prev_embedlen;
-    lil->callback[LIL_CALLBACK_WRITE] = prev_write;
-
+    lil->callback[1] = prev_write;
     return result;
 }
-
 void lil_freemem(void* ptr)
 {
     free(ptr);
 }
-
 void lil_write(lil_t lil, const char* msg)
 {
-    if (lil->callback[LIL_CALLBACK_WRITE]) {
-        lil_write_callback_proc_t proc = (lil_write_callback_proc_t)lil->callback[LIL_CALLBACK_WRITE];
+    if (lil->callback[1]) {
+        lil_write_callback_proc_t proc = (lil_write_callback_proc_t)lil->callback[1];
         proc(lil, msg);
     } else printf("%s", msg);
 }
-
-static LILCALLBACK lil_value_t fnc_reflect(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_reflect(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_func_t func;
     const char* type;
     size_t i;
     lil_value_t r;
-    if (!argc) return NULL;
+    if (!argc) return ((void*)0);
     type = lil_to_string(argv[0]);
     if (!strcmp(type, "version")) {
-        return lil_alloc_string(LIL_VERSION_STRING);
+        return lil_alloc_string("0.1");
     }
     if (!strcmp(type, "args")) {
-        if (argc < 2) return NULL;
+        if (argc < 2) return ((void*)0);
         func = find_cmd(lil, lil_to_string(argv[1]));
-        if (!func || !func->argnames) return NULL;
+        if (!func || !func->argnames) return ((void*)0);
         return lil_list_to_value(func->argnames, 1);
     }
     if (!strcmp(type, "body")) {
-        if (argc < 2) return NULL;
+        if (argc < 2) return ((void*)0);
         func = find_cmd(lil, lil_to_string(argv[1]));
-        if (!func || func->proc) return NULL;
+        if (!func || func->proc) return ((void*)0);
         return lil_clone_value(func->code);
     }
     if (!strcmp(type, "func-count")) {
@@ -2650,31 +3400,31 @@ static LILCALLBACK lil_value_t fnc_reflect(lil_t lil, size_t argc, lil_value_t* 
     }
     if (!strcmp(type, "has-func")) {
         const char* target;
-        if (argc == 1) return NULL;
+        if (argc == 1) return ((void*)0);
         target = lil_to_string(argv[1]);
-        return hm_has(&lil->cmdmap, target) ? lil_alloc_string("1") : NULL;
+        return hm_has(&lil->cmdmap, target) ? lil_alloc_string("1") : ((void*)0);
     }
     if (!strcmp(type, "has-var")) {
         const char* target;
         lil_env_t env = lil->env;
-        if (argc == 1) return NULL;
+        if (argc == 1) return ((void*)0);
         target = lil_to_string(argv[1]);
         while (env) {
             if (hm_has(&env->varmap, target)) return lil_alloc_string("1");
             env = env->parent;
         }
-        return NULL;
+        return ((void*)0);
     }
     if (!strcmp(type, "has-global")) {
         const char* target;
-        if (argc == 1) return NULL;
+        if (argc == 1) return ((void*)0);
         target = lil_to_string(argv[1]);
         for (i=0; i<lil->rootenv->vars; i++)
             if (!strcmp(target, lil->rootenv->var[i]->n)) return lil_alloc_string("1");
-        return NULL;
+        return ((void*)0);
     }
     if (!strcmp(type, "error")) {
-        return lil->err_msg ? lil_alloc_string(lil->err_msg) : NULL;
+        return lil->err_msg ? lil_alloc_string(lil->err_msg) : ((void*)0);
     }
     if (!strcmp(type, "dollar-prefix")) {
         lil_value_t r;
@@ -2689,24 +3439,23 @@ static LILCALLBACK lil_value_t fnc_reflect(lil_t lil, size_t argc, lil_value_t* 
         while (env != lil->rootenv && !env->catcher_for && !env->func) env = env->parent;
         if (env->catcher_for) return lil_alloc_string(lil->catcher);
         if (env == lil->rootenv) return lil_alloc_string(lil->rootcode);
-        return env->func ? env->func->code : NULL;
+        return env->func ? env->func->code : ((void*)0);
     }
     if (!strcmp(type, "name")) {
         lil_env_t env = lil->env;
         while (env != lil->rootenv && !env->catcher_for && !env->func) env = env->parent;
         if (env->catcher_for) return env->catcher_for;
-        if (env == lil->rootenv) return NULL;
-        return env->func ? lil_alloc_string(env->func->name) : NULL;
+        if (env == lil->rootenv) return ((void*)0);
+        return env->func ? lil_alloc_string(env->func->name) : ((void*)0);
     }
-    return NULL;
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_func(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_func(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_value_t name;
     lil_func_t cmd;
     lil_list_t fargs;
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     if (argc >= 3) {
         name = lil_clone_value(argv[0]);
         fargs = lil_subst_to_list(lil, argv[1]);
@@ -2731,14 +3480,13 @@ static LILCALLBACK lil_value_t fnc_func(lil_t lil, size_t argc, lil_value_t* arg
     }
     return name;
 }
-
-static LILCALLBACK lil_value_t fnc_rename(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_rename(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_value_t r;
     lil_func_t func;
     const char* oldname;
     const char* newname;
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     oldname = lil_to_string(argv[0]);
     newname = lil_to_string(argv[1]);
     func = find_cmd(lil, oldname);
@@ -2747,7 +3495,7 @@ static LILCALLBACK lil_value_t fnc_rename(lil_t lil, size_t argc, lil_value_t* a
         sprintf(msg, "unknown function '%s'", oldname);
         lil_set_error_at(lil, lil->head, msg);
         free(msg);
-        return NULL;
+        return ((void*)0);
     }
     r = lil_alloc_string(func->name);
     if (newname[0]) {
@@ -2760,79 +3508,72 @@ static LILCALLBACK lil_value_t fnc_rename(lil_t lil, size_t argc, lil_value_t* a
     }
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_unusedname(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_unusedname(lil_t lil, size_t argc, lil_value_t* argv)
 {
     return lil_unused_name(lil, argc > 0 ? lil_to_string(argv[0]) : "unusedname");
 }
-
-static LILCALLBACK lil_value_t fnc_quote(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_quote(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_value_t r;
     size_t i;
-    if (argc < 1) return NULL;
-    r = alloc_value(NULL);
+    if (argc < 1) return ((void*)0);
+    r = alloc_value(((void*)0));
     for (i=0; i<argc; i++) {
         if (i) lil_append_char(r, ' ');
         lil_append_val(r, argv[i]);
     }
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_set(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_set(lil_t lil, size_t argc, lil_value_t* argv)
 {
     size_t i = 0;
-    lil_var_t var = NULL;
-    int access = LIL_SETVAR_LOCAL;
-    if (!argc) return NULL;
+    lil_var_t var = ((void*)0);
+    int access = 1;
+    if (!argc) return ((void*)0);
     if (!strcmp(lil_to_string(argv[0]), "global")) {
         i = 1;
-        access = LIL_SETVAR_GLOBAL;
+        access = 0;
     }
     while (i < argc) {
         if (argc == i + 1) return lil_clone_value(lil_get_var(lil, lil_to_string(argv[i])));
         var = lil_set_var(lil, lil_to_string(argv[i]), argv[i + 1], access);
         i += 2;
     }
-    return var ? lil_clone_value(var->v) : NULL;
+    return var ? lil_clone_value(var->v) : ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_local(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_local(lil_t lil, size_t argc, lil_value_t* argv)
 {
     size_t i;
     for (i=0; i<argc; i++) {
         const char* varname = lil_to_string(argv[i]);
         if (!lil_find_local_var(lil, lil->env, varname))
-            lil_set_var(lil, varname, lil->empty, LIL_SETVAR_LOCAL_NEW);
+            lil_set_var(lil, varname, lil->empty, 2);
     }
-    return NULL;
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_write(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_write(lil_t lil, size_t argc, lil_value_t* argv)
 {
     size_t i;
-    lil_value_t msg = lil_alloc_string(NULL);
+    lil_value_t msg = lil_alloc_string(((void*)0));
     for (i=0; i<argc; i++) {
         if (i) lil_append_char(msg, ' ');
         lil_append_val(msg, argv[i]);
     }
     lil_write(lil, lil_to_string(msg));
     lil_free_value(msg);
-    return NULL;
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_print(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_print(lil_t lil, size_t argc, lil_value_t* argv)
 {
     fnc_write(lil, argc, argv);
     lil_write(lil, "\n");
-    return NULL;
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_eval(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_eval(lil_t lil, size_t argc, lil_value_t* argv)
 {
     if (argc == 1) return lil_parse_value(lil, argv[0], 0);
     if (argc > 1) {
-        lil_value_t val = alloc_value(NULL), r;
+        lil_value_t val = alloc_value(((void*)0)), r;
         size_t i;
         for (i=0; i<argc; i++) {
             if (i) lil_append_char(val, ' ');
@@ -2842,10 +3583,9 @@ static LILCALLBACK lil_value_t fnc_eval(lil_t lil, size_t argc, lil_value_t* arg
         lil_free_value(val);
         return r;
     }
-    return NULL;
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_topeval(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_topeval(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_env_t thisenv = lil->env;
     lil_env_t thisdownenv = lil->downenv;
@@ -2857,8 +3597,7 @@ static LILCALLBACK lil_value_t fnc_topeval(lil_t lil, size_t argc, lil_value_t* 
     lil->env = thisenv;
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_upeval(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_upeval(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_env_t thisenv = lil->env;
     lil_env_t thisdownenv = lil->downenv;
@@ -2871,30 +3610,28 @@ static LILCALLBACK lil_value_t fnc_upeval(lil_t lil, size_t argc, lil_value_t* a
     lil->downenv = thisdownenv;
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_downeval(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_downeval(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_value_t r;
     lil_env_t upenv = lil->env;
     lil_env_t downenv = lil->downenv;
     if (!downenv) return fnc_eval(lil, argc, argv);
-    lil->downenv = NULL;
+    lil->downenv = ((void*)0);
     lil->env = downenv;
     r = fnc_eval(lil, argc, argv);
     lil->downenv = downenv;
     lil->env = upenv;
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_enveval(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_enveval(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_value_t r;
-    lil_list_t invars = NULL;
-    lil_list_t outvars = NULL;
-    lil_value_t* varvalues = NULL;
+    lil_list_t invars = ((void*)0);
+    lil_list_t outvars = ((void*)0);
+    lil_value_t* varvalues = ((void*)0);
     int codeindex;
     size_t i;
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     if (argc == 1) codeindex = 0;
     else if (argc >= 2) {
         invars = lil_subst_to_list(lil, argv[0]);
@@ -2911,7 +3648,7 @@ static LILCALLBACK lil_value_t fnc_enveval(lil_t lil, size_t argc, lil_value_t* 
     lil_push_env(lil);
     if (invars) {
         for (i=0; i<lil_list_size(invars); i++) {
-            lil_set_var(lil, lil_to_string(lil_list_get(invars, i)), varvalues[i], LIL_SETVAR_LOCAL_NEW);
+            lil_set_var(lil, lil_to_string(lil_list_get(invars, i)), varvalues[i], 2);
             lil_free_value(varvalues[i]);
         }
     }
@@ -2930,12 +3667,12 @@ static LILCALLBACK lil_value_t fnc_enveval(lil_t lil, size_t argc, lil_value_t* 
     if (invars) {
         if (outvars) {
             for (i=0; i<lil_list_size(outvars); i++) {
-                lil_set_var(lil, lil_to_string(lil_list_get(outvars, i)), varvalues[i], LIL_SETVAR_LOCAL);
+                lil_set_var(lil, lil_to_string(lil_list_get(outvars, i)), varvalues[i], 1);
                 lil_free_value(varvalues[i]);
             }
         } else {
             for (i=0; i<lil_list_size(invars); i++) {
-                lil_set_var(lil, lil_to_string(lil_list_get(invars, i)), varvalues[i], LIL_SETVAR_LOCAL);
+                lil_set_var(lil, lil_to_string(lil_list_get(invars, i)), varvalues[i], 1);
                 lil_free_value(varvalues[i]);
             }
         }
@@ -2945,17 +3682,16 @@ static LILCALLBACK lil_value_t fnc_enveval(lil_t lil, size_t argc, lil_value_t* 
     }
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_jaileval(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_jaileval(lil_t lil, size_t argc, lil_value_t* argv)
 {
     size_t i;
     lil_t sublil;
     lil_value_t r;
     size_t base = 0;
-    if (!argc) return NULL;
+    if (!argc) return ((void*)0);
     if (!strcmp(lil_to_string(argv[0]), "clean")) {
         base = 1;
-        if (argc == 1) return NULL;
+        if (argc == 1) return ((void*)0);
     }
     sublil = lil_new();
     if (base != 1) {
@@ -2969,8 +3705,7 @@ static LILCALLBACK lil_value_t fnc_jaileval(lil_t lil, size_t argc, lil_value_t*
     lil_free(sublil);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_count(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_count(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list;
     char buff[64];
@@ -2980,29 +3715,27 @@ static LILCALLBACK lil_value_t fnc_count(lil_t lil, size_t argc, lil_value_t* ar
     lil_free_list(list);
     return alloc_value(buff);
 }
-
-static LILCALLBACK lil_value_t fnc_index(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_index(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list;
     size_t index;
     lil_value_t r;
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     list = lil_subst_to_list(lil, argv[0]);
     index = (size_t)lil_to_integer(argv[1]);
     if (index >= list->c)
-        r = NULL;
+        r = ((void*)0);
     else
         r = lil_clone_value(list->v[index]);
     lil_free_list(list);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_indexof(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_indexof(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list;
     size_t index;
-    lil_value_t r = NULL;
-    if (argc < 2) return NULL;
+    lil_value_t r = ((void*)0);
+    if (argc < 2) return ((void*)0);
     list = lil_subst_to_list(lil, argv[0]);
     for (index = 0; index < list->c; index++)
         if (!strcmp(lil_to_string(list->v[index]), lil_to_string(argv[1]))) {
@@ -3012,21 +3745,20 @@ static LILCALLBACK lil_value_t fnc_indexof(lil_t lil, size_t argc, lil_value_t* 
     lil_free_list(list);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_append(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_append(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list;
     lil_value_t r;
     size_t i, base = 1;
-    int access = LIL_SETVAR_LOCAL;
+    int access = 1;
     const char* varname;
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     varname = lil_to_string(argv[0]);
     if (!strcmp(varname, "global")) {
-        if (argc < 3) return NULL;
+        if (argc < 3) return ((void*)0);
         varname = lil_to_string(argv[1]);
         base = 2;
-        access = LIL_SETVAR_GLOBAL;
+        access = 0;
     }
     list = lil_subst_to_list(lil, lil_get_var(lil, varname));
     for (i=base; i<argc; i++)
@@ -3036,14 +3768,13 @@ static LILCALLBACK lil_value_t fnc_append(lil_t lil, size_t argc, lil_value_t* a
     lil_set_var(lil, varname, r, access);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_slice(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_slice(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list, slice;
     size_t i;
     lilint_t from, to;
     lil_value_t r;
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     if (argc < 2) return lil_clone_value(argv[0]);
     from = lil_to_integer(argv[1]);
     if (from < 0) from = 0;
@@ -3059,15 +3790,14 @@ static LILCALLBACK lil_value_t fnc_slice(lil_t lil, size_t argc, lil_value_t* ar
     lil_free_list(slice);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_filter(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_filter(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list, filtered;
     size_t i;
     lil_value_t r;
     const char* varname = "x";
     int base = 0;
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     if (argc < 2) return lil_clone_value(argv[0]);
     if (argc > 2) {
         base = 1;
@@ -3076,7 +3806,7 @@ static LILCALLBACK lil_value_t fnc_filter(lil_t lil, size_t argc, lil_value_t* a
     list = lil_subst_to_list(lil, argv[base]);
     filtered = lil_alloc_list();
     for (i=0; i<list->c && !lil->env->breakrun; i++) {
-        lil_set_var(lil, varname, list->v[i], LIL_SETVAR_LOCAL_ONLY);
+        lil_set_var(lil, varname, list->v[i], 3);
         r = lil_eval_expr(lil, argv[base + 1]);
         if (lil_to_boolean(r))
             lil_list_append(filtered, lil_clone_value(list->v[i]));
@@ -3087,8 +3817,7 @@ static LILCALLBACK lil_value_t fnc_filter(lil_t lil, size_t argc, lil_value_t* a
     lil_free_list(filtered);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_list(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_list(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list = lil_alloc_list();
     lil_value_t r;
@@ -3099,19 +3828,17 @@ static LILCALLBACK lil_value_t fnc_list(lil_t lil, size_t argc, lil_value_t* arg
     lil_free_list(list);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_subst(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_subst(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     return lil_subst_to_value(lil, argv[0]);
 }
-
-static LILCALLBACK lil_value_t fnc_concat(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_concat(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list;
     lil_value_t r, tmp;
     size_t i;
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     r = lil_alloc_string("");
     for (i=0; i<argc; i++) {
         list = lil_subst_to_list(lil, argv[i]);
@@ -3122,14 +3849,13 @@ static LILCALLBACK lil_value_t fnc_concat(lil_t lil, size_t argc, lil_value_t* a
     }
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_foreach(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_foreach(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list, rlist;
     lil_value_t r;
     size_t i, listidx = 0, codeidx = 1;
     const char* varname = "i";
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     if (argc >= 3) {
         varname = lil_to_string(argv[0]);
         listidx = 1;
@@ -3139,7 +3865,7 @@ static LILCALLBACK lil_value_t fnc_foreach(lil_t lil, size_t argc, lil_value_t* 
     list = lil_subst_to_list(lil, argv[listidx]);
     for (i=0; i<list->c; i++) {
         lil_value_t rv;
-        lil_set_var(lil, varname, list->v[i], LIL_SETVAR_LOCAL_ONLY);
+        lil_set_var(lil, varname, list->v[i], 3);
         rv = lil_parse_value(lil, argv[codeidx], 0);
         if (rv->l) lil_list_append(rlist, rv);
         else lil_free_value(rv);
@@ -3150,31 +3876,28 @@ static LILCALLBACK lil_value_t fnc_foreach(lil_t lil, size_t argc, lil_value_t* 
     lil_free_list(rlist);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_return(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_return(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil->env->breakrun = 1;
     lil_free_value(lil->env->retval);
-    lil->env->retval = argc < 1 ? NULL : lil_clone_value(argv[0]);
+    lil->env->retval = argc < 1 ? ((void*)0) : lil_clone_value(argv[0]);
     lil->env->retval_set = 1;
-    return argc < 1 ? NULL : lil_clone_value(argv[0]);
+    return argc < 1 ? ((void*)0) : lil_clone_value(argv[0]);
 }
-
-static LILCALLBACK lil_value_t fnc_result(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_result(lil_t lil, size_t argc, lil_value_t* argv)
 {
     if (argc > 0) {
         lil_free_value(lil->env->retval);
         lil->env->retval = lil_clone_value(argv[0]);
         lil->env->retval_set = 1;
     }
-    return lil->env->retval_set ? lil_clone_value(lil->env->retval) : NULL;
+    return lil->env->retval_set ? lil_clone_value(lil->env->retval) : ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_expr(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_expr(lil_t lil, size_t argc, lil_value_t* argv)
 {
     if (argc == 1) return lil_eval_expr(lil, argv[0]);
     if (argc > 1) {
-        lil_value_t val = alloc_value(NULL), r;
+        lil_value_t val = alloc_value(((void*)0)), r;
         size_t i;
         for (i=0; i<argc; i++) {
             if (i) lil_append_char(val, ' ');
@@ -3184,9 +3907,8 @@ static LILCALLBACK lil_value_t fnc_expr(lil_t lil, size_t argc, lil_value_t* arg
         lil_free_value(val);
         return r;
     }
-    return NULL;
+    return ((void*)0);
 }
-
 static lil_value_t real_inc(lil_t lil, const char* varname, float v)
 {
     lil_value_t pv = lil_get_var(lil, varname);
@@ -3195,38 +3917,35 @@ static lil_value_t real_inc(lil_t lil, const char* varname, float v)
         pv = lil_alloc_double(dv);
     else
         pv = lil_alloc_integer((lilint_t)dv);
-    lil_set_var(lil, varname, pv, LIL_SETVAR_LOCAL);
+    lil_set_var(lil, varname, pv, 1);
     return pv;
 }
-
-static LILCALLBACK lil_value_t fnc_inc(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_inc(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     return real_inc(lil, lil_to_string(argv[0]), argc > 1 ? lil_to_double(argv[1]) : 1);
 }
-
-static LILCALLBACK lil_value_t fnc_dec(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_dec(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     return real_inc(lil, lil_to_string(argv[0]), -(argc > 1 ? lil_to_double(argv[1]) : 1));
 }
-
-static LILCALLBACK lil_value_t fnc_read(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_read(lil_t lil, size_t argc, lil_value_t* argv)
 {
     FILE* f;
     size_t size;
     char* buffer;
     lil_value_t r;
-    if (argc < 1) return NULL;
-    if (lil->callback[LIL_CALLBACK_READ]) {
-        lil_read_callback_proc_t proc = (lil_read_callback_proc_t) lil->callback[LIL_CALLBACK_READ];
+    if (argc < 1) return ((void*)0);
+    if (lil->callback[2]) {
+        lil_read_callback_proc_t proc = (lil_read_callback_proc_t) lil->callback[2];
         buffer = proc(lil, lil_to_string(argv[0]));
     } else {
         f = fopen(lil_to_string(argv[0]), "rb");
-        if (!f) return NULL;
-        fseek(f, 0, SEEK_END);
+        if (!f) return ((void*)0);
+        fseek(f, 0, 2);
         size = ftell(f);
-        fseek(f, 0, SEEK_SET);
+        fseek(f, 0, 0);
         buffer = malloc(size + 1);
         fread(buffer, 1, size, f);
         buffer[size] = 0;
@@ -3236,34 +3955,32 @@ static LILCALLBACK lil_value_t fnc_read(lil_t lil, size_t argc, lil_value_t* arg
     free(buffer);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_store(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_store(lil_t lil, size_t argc, lil_value_t* argv)
 {
     FILE* f;
     const char* buffer;
-    if (argc < 2) return NULL;
-    if (lil->callback[LIL_CALLBACK_STORE]) {
-        lil_store_callback_proc_t proc = (lil_store_callback_proc_t)lil->callback[LIL_CALLBACK_STORE];
+    if (argc < 2) return ((void*)0);
+    if (lil->callback[3]) {
+        lil_store_callback_proc_t proc = (lil_store_callback_proc_t)lil->callback[3];
         proc(lil, lil_to_string(argv[0]), lil_to_string(argv[1]));
     } else {
         f = fopen(lil_to_string(argv[0]), "wb");
-        if (!f) return NULL;
+        if (!f) return ((void*)0);
         buffer = lil_to_string(argv[1]);
         fwrite(buffer, 1, strlen(buffer), f);
         fclose(f);
     }
     return lil_clone_value(argv[1]);
 }
-
-static LILCALLBACK lil_value_t fnc_if(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_if(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    lil_value_t val, r = NULL;
+    lil_value_t val, r = ((void*)0);
     int base = 0, not = 0, v;
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     if (!strcmp(lil_to_string(argv[0]), "not")) base = not = 1;
-    if (argc < (size_t)base + 2) return NULL;
+    if (argc < (size_t)base + 2) return ((void*)0);
     val = lil_eval_expr(lil, argv[base]);
-    if (!val || lil->error) return NULL;
+    if (!val || lil->error) return ((void*)0);
     v = lil_to_boolean(val);
     if (not) v = !v;
     if (v) {
@@ -3274,17 +3991,16 @@ static LILCALLBACK lil_value_t fnc_if(lil_t lil, size_t argc, lil_value_t* argv)
     lil_free_value(val);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_while(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_while(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    lil_value_t val, r = NULL;
+    lil_value_t val, r = ((void*)0);
     int base = 0, not = 0, v;
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     if (!strcmp(lil_to_string(argv[0]), "not")) base = not = 1;
-    if (argc < (size_t)base + 2) return NULL;
+    if (argc < (size_t)base + 2) return ((void*)0);
     while (!lil->error && !lil->env->breakrun) {
         val = lil_eval_expr(lil, argv[base]);
-        if (!val || lil->error) return NULL;
+        if (!val || lil->error) return ((void*)0);
         v = lil_to_boolean(val);
         if (not) v = !v;
         if (!v) {
@@ -3297,15 +4013,14 @@ static LILCALLBACK lil_value_t fnc_while(lil_t lil, size_t argc, lil_value_t* ar
     }
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_for(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_for(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    lil_value_t val, r = NULL;
-    if (argc < 4) return NULL;
+    lil_value_t val, r = ((void*)0);
+    if (argc < 4) return ((void*)0);
     lil_free_value(lil_parse_value(lil, argv[0], 0));
     while (!lil->error && !lil->env->breakrun) {
         val = lil_eval_expr(lil, argv[1]);
-        if (!val || lil->error) return NULL;
+        if (!val || lil->error) return ((void*)0);
         if (!lil_to_boolean(val)) {
             lil_free_value(val);
             break;
@@ -3317,62 +4032,56 @@ static LILCALLBACK lil_value_t fnc_for(lil_t lil, size_t argc, lil_value_t* argv
     }
     return r;
 }
-
-
-static LILCALLBACK lil_value_t fnc_char(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_char(lil_t lil, size_t argc, lil_value_t* argv)
 {
     char s[2];
-    if (!argc) return NULL;
+    if (!argc) return ((void*)0);
     s[0] = (char)lil_to_integer(argv[0]);
     s[1] = 0;
     return lil_alloc_string(s);
 }
-
-static LILCALLBACK lil_value_t fnc_charat(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_charat(lil_t lil, size_t argc, lil_value_t* argv)
 {
     size_t index;
     char chstr[2];
     const char* str;
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     str = lil_to_string(argv[0]);
     index = (size_t)lil_to_integer(argv[1]);
-    if (index >= strlen(str)) return NULL;
+    if (index >= strlen(str)) return ((void*)0);
     chstr[0] = str[index];
     chstr[1] = 0;
     return lil_alloc_string(chstr);
 }
-
-static LILCALLBACK lil_value_t fnc_codeat(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_codeat(lil_t lil, size_t argc, lil_value_t* argv)
 {
     size_t index;
     const char* str;
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     str = lil_to_string(argv[0]);
     index = (size_t)lil_to_integer(argv[1]);
-    if (index >= strlen(str)) return NULL;
+    if (index >= strlen(str)) return ((void*)0);
     return lil_alloc_integer(str[index]);
 }
-
-static LILCALLBACK lil_value_t fnc_substr(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_substr(lil_t lil, size_t argc, lil_value_t* argv)
 {
     const char* str;
     lil_value_t r;
     size_t start, end, i, slen;
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     str = lil_to_string(argv[0]);
-    if (!str[0]) return NULL;
+    if (!str[0]) return ((void*)0);
     slen = strlen(str);
     start = (size_t)atoll(lil_to_string(argv[1]));
     end = argc > 2 ? (size_t)atoll(lil_to_string(argv[2])) : slen;
     if (end > slen) end = slen;
-    if (start >= end) return NULL;
+    if (start >= end) return ((void*)0);
     r = lil_alloc_string("");
     for (i=start; i<end; i++)
         lil_append_char(r, str[i]);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_strpos(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_strpos(lil_t lil, size_t argc, lil_value_t* argv)
 {
     const char* hay;
     const char* str;
@@ -3387,8 +4096,7 @@ static LILCALLBACK lil_value_t fnc_strpos(lil_t lil, size_t argc, lil_value_t* a
     if (!str) return lil_alloc_integer(-1);
     return lil_alloc_integer(str - hay);
 }
-
-static LILCALLBACK lil_value_t fnc_length(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_length(lil_t lil, size_t argc, lil_value_t* argv)
 {
     size_t i, total = 0;
     for (i=0; i<argc; i++) {
@@ -3397,14 +4105,13 @@ static LILCALLBACK lil_value_t fnc_length(lil_t lil, size_t argc, lil_value_t* a
     }
     return lil_alloc_integer((lilint_t)total);
 }
-
 static lil_value_t real_trim(const char* str, const char* chars, int left, int right)
 {
     int base = 0;
-    lil_value_t r = NULL;
+    lil_value_t r = ((void*)0);
     if (left) {
         while (str[base] && strchr(chars, str[base])) base++;
-        if (!right) r = lil_alloc_string(str[base] ? str + base : NULL);
+        if (!right) r = lil_alloc_string(str[base] ? str + base : ((void*)0));
     }
     if (right) {
         size_t len;
@@ -3418,38 +4125,32 @@ static lil_value_t real_trim(const char* str, const char* chars, int left, int r
     }
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_trim(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_trim(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (!argc) return NULL;
+    if (!argc) return ((void*)0);
     return real_trim(lil_to_string(argv[0]), argc < 2 ? " \f\n\r\t\v" : lil_to_string(argv[1]), 1, 1);
 }
-
-static LILCALLBACK lil_value_t fnc_ltrim(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_ltrim(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (!argc) return NULL;
+    if (!argc) return ((void*)0);
     return real_trim(lil_to_string(argv[0]), argc < 2 ? " \f\n\r\t\v" : lil_to_string(argv[1]), 1, 0);
 }
-
-static LILCALLBACK lil_value_t fnc_rtrim(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_rtrim(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (!argc) return NULL;
+    if (!argc) return ((void*)0);
     return real_trim(lil_to_string(argv[0]), argc < 2 ? " \f\n\r\t\v" : lil_to_string(argv[1]), 0, 1);
 }
-
-static LILCALLBACK lil_value_t fnc_strcmp(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_strcmp(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     return lil_alloc_integer(strcmp(lil_to_string(argv[0]), lil_to_string(argv[1])));
 }
-
-static LILCALLBACK lil_value_t fnc_streq(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_streq(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     return lil_alloc_integer(strcmp(lil_to_string(argv[0]), lil_to_string(argv[1]))?0:1);
 }
-
-static LILCALLBACK lil_value_t fnc_repstr(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_repstr(lil_t lil, size_t argc, lil_value_t* argv)
 {
     const char* from;
     const char* to;
@@ -3460,11 +4161,11 @@ static LILCALLBACK lil_value_t fnc_repstr(lil_t lil, size_t argc, lil_value_t* a
     size_t tolen;
     size_t srclen;
     lil_value_t r;
-    if (argc < 1) return NULL;
+    if (argc < 1) return ((void*)0);
     if (argc < 3) return lil_clone_value(argv[0]);
     from = lil_to_string(argv[1]);
     to = lil_to_string(argv[2]);
-    if (!from[0]) return NULL;
+    if (!from[0]) return ((void*)0);
     src = strclone(lil_to_string(argv[0]));
     srclen = strlen(src);
     fromlen = strlen(from);
@@ -3484,15 +4185,14 @@ static LILCALLBACK lil_value_t fnc_repstr(lil_t lil, size_t argc, lil_value_t* a
     free(src);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_split(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_split(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list;
     const char* sep = " ";
     size_t i;
     lil_value_t val;
     const char* str;
-    if (argc == 0) return NULL;
+    if (argc == 0) return ((void*)0);
     if (argc > 1) {
         sep = lil_to_string(argv[1]);
         if (!sep || !sep[0]) return lil_clone_value(argv[0]);
@@ -3513,56 +4213,52 @@ static LILCALLBACK lil_value_t fnc_split(lil_t lil, size_t argc, lil_value_t* ar
     lil_free_list(list);
     return val;
 }
-
-static LILCALLBACK lil_value_t fnc_try(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_try(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_value_t r;
-    if (argc < 1) return NULL;
-    if (lil->error) return NULL;
+    if (argc < 1) return ((void*)0);
+    if (lil->error) return ((void*)0);
     r = lil_parse_value(lil, argv[0], 0);
     if (lil->error) {
-        lil->error = ERROR_NOERROR;
+        lil->error = 0;
         lil_free_value(r);
         if (argc > 1) r = lil_parse_value(lil, argv[1], 0);
         else r = 0;
     }
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_error(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_error(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    lil_set_error(lil, argc > 0 ? lil_to_string(argv[0]) : NULL);
-    return NULL;
+    lil_set_error(lil, argc > 0 ? lil_to_string(argv[0]) : ((void*)0));
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_exit(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_exit(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    if (lil->callback[LIL_CALLBACK_EXIT]) {
-        lil_exit_callback_proc_t proc = (lil_exit_callback_proc_t)lil->callback[LIL_CALLBACK_EXIT];
-        proc(lil, argc > 0 ? argv[0] : NULL);
+    if (lil->callback[0]) {
+        lil_exit_callback_proc_t proc = (lil_exit_callback_proc_t)lil->callback[0];
+        proc(lil, argc > 0 ? argv[0] : ((void*)0));
     }
-    return NULL;
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_source(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_source(lil_t lil, size_t argc, lil_value_t* argv)
 {
     FILE* f;
     size_t size;
     char* buffer;
     lil_value_t r;
-    if (argc < 1) return NULL;
-    if (lil->callback[LIL_CALLBACK_SOURCE]) {
-        lil_source_callback_proc_t proc = (lil_source_callback_proc_t)lil->callback[LIL_CALLBACK_SOURCE];
+    if (argc < 1) return ((void*)0);
+    if (lil->callback[4]) {
+        lil_source_callback_proc_t proc = (lil_source_callback_proc_t)lil->callback[4];
         buffer = proc(lil, lil_to_string(argv[0]));
-    } else if (lil->callback[LIL_CALLBACK_READ]) {
-        lil_read_callback_proc_t proc = (lil_read_callback_proc_t)lil->callback[LIL_CALLBACK_READ];
+    } else if (lil->callback[2]) {
+        lil_read_callback_proc_t proc = (lil_read_callback_proc_t)lil->callback[2];
         buffer = proc(lil, lil_to_string(argv[0]));
     } else {
         f = fopen(lil_to_string(argv[0]), "rb");
-        if (!f) return NULL;
-        fseek(f, 0, SEEK_END);
+        if (!f) return ((void*)0);
+        fseek(f, 0, 2);
         size = ftell(f);
-        fseek(f, 0, SEEK_SET);
+        fseek(f, 0, 0);
         buffer = malloc(size + 1);
         fread(buffer, 1, size, f);
         buffer[size] = 0;
@@ -3572,54 +4268,49 @@ static LILCALLBACK lil_value_t fnc_source(lil_t lil, size_t argc, lil_value_t* a
     free(buffer);
     return r;
 }
-
-static LILCALLBACK lil_value_t fnc_lmap(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_lmap(lil_t lil, size_t argc, lil_value_t* argv)
 {
     lil_list_t list;
     size_t i;
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     list = lil_subst_to_list(lil, argv[0]);
     for (i=1; i<argc; i++)
-        lil_set_var(lil, lil_to_string(argv[i]), lil_list_get(list, i - 1), LIL_SETVAR_LOCAL);
+        lil_set_var(lil, lil_to_string(argv[i]), lil_list_get(list, i - 1), 1);
     lil_free_list(list);
-    return NULL;
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_rand(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_rand(lil_t lil, size_t argc, lil_value_t* argv)
 {
-    return lil_alloc_double(rand()/(double)RAND_MAX);
+    return lil_alloc_double(rand()/(double)2147483647);
 }
-
-static LILCALLBACK lil_value_t fnc_catcher(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_catcher(lil_t lil, size_t argc, lil_value_t* argv)
 {
     if (argc == 0) {
         return lil_alloc_string(lil->catcher);
     } else {
         const char* catcher = lil_to_string(argv[0]);
         free(lil->catcher);
-        lil->catcher = catcher[0] ? strclone(catcher) : NULL;
+        lil->catcher = catcher[0] ? strclone(catcher) : ((void*)0);
     }
-    return NULL;
+    return ((void*)0);
 }
-
-static LILCALLBACK lil_value_t fnc_watch(lil_t lil, size_t argc, lil_value_t* argv)
+static lil_value_t fnc_watch(lil_t lil, size_t argc, lil_value_t* argv)
 {
     size_t i;
     const char* wcode;
-    if (argc < 2) return NULL;
+    if (argc < 2) return ((void*)0);
     wcode = lil_to_string(argv[argc - 1]);
     for (i=0; i + 1 < argc; i++) {
         const char* vname = lil_to_string(argv[i]);
         lil_var_t v;
         if (!vname[0]) continue;
         v = lil_find_var(lil, lil->env, lil_to_string(argv[i]));
-        if (!v) v = lil_set_var(lil, vname, NULL, LIL_SETVAR_LOCAL_NEW);
+        if (!v) v = lil_set_var(lil, vname, ((void*)0), 2);
         free(v->w);
-        v->w = wcode[0] ? strclone(wcode) : NULL;
+        v->w = wcode[0] ? strclone(wcode) : ((void*)0);
     }
-    return NULL;
+    return ((void*)0);
 }
-
 static void register_stdcmds(lil_t lil)
 {
     lil_register(lil, "reflect", fnc_reflect);
@@ -3680,8 +4371,6 @@ static void register_stdcmds(lil_t lil)
     lil_register(lil, "watch", fnc_watch);
     lil->syscmds = lil->cmds;
 }
-
-
 int lil_new_probe(void)
 {
     lil_t value = lil_new();

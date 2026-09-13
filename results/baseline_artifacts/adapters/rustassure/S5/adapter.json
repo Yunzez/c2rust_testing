@@ -11,11 +11,15 @@
     "rust": "benchmark/pairs/rq4/genann_sactor/translated/genann_sactor.rs"
   },
   "notes": [
-    "The C computation, Rust computation, and wrapper are byte-identical to the audited FLOURINE package for the same defect.",
-    "Only FLOURINE's JSON container is flattened into RustAssure's documented individual-function .i file; the argument map is positional identity."
+    "The C computation and wrapper are the documented preprocessed rendition of the audited exact-source FLOURINE package; the Rust computation and wrapper are copied byte-for-byte.",
+    "FLOURINE's JSON container is flattened and preprocessed with gcc -E -P -x c into RustAssure's documented individual-function .i input; the argument map is positional identity."
   ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
   "input_sha256": {
-    "genann_cached_initialized.i": "3a0f23ae96385594f3439ad7f0e5eb89360e4eafe2d4bda9ef4c5100f652119e",
+    "genann_cached_initialized.i": "7964d98568ec477094610e99c7aa618b059716eea9791623aa5253aff085c7e2",
     "genann_cached_initialized.rs": "810de5b75bbccc418e97f4566488229824dbc006190467c0864294d9fafd69c0",
     "genann_cached_initialized_raw.inc": "58b8cd263858b1b1318d233a2fd4cc2c5bb6bd5f7bab823636e24270d6e460e8",
     "argument_order_map.json": "12741df056e1837cdfc401409bf82b1762086c9bc6161ccbc52a9db9a54c5e90"

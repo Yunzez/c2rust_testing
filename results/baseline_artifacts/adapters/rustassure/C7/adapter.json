@@ -10,11 +10,15 @@
     "rust": "benchmark/pairs/rq4/bzip2_crown/translated/bzip2_crown.rs"
   },
   "notes": [
-    "The C computation, Rust computation, and wrapper are byte-identical to the audited FLOURINE package for the same defect.",
-    "Only FLOURINE's JSON container is flattened into RustAssure's documented individual-function .i file; the argument map is positional identity."
+    "The C computation and wrapper are the documented preprocessed rendition of the audited exact-source FLOURINE package; the Rust computation and wrapper are copied byte-for-byte.",
+    "FLOURINE's JSON container is flattened and preprocessed with gcc -E -P -x c into RustAssure's documented individual-function .i input; the argument map is positional identity."
   ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
   "input_sha256": {
-    "bzbuff_compress_observe.i": "3ff4330dcf425afdb59ebde77abcb4228c5ff9e2e48281ad72cfa1650b814fbc",
+    "bzbuff_compress_observe.i": "31e52d3e2d1fda907b230c49bdc9165a83bf55345ea1b6f1053f1a8cc80d3420",
     "bzbuff_compress_observe.rs": "f6a60978f2935bee46d38128ab8abb5cdd382aa21d260ef5af9fe0865e04e064",
     "bzbuff_compress_observe_raw.inc": "009c0a3c5d72307a66fef841c8a8327a49dcbfb4976ca45cd3a16408ac963672",
     "argument_order_map.json": "21600cf7ca9c22a0b14060f5583b6aeddbea5e312badf442fb9de071e2f73e56"

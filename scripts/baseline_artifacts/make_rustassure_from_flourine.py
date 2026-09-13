@@ -13,12 +13,14 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import subprocess
 from pathlib import Path
 
 
 ROOT = Path("/home/yunzez/c2rust_testing")
 FLOURINE = ROOT / "results/baseline_artifacts/adapters/flourine"
 OUT_ROOT = ROOT / "results/baseline_artifacts/adapters/rustassure"
+RUSTASSURE_IMAGE = "c2r-baseline-rustassure:39618406"
 
 # Defects whose existing package has one exact target and a fixed, explicit
 # logical argument list.  S14 is intentionally absent: its scored FLOURINE
@@ -53,7 +55,7 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def c_input(document: dict) -> str:
+def c_source(document: dict) -> str:
     sections: list[str] = []
     for key in (
         "Includes",
@@ -69,6 +71,32 @@ def c_input(document: dict) -> str:
         if values:
             sections.append("\n".join(values))
     return "\n\n".join(sections).rstrip() + "\n"
+
+
+def preprocess_c(source: str) -> str:
+    """Preprocess with the same frozen Clang toolchain that consumes `.i`."""
+    completed = subprocess.run(
+        [
+            "docker",
+            "run",
+            "--rm",
+            "--cpus",
+            "1",
+            "-i",
+            RUSTASSURE_IMAGE,
+            "clang",
+            "-E",
+            "-P",
+            "-x",
+            "c",
+            "-",
+        ],
+        input=source,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return completed.stdout
 
 
 def emit(defect: str, source_slug: str, arity: int) -> None:
@@ -89,7 +117,9 @@ def emit(defect: str, source_slug: str, arity: int) -> None:
 
     c_path = input_dir / f"{target}.i"
     rust_path = input_dir / f"{target}.rs"
-    c_path.write_text(c_input(json.loads(json_inputs[0].read_text())))
+    c_path.write_text(
+        preprocess_c(c_source(json.loads(json_inputs[0].read_text())))
+    )
     rust_path.write_bytes(rust_inputs[0].read_bytes())
     copied = [c_path, rust_path]
     for dependency in sorted((source / "input").glob("*.inc")):
@@ -112,9 +142,13 @@ def emit(defect: str, source_slug: str, arity: int) -> None:
         "semantic_rewrite": False,
         "sources": metadata["sources"],
         "notes": [
-            "The C computation, Rust computation, and wrapper are byte-identical to the audited FLOURINE package for the same defect.",
-            "Only FLOURINE's JSON container is flattened into RustAssure's documented individual-function .i file; the argument map is positional identity.",
+            "The C computation and wrapper are the documented preprocessed rendition of the audited exact-source FLOURINE package; the Rust computation and wrapper are copied byte-for-byte.",
+            "FLOURINE's JSON container is flattened and preprocessed with gcc -E -P -x c into RustAssure's documented individual-function .i input; the argument map is positional identity.",
         ],
+        "preprocessing": {
+            "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+            "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift",
+        },
         "input_sha256": {path.name: sha256(path) for path in copied},
     }
     (out / "adapter.json").write_text(json.dumps(record, indent=2) + "\n")

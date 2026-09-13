@@ -1,838 +1,1218 @@
-#include <ctype.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+typedef unsigned char __u_char;
+typedef unsigned short int __u_short;
+typedef unsigned int __u_int;
+typedef unsigned long int __u_long;
+typedef signed char __int8_t;
+typedef unsigned char __uint8_t;
+typedef signed short int __int16_t;
+typedef unsigned short int __uint16_t;
+typedef signed int __int32_t;
+typedef unsigned int __uint32_t;
+typedef signed long int __int64_t;
+typedef unsigned long int __uint64_t;
+typedef __int8_t __int_least8_t;
+typedef __uint8_t __uint_least8_t;
+typedef __int16_t __int_least16_t;
+typedef __uint16_t __uint_least16_t;
+typedef __int32_t __int_least32_t;
+typedef __uint32_t __uint_least32_t;
+typedef __int64_t __int_least64_t;
+typedef __uint64_t __uint_least64_t;
+typedef long int __quad_t;
+typedef unsigned long int __u_quad_t;
+typedef long int __intmax_t;
+typedef unsigned long int __uintmax_t;
+typedef unsigned long int __dev_t;
+typedef unsigned int __uid_t;
+typedef unsigned int __gid_t;
+typedef unsigned long int __ino_t;
+typedef unsigned long int __ino64_t;
+typedef unsigned int __mode_t;
+typedef unsigned long int __nlink_t;
+typedef long int __off_t;
+typedef long int __off64_t;
+typedef int __pid_t;
+typedef struct { int __val[2]; } __fsid_t;
+typedef long int __clock_t;
+typedef unsigned long int __rlim_t;
+typedef unsigned long int __rlim64_t;
+typedef unsigned int __id_t;
+typedef long int __time_t;
+typedef unsigned int __useconds_t;
+typedef long int __suseconds_t;
+typedef long int __suseconds64_t;
+typedef int __daddr_t;
+typedef int __key_t;
+typedef int __clockid_t;
+typedef void * __timer_t;
+typedef long int __blksize_t;
+typedef long int __blkcnt_t;
+typedef long int __blkcnt64_t;
+typedef unsigned long int __fsblkcnt_t;
+typedef unsigned long int __fsblkcnt64_t;
+typedef unsigned long int __fsfilcnt_t;
+typedef unsigned long int __fsfilcnt64_t;
+typedef long int __fsword_t;
+typedef long int __ssize_t;
+typedef long int __syscall_slong_t;
+typedef unsigned long int __syscall_ulong_t;
+typedef __off64_t __loff_t;
+typedef char *__caddr_t;
+typedef long int __intptr_t;
+typedef unsigned int __socklen_t;
+typedef int __sig_atomic_t;
+enum
+{
+  _ISupper = ((0) < 8 ? ((1 << (0)) << 8) : ((1 << (0)) >> 8)),
+  _ISlower = ((1) < 8 ? ((1 << (1)) << 8) : ((1 << (1)) >> 8)),
+  _ISalpha = ((2) < 8 ? ((1 << (2)) << 8) : ((1 << (2)) >> 8)),
+  _ISdigit = ((3) < 8 ? ((1 << (3)) << 8) : ((1 << (3)) >> 8)),
+  _ISxdigit = ((4) < 8 ? ((1 << (4)) << 8) : ((1 << (4)) >> 8)),
+  _ISspace = ((5) < 8 ? ((1 << (5)) << 8) : ((1 << (5)) >> 8)),
+  _ISprint = ((6) < 8 ? ((1 << (6)) << 8) : ((1 << (6)) >> 8)),
+  _ISgraph = ((7) < 8 ? ((1 << (7)) << 8) : ((1 << (7)) >> 8)),
+  _ISblank = ((8) < 8 ? ((1 << (8)) << 8) : ((1 << (8)) >> 8)),
+  _IScntrl = ((9) < 8 ? ((1 << (9)) << 8) : ((1 << (9)) >> 8)),
+  _ISpunct = ((10) < 8 ? ((1 << (10)) << 8) : ((1 << (10)) >> 8)),
+  _ISalnum = ((11) < 8 ? ((1 << (11)) << 8) : ((1 << (11)) >> 8))
+};
+extern const unsigned short int **__ctype_b_loc (void)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern const __int32_t **__ctype_tolower_loc (void)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern const __int32_t **__ctype_toupper_loc (void)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern int isalnum (int) __attribute__ ((__nothrow__ ));
+extern int isalpha (int) __attribute__ ((__nothrow__ ));
+extern int iscntrl (int) __attribute__ ((__nothrow__ ));
+extern int isdigit (int) __attribute__ ((__nothrow__ ));
+extern int islower (int) __attribute__ ((__nothrow__ ));
+extern int isgraph (int) __attribute__ ((__nothrow__ ));
+extern int isprint (int) __attribute__ ((__nothrow__ ));
+extern int ispunct (int) __attribute__ ((__nothrow__ ));
+extern int isspace (int) __attribute__ ((__nothrow__ ));
+extern int isupper (int) __attribute__ ((__nothrow__ ));
+extern int isxdigit (int) __attribute__ ((__nothrow__ ));
+extern int tolower (int __c) __attribute__ ((__nothrow__ ));
+extern int toupper (int __c) __attribute__ ((__nothrow__ ));
+extern int isblank (int) __attribute__ ((__nothrow__ ));
+extern int isascii (int __c) __attribute__ ((__nothrow__ ));
+extern int toascii (int __c) __attribute__ ((__nothrow__ ));
+extern int _toupper (int) __attribute__ ((__nothrow__ ));
+extern int _tolower (int) __attribute__ ((__nothrow__ ));
+struct __locale_struct
+{
+  struct __locale_data *__locales[13];
+  const unsigned short int *__ctype_b;
+  const int *__ctype_tolower;
+  const int *__ctype_toupper;
+  const char *__names[13];
+};
+typedef struct __locale_struct *__locale_t;
+
+typedef __locale_t locale_t;
+extern int isalnum_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isalpha_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int iscntrl_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isdigit_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int islower_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isgraph_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isprint_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int ispunct_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isspace_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isupper_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isxdigit_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int isblank_l (int, locale_t) __attribute__ ((__nothrow__ ));
+extern int __tolower_l (int __c, locale_t __l) __attribute__ ((__nothrow__ ));
+extern int tolower_l (int __c, locale_t __l) __attribute__ ((__nothrow__ ));
+extern int __toupper_l (int __c, locale_t __l) __attribute__ ((__nothrow__ ));
+extern int toupper_l (int __c, locale_t __l) __attribute__ ((__nothrow__ ));
+
+typedef __int8_t int8_t;
+typedef __int16_t int16_t;
+typedef __int32_t int32_t;
+typedef __int64_t int64_t;
+typedef __uint8_t uint8_t;
+typedef __uint16_t uint16_t;
+typedef __uint32_t uint32_t;
+typedef __uint64_t uint64_t;
+typedef __int_least8_t int_least8_t;
+typedef __int_least16_t int_least16_t;
+typedef __int_least32_t int_least32_t;
+typedef __int_least64_t int_least64_t;
+typedef __uint_least8_t uint_least8_t;
+typedef __uint_least16_t uint_least16_t;
+typedef __uint_least32_t uint_least32_t;
+typedef __uint_least64_t uint_least64_t;
+typedef signed char int_fast8_t;
+typedef long int int_fast16_t;
+typedef long int int_fast32_t;
+typedef long int int_fast64_t;
+typedef unsigned char uint_fast8_t;
+typedef unsigned long int uint_fast16_t;
+typedef unsigned long int uint_fast32_t;
+typedef unsigned long int uint_fast64_t;
+typedef long int intptr_t;
+typedef unsigned long int uintptr_t;
+typedef __intmax_t intmax_t;
+typedef __uintmax_t uintmax_t;
+typedef long unsigned int size_t;
+typedef __builtin_va_list va_list;
+typedef __builtin_va_list __gnuc_va_list;
+typedef struct
+{
+  int __count;
+  union
+  {
+    unsigned int __wch;
+    char __wchb[4];
+  } __value;
+} __mbstate_t;
+typedef struct _G_fpos_t
+{
+  __off_t __pos;
+  __mbstate_t __state;
+} __fpos_t;
+typedef struct _G_fpos64_t
+{
+  __off64_t __pos;
+  __mbstate_t __state;
+} __fpos64_t;
+struct _IO_FILE;
+typedef struct _IO_FILE __FILE;
+struct _IO_FILE;
+typedef struct _IO_FILE FILE;
+struct _IO_FILE;
+struct _IO_marker;
+struct _IO_codecvt;
+struct _IO_wide_data;
+typedef void _IO_lock_t;
+struct _IO_FILE
+{
+  int _flags;
+  char *_IO_read_ptr;
+  char *_IO_read_end;
+  char *_IO_read_base;
+  char *_IO_write_base;
+  char *_IO_write_ptr;
+  char *_IO_write_end;
+  char *_IO_buf_base;
+  char *_IO_buf_end;
+  char *_IO_save_base;
+  char *_IO_backup_base;
+  char *_IO_save_end;
+  struct _IO_marker *_markers;
+  struct _IO_FILE *_chain;
+  int _fileno;
+  int _flags2;
+  __off_t _old_offset;
+  unsigned short _cur_column;
+  signed char _vtable_offset;
+  char _shortbuf[1];
+  _IO_lock_t *_lock;
+  __off64_t _offset;
+  struct _IO_codecvt *_codecvt;
+  struct _IO_wide_data *_wide_data;
+  struct _IO_FILE *_freeres_list;
+  void *_freeres_buf;
+  size_t __pad5;
+  int _mode;
+  char _unused2[15 * sizeof (int) - 4 * sizeof (void *) - sizeof (size_t)];
+};
+typedef __gnuc_va_list va_list;
+typedef __off_t off_t;
+typedef __ssize_t ssize_t;
+typedef __fpos_t fpos_t;
+extern FILE *stdin;
+extern FILE *stdout;
+extern FILE *stderr;
+extern int remove (const char *__filename) __attribute__ ((__nothrow__ ));
+extern int rename (const char *__old, const char *__new) __attribute__ ((__nothrow__ ));
+extern int renameat (int __oldfd, const char *__old, int __newfd,
+       const char *__new) __attribute__ ((__nothrow__ ));
+extern int fclose (FILE *__stream);
+extern FILE *tmpfile (void)
+  __attribute__ ((__malloc__)) ;
+extern char *tmpnam (char[20]) __attribute__ ((__nothrow__ )) ;
+extern char *tmpnam_r (char __s[20]) __attribute__ ((__nothrow__ )) ;
+extern char *tempnam (const char *__dir, const char *__pfx)
+   __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) ;
+extern int fflush (FILE *__stream);
+extern int fflush_unlocked (FILE *__stream);
+extern FILE *fopen (const char *__restrict __filename,
+      const char *__restrict __modes)
+  __attribute__ ((__malloc__)) ;
+extern FILE *freopen (const char *__restrict __filename,
+        const char *__restrict __modes,
+        FILE *__restrict __stream) ;
+extern FILE *fdopen (int __fd, const char *__modes) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__malloc__)) ;
+extern FILE *fmemopen (void *__s, size_t __len, const char *__modes)
+  __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) ;
+extern FILE *open_memstream (char **__bufloc, size_t *__sizeloc) __attribute__ ((__nothrow__ ))
+  __attribute__ ((__malloc__)) ;
+extern void setbuf (FILE *__restrict __stream, char *__restrict __buf) __attribute__ ((__nothrow__ ));
+extern int setvbuf (FILE *__restrict __stream, char *__restrict __buf,
+      int __modes, size_t __n) __attribute__ ((__nothrow__ ));
+extern void setbuffer (FILE *__restrict __stream, char *__restrict __buf,
+         size_t __size) __attribute__ ((__nothrow__ ));
+extern void setlinebuf (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int fprintf (FILE *__restrict __stream,
+      const char *__restrict __format, ...);
+extern int printf (const char *__restrict __format, ...);
+extern int sprintf (char *__restrict __s,
+      const char *__restrict __format, ...) __attribute__ ((__nothrow__));
+extern int vfprintf (FILE *__restrict __s, const char *__restrict __format,
+       __gnuc_va_list __arg);
+extern int vprintf (const char *__restrict __format, __gnuc_va_list __arg);
+extern int vsprintf (char *__restrict __s, const char *__restrict __format,
+       __gnuc_va_list __arg) __attribute__ ((__nothrow__));
+extern int snprintf (char *__restrict __s, size_t __maxlen,
+       const char *__restrict __format, ...)
+     __attribute__ ((__nothrow__)) __attribute__ ((__format__ (__printf__, 3, 4)));
+extern int vsnprintf (char *__restrict __s, size_t __maxlen,
+        const char *__restrict __format, __gnuc_va_list __arg)
+     __attribute__ ((__nothrow__)) __attribute__ ((__format__ (__printf__, 3, 0)));
+extern int vdprintf (int __fd, const char *__restrict __fmt,
+       __gnuc_va_list __arg)
+     __attribute__ ((__format__ (__printf__, 2, 0)));
+extern int dprintf (int __fd, const char *__restrict __fmt, ...)
+     __attribute__ ((__format__ (__printf__, 2, 3)));
+extern int fscanf (FILE *__restrict __stream,
+     const char *__restrict __format, ...) ;
+extern int scanf (const char *__restrict __format, ...) ;
+extern int sscanf (const char *__restrict __s,
+     const char *__restrict __format, ...) __attribute__ ((__nothrow__ ));
+typedef float _Float32;
+typedef double _Float64;
+typedef double _Float32x;
+typedef long double _Float64x;
+extern int fscanf (FILE *__restrict __stream, const char *__restrict __format, ...) __asm__ ("" "__isoc99_fscanf") ;
+extern int scanf (const char *__restrict __format, ...) __asm__ ("" "__isoc99_scanf") ;
+extern int sscanf (const char *__restrict __s, const char *__restrict __format, ...) __asm__ ("" "__isoc99_sscanf") __attribute__ ((__nothrow__ ));
+extern int vfscanf (FILE *__restrict __s, const char *__restrict __format,
+      __gnuc_va_list __arg)
+     __attribute__ ((__format__ (__scanf__, 2, 0))) ;
+extern int vscanf (const char *__restrict __format, __gnuc_va_list __arg)
+     __attribute__ ((__format__ (__scanf__, 1, 0))) ;
+extern int vsscanf (const char *__restrict __s,
+      const char *__restrict __format, __gnuc_va_list __arg)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__format__ (__scanf__, 2, 0)));
+extern int vfscanf (FILE *__restrict __s, const char *__restrict __format, __gnuc_va_list __arg) __asm__ ("" "__isoc99_vfscanf")
+     __attribute__ ((__format__ (__scanf__, 2, 0))) ;
+extern int vscanf (const char *__restrict __format, __gnuc_va_list __arg) __asm__ ("" "__isoc99_vscanf")
+     __attribute__ ((__format__ (__scanf__, 1, 0))) ;
+extern int vsscanf (const char *__restrict __s, const char *__restrict __format, __gnuc_va_list __arg) __asm__ ("" "__isoc99_vsscanf") __attribute__ ((__nothrow__ ))
+     __attribute__ ((__format__ (__scanf__, 2, 0)));
+extern int fgetc (FILE *__stream);
+extern int getc (FILE *__stream);
+extern int getchar (void);
+extern int getc_unlocked (FILE *__stream);
+extern int getchar_unlocked (void);
+extern int fgetc_unlocked (FILE *__stream);
+extern int fputc (int __c, FILE *__stream);
+extern int putc (int __c, FILE *__stream);
+extern int putchar (int __c);
+extern int fputc_unlocked (int __c, FILE *__stream);
+extern int putc_unlocked (int __c, FILE *__stream);
+extern int putchar_unlocked (int __c);
+extern int getw (FILE *__stream);
+extern int putw (int __w, FILE *__stream);
+extern char *fgets (char *__restrict __s, int __n, FILE *__restrict __stream)
+                                                         ;
+extern __ssize_t __getdelim (char **__restrict __lineptr,
+                             size_t *__restrict __n, int __delimiter,
+                             FILE *__restrict __stream) ;
+extern __ssize_t getdelim (char **__restrict __lineptr,
+                           size_t *__restrict __n, int __delimiter,
+                           FILE *__restrict __stream) ;
+extern __ssize_t getline (char **__restrict __lineptr,
+                          size_t *__restrict __n,
+                          FILE *__restrict __stream) ;
+extern int fputs (const char *__restrict __s, FILE *__restrict __stream);
+extern int puts (const char *__s);
+extern int ungetc (int __c, FILE *__stream);
+extern size_t fread (void *__restrict __ptr, size_t __size,
+       size_t __n, FILE *__restrict __stream) ;
+extern size_t fwrite (const void *__restrict __ptr, size_t __size,
+        size_t __n, FILE *__restrict __s);
+extern size_t fread_unlocked (void *__restrict __ptr, size_t __size,
+         size_t __n, FILE *__restrict __stream) ;
+extern size_t fwrite_unlocked (const void *__restrict __ptr, size_t __size,
+          size_t __n, FILE *__restrict __stream);
+extern int fseek (FILE *__stream, long int __off, int __whence);
+extern long int ftell (FILE *__stream) ;
+extern void rewind (FILE *__stream);
+extern int fseeko (FILE *__stream, __off_t __off, int __whence);
+extern __off_t ftello (FILE *__stream) ;
+extern int fgetpos (FILE *__restrict __stream, fpos_t *__restrict __pos);
+extern int fsetpos (FILE *__stream, const fpos_t *__pos);
+extern void clearerr (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int feof (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern int ferror (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern void clearerr_unlocked (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int feof_unlocked (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern int ferror_unlocked (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern void perror (const char *__s);
+extern int fileno (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern int fileno_unlocked (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern int pclose (FILE *__stream);
+extern FILE *popen (const char *__command, const char *__modes)
+  __attribute__ ((__malloc__)) ;
+extern char *ctermid (char *__s) __attribute__ ((__nothrow__ ))
+                                     ;
+extern void flockfile (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int ftrylockfile (FILE *__stream) __attribute__ ((__nothrow__ )) ;
+extern void funlockfile (FILE *__stream) __attribute__ ((__nothrow__ ));
+extern int __uflow (FILE *);
+extern int __overflow (FILE *, int);
+typedef int wchar_t;
+typedef struct
+  {
+    int quot;
+    int rem;
+  } div_t;
+typedef struct
+  {
+    long int quot;
+    long int rem;
+  } ldiv_t;
+__extension__ typedef struct
+  {
+    long long int quot;
+    long long int rem;
+  } lldiv_t;
+extern size_t __ctype_get_mb_cur_max (void) __attribute__ ((__nothrow__ )) ;
+extern double atof (const char *__nptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+extern int atoi (const char *__nptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+extern long int atol (const char *__nptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+__extension__ extern long long int atoll (const char *__nptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+extern double strtod (const char *__restrict __nptr,
+        char **__restrict __endptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern float strtof (const char *__restrict __nptr,
+       char **__restrict __endptr) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern long double strtold (const char *__restrict __nptr,
+       char **__restrict __endptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern long int strtol (const char *__restrict __nptr,
+   char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern unsigned long int strtoul (const char *__restrict __nptr,
+      char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+__extension__
+extern long long int strtoq (const char *__restrict __nptr,
+        char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+__extension__
+extern unsigned long long int strtouq (const char *__restrict __nptr,
+           char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+__extension__
+extern long long int strtoll (const char *__restrict __nptr,
+         char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+__extension__
+extern unsigned long long int strtoull (const char *__restrict __nptr,
+     char **__restrict __endptr, int __base)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern char *l64a (long int __n) __attribute__ ((__nothrow__ )) ;
+extern long int a64l (const char *__s)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1))) ;
+typedef __u_char u_char;
+typedef __u_short u_short;
+typedef __u_int u_int;
+typedef __u_long u_long;
+typedef __quad_t quad_t;
+typedef __u_quad_t u_quad_t;
+typedef __fsid_t fsid_t;
+typedef __loff_t loff_t;
+typedef __ino_t ino_t;
+typedef __dev_t dev_t;
+typedef __gid_t gid_t;
+typedef __mode_t mode_t;
+typedef __nlink_t nlink_t;
+typedef __uid_t uid_t;
+typedef __pid_t pid_t;
+typedef __id_t id_t;
+typedef __daddr_t daddr_t;
+typedef __caddr_t caddr_t;
+typedef __key_t key_t;
+typedef __clock_t clock_t;
+
+typedef __clockid_t clockid_t;
+typedef __time_t time_t;
+typedef __timer_t timer_t;
+typedef unsigned long int ulong;
+typedef unsigned short int ushort;
+typedef unsigned int uint;
+typedef __uint8_t u_int8_t;
+typedef __uint16_t u_int16_t;
+typedef __uint32_t u_int32_t;
+typedef __uint64_t u_int64_t;
+typedef int register_t __attribute__ ((__mode__ (__word__)));
+static __inline __uint16_t
+__bswap_16 (__uint16_t __bsx)
+{
+  return ((__uint16_t) ((((__bsx) >> 8) & 0xff) | (((__bsx) & 0xff) << 8)));
+}
+static __inline __uint32_t
+__bswap_32 (__uint32_t __bsx)
+{
+  return ((((__bsx) & 0xff000000u) >> 24) | (((__bsx) & 0x00ff0000u) >> 8) | (((__bsx) & 0x0000ff00u) << 8) | (((__bsx) & 0x000000ffu) << 24));
+}
+__extension__ static __inline __uint64_t
+__bswap_64 (__uint64_t __bsx)
+{
+  return ((((__bsx) & 0xff00000000000000ull) >> 56) | (((__bsx) & 0x00ff000000000000ull) >> 40) | (((__bsx) & 0x0000ff0000000000ull) >> 24) | (((__bsx) & 0x000000ff00000000ull) >> 8) | (((__bsx) & 0x00000000ff000000ull) << 8) | (((__bsx) & 0x0000000000ff0000ull) << 24) | (((__bsx) & 0x000000000000ff00ull) << 40) | (((__bsx) & 0x00000000000000ffull) << 56));
+}
+static __inline __uint16_t
+__uint16_identity (__uint16_t __x)
+{
+  return __x;
+}
+static __inline __uint32_t
+__uint32_identity (__uint32_t __x)
+{
+  return __x;
+}
+static __inline __uint64_t
+__uint64_identity (__uint64_t __x)
+{
+  return __x;
+}
+typedef struct
+{
+  unsigned long int __val[(1024 / (8 * sizeof (unsigned long int)))];
+} __sigset_t;
+typedef __sigset_t sigset_t;
+struct timeval
+{
+  __time_t tv_sec;
+  __suseconds_t tv_usec;
+};
+
+struct timespec
+{
+  __time_t tv_sec;
+  __syscall_slong_t tv_nsec;
+};
+typedef __suseconds_t suseconds_t;
+typedef long int __fd_mask;
+typedef struct
+  {
+    __fd_mask __fds_bits[1024 / (8 * (int) sizeof (__fd_mask))];
+  } fd_set;
+typedef __fd_mask fd_mask;
+extern int select (int __nfds, fd_set *__restrict __readfds,
+     fd_set *__restrict __writefds,
+     fd_set *__restrict __exceptfds,
+     struct timeval *__restrict __timeout);
+extern int pselect (int __nfds, fd_set *__restrict __readfds,
+      fd_set *__restrict __writefds,
+      fd_set *__restrict __exceptfds,
+      const struct timespec *__restrict __timeout,
+      const __sigset_t *__restrict __sigmask);
+typedef __blksize_t blksize_t;
+typedef __blkcnt_t blkcnt_t;
+typedef __fsblkcnt_t fsblkcnt_t;
+typedef __fsfilcnt_t fsfilcnt_t;
+
+typedef union
+{
+  __extension__ unsigned long long int __value64;
+  struct
+  {
+    unsigned int __low;
+    unsigned int __high;
+  } __value32;
+} __atomic_wide_counter;
+typedef struct __pthread_internal_list
+{
+  struct __pthread_internal_list *__prev;
+  struct __pthread_internal_list *__next;
+} __pthread_list_t;
+typedef struct __pthread_internal_slist
+{
+  struct __pthread_internal_slist *__next;
+} __pthread_slist_t;
+struct __pthread_mutex_s
+{
+  int __lock;
+  unsigned int __count;
+  int __owner;
+  unsigned int __nusers;
+  int __kind;
+  short __spins;
+  short __elision;
+  __pthread_list_t __list;
+};
+struct __pthread_rwlock_arch_t
+{
+  unsigned int __readers;
+  unsigned int __writers;
+  unsigned int __wrphase_futex;
+  unsigned int __writers_futex;
+  unsigned int __pad3;
+  unsigned int __pad4;
+  int __cur_writer;
+  int __shared;
+  signed char __rwelision;
+  unsigned char __pad1[7];
+  unsigned long int __pad2;
+  unsigned int __flags;
+};
+struct __pthread_cond_s
+{
+  __atomic_wide_counter __wseq;
+  __atomic_wide_counter __g1_start;
+  unsigned int __g_refs[2] ;
+  unsigned int __g_size[2];
+  unsigned int __g1_orig_size;
+  unsigned int __wrefs;
+  unsigned int __g_signals[2];
+};
+typedef unsigned int __tss_t;
+typedef unsigned long int __thrd_t;
+typedef struct
+{
+  int __data ;
+} __once_flag;
+typedef unsigned long int pthread_t;
+typedef union
+{
+  char __size[4];
+  int __align;
+} pthread_mutexattr_t;
+typedef union
+{
+  char __size[4];
+  int __align;
+} pthread_condattr_t;
+typedef unsigned int pthread_key_t;
+typedef int pthread_once_t;
+union pthread_attr_t
+{
+  char __size[56];
+  long int __align;
+};
+typedef union pthread_attr_t pthread_attr_t;
+typedef union
+{
+  struct __pthread_mutex_s __data;
+  char __size[40];
+  long int __align;
+} pthread_mutex_t;
+typedef union
+{
+  struct __pthread_cond_s __data;
+  char __size[48];
+  __extension__ long long int __align;
+} pthread_cond_t;
+typedef union
+{
+  struct __pthread_rwlock_arch_t __data;
+  char __size[56];
+  long int __align;
+} pthread_rwlock_t;
+typedef union
+{
+  char __size[8];
+  long int __align;
+} pthread_rwlockattr_t;
+typedef volatile int pthread_spinlock_t;
+typedef union
+{
+  char __size[32];
+  long int __align;
+} pthread_barrier_t;
+typedef union
+{
+  char __size[4];
+  int __align;
+} pthread_barrierattr_t;
+extern long int random (void) __attribute__ ((__nothrow__ ));
+extern void srandom (unsigned int __seed) __attribute__ ((__nothrow__ ));
+extern char *initstate (unsigned int __seed, char *__statebuf,
+   size_t __statelen) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern char *setstate (char *__statebuf) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+struct random_data
+  {
+    int32_t *fptr;
+    int32_t *rptr;
+    int32_t *state;
+    int rand_type;
+    int rand_deg;
+    int rand_sep;
+    int32_t *end_ptr;
+  };
+extern int random_r (struct random_data *__restrict __buf,
+       int32_t *__restrict __result) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int srandom_r (unsigned int __seed, struct random_data *__buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern int initstate_r (unsigned int __seed, char *__restrict __statebuf,
+   size_t __statelen,
+   struct random_data *__restrict __buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2, 4)));
+extern int setstate_r (char *__restrict __statebuf,
+         struct random_data *__restrict __buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int rand (void) __attribute__ ((__nothrow__ ));
+extern void srand (unsigned int __seed) __attribute__ ((__nothrow__ ));
+extern int rand_r (unsigned int *__seed) __attribute__ ((__nothrow__ ));
+extern double drand48 (void) __attribute__ ((__nothrow__ ));
+extern double erand48 (unsigned short int __xsubi[3]) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern long int lrand48 (void) __attribute__ ((__nothrow__ ));
+extern long int nrand48 (unsigned short int __xsubi[3])
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern long int mrand48 (void) __attribute__ ((__nothrow__ ));
+extern long int jrand48 (unsigned short int __xsubi[3])
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern void srand48 (long int __seedval) __attribute__ ((__nothrow__ ));
+extern unsigned short int *seed48 (unsigned short int __seed16v[3])
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern void lcong48 (unsigned short int __param[7]) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+struct drand48_data
+  {
+    unsigned short int __x[3];
+    unsigned short int __old_x[3];
+    unsigned short int __c;
+    unsigned short int __init;
+    __extension__ unsigned long long int __a;
+  };
+extern int drand48_r (struct drand48_data *__restrict __buffer,
+        double *__restrict __result) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int erand48_r (unsigned short int __xsubi[3],
+        struct drand48_data *__restrict __buffer,
+        double *__restrict __result) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int lrand48_r (struct drand48_data *__restrict __buffer,
+        long int *__restrict __result)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int nrand48_r (unsigned short int __xsubi[3],
+        struct drand48_data *__restrict __buffer,
+        long int *__restrict __result)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int mrand48_r (struct drand48_data *__restrict __buffer,
+        long int *__restrict __result)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int jrand48_r (unsigned short int __xsubi[3],
+        struct drand48_data *__restrict __buffer,
+        long int *__restrict __result)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int srand48_r (long int __seedval, struct drand48_data *__buffer)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern int seed48_r (unsigned short int __seed16v[3],
+       struct drand48_data *__buffer) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int lcong48_r (unsigned short int __param[7],
+        struct drand48_data *__buffer)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern void *malloc (size_t __size) __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__))
+                                         ;
+extern void *calloc (size_t __nmemb, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) ;
+extern void *realloc (void *__ptr, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__warn_unused_result__)) ;
+extern void free (void *__ptr) __attribute__ ((__nothrow__ ));
+extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__warn_unused_result__))
+                       ;
+extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+     __attribute__ ((__nothrow__ )) ;
+extern void *alloca (size_t __size) __attribute__ ((__nothrow__ ));
+extern void *valloc (size_t __size) __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__))
+                                         ;
+extern int posix_memalign (void **__memptr, size_t __alignment, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1))) ;
+extern void *aligned_alloc (size_t __alignment, size_t __size)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) __attribute__ ((__alloc_align__ (1)))
+                                         ;
+extern void abort (void) __attribute__ ((__nothrow__ )) __attribute__ ((__noreturn__));
+extern int atexit (void (*__func) (void)) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int at_quick_exit (void (*__func) (void)) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int on_exit (void (*__func) (int __status, void *__arg), void *__arg)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern void exit (int __status) __attribute__ ((__nothrow__ )) __attribute__ ((__noreturn__));
+extern void quick_exit (int __status) __attribute__ ((__nothrow__ )) __attribute__ ((__noreturn__));
+extern void _Exit (int __status) __attribute__ ((__nothrow__ )) __attribute__ ((__noreturn__));
+extern char *getenv (const char *__name) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1))) ;
+extern int putenv (char *__string) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int setenv (const char *__name, const char *__value, int __replace)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern int unsetenv (const char *__name) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int clearenv (void) __attribute__ ((__nothrow__ ));
+extern char *mktemp (char *__template) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int mkstemp (char *__template) __attribute__ ((__nonnull__ (1))) ;
+extern int mkstemps (char *__template, int __suffixlen) __attribute__ ((__nonnull__ (1))) ;
+extern char *mkdtemp (char *__template) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1))) ;
+extern int system (const char *__command) ;
+extern char *realpath (const char *__restrict __name,
+         char *__restrict __resolved) __attribute__ ((__nothrow__ )) ;
+typedef int (*__compar_fn_t) (const void *, const void *);
+extern void *bsearch (const void *__key, const void *__base,
+        size_t __nmemb, size_t __size, __compar_fn_t __compar)
+     __attribute__ ((__nonnull__ (1, 2, 5))) ;
+extern void qsort (void *__base, size_t __nmemb, size_t __size,
+     __compar_fn_t __compar) __attribute__ ((__nonnull__ (1, 4)));
+extern int abs (int __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+extern long int labs (long int __x) __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+__extension__ extern long long int llabs (long long int __x)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+extern div_t div (int __numer, int __denom)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+extern ldiv_t ldiv (long int __numer, long int __denom)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+__extension__ extern lldiv_t lldiv (long long int __numer,
+        long long int __denom)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__)) ;
+extern char *ecvt (double __value, int __ndigit, int *__restrict __decpt,
+     int *__restrict __sign) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4))) ;
+extern char *fcvt (double __value, int __ndigit, int *__restrict __decpt,
+     int *__restrict __sign) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4))) ;
+extern char *gcvt (double __value, int __ndigit, char *__buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3))) ;
+extern char *qecvt (long double __value, int __ndigit,
+      int *__restrict __decpt, int *__restrict __sign)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4))) ;
+extern char *qfcvt (long double __value, int __ndigit,
+      int *__restrict __decpt, int *__restrict __sign)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4))) ;
+extern char *qgcvt (long double __value, int __ndigit, char *__buf)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3))) ;
+extern int ecvt_r (double __value, int __ndigit, int *__restrict __decpt,
+     int *__restrict __sign, char *__restrict __buf,
+     size_t __len) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4, 5)));
+extern int fcvt_r (double __value, int __ndigit, int *__restrict __decpt,
+     int *__restrict __sign, char *__restrict __buf,
+     size_t __len) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4, 5)));
+extern int qecvt_r (long double __value, int __ndigit,
+      int *__restrict __decpt, int *__restrict __sign,
+      char *__restrict __buf, size_t __len)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4, 5)));
+extern int qfcvt_r (long double __value, int __ndigit,
+      int *__restrict __decpt, int *__restrict __sign,
+      char *__restrict __buf, size_t __len)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (3, 4, 5)));
+extern int mblen (const char *__s, size_t __n) __attribute__ ((__nothrow__ ));
+extern int mbtowc (wchar_t *__restrict __pwc,
+     const char *__restrict __s, size_t __n) __attribute__ ((__nothrow__ ));
+extern int wctomb (char *__s, wchar_t __wchar) __attribute__ ((__nothrow__ ));
+extern size_t mbstowcs (wchar_t *__restrict __pwcs,
+   const char *__restrict __s, size_t __n) __attribute__ ((__nothrow__ ))
+                                      ;
+extern size_t wcstombs (char *__restrict __s,
+   const wchar_t *__restrict __pwcs, size_t __n)
+     __attribute__ ((__nothrow__ ))
+                                    ;
+extern int rpmatch (const char *__response) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1))) ;
+extern int getsubopt (char **__restrict __optionp,
+        char *const *__restrict __tokens,
+        char **__restrict __valuep)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2, 3))) ;
+extern int getloadavg (double __loadavg[], int __nelem)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern void *memcpy (void *__restrict __dest, const void *__restrict __src,
+       size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern void *memmove (void *__dest, const void *__src, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern void *memccpy (void *__restrict __dest, const void *__restrict __src,
+        int __c, size_t __n)
+    __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2))) ;
+extern void *memset (void *__s, int __c, size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern int memcmp (const void *__s1, const void *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int __memcmpeq (const void *__s1, const void *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern void *memchr (const void *__s, int __c, size_t __n)
+      __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strncpy (char *__restrict __dest,
+        const char *__restrict __src, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strcat (char *__restrict __dest, const char *__restrict __src)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strncat (char *__restrict __dest, const char *__restrict __src,
+        size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern int strcmp (const char *__s1, const char *__s2)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int strncmp (const char *__s1, const char *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int strcoll (const char *__s1, const char *__s2)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern size_t strxfrm (char *__restrict __dest,
+         const char *__restrict __src, size_t __n)
+    __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2))) ;
+extern int strcoll_l (const char *__s1, const char *__s2, locale_t __l)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2, 3)));
+extern size_t strxfrm_l (char *__dest, const char *__src, size_t __n,
+    locale_t __l) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2, 4)))
+                                           ;
+extern char *strdup (const char *__s)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) __attribute__ ((__nonnull__ (1)));
+extern char *strndup (const char *__string, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__malloc__)) __attribute__ ((__nonnull__ (1)));
+extern char *strchr (const char *__s, int __c)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern char *strrchr (const char *__s, int __c)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern size_t strcspn (const char *__s, const char *__reject)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern size_t strspn (const char *__s, const char *__accept)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strpbrk (const char *__s, const char *__accept)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strstr (const char *__haystack, const char *__needle)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strtok (char *__restrict __s, const char *__restrict __delim)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)));
+extern char *__strtok_r (char *__restrict __s,
+    const char *__restrict __delim,
+    char **__restrict __save_ptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2, 3)));
+extern char *strtok_r (char *__restrict __s, const char *__restrict __delim,
+         char **__restrict __save_ptr)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2, 3)));
+extern size_t strlen (const char *__s)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern size_t strnlen (const char *__string, size_t __maxlen)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern char *strerror (int __errnum) __attribute__ ((__nothrow__ ));
+extern int strerror_r (int __errnum, char *__buf, size_t __buflen) __asm__ ("" "__xpg_strerror_r") __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (2)))
+                                          ;
+extern char *strerror_l (int __errnum, locale_t __l) __attribute__ ((__nothrow__ ));
+extern int bcmp (const void *__s1, const void *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern void bcopy (const void *__src, void *__dest, size_t __n)
+  __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern void bzero (void *__s, size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)));
+extern char *index (const char *__s, int __c)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern char *rindex (const char *__s, int __c)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1)));
+extern int ffs (int __i) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern int ffsl (long int __l) __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+__extension__ extern int ffsll (long long int __ll)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__const__));
+extern int strcasecmp (const char *__s1, const char *__s2)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int strncasecmp (const char *__s1, const char *__s2, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2)));
+extern int strcasecmp_l (const char *__s1, const char *__s2, locale_t __loc)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2, 3)));
+extern int strncasecmp_l (const char *__s1, const char *__s2,
+     size_t __n, locale_t __loc)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__pure__)) __attribute__ ((__nonnull__ (1, 2, 4)));
+extern void explicit_bzero (void *__s, size_t __n) __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1)))
+                                                  ;
+extern char *strsep (char **__restrict __stringp,
+       const char *__restrict __delim)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *strsignal (int __sig) __attribute__ ((__nothrow__ ));
+extern char *__stpcpy (char *__restrict __dest, const char *__restrict __src)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *stpcpy (char *__restrict __dest, const char *__restrict __src)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *__stpncpy (char *__restrict __dest,
+   const char *__restrict __src, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
+extern char *stpncpy (char *__restrict __dest,
+        const char *__restrict __src, size_t __n)
+     __attribute__ ((__nothrow__ )) __attribute__ ((__nonnull__ (1, 2)));
 
 int bzbuff_compress_packet(int8_t packet[64]);
-
-
-/*-------------------------------------------------------------*/
-/*--- Public header file for the library.                   ---*/
-/*---                                               bzlib.h ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-
-#ifndef _BZLIB_H
-#define _BZLIB_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#define BZ_RUN               0
-#define BZ_FLUSH             1
-#define BZ_FINISH            2
-
-#define BZ_OK                0
-#define BZ_RUN_OK            1
-#define BZ_FLUSH_OK          2
-#define BZ_FINISH_OK         3
-#define BZ_STREAM_END        4
-#define BZ_SEQUENCE_ERROR    (-1)
-#define BZ_PARAM_ERROR       (-2)
-#define BZ_MEM_ERROR         (-3)
-#define BZ_DATA_ERROR        (-4)
-#define BZ_DATA_ERROR_MAGIC  (-5)
-#define BZ_IO_ERROR          (-6)
-#define BZ_UNEXPECTED_EOF    (-7)
-#define BZ_OUTBUFF_FULL      (-8)
-#define BZ_CONFIG_ERROR      (-9)
-
-typedef 
+typedef
    struct {
       char *next_in;
       unsigned int avail_in;
       unsigned int total_in_lo32;
       unsigned int total_in_hi32;
-
       char *next_out;
       unsigned int avail_out;
       unsigned int total_out_lo32;
       unsigned int total_out_hi32;
-
       void *state;
-
       void *(*bzalloc)(void *,int,int);
       void (*bzfree)(void *,void *);
       void *opaque;
-   } 
+   }
    bz_stream;
-
-
-#ifndef BZ_IMPORT
-#define BZ_EXPORT
-#endif
-
-#ifndef BZ_NO_STDIO
-/* Need a definitition for FILE */
-
-#endif
-
-#ifdef _WIN32
-
-#   ifdef small
-      /* windows.h define small to char */
-#      undef small
-#   endif
-#   ifdef BZ_EXPORT
-#   define BZ_API(func) WINAPI func
-#   define BZ_EXTERN extern
-#   else
-   /* import windows dll dynamically */
-#   define BZ_API(func) (WINAPI * func)
-#   define BZ_EXTERN
-#   endif
-#else
-#   define BZ_API(func) func
-#   define BZ_EXTERN extern
-#endif
-
-
-/*-- Core (low-level) library functions --*/
-
-BZ_EXTERN int BZ_API(BZ2_bzCompressInit) ( 
-      bz_stream* strm, 
-      int        blockSize100k, 
-      int        verbosity, 
-      int        workFactor 
+extern int BZ2_bzCompressInit (
+      bz_stream* strm,
+      int blockSize100k,
+      int verbosity,
+      int workFactor
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzCompress) ( 
-      bz_stream* strm, 
-      int action 
+extern int BZ2_bzCompress (
+      bz_stream* strm,
+      int action
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzCompressEnd) ( 
-      bz_stream* strm 
+extern int BZ2_bzCompressEnd (
+      bz_stream* strm
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzDecompressInit) ( 
-      bz_stream *strm, 
-      int       verbosity, 
-      int       small
+extern int BZ2_bzDecompressInit (
+      bz_stream *strm,
+      int verbosity,
+      int small
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzDecompress) ( 
-      bz_stream* strm 
+extern int BZ2_bzDecompress (
+      bz_stream* strm
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzDecompressEnd) ( 
-      bz_stream *strm 
+extern int BZ2_bzDecompressEnd (
+      bz_stream *strm
    );
-
-
-
-/*-- High(er) level library functions --*/
-
-#ifndef BZ_NO_STDIO
-#define BZ_MAX_UNUSED 5000
-
 typedef void BZFILE;
-
-BZ_EXTERN BZFILE* BZ_API(BZ2_bzReadOpen) ( 
-      int*  bzerror,   
-      FILE* f, 
-      int   verbosity, 
-      int   small,
-      void* unused,    
-      int   nUnused 
+extern BZFILE* BZ2_bzReadOpen (
+      int* bzerror,
+      FILE* f,
+      int verbosity,
+      int small,
+      void* unused,
+      int nUnused
    );
-
-BZ_EXTERN void BZ_API(BZ2_bzReadClose) ( 
-      int*    bzerror, 
-      BZFILE* b 
+extern void BZ2_bzReadClose (
+      int* bzerror,
+      BZFILE* b
    );
-
-BZ_EXTERN void BZ_API(BZ2_bzReadGetUnused) ( 
-      int*    bzerror, 
-      BZFILE* b, 
-      void**  unused,  
-      int*    nUnused 
+extern void BZ2_bzReadGetUnused (
+      int* bzerror,
+      BZFILE* b,
+      void** unused,
+      int* nUnused
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzRead) ( 
-      int*    bzerror, 
-      BZFILE* b, 
-      void*   buf, 
-      int     len 
+extern int BZ2_bzRead (
+      int* bzerror,
+      BZFILE* b,
+      void* buf,
+      int len
    );
-
-BZ_EXTERN BZFILE* BZ_API(BZ2_bzWriteOpen) ( 
-      int*  bzerror,      
-      FILE* f, 
-      int   blockSize100k, 
-      int   verbosity, 
-      int   workFactor 
+extern BZFILE* BZ2_bzWriteOpen (
+      int* bzerror,
+      FILE* f,
+      int blockSize100k,
+      int verbosity,
+      int workFactor
    );
-
-BZ_EXTERN void BZ_API(BZ2_bzWrite) ( 
-      int*    bzerror, 
-      BZFILE* b, 
-      void*   buf, 
-      int     len 
+extern void BZ2_bzWrite (
+      int* bzerror,
+      BZFILE* b,
+      void* buf,
+      int len
    );
-
-BZ_EXTERN void BZ_API(BZ2_bzWriteClose) ( 
-      int*          bzerror, 
-      BZFILE*       b, 
-      int           abandon, 
-      unsigned int* nbytes_in, 
-      unsigned int* nbytes_out 
+extern void BZ2_bzWriteClose (
+      int* bzerror,
+      BZFILE* b,
+      int abandon,
+      unsigned int* nbytes_in,
+      unsigned int* nbytes_out
    );
-
-BZ_EXTERN void BZ_API(BZ2_bzWriteClose64) ( 
-      int*          bzerror, 
-      BZFILE*       b, 
-      int           abandon, 
-      unsigned int* nbytes_in_lo32, 
-      unsigned int* nbytes_in_hi32, 
-      unsigned int* nbytes_out_lo32, 
+extern void BZ2_bzWriteClose64 (
+      int* bzerror,
+      BZFILE* b,
+      int abandon,
+      unsigned int* nbytes_in_lo32,
+      unsigned int* nbytes_in_hi32,
+      unsigned int* nbytes_out_lo32,
       unsigned int* nbytes_out_hi32
    );
-#endif
-
-
-/*-- Utility functions --*/
-
-BZ_EXTERN int BZ_API(BZ2_bzBuffToBuffCompress) ( 
-      char*         dest, 
+extern int BZ2_bzBuffToBuffCompress (
+      char* dest,
       unsigned int* destLen,
-      char*         source, 
-      unsigned int  sourceLen,
-      int           blockSize100k, 
-      int           verbosity, 
-      int           workFactor 
+      char* source,
+      unsigned int sourceLen,
+      int blockSize100k,
+      int verbosity,
+      int workFactor
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzBuffToBuffDecompress) ( 
-      char*         dest, 
+extern int BZ2_bzBuffToBuffDecompress (
+      char* dest,
       unsigned int* destLen,
-      char*         source, 
-      unsigned int  sourceLen,
-      int           small, 
-      int           verbosity 
+      char* source,
+      unsigned int sourceLen,
+      int small,
+      int verbosity
    );
-
-
-/*--
-   Code contributed by Yoshioka Tsuneo (tsuneo@rr.iij4u.or.jp)
-   to support better zlib compatibility.
-   This code is not _officially_ part of libbzip2 (yet);
-   I haven't tested it, documented it, or considered the
-   threading-safeness of it.
-   If this code breaks, please contact both Yoshioka and me.
---*/
-
-BZ_EXTERN const char * BZ_API(BZ2_bzlibVersion) (
+extern const char * BZ2_bzlibVersion (
       void
    );
-
-#ifndef BZ_NO_STDIO
-BZ_EXTERN BZFILE * BZ_API(BZ2_bzopen) (
+extern BZFILE * BZ2_bzopen (
       const char *path,
       const char *mode
    );
-
-BZ_EXTERN BZFILE * BZ_API(BZ2_bzdopen) (
-      int        fd,
+extern BZFILE * BZ2_bzdopen (
+      int fd,
       const char *mode
    );
-         
-BZ_EXTERN int BZ_API(BZ2_bzread) (
-      BZFILE* b, 
-      void* buf, 
-      int len 
+extern int BZ2_bzread (
+      BZFILE* b,
+      void* buf,
+      int len
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzwrite) (
-      BZFILE* b, 
-      void*   buf, 
-      int     len 
+extern int BZ2_bzwrite (
+      BZFILE* b,
+      void* buf,
+      int len
    );
-
-BZ_EXTERN int BZ_API(BZ2_bzflush) (
+extern int BZ2_bzflush (
       BZFILE* b
    );
-
-BZ_EXTERN void BZ_API(BZ2_bzclose) (
+extern void BZ2_bzclose (
       BZFILE* b
    );
-
-BZ_EXTERN const char * BZ_API(BZ2_bzerror) (
-      BZFILE *b, 
-      int    *errnum
+extern const char * BZ2_bzerror (
+      BZFILE *b,
+      int *errnum
    );
-#endif
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
-
-/*-------------------------------------------------------------*/
-/*--- end                                           bzlib.h ---*/
-/*-------------------------------------------------------------*/
-
-
-
-/*-------------------------------------------------------------*/
-/*--- Private header file for the library.                  ---*/
-/*---                                       bzlib_private.h ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-
-#ifndef _BZLIB_PRIVATE_H
-#define _BZLIB_PRIVATE_H
-
-#ifndef BZ_NO_STDIO
-
-
-
-#endif
-
-/*-- General stuff. --*/
-
-#define BZ_VERSION  "1.0.8, 13-Jul-2019"
-
-typedef char            Char;
-typedef unsigned char   Bool;
-typedef unsigned char   UChar;
-typedef int             Int32;
-typedef unsigned int    UInt32;
-typedef short           Int16;
-typedef unsigned short  UInt16;
-
-#define True  ((Bool)1)
-#define False ((Bool)0)
-
-#ifndef __GNUC__
-#define __inline__  /* */
-#endif 
-
-#ifndef BZ_NO_STDIO
-
+typedef char Char;
+typedef unsigned char Bool;
+typedef unsigned char UChar;
+typedef int Int32;
+typedef unsigned int UInt32;
+typedef short Int16;
+typedef unsigned short UInt16;
 extern void BZ2_bz__AssertH__fail ( int errcode );
-#define AssertH(cond,errcode) \
-   { if (!(cond)) BZ2_bz__AssertH__fail ( errcode ); }
-
-#if BZ_DEBUG
-#define AssertD(cond,msg) \
-   { if (!(cond)) {       \
-      fprintf ( stderr,   \
-        "\n\nlibbzip2(debug build): internal error\n\t%s\n", msg );\
-      exit(1); \
-   }}
-#else
-#define AssertD(cond,msg) /* */
-#endif
-
-#define VPrintf0(zf) \
-   fprintf(stderr,zf)
-#define VPrintf1(zf,za1) \
-   fprintf(stderr,zf,za1)
-#define VPrintf2(zf,za1,za2) \
-   fprintf(stderr,zf,za1,za2)
-#define VPrintf3(zf,za1,za2,za3) \
-   fprintf(stderr,zf,za1,za2,za3)
-#define VPrintf4(zf,za1,za2,za3,za4) \
-   fprintf(stderr,zf,za1,za2,za3,za4)
-#define VPrintf5(zf,za1,za2,za3,za4,za5) \
-   fprintf(stderr,zf,za1,za2,za3,za4,za5)
-
-#else
-
-extern void bz_internal_error ( int errcode );
-#define AssertH(cond,errcode) \
-   { if (!(cond)) bz_internal_error ( errcode ); }
-#define AssertD(cond,msg)                do { } while (0)
-#define VPrintf0(zf)                     do { } while (0)
-#define VPrintf1(zf,za1)                 do { } while (0)
-#define VPrintf2(zf,za1,za2)             do { } while (0)
-#define VPrintf3(zf,za1,za2,za3)         do { } while (0)
-#define VPrintf4(zf,za1,za2,za3,za4)     do { } while (0)
-#define VPrintf5(zf,za1,za2,za3,za4,za5) do { } while (0)
-
-#endif
-
-
-#define BZALLOC(nnn) (strm->bzalloc)(strm->opaque,(nnn),1)
-#define BZFREE(ppp)  (strm->bzfree)(strm->opaque,(ppp))
-
-
-/*-- Header bytes. --*/
-
-#define BZ_HDR_B 0x42   /* 'B' */
-#define BZ_HDR_Z 0x5a   /* 'Z' */
-#define BZ_HDR_h 0x68   /* 'h' */
-#define BZ_HDR_0 0x30   /* '0' */
-  
-/*-- Constants for the back end. --*/
-
-#define BZ_MAX_ALPHA_SIZE 258
-#define BZ_MAX_CODE_LEN    23
-
-#define BZ_RUNA 0
-#define BZ_RUNB 1
-
-#define BZ_N_GROUPS 6
-#define BZ_G_SIZE   50
-#define BZ_N_ITERS  4
-
-#define BZ_MAX_SELECTORS (2 + (900000 / BZ_G_SIZE))
-
-
-
-/*-- Stuff for randomising repetitive blocks. --*/
-
 extern Int32 BZ2_rNums[512];
-
-#define BZ_RAND_DECLS                          \
-   Int32 rNToGo;                               \
-   Int32 rTPos                                 \
-
-#define BZ_RAND_INIT_MASK                      \
-   s->rNToGo = 0;                              \
-   s->rTPos  = 0                               \
-
-#define BZ_RAND_MASK ((s->rNToGo == 1) ? 1 : 0)
-
-#define BZ_RAND_UPD_MASK                       \
-   if (s->rNToGo == 0) {                       \
-      s->rNToGo = BZ2_rNums[s->rTPos];         \
-      s->rTPos++;                              \
-      if (s->rTPos == 512) s->rTPos = 0;       \
-   }                                           \
-   s->rNToGo--;
-
-
-
-/*-- Stuff for doing CRCs. --*/
-
 extern UInt32 BZ2_crc32Table[256];
-
-#define BZ_INITIALISE_CRC(crcVar)              \
-{                                              \
-   crcVar = 0xffffffffL;                       \
-}
-
-#define BZ_FINALISE_CRC(crcVar)                \
-{                                              \
-   crcVar = ~(crcVar);                         \
-}
-
-#define BZ_UPDATE_CRC(crcVar,cha)              \
-{                                              \
-   crcVar = (crcVar << 8) ^                    \
-            BZ2_crc32Table[(crcVar >> 24) ^    \
-                           ((UChar)cha)];      \
-}
-
-
-
-/*-- States and modes for compression. --*/
-
-#define BZ_M_IDLE      1
-#define BZ_M_RUNNING   2
-#define BZ_M_FLUSHING  3
-#define BZ_M_FINISHING 4
-
-#define BZ_S_OUTPUT    1
-#define BZ_S_INPUT     2
-
-#define BZ_N_RADIX 2
-#define BZ_N_QSORT 12
-#define BZ_N_SHELL 18
-#define BZ_N_OVERSHOOT (BZ_N_RADIX + BZ_N_QSORT + BZ_N_SHELL + 2)
-
-
-
-
-/*-- Structure holding all the compression-side stuff. --*/
-
 typedef
    struct {
-      /* pointer back to the struct bz_stream */
       bz_stream* strm;
-
-      /* mode this stream is in, and whether inputting */
-      /* or outputting data */
-      Int32    mode;
-      Int32    state;
-
-      /* remembers avail_in when flush/finish requested */
-      UInt32   avail_in_expect;
-
-      /* for doing the block sorting */
-      UInt32*  arr1;
-      UInt32*  arr2;
-      UInt32*  ftab;
-      Int32    origPtr;
-
-      /* aliases for arr1 and arr2 */
-      UInt32*  ptr;
-      UChar*   block;
-      UInt16*  mtfv;
-      UChar*   zbits;
-
-      /* for deciding when to use the fallback sorting algorithm */
-      Int32    workFactor;
-
-      /* run-length-encoding of the input */
-      UInt32   state_in_ch;
-      Int32    state_in_len;
-      BZ_RAND_DECLS;
-
-      /* input and output limits and current posns */
-      Int32    nblock;
-      Int32    nblockMAX;
-      Int32    numZ;
-      Int32    state_out_pos;
-
-      /* map of bytes used in block */
-      Int32    nInUse;
-      Bool     inUse[256];
-      UChar    unseqToSeq[256];
-
-      /* the buffer for bit stream creation */
-      UInt32   bsBuff;
-      Int32    bsLive;
-
-      /* block and combined CRCs */
-      UInt32   blockCRC;
-      UInt32   combinedCRC;
-
-      /* misc administratium */
-      Int32    verbosity;
-      Int32    blockNo;
-      Int32    blockSize100k;
-
-      /* stuff for coding the MTF values */
-      Int32    nMTF;
-      Int32    mtfFreq    [BZ_MAX_ALPHA_SIZE];
-      UChar    selector   [BZ_MAX_SELECTORS];
-      UChar    selectorMtf[BZ_MAX_SELECTORS];
-
-      UChar    len     [BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-      Int32    code    [BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-      Int32    rfreq   [BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-      /* second dimension: only 3 needed; 4 makes index calculations faster */
-      UInt32   len_pack[BZ_MAX_ALPHA_SIZE][4];
-
+      Int32 mode;
+      Int32 state;
+      UInt32 avail_in_expect;
+      UInt32* arr1;
+      UInt32* arr2;
+      UInt32* ftab;
+      Int32 origPtr;
+      UInt32* ptr;
+      UChar* block;
+      UInt16* mtfv;
+      UChar* zbits;
+      Int32 workFactor;
+      UInt32 state_in_ch;
+      Int32 state_in_len;
+      Int32 rNToGo; Int32 rTPos;
+      Int32 nblock;
+      Int32 nblockMAX;
+      Int32 numZ;
+      Int32 state_out_pos;
+      Int32 nInUse;
+      Bool inUse[256];
+      UChar unseqToSeq[256];
+      UInt32 bsBuff;
+      Int32 bsLive;
+      UInt32 blockCRC;
+      UInt32 combinedCRC;
+      Int32 verbosity;
+      Int32 blockNo;
+      Int32 blockSize100k;
+      Int32 nMTF;
+      Int32 mtfFreq [258];
+      UChar selector [(2 + (900000 / 50))];
+      UChar selectorMtf[(2 + (900000 / 50))];
+      UChar len [6][258];
+      Int32 code [6][258];
+      Int32 rfreq [6][258];
+      UInt32 len_pack[258][4];
    }
    EState;
-
-
-
-/*-- externs for compression. --*/
-
-extern void 
+extern void
 BZ2_blockSort ( EState* );
-
-extern void 
+extern void
 BZ2_compressBlock ( EState*, Bool );
-
-extern void 
+extern void
 BZ2_bsInitWrite ( EState* );
-
-extern void 
+extern void
 BZ2_hbAssignCodes ( Int32*, UChar*, Int32, Int32, Int32 );
-
-extern void 
+extern void
 BZ2_hbMakeCodeLengths ( UChar*, Int32*, Int32, Int32 );
-
-
-
-/*-- states for decompression. --*/
-
-#define BZ_X_IDLE        1
-#define BZ_X_OUTPUT      2
-
-#define BZ_X_MAGIC_1     10
-#define BZ_X_MAGIC_2     11
-#define BZ_X_MAGIC_3     12
-#define BZ_X_MAGIC_4     13
-#define BZ_X_BLKHDR_1    14
-#define BZ_X_BLKHDR_2    15
-#define BZ_X_BLKHDR_3    16
-#define BZ_X_BLKHDR_4    17
-#define BZ_X_BLKHDR_5    18
-#define BZ_X_BLKHDR_6    19
-#define BZ_X_BCRC_1      20
-#define BZ_X_BCRC_2      21
-#define BZ_X_BCRC_3      22
-#define BZ_X_BCRC_4      23
-#define BZ_X_RANDBIT     24
-#define BZ_X_ORIGPTR_1   25
-#define BZ_X_ORIGPTR_2   26
-#define BZ_X_ORIGPTR_3   27
-#define BZ_X_MAPPING_1   28
-#define BZ_X_MAPPING_2   29
-#define BZ_X_SELECTOR_1  30
-#define BZ_X_SELECTOR_2  31
-#define BZ_X_SELECTOR_3  32
-#define BZ_X_CODING_1    33
-#define BZ_X_CODING_2    34
-#define BZ_X_CODING_3    35
-#define BZ_X_MTF_1       36
-#define BZ_X_MTF_2       37
-#define BZ_X_MTF_3       38
-#define BZ_X_MTF_4       39
-#define BZ_X_MTF_5       40
-#define BZ_X_MTF_6       41
-#define BZ_X_ENDHDR_2    42
-#define BZ_X_ENDHDR_3    43
-#define BZ_X_ENDHDR_4    44
-#define BZ_X_ENDHDR_5    45
-#define BZ_X_ENDHDR_6    46
-#define BZ_X_CCRC_1      47
-#define BZ_X_CCRC_2      48
-#define BZ_X_CCRC_3      49
-#define BZ_X_CCRC_4      50
-
-
-
-/*-- Constants for the fast MTF decoder. --*/
-
-#define MTFA_SIZE 4096
-#define MTFL_SIZE 16
-
-
-
-/*-- Structure holding all the decompression-side stuff. --*/
-
 typedef
    struct {
-      /* pointer back to the struct bz_stream */
       bz_stream* strm;
-
-      /* state indicator for this stream */
-      Int32    state;
-
-      /* for doing the final run-length decoding */
-      UChar    state_out_ch;
-      Int32    state_out_len;
-      Bool     blockRandomised;
-      BZ_RAND_DECLS;
-
-      /* the buffer for bit stream reading */
-      UInt32   bsBuff;
-      Int32    bsLive;
-
-      /* misc administratium */
-      Int32    blockSize100k;
-      Bool     smallDecompress;
-      Int32    currBlockNo;
-      Int32    verbosity;
-
-      /* for undoing the Burrows-Wheeler transform */
-      Int32    origPtr;
-      UInt32   tPos;
-      Int32    k0;
-      Int32    unzftab[256];
-      Int32    nblock_used;
-      Int32    cftab[257];
-      Int32    cftabCopy[257];
-
-      /* for undoing the Burrows-Wheeler transform (FAST) */
-      UInt32   *tt;
-
-      /* for undoing the Burrows-Wheeler transform (SMALL) */
-      UInt16   *ll16;
-      UChar    *ll4;
-
-      /* stored and calculated CRCs */
-      UInt32   storedBlockCRC;
-      UInt32   storedCombinedCRC;
-      UInt32   calculatedBlockCRC;
-      UInt32   calculatedCombinedCRC;
-
-      /* map of bytes used in block */
-      Int32    nInUse;
-      Bool     inUse[256];
-      Bool     inUse16[16];
-      UChar    seqToUnseq[256];
-
-      /* for decoding the MTF values */
-      UChar    mtfa   [MTFA_SIZE];
-      Int32    mtfbase[256 / MTFL_SIZE];
-      UChar    selector   [BZ_MAX_SELECTORS];
-      UChar    selectorMtf[BZ_MAX_SELECTORS];
-      UChar    len  [BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-
-      Int32    limit  [BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-      Int32    base   [BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-      Int32    perm   [BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-      Int32    minLens[BZ_N_GROUPS];
-
-      /* save area for scalars in the main decompress code */
-      Int32    save_i;
-      Int32    save_j;
-      Int32    save_t;
-      Int32    save_alphaSize;
-      Int32    save_nGroups;
-      Int32    save_nSelectors;
-      Int32    save_EOB;
-      Int32    save_groupNo;
-      Int32    save_groupPos;
-      Int32    save_nextSym;
-      Int32    save_nblockMAX;
-      Int32    save_nblock;
-      Int32    save_es;
-      Int32    save_N;
-      Int32    save_curr;
-      Int32    save_zt;
-      Int32    save_zn; 
-      Int32    save_zvec;
-      Int32    save_zj;
-      Int32    save_gSel;
-      Int32    save_gMinlen;
-      Int32*   save_gLimit;
-      Int32*   save_gBase;
-      Int32*   save_gPerm;
-
+      Int32 state;
+      UChar state_out_ch;
+      Int32 state_out_len;
+      Bool blockRandomised;
+      Int32 rNToGo; Int32 rTPos;
+      UInt32 bsBuff;
+      Int32 bsLive;
+      Int32 blockSize100k;
+      Bool smallDecompress;
+      Int32 currBlockNo;
+      Int32 verbosity;
+      Int32 origPtr;
+      UInt32 tPos;
+      Int32 k0;
+      Int32 unzftab[256];
+      Int32 nblock_used;
+      Int32 cftab[257];
+      Int32 cftabCopy[257];
+      UInt32 *tt;
+      UInt16 *ll16;
+      UChar *ll4;
+      UInt32 storedBlockCRC;
+      UInt32 storedCombinedCRC;
+      UInt32 calculatedBlockCRC;
+      UInt32 calculatedCombinedCRC;
+      Int32 nInUse;
+      Bool inUse[256];
+      Bool inUse16[16];
+      UChar seqToUnseq[256];
+      UChar mtfa [4096];
+      Int32 mtfbase[256 / 16];
+      UChar selector [(2 + (900000 / 50))];
+      UChar selectorMtf[(2 + (900000 / 50))];
+      UChar len [6][258];
+      Int32 limit [6][258];
+      Int32 base [6][258];
+      Int32 perm [6][258];
+      Int32 minLens[6];
+      Int32 save_i;
+      Int32 save_j;
+      Int32 save_t;
+      Int32 save_alphaSize;
+      Int32 save_nGroups;
+      Int32 save_nSelectors;
+      Int32 save_EOB;
+      Int32 save_groupNo;
+      Int32 save_groupPos;
+      Int32 save_nextSym;
+      Int32 save_nblockMAX;
+      Int32 save_nblock;
+      Int32 save_es;
+      Int32 save_N;
+      Int32 save_curr;
+      Int32 save_zt;
+      Int32 save_zn;
+      Int32 save_zvec;
+      Int32 save_zj;
+      Int32 save_gSel;
+      Int32 save_gMinlen;
+      Int32* save_gLimit;
+      Int32* save_gBase;
+      Int32* save_gPerm;
    }
    DState;
-
-
-
-/*-- Macros for decompression. --*/
-
-#define BZ_GET_FAST(cccc)                     \
-    /* c_tPos is unsigned, hence test < 0 is pointless. */ \
-    if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return True; \
-    s->tPos = s->tt[s->tPos];                 \
-    cccc = (UChar)(s->tPos & 0xff);           \
-    s->tPos >>= 8;
-
-#define BZ_GET_FAST_C(cccc)                   \
-    /* c_tPos is unsigned, hence test < 0 is pointless. */ \
-    if (c_tPos >= (UInt32)100000 * (UInt32)ro_blockSize100k) return True; \
-    c_tPos = c_tt[c_tPos];                    \
-    cccc = (UChar)(c_tPos & 0xff);            \
-    c_tPos >>= 8;
-
-#define SET_LL4(i,n)                                          \
-   { if (((i) & 0x1) == 0)                                    \
-        s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0xf0) | (n); else    \
-        s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0x0f) | ((n) << 4);  \
-   }
-
-#define GET_LL4(i)                             \
-   ((((UInt32)(s->ll4[(i) >> 1])) >> (((i) << 2) & 0x4)) & 0xF)
-
-#define SET_LL(i,n)                          \
-   { s->ll16[i] = (UInt16)(n & 0x0000ffff);  \
-     SET_LL4(i, n >> 16);                    \
-   }
-
-#define GET_LL(i) \
-   (((UInt32)s->ll16[i]) | (GET_LL4(i) << 16))
-
-#define BZ_GET_SMALL(cccc)                            \
-    /* c_tPos is unsigned, hence test < 0 is pointless. */ \
-    if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return True; \
-    cccc = BZ2_indexIntoF ( s->tPos, s->cftab );    \
-    s->tPos = GET_LL(s->tPos);
-
-
-/*-- externs for decompression. --*/
-
-extern Int32 
+extern Int32
 BZ2_indexIntoF ( Int32, Int32* );
-
-extern Int32 
+extern Int32
 BZ2_decompress ( DState* );
-
-extern void 
+extern void
 BZ2_hbCreateDecodeTables ( Int32*, Int32*, Int32*, UChar*,
-                           Int32,  Int32, Int32 );
-
-
-#endif
-
-
-/*-- BZ_NO_STDIO seems to make NULL disappear on some platforms. --*/
-
-#ifdef BZ_NO_STDIO
-#ifndef NULL
-#define NULL 0
-#endif
-#endif
-
-
-/*-------------------------------------------------------------*/
-/*--- end                                   bzlib_private.h ---*/
-/*-------------------------------------------------------------*/
-
-
-
-/*-------------------------------------------------------------*/
-/*--- Block sorting machinery                               ---*/
-/*---                                           blocksort.c ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-/*---------------------------------------------*/
-/*--- Fallback O(N log(N)^2) sorting        ---*/
-/*--- algorithm, for repetitive blocks      ---*/
-/*---------------------------------------------*/
-
-/*---------------------------------------------*/
-static 
+                           Int32, Int32, Int32 );
+static
 __inline__
-void fallbackSimpleSort ( UInt32* fmap, 
-                          UInt32* eclass, 
-                          Int32   lo, 
-                          Int32   hi )
+void fallbackSimpleSort ( UInt32* fmap,
+                          UInt32* eclass,
+                          Int32 lo,
+                          Int32 hi )
 {
    Int32 i, j, tmp;
    UInt32 ec_tmp;
-
    if (lo == hi) return;
-
    if (hi - lo > 3) {
       for ( i = hi-4; i >= lo; i-- ) {
          tmp = fmap[i];
@@ -842,7 +1222,6 @@ void fallbackSimpleSort ( UInt32* fmap,
          fmap[j-4] = tmp;
       }
    }
-
    for ( i = hi-1; i >= lo; i-- ) {
       tmp = fmap[i];
       ec_tmp = eclass[tmp];
@@ -851,89 +1230,42 @@ void fallbackSimpleSort ( UInt32* fmap,
       fmap[j-1] = tmp;
    }
 }
-
-
-/*---------------------------------------------*/
-#define fswap(zz1, zz2) \
-   { Int32 zztmp = zz1; zz1 = zz2; zz2 = zztmp; }
-
-#define fvswap(zzp1, zzp2, zzn)       \
-{                                     \
-   Int32 yyp1 = (zzp1);               \
-   Int32 yyp2 = (zzp2);               \
-   Int32 yyn  = (zzn);                \
-   while (yyn > 0) {                  \
-      fswap(fmap[yyp1], fmap[yyp2]);  \
-      yyp1++; yyp2++; yyn--;          \
-   }                                  \
-}
-
-
-#define fmin(a,b) ((a) < (b)) ? (a) : (b)
-
-#define fpush(lz,hz) { stackLo[sp] = lz; \
-                       stackHi[sp] = hz; \
-                       sp++; }
-
-#define fpop(lz,hz) { sp--;              \
-                      lz = stackLo[sp];  \
-                      hz = stackHi[sp]; }
-
-#define FALLBACK_QSORT_SMALL_THRESH 10
-#define FALLBACK_QSORT_STACK_SIZE   100
-
-
 static
-void fallbackQSort3 ( UInt32* fmap, 
+void fallbackQSort3 ( UInt32* fmap,
                       UInt32* eclass,
-                      Int32   loSt, 
-                      Int32   hiSt )
+                      Int32 loSt,
+                      Int32 hiSt )
 {
    Int32 unLo, unHi, ltLo, gtHi, n, m;
    Int32 sp, lo, hi;
    UInt32 med, r, r3;
-   Int32 stackLo[FALLBACK_QSORT_STACK_SIZE];
-   Int32 stackHi[FALLBACK_QSORT_STACK_SIZE];
-
+   Int32 stackLo[100];
+   Int32 stackHi[100];
    r = 0;
-
    sp = 0;
-   fpush ( loSt, hiSt );
-
+   { stackLo[sp] = loSt; stackHi[sp] = hiSt; sp++; };
    while (sp > 0) {
-
-      AssertH ( sp < FALLBACK_QSORT_STACK_SIZE - 1, 1004 );
-
-      fpop ( lo, hi );
-      if (hi - lo < FALLBACK_QSORT_SMALL_THRESH) {
+      { if (!(sp < 100 - 1)) BZ2_bz__AssertH__fail ( 1004 ); };
+      { sp--; lo = stackLo[sp]; hi = stackHi[sp]; };
+      if (hi - lo < 10) {
          fallbackSimpleSort ( fmap, eclass, lo, hi );
          continue;
       }
-
-      /* Random partitioning.  Median of 3 sometimes fails to
-         avoid bad cases.  Median of 9 seems to help but 
-         looks rather expensive.  This too seems to work but
-         is cheaper.  Guidance for the magic constants 
-         7621 and 32768 is taken from Sedgewick's algorithms
-         book, chapter 35.
-      */
       r = ((r * 7621) + 1) % 32768;
       r3 = r % 3;
       if (r3 == 0) med = eclass[fmap[lo]]; else
       if (r3 == 1) med = eclass[fmap[(lo+hi)>>1]]; else
                    med = eclass[fmap[hi]];
-
       unLo = ltLo = lo;
       unHi = gtHi = hi;
-
       while (1) {
          while (1) {
             if (unLo > unHi) break;
             n = (Int32)eclass[fmap[unLo]] - (Int32)med;
-            if (n == 0) { 
-               fswap(fmap[unLo], fmap[ltLo]); 
-               ltLo++; unLo++; 
-               continue; 
+            if (n == 0) {
+               { Int32 zztmp = fmap[unLo]; fmap[unLo] = fmap[ltLo]; fmap[ltLo] = zztmp; };
+               ltLo++; unLo++;
+               continue;
             };
             if (n > 0) break;
             unLo++;
@@ -941,73 +1273,38 @@ void fallbackQSort3 ( UInt32* fmap,
          while (1) {
             if (unLo > unHi) break;
             n = (Int32)eclass[fmap[unHi]] - (Int32)med;
-            if (n == 0) { 
-               fswap(fmap[unHi], fmap[gtHi]); 
-               gtHi--; unHi--; 
-               continue; 
+            if (n == 0) {
+               { Int32 zztmp = fmap[unHi]; fmap[unHi] = fmap[gtHi]; fmap[gtHi] = zztmp; };
+               gtHi--; unHi--;
+               continue;
             };
             if (n < 0) break;
             unHi--;
          }
          if (unLo > unHi) break;
-         fswap(fmap[unLo], fmap[unHi]); unLo++; unHi--;
+         { Int32 zztmp = fmap[unLo]; fmap[unLo] = fmap[unHi]; fmap[unHi] = zztmp; }; unLo++; unHi--;
       }
-
-      AssertD ( unHi == unLo-1, "fallbackQSort3(2)" );
-
+                                                     ;
       if (gtHi < ltLo) continue;
-
-      n = fmin(ltLo-lo, unLo-ltLo); fvswap(lo, unLo-n, n);
-      m = fmin(hi-gtHi, gtHi-unHi); fvswap(unLo, hi-m+1, m);
-
+      n = ((ltLo-lo) < (unLo-ltLo)) ? (ltLo-lo) : (unLo-ltLo); { Int32 yyp1 = (lo); Int32 yyp2 = (unLo-n); Int32 yyn = (n); while (yyn > 0) { { Int32 zztmp = fmap[yyp1]; fmap[yyp1] = fmap[yyp2]; fmap[yyp2] = zztmp; }; yyp1++; yyp2++; yyn--; } };
+      m = ((hi-gtHi) < (gtHi-unHi)) ? (hi-gtHi) : (gtHi-unHi); { Int32 yyp1 = (unLo); Int32 yyp2 = (hi-m+1); Int32 yyn = (m); while (yyn > 0) { { Int32 zztmp = fmap[yyp1]; fmap[yyp1] = fmap[yyp2]; fmap[yyp2] = zztmp; }; yyp1++; yyp2++; yyn--; } };
       n = lo + unLo - ltLo - 1;
       m = hi - (gtHi - unHi) + 1;
-
       if (n - lo > hi - m) {
-         fpush ( lo, n );
-         fpush ( m, hi );
+         { stackLo[sp] = lo; stackHi[sp] = n; sp++; };
+         { stackLo[sp] = m; stackHi[sp] = hi; sp++; };
       } else {
-         fpush ( m, hi );
-         fpush ( lo, n );
+         { stackLo[sp] = m; stackHi[sp] = hi; sp++; };
+         { stackLo[sp] = lo; stackHi[sp] = n; sp++; };
       }
    }
 }
-
-#undef fmin
-#undef fpush
-#undef fpop
-#undef fswap
-#undef fvswap
-#undef FALLBACK_QSORT_SMALL_THRESH
-#undef FALLBACK_QSORT_STACK_SIZE
-
-
-/*---------------------------------------------*/
-/* Pre:
-      nblock > 0
-      eclass exists for [0 .. nblock-1]
-      ((UChar*)eclass) [0 .. nblock-1] holds block
-      ptr exists for [0 .. nblock-1]
-
-   Post:
-      ((UChar*)eclass) [0 .. nblock-1] holds block
-      All other areas of eclass destroyed
-      fmap [0 .. nblock-1] holds sorted order
-      bhtab [ 0 .. 2+(nblock/32) ] destroyed
-*/
-
-#define       SET_BH(zz)  bhtab[(zz) >> 5] |= ((UInt32)1 << ((zz) & 31))
-#define     CLEAR_BH(zz)  bhtab[(zz) >> 5] &= ~((UInt32)1 << ((zz) & 31))
-#define     ISSET_BH(zz)  (bhtab[(zz) >> 5] & ((UInt32)1 << ((zz) & 31)))
-#define      WORD_BH(zz)  bhtab[(zz) >> 5]
-#define UNALIGNED_BH(zz)  ((zz) & 0x01f)
-
 static
-void fallbackSort ( UInt32* fmap, 
-                    UInt32* eclass, 
+void fallbackSort ( UInt32* fmap,
+                    UInt32* eclass,
                     UInt32* bhtab,
-                    Int32   nblock,
-                    Int32   verb )
+                    Int32 nblock,
+                    Int32 verb )
 {
    Int32 ftab[257];
    Int32 ftabCopy[256];
@@ -1015,298 +1312,207 @@ void fallbackSort ( UInt32* fmap,
    Int32 nNotDone;
    Int32 nBhtab;
    UChar* eclass8 = (UChar*)eclass;
-
-   /*--
-      Initial 1-char radix sort to generate
-      initial fmap and initial BH bits.
-   --*/
    if (verb >= 4)
-      VPrintf0 ( "        bucket sorting ...\n" );
-   for (i = 0; i < 257;    i++) ftab[i] = 0;
+      fprintf(stderr,"        bucket sorting ...\n");
+   for (i = 0; i < 257; i++) ftab[i] = 0;
    for (i = 0; i < nblock; i++) ftab[eclass8[i]]++;
-   for (i = 0; i < 256;    i++) ftabCopy[i] = ftab[i];
-   for (i = 1; i < 257;    i++) ftab[i] += ftab[i-1];
-
+   for (i = 0; i < 256; i++) ftabCopy[i] = ftab[i];
+   for (i = 1; i < 257; i++) ftab[i] += ftab[i-1];
    for (i = 0; i < nblock; i++) {
       j = eclass8[i];
       k = ftab[j] - 1;
       ftab[j] = k;
       fmap[k] = i;
    }
-
    nBhtab = 2 + (nblock / 32);
    for (i = 0; i < nBhtab; i++) bhtab[i] = 0;
-   for (i = 0; i < 256; i++) SET_BH(ftab[i]);
-
-   /*--
-      Inductively refine the buckets.  Kind-of an
-      "exponential radix sort" (!), inspired by the
-      Manber-Myers suffix array construction algorithm.
-   --*/
-
-   /*-- set sentinel bits for block-end detection --*/
-   for (i = 0; i < 32; i++) { 
-      SET_BH(nblock + 2*i);
-      CLEAR_BH(nblock + 2*i + 1);
+   for (i = 0; i < 256; i++) bhtab[(ftab[i]) >> 5] |= ((UInt32)1 << ((ftab[i]) & 31));
+   for (i = 0; i < 32; i++) {
+      bhtab[(nblock + 2*i) >> 5] |= ((UInt32)1 << ((nblock + 2*i) & 31));
+      bhtab[(nblock + 2*i + 1) >> 5] &= ~((UInt32)1 << ((nblock + 2*i + 1) & 31));
    }
-
-   /*-- the log(N) loop --*/
    H = 1;
    while (1) {
-
-      if (verb >= 4) 
-         VPrintf1 ( "        depth %6d has ", H );
-
+      if (verb >= 4)
+         fprintf(stderr,"        depth %6d has ",H);
       j = 0;
       for (i = 0; i < nblock; i++) {
-         if (ISSET_BH(i)) j = i;
+         if ((bhtab[(i) >> 5] & ((UInt32)1 << ((i) & 31)))) j = i;
          k = fmap[i] - H; if (k < 0) k += nblock;
          eclass[k] = j;
       }
-
       nNotDone = 0;
       r = -1;
       while (1) {
-
-	 /*-- find the next non-singleton bucket --*/
          k = r + 1;
-         while (ISSET_BH(k) && UNALIGNED_BH(k)) k++;
-         if (ISSET_BH(k)) {
-            while (WORD_BH(k) == 0xffffffff) k += 32;
-            while (ISSET_BH(k)) k++;
+         while ((bhtab[(k) >> 5] & ((UInt32)1 << ((k) & 31))) && ((k) & 0x01f)) k++;
+         if ((bhtab[(k) >> 5] & ((UInt32)1 << ((k) & 31)))) {
+            while (bhtab[(k) >> 5] == 0xffffffff) k += 32;
+            while ((bhtab[(k) >> 5] & ((UInt32)1 << ((k) & 31)))) k++;
          }
          l = k - 1;
          if (l >= nblock) break;
-         while (!ISSET_BH(k) && UNALIGNED_BH(k)) k++;
-         if (!ISSET_BH(k)) {
-            while (WORD_BH(k) == 0x00000000) k += 32;
-            while (!ISSET_BH(k)) k++;
+         while (!(bhtab[(k) >> 5] & ((UInt32)1 << ((k) & 31))) && ((k) & 0x01f)) k++;
+         if (!(bhtab[(k) >> 5] & ((UInt32)1 << ((k) & 31)))) {
+            while (bhtab[(k) >> 5] == 0x00000000) k += 32;
+            while (!(bhtab[(k) >> 5] & ((UInt32)1 << ((k) & 31)))) k++;
          }
          r = k - 1;
          if (r >= nblock) break;
-
-         /*-- now [l, r] bracket current bucket --*/
          if (r > l) {
             nNotDone += (r - l + 1);
             fallbackQSort3 ( fmap, eclass, l, r );
-
-            /*-- scan bucket and generate header bits-- */
             cc = -1;
             for (i = l; i <= r; i++) {
                cc1 = eclass[fmap[i]];
-               if (cc != cc1) { SET_BH(i); cc = cc1; };
+               if (cc != cc1) { bhtab[(i) >> 5] |= ((UInt32)1 << ((i) & 31)); cc = cc1; };
             }
          }
       }
-
-      if (verb >= 4) 
-         VPrintf1 ( "%6d unresolved strings\n", nNotDone );
-
+      if (verb >= 4)
+         fprintf(stderr,"%6d unresolved strings\n",nNotDone);
       H *= 2;
       if (H > nblock || nNotDone == 0) break;
    }
-
-   /*-- 
-      Reconstruct the original block in
-      eclass8 [0 .. nblock-1], since the
-      previous phase destroyed it.
-   --*/
    if (verb >= 4)
-      VPrintf0 ( "        reconstructing block ...\n" );
+      fprintf(stderr,"        reconstructing block ...\n");
    j = 0;
    for (i = 0; i < nblock; i++) {
       while (ftabCopy[j] == 0) j++;
       ftabCopy[j]--;
       eclass8[fmap[i]] = (UChar)j;
    }
-   AssertH ( j < 256, 1005 );
+   { if (!(j < 256)) BZ2_bz__AssertH__fail ( 1005 ); };
 }
-
-#undef       SET_BH
-#undef     CLEAR_BH
-#undef     ISSET_BH
-#undef      WORD_BH
-#undef UNALIGNED_BH
-
-
-/*---------------------------------------------*/
-/*--- The main, O(N^2 log(N)) sorting       ---*/
-/*--- algorithm.  Faster for "normal"       ---*/
-/*--- non-repetitive blocks.                ---*/
-/*---------------------------------------------*/
-
-/*---------------------------------------------*/
 static
 __inline__
-Bool mainGtU ( UInt32  i1, 
-               UInt32  i2,
-               UChar*  block, 
+Bool mainGtU ( UInt32 i1,
+               UInt32 i2,
+               UChar* block,
                UInt16* quadrant,
-               UInt32  nblock,
-               Int32*  budget )
+               UInt32 nblock,
+               Int32* budget )
 {
-   Int32  k;
-   UChar  c1, c2;
+   Int32 k;
+   UChar c1, c2;
    UInt16 s1, s2;
-
-   AssertD ( i1 != i2, "mainGtU" );
-   /* 1 */
+                                  ;
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 2 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 3 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 4 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 5 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 6 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 7 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 8 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 9 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 10 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 11 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-   /* 12 */
    c1 = block[i1]; c2 = block[i2];
    if (c1 != c2) return (c1 > c2);
    i1++; i2++;
-
    k = nblock + 8;
-
    do {
-      /* 1 */
       c1 = block[i1]; c2 = block[i2];
       if (c1 != c2) return (c1 > c2);
       s1 = quadrant[i1]; s2 = quadrant[i2];
       if (s1 != s2) return (s1 > s2);
       i1++; i2++;
-      /* 2 */
       c1 = block[i1]; c2 = block[i2];
       if (c1 != c2) return (c1 > c2);
       s1 = quadrant[i1]; s2 = quadrant[i2];
       if (s1 != s2) return (s1 > s2);
       i1++; i2++;
-      /* 3 */
       c1 = block[i1]; c2 = block[i2];
       if (c1 != c2) return (c1 > c2);
       s1 = quadrant[i1]; s2 = quadrant[i2];
       if (s1 != s2) return (s1 > s2);
       i1++; i2++;
-      /* 4 */
       c1 = block[i1]; c2 = block[i2];
       if (c1 != c2) return (c1 > c2);
       s1 = quadrant[i1]; s2 = quadrant[i2];
       if (s1 != s2) return (s1 > s2);
       i1++; i2++;
-      /* 5 */
       c1 = block[i1]; c2 = block[i2];
       if (c1 != c2) return (c1 > c2);
       s1 = quadrant[i1]; s2 = quadrant[i2];
       if (s1 != s2) return (s1 > s2);
       i1++; i2++;
-      /* 6 */
       c1 = block[i1]; c2 = block[i2];
       if (c1 != c2) return (c1 > c2);
       s1 = quadrant[i1]; s2 = quadrant[i2];
       if (s1 != s2) return (s1 > s2);
       i1++; i2++;
-      /* 7 */
       c1 = block[i1]; c2 = block[i2];
       if (c1 != c2) return (c1 > c2);
       s1 = quadrant[i1]; s2 = quadrant[i2];
       if (s1 != s2) return (s1 > s2);
       i1++; i2++;
-      /* 8 */
       c1 = block[i1]; c2 = block[i2];
       if (c1 != c2) return (c1 > c2);
       s1 = quadrant[i1]; s2 = quadrant[i2];
       if (s1 != s2) return (s1 > s2);
       i1++; i2++;
-
       if (i1 >= nblock) i1 -= nblock;
       if (i2 >= nblock) i2 -= nblock;
-
       k -= 8;
       (*budget)--;
    }
       while (k >= 0);
-
-   return False;
+   return ((Bool)0);
 }
-
-
-/*---------------------------------------------*/
-/*--
-   Knuth's increments seem to work better
-   than Incerpi-Sedgewick here.  Possibly
-   because the number of elems to sort is
-   usually small, typically <= 20.
---*/
 static
 Int32 incs[14] = { 1, 4, 13, 40, 121, 364, 1093, 3280,
                    9841, 29524, 88573, 265720,
                    797161, 2391484 };
-
 static
 void mainSimpleSort ( UInt32* ptr,
-                      UChar*  block,
+                      UChar* block,
                       UInt16* quadrant,
-                      Int32   nblock,
-                      Int32   lo, 
-                      Int32   hi, 
-                      Int32   d,
-                      Int32*  budget )
+                      Int32 nblock,
+                      Int32 lo,
+                      Int32 hi,
+                      Int32 d,
+                      Int32* budget )
 {
    Int32 i, j, h, bigN, hp;
    UInt32 v;
-
    bigN = hi - lo + 1;
    if (bigN < 2) return;
-
    hp = 0;
    while (incs[hp] < bigN) hp++;
    hp--;
-
    for (; hp >= 0; hp--) {
       h = incs[hp];
-
       i = lo + h;
-      while (True) {
-
-         /*-- copy 1 --*/
+      while (((Bool)1)) {
          if (i > hi) break;
          v = ptr[i];
          j = i;
-         while ( mainGtU ( 
-                    ptr[j-h]+d, v+d, block, quadrant, nblock, budget 
+         while ( mainGtU (
+                    ptr[j-h]+d, v+d, block, quadrant, nblock, budget
                  ) ) {
             ptr[j] = ptr[j-h];
             j = j - h;
@@ -1314,13 +1520,11 @@ void mainSimpleSort ( UInt32* ptr,
          }
          ptr[j] = v;
          i++;
-
-         /*-- copy 2 --*/
          if (i > hi) break;
          v = ptr[i];
          j = i;
-         while ( mainGtU ( 
-                    ptr[j-h]+d, v+d, block, quadrant, nblock, budget 
+         while ( mainGtU (
+                    ptr[j-h]+d, v+d, block, quadrant, nblock, budget
                  ) ) {
             ptr[j] = ptr[j-h];
             j = j - h;
@@ -1328,13 +1532,11 @@ void mainSimpleSort ( UInt32* ptr,
          }
          ptr[j] = v;
          i++;
-
-         /*-- copy 3 --*/
          if (i > hi) break;
          v = ptr[i];
          j = i;
-         while ( mainGtU ( 
-                    ptr[j-h]+d, v+d, block, quadrant, nblock, budget 
+         while ( mainGtU (
+                    ptr[j-h]+d, v+d, block, quadrant, nblock, budget
                  ) ) {
             ptr[j] = ptr[j-h];
             j = j - h;
@@ -1342,227 +1544,122 @@ void mainSimpleSort ( UInt32* ptr,
          }
          ptr[j] = v;
          i++;
-
          if (*budget < 0) return;
       }
    }
 }
-
-
-/*---------------------------------------------*/
-/*--
-   The following is an implementation of
-   an elegant 3-way quicksort for strings,
-   described in a paper "Fast Algorithms for
-   Sorting and Searching Strings", by Robert
-   Sedgewick and Jon L. Bentley.
---*/
-
-#define mswap(zz1, zz2) \
-   { Int32 zztmp = zz1; zz1 = zz2; zz2 = zztmp; }
-
-#define mvswap(zzp1, zzp2, zzn)       \
-{                                     \
-   Int32 yyp1 = (zzp1);               \
-   Int32 yyp2 = (zzp2);               \
-   Int32 yyn  = (zzn);                \
-   while (yyn > 0) {                  \
-      mswap(ptr[yyp1], ptr[yyp2]);    \
-      yyp1++; yyp2++; yyn--;          \
-   }                                  \
-}
-
-static 
+static
 __inline__
 UChar mmed3 ( UChar a, UChar b, UChar c )
 {
    UChar t;
    if (a > b) { t = a; a = b; b = t; };
-   if (b > c) { 
+   if (b > c) {
       b = c;
       if (a > b) b = a;
    }
    return b;
 }
-
-#define mmin(a,b) ((a) < (b)) ? (a) : (b)
-
-#define mpush(lz,hz,dz) { stackLo[sp] = lz; \
-                          stackHi[sp] = hz; \
-                          stackD [sp] = dz; \
-                          sp++; }
-
-#define mpop(lz,hz,dz) { sp--;             \
-                         lz = stackLo[sp]; \
-                         hz = stackHi[sp]; \
-                         dz = stackD [sp]; }
-
-
-#define mnextsize(az) (nextHi[az]-nextLo[az])
-
-#define mnextswap(az,bz)                                        \
-   { Int32 tz;                                                  \
-     tz = nextLo[az]; nextLo[az] = nextLo[bz]; nextLo[bz] = tz; \
-     tz = nextHi[az]; nextHi[az] = nextHi[bz]; nextHi[bz] = tz; \
-     tz = nextD [az]; nextD [az] = nextD [bz]; nextD [bz] = tz; }
-
-
-#define MAIN_QSORT_SMALL_THRESH 20
-#define MAIN_QSORT_DEPTH_THRESH (BZ_N_RADIX + BZ_N_QSORT)
-#define MAIN_QSORT_STACK_SIZE 100
-
 static
 void mainQSort3 ( UInt32* ptr,
-                  UChar*  block,
+                  UChar* block,
                   UInt16* quadrant,
-                  Int32   nblock,
-                  Int32   loSt, 
-                  Int32   hiSt, 
-                  Int32   dSt,
-                  Int32*  budget )
+                  Int32 nblock,
+                  Int32 loSt,
+                  Int32 hiSt,
+                  Int32 dSt,
+                  Int32* budget )
 {
    Int32 unLo, unHi, ltLo, gtHi, n, m, med;
    Int32 sp, lo, hi, d;
-
-   Int32 stackLo[MAIN_QSORT_STACK_SIZE];
-   Int32 stackHi[MAIN_QSORT_STACK_SIZE];
-   Int32 stackD [MAIN_QSORT_STACK_SIZE];
-
+   Int32 stackLo[100];
+   Int32 stackHi[100];
+   Int32 stackD [100];
    Int32 nextLo[3];
    Int32 nextHi[3];
    Int32 nextD [3];
-
    sp = 0;
-   mpush ( loSt, hiSt, dSt );
-
+   { stackLo[sp] = loSt; stackHi[sp] = hiSt; stackD [sp] = dSt; sp++; };
    while (sp > 0) {
-
-      AssertH ( sp < MAIN_QSORT_STACK_SIZE - 2, 1001 );
-
-      mpop ( lo, hi, d );
-      if (hi - lo < MAIN_QSORT_SMALL_THRESH || 
-          d > MAIN_QSORT_DEPTH_THRESH) {
+      { if (!(sp < 100 - 2)) BZ2_bz__AssertH__fail ( 1001 ); };
+      { sp--; lo = stackLo[sp]; hi = stackHi[sp]; d = stackD [sp]; };
+      if (hi - lo < 20 ||
+          d > (2 + 12)) {
          mainSimpleSort ( ptr, block, quadrant, nblock, lo, hi, d, budget );
          if (*budget < 0) return;
          continue;
       }
-
-      med = (Int32) 
-            mmed3 ( block[ptr[ lo         ]+d],
-                    block[ptr[ hi         ]+d],
+      med = (Int32)
+            mmed3 ( block[ptr[ lo ]+d],
+                    block[ptr[ hi ]+d],
                     block[ptr[ (lo+hi)>>1 ]+d] );
-
       unLo = ltLo = lo;
       unHi = gtHi = hi;
-
-      while (True) {
-         while (True) {
+      while (((Bool)1)) {
+         while (((Bool)1)) {
             if (unLo > unHi) break;
             n = ((Int32)block[ptr[unLo]+d]) - med;
-            if (n == 0) { 
-               mswap(ptr[unLo], ptr[ltLo]); 
-               ltLo++; unLo++; continue; 
+            if (n == 0) {
+               { Int32 zztmp = ptr[unLo]; ptr[unLo] = ptr[ltLo]; ptr[ltLo] = zztmp; };
+               ltLo++; unLo++; continue;
             };
-            if (n >  0) break;
+            if (n > 0) break;
             unLo++;
          }
-         while (True) {
+         while (((Bool)1)) {
             if (unLo > unHi) break;
             n = ((Int32)block[ptr[unHi]+d]) - med;
-            if (n == 0) { 
-               mswap(ptr[unHi], ptr[gtHi]); 
-               gtHi--; unHi--; continue; 
+            if (n == 0) {
+               { Int32 zztmp = ptr[unHi]; ptr[unHi] = ptr[gtHi]; ptr[gtHi] = zztmp; };
+               gtHi--; unHi--; continue;
             };
-            if (n <  0) break;
+            if (n < 0) break;
             unHi--;
          }
          if (unLo > unHi) break;
-         mswap(ptr[unLo], ptr[unHi]); unLo++; unHi--;
+         { Int32 zztmp = ptr[unLo]; ptr[unLo] = ptr[unHi]; ptr[unHi] = zztmp; }; unLo++; unHi--;
       }
-
-      AssertD ( unHi == unLo-1, "mainQSort3(2)" );
-
+                                                 ;
       if (gtHi < ltLo) {
-         mpush(lo, hi, d+1 );
+         { stackLo[sp] = lo; stackHi[sp] = hi; stackD [sp] = d+1; sp++; };
          continue;
       }
-
-      n = mmin(ltLo-lo, unLo-ltLo); mvswap(lo, unLo-n, n);
-      m = mmin(hi-gtHi, gtHi-unHi); mvswap(unLo, hi-m+1, m);
-
+      n = ((ltLo-lo) < (unLo-ltLo)) ? (ltLo-lo) : (unLo-ltLo); { Int32 yyp1 = (lo); Int32 yyp2 = (unLo-n); Int32 yyn = (n); while (yyn > 0) { { Int32 zztmp = ptr[yyp1]; ptr[yyp1] = ptr[yyp2]; ptr[yyp2] = zztmp; }; yyp1++; yyp2++; yyn--; } };
+      m = ((hi-gtHi) < (gtHi-unHi)) ? (hi-gtHi) : (gtHi-unHi); { Int32 yyp1 = (unLo); Int32 yyp2 = (hi-m+1); Int32 yyn = (m); while (yyn > 0) { { Int32 zztmp = ptr[yyp1]; ptr[yyp1] = ptr[yyp2]; ptr[yyp2] = zztmp; }; yyp1++; yyp2++; yyn--; } };
       n = lo + unLo - ltLo - 1;
       m = hi - (gtHi - unHi) + 1;
-
-      nextLo[0] = lo;  nextHi[0] = n;   nextD[0] = d;
-      nextLo[1] = m;   nextHi[1] = hi;  nextD[1] = d;
+      nextLo[0] = lo; nextHi[0] = n; nextD[0] = d;
+      nextLo[1] = m; nextHi[1] = hi; nextD[1] = d;
       nextLo[2] = n+1; nextHi[2] = m-1; nextD[2] = d+1;
-
-      if (mnextsize(0) < mnextsize(1)) mnextswap(0,1);
-      if (mnextsize(1) < mnextsize(2)) mnextswap(1,2);
-      if (mnextsize(0) < mnextsize(1)) mnextswap(0,1);
-
-      AssertD (mnextsize(0) >= mnextsize(1), "mainQSort3(8)" );
-      AssertD (mnextsize(1) >= mnextsize(2), "mainQSort3(9)" );
-
-      mpush (nextLo[0], nextHi[0], nextD[0]);
-      mpush (nextLo[1], nextHi[1], nextD[1]);
-      mpush (nextLo[2], nextHi[2], nextD[2]);
+      if ((nextHi[0]-nextLo[0]) < (nextHi[1]-nextLo[1])) { Int32 tz; tz = nextLo[0]; nextLo[0] = nextLo[1]; nextLo[1] = tz; tz = nextHi[0]; nextHi[0] = nextHi[1]; nextHi[1] = tz; tz = nextD [0]; nextD [0] = nextD [1]; nextD [1] = tz; };
+      if ((nextHi[1]-nextLo[1]) < (nextHi[2]-nextLo[2])) { Int32 tz; tz = nextLo[1]; nextLo[1] = nextLo[2]; nextLo[2] = tz; tz = nextHi[1]; nextHi[1] = nextHi[2]; nextHi[2] = tz; tz = nextD [1]; nextD [1] = nextD [2]; nextD [2] = tz; };
+      if ((nextHi[0]-nextLo[0]) < (nextHi[1]-nextLo[1])) { Int32 tz; tz = nextLo[0]; nextLo[0] = nextLo[1]; nextLo[1] = tz; tz = nextHi[0]; nextHi[0] = nextHi[1]; nextHi[1] = tz; tz = nextD [0]; nextD [0] = nextD [1]; nextD [1] = tz; };
+                                                              ;
+                                                              ;
+      { stackLo[sp] = nextLo[0]; stackHi[sp] = nextHi[0]; stackD [sp] = nextD[0]; sp++; };
+      { stackLo[sp] = nextLo[1]; stackHi[sp] = nextHi[1]; stackD [sp] = nextD[1]; sp++; };
+      { stackLo[sp] = nextLo[2]; stackHi[sp] = nextHi[2]; stackD [sp] = nextD[2]; sp++; };
    }
 }
-
-#undef mswap
-#undef mvswap
-#undef mpush
-#undef mpop
-#undef mmin
-#undef mnextsize
-#undef mnextswap
-#undef MAIN_QSORT_SMALL_THRESH
-#undef MAIN_QSORT_DEPTH_THRESH
-#undef MAIN_QSORT_STACK_SIZE
-
-
-/*---------------------------------------------*/
-/* Pre:
-      nblock > N_OVERSHOOT
-      block32 exists for [0 .. nblock-1 +N_OVERSHOOT]
-      ((UChar*)block32) [0 .. nblock-1] holds block
-      ptr exists for [0 .. nblock-1]
-
-   Post:
-      ((UChar*)block32) [0 .. nblock-1] holds block
-      All other areas of block32 destroyed
-      ftab [0 .. 65536 ] destroyed
-      ptr [0 .. nblock-1] holds sorted order
-      if (*budget < 0), sorting was abandoned
-*/
-
-#define BIGFREQ(b) (ftab[((b)+1) << 8] - ftab[(b) << 8])
-#define SETMASK (1 << 21)
-#define CLEARMASK (~(SETMASK))
-
 static
-void mainSort ( UInt32* ptr, 
-                UChar*  block,
-                UInt16* quadrant, 
+void mainSort ( UInt32* ptr,
+                UChar* block,
+                UInt16* quadrant,
                 UInt32* ftab,
-                Int32   nblock,
-                Int32   verb,
-                Int32*  budget )
+                Int32 nblock,
+                Int32 verb,
+                Int32* budget )
 {
-   Int32  i, j, k, ss, sb;
-   Int32  runningOrder[256];
-   Bool   bigDone[256];
-   Int32  copyStart[256];
-   Int32  copyEnd  [256];
-   UChar  c1;
-   Int32  numQSorted;
+   Int32 i, j, k, ss, sb;
+   Int32 runningOrder[256];
+   Bool bigDone[256];
+   Int32 copyStart[256];
+   Int32 copyEnd [256];
+   UChar c1;
+   Int32 numQSorted;
    UInt16 s;
-   if (verb >= 4) VPrintf0 ( "        main sort initialise ...\n" );
-
-   /*-- set up the 2-byte frequency table --*/
+   if (verb >= 4) fprintf(stderr,"        main sort initialise ...\n");
    for (i = 65536; i >= 0; i--) ftab[i] = 0;
-
    j = block[0] << 8;
    i = nblock-1;
    for (; i >= 3; i -= 4) {
@@ -1584,18 +1681,12 @@ void mainSort ( UInt32* ptr,
       j = (j >> 8) | ( ((UInt16)block[i]) << 8);
       ftab[j]++;
    }
-
-   /*-- (emphasises close relationship of block & quadrant) --*/
-   for (i = 0; i < BZ_N_OVERSHOOT; i++) {
-      block   [nblock+i] = block[i];
+   for (i = 0; i < (2 + 12 + 18 + 2); i++) {
+      block [nblock+i] = block[i];
       quadrant[nblock+i] = 0;
    }
-
-   if (verb >= 4) VPrintf0 ( "        bucket sorting ...\n" );
-
-   /*-- Complete the initial radix sort --*/
+   if (verb >= 4) fprintf(stderr,"        bucket sorting ...\n");
    for (i = 1; i <= 65536; i++) ftab[i] += ftab[i-1];
-
    s = block[0] << 8;
    i = nblock-1;
    for (; i >= 3; i -= 4) {
@@ -1622,17 +1713,10 @@ void mainSort ( UInt32* ptr,
       ftab[s] = j;
       ptr[j] = i;
    }
-
-   /*--
-      Now ftab contains the first loc of every small bucket.
-      Calculate the running order, from smallest to largest
-      big bucket.
-   --*/
    for (i = 0; i <= 255; i++) {
-      bigDone     [i] = False;
+      bigDone [i] = ((Bool)0);
       runningOrder[i] = i;
    }
-
    {
       Int32 vv;
       Int32 h = 1;
@@ -1642,7 +1726,7 @@ void mainSort ( UInt32* ptr,
          for (i = h; i <= 255; i++) {
             vv = runningOrder[i];
             j = i;
-            while ( BIGFREQ(runningOrder[j-h]) > BIGFREQ(vv) ) {
+            while ( (ftab[((runningOrder[j-h])+1) << 8] - ftab[(runningOrder[j-h]) << 8]) > (ftab[((vv)+1) << 8] - ftab[(vv) << 8]) ) {
                runningOrder[j] = runningOrder[j-h];
                j = j - h;
                if (j <= (h - 1)) goto zero;
@@ -1652,380 +1736,152 @@ void mainSort ( UInt32* ptr,
          }
       } while (h != 1);
    }
-
-   /*--
-      The main sorting loop.
-   --*/
-
    numQSorted = 0;
-
    for (i = 0; i <= 255; i++) {
-
-      /*--
-         Process big buckets, starting with the least full.
-         Basically this is a 3-step process in which we call
-         mainQSort3 to sort the small buckets [ss, j], but
-         also make a big effort to avoid the calls if we can.
-      --*/
       ss = runningOrder[i];
-
-      /*--
-         Step 1:
-         Complete the big bucket [ss] by quicksorting
-         any unsorted small buckets [ss, j], for j != ss.  
-         Hopefully previous pointer-scanning phases have already
-         completed many of the small buckets [ss, j], so
-         we don't have to sort them at all.
-      --*/
       for (j = 0; j <= 255; j++) {
          if (j != ss) {
             sb = (ss << 8) + j;
-            if ( ! (ftab[sb] & SETMASK) ) {
-               Int32 lo = ftab[sb]   & CLEARMASK;
-               Int32 hi = (ftab[sb+1] & CLEARMASK) - 1;
+            if ( ! (ftab[sb] & (1 << 21)) ) {
+               Int32 lo = ftab[sb] & (~((1 << 21)));
+               Int32 hi = (ftab[sb+1] & (~((1 << 21)))) - 1;
                if (hi > lo) {
                   if (verb >= 4)
-                     VPrintf4 ( "        qsort [0x%x, 0x%x]   "
-                                "done %d   this %d\n",
-                                ss, j, numQSorted, hi - lo + 1 );
-                  mainQSort3 ( 
-                     ptr, block, quadrant, nblock, 
-                     lo, hi, BZ_N_RADIX, budget 
-                  );   
+                     fprintf(stderr,"        qsort [0x%x, 0x%x]   " "done %d   this %d\n",ss,j,numQSorted,hi - lo + 1);
+                  mainQSort3 (
+                     ptr, block, quadrant, nblock,
+                     lo, hi, 2, budget
+                  );
                   numQSorted += (hi - lo + 1);
                   if (*budget < 0) return;
                }
             }
-            ftab[sb] |= SETMASK;
+            ftab[sb] |= (1 << 21);
          }
       }
-
-      AssertH ( !bigDone[ss], 1006 );
-
-      /*--
-         Step 2:
-         Now scan this big bucket [ss] so as to synthesise the
-         sorted order for small buckets [t, ss] for all t,
-         including, magically, the bucket [ss,ss] too.
-         This will avoid doing Real Work in subsequent Step 1's.
-      --*/
+      { if (!(!bigDone[ss])) BZ2_bz__AssertH__fail ( 1006 ); };
       {
          for (j = 0; j <= 255; j++) {
-            copyStart[j] =  ftab[(j << 8) + ss]     & CLEARMASK;
-            copyEnd  [j] = (ftab[(j << 8) + ss + 1] & CLEARMASK) - 1;
+            copyStart[j] = ftab[(j << 8) + ss] & (~((1 << 21)));
+            copyEnd [j] = (ftab[(j << 8) + ss + 1] & (~((1 << 21)))) - 1;
          }
-         for (j = ftab[ss << 8] & CLEARMASK; j < copyStart[ss]; j++) {
+         for (j = ftab[ss << 8] & (~((1 << 21))); j < copyStart[ss]; j++) {
             k = ptr[j]-1; if (k < 0) k += nblock;
             c1 = block[k];
             if (!bigDone[c1])
                ptr[ copyStart[c1]++ ] = k;
          }
-         for (j = (ftab[(ss+1) << 8] & CLEARMASK) - 1; j > copyEnd[ss]; j--) {
+         for (j = (ftab[(ss+1) << 8] & (~((1 << 21)))) - 1; j > copyEnd[ss]; j--) {
             k = ptr[j]-1; if (k < 0) k += nblock;
             c1 = block[k];
-            if (!bigDone[c1]) 
+            if (!bigDone[c1])
                ptr[ copyEnd[c1]-- ] = k;
          }
       }
-
-      AssertH ( (copyStart[ss]-1 == copyEnd[ss])
-                || 
-                /* Extremely rare case missing in bzip2-1.0.0 and 1.0.1.
-                   Necessity for this case is demonstrated by compressing 
-                   a sequence of approximately 48.5 million of character 
-                   251; 1.0.0/1.0.1 will then die here. */
-                (copyStart[ss] == 0 && copyEnd[ss] == nblock-1),
-                1007 )
-
-      for (j = 0; j <= 255; j++) ftab[(j << 8) + ss] |= SETMASK;
-
-      /*--
-         Step 3:
-         The [ss] big bucket is now done.  Record this fact,
-         and update the quadrant descriptors.  Remember to
-         update quadrants in the overshoot area too, if
-         necessary.  The "if (i < 255)" test merely skips
-         this updating for the last bucket processed, since
-         updating for the last bucket is pointless.
-
-         The quadrant array provides a way to incrementally
-         cache sort orderings, as they appear, so as to 
-         make subsequent comparisons in fullGtU() complete
-         faster.  For repetitive blocks this makes a big
-         difference (but not big enough to be able to avoid
-         the fallback sorting mechanism, exponential radix sort).
-
-         The precise meaning is: at all times:
-
-            for 0 <= i < nblock and 0 <= j <= nblock
-
-            if block[i] != block[j], 
-
-               then the relative values of quadrant[i] and 
-                    quadrant[j] are meaningless.
-
-               else {
-                  if quadrant[i] < quadrant[j]
-                     then the string starting at i lexicographically
-                     precedes the string starting at j
-
-                  else if quadrant[i] > quadrant[j]
-                     then the string starting at j lexicographically
-                     precedes the string starting at i
-
-                  else
-                     the relative ordering of the strings starting
-                     at i and j has not yet been determined.
-               }
-      --*/
-      bigDone[ss] = True;
-
+      { if (!((copyStart[ss]-1 == copyEnd[ss]) || (copyStart[ss] == 0 && copyEnd[ss] == nblock-1))) BZ2_bz__AssertH__fail ( 1007 ); }
+      for (j = 0; j <= 255; j++) ftab[(j << 8) + ss] |= (1 << 21);
+      bigDone[ss] = ((Bool)1);
       if (i < 255) {
-         Int32 bbStart  = ftab[ss << 8] & CLEARMASK;
-         Int32 bbSize   = (ftab[(ss+1) << 8] & CLEARMASK) - bbStart;
-         Int32 shifts   = 0;
-
+         Int32 bbStart = ftab[ss << 8] & (~((1 << 21)));
+         Int32 bbSize = (ftab[(ss+1) << 8] & (~((1 << 21)))) - bbStart;
+         Int32 shifts = 0;
          while ((bbSize >> shifts) > 65534) shifts++;
-
          for (j = bbSize-1; j >= 0; j--) {
-            Int32 a2update     = ptr[bbStart + j];
-            UInt16 qVal        = (UInt16)(j >> shifts);
+            Int32 a2update = ptr[bbStart + j];
+            UInt16 qVal = (UInt16)(j >> shifts);
             quadrant[a2update] = qVal;
-            if (a2update < BZ_N_OVERSHOOT)
+            if (a2update < (2 + 12 + 18 + 2))
                quadrant[a2update + nblock] = qVal;
          }
-         AssertH ( ((bbSize-1) >> shifts) <= 65535, 1002 );
+         { if (!(((bbSize-1) >> shifts) <= 65535)) BZ2_bz__AssertH__fail ( 1002 ); };
       }
-
    }
-
    if (verb >= 4)
-      VPrintf3 ( "        %d pointers, %d sorted, %d scanned\n",
-                 nblock, numQSorted, nblock - numQSorted );
+      fprintf(stderr,"        %d pointers, %d sorted, %d scanned\n",nblock,numQSorted,nblock - numQSorted);
 }
-
-#undef BIGFREQ
-#undef SETMASK
-#undef CLEARMASK
-
-
-/*---------------------------------------------*/
-/* Pre:
-      nblock > 0
-      arr2 exists for [0 .. nblock-1 +N_OVERSHOOT]
-      ((UChar*)arr2)  [0 .. nblock-1] holds block
-      arr1 exists for [0 .. nblock-1]
-
-   Post:
-      ((UChar*)arr2) [0 .. nblock-1] holds block
-      All other areas of block destroyed
-      ftab [ 0 .. 65536 ] destroyed
-      arr1 [0 .. nblock-1] holds sorted order
-*/
 void BZ2_blockSort ( EState* s )
 {
-   UInt32* ptr    = s->ptr; 
-   UChar*  block  = s->block;
-   UInt32* ftab   = s->ftab;
-   Int32   nblock = s->nblock;
-   Int32   verb   = s->verbosity;
-   Int32   wfact  = s->workFactor;
+   UInt32* ptr = s->ptr;
+   UChar* block = s->block;
+   UInt32* ftab = s->ftab;
+   Int32 nblock = s->nblock;
+   Int32 verb = s->verbosity;
+   Int32 wfact = s->workFactor;
    UInt16* quadrant;
-   Int32   budget;
-   Int32   budgetInit;
-   Int32   i;
-
+   Int32 budget;
+   Int32 budgetInit;
+   Int32 i;
    if (nblock < 10000) {
       fallbackSort ( s->arr1, s->arr2, ftab, nblock, verb );
    } else {
-      /* Calculate the location for quadrant, remembering to get
-         the alignment right.  Assumes that &(block[0]) is at least
-         2-byte aligned -- this should be ok since block is really
-         the first section of arr2.
-      */
-      i = nblock+BZ_N_OVERSHOOT;
+      i = nblock+(2 + 12 + 18 + 2);
       if (i & 1) i++;
       quadrant = (UInt16*)(&(block[i]));
-
-      /* (wfact-1) / 3 puts the default-factor-30
-         transition point at very roughly the same place as 
-         with v0.1 and v0.9.0.  
-         Not that it particularly matters any more, since the
-         resulting compressed stream is now the same regardless
-         of whether or not we use the main sort or fallback sort.
-      */
-      if (wfact < 1  ) wfact = 1;
+      if (wfact < 1 ) wfact = 1;
       if (wfact > 100) wfact = 100;
       budgetInit = nblock * ((wfact-1) / 3);
       budget = budgetInit;
-
       mainSort ( ptr, block, quadrant, ftab, nblock, verb, &budget );
-      if (verb >= 3) 
-         VPrintf3 ( "      %d work, %d block, ratio %5.2f\n",
-                    budgetInit - budget,
-                    nblock, 
-                    (float)(budgetInit - budget) /
-                    (float)(nblock==0 ? 1 : nblock) ); 
+      if (verb >= 3)
+         fprintf(stderr,"      %d work, %d block, ratio %5.2f\n",budgetInit - budget,nblock,(float)(budgetInit - budget) / (float)(nblock==0 ? 1 : nblock));
       if (budget < 0) {
-         if (verb >= 2) 
-            VPrintf0 ( "    too repetitive; using fallback"
-                       " sorting algorithm\n" );
+         if (verb >= 2)
+            fprintf(stderr,"    too repetitive; using fallback" " sorting algorithm\n");
          fallbackSort ( s->arr1, s->arr2, ftab, nblock, verb );
       }
    }
-
    s->origPtr = -1;
    for (i = 0; i < s->nblock; i++)
       if (ptr[i] == 0)
          { s->origPtr = i; break; };
-
-   AssertH( s->origPtr != -1, 1003 );
+   { if (!(s->origPtr != -1)) BZ2_bz__AssertH__fail ( 1003 ); };
 }
-
-
-/*-------------------------------------------------------------*/
-/*--- end                                       blocksort.c ---*/
-/*-------------------------------------------------------------*/
-
-
-
-/*-------------------------------------------------------------*/
-/*--- Huffman coding low-level stuff                        ---*/
-/*---                                             huffman.c ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-/*---------------------------------------------------*/
-#define WEIGHTOF(zz0)  ((zz0) & 0xffffff00)
-#define DEPTHOF(zz1)   ((zz1) & 0x000000ff)
-#define MYMAX(zz2,zz3) ((zz2) > (zz3) ? (zz2) : (zz3))
-
-#define ADDWEIGHTS(zw1,zw2)                           \
-   (WEIGHTOF(zw1)+WEIGHTOF(zw2)) |                    \
-   (1 + MYMAX(DEPTHOF(zw1),DEPTHOF(zw2)))
-
-#define UPHEAP(z)                                     \
-{                                                     \
-   Int32 zz, tmp;                                     \
-   zz = z; tmp = heap[zz];                            \
-   while (weight[tmp] < weight[heap[zz >> 1]]) {      \
-      heap[zz] = heap[zz >> 1];                       \
-      zz >>= 1;                                       \
-   }                                                  \
-   heap[zz] = tmp;                                    \
-}
-
-#define DOWNHEAP(z)                                   \
-{                                                     \
-   Int32 zz, yy, tmp;                                 \
-   zz = z; tmp = heap[zz];                            \
-   while (True) {                                     \
-      yy = zz << 1;                                   \
-      if (yy > nHeap) break;                          \
-      if (yy < nHeap &&                               \
-          weight[heap[yy+1]] < weight[heap[yy]])      \
-         yy++;                                        \
-      if (weight[tmp] < weight[heap[yy]]) break;      \
-      heap[zz] = heap[yy];                            \
-      zz = yy;                                        \
-   }                                                  \
-   heap[zz] = tmp;                                    \
-}
-
-
-/*---------------------------------------------------*/
-void BZ2_hbMakeCodeLengths ( UChar *len, 
+void BZ2_hbMakeCodeLengths ( UChar *len,
                              Int32 *freq,
                              Int32 alphaSize,
                              Int32 maxLen )
 {
-   /*--
-      Nodes and heap entries run from 1.  Entry 0
-      for both the heap and nodes is a sentinel.
-   --*/
    Int32 nNodes, nHeap, n1, n2, i, j, k;
-   Bool  tooLong;
-
-   Int32 heap   [ BZ_MAX_ALPHA_SIZE + 2 ];
-   Int32 weight [ BZ_MAX_ALPHA_SIZE * 2 ];
-   Int32 parent [ BZ_MAX_ALPHA_SIZE * 2 ]; 
-
+   Bool tooLong;
+   Int32 heap [ 258 + 2 ];
+   Int32 weight [ 258 * 2 ];
+   Int32 parent [ 258 * 2 ];
    for (i = 0; i < alphaSize; i++)
       weight[i+1] = (freq[i] == 0 ? 1 : freq[i]) << 8;
-
-   while (True) {
-
+   while (((Bool)1)) {
       nNodes = alphaSize;
       nHeap = 0;
-
       heap[0] = 0;
       weight[0] = 0;
       parent[0] = -2;
-
       for (i = 1; i <= alphaSize; i++) {
          parent[i] = -1;
          nHeap++;
          heap[nHeap] = i;
-         UPHEAP(nHeap);
+         { Int32 zz, tmp; zz = nHeap; tmp = heap[zz]; while (weight[tmp] < weight[heap[zz >> 1]]) { heap[zz] = heap[zz >> 1]; zz >>= 1; } heap[zz] = tmp; };
       }
-
-      AssertH( nHeap < (BZ_MAX_ALPHA_SIZE+2), 2001 );
-   
+      { if (!(nHeap < (258 +2))) BZ2_bz__AssertH__fail ( 2001 ); };
       while (nHeap > 1) {
-         n1 = heap[1]; heap[1] = heap[nHeap]; nHeap--; DOWNHEAP(1);
-         n2 = heap[1]; heap[1] = heap[nHeap]; nHeap--; DOWNHEAP(1);
+         n1 = heap[1]; heap[1] = heap[nHeap]; nHeap--; { Int32 zz, yy, tmp; zz = 1; tmp = heap[zz]; while (((Bool)1)) { yy = zz << 1; if (yy > nHeap) break; if (yy < nHeap && weight[heap[yy+1]] < weight[heap[yy]]) yy++; if (weight[tmp] < weight[heap[yy]]) break; heap[zz] = heap[yy]; zz = yy; } heap[zz] = tmp; };
+         n2 = heap[1]; heap[1] = heap[nHeap]; nHeap--; { Int32 zz, yy, tmp; zz = 1; tmp = heap[zz]; while (((Bool)1)) { yy = zz << 1; if (yy > nHeap) break; if (yy < nHeap && weight[heap[yy+1]] < weight[heap[yy]]) yy++; if (weight[tmp] < weight[heap[yy]]) break; heap[zz] = heap[yy]; zz = yy; } heap[zz] = tmp; };
          nNodes++;
          parent[n1] = parent[n2] = nNodes;
-         weight[nNodes] = ADDWEIGHTS(weight[n1], weight[n2]);
+         weight[nNodes] = (((weight[n1]) & 0xffffff00)+((weight[n2]) & 0xffffff00)) | (1 + ((((weight[n1]) & 0x000000ff)) > (((weight[n2]) & 0x000000ff)) ? (((weight[n1]) & 0x000000ff)) : (((weight[n2]) & 0x000000ff))));
          parent[nNodes] = -1;
          nHeap++;
          heap[nHeap] = nNodes;
-         UPHEAP(nHeap);
+         { Int32 zz, tmp; zz = nHeap; tmp = heap[zz]; while (weight[tmp] < weight[heap[zz >> 1]]) { heap[zz] = heap[zz >> 1]; zz >>= 1; } heap[zz] = tmp; };
       }
-
-      AssertH( nNodes < (BZ_MAX_ALPHA_SIZE * 2), 2002 );
-
-      tooLong = False;
+      { if (!(nNodes < (258 * 2))) BZ2_bz__AssertH__fail ( 2002 ); };
+      tooLong = ((Bool)0);
       for (i = 1; i <= alphaSize; i++) {
          j = 0;
          k = i;
          while (parent[k] >= 0) { k = parent[k]; j++; }
          len[i-1] = j;
-         if (j > maxLen) tooLong = True;
+         if (j > maxLen) tooLong = ((Bool)1);
       }
-      
       if (! tooLong) break;
-
-      /* 17 Oct 04: keep-going condition for the following loop used
-         to be 'i < alphaSize', which missed the last element,
-         theoretically leading to the possibility of the compressor
-         looping.  However, this count-scaling step is only needed if
-         one of the generated Huffman code words is longer than
-         maxLen, which up to and including version 1.0.2 was 20 bits,
-         which is extremely unlikely.  In version 1.0.3 maxLen was
-         changed to 17 bits, which has minimal effect on compression
-         ratio, but does mean this scaling step is used from time to
-         time, enough to verify that it works.
-
-         This means that bzip2-1.0.3 and later will only produce
-         Huffman codes with a maximum length of 17 bits.  However, in
-         order to preserve backwards compatibility with bitstreams
-         produced by versions pre-1.0.3, the decompressor must still
-         handle lengths of up to 20. */
-
       for (i = 1; i <= alphaSize; i++) {
          j = weight[i] >> 8;
          j = 1 + (j / 2);
@@ -2033,9 +1889,6 @@ void BZ2_hbMakeCodeLengths ( UChar *len,
       }
    }
 }
-
-
-/*---------------------------------------------------*/
 void BZ2_hbAssignCodes ( Int32 *code,
                          UChar *length,
                          Int32 minLen,
@@ -2043,7 +1896,6 @@ void BZ2_hbAssignCodes ( Int32 *code,
                          Int32 alphaSize )
 {
    Int32 n, vec, i;
-
    vec = 0;
    for (n = minLen; n <= maxLen; n++) {
       for (i = 0; i < alphaSize; i++)
@@ -2051,9 +1903,6 @@ void BZ2_hbAssignCodes ( Int32 *code,
       vec <<= 1;
    }
 }
-
-
-/*---------------------------------------------------*/
 void BZ2_hbCreateDecodeTables ( Int32 *limit,
                                 Int32 *base,
                                 Int32 *perm,
@@ -2063,20 +1912,15 @@ void BZ2_hbCreateDecodeTables ( Int32 *limit,
                                 Int32 alphaSize )
 {
    Int32 pp, i, j, vec;
-
    pp = 0;
    for (i = minLen; i <= maxLen; i++)
       for (j = 0; j < alphaSize; j++)
          if (length[j] == i) { perm[pp] = j; pp++; };
-
-   for (i = 0; i < BZ_MAX_CODE_LEN; i++) base[i] = 0;
+   for (i = 0; i < 23; i++) base[i] = 0;
    for (i = 0; i < alphaSize; i++) base[length[i]+1]++;
-
-   for (i = 1; i < BZ_MAX_CODE_LEN; i++) base[i] += base[i-1];
-
-   for (i = 0; i < BZ_MAX_CODE_LEN; i++) limit[i] = 0;
+   for (i = 1; i < 23; i++) base[i] += base[i-1];
+   for (i = 0; i < 23; i++) limit[i] = 0;
    vec = 0;
-
    for (i = minLen; i <= maxLen; i++) {
       vec += (base[i+1] - base[i]);
       limit[i] = vec-1;
@@ -2085,44 +1929,7 @@ void BZ2_hbCreateDecodeTables ( Int32 *limit,
    for (i = minLen + 1; i <= maxLen; i++)
       base[i] = ((limit[i-1] + 1) << 1) - base[i];
 }
-
-
-/*-------------------------------------------------------------*/
-/*--- end                                         huffman.c ---*/
-/*-------------------------------------------------------------*/
-
-
-
-/*-------------------------------------------------------------*/
-/*--- Table for doing CRCs                                  ---*/
-/*---                                            crctable.c ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-/*--
-  I think this is an implementation of the AUTODIN-II,
-  Ethernet & FDDI 32-bit CRC standard.  Vaguely derived
-  from code by Rob Warnock, in Section 51 of the
-  comp.compression FAQ.
---*/
-
 UInt32 BZ2_crc32Table[256] = {
-
-   /*-- Ugly, innit? --*/
-
    0x00000000L, 0x04c11db7L, 0x09823b6eL, 0x0d4326d9L,
    0x130476dcL, 0x17c56b6bL, 0x1a864db2L, 0x1e475005L,
    0x2608edb8L, 0x22c9f00fL, 0x2f8ad6d6L, 0x2b4bcb61L,
@@ -2188,136 +1995,65 @@ UInt32 BZ2_crc32Table[256] = {
    0xafb010b1L, 0xab710d06L, 0xa6322bdfL, 0xa2f33668L,
    0xbcb4666dL, 0xb8757bdaL, 0xb5365d03L, 0xb1f740b4L
 };
-
-
-/*-------------------------------------------------------------*/
-/*--- end                                        crctable.c ---*/
-/*-------------------------------------------------------------*/
-
-
-
-/*-------------------------------------------------------------*/
-/*--- Table for randomising repetitive blocks               ---*/
-/*---                                           randtable.c ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-/*---------------------------------------------*/
-Int32 BZ2_rNums[512] = { 
-   619, 720, 127, 481, 931, 816, 813, 233, 566, 247, 
-   985, 724, 205, 454, 863, 491, 741, 242, 949, 214, 
-   733, 859, 335, 708, 621, 574, 73, 654, 730, 472, 
-   419, 436, 278, 496, 867, 210, 399, 680, 480, 51, 
-   878, 465, 811, 169, 869, 675, 611, 697, 867, 561, 
-   862, 687, 507, 283, 482, 129, 807, 591, 733, 623, 
-   150, 238, 59, 379, 684, 877, 625, 169, 643, 105, 
-   170, 607, 520, 932, 727, 476, 693, 425, 174, 647, 
-   73, 122, 335, 530, 442, 853, 695, 249, 445, 515, 
-   909, 545, 703, 919, 874, 474, 882, 500, 594, 612, 
-   641, 801, 220, 162, 819, 984, 589, 513, 495, 799, 
-   161, 604, 958, 533, 221, 400, 386, 867, 600, 782, 
-   382, 596, 414, 171, 516, 375, 682, 485, 911, 276, 
-   98, 553, 163, 354, 666, 933, 424, 341, 533, 870, 
-   227, 730, 475, 186, 263, 647, 537, 686, 600, 224, 
-   469, 68, 770, 919, 190, 373, 294, 822, 808, 206, 
-   184, 943, 795, 384, 383, 461, 404, 758, 839, 887, 
-   715, 67, 618, 276, 204, 918, 873, 777, 604, 560, 
-   951, 160, 578, 722, 79, 804, 96, 409, 713, 940, 
-   652, 934, 970, 447, 318, 353, 859, 672, 112, 785, 
-   645, 863, 803, 350, 139, 93, 354, 99, 820, 908, 
-   609, 772, 154, 274, 580, 184, 79, 626, 630, 742, 
-   653, 282, 762, 623, 680, 81, 927, 626, 789, 125, 
-   411, 521, 938, 300, 821, 78, 343, 175, 128, 250, 
-   170, 774, 972, 275, 999, 639, 495, 78, 352, 126, 
-   857, 956, 358, 619, 580, 124, 737, 594, 701, 612, 
-   669, 112, 134, 694, 363, 992, 809, 743, 168, 974, 
-   944, 375, 748, 52, 600, 747, 642, 182, 862, 81, 
-   344, 805, 988, 739, 511, 655, 814, 334, 249, 515, 
-   897, 955, 664, 981, 649, 113, 974, 459, 893, 228, 
-   433, 837, 553, 268, 926, 240, 102, 654, 459, 51, 
-   686, 754, 806, 760, 493, 403, 415, 394, 687, 700, 
-   946, 670, 656, 610, 738, 392, 760, 799, 887, 653, 
-   978, 321, 576, 617, 626, 502, 894, 679, 243, 440, 
-   680, 879, 194, 572, 640, 724, 926, 56, 204, 700, 
-   707, 151, 457, 449, 797, 195, 791, 558, 945, 679, 
-   297, 59, 87, 824, 713, 663, 412, 693, 342, 606, 
-   134, 108, 571, 364, 631, 212, 174, 643, 304, 329, 
-   343, 97, 430, 751, 497, 314, 983, 374, 822, 928, 
-   140, 206, 73, 263, 980, 736, 876, 478, 430, 305, 
-   170, 514, 364, 692, 829, 82, 855, 953, 676, 246, 
-   369, 970, 294, 750, 807, 827, 150, 790, 288, 923, 
-   804, 378, 215, 828, 592, 281, 565, 555, 710, 82, 
-   896, 831, 547, 261, 524, 462, 293, 465, 502, 56, 
-   661, 821, 976, 991, 658, 869, 905, 758, 745, 193, 
-   768, 550, 608, 933, 378, 286, 215, 979, 792, 961, 
-   61, 688, 793, 644, 986, 403, 106, 366, 905, 644, 
-   372, 567, 466, 434, 645, 210, 389, 550, 919, 135, 
-   780, 773, 635, 389, 707, 100, 626, 958, 165, 504, 
-   920, 176, 193, 713, 857, 265, 203, 50, 668, 108, 
-   645, 990, 626, 197, 510, 357, 358, 850, 858, 364, 
+Int32 BZ2_rNums[512] = {
+   619, 720, 127, 481, 931, 816, 813, 233, 566, 247,
+   985, 724, 205, 454, 863, 491, 741, 242, 949, 214,
+   733, 859, 335, 708, 621, 574, 73, 654, 730, 472,
+   419, 436, 278, 496, 867, 210, 399, 680, 480, 51,
+   878, 465, 811, 169, 869, 675, 611, 697, 867, 561,
+   862, 687, 507, 283, 482, 129, 807, 591, 733, 623,
+   150, 238, 59, 379, 684, 877, 625, 169, 643, 105,
+   170, 607, 520, 932, 727, 476, 693, 425, 174, 647,
+   73, 122, 335, 530, 442, 853, 695, 249, 445, 515,
+   909, 545, 703, 919, 874, 474, 882, 500, 594, 612,
+   641, 801, 220, 162, 819, 984, 589, 513, 495, 799,
+   161, 604, 958, 533, 221, 400, 386, 867, 600, 782,
+   382, 596, 414, 171, 516, 375, 682, 485, 911, 276,
+   98, 553, 163, 354, 666, 933, 424, 341, 533, 870,
+   227, 730, 475, 186, 263, 647, 537, 686, 600, 224,
+   469, 68, 770, 919, 190, 373, 294, 822, 808, 206,
+   184, 943, 795, 384, 383, 461, 404, 758, 839, 887,
+   715, 67, 618, 276, 204, 918, 873, 777, 604, 560,
+   951, 160, 578, 722, 79, 804, 96, 409, 713, 940,
+   652, 934, 970, 447, 318, 353, 859, 672, 112, 785,
+   645, 863, 803, 350, 139, 93, 354, 99, 820, 908,
+   609, 772, 154, 274, 580, 184, 79, 626, 630, 742,
+   653, 282, 762, 623, 680, 81, 927, 626, 789, 125,
+   411, 521, 938, 300, 821, 78, 343, 175, 128, 250,
+   170, 774, 972, 275, 999, 639, 495, 78, 352, 126,
+   857, 956, 358, 619, 580, 124, 737, 594, 701, 612,
+   669, 112, 134, 694, 363, 992, 809, 743, 168, 974,
+   944, 375, 748, 52, 600, 747, 642, 182, 862, 81,
+   344, 805, 988, 739, 511, 655, 814, 334, 249, 515,
+   897, 955, 664, 981, 649, 113, 974, 459, 893, 228,
+   433, 837, 553, 268, 926, 240, 102, 654, 459, 51,
+   686, 754, 806, 760, 493, 403, 415, 394, 687, 700,
+   946, 670, 656, 610, 738, 392, 760, 799, 887, 653,
+   978, 321, 576, 617, 626, 502, 894, 679, 243, 440,
+   680, 879, 194, 572, 640, 724, 926, 56, 204, 700,
+   707, 151, 457, 449, 797, 195, 791, 558, 945, 679,
+   297, 59, 87, 824, 713, 663, 412, 693, 342, 606,
+   134, 108, 571, 364, 631, 212, 174, 643, 304, 329,
+   343, 97, 430, 751, 497, 314, 983, 374, 822, 928,
+   140, 206, 73, 263, 980, 736, 876, 478, 430, 305,
+   170, 514, 364, 692, 829, 82, 855, 953, 676, 246,
+   369, 970, 294, 750, 807, 827, 150, 790, 288, 923,
+   804, 378, 215, 828, 592, 281, 565, 555, 710, 82,
+   896, 831, 547, 261, 524, 462, 293, 465, 502, 56,
+   661, 821, 976, 991, 658, 869, 905, 758, 745, 193,
+   768, 550, 608, 933, 378, 286, 215, 979, 792, 961,
+   61, 688, 793, 644, 986, 403, 106, 366, 905, 644,
+   372, 567, 466, 434, 645, 210, 389, 550, 919, 135,
+   780, 773, 635, 389, 707, 100, 626, 958, 165, 504,
+   920, 176, 193, 713, 857, 265, 203, 50, 668, 108,
+   645, 990, 626, 197, 510, 357, 358, 850, 858, 364,
    936, 638
 };
-
-
-/*-------------------------------------------------------------*/
-/*--- end                                       randtable.c ---*/
-/*-------------------------------------------------------------*/
-
-
-
-/*-------------------------------------------------------------*/
-/*--- Compression machinery (not incl block sorting)        ---*/
-/*---                                            compress.c ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-
-/* CHANGES
-    0.9.0    -- original version.
-    0.9.0a/b -- no changes in this file.
-    0.9.0c   -- changed setting of nGroups in sendMTFValues() 
-                so as to do a bit better on small files
-*/
-
-/*---------------------------------------------------*/
-/*--- Bit stream I/O                              ---*/
-/*---------------------------------------------------*/
-
-/*---------------------------------------------------*/
 void BZ2_bsInitWrite ( EState* s )
 {
    s->bsLive = 0;
    s->bsBuff = 0;
 }
-
-
-/*---------------------------------------------------*/
 static
 void bsFinishWrite ( EState* s )
 {
@@ -2328,56 +2064,27 @@ void bsFinishWrite ( EState* s )
       s->bsLive -= 8;
    }
 }
-
-
-/*---------------------------------------------------*/
-#define bsNEEDW(nz)                           \
-{                                             \
-   while (s->bsLive >= 8) {                   \
-      s->zbits[s->numZ]                       \
-         = (UChar)(s->bsBuff >> 24);          \
-      s->numZ++;                              \
-      s->bsBuff <<= 8;                        \
-      s->bsLive -= 8;                         \
-   }                                          \
-}
-
-
-/*---------------------------------------------------*/
 static
 __inline__
 void bsW ( EState* s, Int32 n, UInt32 v )
 {
-   bsNEEDW ( n );
+   { while (s->bsLive >= 8) { s->zbits[s->numZ] = (UChar)(s->bsBuff >> 24); s->numZ++; s->bsBuff <<= 8; s->bsLive -= 8; } };
    s->bsBuff |= (v << (32 - s->bsLive - n));
    s->bsLive += n;
 }
-
-
-/*---------------------------------------------------*/
 static
 void bsPutUInt32 ( EState* s, UInt32 u )
 {
    bsW ( s, 8, (u >> 24) & 0xffL );
    bsW ( s, 8, (u >> 16) & 0xffL );
-   bsW ( s, 8, (u >>  8) & 0xffL );
-   bsW ( s, 8,  u        & 0xffL );
+   bsW ( s, 8, (u >> 8) & 0xffL );
+   bsW ( s, 8, u & 0xffL );
 }
-
-
-/*---------------------------------------------------*/
 static
 void bsPutUChar ( EState* s, UChar c )
 {
    bsW( s, 8, (UInt32)c );
 }
-
-
-/*---------------------------------------------------*/
-/*--- The back end proper                         ---*/
-/*---------------------------------------------------*/
-
-/*---------------------------------------------------*/
 static
 void makeMaps_e ( EState* s )
 {
@@ -2389,73 +2096,41 @@ void makeMaps_e ( EState* s )
          s->nInUse++;
       }
 }
-
-
-/*---------------------------------------------------*/
 static
 void generateMTFValues ( EState* s )
 {
-   UChar   yy[256];
-   Int32   i, j;
-   Int32   zPend;
-   Int32   wr;
-   Int32   EOB;
-
-   /* 
-      After sorting (eg, here),
-         s->arr1 [ 0 .. s->nblock-1 ] holds sorted order,
-         and
-         ((UChar*)s->arr2) [ 0 .. s->nblock-1 ] 
-         holds the original block data.
-
-      The first thing to do is generate the MTF values,
-      and put them in
-         ((UInt16*)s->arr1) [ 0 .. s->nblock-1 ].
-      Because there are strictly fewer or equal MTF values
-      than block values, ptr values in this area are overwritten
-      with MTF values only when they are no longer needed.
-
-      The final compressed bitstream is generated into the
-      area starting at
-         (UChar*) (&((UChar*)s->arr2)[s->nblock])
-
-      These storage aliases are set up in bzCompressInit(),
-      except for the last one, which is arranged in 
-      compressBlock().
-   */
-   UInt32* ptr   = s->ptr;
-   UChar* block  = s->block;
-   UInt16* mtfv  = s->mtfv;
-
+   UChar yy[256];
+   Int32 i, j;
+   Int32 zPend;
+   Int32 wr;
+   Int32 EOB;
+   UInt32* ptr = s->ptr;
+   UChar* block = s->block;
+   UInt16* mtfv = s->mtfv;
    makeMaps_e ( s );
    EOB = s->nInUse+1;
-
    for (i = 0; i <= EOB; i++) s->mtfFreq[i] = 0;
-
    wr = 0;
    zPend = 0;
    for (i = 0; i < s->nInUse; i++) yy[i] = (UChar) i;
-
    for (i = 0; i < s->nblock; i++) {
       UChar ll_i;
-      AssertD ( wr <= i, "generateMTFValues(1)" );
+                                                 ;
       j = ptr[i]-1; if (j < 0) j += s->nblock;
       ll_i = s->unseqToSeq[block[j]];
-      AssertD ( ll_i < s->nInUse, "generateMTFValues(2a)" );
-
-      if (yy[0] == ll_i) { 
+                                                           ;
+      if (yy[0] == ll_i) {
          zPend++;
       } else {
-
          if (zPend > 0) {
             zPend--;
-            while (True) {
+            while (((Bool)1)) {
                if (zPend & 1) {
-                  mtfv[wr] = BZ_RUNB; wr++; 
-                  s->mtfFreq[BZ_RUNB]++; 
+                  mtfv[wr] = 1; wr++;
+                  s->mtfFreq[1]++;
                } else {
-                  mtfv[wr] = BZ_RUNA; wr++; 
-                  s->mtfFreq[BZ_RUNA]++; 
+                  mtfv[wr] = 0; wr++;
+                  s->mtfFreq[0]++;
                }
                if (zPend < 2) break;
                zPend = (zPend - 2) / 2;
@@ -2463,101 +2138,69 @@ void generateMTFValues ( EState* s )
             zPend = 0;
          }
          {
-            register UChar  rtmp;
+            register UChar rtmp;
             register UChar* ryy_j;
-            register UChar  rll_i;
-            rtmp  = yy[1];
+            register UChar rll_i;
+            rtmp = yy[1];
             yy[1] = yy[0];
             ryy_j = &(yy[1]);
             rll_i = ll_i;
             while ( rll_i != rtmp ) {
                register UChar rtmp2;
                ryy_j++;
-               rtmp2  = rtmp;
-               rtmp   = *ryy_j;
+               rtmp2 = rtmp;
+               rtmp = *ryy_j;
                *ryy_j = rtmp2;
             };
             yy[0] = rtmp;
             j = ryy_j - &(yy[0]);
             mtfv[wr] = j+1; wr++; s->mtfFreq[j+1]++;
          }
-
       }
    }
-
    if (zPend > 0) {
       zPend--;
-      while (True) {
+      while (((Bool)1)) {
          if (zPend & 1) {
-            mtfv[wr] = BZ_RUNB; wr++; 
-            s->mtfFreq[BZ_RUNB]++; 
+            mtfv[wr] = 1; wr++;
+            s->mtfFreq[1]++;
          } else {
-            mtfv[wr] = BZ_RUNA; wr++; 
-            s->mtfFreq[BZ_RUNA]++; 
+            mtfv[wr] = 0; wr++;
+            s->mtfFreq[0]++;
          }
          if (zPend < 2) break;
          zPend = (zPend - 2) / 2;
       };
       zPend = 0;
    }
-
    mtfv[wr] = EOB; wr++; s->mtfFreq[EOB]++;
-
    s->nMTF = wr;
 }
-
-
-/*---------------------------------------------------*/
-#define BZ_LESSER_ICOST  0
-#define BZ_GREATER_ICOST 15
-
 static
 void sendMTFValues ( EState* s )
 {
    Int32 v, t, i, j, gs, ge, totc, bt, bc, iter;
    Int32 nSelectors, alphaSize, minLen, maxLen, selCtr;
    Int32 nGroups, nBytes;
-
-   /*--
-   UChar  len [BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-   is a global since the decoder also needs it.
-
-   Int32  code[BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-   Int32  rfreq[BZ_N_GROUPS][BZ_MAX_ALPHA_SIZE];
-   are also globals only used in this proc.
-   Made global to keep stack frame size small.
-   --*/
-
-
-   UInt16 cost[BZ_N_GROUPS];
-   Int32  fave[BZ_N_GROUPS];
-
+   UInt16 cost[6];
+   Int32 fave[6];
    UInt16* mtfv = s->mtfv;
-
    if (s->verbosity >= 3)
-      VPrintf3( "      %d in block, %d after MTF & 1-2 coding, "
-                "%d+2 syms in use\n", 
-                s->nblock, s->nMTF, s->nInUse );
-
+      fprintf(stderr,"      %d in block, %d after MTF & 1-2 coding, " "%d+2 syms in use\n",s->nblock,s->nMTF,s->nInUse);
    alphaSize = s->nInUse+2;
-   for (t = 0; t < BZ_N_GROUPS; t++)
+   for (t = 0; t < 6; t++)
       for (v = 0; v < alphaSize; v++)
-         s->len[t][v] = BZ_GREATER_ICOST;
-
-   /*--- Decide how many coding tables to use ---*/
-   AssertH ( s->nMTF > 0, 3001 );
-   if (s->nMTF < 200)  nGroups = 2; else
-   if (s->nMTF < 600)  nGroups = 3; else
+         s->len[t][v] = 15;
+   { if (!(s->nMTF > 0)) BZ2_bz__AssertH__fail ( 3001 ); };
+   if (s->nMTF < 200) nGroups = 2; else
+   if (s->nMTF < 600) nGroups = 3; else
    if (s->nMTF < 1200) nGroups = 4; else
    if (s->nMTF < 2400) nGroups = 5; else
                        nGroups = 6;
-
-   /*--- Generate an initial set of coding tables ---*/
-   { 
+   {
       Int32 nPart, remF, tFreq, aFreq;
-
       nPart = nGroups;
-      remF  = s->nMTF;
+      remF = s->nMTF;
       gs = 0;
       while (nPart > 0) {
          tFreq = remF / nPart;
@@ -2567,111 +2210,66 @@ void sendMTFValues ( EState* s )
             ge++;
             aFreq += s->mtfFreq[ge];
          }
-
-         if (ge > gs 
-             && nPart != nGroups && nPart != 1 
+         if (ge > gs
+             && nPart != nGroups && nPart != 1
              && ((nGroups-nPart) % 2 == 1)) {
             aFreq -= s->mtfFreq[ge];
             ge--;
          }
-
          if (s->verbosity >= 3)
-            VPrintf5( "      initial group %d, [%d .. %d], "
-                      "has %d syms (%4.1f%%)\n",
-                      nPart, gs, ge, aFreq, 
-                      (100.0 * (float)aFreq) / (float)(s->nMTF) );
- 
+            fprintf(stderr,"      initial group %d, [%d .. %d], " "has %d syms (%4.1f%%)\n",nPart,gs,ge,aFreq,(100.0 * (float)aFreq) / (float)(s->nMTF));
          for (v = 0; v < alphaSize; v++)
-            if (v >= gs && v <= ge) 
-               s->len[nPart-1][v] = BZ_LESSER_ICOST; else
-               s->len[nPart-1][v] = BZ_GREATER_ICOST;
- 
+            if (v >= gs && v <= ge)
+               s->len[nPart-1][v] = 0; else
+               s->len[nPart-1][v] = 15;
          nPart--;
          gs = ge+1;
          remF -= aFreq;
       }
    }
-
-   /*--- 
-      Iterate up to BZ_N_ITERS times to improve the tables.
-   ---*/
-   for (iter = 0; iter < BZ_N_ITERS; iter++) {
-
+   for (iter = 0; iter < 4; iter++) {
       for (t = 0; t < nGroups; t++) fave[t] = 0;
-
       for (t = 0; t < nGroups; t++)
          for (v = 0; v < alphaSize; v++)
             s->rfreq[t][v] = 0;
-
-      /*---
-        Set up an auxiliary length table which is used to fast-track
-	the common case (nGroups == 6). 
-      ---*/
       if (nGroups == 6) {
          for (v = 0; v < alphaSize; v++) {
             s->len_pack[v][0] = (s->len[1][v] << 16) | s->len[0][v];
             s->len_pack[v][1] = (s->len[3][v] << 16) | s->len[2][v];
             s->len_pack[v][2] = (s->len[5][v] << 16) | s->len[4][v];
-	 }
+  }
       }
-
       nSelectors = 0;
       totc = 0;
       gs = 0;
-      while (True) {
-
-         /*--- Set group start & end marks. --*/
+      while (((Bool)1)) {
          if (gs >= s->nMTF) break;
-         ge = gs + BZ_G_SIZE - 1; 
+         ge = gs + 50 - 1;
          if (ge >= s->nMTF) ge = s->nMTF-1;
-
-         /*-- 
-            Calculate the cost of this group as coded
-            by each of the coding tables.
-         --*/
          for (t = 0; t < nGroups; t++) cost[t] = 0;
-
          if (nGroups == 6 && 50 == ge-gs+1) {
-            /*--- fast track the common case ---*/
             register UInt32 cost01, cost23, cost45;
             register UInt16 icv;
             cost01 = cost23 = cost45 = 0;
-
-#           define BZ_ITER(nn)                \
-               icv = mtfv[gs+(nn)];           \
-               cost01 += s->len_pack[icv][0]; \
-               cost23 += s->len_pack[icv][1]; \
-               cost45 += s->len_pack[icv][2]; \
-
-            BZ_ITER(0);  BZ_ITER(1);  BZ_ITER(2);  BZ_ITER(3);  BZ_ITER(4);
-            BZ_ITER(5);  BZ_ITER(6);  BZ_ITER(7);  BZ_ITER(8);  BZ_ITER(9);
-            BZ_ITER(10); BZ_ITER(11); BZ_ITER(12); BZ_ITER(13); BZ_ITER(14);
-            BZ_ITER(15); BZ_ITER(16); BZ_ITER(17); BZ_ITER(18); BZ_ITER(19);
-            BZ_ITER(20); BZ_ITER(21); BZ_ITER(22); BZ_ITER(23); BZ_ITER(24);
-            BZ_ITER(25); BZ_ITER(26); BZ_ITER(27); BZ_ITER(28); BZ_ITER(29);
-            BZ_ITER(30); BZ_ITER(31); BZ_ITER(32); BZ_ITER(33); BZ_ITER(34);
-            BZ_ITER(35); BZ_ITER(36); BZ_ITER(37); BZ_ITER(38); BZ_ITER(39);
-            BZ_ITER(40); BZ_ITER(41); BZ_ITER(42); BZ_ITER(43); BZ_ITER(44);
-            BZ_ITER(45); BZ_ITER(46); BZ_ITER(47); BZ_ITER(48); BZ_ITER(49);
-
-#           undef BZ_ITER
-
+            icv = mtfv[gs+(0)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(1)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(2)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(3)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(4)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(5)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(6)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(7)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(8)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(9)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(10)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(11)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(12)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(13)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(14)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(15)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(16)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(17)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(18)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(19)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(20)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(21)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(22)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(23)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(24)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(25)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(26)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(27)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(28)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(29)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(30)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(31)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(32)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(33)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(34)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(35)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(36)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(37)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(38)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(39)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(40)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(41)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(42)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(43)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(44)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
+            icv = mtfv[gs+(45)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(46)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(47)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(48)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];; icv = mtfv[gs+(49)]; cost01 += s->len_pack[icv][0]; cost23 += s->len_pack[icv][1]; cost45 += s->len_pack[icv][2];;
             cost[0] = cost01 & 0xffff; cost[1] = cost01 >> 16;
             cost[2] = cost23 & 0xffff; cost[3] = cost23 >> 16;
             cost[4] = cost45 & 0xffff; cost[5] = cost45 >> 16;
-
          } else {
-	    /*--- slow version which correctly handles all situations ---*/
-            for (i = gs; i <= ge; i++) { 
+            for (i = gs; i <= ge; i++) {
                UInt16 icv = mtfv[i];
                for (t = 0; t < nGroups; t++) cost[t] += s->len[t][icv];
             }
          }
- 
-         /*-- 
-            Find the coding table which is best for this group,
-            and record its identity in the selector table.
-         --*/
          bc = 999999999; bt = -1;
          for (t = 0; t < nGroups; t++)
             if (cost[t] < bc) { bc = cost[t]; bt = t; };
@@ -2679,64 +2277,37 @@ void sendMTFValues ( EState* s )
          fave[bt]++;
          s->selector[nSelectors] = bt;
          nSelectors++;
-
-         /*-- 
-            Increment the symbol frequencies for the selected table.
-          --*/
          if (nGroups == 6 && 50 == ge-gs+1) {
-            /*--- fast track the common case ---*/
-
-#           define BZ_ITUR(nn) s->rfreq[bt][ mtfv[gs+(nn)] ]++
-
-            BZ_ITUR(0);  BZ_ITUR(1);  BZ_ITUR(2);  BZ_ITUR(3);  BZ_ITUR(4);
-            BZ_ITUR(5);  BZ_ITUR(6);  BZ_ITUR(7);  BZ_ITUR(8);  BZ_ITUR(9);
-            BZ_ITUR(10); BZ_ITUR(11); BZ_ITUR(12); BZ_ITUR(13); BZ_ITUR(14);
-            BZ_ITUR(15); BZ_ITUR(16); BZ_ITUR(17); BZ_ITUR(18); BZ_ITUR(19);
-            BZ_ITUR(20); BZ_ITUR(21); BZ_ITUR(22); BZ_ITUR(23); BZ_ITUR(24);
-            BZ_ITUR(25); BZ_ITUR(26); BZ_ITUR(27); BZ_ITUR(28); BZ_ITUR(29);
-            BZ_ITUR(30); BZ_ITUR(31); BZ_ITUR(32); BZ_ITUR(33); BZ_ITUR(34);
-            BZ_ITUR(35); BZ_ITUR(36); BZ_ITUR(37); BZ_ITUR(38); BZ_ITUR(39);
-            BZ_ITUR(40); BZ_ITUR(41); BZ_ITUR(42); BZ_ITUR(43); BZ_ITUR(44);
-            BZ_ITUR(45); BZ_ITUR(46); BZ_ITUR(47); BZ_ITUR(48); BZ_ITUR(49);
-
-#           undef BZ_ITUR
-
+            s->rfreq[bt][ mtfv[gs+(0)] ]++; s->rfreq[bt][ mtfv[gs+(1)] ]++; s->rfreq[bt][ mtfv[gs+(2)] ]++; s->rfreq[bt][ mtfv[gs+(3)] ]++; s->rfreq[bt][ mtfv[gs+(4)] ]++;
+            s->rfreq[bt][ mtfv[gs+(5)] ]++; s->rfreq[bt][ mtfv[gs+(6)] ]++; s->rfreq[bt][ mtfv[gs+(7)] ]++; s->rfreq[bt][ mtfv[gs+(8)] ]++; s->rfreq[bt][ mtfv[gs+(9)] ]++;
+            s->rfreq[bt][ mtfv[gs+(10)] ]++; s->rfreq[bt][ mtfv[gs+(11)] ]++; s->rfreq[bt][ mtfv[gs+(12)] ]++; s->rfreq[bt][ mtfv[gs+(13)] ]++; s->rfreq[bt][ mtfv[gs+(14)] ]++;
+            s->rfreq[bt][ mtfv[gs+(15)] ]++; s->rfreq[bt][ mtfv[gs+(16)] ]++; s->rfreq[bt][ mtfv[gs+(17)] ]++; s->rfreq[bt][ mtfv[gs+(18)] ]++; s->rfreq[bt][ mtfv[gs+(19)] ]++;
+            s->rfreq[bt][ mtfv[gs+(20)] ]++; s->rfreq[bt][ mtfv[gs+(21)] ]++; s->rfreq[bt][ mtfv[gs+(22)] ]++; s->rfreq[bt][ mtfv[gs+(23)] ]++; s->rfreq[bt][ mtfv[gs+(24)] ]++;
+            s->rfreq[bt][ mtfv[gs+(25)] ]++; s->rfreq[bt][ mtfv[gs+(26)] ]++; s->rfreq[bt][ mtfv[gs+(27)] ]++; s->rfreq[bt][ mtfv[gs+(28)] ]++; s->rfreq[bt][ mtfv[gs+(29)] ]++;
+            s->rfreq[bt][ mtfv[gs+(30)] ]++; s->rfreq[bt][ mtfv[gs+(31)] ]++; s->rfreq[bt][ mtfv[gs+(32)] ]++; s->rfreq[bt][ mtfv[gs+(33)] ]++; s->rfreq[bt][ mtfv[gs+(34)] ]++;
+            s->rfreq[bt][ mtfv[gs+(35)] ]++; s->rfreq[bt][ mtfv[gs+(36)] ]++; s->rfreq[bt][ mtfv[gs+(37)] ]++; s->rfreq[bt][ mtfv[gs+(38)] ]++; s->rfreq[bt][ mtfv[gs+(39)] ]++;
+            s->rfreq[bt][ mtfv[gs+(40)] ]++; s->rfreq[bt][ mtfv[gs+(41)] ]++; s->rfreq[bt][ mtfv[gs+(42)] ]++; s->rfreq[bt][ mtfv[gs+(43)] ]++; s->rfreq[bt][ mtfv[gs+(44)] ]++;
+            s->rfreq[bt][ mtfv[gs+(45)] ]++; s->rfreq[bt][ mtfv[gs+(46)] ]++; s->rfreq[bt][ mtfv[gs+(47)] ]++; s->rfreq[bt][ mtfv[gs+(48)] ]++; s->rfreq[bt][ mtfv[gs+(49)] ]++;
          } else {
-	    /*--- slow version which correctly handles all situations ---*/
             for (i = gs; i <= ge; i++)
                s->rfreq[bt][ mtfv[i] ]++;
          }
-
          gs = ge+1;
       }
       if (s->verbosity >= 3) {
-         VPrintf2 ( "      pass %d: size is %d, grp uses are ", 
-                   iter+1, totc/8 );
+         fprintf(stderr,"      pass %d: size is %d, grp uses are ",iter+1,totc/8);
          for (t = 0; t < nGroups; t++)
-            VPrintf1 ( "%d ", fave[t] );
-         VPrintf0 ( "\n" );
+            fprintf(stderr,"%d ",fave[t]);
+         fprintf(stderr,"\n");
       }
-
-      /*--
-        Recompute the tables based on the accumulated frequencies.
-      --*/
-      /* maxLen was changed from 20 to 17 in bzip2-1.0.3.  See 
-         comment in huffman.c for details. */
       for (t = 0; t < nGroups; t++)
-         BZ2_hbMakeCodeLengths ( &(s->len[t][0]), &(s->rfreq[t][0]), 
-                                 alphaSize, 17 /*20*/ );
+         BZ2_hbMakeCodeLengths ( &(s->len[t][0]), &(s->rfreq[t][0]),
+                                 alphaSize, 17 );
    }
-
-
-   AssertH( nGroups < 8, 3002 );
-   AssertH( nSelectors < 32768 &&
-            nSelectors <= BZ_MAX_SELECTORS,
-            3003 );
-
-
-   /*--- Compute MTF values for the selectors. ---*/
+   { if (!(nGroups < 8)) BZ2_bz__AssertH__fail ( 3002 ); };
+   { if (!(nSelectors < 32768 && nSelectors <= (2 + (900000 / 50)))) BZ2_bz__AssertH__fail ( 3003 ); };
    {
-      UChar pos[BZ_N_GROUPS], ll_i, tmp2, tmp;
+      UChar pos[6], ll_i, tmp2, tmp;
       for (i = 0; i < nGroups; i++) pos[i] = i;
       for (i = 0; i < nSelectors; i++) {
          ll_i = s->selector[i];
@@ -2752,8 +2323,6 @@ void sendMTFValues ( EState* s )
          s->selectorMtf[i] = j;
       }
    };
-
-   /*--- Assign actual codes for the tables. --*/
    for (t = 0; t < nGroups; t++) {
       minLen = 32;
       maxLen = 0;
@@ -2761,214 +2330,127 @@ void sendMTFValues ( EState* s )
          if (s->len[t][i] > maxLen) maxLen = s->len[t][i];
          if (s->len[t][i] < minLen) minLen = s->len[t][i];
       }
-      AssertH ( !(maxLen > 17 /*20*/ ), 3004 );
-      AssertH ( !(minLen < 1),  3005 );
-      BZ2_hbAssignCodes ( &(s->code[t][0]), &(s->len[t][0]), 
+      { if (!(!(maxLen > 17 ))) BZ2_bz__AssertH__fail ( 3004 ); };
+      { if (!(!(minLen < 1))) BZ2_bz__AssertH__fail ( 3005 ); };
+      BZ2_hbAssignCodes ( &(s->code[t][0]), &(s->len[t][0]),
                           minLen, maxLen, alphaSize );
    }
-
-   /*--- Transmit the mapping table. ---*/
-   { 
+   {
       Bool inUse16[16];
       for (i = 0; i < 16; i++) {
-          inUse16[i] = False;
+          inUse16[i] = ((Bool)0);
           for (j = 0; j < 16; j++)
-             if (s->inUse[i * 16 + j]) inUse16[i] = True;
+             if (s->inUse[i * 16 + j]) inUse16[i] = ((Bool)1);
       }
-     
       nBytes = s->numZ;
       for (i = 0; i < 16; i++)
          if (inUse16[i]) bsW(s,1,1); else bsW(s,1,0);
-
       for (i = 0; i < 16; i++)
          if (inUse16[i])
             for (j = 0; j < 16; j++) {
                if (s->inUse[i * 16 + j]) bsW(s,1,1); else bsW(s,1,0);
             }
-
-      if (s->verbosity >= 3) 
-         VPrintf1( "      bytes: mapping %d, ", s->numZ-nBytes );
+      if (s->verbosity >= 3)
+         fprintf(stderr,"      bytes: mapping %d, ",s->numZ-nBytes);
    }
-
-   /*--- Now the selectors. ---*/
    nBytes = s->numZ;
    bsW ( s, 3, nGroups );
    bsW ( s, 15, nSelectors );
-   for (i = 0; i < nSelectors; i++) { 
+   for (i = 0; i < nSelectors; i++) {
       for (j = 0; j < s->selectorMtf[i]; j++) bsW(s,1,1);
       bsW(s,1,0);
    }
    if (s->verbosity >= 3)
-      VPrintf1( "selectors %d, ", s->numZ-nBytes );
-
-   /*--- Now the coding tables. ---*/
+      fprintf(stderr,"selectors %d, ",s->numZ-nBytes);
    nBytes = s->numZ;
-
    for (t = 0; t < nGroups; t++) {
       Int32 curr = s->len[t][0];
       bsW ( s, 5, curr );
       for (i = 0; i < alphaSize; i++) {
-         while (curr < s->len[t][i]) { bsW(s,2,2); curr++; /* 10 */ };
-         while (curr > s->len[t][i]) { bsW(s,2,3); curr--; /* 11 */ };
+         while (curr < s->len[t][i]) { bsW(s,2,2); curr++; };
+         while (curr > s->len[t][i]) { bsW(s,2,3); curr--; };
          bsW ( s, 1, 0 );
       }
    }
-
    if (s->verbosity >= 3)
-      VPrintf1 ( "code lengths %d, ", s->numZ-nBytes );
-
-   /*--- And finally, the block data proper ---*/
+      fprintf(stderr,"code lengths %d, ",s->numZ-nBytes);
    nBytes = s->numZ;
    selCtr = 0;
    gs = 0;
-   while (True) {
+   while (((Bool)1)) {
       if (gs >= s->nMTF) break;
-      ge = gs + BZ_G_SIZE - 1; 
+      ge = gs + 50 - 1;
       if (ge >= s->nMTF) ge = s->nMTF-1;
-      AssertH ( s->selector[selCtr] < nGroups, 3006 );
-
+      { if (!(s->selector[selCtr] < nGroups)) BZ2_bz__AssertH__fail ( 3006 ); };
       if (nGroups == 6 && 50 == ge-gs+1) {
-            /*--- fast track the common case ---*/
             UInt16 mtfv_i;
-            UChar* s_len_sel_selCtr 
+            UChar* s_len_sel_selCtr
                = &(s->len[s->selector[selCtr]][0]);
             Int32* s_code_sel_selCtr
                = &(s->code[s->selector[selCtr]][0]);
-
-#           define BZ_ITAH(nn)                      \
-               mtfv_i = mtfv[gs+(nn)];              \
-               bsW ( s,                             \
-                     s_len_sel_selCtr[mtfv_i],      \
-                     s_code_sel_selCtr[mtfv_i] )
-
-            BZ_ITAH(0);  BZ_ITAH(1);  BZ_ITAH(2);  BZ_ITAH(3);  BZ_ITAH(4);
-            BZ_ITAH(5);  BZ_ITAH(6);  BZ_ITAH(7);  BZ_ITAH(8);  BZ_ITAH(9);
-            BZ_ITAH(10); BZ_ITAH(11); BZ_ITAH(12); BZ_ITAH(13); BZ_ITAH(14);
-            BZ_ITAH(15); BZ_ITAH(16); BZ_ITAH(17); BZ_ITAH(18); BZ_ITAH(19);
-            BZ_ITAH(20); BZ_ITAH(21); BZ_ITAH(22); BZ_ITAH(23); BZ_ITAH(24);
-            BZ_ITAH(25); BZ_ITAH(26); BZ_ITAH(27); BZ_ITAH(28); BZ_ITAH(29);
-            BZ_ITAH(30); BZ_ITAH(31); BZ_ITAH(32); BZ_ITAH(33); BZ_ITAH(34);
-            BZ_ITAH(35); BZ_ITAH(36); BZ_ITAH(37); BZ_ITAH(38); BZ_ITAH(39);
-            BZ_ITAH(40); BZ_ITAH(41); BZ_ITAH(42); BZ_ITAH(43); BZ_ITAH(44);
-            BZ_ITAH(45); BZ_ITAH(46); BZ_ITAH(47); BZ_ITAH(48); BZ_ITAH(49);
-
-#           undef BZ_ITAH
-
+            mtfv_i = mtfv[gs+(0)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(1)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(2)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(3)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(4)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(5)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(6)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(7)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(8)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(9)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(10)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(11)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(12)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(13)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(14)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(15)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(16)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(17)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(18)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(19)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(20)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(21)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(22)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(23)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(24)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(25)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(26)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(27)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(28)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(29)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(30)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(31)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(32)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(33)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(34)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(35)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(36)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(37)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(38)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(39)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(40)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(41)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(42)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(43)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(44)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
+            mtfv_i = mtfv[gs+(45)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(46)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(47)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(48)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] ); mtfv_i = mtfv[gs+(49)]; bsW ( s, s_len_sel_selCtr[mtfv_i], s_code_sel_selCtr[mtfv_i] );
       } else {
-	 /*--- slow version which correctly handles all situations ---*/
          for (i = gs; i <= ge; i++) {
-            bsW ( s, 
-                  s->len  [s->selector[selCtr]] [mtfv[i]],
+            bsW ( s,
+                  s->len [s->selector[selCtr]] [mtfv[i]],
                   s->code [s->selector[selCtr]] [mtfv[i]] );
          }
       }
-
-
       gs = ge+1;
       selCtr++;
    }
-   AssertH( selCtr == nSelectors, 3007 );
-
+   { if (!(selCtr == nSelectors)) BZ2_bz__AssertH__fail ( 3007 ); };
    if (s->verbosity >= 3)
-      VPrintf1( "codes %d\n", s->numZ-nBytes );
+      fprintf(stderr,"codes %d\n",s->numZ-nBytes);
 }
-
-
-/*---------------------------------------------------*/
 void BZ2_compressBlock ( EState* s, Bool is_last_block )
 {
    if (s->nblock > 0) {
-
-      BZ_FINALISE_CRC ( s->blockCRC );
+      { s->blockCRC = ~(s->blockCRC); };
       s->combinedCRC = (s->combinedCRC << 1) | (s->combinedCRC >> 31);
       s->combinedCRC ^= s->blockCRC;
       if (s->blockNo > 1) s->numZ = 0;
-
       if (s->verbosity >= 2)
-         VPrintf4( "    block %d: crc = 0x%08x, "
-                   "combined CRC = 0x%08x, size = %d\n",
-                   s->blockNo, s->blockCRC, s->combinedCRC, s->nblock );
-
+         fprintf(stderr,"    block %d: crc = 0x%08x, " "combined CRC = 0x%08x, size = %d\n",s->blockNo,s->blockCRC,s->combinedCRC,s->nblock);
       BZ2_blockSort ( s );
    }
-
    s->zbits = (UChar*) (&((UChar*)s->arr2)[s->nblock]);
-
-   /*-- If this is the first block, create the stream header. --*/
    if (s->blockNo == 1) {
       BZ2_bsInitWrite ( s );
-      bsPutUChar ( s, BZ_HDR_B );
-      bsPutUChar ( s, BZ_HDR_Z );
-      bsPutUChar ( s, BZ_HDR_h );
-      bsPutUChar ( s, (UChar)(BZ_HDR_0 + s->blockSize100k) );
+      bsPutUChar ( s, 0x42 );
+      bsPutUChar ( s, 0x5a );
+      bsPutUChar ( s, 0x68 );
+      bsPutUChar ( s, (UChar)(0x30 + s->blockSize100k) );
    }
-
    if (s->nblock > 0) {
-
       bsPutUChar ( s, 0x31 ); bsPutUChar ( s, 0x41 );
       bsPutUChar ( s, 0x59 ); bsPutUChar ( s, 0x26 );
       bsPutUChar ( s, 0x53 ); bsPutUChar ( s, 0x59 );
-
-      /*-- Now the block's CRC, so it is in a known place. --*/
       bsPutUInt32 ( s, s->blockCRC );
-
-      /*-- 
-         Now a single bit indicating (non-)randomisation. 
-         As of version 0.9.5, we use a better sorting algorithm
-         which makes randomisation unnecessary.  So always set
-         the randomised bit to 'no'.  Of course, the decoder
-         still needs to be able to handle randomised blocks
-         so as to maintain backwards compatibility with
-         older versions of bzip2.
-      --*/
       bsW(s,1,0);
-
       bsW ( s, 24, s->origPtr );
       generateMTFValues ( s );
       sendMTFValues ( s );
    }
-
-
-   /*-- If this is the last block, add the stream trailer. --*/
    if (is_last_block) {
-
       bsPutUChar ( s, 0x17 ); bsPutUChar ( s, 0x72 );
       bsPutUChar ( s, 0x45 ); bsPutUChar ( s, 0x38 );
       bsPutUChar ( s, 0x50 ); bsPutUChar ( s, 0x90 );
       bsPutUInt32 ( s, s->combinedCRC );
       if (s->verbosity >= 2)
-         VPrintf1( "    final combined CRC = 0x%08x\n   ", s->combinedCRC );
+         fprintf(stderr,"    final combined CRC = 0x%08x\n   ",s->combinedCRC);
       bsFinishWrite ( s );
    }
 }
-
-
-/*-------------------------------------------------------------*/
-/*--- end                                        compress.c ---*/
-/*-------------------------------------------------------------*/
-
-
-
-/*-------------------------------------------------------------*/
-/*--- Decompression machinery                               ---*/
-/*---                                          decompress.c ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-/*---------------------------------------------------*/
 static
 void makeMaps_d ( DState* s )
 {
@@ -2980,282 +2462,179 @@ void makeMaps_d ( DState* s )
          s->nInUse++;
       }
 }
-
-
-/*---------------------------------------------------*/
-#define RETURN(rrr)                               \
-   { retVal = rrr; goto save_state_and_return; };
-
-#define GET_BITS(lll,vvv,nnn)                     \
-   case lll: s->state = lll;                      \
-   while (True) {                                 \
-      if (s->bsLive >= nnn) {                     \
-         UInt32 v;                                \
-         v = (s->bsBuff >>                        \
-             (s->bsLive-nnn)) & ((1 << nnn)-1);   \
-         s->bsLive -= nnn;                        \
-         vvv = v;                                 \
-         break;                                   \
-      }                                           \
-      if (s->strm->avail_in == 0) RETURN(BZ_OK);  \
-      s->bsBuff                                   \
-         = (s->bsBuff << 8) |                     \
-           ((UInt32)                              \
-              (*((UChar*)(s->strm->next_in))));   \
-      s->bsLive += 8;                             \
-      s->strm->next_in++;                         \
-      s->strm->avail_in--;                        \
-      s->strm->total_in_lo32++;                   \
-      if (s->strm->total_in_lo32 == 0)            \
-         s->strm->total_in_hi32++;                \
-   }
-
-#define GET_UCHAR(lll,uuu)                        \
-   GET_BITS(lll,uuu,8)
-
-#define GET_BIT(lll,uuu)                          \
-   GET_BITS(lll,uuu,1)
-
-/*---------------------------------------------------*/
-#define GET_MTF_VAL(label1,label2,lval)           \
-{                                                 \
-   if (groupPos == 0) {                           \
-      groupNo++;                                  \
-      if (groupNo >= nSelectors)                  \
-         RETURN(BZ_DATA_ERROR);                   \
-      groupPos = BZ_G_SIZE;                       \
-      gSel = s->selector[groupNo];                \
-      gMinlen = s->minLens[gSel];                 \
-      gLimit = &(s->limit[gSel][0]);              \
-      gPerm = &(s->perm[gSel][0]);                \
-      gBase = &(s->base[gSel][0]);                \
-   }                                              \
-   groupPos--;                                    \
-   zn = gMinlen;                                  \
-   GET_BITS(label1, zvec, zn);                    \
-   while (1) {                                    \
-      if (zn > 20 /* the longest code */)         \
-         RETURN(BZ_DATA_ERROR);                   \
-      if (zvec <= gLimit[zn]) break;              \
-      zn++;                                       \
-      GET_BIT(label2, zj);                        \
-      zvec = (zvec << 1) | zj;                    \
-   };                                             \
-   if (zvec - gBase[zn] < 0                       \
-       || zvec - gBase[zn] >= BZ_MAX_ALPHA_SIZE)  \
-      RETURN(BZ_DATA_ERROR);                      \
-   lval = gPerm[zvec - gBase[zn]];                \
-}
-
-
-/*---------------------------------------------------*/
 Int32 BZ2_decompress ( DState* s )
 {
-   UChar      uc;
-   Int32      retVal;
-   Int32      minLen, maxLen;
+   UChar uc;
+   Int32 retVal;
+   Int32 minLen, maxLen;
    bz_stream* strm = s->strm;
-
-   /* stuff that needs to be saved/restored */
-   Int32  i;
-   Int32  j;
-   Int32  t;
-   Int32  alphaSize;
-   Int32  nGroups;
-   Int32  nSelectors;
-   Int32  EOB;
-   Int32  groupNo;
-   Int32  groupPos;
-   Int32  nextSym;
-   Int32  nblockMAX;
-   Int32  nblock;
-   Int32  es;
-   Int32  N;
-   Int32  curr;
-   Int32  zt;
-   Int32  zn; 
-   Int32  zvec;
-   Int32  zj;
-   Int32  gSel;
-   Int32  gMinlen;
+   Int32 i;
+   Int32 j;
+   Int32 t;
+   Int32 alphaSize;
+   Int32 nGroups;
+   Int32 nSelectors;
+   Int32 EOB;
+   Int32 groupNo;
+   Int32 groupPos;
+   Int32 nextSym;
+   Int32 nblockMAX;
+   Int32 nblock;
+   Int32 es;
+   Int32 N;
+   Int32 curr;
+   Int32 zt;
+   Int32 zn;
+   Int32 zvec;
+   Int32 zj;
+   Int32 gSel;
+   Int32 gMinlen;
    Int32* gLimit;
    Int32* gBase;
    Int32* gPerm;
-
-   if (s->state == BZ_X_MAGIC_1) {
-      /*initialise the save area*/
-      s->save_i           = 0;
-      s->save_j           = 0;
-      s->save_t           = 0;
-      s->save_alphaSize   = 0;
-      s->save_nGroups     = 0;
-      s->save_nSelectors  = 0;
-      s->save_EOB         = 0;
-      s->save_groupNo     = 0;
-      s->save_groupPos    = 0;
-      s->save_nextSym     = 0;
-      s->save_nblockMAX   = 0;
-      s->save_nblock      = 0;
-      s->save_es          = 0;
-      s->save_N           = 0;
-      s->save_curr        = 0;
-      s->save_zt          = 0;
-      s->save_zn          = 0;
-      s->save_zvec        = 0;
-      s->save_zj          = 0;
-      s->save_gSel        = 0;
-      s->save_gMinlen     = 0;
-      s->save_gLimit      = NULL;
-      s->save_gBase       = NULL;
-      s->save_gPerm       = NULL;
+   if (s->state == 10) {
+      s->save_i = 0;
+      s->save_j = 0;
+      s->save_t = 0;
+      s->save_alphaSize = 0;
+      s->save_nGroups = 0;
+      s->save_nSelectors = 0;
+      s->save_EOB = 0;
+      s->save_groupNo = 0;
+      s->save_groupPos = 0;
+      s->save_nextSym = 0;
+      s->save_nblockMAX = 0;
+      s->save_nblock = 0;
+      s->save_es = 0;
+      s->save_N = 0;
+      s->save_curr = 0;
+      s->save_zt = 0;
+      s->save_zn = 0;
+      s->save_zvec = 0;
+      s->save_zj = 0;
+      s->save_gSel = 0;
+      s->save_gMinlen = 0;
+      s->save_gLimit = ((void*)0);
+      s->save_gBase = ((void*)0);
+      s->save_gPerm = ((void*)0);
    }
-
-   /*restore from the save area*/
-   i           = s->save_i;
-   j           = s->save_j;
-   t           = s->save_t;
-   alphaSize   = s->save_alphaSize;
-   nGroups     = s->save_nGroups;
-   nSelectors  = s->save_nSelectors;
-   EOB         = s->save_EOB;
-   groupNo     = s->save_groupNo;
-   groupPos    = s->save_groupPos;
-   nextSym     = s->save_nextSym;
-   nblockMAX   = s->save_nblockMAX;
-   nblock      = s->save_nblock;
-   es          = s->save_es;
-   N           = s->save_N;
-   curr        = s->save_curr;
-   zt          = s->save_zt;
-   zn          = s->save_zn; 
-   zvec        = s->save_zvec;
-   zj          = s->save_zj;
-   gSel        = s->save_gSel;
-   gMinlen     = s->save_gMinlen;
-   gLimit      = s->save_gLimit;
-   gBase       = s->save_gBase;
-   gPerm       = s->save_gPerm;
-
-   retVal = BZ_OK;
-
+   i = s->save_i;
+   j = s->save_j;
+   t = s->save_t;
+   alphaSize = s->save_alphaSize;
+   nGroups = s->save_nGroups;
+   nSelectors = s->save_nSelectors;
+   EOB = s->save_EOB;
+   groupNo = s->save_groupNo;
+   groupPos = s->save_groupPos;
+   nextSym = s->save_nextSym;
+   nblockMAX = s->save_nblockMAX;
+   nblock = s->save_nblock;
+   es = s->save_es;
+   N = s->save_N;
+   curr = s->save_curr;
+   zt = s->save_zt;
+   zn = s->save_zn;
+   zvec = s->save_zvec;
+   zj = s->save_zj;
+   gSel = s->save_gSel;
+   gMinlen = s->save_gMinlen;
+   gLimit = s->save_gLimit;
+   gBase = s->save_gBase;
+   gPerm = s->save_gPerm;
+   retVal = 0;
    switch (s->state) {
-
-      GET_UCHAR(BZ_X_MAGIC_1, uc);
-      if (uc != BZ_HDR_B) RETURN(BZ_DATA_ERROR_MAGIC);
-
-      GET_UCHAR(BZ_X_MAGIC_2, uc);
-      if (uc != BZ_HDR_Z) RETURN(BZ_DATA_ERROR_MAGIC);
-
-      GET_UCHAR(BZ_X_MAGIC_3, uc)
-      if (uc != BZ_HDR_h) RETURN(BZ_DATA_ERROR_MAGIC);
-
-      GET_BITS(BZ_X_MAGIC_4, s->blockSize100k, 8)
-      if (s->blockSize100k < (BZ_HDR_0 + 1) || 
-          s->blockSize100k > (BZ_HDR_0 + 9)) RETURN(BZ_DATA_ERROR_MAGIC);
-      s->blockSize100k -= BZ_HDR_0;
-
+      case 10: s->state = 10; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x42) { retVal = (-5); goto save_state_and_return; };;
+      case 11: s->state = 11; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x5a) { retVal = (-5); goto save_state_and_return; };;
+      case 12: s->state = 12; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; }
+      if (uc != 0x68) { retVal = (-5); goto save_state_and_return; };;
+      case 13: s->state = 13; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; s->blockSize100k = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; }
+      if (s->blockSize100k < (0x30 + 1) ||
+          s->blockSize100k > (0x30 + 9)) { retVal = (-5); goto save_state_and_return; };;
+      s->blockSize100k -= 0x30;
       if (s->smallDecompress) {
-         s->ll16 = BZALLOC( s->blockSize100k * 100000 * sizeof(UInt16) );
-         s->ll4  = BZALLOC( 
-                      ((1 + s->blockSize100k * 100000) >> 1) * sizeof(UChar) 
-                   );
-         if (s->ll16 == NULL || s->ll4 == NULL) RETURN(BZ_MEM_ERROR);
+         s->ll16 = (strm->bzalloc)(strm->opaque,(s->blockSize100k * 100000 * sizeof(UInt16)),1);
+         s->ll4 = (strm->bzalloc)(strm->opaque,(((1 + s->blockSize100k * 100000) >> 1) * sizeof(UChar)),1);
+         if (s->ll16 == ((void*)0) || s->ll4 == ((void*)0)) { retVal = (-3); goto save_state_and_return; };;
       } else {
-         s->tt  = BZALLOC( s->blockSize100k * 100000 * sizeof(Int32) );
-         if (s->tt == NULL) RETURN(BZ_MEM_ERROR);
+         s->tt = (strm->bzalloc)(strm->opaque,(s->blockSize100k * 100000 * sizeof(Int32)),1);
+         if (s->tt == ((void*)0)) { retVal = (-3); goto save_state_and_return; };;
       }
-
-      GET_UCHAR(BZ_X_BLKHDR_1, uc);
-
+      case 14: s->state = 14; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       if (uc == 0x17) goto endhdr_2;
-      if (uc != 0x31) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_BLKHDR_2, uc);
-      if (uc != 0x41) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_BLKHDR_3, uc);
-      if (uc != 0x59) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_BLKHDR_4, uc);
-      if (uc != 0x26) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_BLKHDR_5, uc);
-      if (uc != 0x53) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_BLKHDR_6, uc);
-      if (uc != 0x59) RETURN(BZ_DATA_ERROR);
-
+      if (uc != 0x31) { retVal = (-4); goto save_state_and_return; };;
+      case 15: s->state = 15; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x41) { retVal = (-4); goto save_state_and_return; };;
+      case 16: s->state = 16; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x59) { retVal = (-4); goto save_state_and_return; };;
+      case 17: s->state = 17; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x26) { retVal = (-4); goto save_state_and_return; };;
+      case 18: s->state = 18; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x53) { retVal = (-4); goto save_state_and_return; };;
+      case 19: s->state = 19; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x59) { retVal = (-4); goto save_state_and_return; };;
       s->currBlockNo++;
       if (s->verbosity >= 2)
-         VPrintf1 ( "\n    [%d: huff+mtf ", s->currBlockNo );
- 
+         fprintf(stderr,"\n    [%d: huff+mtf ",s->currBlockNo);
       s->storedBlockCRC = 0;
-      GET_UCHAR(BZ_X_BCRC_1, uc);
+      case 20: s->state = 20; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->storedBlockCRC = (s->storedBlockCRC << 8) | ((UInt32)uc);
-      GET_UCHAR(BZ_X_BCRC_2, uc);
+      case 21: s->state = 21; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->storedBlockCRC = (s->storedBlockCRC << 8) | ((UInt32)uc);
-      GET_UCHAR(BZ_X_BCRC_3, uc);
+      case 22: s->state = 22; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->storedBlockCRC = (s->storedBlockCRC << 8) | ((UInt32)uc);
-      GET_UCHAR(BZ_X_BCRC_4, uc);
+      case 23: s->state = 23; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->storedBlockCRC = (s->storedBlockCRC << 8) | ((UInt32)uc);
-
-      GET_BITS(BZ_X_RANDBIT, s->blockRandomised, 1);
-
+      case 24: s->state = 24; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; s->blockRandomised = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->origPtr = 0;
-      GET_UCHAR(BZ_X_ORIGPTR_1, uc);
+      case 25: s->state = 25; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->origPtr = (s->origPtr << 8) | ((Int32)uc);
-      GET_UCHAR(BZ_X_ORIGPTR_2, uc);
+      case 26: s->state = 26; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->origPtr = (s->origPtr << 8) | ((Int32)uc);
-      GET_UCHAR(BZ_X_ORIGPTR_3, uc);
+      case 27: s->state = 27; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->origPtr = (s->origPtr << 8) | ((Int32)uc);
-
       if (s->origPtr < 0)
-         RETURN(BZ_DATA_ERROR);
-      if (s->origPtr > 10 + 100000*s->blockSize100k) 
-         RETURN(BZ_DATA_ERROR);
-
-      /*--- Receive the mapping table ---*/
+         { retVal = (-4); goto save_state_and_return; };;
+      if (s->origPtr > 10 + 100000*s->blockSize100k)
+         { retVal = (-4); goto save_state_and_return; };;
       for (i = 0; i < 16; i++) {
-         GET_BIT(BZ_X_MAPPING_1, uc);
-         if (uc == 1) 
-            s->inUse16[i] = True; else 
-            s->inUse16[i] = False;
+         case 28: s->state = 28; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+         if (uc == 1)
+            s->inUse16[i] = ((Bool)1); else
+            s->inUse16[i] = ((Bool)0);
       }
-
-      for (i = 0; i < 256; i++) s->inUse[i] = False;
-
+      for (i = 0; i < 256; i++) s->inUse[i] = ((Bool)0);
       for (i = 0; i < 16; i++)
          if (s->inUse16[i])
             for (j = 0; j < 16; j++) {
-               GET_BIT(BZ_X_MAPPING_2, uc);
-               if (uc == 1) s->inUse[i * 16 + j] = True;
+               case 29: s->state = 29; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+               if (uc == 1) s->inUse[i * 16 + j] = ((Bool)1);
             }
       makeMaps_d ( s );
-      if (s->nInUse == 0) RETURN(BZ_DATA_ERROR);
+      if (s->nInUse == 0) { retVal = (-4); goto save_state_and_return; };;
       alphaSize = s->nInUse+2;
-
-      /*--- Now the selectors ---*/
-      GET_BITS(BZ_X_SELECTOR_1, nGroups, 3);
-      if (nGroups < 2 || nGroups > BZ_N_GROUPS) RETURN(BZ_DATA_ERROR);
-      GET_BITS(BZ_X_SELECTOR_2, nSelectors, 15);
-      if (nSelectors < 1) RETURN(BZ_DATA_ERROR);
+      case 30: s->state = 30; while (((Bool)1)) { if (s->bsLive >= 3) { UInt32 v; v = (s->bsBuff >> (s->bsLive-3)) & ((1 << 3)-1); s->bsLive -= 3; nGroups = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (nGroups < 2 || nGroups > 6) { retVal = (-4); goto save_state_and_return; };;
+      case 31: s->state = 31; while (((Bool)1)) { if (s->bsLive >= 15) { UInt32 v; v = (s->bsBuff >> (s->bsLive-15)) & ((1 << 15)-1); s->bsLive -= 15; nSelectors = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (nSelectors < 1) { retVal = (-4); goto save_state_and_return; };;
       for (i = 0; i < nSelectors; i++) {
          j = 0;
-         while (True) {
-            GET_BIT(BZ_X_SELECTOR_3, uc);
+         while (((Bool)1)) {
+            case 32: s->state = 32; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
             if (uc == 0) break;
             j++;
-            if (j >= nGroups) RETURN(BZ_DATA_ERROR);
+            if (j >= nGroups) { retVal = (-4); goto save_state_and_return; };;
          }
-         /* Having more than BZ_MAX_SELECTORS doesn't make much sense
-            since they will never be used, but some implementations might
-            "round up" the number of selectors, so just ignore those. */
-         if (i < BZ_MAX_SELECTORS)
+         if (i < (2 + (900000 / 50)))
            s->selectorMtf[i] = j;
       }
-      if (nSelectors > BZ_MAX_SELECTORS)
-        nSelectors = BZ_MAX_SELECTORS;
-
-      /*--- Undo the MTF values for the selectors. ---*/
+      if (nSelectors > (2 + (900000 / 50)))
+        nSelectors = (2 + (900000 / 50));
       {
-         UChar pos[BZ_N_GROUPS], tmp, v;
+         UChar pos[6], tmp, v;
          for (v = 0; v < nGroups; v++) pos[v] = v;
-   
          for (i = 0; i < nSelectors; i++) {
             v = s->selectorMtf[i];
             tmp = pos[v];
@@ -3264,23 +2643,19 @@ Int32 BZ2_decompress ( DState* s )
             s->selector[i] = tmp;
          }
       }
-
-      /*--- Now the coding tables ---*/
       for (t = 0; t < nGroups; t++) {
-         GET_BITS(BZ_X_CODING_1, curr, 5);
+         case 33: s->state = 33; while (((Bool)1)) { if (s->bsLive >= 5) { UInt32 v; v = (s->bsBuff >> (s->bsLive-5)) & ((1 << 5)-1); s->bsLive -= 5; curr = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
          for (i = 0; i < alphaSize; i++) {
-            while (True) {
-               if (curr < 1 || curr > 20) RETURN(BZ_DATA_ERROR);
-               GET_BIT(BZ_X_CODING_2, uc);
+            while (((Bool)1)) {
+               if (curr < 1 || curr > 20) { retVal = (-4); goto save_state_and_return; };;
+               case 34: s->state = 34; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
                if (uc == 0) break;
-               GET_BIT(BZ_X_CODING_3, uc);
+               case 35: s->state = 35; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
                if (uc == 0) curr++; else curr--;
             }
             s->len[t][i] = curr;
          }
       }
-
-      /*--- Create the Huffman decoding tables ---*/
       for (t = 0; t < nGroups; t++) {
          minLen = 32;
          maxLen = 0;
@@ -3288,134 +2663,106 @@ Int32 BZ2_decompress ( DState* s )
             if (s->len[t][i] > maxLen) maxLen = s->len[t][i];
             if (s->len[t][i] < minLen) minLen = s->len[t][i];
          }
-         BZ2_hbCreateDecodeTables ( 
-            &(s->limit[t][0]), 
-            &(s->base[t][0]), 
-            &(s->perm[t][0]), 
+         BZ2_hbCreateDecodeTables (
+            &(s->limit[t][0]),
+            &(s->base[t][0]),
+            &(s->perm[t][0]),
             &(s->len[t][0]),
             minLen, maxLen, alphaSize
          );
          s->minLens[t] = minLen;
       }
-
-      /*--- Now the MTF values ---*/
-
-      EOB      = s->nInUse+1;
+      EOB = s->nInUse+1;
       nblockMAX = 100000 * s->blockSize100k;
-      groupNo  = -1;
+      groupNo = -1;
       groupPos = 0;
-
       for (i = 0; i <= 255; i++) s->unzftab[i] = 0;
-
-      /*-- MTF init --*/
       {
          Int32 ii, jj, kk;
-         kk = MTFA_SIZE-1;
-         for (ii = 256 / MTFL_SIZE - 1; ii >= 0; ii--) {
-            for (jj = MTFL_SIZE-1; jj >= 0; jj--) {
-               s->mtfa[kk] = (UChar)(ii * MTFL_SIZE + jj);
+         kk = 4096 -1;
+         for (ii = 256 / 16 - 1; ii >= 0; ii--) {
+            for (jj = 16 -1; jj >= 0; jj--) {
+               s->mtfa[kk] = (UChar)(ii * 16 + jj);
                kk--;
             }
             s->mtfbase[ii] = kk + 1;
          }
       }
-      /*-- end MTF init --*/
-
       nblock = 0;
-      GET_MTF_VAL(BZ_X_MTF_1, BZ_X_MTF_2, nextSym);
-
-      while (True) {
-
+      { if (groupPos == 0) { groupNo++; if (groupNo >= nSelectors) { retVal = (-4); goto save_state_and_return; };; groupPos = 50; gSel = s->selector[groupNo]; gMinlen = s->minLens[gSel]; gLimit = &(s->limit[gSel][0]); gPerm = &(s->perm[gSel][0]); gBase = &(s->base[gSel][0]); } groupPos--; zn = gMinlen; case 36: s->state = 36; while (((Bool)1)) { if (s->bsLive >= zn) { UInt32 v; v = (s->bsBuff >> (s->bsLive-zn)) & ((1 << zn)-1); s->bsLive -= zn; zvec = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; }; while (1) { if (zn > 20 ) { retVal = (-4); goto save_state_and_return; };; if (zvec <= gLimit[zn]) break; zn++; case 37: s->state = 37; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; zj = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; }; zvec = (zvec << 1) | zj; }; if (zvec - gBase[zn] < 0 || zvec - gBase[zn] >= 258) { retVal = (-4); goto save_state_and_return; };; nextSym = gPerm[zvec - gBase[zn]]; };
+      while (((Bool)1)) {
          if (nextSym == EOB) break;
-
-         if (nextSym == BZ_RUNA || nextSym == BZ_RUNB) {
-
+         if (nextSym == 0 || nextSym == 1) {
             es = -1;
             N = 1;
             do {
-               /* Check that N doesn't get too big, so that es doesn't
-                  go negative.  The maximum value that can be
-                  RUNA/RUNB encoded is equal to the block size (post
-                  the initial RLE), viz, 900k, so bounding N at 2
-                  million should guard against overflow without
-                  rejecting any legitimate inputs. */
-               if (N >= 2*1024*1024) RETURN(BZ_DATA_ERROR);
-               if (nextSym == BZ_RUNA) es = es + (0+1) * N; else
-               if (nextSym == BZ_RUNB) es = es + (1+1) * N;
+               if (N >= 2*1024*1024) { retVal = (-4); goto save_state_and_return; };;
+               if (nextSym == 0) es = es + (0+1) * N; else
+               if (nextSym == 1) es = es + (1+1) * N;
                N = N * 2;
-               GET_MTF_VAL(BZ_X_MTF_3, BZ_X_MTF_4, nextSym);
+               { if (groupPos == 0) { groupNo++; if (groupNo >= nSelectors) { retVal = (-4); goto save_state_and_return; };; groupPos = 50; gSel = s->selector[groupNo]; gMinlen = s->minLens[gSel]; gLimit = &(s->limit[gSel][0]); gPerm = &(s->perm[gSel][0]); gBase = &(s->base[gSel][0]); } groupPos--; zn = gMinlen; case 38: s->state = 38; while (((Bool)1)) { if (s->bsLive >= zn) { UInt32 v; v = (s->bsBuff >> (s->bsLive-zn)) & ((1 << zn)-1); s->bsLive -= zn; zvec = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; }; while (1) { if (zn > 20 ) { retVal = (-4); goto save_state_and_return; };; if (zvec <= gLimit[zn]) break; zn++; case 39: s->state = 39; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; zj = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; }; zvec = (zvec << 1) | zj; }; if (zvec - gBase[zn] < 0 || zvec - gBase[zn] >= 258) { retVal = (-4); goto save_state_and_return; };; nextSym = gPerm[zvec - gBase[zn]]; };
             }
-               while (nextSym == BZ_RUNA || nextSym == BZ_RUNB);
-
+               while (nextSym == 0 || nextSym == 1);
             es++;
             uc = s->seqToUnseq[ s->mtfa[s->mtfbase[0]] ];
             s->unzftab[uc] += es;
-
             if (s->smallDecompress)
                while (es > 0) {
-                  if (nblock >= nblockMAX) RETURN(BZ_DATA_ERROR);
+                  if (nblock >= nblockMAX) { retVal = (-4); goto save_state_and_return; };;
                   s->ll16[nblock] = (UInt16)uc;
                   nblock++;
                   es--;
                }
             else
                while (es > 0) {
-                  if (nblock >= nblockMAX) RETURN(BZ_DATA_ERROR);
+                  if (nblock >= nblockMAX) { retVal = (-4); goto save_state_and_return; };;
                   s->tt[nblock] = (UInt32)uc;
                   nblock++;
                   es--;
                };
-
             continue;
-
          } else {
-
-            if (nblock >= nblockMAX) RETURN(BZ_DATA_ERROR);
-
-            /*-- uc = MTF ( nextSym-1 ) --*/
+            if (nblock >= nblockMAX) { retVal = (-4); goto save_state_and_return; };;
             {
                Int32 ii, jj, kk, pp, lno, off;
                UInt32 nn;
                nn = (UInt32)(nextSym - 1);
-
-               if (nn < MTFL_SIZE) {
-                  /* avoid general-case expense */
+               if (nn < 16) {
                   pp = s->mtfbase[0];
                   uc = s->mtfa[pp+nn];
                   while (nn > 3) {
                      Int32 z = pp+nn;
-                     s->mtfa[(z)  ] = s->mtfa[(z)-1];
+                     s->mtfa[(z) ] = s->mtfa[(z)-1];
                      s->mtfa[(z)-1] = s->mtfa[(z)-2];
                      s->mtfa[(z)-2] = s->mtfa[(z)-3];
                      s->mtfa[(z)-3] = s->mtfa[(z)-4];
                      nn -= 4;
                   }
-                  while (nn > 0) { 
-                     s->mtfa[(pp+nn)] = s->mtfa[(pp+nn)-1]; nn--; 
+                  while (nn > 0) {
+                     s->mtfa[(pp+nn)] = s->mtfa[(pp+nn)-1]; nn--;
                   };
                   s->mtfa[pp] = uc;
-               } else { 
-                  /* general case */
-                  lno = nn / MTFL_SIZE;
-                  off = nn % MTFL_SIZE;
+               } else {
+                  lno = nn / 16;
+                  off = nn % 16;
                   pp = s->mtfbase[lno] + off;
                   uc = s->mtfa[pp];
-                  while (pp > s->mtfbase[lno]) { 
-                     s->mtfa[pp] = s->mtfa[pp-1]; pp--; 
+                  while (pp > s->mtfbase[lno]) {
+                     s->mtfa[pp] = s->mtfa[pp-1]; pp--;
                   };
                   s->mtfbase[lno]++;
                   while (lno > 0) {
                      s->mtfbase[lno]--;
-                     s->mtfa[s->mtfbase[lno]] 
-                        = s->mtfa[s->mtfbase[lno-1] + MTFL_SIZE - 1];
+                     s->mtfa[s->mtfbase[lno]]
+                        = s->mtfa[s->mtfbase[lno-1] + 16 - 1];
                      lno--;
                   }
                   s->mtfbase[0]--;
                   s->mtfa[s->mtfbase[0]] = uc;
                   if (s->mtfbase[0] == 0) {
-                     kk = MTFA_SIZE-1;
-                     for (ii = 256 / MTFL_SIZE-1; ii >= 0; ii--) {
-                        for (jj = MTFL_SIZE-1; jj >= 0; jj--) {
+                     kk = 4096 -1;
+                     for (ii = 256 / 16 -1; ii >= 0; ii--) {
+                        for (jj = 16 -1; jj >= 0; jj--) {
                            s->mtfa[kk] = s->mtfa[s->mtfbase[ii] + jj];
                            kk--;
                         }
@@ -3424,220 +2771,136 @@ Int32 BZ2_decompress ( DState* s )
                   }
                }
             }
-            /*-- end uc = MTF ( nextSym-1 ) --*/
-
             s->unzftab[s->seqToUnseq[uc]]++;
             if (s->smallDecompress)
                s->ll16[nblock] = (UInt16)(s->seqToUnseq[uc]); else
-               s->tt[nblock]   = (UInt32)(s->seqToUnseq[uc]);
+               s->tt[nblock] = (UInt32)(s->seqToUnseq[uc]);
             nblock++;
-
-            GET_MTF_VAL(BZ_X_MTF_5, BZ_X_MTF_6, nextSym);
+            { if (groupPos == 0) { groupNo++; if (groupNo >= nSelectors) { retVal = (-4); goto save_state_and_return; };; groupPos = 50; gSel = s->selector[groupNo]; gMinlen = s->minLens[gSel]; gLimit = &(s->limit[gSel][0]); gPerm = &(s->perm[gSel][0]); gBase = &(s->base[gSel][0]); } groupPos--; zn = gMinlen; case 40: s->state = 40; while (((Bool)1)) { if (s->bsLive >= zn) { UInt32 v; v = (s->bsBuff >> (s->bsLive-zn)) & ((1 << zn)-1); s->bsLive -= zn; zvec = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; }; while (1) { if (zn > 20 ) { retVal = (-4); goto save_state_and_return; };; if (zvec <= gLimit[zn]) break; zn++; case 41: s->state = 41; while (((Bool)1)) { if (s->bsLive >= 1) { UInt32 v; v = (s->bsBuff >> (s->bsLive-1)) & ((1 << 1)-1); s->bsLive -= 1; zj = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; }; zvec = (zvec << 1) | zj; }; if (zvec - gBase[zn] < 0 || zvec - gBase[zn] >= 258) { retVal = (-4); goto save_state_and_return; };; nextSym = gPerm[zvec - gBase[zn]]; };
             continue;
          }
       }
-
-      /* Now we know what nblock is, we can do a better sanity
-         check on s->origPtr.
-      */
       if (s->origPtr < 0 || s->origPtr >= nblock)
-         RETURN(BZ_DATA_ERROR);
-
-      /*-- Set up cftab to facilitate generation of T^(-1) --*/
-      /* Check: unzftab entries in range. */
+         { retVal = (-4); goto save_state_and_return; };;
       for (i = 0; i <= 255; i++) {
          if (s->unzftab[i] < 0 || s->unzftab[i] > nblock)
-            RETURN(BZ_DATA_ERROR);
+            { retVal = (-4); goto save_state_and_return; };;
       }
-      /* Actually generate cftab. */
       s->cftab[0] = 0;
       for (i = 1; i <= 256; i++) s->cftab[i] = s->unzftab[i-1];
       for (i = 1; i <= 256; i++) s->cftab[i] += s->cftab[i-1];
-      /* Check: cftab entries in range. */
       for (i = 0; i <= 256; i++) {
          if (s->cftab[i] < 0 || s->cftab[i] > nblock) {
-            /* s->cftab[i] can legitimately be == nblock */
-            RETURN(BZ_DATA_ERROR);
+            { retVal = (-4); goto save_state_and_return; };;
          }
       }
-      /* Check: cftab entries non-descending. */
       for (i = 1; i <= 256; i++) {
          if (s->cftab[i-1] > s->cftab[i]) {
-            RETURN(BZ_DATA_ERROR);
+            { retVal = (-4); goto save_state_and_return; };;
          }
       }
-
       s->state_out_len = 0;
-      s->state_out_ch  = 0;
-      BZ_INITIALISE_CRC ( s->calculatedBlockCRC );
-      s->state = BZ_X_OUTPUT;
-      if (s->verbosity >= 2) VPrintf0 ( "rt+rld" );
-
+      s->state_out_ch = 0;
+      { s->calculatedBlockCRC = 0xffffffffL; };
+      s->state = 2;
+      if (s->verbosity >= 2) fprintf(stderr,"rt+rld");
       if (s->smallDecompress) {
-
-         /*-- Make a copy of cftab, used in generation of T --*/
          for (i = 0; i <= 256; i++) s->cftabCopy[i] = s->cftab[i];
-
-         /*-- compute the T vector --*/
          for (i = 0; i < nblock; i++) {
             uc = (UChar)(s->ll16[i]);
-            SET_LL(i, s->cftabCopy[uc]);
+            { s->ll16[i] = (UInt16)(s->cftabCopy[uc] & 0x0000ffff); { if (((i) & 0x1) == 0) s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0xf0) | (s->cftabCopy[uc] >> 16); else s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0x0f) | ((s->cftabCopy[uc] >> 16) << 4); }; };
             s->cftabCopy[uc]++;
          }
-
-         /*-- Compute T^(-1) by pointer reversal on T --*/
          i = s->origPtr;
-         j = GET_LL(i);
+         j = (((UInt32)s->ll16[i]) | (((((UInt32)(s->ll4[(i) >> 1])) >> (((i) << 2) & 0x4)) & 0xF) << 16));
          do {
-            Int32 tmp = GET_LL(j);
-            SET_LL(j, i);
+            Int32 tmp = (((UInt32)s->ll16[j]) | (((((UInt32)(s->ll4[(j) >> 1])) >> (((j) << 2) & 0x4)) & 0xF) << 16));
+            { s->ll16[j] = (UInt16)(i & 0x0000ffff); { if (((j) & 0x1) == 0) s->ll4[(j) >> 1] = (s->ll4[(j) >> 1] & 0xf0) | (i >> 16); else s->ll4[(j) >> 1] = (s->ll4[(j) >> 1] & 0x0f) | ((i >> 16) << 4); }; };
             i = j;
             j = tmp;
          }
             while (i != s->origPtr);
-
          s->tPos = s->origPtr;
          s->nblock_used = 0;
          if (s->blockRandomised) {
-            BZ_RAND_INIT_MASK;
-            BZ_GET_SMALL(s->k0); s->nblock_used++;
-            BZ_RAND_UPD_MASK; s->k0 ^= BZ_RAND_MASK; 
+            s->rNToGo = 0; s->rTPos = 0;
+            if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->k0 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; s->nblock_used++;
+            if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;; s->k0 ^= ((s->rNToGo == 1) ? 1 : 0);
          } else {
-            BZ_GET_SMALL(s->k0); s->nblock_used++;
+            if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->k0 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; s->nblock_used++;
          }
-
       } else {
-
-         /*-- compute the T^(-1) vector --*/
          for (i = 0; i < nblock; i++) {
             uc = (UChar)(s->tt[i] & 0xff);
             s->tt[s->cftab[uc]] |= (i << 8);
             s->cftab[uc]++;
          }
-
          s->tPos = s->tt[s->origPtr] >> 8;
          s->nblock_used = 0;
          if (s->blockRandomised) {
-            BZ_RAND_INIT_MASK;
-            BZ_GET_FAST(s->k0); s->nblock_used++;
-            BZ_RAND_UPD_MASK; s->k0 ^= BZ_RAND_MASK; 
+            s->rNToGo = 0; s->rTPos = 0;
+            if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->tPos = s->tt[s->tPos]; s->k0 = (UChar)(s->tPos & 0xff); s->tPos >>= 8;; s->nblock_used++;
+            if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;; s->k0 ^= ((s->rNToGo == 1) ? 1 : 0);
          } else {
-            BZ_GET_FAST(s->k0); s->nblock_used++;
+            if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->tPos = s->tt[s->tPos]; s->k0 = (UChar)(s->tPos & 0xff); s->tPos >>= 8;; s->nblock_used++;
          }
-
       }
-
-      RETURN(BZ_OK);
-
-
-
+      { retVal = 0; goto save_state_and_return; };;
     endhdr_2:
-
-      GET_UCHAR(BZ_X_ENDHDR_2, uc);
-      if (uc != 0x72) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_ENDHDR_3, uc);
-      if (uc != 0x45) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_ENDHDR_4, uc);
-      if (uc != 0x38) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_ENDHDR_5, uc);
-      if (uc != 0x50) RETURN(BZ_DATA_ERROR);
-      GET_UCHAR(BZ_X_ENDHDR_6, uc);
-      if (uc != 0x90) RETURN(BZ_DATA_ERROR);
-
+      case 42: s->state = 42; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x72) { retVal = (-4); goto save_state_and_return; };;
+      case 43: s->state = 43; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x45) { retVal = (-4); goto save_state_and_return; };;
+      case 44: s->state = 44; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x38) { retVal = (-4); goto save_state_and_return; };;
+      case 45: s->state = 45; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x50) { retVal = (-4); goto save_state_and_return; };;
+      case 46: s->state = 46; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
+      if (uc != 0x90) { retVal = (-4); goto save_state_and_return; };;
       s->storedCombinedCRC = 0;
-      GET_UCHAR(BZ_X_CCRC_1, uc);
+      case 47: s->state = 47; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->storedCombinedCRC = (s->storedCombinedCRC << 8) | ((UInt32)uc);
-      GET_UCHAR(BZ_X_CCRC_2, uc);
+      case 48: s->state = 48; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->storedCombinedCRC = (s->storedCombinedCRC << 8) | ((UInt32)uc);
-      GET_UCHAR(BZ_X_CCRC_3, uc);
+      case 49: s->state = 49; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->storedCombinedCRC = (s->storedCombinedCRC << 8) | ((UInt32)uc);
-      GET_UCHAR(BZ_X_CCRC_4, uc);
+      case 50: s->state = 50; while (((Bool)1)) { if (s->bsLive >= 8) { UInt32 v; v = (s->bsBuff >> (s->bsLive-8)) & ((1 << 8)-1); s->bsLive -= 8; uc = v; break; } if (s->strm->avail_in == 0) { retVal = 0; goto save_state_and_return; };; s->bsBuff = (s->bsBuff << 8) | ((UInt32) (*((UChar*)(s->strm->next_in)))); s->bsLive += 8; s->strm->next_in++; s->strm->avail_in--; s->strm->total_in_lo32++; if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++; };
       s->storedCombinedCRC = (s->storedCombinedCRC << 8) | ((UInt32)uc);
-
-      s->state = BZ_X_IDLE;
-      RETURN(BZ_STREAM_END);
-
-      default: AssertH ( False, 4001 );
+      s->state = 1;
+      { retVal = 4; goto save_state_and_return; };;
+      default: { if (!(((Bool)0))) BZ2_bz__AssertH__fail ( 4001 ); };
    }
-
-   AssertH ( False, 4002 );
-
+   { if (!(((Bool)0))) BZ2_bz__AssertH__fail ( 4002 ); };
    save_state_and_return:
-
-   s->save_i           = i;
-   s->save_j           = j;
-   s->save_t           = t;
-   s->save_alphaSize   = alphaSize;
-   s->save_nGroups     = nGroups;
-   s->save_nSelectors  = nSelectors;
-   s->save_EOB         = EOB;
-   s->save_groupNo     = groupNo;
-   s->save_groupPos    = groupPos;
-   s->save_nextSym     = nextSym;
-   s->save_nblockMAX   = nblockMAX;
-   s->save_nblock      = nblock;
-   s->save_es          = es;
-   s->save_N           = N;
-   s->save_curr        = curr;
-   s->save_zt          = zt;
-   s->save_zn          = zn;
-   s->save_zvec        = zvec;
-   s->save_zj          = zj;
-   s->save_gSel        = gSel;
-   s->save_gMinlen     = gMinlen;
-   s->save_gLimit      = gLimit;
-   s->save_gBase       = gBase;
-   s->save_gPerm       = gPerm;
-
-   return retVal;   
+   s->save_i = i;
+   s->save_j = j;
+   s->save_t = t;
+   s->save_alphaSize = alphaSize;
+   s->save_nGroups = nGroups;
+   s->save_nSelectors = nSelectors;
+   s->save_EOB = EOB;
+   s->save_groupNo = groupNo;
+   s->save_groupPos = groupPos;
+   s->save_nextSym = nextSym;
+   s->save_nblockMAX = nblockMAX;
+   s->save_nblock = nblock;
+   s->save_es = es;
+   s->save_N = N;
+   s->save_curr = curr;
+   s->save_zt = zt;
+   s->save_zn = zn;
+   s->save_zvec = zvec;
+   s->save_zj = zj;
+   s->save_gSel = gSel;
+   s->save_gMinlen = gMinlen;
+   s->save_gLimit = gLimit;
+   s->save_gBase = gBase;
+   s->save_gPerm = gPerm;
+   return retVal;
 }
-
-
-/*-------------------------------------------------------------*/
-/*--- end                                      decompress.c ---*/
-/*-------------------------------------------------------------*/
-
-
-
-/*-------------------------------------------------------------*/
-/*--- Library top-level functions.                          ---*/
-/*---                                               bzlib.c ---*/
-/*-------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
-   This file is part of bzip2/libbzip2, a program and library for
-   lossless, block-sorting data compression.
-
-   bzip2/libbzip2 version 1.0.8 of 13 July 2019
-   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
-
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
-   README file.
-
-   This program is released under the terms of the license contained
-   in the file LICENSE.
-   ------------------------------------------------------------------ */
-
-/* CHANGES
-   0.9.0    -- original version.
-   0.9.0a/b -- no changes in this file.
-   0.9.0c   -- made zero-length BZ_FLUSH work correctly in bzCompress().
-     fixed bzWrite/bzRead to ignore zero-length requests.
-     fixed bzread to correctly handle read requests after EOF.
-     wrong parameter order in call to bzDecompressInit in
-     bzBuffToBuffDecompress.  Fixed.
-*/
-
-/*---------------------------------------------------*/
-/*--- Compression stuff                           ---*/
-/*---------------------------------------------------*/
-
-
-/*---------------------------------------------------*/
-#ifndef BZ_NO_STDIO
 void BZ2_bz__AssertH__fail ( int errcode )
 {
-   fprintf(stderr, 
+   fprintf(stderr,
       "\n\nbzip2/libbzip2: internal error number %d.\n"
       "This is a bug in bzip2/libbzip2, %s.\n"
       "Please report it to: bzip2-devel@sourceware.org.  If this happened\n"
@@ -3649,7 +2912,6 @@ void BZ2_bz__AssertH__fail ( int errcode )
       errcode,
       BZ2_bzlibVersion()
    );
-
    if (errcode == 1007) {
    fprintf(stderr,
       "\n*** A special note about internal error number 1007 ***\n"
@@ -3677,39 +2939,27 @@ void BZ2_bz__AssertH__fail ( int errcode )
       "\n"
    );
    }
-
    exit(3);
 }
-#endif
-
-
-/*---------------------------------------------------*/
 static
 int bz_config_ok ( void )
 {
-   if (sizeof(int)   != 4) return 0;
+   if (sizeof(int) != 4) return 0;
    if (sizeof(short) != 2) return 0;
-   if (sizeof(char)  != 1) return 0;
+   if (sizeof(char) != 1) return 0;
    return 1;
 }
-
-
-/*---------------------------------------------------*/
 static
 void* default_bzalloc ( void* opaque, Int32 items, Int32 size )
 {
    void* v = malloc ( items * size );
    return v;
 }
-
 static
 void default_bzfree ( void* opaque, void* addr )
 {
-   if (addr != NULL) free ( addr );
+   if (addr != ((void*)0)) free ( addr );
 }
-
-
-/*---------------------------------------------------*/
 static
 void prepare_new_block ( EState* s )
 {
@@ -3717,107 +2967,86 @@ void prepare_new_block ( EState* s )
    s->nblock = 0;
    s->numZ = 0;
    s->state_out_pos = 0;
-   BZ_INITIALISE_CRC ( s->blockCRC );
-   for (i = 0; i < 256; i++) s->inUse[i] = False;
+   { s->blockCRC = 0xffffffffL; };
+   for (i = 0; i < 256; i++) s->inUse[i] = ((Bool)0);
    s->blockNo++;
 }
-
-
-/*---------------------------------------------------*/
 static
 void init_RL ( EState* s )
 {
-   s->state_in_ch  = 256;
+   s->state_in_ch = 256;
    s->state_in_len = 0;
 }
-
-
 static
 Bool isempty_RL ( EState* s )
 {
    if (s->state_in_ch < 256 && s->state_in_len > 0)
-      return False; else
-      return True;
+      return ((Bool)0); else
+      return ((Bool)1);
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzCompressInit) 
-                    ( bz_stream* strm, 
-                     int        blockSize100k,
-                     int        verbosity,
-                     int        workFactor )
+int BZ2_bzCompressInit
+                    ( bz_stream* strm,
+                     int blockSize100k,
+                     int verbosity,
+                     int workFactor )
 {
-   Int32   n;
+   Int32 n;
    EState* s;
-
-   if (!bz_config_ok()) return BZ_CONFIG_ERROR;
-
-   if (strm == NULL || 
+   if (!bz_config_ok()) return (-9);
+   if (strm == ((void*)0) ||
        blockSize100k < 1 || blockSize100k > 9 ||
        workFactor < 0 || workFactor > 250)
-     return BZ_PARAM_ERROR;
-
+     return (-2);
    if (workFactor == 0) workFactor = 30;
-   if (strm->bzalloc == NULL) strm->bzalloc = default_bzalloc;
-   if (strm->bzfree == NULL) strm->bzfree = default_bzfree;
-
-   s = BZALLOC( sizeof(EState) );
-   if (s == NULL) return BZ_MEM_ERROR;
+   if (strm->bzalloc == ((void*)0)) strm->bzalloc = default_bzalloc;
+   if (strm->bzfree == ((void*)0)) strm->bzfree = default_bzfree;
+   s = (strm->bzalloc)(strm->opaque,(sizeof(EState)),1);
+   if (s == ((void*)0)) return (-3);
    s->strm = strm;
-
-   s->arr1 = NULL;
-   s->arr2 = NULL;
-   s->ftab = NULL;
-
-   n       = 100000 * blockSize100k;
-   s->arr1 = BZALLOC( n                  * sizeof(UInt32) );
-   s->arr2 = BZALLOC( (n+BZ_N_OVERSHOOT) * sizeof(UInt32) );
-   s->ftab = BZALLOC( 65537              * sizeof(UInt32) );
-
-   if (s->arr1 == NULL || s->arr2 == NULL || s->ftab == NULL) {
-      if (s->arr1 != NULL) BZFREE(s->arr1);
-      if (s->arr2 != NULL) BZFREE(s->arr2);
-      if (s->ftab != NULL) BZFREE(s->ftab);
-      if (s       != NULL) BZFREE(s);
-      return BZ_MEM_ERROR;
+   s->arr1 = ((void*)0);
+   s->arr2 = ((void*)0);
+   s->ftab = ((void*)0);
+   n = 100000 * blockSize100k;
+   s->arr1 = (strm->bzalloc)(strm->opaque,(n * sizeof(UInt32)),1);
+   s->arr2 = (strm->bzalloc)(strm->opaque,((n+(2 + 12 + 18 + 2)) * sizeof(UInt32)),1);
+   s->ftab = (strm->bzalloc)(strm->opaque,(65537 * sizeof(UInt32)),1);
+   if (s->arr1 == ((void*)0) || s->arr2 == ((void*)0) || s->ftab == ((void*)0)) {
+      if (s->arr1 != ((void*)0)) (strm->bzfree)(strm->opaque,(s->arr1));
+      if (s->arr2 != ((void*)0)) (strm->bzfree)(strm->opaque,(s->arr2));
+      if (s->ftab != ((void*)0)) (strm->bzfree)(strm->opaque,(s->ftab));
+      if (s != ((void*)0)) (strm->bzfree)(strm->opaque,(s));
+      return (-3);
    }
-
-   s->blockNo           = 0;
-   s->state             = BZ_S_INPUT;
-   s->mode              = BZ_M_RUNNING;
-   s->combinedCRC       = 0;
-   s->blockSize100k     = blockSize100k;
-   s->nblockMAX         = 100000 * blockSize100k - 19;
-   s->verbosity         = verbosity;
-   s->workFactor        = workFactor;
-
-   s->block             = (UChar*)s->arr2;
-   s->mtfv              = (UInt16*)s->arr1;
-   s->zbits             = NULL;
-   s->ptr               = (UInt32*)s->arr1;
-
-   strm->state          = s;
-   strm->total_in_lo32  = 0;
-   strm->total_in_hi32  = 0;
+   s->blockNo = 0;
+   s->state = 2;
+   s->mode = 2;
+   s->combinedCRC = 0;
+   s->blockSize100k = blockSize100k;
+   s->nblockMAX = 100000 * blockSize100k - 19;
+   s->verbosity = verbosity;
+   s->workFactor = workFactor;
+   s->block = (UChar*)s->arr2;
+   s->mtfv = (UInt16*)s->arr1;
+   s->zbits = ((void*)0);
+   s->ptr = (UInt32*)s->arr1;
+   strm->state = s;
+   strm->total_in_lo32 = 0;
+   strm->total_in_hi32 = 0;
    strm->total_out_lo32 = 0;
    strm->total_out_hi32 = 0;
    init_RL ( s );
    prepare_new_block ( s );
-   return BZ_OK;
+   return 0;
 }
-
-
-/*---------------------------------------------------*/
 static
 void add_pair_to_block ( EState* s )
 {
    Int32 i;
    UChar ch = (UChar)(s->state_in_ch);
    for (i = 0; i < s->state_in_len; i++) {
-      BZ_UPDATE_CRC( s->blockCRC, ch );
+      { s->blockCRC = (s->blockCRC << 8) ^ BZ2_crc32Table[(s->blockCRC >> 24) ^ ((UChar)ch)]; };
    }
-   s->inUse[s->state_in_ch] = True;
+   s->inUse[s->state_in_ch] = ((Bool)1);
    switch (s->state_in_len) {
       case 1:
          s->block[s->nblock] = (UChar)ch; s->nblock++;
@@ -3832,7 +3061,7 @@ void add_pair_to_block ( EState* s )
          s->block[s->nblock] = (UChar)ch; s->nblock++;
          break;
       default:
-         s->inUse[s->state_in_len-4] = True;
+         s->inUse[s->state_in_len-4] = ((Bool)1);
          s->block[s->nblock] = (UChar)ch; s->nblock++;
          s->block[s->nblock] = (UChar)ch; s->nblock++;
          s->block[s->nblock] = (UChar)ch; s->nblock++;
@@ -3842,79 +3071,34 @@ void add_pair_to_block ( EState* s )
          break;
    }
 }
-
-
-/*---------------------------------------------------*/
 static
 void flush_RL ( EState* s )
 {
    if (s->state_in_ch < 256) add_pair_to_block ( s );
    init_RL ( s );
 }
-
-
-/*---------------------------------------------------*/
-#define ADD_CHAR_TO_BLOCK(zs,zchh0)               \
-{                                                 \
-   UInt32 zchh = (UInt32)(zchh0);                 \
-   /*-- fast track the common case --*/           \
-   if (zchh != zs->state_in_ch &&                 \
-       zs->state_in_len == 1) {                   \
-      UChar ch = (UChar)(zs->state_in_ch);        \
-      BZ_UPDATE_CRC( zs->blockCRC, ch );          \
-      zs->inUse[zs->state_in_ch] = True;          \
-      zs->block[zs->nblock] = (UChar)ch;          \
-      zs->nblock++;                               \
-      zs->state_in_ch = zchh;                     \
-   }                                              \
-   else                                           \
-   /*-- general, uncommon cases --*/              \
-   if (zchh != zs->state_in_ch ||                 \
-      zs->state_in_len == 255) {                  \
-      if (zs->state_in_ch < 256)                  \
-         add_pair_to_block ( zs );                \
-      zs->state_in_ch = zchh;                     \
-      zs->state_in_len = 1;                       \
-   } else {                                       \
-      zs->state_in_len++;                         \
-   }                                              \
-}
-
-
-/*---------------------------------------------------*/
 static
 Bool copy_input_until_stop ( EState* s )
 {
-   Bool progress_in = False;
-
-   if (s->mode == BZ_M_RUNNING) {
-
-      /*-- fast track the common case --*/
-      while (True) {
-         /*-- block full? --*/
+   Bool progress_in = ((Bool)0);
+   if (s->mode == 2) {
+      while (((Bool)1)) {
          if (s->nblock >= s->nblockMAX) break;
-         /*-- no input? --*/
          if (s->strm->avail_in == 0) break;
-         progress_in = True;
-         ADD_CHAR_TO_BLOCK ( s, (UInt32)(*((UChar*)(s->strm->next_in))) ); 
+         progress_in = ((Bool)1);
+         { UInt32 zchh = (UInt32)((UInt32)(*((UChar*)(s->strm->next_in)))); if (zchh != s->state_in_ch && s->state_in_len == 1) { UChar ch = (UChar)(s->state_in_ch); { s->blockCRC = (s->blockCRC << 8) ^ BZ2_crc32Table[(s->blockCRC >> 24) ^ ((UChar)ch)]; }; s->inUse[s->state_in_ch] = ((Bool)1); s->block[s->nblock] = (UChar)ch; s->nblock++; s->state_in_ch = zchh; } else if (zchh != s->state_in_ch || s->state_in_len == 255) { if (s->state_in_ch < 256) add_pair_to_block ( s ); s->state_in_ch = zchh; s->state_in_len = 1; } else { s->state_in_len++; } };
          s->strm->next_in++;
          s->strm->avail_in--;
          s->strm->total_in_lo32++;
          if (s->strm->total_in_lo32 == 0) s->strm->total_in_hi32++;
       }
-
    } else {
-
-      /*-- general, uncommon case --*/
-      while (True) {
-         /*-- block full? --*/
+      while (((Bool)1)) {
          if (s->nblock >= s->nblockMAX) break;
-         /*-- no input? --*/
          if (s->strm->avail_in == 0) break;
-         /*-- flush/finish end? --*/
          if (s->avail_in_expect == 0) break;
-         progress_in = True;
-         ADD_CHAR_TO_BLOCK ( s, (UInt32)(*((UChar*)(s->strm->next_in))) ); 
+         progress_in = ((Bool)1);
+         { UInt32 zchh = (UInt32)((UInt32)(*((UChar*)(s->strm->next_in)))); if (zchh != s->state_in_ch && s->state_in_len == 1) { UChar ch = (UChar)(s->state_in_ch); { s->blockCRC = (s->blockCRC << 8) ^ BZ2_crc32Table[(s->blockCRC >> 24) ^ ((UChar)ch)]; }; s->inUse[s->state_in_ch] = ((Bool)1); s->block[s->nblock] = (UChar)ch; s->nblock++; s->state_in_ch = zchh; } else if (zchh != s->state_in_ch || s->state_in_len == 255) { if (s->state_in_ch < 256) add_pair_to_block ( s ); s->state_in_ch = zchh; s->state_in_len = 1; } else { s->state_in_len++; } };
          s->strm->next_in++;
          s->strm->avail_in--;
          s->strm->total_in_lo32++;
@@ -3924,23 +3108,14 @@ Bool copy_input_until_stop ( EState* s )
    }
    return progress_in;
 }
-
-
-/*---------------------------------------------------*/
 static
 Bool copy_output_until_stop ( EState* s )
 {
-   Bool progress_out = False;
-
-   while (True) {
-
-      /*-- no output space? --*/
+   Bool progress_out = ((Bool)0);
+   while (((Bool)1)) {
       if (s->strm->avail_out == 0) break;
-
-      /*-- block done? --*/
       if (s->state_out_pos >= s->numZ) break;
-
-      progress_out = True;
+      progress_out = ((Bool)1);
       *(s->strm->next_out) = s->zbits[s->state_out_pos];
       s->state_out_pos++;
       s->strm->avail_out--;
@@ -3948,339 +3123,265 @@ Bool copy_output_until_stop ( EState* s )
       s->strm->total_out_lo32++;
       if (s->strm->total_out_lo32 == 0) s->strm->total_out_hi32++;
    }
-
    return progress_out;
 }
-
-
-/*---------------------------------------------------*/
 static
 Bool handle_compress ( bz_stream* strm )
 {
-   Bool progress_in  = False;
-   Bool progress_out = False;
+   Bool progress_in = ((Bool)0);
+   Bool progress_out = ((Bool)0);
    EState* s = strm->state;
-   
-   while (True) {
-
-      if (s->state == BZ_S_OUTPUT) {
+   while (((Bool)1)) {
+      if (s->state == 1) {
          progress_out |= copy_output_until_stop ( s );
          if (s->state_out_pos < s->numZ) break;
-         if (s->mode == BZ_M_FINISHING && 
+         if (s->mode == 4 &&
              s->avail_in_expect == 0 &&
              isempty_RL(s)) break;
          prepare_new_block ( s );
-         s->state = BZ_S_INPUT;
-         if (s->mode == BZ_M_FLUSHING && 
+         s->state = 2;
+         if (s->mode == 3 &&
              s->avail_in_expect == 0 &&
              isempty_RL(s)) break;
       }
-
-      if (s->state == BZ_S_INPUT) {
+      if (s->state == 2) {
          progress_in |= copy_input_until_stop ( s );
-         if (s->mode != BZ_M_RUNNING && s->avail_in_expect == 0) {
+         if (s->mode != 2 && s->avail_in_expect == 0) {
             flush_RL ( s );
-            BZ2_compressBlock ( s, (Bool)(s->mode == BZ_M_FINISHING) );
-            s->state = BZ_S_OUTPUT;
+            BZ2_compressBlock ( s, (Bool)(s->mode == 4) );
+            s->state = 1;
          }
          else
          if (s->nblock >= s->nblockMAX) {
-            BZ2_compressBlock ( s, False );
-            s->state = BZ_S_OUTPUT;
+            BZ2_compressBlock ( s, ((Bool)0) );
+            s->state = 1;
          }
          else
          if (s->strm->avail_in == 0) {
             break;
          }
       }
-
    }
-
    return progress_in || progress_out;
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzCompress) ( bz_stream *strm, int action )
+int BZ2_bzCompress ( bz_stream *strm, int action )
 {
    Bool progress;
    EState* s;
-   if (strm == NULL) return BZ_PARAM_ERROR;
+   if (strm == ((void*)0)) return (-2);
    s = strm->state;
-   if (s == NULL) return BZ_PARAM_ERROR;
-   if (s->strm != strm) return BZ_PARAM_ERROR;
-
+   if (s == ((void*)0)) return (-2);
+   if (s->strm != strm) return (-2);
    preswitch:
    switch (s->mode) {
-
-      case BZ_M_IDLE:
-         return BZ_SEQUENCE_ERROR;
-
-      case BZ_M_RUNNING:
-         if (action == BZ_RUN) {
+      case 1:
+         return (-1);
+      case 2:
+         if (action == 0) {
             progress = handle_compress ( strm );
-            return progress ? BZ_RUN_OK : BZ_PARAM_ERROR;
-         } 
+            return progress ? 1 : (-2);
+         }
          else
-	 if (action == BZ_FLUSH) {
+  if (action == 1) {
             s->avail_in_expect = strm->avail_in;
-            s->mode = BZ_M_FLUSHING;
+            s->mode = 3;
             goto preswitch;
          }
          else
-         if (action == BZ_FINISH) {
+         if (action == 2) {
             s->avail_in_expect = strm->avail_in;
-            s->mode = BZ_M_FINISHING;
+            s->mode = 4;
             goto preswitch;
          }
-         else 
-            return BZ_PARAM_ERROR;
-
-      case BZ_M_FLUSHING:
-         if (action != BZ_FLUSH) return BZ_SEQUENCE_ERROR;
-         if (s->avail_in_expect != s->strm->avail_in) 
-            return BZ_SEQUENCE_ERROR;
+         else
+            return (-2);
+      case 3:
+         if (action != 1) return (-1);
+         if (s->avail_in_expect != s->strm->avail_in)
+            return (-1);
          progress = handle_compress ( strm );
          if (s->avail_in_expect > 0 || !isempty_RL(s) ||
-             s->state_out_pos < s->numZ) return BZ_FLUSH_OK;
-         s->mode = BZ_M_RUNNING;
-         return BZ_RUN_OK;
-
-      case BZ_M_FINISHING:
-         if (action != BZ_FINISH) return BZ_SEQUENCE_ERROR;
-         if (s->avail_in_expect != s->strm->avail_in) 
-            return BZ_SEQUENCE_ERROR;
+             s->state_out_pos < s->numZ) return 2;
+         s->mode = 2;
+         return 1;
+      case 4:
+         if (action != 2) return (-1);
+         if (s->avail_in_expect != s->strm->avail_in)
+            return (-1);
          progress = handle_compress ( strm );
-         if (!progress) return BZ_SEQUENCE_ERROR;
+         if (!progress) return (-1);
          if (s->avail_in_expect > 0 || !isempty_RL(s) ||
-             s->state_out_pos < s->numZ) return BZ_FINISH_OK;
-         s->mode = BZ_M_IDLE;
-         return BZ_STREAM_END;
+             s->state_out_pos < s->numZ) return 3;
+         s->mode = 1;
+         return 4;
    }
-   return BZ_OK; /*--not reached--*/
+   return 0;
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzCompressEnd)  ( bz_stream *strm )
+int BZ2_bzCompressEnd ( bz_stream *strm )
 {
    EState* s;
-   if (strm == NULL) return BZ_PARAM_ERROR;
+   if (strm == ((void*)0)) return (-2);
    s = strm->state;
-   if (s == NULL) return BZ_PARAM_ERROR;
-   if (s->strm != strm) return BZ_PARAM_ERROR;
-
-   if (s->arr1 != NULL) BZFREE(s->arr1);
-   if (s->arr2 != NULL) BZFREE(s->arr2);
-   if (s->ftab != NULL) BZFREE(s->ftab);
-   BZFREE(strm->state);
-
-   strm->state = NULL;   
-
-   return BZ_OK;
+   if (s == ((void*)0)) return (-2);
+   if (s->strm != strm) return (-2);
+   if (s->arr1 != ((void*)0)) (strm->bzfree)(strm->opaque,(s->arr1));
+   if (s->arr2 != ((void*)0)) (strm->bzfree)(strm->opaque,(s->arr2));
+   if (s->ftab != ((void*)0)) (strm->bzfree)(strm->opaque,(s->ftab));
+   (strm->bzfree)(strm->opaque,(strm->state));
+   strm->state = ((void*)0);
+   return 0;
 }
-
-
-/*---------------------------------------------------*/
-/*--- Decompression stuff                         ---*/
-/*---------------------------------------------------*/
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzDecompressInit) 
-                     ( bz_stream* strm, 
-                       int        verbosity,
-                       int        small )
+int BZ2_bzDecompressInit
+                     ( bz_stream* strm,
+                       int verbosity,
+                       int small )
 {
    DState* s;
-
-   if (!bz_config_ok()) return BZ_CONFIG_ERROR;
-
-   if (strm == NULL) return BZ_PARAM_ERROR;
-   if (small != 0 && small != 1) return BZ_PARAM_ERROR;
-   if (verbosity < 0 || verbosity > 4) return BZ_PARAM_ERROR;
-
-   if (strm->bzalloc == NULL) strm->bzalloc = default_bzalloc;
-   if (strm->bzfree == NULL) strm->bzfree = default_bzfree;
-
-   s = BZALLOC( sizeof(DState) );
-   if (s == NULL) return BZ_MEM_ERROR;
-   s->strm                  = strm;
-   strm->state              = s;
-   s->state                 = BZ_X_MAGIC_1;
-   s->bsLive                = 0;
-   s->bsBuff                = 0;
+   if (!bz_config_ok()) return (-9);
+   if (strm == ((void*)0)) return (-2);
+   if (small != 0 && small != 1) return (-2);
+   if (verbosity < 0 || verbosity > 4) return (-2);
+   if (strm->bzalloc == ((void*)0)) strm->bzalloc = default_bzalloc;
+   if (strm->bzfree == ((void*)0)) strm->bzfree = default_bzfree;
+   s = (strm->bzalloc)(strm->opaque,(sizeof(DState)),1);
+   if (s == ((void*)0)) return (-3);
+   s->strm = strm;
+   strm->state = s;
+   s->state = 10;
+   s->bsLive = 0;
+   s->bsBuff = 0;
    s->calculatedCombinedCRC = 0;
-   strm->total_in_lo32      = 0;
-   strm->total_in_hi32      = 0;
-   strm->total_out_lo32     = 0;
-   strm->total_out_hi32     = 0;
-   s->smallDecompress       = (Bool)small;
-   s->ll4                   = NULL;
-   s->ll16                  = NULL;
-   s->tt                    = NULL;
-   s->currBlockNo           = 0;
-   s->verbosity             = verbosity;
-
-   return BZ_OK;
+   strm->total_in_lo32 = 0;
+   strm->total_in_hi32 = 0;
+   strm->total_out_lo32 = 0;
+   strm->total_out_hi32 = 0;
+   s->smallDecompress = (Bool)small;
+   s->ll4 = ((void*)0);
+   s->ll16 = ((void*)0);
+   s->tt = ((void*)0);
+   s->currBlockNo = 0;
+   s->verbosity = verbosity;
+   return 0;
 }
-
-
-/*---------------------------------------------------*/
-/* Return  True iff data corruption is discovered.
-   Returns False if there is no problem.
-*/
 static
 Bool unRLE_obuf_to_output_FAST ( DState* s )
 {
    UChar k1;
-
    if (s->blockRandomised) {
-
-      while (True) {
-         /* try to finish existing run */
-         while (True) {
-            if (s->strm->avail_out == 0) return False;
+      while (((Bool)1)) {
+         while (((Bool)1)) {
+            if (s->strm->avail_out == 0) return ((Bool)0);
             if (s->state_out_len == 0) break;
             *( (UChar*)(s->strm->next_out) ) = s->state_out_ch;
-            BZ_UPDATE_CRC ( s->calculatedBlockCRC, s->state_out_ch );
+            { s->calculatedBlockCRC = (s->calculatedBlockCRC << 8) ^ BZ2_crc32Table[(s->calculatedBlockCRC >> 24) ^ ((UChar)s->state_out_ch)]; };
             s->state_out_len--;
             s->strm->next_out++;
             s->strm->avail_out--;
             s->strm->total_out_lo32++;
             if (s->strm->total_out_lo32 == 0) s->strm->total_out_hi32++;
          }
-
-         /* can a new run be started? */
-         if (s->nblock_used == s->save_nblock+1) return False;
-               
-         /* Only caused by corrupt data stream? */
+         if (s->nblock_used == s->save_nblock+1) return ((Bool)0);
          if (s->nblock_used > s->save_nblock+1)
-            return True;
-   
+            return ((Bool)1);
          s->state_out_len = 1;
          s->state_out_ch = s->k0;
-         BZ_GET_FAST(k1); BZ_RAND_UPD_MASK; 
-         k1 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->tPos = s->tt[s->tPos]; k1 = (UChar)(s->tPos & 0xff); s->tPos >>= 8;; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         k1 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
          s->state_out_len = 2;
-         BZ_GET_FAST(k1); BZ_RAND_UPD_MASK; 
-         k1 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->tPos = s->tt[s->tPos]; k1 = (UChar)(s->tPos & 0xff); s->tPos >>= 8;; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         k1 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
          s->state_out_len = 3;
-         BZ_GET_FAST(k1); BZ_RAND_UPD_MASK; 
-         k1 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->tPos = s->tt[s->tPos]; k1 = (UChar)(s->tPos & 0xff); s->tPos >>= 8;; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         k1 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
-         BZ_GET_FAST(k1); BZ_RAND_UPD_MASK; 
-         k1 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->tPos = s->tt[s->tPos]; k1 = (UChar)(s->tPos & 0xff); s->tPos >>= 8;; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         k1 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
          s->state_out_len = ((Int32)k1) + 4;
-         BZ_GET_FAST(s->k0); BZ_RAND_UPD_MASK; 
-         s->k0 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->tPos = s->tt[s->tPos]; s->k0 = (UChar)(s->tPos & 0xff); s->tPos >>= 8;; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         s->k0 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
       }
-
    } else {
-
-      /* restore */
-      UInt32        c_calculatedBlockCRC = s->calculatedBlockCRC;
-      UChar         c_state_out_ch       = s->state_out_ch;
-      Int32         c_state_out_len      = s->state_out_len;
-      Int32         c_nblock_used        = s->nblock_used;
-      Int32         c_k0                 = s->k0;
-      UInt32*       c_tt                 = s->tt;
-      UInt32        c_tPos               = s->tPos;
-      char*         cs_next_out          = s->strm->next_out;
-      unsigned int  cs_avail_out         = s->strm->avail_out;
-      Int32         ro_blockSize100k     = s->blockSize100k;
-      /* end restore */
-
-      UInt32       avail_out_INIT = cs_avail_out;
-      Int32        s_save_nblockPP = s->save_nblock+1;
+      UInt32 c_calculatedBlockCRC = s->calculatedBlockCRC;
+      UChar c_state_out_ch = s->state_out_ch;
+      Int32 c_state_out_len = s->state_out_len;
+      Int32 c_nblock_used = s->nblock_used;
+      Int32 c_k0 = s->k0;
+      UInt32* c_tt = s->tt;
+      UInt32 c_tPos = s->tPos;
+      char* cs_next_out = s->strm->next_out;
+      unsigned int cs_avail_out = s->strm->avail_out;
+      Int32 ro_blockSize100k = s->blockSize100k;
+      UInt32 avail_out_INIT = cs_avail_out;
+      Int32 s_save_nblockPP = s->save_nblock+1;
       unsigned int total_out_lo32_old;
-
-      while (True) {
-
-         /* try to finish existing run */
+      while (((Bool)1)) {
          if (c_state_out_len > 0) {
-            while (True) {
+            while (((Bool)1)) {
                if (cs_avail_out == 0) goto return_notr;
                if (c_state_out_len == 1) break;
                *( (UChar*)(cs_next_out) ) = c_state_out_ch;
-               BZ_UPDATE_CRC ( c_calculatedBlockCRC, c_state_out_ch );
+               { c_calculatedBlockCRC = (c_calculatedBlockCRC << 8) ^ BZ2_crc32Table[(c_calculatedBlockCRC >> 24) ^ ((UChar)c_state_out_ch)]; };
                c_state_out_len--;
                cs_next_out++;
                cs_avail_out--;
             }
             s_state_out_len_eq_one:
             {
-               if (cs_avail_out == 0) { 
+               if (cs_avail_out == 0) {
                   c_state_out_len = 1; goto return_notr;
                };
                *( (UChar*)(cs_next_out) ) = c_state_out_ch;
-               BZ_UPDATE_CRC ( c_calculatedBlockCRC, c_state_out_ch );
+               { c_calculatedBlockCRC = (c_calculatedBlockCRC << 8) ^ BZ2_crc32Table[(c_calculatedBlockCRC >> 24) ^ ((UChar)c_state_out_ch)]; };
                cs_next_out++;
                cs_avail_out--;
             }
-         }   
-         /* Only caused by corrupt data stream? */
+         }
          if (c_nblock_used > s_save_nblockPP)
-            return True;
-
-         /* can a new run be started? */
+            return ((Bool)1);
          if (c_nblock_used == s_save_nblockPP) {
             c_state_out_len = 0; goto return_notr;
-         };   
-         c_state_out_ch = c_k0;
-         BZ_GET_FAST_C(k1); c_nblock_used++;
-         if (k1 != c_k0) { 
-            c_k0 = k1; goto s_state_out_len_eq_one; 
          };
-         if (c_nblock_used == s_save_nblockPP) 
+         c_state_out_ch = c_k0;
+         if (c_tPos >= (UInt32)100000 * (UInt32)ro_blockSize100k) return ((Bool)1); c_tPos = c_tt[c_tPos]; k1 = (UChar)(c_tPos & 0xff); c_tPos >>= 8;; c_nblock_used++;
+         if (k1 != c_k0) {
+            c_k0 = k1; goto s_state_out_len_eq_one;
+         };
+         if (c_nblock_used == s_save_nblockPP)
             goto s_state_out_len_eq_one;
-   
          c_state_out_len = 2;
-         BZ_GET_FAST_C(k1); c_nblock_used++;
+         if (c_tPos >= (UInt32)100000 * (UInt32)ro_blockSize100k) return ((Bool)1); c_tPos = c_tt[c_tPos]; k1 = (UChar)(c_tPos & 0xff); c_tPos >>= 8;; c_nblock_used++;
          if (c_nblock_used == s_save_nblockPP) continue;
          if (k1 != c_k0) { c_k0 = k1; continue; };
-   
          c_state_out_len = 3;
-         BZ_GET_FAST_C(k1); c_nblock_used++;
+         if (c_tPos >= (UInt32)100000 * (UInt32)ro_blockSize100k) return ((Bool)1); c_tPos = c_tt[c_tPos]; k1 = (UChar)(c_tPos & 0xff); c_tPos >>= 8;; c_nblock_used++;
          if (c_nblock_used == s_save_nblockPP) continue;
          if (k1 != c_k0) { c_k0 = k1; continue; };
-   
-         BZ_GET_FAST_C(k1); c_nblock_used++;
+         if (c_tPos >= (UInt32)100000 * (UInt32)ro_blockSize100k) return ((Bool)1); c_tPos = c_tt[c_tPos]; k1 = (UChar)(c_tPos & 0xff); c_tPos >>= 8;; c_nblock_used++;
          c_state_out_len = ((Int32)k1) + 4;
-         BZ_GET_FAST_C(c_k0); c_nblock_used++;
+         if (c_tPos >= (UInt32)100000 * (UInt32)ro_blockSize100k) return ((Bool)1); c_tPos = c_tt[c_tPos]; c_k0 = (UChar)(c_tPos & 0xff); c_tPos >>= 8;; c_nblock_used++;
       }
-
       return_notr:
       total_out_lo32_old = s->strm->total_out_lo32;
       s->strm->total_out_lo32 += (avail_out_INIT - cs_avail_out);
       if (s->strm->total_out_lo32 < total_out_lo32_old)
          s->strm->total_out_hi32++;
-
-      /* save */
       s->calculatedBlockCRC = c_calculatedBlockCRC;
-      s->state_out_ch       = c_state_out_ch;
-      s->state_out_len      = c_state_out_len;
-      s->nblock_used        = c_nblock_used;
-      s->k0                 = c_k0;
-      s->tt                 = c_tt;
-      s->tPos               = c_tPos;
-      s->strm->next_out     = cs_next_out;
-      s->strm->avail_out    = cs_avail_out;
-      /* end save */
+      s->state_out_ch = c_state_out_ch;
+      s->state_out_len = c_state_out_len;
+      s->nblock_used = c_nblock_used;
+      s->k0 = c_k0;
+      s->tt = c_tt;
+      s->tPos = c_tPos;
+      s->strm->next_out = cs_next_out;
+      s->strm->avail_out = cs_avail_out;
    }
-   return False;
+   return ((Bool)0);
 }
-
-
-
-/*---------------------------------------------------*/
 __inline__ Int32 BZ2_indexIntoF ( Int32 indx, Int32 *cftab )
 {
    Int32 nb, na, mid;
@@ -4293,709 +3394,520 @@ __inline__ Int32 BZ2_indexIntoF ( Int32 indx, Int32 *cftab )
    while (na - nb != 1);
    return nb;
 }
-
-
-/*---------------------------------------------------*/
-/* Return  True iff data corruption is discovered.
-   Returns False if there is no problem.
-*/
 static
 Bool unRLE_obuf_to_output_SMALL ( DState* s )
 {
    UChar k1;
-
    if (s->blockRandomised) {
-
-      while (True) {
-         /* try to finish existing run */
-         while (True) {
-            if (s->strm->avail_out == 0) return False;
+      while (((Bool)1)) {
+         while (((Bool)1)) {
+            if (s->strm->avail_out == 0) return ((Bool)0);
             if (s->state_out_len == 0) break;
             *( (UChar*)(s->strm->next_out) ) = s->state_out_ch;
-            BZ_UPDATE_CRC ( s->calculatedBlockCRC, s->state_out_ch );
+            { s->calculatedBlockCRC = (s->calculatedBlockCRC << 8) ^ BZ2_crc32Table[(s->calculatedBlockCRC >> 24) ^ ((UChar)s->state_out_ch)]; };
             s->state_out_len--;
             s->strm->next_out++;
             s->strm->avail_out--;
             s->strm->total_out_lo32++;
             if (s->strm->total_out_lo32 == 0) s->strm->total_out_hi32++;
          }
-   
-         /* can a new run be started? */
-         if (s->nblock_used == s->save_nblock+1) return False;
-
-         /* Only caused by corrupt data stream? */
+         if (s->nblock_used == s->save_nblock+1) return ((Bool)0);
          if (s->nblock_used > s->save_nblock+1)
-            return True;
-   
+            return ((Bool)1);
          s->state_out_len = 1;
          s->state_out_ch = s->k0;
-         BZ_GET_SMALL(k1); BZ_RAND_UPD_MASK; 
-         k1 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); k1 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         k1 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
          s->state_out_len = 2;
-         BZ_GET_SMALL(k1); BZ_RAND_UPD_MASK; 
-         k1 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); k1 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         k1 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
          s->state_out_len = 3;
-         BZ_GET_SMALL(k1); BZ_RAND_UPD_MASK; 
-         k1 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); k1 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         k1 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
-         BZ_GET_SMALL(k1); BZ_RAND_UPD_MASK; 
-         k1 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); k1 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         k1 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
          s->state_out_len = ((Int32)k1) + 4;
-         BZ_GET_SMALL(s->k0); BZ_RAND_UPD_MASK; 
-         s->k0 ^= BZ_RAND_MASK; s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->k0 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; if (s->rNToGo == 0) { s->rNToGo = BZ2_rNums[s->rTPos]; s->rTPos++; if (s->rTPos == 512) s->rTPos = 0; } s->rNToGo--;;
+         s->k0 ^= ((s->rNToGo == 1) ? 1 : 0); s->nblock_used++;
       }
-
    } else {
-
-      while (True) {
-         /* try to finish existing run */
-         while (True) {
-            if (s->strm->avail_out == 0) return False;
+      while (((Bool)1)) {
+         while (((Bool)1)) {
+            if (s->strm->avail_out == 0) return ((Bool)0);
             if (s->state_out_len == 0) break;
             *( (UChar*)(s->strm->next_out) ) = s->state_out_ch;
-            BZ_UPDATE_CRC ( s->calculatedBlockCRC, s->state_out_ch );
+            { s->calculatedBlockCRC = (s->calculatedBlockCRC << 8) ^ BZ2_crc32Table[(s->calculatedBlockCRC >> 24) ^ ((UChar)s->state_out_ch)]; };
             s->state_out_len--;
             s->strm->next_out++;
             s->strm->avail_out--;
             s->strm->total_out_lo32++;
             if (s->strm->total_out_lo32 == 0) s->strm->total_out_hi32++;
          }
-   
-         /* can a new run be started? */
-         if (s->nblock_used == s->save_nblock+1) return False;
-
-         /* Only caused by corrupt data stream? */
+         if (s->nblock_used == s->save_nblock+1) return ((Bool)0);
          if (s->nblock_used > s->save_nblock+1)
-            return True;
-   
+            return ((Bool)1);
          s->state_out_len = 1;
          s->state_out_ch = s->k0;
-         BZ_GET_SMALL(k1); s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); k1 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
          s->state_out_len = 2;
-         BZ_GET_SMALL(k1); s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); k1 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
          s->state_out_len = 3;
-         BZ_GET_SMALL(k1); s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); k1 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; s->nblock_used++;
          if (s->nblock_used == s->save_nblock+1) continue;
          if (k1 != s->k0) { s->k0 = k1; continue; };
-   
-         BZ_GET_SMALL(k1); s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); k1 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; s->nblock_used++;
          s->state_out_len = ((Int32)k1) + 4;
-         BZ_GET_SMALL(s->k0); s->nblock_used++;
+         if (s->tPos >= (UInt32)100000 * (UInt32)s->blockSize100k) return ((Bool)1); s->k0 = BZ2_indexIntoF ( s->tPos, s->cftab ); s->tPos = (((UInt32)s->ll16[s->tPos]) | (((((UInt32)(s->ll4[(s->tPos) >> 1])) >> (((s->tPos) << 2) & 0x4)) & 0xF) << 16));; s->nblock_used++;
       }
-
    }
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzDecompress) ( bz_stream *strm )
+int BZ2_bzDecompress ( bz_stream *strm )
 {
-   Bool    corrupt;
+   Bool corrupt;
    DState* s;
-   if (strm == NULL) return BZ_PARAM_ERROR;
+   if (strm == ((void*)0)) return (-2);
    s = strm->state;
-   if (s == NULL) return BZ_PARAM_ERROR;
-   if (s->strm != strm) return BZ_PARAM_ERROR;
-
-   while (True) {
-      if (s->state == BZ_X_IDLE) return BZ_SEQUENCE_ERROR;
-      if (s->state == BZ_X_OUTPUT) {
+   if (s == ((void*)0)) return (-2);
+   if (s->strm != strm) return (-2);
+   while (((Bool)1)) {
+      if (s->state == 1) return (-1);
+      if (s->state == 2) {
          if (s->smallDecompress)
             corrupt = unRLE_obuf_to_output_SMALL ( s ); else
-            corrupt = unRLE_obuf_to_output_FAST  ( s );
-         if (corrupt) return BZ_DATA_ERROR;
+            corrupt = unRLE_obuf_to_output_FAST ( s );
+         if (corrupt) return (-4);
          if (s->nblock_used == s->save_nblock+1 && s->state_out_len == 0) {
-            BZ_FINALISE_CRC ( s->calculatedBlockCRC );
-            if (s->verbosity >= 3) 
-               VPrintf2 ( " {0x%08x, 0x%08x}", s->storedBlockCRC, 
-                          s->calculatedBlockCRC );
-            if (s->verbosity >= 2) VPrintf0 ( "]" );
+            { s->calculatedBlockCRC = ~(s->calculatedBlockCRC); };
+            if (s->verbosity >= 3)
+               fprintf(stderr," {0x%08x, 0x%08x}",s->storedBlockCRC,s->calculatedBlockCRC);
+            if (s->verbosity >= 2) fprintf(stderr,"]");
             if (s->calculatedBlockCRC != s->storedBlockCRC)
-               return BZ_DATA_ERROR;
-            s->calculatedCombinedCRC 
-               = (s->calculatedCombinedCRC << 1) | 
+               return (-4);
+            s->calculatedCombinedCRC
+               = (s->calculatedCombinedCRC << 1) |
                     (s->calculatedCombinedCRC >> 31);
             s->calculatedCombinedCRC ^= s->calculatedBlockCRC;
-            s->state = BZ_X_BLKHDR_1;
+            s->state = 14;
          } else {
-            return BZ_OK;
+            return 0;
          }
       }
-      if (s->state >= BZ_X_MAGIC_1) {
+      if (s->state >= 10) {
          Int32 r = BZ2_decompress ( s );
-         if (r == BZ_STREAM_END) {
+         if (r == 4) {
             if (s->verbosity >= 3)
-               VPrintf2 ( "\n    combined CRCs: stored = 0x%08x, computed = 0x%08x", 
-                          s->storedCombinedCRC, s->calculatedCombinedCRC );
+               fprintf(stderr,"\n    combined CRCs: stored = 0x%08x, computed = 0x%08x",s->storedCombinedCRC,s->calculatedCombinedCRC);
             if (s->calculatedCombinedCRC != s->storedCombinedCRC)
-               return BZ_DATA_ERROR;
+               return (-4);
             return r;
          }
-         if (s->state != BZ_X_OUTPUT) return r;
+         if (s->state != 2) return r;
       }
    }
-
-   AssertH ( 0, 6001 );
-
-   return 0;  /*NOTREACHED*/
+   { if (!(0)) BZ2_bz__AssertH__fail ( 6001 ); };
+   return 0;
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzDecompressEnd)  ( bz_stream *strm )
+int BZ2_bzDecompressEnd ( bz_stream *strm )
 {
    DState* s;
-   if (strm == NULL) return BZ_PARAM_ERROR;
+   if (strm == ((void*)0)) return (-2);
    s = strm->state;
-   if (s == NULL) return BZ_PARAM_ERROR;
-   if (s->strm != strm) return BZ_PARAM_ERROR;
-
-   if (s->tt   != NULL) BZFREE(s->tt);
-   if (s->ll16 != NULL) BZFREE(s->ll16);
-   if (s->ll4  != NULL) BZFREE(s->ll4);
-
-   BZFREE(strm->state);
-   strm->state = NULL;
-
-   return BZ_OK;
+   if (s == ((void*)0)) return (-2);
+   if (s->strm != strm) return (-2);
+   if (s->tt != ((void*)0)) (strm->bzfree)(strm->opaque,(s->tt));
+   if (s->ll16 != ((void*)0)) (strm->bzfree)(strm->opaque,(s->ll16));
+   if (s->ll4 != ((void*)0)) (strm->bzfree)(strm->opaque,(s->ll4));
+   (strm->bzfree)(strm->opaque,(strm->state));
+   strm->state = ((void*)0);
+   return 0;
 }
-
-
-#ifndef BZ_NO_STDIO
-/*---------------------------------------------------*/
-/*--- File I/O stuff                              ---*/
-/*---------------------------------------------------*/
-
-#define BZ_SETERR(eee)                    \
-{                                         \
-   if (bzerror != NULL) *bzerror = eee;   \
-   if (bzf != NULL) bzf->lastErr = eee;   \
-}
-
-typedef 
+typedef
    struct {
-      FILE*     handle;
-      Char      buf[BZ_MAX_UNUSED];
-      Int32     bufN;
-      Bool      writing;
+      FILE* handle;
+      Char buf[5000];
+      Int32 bufN;
+      Bool writing;
       bz_stream strm;
-      Int32     lastErr;
-      Bool      initialisedOk;
+      Int32 lastErr;
+      Bool initialisedOk;
    }
    bzFile;
-
-
-/*---------------------------------------------*/
 static Bool myfeof ( FILE* f )
 {
    Int32 c = fgetc ( f );
-   if (c == EOF) return True;
+   if (c == (-1)) return ((Bool)1);
    ungetc ( c, f );
-   return False;
+   return ((Bool)0);
 }
-
-
-/*---------------------------------------------------*/
-BZFILE* BZ_API(BZ2_bzWriteOpen) 
-                    ( int*  bzerror,      
-                      FILE* f, 
-                      int   blockSize100k, 
-                      int   verbosity,
-                      int   workFactor )
+BZFILE* BZ2_bzWriteOpen
+                    ( int* bzerror,
+                      FILE* f,
+                      int blockSize100k,
+                      int verbosity,
+                      int workFactor )
 {
-   Int32   ret;
-   bzFile* bzf = NULL;
-
-   BZ_SETERR(BZ_OK);
-
-   if (f == NULL ||
+   Int32 ret;
+   bzFile* bzf = ((void*)0);
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
+   if (f == ((void*)0) ||
        (blockSize100k < 1 || blockSize100k > 9) ||
        (workFactor < 0 || workFactor > 250) ||
        (verbosity < 0 || verbosity > 4))
-      { BZ_SETERR(BZ_PARAM_ERROR); return NULL; };
-
+      { { if (bzerror != ((void*)0)) *bzerror = (-2); if (bzf != ((void*)0)) bzf->lastErr = (-2); }; return ((void*)0); };
    if (ferror(f))
-      { BZ_SETERR(BZ_IO_ERROR); return NULL; };
-
+      { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return ((void*)0); };
    bzf = malloc ( sizeof(bzFile) );
-   if (bzf == NULL)
-      { BZ_SETERR(BZ_MEM_ERROR); return NULL; };
-
-   BZ_SETERR(BZ_OK);
-   bzf->initialisedOk = False;
-   bzf->bufN          = 0;
-   bzf->handle        = f;
-   bzf->writing       = True;
-   bzf->strm.bzalloc  = NULL;
-   bzf->strm.bzfree   = NULL;
-   bzf->strm.opaque   = NULL;
-
+   if (bzf == ((void*)0))
+      { { if (bzerror != ((void*)0)) *bzerror = (-3); if (bzf != ((void*)0)) bzf->lastErr = (-3); }; return ((void*)0); };
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
+   bzf->initialisedOk = ((Bool)0);
+   bzf->bufN = 0;
+   bzf->handle = f;
+   bzf->writing = ((Bool)1);
+   bzf->strm.bzalloc = ((void*)0);
+   bzf->strm.bzfree = ((void*)0);
+   bzf->strm.opaque = ((void*)0);
    if (workFactor == 0) workFactor = 30;
-   ret = BZ2_bzCompressInit ( &(bzf->strm), blockSize100k, 
+   ret = BZ2_bzCompressInit ( &(bzf->strm), blockSize100k,
                               verbosity, workFactor );
-   if (ret != BZ_OK)
-      { BZ_SETERR(ret); free(bzf); return NULL; };
-
+   if (ret != 0)
+      { { if (bzerror != ((void*)0)) *bzerror = ret; if (bzf != ((void*)0)) bzf->lastErr = ret; }; free(bzf); return ((void*)0); };
    bzf->strm.avail_in = 0;
-   bzf->initialisedOk = True;
-   return bzf;   
+   bzf->initialisedOk = ((Bool)1);
+   return bzf;
 }
-
-
-
-/*---------------------------------------------------*/
-void BZ_API(BZ2_bzWrite)
-             ( int*    bzerror, 
-               BZFILE* b, 
-               void*   buf, 
-               int     len )
+void BZ2_bzWrite
+             ( int* bzerror,
+               BZFILE* b,
+               void* buf,
+               int len )
 {
    Int32 n, n2, ret;
    bzFile* bzf = (bzFile*)b;
-
-   BZ_SETERR(BZ_OK);
-   if (bzf == NULL || buf == NULL || len < 0)
-      { BZ_SETERR(BZ_PARAM_ERROR); return; };
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
+   if (bzf == ((void*)0) || buf == ((void*)0) || len < 0)
+      { { if (bzerror != ((void*)0)) *bzerror = (-2); if (bzf != ((void*)0)) bzf->lastErr = (-2); }; return; };
    if (!(bzf->writing))
-      { BZ_SETERR(BZ_SEQUENCE_ERROR); return; };
+      { { if (bzerror != ((void*)0)) *bzerror = (-1); if (bzf != ((void*)0)) bzf->lastErr = (-1); }; return; };
    if (ferror(bzf->handle))
-      { BZ_SETERR(BZ_IO_ERROR); return; };
-
+      { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return; };
    if (len == 0)
-      { BZ_SETERR(BZ_OK); return; };
-
+      { { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; }; return; };
    bzf->strm.avail_in = len;
-   bzf->strm.next_in  = buf;
-
-   while (True) {
-      bzf->strm.avail_out = BZ_MAX_UNUSED;
+   bzf->strm.next_in = buf;
+   while (((Bool)1)) {
+      bzf->strm.avail_out = 5000;
       bzf->strm.next_out = bzf->buf;
-      ret = BZ2_bzCompress ( &(bzf->strm), BZ_RUN );
-      if (ret != BZ_RUN_OK)
-         { BZ_SETERR(ret); return; };
-
-      if (bzf->strm.avail_out < BZ_MAX_UNUSED) {
-         n = BZ_MAX_UNUSED - bzf->strm.avail_out;
-         n2 = fwrite ( (void*)(bzf->buf), sizeof(UChar), 
+      ret = BZ2_bzCompress ( &(bzf->strm), 0 );
+      if (ret != 1)
+         { { if (bzerror != ((void*)0)) *bzerror = ret; if (bzf != ((void*)0)) bzf->lastErr = ret; }; return; };
+      if (bzf->strm.avail_out < 5000) {
+         n = 5000 - bzf->strm.avail_out;
+         n2 = fwrite ( (void*)(bzf->buf), sizeof(UChar),
                        n, bzf->handle );
          if (n != n2 || ferror(bzf->handle))
-            { BZ_SETERR(BZ_IO_ERROR); return; };
+            { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return; };
       }
-
       if (bzf->strm.avail_in == 0)
-         { BZ_SETERR(BZ_OK); return; };
+         { { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; }; return; };
    }
 }
-
-
-/*---------------------------------------------------*/
-void BZ_API(BZ2_bzWriteClose)
-                  ( int*          bzerror, 
-                    BZFILE*       b, 
-                    int           abandon,
+void BZ2_bzWriteClose
+                  ( int* bzerror,
+                    BZFILE* b,
+                    int abandon,
                     unsigned int* nbytes_in,
                     unsigned int* nbytes_out )
 {
-   BZ2_bzWriteClose64 ( bzerror, b, abandon, 
-                        nbytes_in, NULL, nbytes_out, NULL );
+   BZ2_bzWriteClose64 ( bzerror, b, abandon,
+                        nbytes_in, ((void*)0), nbytes_out, ((void*)0) );
 }
-
-
-void BZ_API(BZ2_bzWriteClose64)
-                  ( int*          bzerror, 
-                    BZFILE*       b, 
-                    int           abandon,
+void BZ2_bzWriteClose64
+                  ( int* bzerror,
+                    BZFILE* b,
+                    int abandon,
                     unsigned int* nbytes_in_lo32,
                     unsigned int* nbytes_in_hi32,
                     unsigned int* nbytes_out_lo32,
                     unsigned int* nbytes_out_hi32 )
 {
-   Int32   n, n2, ret;
+   Int32 n, n2, ret;
    bzFile* bzf = (bzFile*)b;
-
-   if (bzf == NULL)
-      { BZ_SETERR(BZ_OK); return; };
+   if (bzf == ((void*)0))
+      { { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; }; return; };
    if (!(bzf->writing))
-      { BZ_SETERR(BZ_SEQUENCE_ERROR); return; };
+      { { if (bzerror != ((void*)0)) *bzerror = (-1); if (bzf != ((void*)0)) bzf->lastErr = (-1); }; return; };
    if (ferror(bzf->handle))
-      { BZ_SETERR(BZ_IO_ERROR); return; };
-
-   if (nbytes_in_lo32 != NULL) *nbytes_in_lo32 = 0;
-   if (nbytes_in_hi32 != NULL) *nbytes_in_hi32 = 0;
-   if (nbytes_out_lo32 != NULL) *nbytes_out_lo32 = 0;
-   if (nbytes_out_hi32 != NULL) *nbytes_out_hi32 = 0;
-
-   if ((!abandon) && bzf->lastErr == BZ_OK) {
-      while (True) {
-         bzf->strm.avail_out = BZ_MAX_UNUSED;
+      { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return; };
+   if (nbytes_in_lo32 != ((void*)0)) *nbytes_in_lo32 = 0;
+   if (nbytes_in_hi32 != ((void*)0)) *nbytes_in_hi32 = 0;
+   if (nbytes_out_lo32 != ((void*)0)) *nbytes_out_lo32 = 0;
+   if (nbytes_out_hi32 != ((void*)0)) *nbytes_out_hi32 = 0;
+   if ((!abandon) && bzf->lastErr == 0) {
+      while (((Bool)1)) {
+         bzf->strm.avail_out = 5000;
          bzf->strm.next_out = bzf->buf;
-         ret = BZ2_bzCompress ( &(bzf->strm), BZ_FINISH );
-         if (ret != BZ_FINISH_OK && ret != BZ_STREAM_END)
-            { BZ_SETERR(ret); return; };
-
-         if (bzf->strm.avail_out < BZ_MAX_UNUSED) {
-            n = BZ_MAX_UNUSED - bzf->strm.avail_out;
-            n2 = fwrite ( (void*)(bzf->buf), sizeof(UChar), 
+         ret = BZ2_bzCompress ( &(bzf->strm), 2 );
+         if (ret != 3 && ret != 4)
+            { { if (bzerror != ((void*)0)) *bzerror = ret; if (bzf != ((void*)0)) bzf->lastErr = ret; }; return; };
+         if (bzf->strm.avail_out < 5000) {
+            n = 5000 - bzf->strm.avail_out;
+            n2 = fwrite ( (void*)(bzf->buf), sizeof(UChar),
                           n, bzf->handle );
             if (n != n2 || ferror(bzf->handle))
-               { BZ_SETERR(BZ_IO_ERROR); return; };
+               { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return; };
          }
-
-         if (ret == BZ_STREAM_END) break;
+         if (ret == 4) break;
       }
    }
-
    if ( !abandon && !ferror ( bzf->handle ) ) {
       fflush ( bzf->handle );
       if (ferror(bzf->handle))
-         { BZ_SETERR(BZ_IO_ERROR); return; };
+         { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return; };
    }
-
-   if (nbytes_in_lo32 != NULL)
+   if (nbytes_in_lo32 != ((void*)0))
       *nbytes_in_lo32 = bzf->strm.total_in_lo32;
-   if (nbytes_in_hi32 != NULL)
+   if (nbytes_in_hi32 != ((void*)0))
       *nbytes_in_hi32 = bzf->strm.total_in_hi32;
-   if (nbytes_out_lo32 != NULL)
+   if (nbytes_out_lo32 != ((void*)0))
       *nbytes_out_lo32 = bzf->strm.total_out_lo32;
-   if (nbytes_out_hi32 != NULL)
+   if (nbytes_out_hi32 != ((void*)0))
       *nbytes_out_hi32 = bzf->strm.total_out_hi32;
-
-   BZ_SETERR(BZ_OK);
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
    BZ2_bzCompressEnd ( &(bzf->strm) );
    free ( bzf );
 }
-
-
-/*---------------------------------------------------*/
-BZFILE* BZ_API(BZ2_bzReadOpen) 
-                   ( int*  bzerror, 
-                     FILE* f, 
-                     int   verbosity,
-                     int   small,
+BZFILE* BZ2_bzReadOpen
+                   ( int* bzerror,
+                     FILE* f,
+                     int verbosity,
+                     int small,
                      void* unused,
-                     int   nUnused )
+                     int nUnused )
 {
-   bzFile* bzf = NULL;
-   int     ret;
-
-   BZ_SETERR(BZ_OK);
-
-   if (f == NULL || 
+   bzFile* bzf = ((void*)0);
+   int ret;
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
+   if (f == ((void*)0) ||
        (small != 0 && small != 1) ||
        (verbosity < 0 || verbosity > 4) ||
-       (unused == NULL && nUnused != 0) ||
-       (unused != NULL && (nUnused < 0 || nUnused > BZ_MAX_UNUSED)))
-      { BZ_SETERR(BZ_PARAM_ERROR); return NULL; };
-
+       (unused == ((void*)0) && nUnused != 0) ||
+       (unused != ((void*)0) && (nUnused < 0 || nUnused > 5000)))
+      { { if (bzerror != ((void*)0)) *bzerror = (-2); if (bzf != ((void*)0)) bzf->lastErr = (-2); }; return ((void*)0); };
    if (ferror(f))
-      { BZ_SETERR(BZ_IO_ERROR); return NULL; };
-
+      { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return ((void*)0); };
    bzf = malloc ( sizeof(bzFile) );
-   if (bzf == NULL) 
-      { BZ_SETERR(BZ_MEM_ERROR); return NULL; };
-
-   BZ_SETERR(BZ_OK);
-
-   bzf->initialisedOk = False;
-   bzf->handle        = f;
-   bzf->bufN          = 0;
-   bzf->writing       = False;
-   bzf->strm.bzalloc  = NULL;
-   bzf->strm.bzfree   = NULL;
-   bzf->strm.opaque   = NULL;
-   
+   if (bzf == ((void*)0))
+      { { if (bzerror != ((void*)0)) *bzerror = (-3); if (bzf != ((void*)0)) bzf->lastErr = (-3); }; return ((void*)0); };
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
+   bzf->initialisedOk = ((Bool)0);
+   bzf->handle = f;
+   bzf->bufN = 0;
+   bzf->writing = ((Bool)0);
+   bzf->strm.bzalloc = ((void*)0);
+   bzf->strm.bzfree = ((void*)0);
+   bzf->strm.opaque = ((void*)0);
    while (nUnused > 0) {
       bzf->buf[bzf->bufN] = *((UChar*)(unused)); bzf->bufN++;
-      unused = ((void*)( 1 + ((UChar*)(unused))  ));
+      unused = ((void*)( 1 + ((UChar*)(unused)) ));
       nUnused--;
    }
-
    ret = BZ2_bzDecompressInit ( &(bzf->strm), verbosity, small );
-   if (ret != BZ_OK)
-      { BZ_SETERR(ret); free(bzf); return NULL; };
-
+   if (ret != 0)
+      { { if (bzerror != ((void*)0)) *bzerror = ret; if (bzf != ((void*)0)) bzf->lastErr = ret; }; free(bzf); return ((void*)0); };
    bzf->strm.avail_in = bzf->bufN;
-   bzf->strm.next_in  = bzf->buf;
-
-   bzf->initialisedOk = True;
-   return bzf;   
+   bzf->strm.next_in = bzf->buf;
+   bzf->initialisedOk = ((Bool)1);
+   return bzf;
 }
-
-
-/*---------------------------------------------------*/
-void BZ_API(BZ2_bzReadClose) ( int *bzerror, BZFILE *b )
+void BZ2_bzReadClose ( int *bzerror, BZFILE *b )
 {
    bzFile* bzf = (bzFile*)b;
-
-   BZ_SETERR(BZ_OK);
-   if (bzf == NULL)
-      { BZ_SETERR(BZ_OK); return; };
-
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
+   if (bzf == ((void*)0))
+      { { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; }; return; };
    if (bzf->writing)
-      { BZ_SETERR(BZ_SEQUENCE_ERROR); return; };
-
+      { { if (bzerror != ((void*)0)) *bzerror = (-1); if (bzf != ((void*)0)) bzf->lastErr = (-1); }; return; };
    if (bzf->initialisedOk)
       (void)BZ2_bzDecompressEnd ( &(bzf->strm) );
    free ( bzf );
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzRead) 
-           ( int*    bzerror, 
-             BZFILE* b, 
-             void*   buf, 
-             int     len )
+int BZ2_bzRead
+           ( int* bzerror,
+             BZFILE* b,
+             void* buf,
+             int len )
 {
-   Int32   n, ret;
+   Int32 n, ret;
    bzFile* bzf = (bzFile*)b;
-
-   BZ_SETERR(BZ_OK);
-
-   if (bzf == NULL || buf == NULL || len < 0)
-      { BZ_SETERR(BZ_PARAM_ERROR); return 0; };
-
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
+   if (bzf == ((void*)0) || buf == ((void*)0) || len < 0)
+      { { if (bzerror != ((void*)0)) *bzerror = (-2); if (bzf != ((void*)0)) bzf->lastErr = (-2); }; return 0; };
    if (bzf->writing)
-      { BZ_SETERR(BZ_SEQUENCE_ERROR); return 0; };
-
+      { { if (bzerror != ((void*)0)) *bzerror = (-1); if (bzf != ((void*)0)) bzf->lastErr = (-1); }; return 0; };
    if (len == 0)
-      { BZ_SETERR(BZ_OK); return 0; };
-
+      { { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; }; return 0; };
    bzf->strm.avail_out = len;
    bzf->strm.next_out = buf;
-
-   while (True) {
-
-      if (ferror(bzf->handle)) 
-         { BZ_SETERR(BZ_IO_ERROR); return 0; };
-
+   while (((Bool)1)) {
+      if (ferror(bzf->handle))
+         { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return 0; };
       if (bzf->strm.avail_in == 0 && !myfeof(bzf->handle)) {
-         n = fread ( bzf->buf, sizeof(UChar), 
-                     BZ_MAX_UNUSED, bzf->handle );
+         n = fread ( bzf->buf, sizeof(UChar),
+                     5000, bzf->handle );
          if (ferror(bzf->handle))
-            { BZ_SETERR(BZ_IO_ERROR); return 0; };
+            { { if (bzerror != ((void*)0)) *bzerror = (-6); if (bzf != ((void*)0)) bzf->lastErr = (-6); }; return 0; };
          bzf->bufN = n;
          bzf->strm.avail_in = bzf->bufN;
          bzf->strm.next_in = bzf->buf;
       }
-
       ret = BZ2_bzDecompress ( &(bzf->strm) );
-
-      if (ret != BZ_OK && ret != BZ_STREAM_END)
-         { BZ_SETERR(ret); return 0; };
-
-      if (ret == BZ_OK && myfeof(bzf->handle) && 
+      if (ret != 0 && ret != 4)
+         { { if (bzerror != ((void*)0)) *bzerror = ret; if (bzf != ((void*)0)) bzf->lastErr = ret; }; return 0; };
+      if (ret == 0 && myfeof(bzf->handle) &&
           bzf->strm.avail_in == 0 && bzf->strm.avail_out > 0)
-         { BZ_SETERR(BZ_UNEXPECTED_EOF); return 0; };
-
-      if (ret == BZ_STREAM_END)
-         { BZ_SETERR(BZ_STREAM_END);
+         { { if (bzerror != ((void*)0)) *bzerror = (-7); if (bzf != ((void*)0)) bzf->lastErr = (-7); }; return 0; };
+      if (ret == 4)
+         { { if (bzerror != ((void*)0)) *bzerror = 4; if (bzf != ((void*)0)) bzf->lastErr = 4; };
            return len - bzf->strm.avail_out; };
       if (bzf->strm.avail_out == 0)
-         { BZ_SETERR(BZ_OK); return len; };
-      
+         { { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; }; return len; };
    }
-
-   return 0; /*not reached*/
+   return 0;
 }
-
-
-/*---------------------------------------------------*/
-void BZ_API(BZ2_bzReadGetUnused) 
-                     ( int*    bzerror, 
-                       BZFILE* b, 
-                       void**  unused, 
-                       int*    nUnused )
+void BZ2_bzReadGetUnused
+                     ( int* bzerror,
+                       BZFILE* b,
+                       void** unused,
+                       int* nUnused )
 {
    bzFile* bzf = (bzFile*)b;
-   if (bzf == NULL)
-      { BZ_SETERR(BZ_PARAM_ERROR); return; };
-   if (bzf->lastErr != BZ_STREAM_END)
-      { BZ_SETERR(BZ_SEQUENCE_ERROR); return; };
-   if (unused == NULL || nUnused == NULL)
-      { BZ_SETERR(BZ_PARAM_ERROR); return; };
-
-   BZ_SETERR(BZ_OK);
+   if (bzf == ((void*)0))
+      { { if (bzerror != ((void*)0)) *bzerror = (-2); if (bzf != ((void*)0)) bzf->lastErr = (-2); }; return; };
+   if (bzf->lastErr != 4)
+      { { if (bzerror != ((void*)0)) *bzerror = (-1); if (bzf != ((void*)0)) bzf->lastErr = (-1); }; return; };
+   if (unused == ((void*)0) || nUnused == ((void*)0))
+      { { if (bzerror != ((void*)0)) *bzerror = (-2); if (bzf != ((void*)0)) bzf->lastErr = (-2); }; return; };
+   { if (bzerror != ((void*)0)) *bzerror = 0; if (bzf != ((void*)0)) bzf->lastErr = 0; };
    *nUnused = bzf->strm.avail_in;
    *unused = bzf->strm.next_in;
 }
-#endif
-
-
-/*---------------------------------------------------*/
-/*--- Misc convenience stuff                      ---*/
-/*---------------------------------------------------*/
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzBuffToBuffCompress) 
-                         ( char*         dest, 
+int BZ2_bzBuffToBuffCompress
+                         ( char* dest,
                            unsigned int* destLen,
-                           char*         source, 
-                           unsigned int  sourceLen,
-                           int           blockSize100k, 
-                           int           verbosity, 
-                           int           workFactor )
+                           char* source,
+                           unsigned int sourceLen,
+                           int blockSize100k,
+                           int verbosity,
+                           int workFactor )
 {
    bz_stream strm;
    int ret;
-
-   if (dest == NULL || destLen == NULL || 
-       source == NULL ||
+   if (dest == ((void*)0) || destLen == ((void*)0) ||
+       source == ((void*)0) ||
        blockSize100k < 1 || blockSize100k > 9 ||
        verbosity < 0 || verbosity > 4 ||
-       workFactor < 0 || workFactor > 250) 
-      return BZ_PARAM_ERROR;
-
+       workFactor < 0 || workFactor > 250)
+      return (-2);
    if (workFactor == 0) workFactor = 30;
-   strm.bzalloc = NULL;
-   strm.bzfree = NULL;
-   strm.opaque = NULL;
-   ret = BZ2_bzCompressInit ( &strm, blockSize100k, 
+   strm.bzalloc = ((void*)0);
+   strm.bzfree = ((void*)0);
+   strm.opaque = ((void*)0);
+   ret = BZ2_bzCompressInit ( &strm, blockSize100k,
                               verbosity, workFactor );
-   if (ret != BZ_OK) return ret;
-
+   if (ret != 0) return ret;
    strm.next_in = source;
    strm.next_out = dest;
    strm.avail_in = sourceLen;
    strm.avail_out = *destLen;
-
-   ret = BZ2_bzCompress ( &strm, BZ_FINISH );
-   if (ret == BZ_FINISH_OK) goto output_overflow;
-   if (ret != BZ_STREAM_END) goto errhandler;
-
-   /* normal termination */
-   *destLen -= strm.avail_out;   
+   ret = BZ2_bzCompress ( &strm, 2 );
+   if (ret == 3) goto output_overflow;
+   if (ret != 4) goto errhandler;
+   *destLen -= strm.avail_out;
    BZ2_bzCompressEnd ( &strm );
-   return BZ_OK;
-
+   return 0;
    output_overflow:
    BZ2_bzCompressEnd ( &strm );
-   return BZ_OUTBUFF_FULL;
-
+   return (-8);
    errhandler:
    BZ2_bzCompressEnd ( &strm );
    return ret;
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzBuffToBuffDecompress) 
-                           ( char*         dest, 
+int BZ2_bzBuffToBuffDecompress
+                           ( char* dest,
                              unsigned int* destLen,
-                             char*         source, 
-                             unsigned int  sourceLen,
-                             int           small,
-                             int           verbosity )
+                             char* source,
+                             unsigned int sourceLen,
+                             int small,
+                             int verbosity )
 {
    bz_stream strm;
    int ret;
-
-   if (dest == NULL || destLen == NULL || 
-       source == NULL ||
+   if (dest == ((void*)0) || destLen == ((void*)0) ||
+       source == ((void*)0) ||
        (small != 0 && small != 1) ||
-       verbosity < 0 || verbosity > 4) 
-          return BZ_PARAM_ERROR;
-
-   strm.bzalloc = NULL;
-   strm.bzfree = NULL;
-   strm.opaque = NULL;
+       verbosity < 0 || verbosity > 4)
+          return (-2);
+   strm.bzalloc = ((void*)0);
+   strm.bzfree = ((void*)0);
+   strm.opaque = ((void*)0);
    ret = BZ2_bzDecompressInit ( &strm, verbosity, small );
-   if (ret != BZ_OK) return ret;
-
+   if (ret != 0) return ret;
    strm.next_in = source;
    strm.next_out = dest;
    strm.avail_in = sourceLen;
    strm.avail_out = *destLen;
-
    ret = BZ2_bzDecompress ( &strm );
-   if (ret == BZ_OK) goto output_overflow_or_eof;
-   if (ret != BZ_STREAM_END) goto errhandler;
-
-   /* normal termination */
+   if (ret == 0) goto output_overflow_or_eof;
+   if (ret != 4) goto errhandler;
    *destLen -= strm.avail_out;
    BZ2_bzDecompressEnd ( &strm );
-   return BZ_OK;
-
+   return 0;
    output_overflow_or_eof:
    if (strm.avail_out > 0) {
       BZ2_bzDecompressEnd ( &strm );
-      return BZ_UNEXPECTED_EOF;
+      return (-7);
    } else {
       BZ2_bzDecompressEnd ( &strm );
-      return BZ_OUTBUFF_FULL;
-   };      
-
+      return (-8);
+   };
    errhandler:
    BZ2_bzDecompressEnd ( &strm );
-   return ret; 
+   return ret;
 }
-
-
-/*---------------------------------------------------*/
-/*--
-   Code contributed by Yoshioka Tsuneo (tsuneo@rr.iij4u.or.jp)
-   to support better zlib compatibility.
-   This code is not _officially_ part of libbzip2 (yet);
-   I haven't tested it, documented it, or considered the
-   threading-safeness of it.
-   If this code breaks, please contact both Yoshioka and me.
---*/
-/*---------------------------------------------------*/
-
-/*---------------------------------------------------*/
-/*--
-   return version like "0.9.5d, 4-Sept-1999".
---*/
-const char * BZ_API(BZ2_bzlibVersion)(void)
+const char * BZ2_bzlibVersion(void)
 {
-   return BZ_VERSION;
+   return "1.0.8, 13-Jul-2019";
 }
-
-
-#ifndef BZ_NO_STDIO
-/*---------------------------------------------------*/
-
-#if defined(_WIN32) || defined(OS2) || defined(MSDOS)
-
-
-#   define SET_BINARY_MODE(file) setmode(fileno(file),O_BINARY)
-#else
-#   define SET_BINARY_MODE(file)
-#endif
 static
 BZFILE * bzopen_or_bzdopen
-               ( const char *path,   /* no use when bzdopen */
-                 int fd,             /* no use when bzdopen */
+               ( const char *path,
+                 int fd,
                  const char *mode,
-                 int open_mode)      /* bzopen: 0, bzdopen:1 */
+                 int open_mode)
 {
-   int    bzerr;
-   char   unused[BZ_MAX_UNUSED];
-   int    blockSize100k = 9;
-   int    writing       = 0;
-   char   mode2[10]     = "";
-   FILE   *fp           = NULL;
-   BZFILE *bzfp         = NULL;
-   int    verbosity     = 0;
-   int    workFactor    = 30;
-   int    smallMode     = 0;
-   int    nUnused       = 0; 
-
-   if (mode == NULL) return NULL;
+   int bzerr;
+   char unused[5000];
+   int blockSize100k = 9;
+   int writing = 0;
+   char mode2[10] = "";
+   FILE *fp = ((void*)0);
+   BZFILE *bzfp = ((void*)0);
+   int verbosity = 0;
+   int workFactor = 30;
+   int smallMode = 0;
+   int nUnused = 0;
+   if (mode == ((void*)0)) return ((void*)0);
    while (*mode) {
       switch (*mode) {
       case 'r':
@@ -5005,120 +3917,87 @@ BZFILE * bzopen_or_bzdopen
       case 's':
          smallMode = 1; break;
       default:
-         if (isdigit((int)(*mode))) {
-            blockSize100k = *mode-BZ_HDR_0;
+         if (((*__ctype_b_loc ())[(int) (((int)(*mode)))] & (unsigned short int) _ISdigit)) {
+            blockSize100k = *mode-0x30;
          }
       }
       mode++;
    }
    strcat(mode2, writing ? "w" : "r" );
-   strcat(mode2,"b");   /* binary mode */
-
+   strcat(mode2,"b");
    if (open_mode==0) {
-      if (path==NULL || strcmp(path,"")==0) {
+      if (path==((void*)0) || strcmp(path,"")==0) {
         fp = (writing ? stdout : stdin);
-        SET_BINARY_MODE(fp);
+                           ;
       } else {
         fp = fopen(path,mode2);
       }
    } else {
-#ifdef BZ_STRICT_ANSI
-      fp = NULL;
-#else
       fp = fdopen(fd,mode2);
-#endif
    }
-   if (fp == NULL) return NULL;
-
+   if (fp == ((void*)0)) return ((void*)0);
    if (writing) {
-      /* Guard against total chaos and anarchy -- JRS */
       if (blockSize100k < 1) blockSize100k = 1;
-      if (blockSize100k > 9) blockSize100k = 9; 
+      if (blockSize100k > 9) blockSize100k = 9;
       bzfp = BZ2_bzWriteOpen(&bzerr,fp,blockSize100k,
                              verbosity,workFactor);
    } else {
       bzfp = BZ2_bzReadOpen(&bzerr,fp,verbosity,smallMode,
                             unused,nUnused);
    }
-   if (bzfp == NULL) {
+   if (bzfp == ((void*)0)) {
       if (fp != stdin && fp != stdout) fclose(fp);
-      return NULL;
+      return ((void*)0);
    }
    return bzfp;
 }
-
-
-/*---------------------------------------------------*/
-/*--
-   open file for read or write.
-      ex) bzopen("file","w9")
-      case path="" or NULL => use stdin or stdout.
---*/
-BZFILE * BZ_API(BZ2_bzopen)
+BZFILE * BZ2_bzopen
                ( const char *path,
                  const char *mode )
 {
-   return bzopen_or_bzdopen(path,-1,mode,/*bzopen*/0);
+   return bzopen_or_bzdopen(path,-1,mode, 0);
 }
-
-
-/*---------------------------------------------------*/
-BZFILE * BZ_API(BZ2_bzdopen)
+BZFILE * BZ2_bzdopen
                ( int fd,
                  const char *mode )
 {
-   return bzopen_or_bzdopen(NULL,fd,mode,/*bzdopen*/1);
+   return bzopen_or_bzdopen(((void*)0),fd,mode, 1);
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzread) (BZFILE* b, void* buf, int len )
+int BZ2_bzread (BZFILE* b, void* buf, int len )
 {
    int bzerr, nread;
-   if (((bzFile*)b)->lastErr == BZ_STREAM_END) return 0;
+   if (((bzFile*)b)->lastErr == 4) return 0;
    nread = BZ2_bzRead(&bzerr,b,buf,len);
-   if (bzerr == BZ_OK || bzerr == BZ_STREAM_END) {
+   if (bzerr == 0 || bzerr == 4) {
       return nread;
    } else {
       return -1;
    }
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzwrite) (BZFILE* b, void* buf, int len )
+int BZ2_bzwrite (BZFILE* b, void* buf, int len )
 {
    int bzerr;
-
    BZ2_bzWrite(&bzerr,b,buf,len);
-   if(bzerr == BZ_OK){
+   if(bzerr == 0){
       return len;
    }else{
       return -1;
    }
 }
-
-
-/*---------------------------------------------------*/
-int BZ_API(BZ2_bzflush) (BZFILE *b)
+int BZ2_bzflush (BZFILE *b)
 {
-   /* do nothing now... */
    return 0;
 }
-
-
-/*---------------------------------------------------*/
-void BZ_API(BZ2_bzclose) (BZFILE* b)
+void BZ2_bzclose (BZFILE* b)
 {
    int bzerr;
    FILE *fp;
-   
-   if (b==NULL) {return;}
+   if (b==((void*)0)) {return;}
    fp = ((bzFile *)b)->handle;
    if(((bzFile*)b)->writing){
-      BZ2_bzWriteClose(&bzerr,b,0,NULL,NULL);
-      if(bzerr != BZ_OK){
-         BZ2_bzWriteClose(NULL,b,1,NULL,NULL);
+      BZ2_bzWriteClose(&bzerr,b,0,((void*)0),((void*)0));
+      if(bzerr != 0){
+         BZ2_bzWriteClose(((void*)0),b,1,((void*)0),((void*)0));
       }
    }else{
       BZ2_bzReadClose(&bzerr,b);
@@ -5127,12 +4006,6 @@ void BZ_API(BZ2_bzclose) (BZFILE* b)
       fclose(fp);
    }
 }
-
-
-/*---------------------------------------------------*/
-/*--
-   return last error code 
---*/
 static const char *bzerrorstrings[] = {
        "OK"
       ,"SEQUENCE_ERROR"
@@ -5144,31 +4017,20 @@ static const char *bzerrorstrings[] = {
       ,"UNEXPECTED_EOF"
       ,"OUTBUFF_FULL"
       ,"CONFIG_ERROR"
-      ,"???"   /* for future */
-      ,"???"   /* for future */
-      ,"???"   /* for future */
-      ,"???"   /* for future */
-      ,"???"   /* for future */
-      ,"???"   /* for future */
+      ,"???"
+      ,"???"
+      ,"???"
+      ,"???"
+      ,"???"
+      ,"???"
 };
-
-
-const char * BZ_API(BZ2_bzerror) (BZFILE *b, int *errnum)
+const char * BZ2_bzerror (BZFILE *b, int *errnum)
 {
    int err = ((bzFile *)b)->lastErr;
-
    if(err>0) err = 0;
    *errnum = err;
    return bzerrorstrings[err*-1];
 }
-#endif
-
-
-/*-------------------------------------------------------------*/
-/*--- end                                           bzlib.c ---*/
-/*-------------------------------------------------------------*/
-
-
 int bzbuff_compress_packet(int8_t packet[64])
 {
     char destination[128];

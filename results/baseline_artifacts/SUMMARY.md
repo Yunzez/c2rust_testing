@@ -4,11 +4,11 @@ Generated from `results/baseline_artifacts/results.json`; do not edit counts by 
 
 ## Funnel
 
-| Baseline | Submitted | Accepted | Compiled | Completed | Detected |
-|---|---:|---:|---:|---:|---:|
-| RustAssure | 28/36 | 28/36 | 11/36 | 11/36 | 5/36 |
-| FLOURINE | 33/36 | 20/36 | 17/36 | 16/36 | 14/36 |
-| VERT | 0/36 | 0/36 | 0/36 | 0/36 | 0/36 |
+| Baseline | Submitted | Accepted | Compiled | Completed | Detected | Detected / completed |
+|---|---:|---:|---:|---:|---:|---:|
+| RustAssure | 28/36 | 28/36 | 11/36 | 11/36 | 5/36 | 5/11 |
+| FLOURINE | 33/36 | 20/36 | 17/36 | 16/36 | 14/36 | 14/16 |
+| VERT | 0/36 | 0/36 | 0/36 | 0/36 | 0/36 | -- |
 
 ## Final outcomes
 

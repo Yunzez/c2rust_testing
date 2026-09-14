@@ -14,6 +14,9 @@ are in `results.json`; `funnel.json`, `SUMMARY.md`, and
 `c2rust_paper/table/baseline_comparison.tex` are generated from that file.
 `scripts/baseline_artifacts/validate_completion.py --require-complete` audits
 all 108 records and rejects unfinished cells or stale generated summaries.
+While the large raw run directories remain under `/home/yunzez/c2rust_baselines`,
+`scripts/baseline_artifacts/validate_raw_evidence.py` verifies every archived
+file hash referenced by the committed result records.
 
 `adapter_policy.json` is the scored-adapter audit. It distinguishes input-contract
 realization and source packaging from interface changes that work around a

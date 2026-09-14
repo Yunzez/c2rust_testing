@@ -102,4 +102,5 @@ strict completion audit is:
 
 ```
 python3 scripts/baseline_artifacts/validate_completion.py --require-complete
+python3 scripts/baseline_artifacts/validate_raw_evidence.py
 ```

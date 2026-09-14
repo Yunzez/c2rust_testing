@@ -580,6 +580,7 @@ def record_all() -> dict[str, dict]:
         ("S11", "bzbuff_decompress_observe", None),
         ("S19", "zlib_compress_observe", None),
         ("S20", "zlib_uncompress_observe", None),
+        ("C15", "zlib_uncompress_observe", "S20"),
         ("C10", "lil_parse_generated", None),
         ("C11", "ti_find_indicator_valid", None),
         ("S18", "zlib_uncompress_observe", None),
@@ -591,6 +592,10 @@ def record_all() -> dict[str, dict]:
             )
             if external_slug:
                 payloads[defect]["shared_submission_with"] = external_slug
+                if defect == "C15":
+                    payloads[defect]["adapter_record"] = (
+                        "results/baseline_artifacts/adapters/flourine/S20/adapter.json"
+                    )
     return payloads
 
 

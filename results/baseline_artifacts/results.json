@@ -1264,17 +1264,19 @@
       "defect_id": "C15",
       "pilot": false,
       "gates": {
-        "submitted": false,
+        "submitted": true,
         "accepted": false,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "analysis_failure",
+      "adapter": "results/baseline_artifacts/adapters/flourine/S20/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh C15",
+      "result_record": "results/baseline_artifacts/runs/flourine/C15/result.json",
+      "notes": [
+        "The released C instrumenter accepted and compiled the submitted dependency closure, but the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`. No parser workaround or source reduction is attempted."
+      ]
     },
     {
       "baseline": "flourine",

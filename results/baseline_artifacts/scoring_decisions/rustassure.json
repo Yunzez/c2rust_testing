@@ -42,6 +42,32 @@
         "results/rq4_effectiveness/defect_manifest.json"
       ]
     },
+    "C13": {
+      "outcome": "missed",
+      "baseline_signal_matches_defect": false,
+      "source_level_validation": "The released analysis compiled and completed both sides, but reported edit distance 0 for the selector argument and constant return value, and neither termination report contains a signal. It therefore did not expose the catalogued `free(NULL)` versus `Box::from_raw(NULL)` termination difference.",
+      "c_oracle_status": "The wrapper selects either NULL or a valid one-byte allocation before calling the exact C opng_free body. Both choices are within C free's contract, including the NULL choice that triggers C13 only on the Rust side.",
+      "reviewed_by": "authors",
+      "paper_summary": "RustAssure completed on C13 but emitted neither a graph-distance nor termination signal, so the NULL-free defect is recorded as missed.",
+      "evidence": [
+        "results/baseline_artifacts/runs/rustassure/C13/result.json",
+        "results/baseline_artifacts/adapters/rustassure/C13/adapter.json",
+        "results/rq4_effectiveness/defect_manifest.json"
+      ]
+    },
+    "C16": {
+      "outcome": "detected",
+      "baseline_signal_matches_defect": true,
+      "source_level_validation": "RustAssure reports distance 1000 for the mutated two-byte packet and distance 0 for data_size. The C graph set contains nine packet outcomes: the unchanged packet plus eight decrement-derived mutations, including the unsigned-underflow path whose expression adds 0xfffffff8. The Rust graph set contains only the unchanged packet plus seven decrement paths; its LLVM contains `llvm.usub.with.overflow.i32` and a panic edge for the missing z_cinfo=0 path. Thus the unmatched output graph is exactly the catalogued checked-subtraction substitution in C16, rather than an unrelated argument-representation mismatch.",
+      "c_oracle_status": "The adapter supplies exactly the two initialized bytes read and written by optimize_cmf. The established witness uses a legal RFC 1950 CINFO=0 header; unsigned decrement is defined to wrap in C, so the missing Rust path has a valid C oracle.",
+      "reviewed_by": "authors",
+      "paper_summary": "RustAssure detected C16: its unmatched packet-output path was manually traced to the checked Rust decrement that removes C's defined unsigned-underflow behavior.",
+      "evidence": [
+        "results/baseline_artifacts/runs/rustassure/C16/result.json",
+        "results/baseline_artifacts/adapters/rustassure/C16/adapter.json",
+        "results/rq4_effectiveness/defect_manifest.json"
+      ]
+    },
     "S14": {
       "outcome": "missed",
       "baseline_signal_matches_defect": false,

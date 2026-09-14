@@ -357,17 +357,19 @@
       "defect_id": "S9",
       "pilot": false,
       "gates": {
-        "submitted": false,
-        "accepted": false,
+        "submitted": true,
+        "accepted": true,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "compile_failure",
+      "adapter": "results/baseline_artifacts/adapters/rustassure/S9/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_rustassure_pair.sh S9",
+      "result_record": "results/baseline_artifacts/runs/rustassure/S9/result.json",
+      "notes": [
+        "The released RustAssure emitter accepted the exact S9 package, but its pinned Rust compiler compiled 0/1 Rust functions. The subsequent `Rust Empty!` graph rows contain no Rust execution and are not a defect signal; no compiler or source workaround is attempted."
+      ]
     },
     {
       "baseline": "rustassure",
@@ -482,17 +484,19 @@
       "defect_id": "C13",
       "pilot": false,
       "gates": {
-        "submitted": false,
-        "accepted": false,
-        "compiled": false,
-        "completed": false,
+        "submitted": true,
+        "accepted": true,
+        "compiled": true,
+        "completed": true,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "missed",
+      "adapter": "results/baseline_artifacts/adapters/rustassure/C13/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_rustassure_pair.sh C13",
+      "result_record": "results/baseline_artifacts/runs/rustassure/C13/result.json",
+      "notes": [
+        "RustAssure completed on C13 but emitted neither a graph-distance nor termination signal, so the NULL-free defect is recorded as missed."
+      ]
     },
     {
       "baseline": "rustassure",
@@ -622,17 +626,19 @@
       "defect_id": "C16",
       "pilot": false,
       "gates": {
-        "submitted": false,
-        "accepted": false,
-        "compiled": false,
-        "completed": false,
-        "detected": false
+        "submitted": true,
+        "accepted": true,
+        "compiled": true,
+        "completed": true,
+        "detected": true
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "detected",
+      "adapter": "results/baseline_artifacts/adapters/rustassure/C16/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_rustassure_pair.sh C16",
+      "result_record": "results/baseline_artifacts/runs/rustassure/C16/result.json",
+      "notes": [
+        "RustAssure detected C16: its unmatched packet-output path was manually traced to the checked Rust decrement that removes C's defined unsigned-underflow behavior."
+      ]
     },
     {
       "baseline": "flourine",

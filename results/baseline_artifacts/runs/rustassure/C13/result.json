@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "C13",
+  "target": "opng_free_choice",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": false
+  },
+  "outcome": "missed",
+  "artifact_native_symbolic_analysis": true,
+  "has_baseline_signal": false,
+  "distances": [
+    {
+      "function_name": "opng_free_choice",
+      "argument_name": "arg_value_0",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "opng_free_choice",
+      "argument_name": "ret_value",
+      "best_edit_distances": 0.0
+    }
+  ],
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "1",
+    "total_arguments": "2",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "0",
+    "overall_unsafe_sum": "9",
+    "overall_safe_lines": "-9",
+    "rust_coverage": "57.58",
+    "c_coverage": "100.0",
+    "execution_time": "0m"
+  },
+  "manual_validation": {
+    "outcome": "missed",
+    "baseline_signal_matches_defect": false,
+    "source_level_validation": "The released analysis compiled and completed both sides, but reported edit distance 0 for the selector argument and constant return value, and neither termination report contains a signal. It therefore did not expose the catalogued `free(NULL)` versus `Box::from_raw(NULL)` termination difference.",
+    "c_oracle_status": "The wrapper selects either NULL or a valid one-byte allocation before calling the exact C opng_free body. Both choices are within C free's contract, including the NULL choice that triggers C13 only on the Rust side.",
+    "reviewed_by": "authors",
+    "paper_summary": "RustAssure completed on C13 but emitted neither a graph-distance nor termination signal, so the NULL-free defect is recorded as missed.",
+    "evidence": [
+      "results/baseline_artifacts/runs/rustassure/C13/result.json",
+      "results/baseline_artifacts/adapters/rustassure/C13/adapter.json",
+      "results/rq4_effectiveness/defect_manifest.json"
+    ]
+  },
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_C13/workdir",
+  "hashes": {
+    "result.csv": "357ec339728f6b6eb401250321868a075e06ba4186f52056ade7c3bd8e0cd552",
+    "edit_distance/best_edit_distances.csv": "5f624b66c21b429871511441f4420c8e7eab3857bfe18505f8cf117c0b23f7e2",
+    "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5"
+  },
+  "interpretation": "RustAssure completed on C13 but emitted neither a graph-distance nor termination signal, so the NULL-free defect is recorded as missed."
+}

@@ -230,6 +230,51 @@ def record_s7_compile_failure() -> dict:
     return payload
 
 
+def record_s9_compile_failure() -> dict:
+    """Record the released compiler's failure on the exact S9 package."""
+    attempt = EXTERNAL / "pilot_S9/workdir"
+    logger = attempt / "test_llvm_bitcode_emitter_logger.log"
+    rust_input = attempt / "testcase/Rust/parse_string_valid.rs"
+    c_input = attempt / "testcase/C/parse_string_valid.i"
+    log_text = logger.read_text()
+    assert "Compilation failed for testcase/Rust/parse_string_valid.rs" in log_text
+    assert "Out of 1 total Rust files 0 compiled" in log_text
+    with (attempt / "result.csv").open(newline="") as handle:
+        summary = next(csv.DictReader(handle))
+    assert summary["total_rust_functions_compiled"] == "0"
+    payload = {
+        "schema_version": 1,
+        "baseline": "rustassure",
+        "defect_id": "S9",
+        "target": "parse_string_valid",
+        "gates": {
+            "submitted": True,
+            "accepted": True,
+            "compiled": False,
+            "completed": False,
+            "detected": False,
+        },
+        "outcome": "compile_failure",
+        "artifact_native_symbolic_analysis": False,
+        "formal_attempt": str(attempt),
+        "summary": summary,
+        "hashes": {
+            str(path.relative_to(attempt)): sha256(path)
+            for path in (logger, rust_input, c_input, attempt / "result.csv")
+        },
+        "interpretation": (
+            "The released RustAssure emitter accepted the exact S9 package, but "
+            "its pinned Rust compiler compiled 0/1 Rust functions. The subsequent "
+            "`Rust Empty!` graph rows contain no Rust execution and are not a defect "
+            "signal; no compiler or source workaround is attempted."
+        ),
+    }
+    out = RUN_ROOT / "S9"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "result.json").write_text(json.dumps(payload, indent=2) + "\n")
+    return payload
+
+
 def main() -> None:
     decision_doc = json.loads(DECISIONS.read_text())
     assert decision_doc["baseline"] == "rustassure"
@@ -237,11 +282,12 @@ def main() -> None:
     payloads = {
         "C1": record_c1_direct_failure(),
         "S7": record_s7_compile_failure(),
+        "S9": record_s9_compile_failure(),
     }
     payloads.update(
         {
             defect: payload
-            for defect in ["S6", "S21", "S14", "S17", "C12", "C2"]
+            for defect in ["S6", "S21", "S14", "S17", "C12", "C2", "C13", "C16"]
             if (payload := record(defect, decisions))
         }
     )

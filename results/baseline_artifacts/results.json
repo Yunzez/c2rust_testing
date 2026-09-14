@@ -321,17 +321,19 @@
       "defect_id": "S7",
       "pilot": false,
       "gates": {
-        "submitted": false,
-        "accepted": false,
+        "submitted": true,
+        "accepted": true,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "compile_failure",
+      "adapter": "results/baseline_artifacts/adapters/rustassure/S7/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_rustassure_pair.sh S7",
+      "result_record": "results/baseline_artifacts/runs/rustassure/S7/result.json",
+      "notes": [
+        "The released RustAssure emitter accepted the exact dependency package, but its pinned Rust compiler failed on the frozen PtrTrans source and compiled 0/1 Rust functions. The subsequent `Rust Empty!` graph rows contain no Rust execution and are not a defect signal; no compiler or source workaround is attempted."
+      ]
     },
     {
       "baseline": "rustassure",

@@ -27,6 +27,11 @@
       "scored_class": "allowed_exact_source_packaging",
       "basis": "the exact C and Rust quicksort bodies are packaged with lossless name forwarding and identity source-level argument order; the released artifact's extra symbolic fat-pointer length is retained rather than patched"
     },
+    "S7": {
+      "scored_class": "released_baseline_failure",
+      "outcome": "compile_failure",
+      "basis": "the exact dependency package is retained, but RustAssure's pinned Rust compiler compiles 0/1 Rust functions; the resulting `Rust Empty!` rows are not treated as a detection and no compiler or source workaround is attempted"
+    },
     "C12": {
       "scored_class": "allowed_exact_source_packaging",
       "basis": "the frozen C initialized table, Rust all-NULL table, and exact target bodies are packaged as RustAssure's documented individual-function input"

@@ -184,11 +184,60 @@ def record_c1_direct_failure() -> dict:
     return payload
 
 
+def record_s7_compile_failure() -> dict:
+    """Record the released compiler's failure on the exact S7 package."""
+    attempt = EXTERNAL / "pilot_S7/workdir"
+    logger = attempt / "test_llvm_bitcode_emitter_logger.log"
+    rust_input = attempt / "testcase/Rust/parse_string_ascii.rs"
+    c_input = attempt / "testcase/C/parse_string_ascii.i"
+    log_text = logger.read_text()
+    assert "Compilation failed for testcase/Rust/parse_string_ascii.rs" in log_text
+    assert "Out of 1 total Rust files 0 compiled" in log_text
+    with (attempt / "result.csv").open(newline="") as handle:
+        summary = next(csv.DictReader(handle))
+    assert summary["total_rust_functions_compiled"] == "0"
+    payload = {
+        "schema_version": 1,
+        "baseline": "rustassure",
+        "defect_id": "S7",
+        "target": "parse_string_ascii",
+        "gates": {
+            "submitted": True,
+            "accepted": True,
+            "compiled": False,
+            "completed": False,
+            "detected": False,
+        },
+        "outcome": "compile_failure",
+        "artifact_native_symbolic_analysis": False,
+        "formal_attempt": str(attempt),
+        "summary": summary,
+        "hashes": {
+            str(path.relative_to(attempt)): sha256(path)
+            for path in (logger, rust_input, c_input, attempt / "result.csv")
+        },
+        "interpretation": (
+            "The released RustAssure emitter accepted the exact dependency package, "
+            "but its pinned Rust compiler failed on the frozen PtrTrans source and "
+            "compiled 0/1 Rust functions. The subsequent `Rust Empty!` graph rows "
+            "contain no Rust execution and are not a defect signal; no compiler or "
+            "source workaround is attempted."
+        ),
+    }
+    out = RUN_ROOT / "S7"
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "result.json").write_text(json.dumps(payload, indent=2) + "\n")
+    return payload
+
+
 def main() -> None:
     decision_doc = json.loads(DECISIONS.read_text())
     assert decision_doc["baseline"] == "rustassure"
     decisions = decision_doc["decisions"]
-    payloads = {"C1": record_c1_direct_failure()}
+    payloads = {
+        "C1": record_c1_direct_failure(),
+        "S7": record_s7_compile_failure(),
+    }
     payloads.update(
         {
             defect: payload

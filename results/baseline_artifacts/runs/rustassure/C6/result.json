@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "C6",
+  "target": "sample_main_packet",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "compile_failure",
+  "artifact_native_symbolic_analysis": false,
+  "formal_attempt": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_C6/workdir",
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "0",
+    "total_arguments": "0",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "0",
+    "overall_unsafe_sum": "0",
+    "overall_safe_lines": "0",
+    "rust_coverage": "",
+    "c_coverage": "",
+    "execution_time": "0m"
+  },
+  "hashes": {
+    "test_llvm_bitcode_emitter_logger.log": "33b0db676a79cf724e65824fa36f57035ab775f9ee4a43ffcb532e19f248ee25",
+    "testcase/Rust/sample_main_packet.rs": "4de2cd2ef31fefb5e415aa1fd41aa377342c27472de3a032ad46b371f79eb3a8",
+    "testcase/C/sample_main_packet.i": "ff618ec83e90ad69f26f726515f4b4f2fcbf3f1eef914e74744e511c779959a3",
+    "result.csv": "714c6f0cd21711e215386d74d27eaeec08eb9285ac2be254b7abdd608fb52562",
+    "symbol_execution_error.log": "2869c0a88cdd4a035e09201e69bde1f3974bd25075376855d48852e08648429f"
+  },
+  "interpretation": "The released RustAssure emitter accepted the exact C6 package, but its pinned Rust compiler compiled 0/1 Rust functions. The subsequent `Rust Empty!` rows contain no Rust execution and are not a defect signal; no compiler or source workaround is attempted. Independently, the released C symbolic stage also fails while linking the emitted bitcode against its bundled libc model."
+}

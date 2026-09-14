@@ -283,7 +283,13 @@ def record_s9_compile_failure() -> dict:
     return payload
 
 
-def record_compile_failure(defect: str, target: str) -> dict:
+def record_compile_failure(
+    defect: str,
+    target: str,
+    *,
+    extra_interpretation: str = "",
+    extra_paths: tuple[str, ...] = (),
+) -> dict:
     """Record a released Rust compiler failure without attempting a retry."""
     attempt = EXTERNAL / f"pilot_{defect}/workdir"
     logger = attempt / "test_llvm_bitcode_emitter_logger.log"
@@ -313,13 +319,20 @@ def record_compile_failure(defect: str, target: str) -> dict:
         "summary": summary,
         "hashes": {
             str(path.relative_to(attempt)): sha256(path)
-            for path in (logger, rust_input, c_input, attempt / "result.csv")
+            for path in (
+                logger,
+                rust_input,
+                c_input,
+                attempt / "result.csv",
+                *(attempt / path for path in extra_paths),
+            )
         },
         "interpretation": (
             f"The released RustAssure emitter accepted the exact {defect} package, "
             "but its pinned Rust compiler compiled 0/1 Rust functions. The "
             "subsequent `Rust Empty!` rows contain no Rust execution and are not "
             "a defect signal; no compiler or source workaround is attempted."
+            + extra_interpretation
         ),
     }
     out = RUN_ROOT / defect
@@ -339,10 +352,25 @@ def main() -> None:
         "S2": record_compile_failure("S2", "adler32_z_packet"),
         "S1": record_compile_failure("S1", "crc32_z_packet"),
         "S4": record_compile_failure("S4", "crc32_z_packet"),
+        "S8": record_compile_failure("S8", "parse_string"),
         "S5": record_compile_failure("S5", "genann_cached_initialized"),
         "S19": record_compile_failure("S19", "zlib_compress_observe"),
         "C7": record_compile_failure("C7", "bzbuff_compress_observe"),
         "S10": record_compile_failure("S10", "bzbuff_compress_observe"),
+        "C11": record_compile_failure("C11", "ti_find_indicator_valid"),
+        "C6": record_compile_failure(
+            "C6",
+            "sample_main_packet",
+            extra_interpretation=(
+                " Independently, the released C symbolic stage also fails while "
+                "linking the emitted bitcode against its bundled libc model."
+            ),
+            extra_paths=("symbol_execution_error.log",),
+        ),
+        "S20": record_compile_failure("S20", "zlib_uncompress_observe"),
+        "C15": record_compile_failure("C15", "zlib_uncompress_observe"),
+        "S11": record_compile_failure("S11", "bzbuff_decompress_observe"),
+        "S12": record_compile_failure("S12", "bzbuff_compress_packet"),
     }
     payloads.update(
         {

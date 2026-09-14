@@ -6,7 +6,7 @@ Generated from `results/baseline_artifacts/results.json`; do not edit counts by 
 
 | Baseline | Submitted | Accepted | Compiled | Completed | Detected |
 |---|---:|---:|---:|---:|---:|
-| RustAssure | 21/36 | 21/36 | 11/36 | 11/36 | 5/36 |
+| RustAssure | 28/36 | 28/36 | 11/36 | 11/36 | 5/36 |
 | FLOURINE | 33/36 | 20/36 | 17/36 | 16/36 | 14/36 |
 | VERT | 0/36 | 0/36 | 0/36 | 0/36 | 0/36 |
 
@@ -14,7 +14,7 @@ Generated from `results/baseline_artifacts/results.json`; do not edit counts by 
 
 | Baseline | Detected | Missed | Unsupported | Analysis failure | Compile failure | Not run |
 |---|---:|---:|---:|---:|---:|---:|
-| RustAssure | 5 | 6 | 2 | 0 | 10 | 13 |
+| RustAssure | 5 | 6 | 2 | 0 | 17 | 6 |
 | FLOURINE | 14 | 2 | 3 | 14 | 3 | 0 |
 | VERT | 0 | 0 | 36 | 0 | 0 | 0 |
 
@@ -26,8 +26,8 @@ Generated from `results/baseline_artifacts/results.json`; do not edit counts by 
 - `missed`: C13, C2, S14, S16, S17, S6
 - `unsupported_input`: C5, S13
 - `analysis_failure`: none
-- `compile_failure`: C1, C7, S1, S10, S19, S2, S4, S5, S7, S9
-- `not_run`: C10, C11, C15, C3, C6, C8, C9, S11, S12, S18, S20, S3, S8
+- `compile_failure`: C1, C11, C15, C6, C7, S1, S10, S11, S12, S19, S2, S20, S4, S5, S7, S8, S9
+- `not_run`: C10, C3, C8, C9, S18, S3
 
 ### FLOURINE
 

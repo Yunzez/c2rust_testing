@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "S18",
+  "target": "zlib_uncompress_observe",
+  "gates": {
+    "submitted": true,
+    "accepted": false,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "analysis_failure",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_S18/attempt-001",
+  "hashes": {
+    "input.sha256": "76a6c91c147267ab2b3af22d173f8865da8aa78f480399c559bfd58a290d2619",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "be9479e2b860afa366f135c693235759da04b39f424f9ebaef03e8dfd8b11337",
+    "instrument-rust.log": "7024d3ef550fa5741e4ebe6d815557f1959bd7a3944fc2137a034f7549d5bddf",
+    "console.log": "622b5e865682030aa546ac91d4ca01751536ec2877627c10322bcc94fe74f2fc",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  },
+  "failure_stage": "rust_instrumentation",
+  "interpretation": "The released C instrumenter accepted and compiled the submitted dependency closure, but the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`. No parser workaround or source reduction is attempted."
+}

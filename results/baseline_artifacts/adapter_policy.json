@@ -23,6 +23,10 @@
       "basis": "the first direct individual-function submission retained the frozen Rust function and its crate attributes; RustAssure's pinned stable compiler compiled 0/1 Rust functions",
       "exploratory_workaround": "a post-failure retry that strips crate-level nightly attributes is retained unscored"
     },
+    "S6": {
+      "scored_class": "allowed_exact_source_packaging",
+      "basis": "the exact C and Rust quicksort bodies are packaged with lossless name forwarding and identity source-level argument order; the released artifact's extra symbolic fat-pointer length is retained rather than patched"
+    },
     "C12": {
       "scored_class": "allowed_exact_source_packaging",
       "basis": "the frozen C initialized table, Rust all-NULL table, and exact target bodies are packaged as RustAssure's documented individual-function input"
@@ -109,10 +113,25 @@
       "outcome": "compile_failure",
       "basis": "the original zero-argument constructor probe triggers the released C emitter's invalid `void extern_input0` declaration; no ignored argument is added"
     },
+    "C6": {
+      "scored_class": "released_baseline_failure",
+      "outcome": "compile_failure",
+      "basis": "after allowed exact dependency packaging, the released C emitter produces conflicting preprocessed floating typedefs and allocator macros that rewrite system malloc/free declarations; no emitter or source-order workaround is attempted"
+    },
     "C10": {
       "scored_class": "released_baseline_failure",
       "outcome": "analysis_failure",
       "basis": "the released C instrumenter accepted and compiled the generated-script lifecycle wrapper and exact dependency closure, then the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`; no parser workaround is attempted"
+    },
+    "C11": {
+      "scored_class": "released_baseline_failure",
+      "outcome": "analysis_failure",
+      "basis": "the released C instrumenter accepted and compiled the Tulip lookup wrapper and exact dependency closure, then the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`; no parser workaround is attempted"
+    },
+    "S18": {
+      "scored_class": "released_baseline_failure",
+      "outcome": "analysis_failure",
+      "basis": "the released C instrumenter accepted and compiled the bounded-buffer decompression wrapper and exact dependency closure, then the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`; no parser workaround is attempted"
     }
   }
 }

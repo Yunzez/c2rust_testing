@@ -302,17 +302,19 @@
       "defect_id": "S6",
       "pilot": true,
       "gates": {
-        "submitted": false,
-        "accepted": false,
-        "compiled": false,
-        "completed": false,
+        "submitted": true,
+        "accepted": true,
+        "compiled": true,
+        "completed": true,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "missed",
+      "adapter": "results/baseline_artifacts/adapters/rustassure/S6/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_rustassure_pair.sh S6",
+      "result_record": "results/baseline_artifacts/runs/rustassure/S6/result.json",
+      "notes": [
+        "RustAssure completed on S6 and reported a mutated-array graph mismatch, but its independently symbolic Rust slice length made that signal non-comparable to the three-argument C interface; S6 is conservatively recorded as missed."
+      ]
     },
     {
       "baseline": "rustassure",
@@ -730,17 +732,19 @@
       "defect_id": "C6",
       "pilot": false,
       "gates": {
-        "submitted": false,
-        "accepted": false,
+        "submitted": true,
+        "accepted": true,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "compile_failure",
+      "adapter": "results/baseline_artifacts/adapters/flourine/C6/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh C6",
+      "result_record": "results/baseline_artifacts/runs/flourine/C6/result.json",
+      "notes": [
+        "The released C emitter accepted the packet wrapper but generated a translation unit whose preprocessed floating typedefs conflict with the compiler and whose allocator macros rewrite the system malloc/free declarations. The generated C ground truth therefore did not compile; no emitter or source-order workaround is attempted."
+      ]
     },
     {
       "baseline": "flourine",
@@ -842,17 +846,19 @@
       "defect_id": "C11",
       "pilot": false,
       "gates": {
-        "submitted": false,
+        "submitted": true,
         "accepted": false,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "analysis_failure",
+      "adapter": "results/baseline_artifacts/adapters/flourine/C11/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh C11",
+      "result_record": "results/baseline_artifacts/runs/flourine/C11/result.json",
+      "notes": [
+        "The released C instrumenter accepted and compiled the submitted dependency closure, but the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`. No parser workaround or source reduction is attempted."
+      ]
     },
     {
       "baseline": "flourine",
@@ -1201,17 +1207,19 @@
       "defect_id": "S18",
       "pilot": false,
       "gates": {
-        "submitted": false,
+        "submitted": true,
         "accepted": false,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "analysis_failure",
+      "adapter": "results/baseline_artifacts/adapters/flourine/S18/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh S18",
+      "result_record": "results/baseline_artifacts/runs/flourine/S18/result.json",
+      "notes": [
+        "The released C instrumenter accepted and compiled the submitted dependency closure, but the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`. No parser workaround or source reduction is attempted."
+      ]
     },
     {
       "baseline": "flourine",

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "C6",
+  "target": "sample_main_packet",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "compile_failure",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_C6/attempt-001",
+  "hashes": {
+    "input.sha256": "7b195b8a05720a9ff518706cabc5e65d10e02ddd4d09d102ba08d582cabf6ecc",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "5b944a7c9dd941f092fe51633ffee846856027d64a676ef68ecc34f495c79126",
+    "console.log": "a6f0a59c494769f8e3bdd44142beb02e09768192556bbe27163adbc9437b511d",
+    "exit_code.txt": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+  },
+  "failure_stage": "compile",
+  "interpretation": "The released C emitter accepted the packet wrapper but generated a translation unit whose preprocessed floating typedefs conflict with the compiler and whose allocator macros rewrite the system malloc/free declarations. The generated C ground truth therefore did not compile; no emitter or source-order workaround is attempted."
+}

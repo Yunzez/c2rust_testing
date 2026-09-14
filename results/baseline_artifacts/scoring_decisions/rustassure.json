@@ -3,6 +3,19 @@
   "baseline": "rustassure",
   "rule": "A released-artifact signal is scored as detected only after source-level review establishes that it corresponds to the catalogued defect on an input within the C target's contract. Signal extraction alone never updates the canonical result matrix.",
   "decisions": {
+    "S6": {
+      "outcome": "missed",
+      "baseline_signal_matches_defect": false,
+      "source_level_validation": "RustAssure reports distance 1000 for the mutated array, but its generated Rust KLEE harness lowers `Option<&mut [i32]>` to four LLVM arguments: the data pointer, an independently symbolic slice length, low, and high. The C harness has only the original pointer, low, and high arguments. Consequently the Rust graphs contain the extra `arg_value_3` and `klee_offset` terms while the C graphs do not. This representation-induced graph mismatch prevents the nonzero distance from being attributed specifically to S6's erroneous split-at-mut swap index.",
+      "c_oracle_status": "The exact C quicksort body receives initialized 100-element symbolic storage and the original low/high interface. The failure to validate S6 is caused by the released comparison's uncorrelated Rust slice-length argument, not by an invalid C target package.",
+      "reviewed_by": "authors",
+      "paper_summary": "RustAssure completed on S6 and reported a mutated-array graph mismatch, but its independently symbolic Rust slice length made that signal non-comparable to the three-argument C interface; S6 is conservatively recorded as missed.",
+      "evidence": [
+        "results/baseline_artifacts/runs/rustassure/S6/result.json",
+        "results/baseline_artifacts/adapters/rustassure/S6/adapter.json",
+        "results/rq4_effectiveness/defect_manifest.json"
+      ]
+    },
     "C2": {
       "outcome": "missed",
       "baseline_signal_matches_defect": false,

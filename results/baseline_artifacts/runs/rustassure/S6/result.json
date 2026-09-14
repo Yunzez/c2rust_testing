@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "S6",
+  "target": "quick_sort",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": false
+  },
+  "outcome": "missed",
+  "artifact_native_symbolic_analysis": true,
+  "has_baseline_signal": true,
+  "distances": [
+    {
+      "function_name": "quick_sort",
+      "argument_name": "arg_value_0",
+      "best_edit_distances": 1000.0
+    },
+    {
+      "function_name": "quick_sort",
+      "argument_name": "arg_value_2",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "quick_sort",
+      "argument_name": "arg_value_1",
+      "best_edit_distances": 0.0
+    }
+  ],
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "1",
+    "total_arguments": "3",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "0",
+    "overall_unsafe_sum": "10",
+    "overall_safe_lines": "-10",
+    "rust_coverage": "95.65",
+    "c_coverage": "100.0",
+    "execution_time": "304m"
+  },
+  "manual_validation": {
+    "outcome": "missed",
+    "baseline_signal_matches_defect": false,
+    "source_level_validation": "RustAssure reports distance 1000 for the mutated array, but its generated Rust KLEE harness lowers `Option<&mut [i32]>` to four LLVM arguments: the data pointer, an independently symbolic slice length, low, and high. The C harness has only the original pointer, low, and high arguments. Consequently the Rust graphs contain the extra `arg_value_3` and `klee_offset` terms while the C graphs do not. This representation-induced graph mismatch prevents the nonzero distance from being attributed specifically to S6's erroneous split-at-mut swap index.",
+    "c_oracle_status": "The exact C quicksort body receives initialized 100-element symbolic storage and the original low/high interface. The failure to validate S6 is caused by the released comparison's uncorrelated Rust slice-length argument, not by an invalid C target package.",
+    "reviewed_by": "authors",
+    "paper_summary": "RustAssure completed on S6 and reported a mutated-array graph mismatch, but its independently symbolic Rust slice length made that signal non-comparable to the three-argument C interface; S6 is conservatively recorded as missed.",
+    "evidence": [
+      "results/baseline_artifacts/runs/rustassure/S6/result.json",
+      "results/baseline_artifacts/adapters/rustassure/S6/adapter.json",
+      "results/rq4_effectiveness/defect_manifest.json"
+    ]
+  },
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_S6/workdir",
+  "hashes": {
+    "result.csv": "65cb77f31309d2070bdf9ef869df60b20e09cec06d7d7f0e72015715f4bfd95d",
+    "edit_distance/best_edit_distances.csv": "8131494a6216702ede7c308b3f4da8bf310ad0fbbc21bf570bfac2c809d1ec3a",
+    "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5"
+  },
+  "interpretation": "RustAssure completed on S6 and reported a mutated-array graph mismatch, but its independently symbolic Rust slice length made that signal non-comparable to the three-argument C interface; S6 is conservatively recorded as missed."
+}

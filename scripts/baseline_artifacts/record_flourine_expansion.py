@@ -476,6 +476,44 @@ def record_all() -> dict[str, dict]:
         }
     )
 
+    c6_attempt = EXTERNAL / "pilot_C6/attempt-001"
+    if c6_attempt.is_dir():
+        c6_compile_log = text(c6_attempt / "cmake-build.log")
+        required_c6_errors = (
+            "two or more data types in declaration specifiers",
+            "in expansion of macro ‘malloc’",
+            "in expansion of macro ‘free’",
+            "Built target ground_truth",
+        )
+        if any(marker not in c6_compile_log for marker in required_c6_errors[:3]):
+            raise RuntimeError("C6 released C-emitter failure evidence changed")
+        if required_c6_errors[3] in c6_compile_log:
+            raise RuntimeError("C6 unexpectedly compiled its released C output")
+        payloads["C6"] = base(
+            "C6",
+            "sample_main_packet",
+            {
+                "submitted": True,
+                "accepted": True,
+                "compiled": False,
+                "completed": False,
+                "detected": False,
+            },
+            "compile_failure",
+        )
+        payloads["C6"].update(
+            {
+                "failure_stage": "compile",
+                "interpretation": (
+                    "The released C emitter accepted the packet wrapper but generated a "
+                    "translation unit whose preprocessed floating typedefs conflict with the "
+                    "compiler and whose allocator macros rewrite the system malloc/free "
+                    "declarations. The generated C ground truth therefore did not compile; "
+                    "no emitter or source-order workaround is attempted."
+                ),
+            }
+        )
+
     c3_parser_message = (
         "Error: unexpected end of input, expected one of: `fn`, `extern`, `use`, "
         "`static`, `const`, `unsafe`, `mod`, `type`, `struct`, `enum`, `union`, "
@@ -543,6 +581,8 @@ def record_all() -> dict[str, dict]:
         ("S19", "zlib_compress_observe", None),
         ("S20", "zlib_uncompress_observe", None),
         ("C10", "lil_parse_generated", None),
+        ("C11", "ti_find_indicator_valid", None),
+        ("S18", "zlib_uncompress_observe", None),
     ):
         slug = external_slug or defect
         if (EXTERNAL / f"pilot_{slug}/attempt-001").is_dir():

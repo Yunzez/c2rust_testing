@@ -44,6 +44,15 @@ def validate_record(record: dict) -> None:
     values = [bool(gates[gate]) for gate in GATES]
     assert values == sorted(values, reverse=True), f"non-monotone gates: {label}"
 
+    if gates["submitted"]:
+        adapter = record.get("adapter")
+        command = record.get("command_record")
+        assert adapter, f"missing submitted adapter: {label}"
+        assert (ROOT / adapter).is_file(), f"missing submitted adapter file: {label}"
+        assert command, f"missing submitted command: {label}"
+        command_path = command.split()[0]
+        assert (ROOT / command_path).is_file(), f"missing command script: {label}"
+
     outcome = record["outcome"]
     if outcome in {"not_run", "unsupported_input"}:
         assert not any(values), label

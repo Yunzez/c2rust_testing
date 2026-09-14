@@ -592,10 +592,10 @@ def record_all() -> dict[str, dict]:
             )
             if external_slug:
                 payloads[defect]["shared_submission_with"] = external_slug
-                if defect == "C15":
-                    payloads[defect]["adapter_record"] = (
-                        "results/baseline_artifacts/adapters/flourine/S20/adapter.json"
-                    )
+                payloads[defect]["adapter_record"] = (
+                    "results/baseline_artifacts/adapters/flourine/"
+                    f"{external_slug}/adapter.json"
+                )
     return payloads
 
 

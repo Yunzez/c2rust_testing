@@ -278,17 +278,19 @@
       "defect_id": "S4",
       "pilot": false,
       "gates": {
-        "submitted": false,
-        "accepted": false,
+        "submitted": true,
+        "accepted": true,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "compile_failure",
+      "adapter": "results/baseline_artifacts/adapters/rustassure/S4/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_rustassure_pair.sh S4",
+      "result_record": "results/baseline_artifacts/runs/rustassure/S4/result.json",
+      "notes": [
+        "The released RustAssure emitter accepted the exact S4 package, but its pinned Rust compiler compiled 0/1 Rust functions. The subsequent `Rust Empty!` rows contain no Rust execution and are not a defect signal; no compiler or source workaround is attempted."
+      ]
     },
     {
       "baseline": "rustassure",

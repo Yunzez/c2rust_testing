@@ -338,6 +338,7 @@ def main() -> None:
         "S9": record_s9_compile_failure(),
         "S2": record_compile_failure("S2", "adler32_z_packet"),
         "S1": record_compile_failure("S1", "crc32_z_packet"),
+        "S4": record_compile_failure("S4", "crc32_z_packet"),
         "S5": record_compile_failure("S5", "genann_cached_initialized"),
         "S19": record_compile_failure("S19", "zlib_compress_observe"),
         "C7": record_compile_failure("C7", "bzbuff_compress_observe"),

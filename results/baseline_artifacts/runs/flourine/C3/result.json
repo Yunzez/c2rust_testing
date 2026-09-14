@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "baseline": "flourine",
+  "defect_id": "C3",
+  "target": "do_system_two",
+  "gates": {
+    "submitted": true,
+    "accepted": false,
+    "compiled": false,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "analysis_failure",
+  "artifact_native_search": true,
+  "witness_replay": false,
+  "attempt": "attempt-001",
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/flourine/pilot_C3/attempt-001",
+  "hashes": {
+    "input.sha256": "04552a9c4c140c5e167ae49270dc58d08a0c743750173bf2b73dc8921ba9c667",
+    "instrument-c.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cmake-build.log": "18ca9e2e7537dc45b8dc0ca30da4d63ccdade012de20c3977c9f7a53f7febec0",
+    "instrument-rust.log": "f72dc9ac678e99ef02f4eb7d219c921a7f5962d4f272cb6aa0b6e78742e0d754",
+    "console.log": "e54dbd6b4475e0c914e6c42b58d845b89e27e0e5a9f0cc59f9c0549e65bcf572",
+    "exit_code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  },
+  "failure_stage": "rust_instrumentation",
+  "interpretation": "The released C instrumenter accepted and compiled the submitted dependency closure, but the released Rust instrumenter rejected the frozen Rust input with `Error: unexpected end of input, expected one of: `fn`, `extern`, `use`, `static`, `const`, `unsafe`, `mod`, `type`, `struct`, `enum`, `union`, `trait`, `auto`, `impl`, `default`, `macro`, identifier, `self`, `super`, `crate`, `::``. No parser workaround or source reduction is attempted."
+}

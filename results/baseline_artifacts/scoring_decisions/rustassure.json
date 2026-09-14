@@ -29,6 +29,19 @@
         "results/rq4_effectiveness/defect_manifest.json"
       ]
     },
+    "S14": {
+      "outcome": "missed",
+      "baseline_signal_matches_defect": false,
+      "source_level_validation": "RustAssure reports return distance 1000 because its C return graph is the constant zero while its Rust return graph is a symbolic minimum-of-three expression. The C graph does not encode the original median computation, so the non-comparability signal cannot be attributed to S14's median-to-minimum substitution.",
+      "c_oracle_status": "All three u8 inputs are valid for the pure original median helper; the limitation is in the released symbolic graph, not the C API contract.",
+      "reviewed_by": "authors",
+      "paper_summary": "RustAssure completed on S14, but its constant C return graph could not establish the median-to-minimum defect; S14 is recorded as missed.",
+      "evidence": [
+        "results/baseline_artifacts/runs/rustassure/S14/result.json",
+        "results/baseline_artifacts/adapters/rustassure/S14/adapter.json",
+        "results/rq4_effectiveness/defect_manifest.json"
+      ]
+    },
     "S17": {
       "outcome": "missed",
       "baseline_signal_matches_defect": false,
@@ -39,6 +52,19 @@
       "evidence": [
         "results/baseline_artifacts/runs/rustassure/S17/result.json",
         "results/baseline_artifacts/adapters/rustassure/S17/adapter.json",
+        "results/rq4_effectiveness/defect_manifest.json"
+      ]
+    },
+    "S21": {
+      "outcome": "detected",
+      "baseline_signal_matches_defect": true,
+      "source_level_validation": "RustAssure reports return distance 1000 with identical argument graphs. The C side contains 36,595 return expressions from the original GF(2) matrix computation, while frozen Rust has only direct crc1/crc2 return graphs. This collapse follows directly from using the zero-initialized output matrix as the gf2_matrix_times input and then swapping the even/odd applications, which is the catalogued S21 root cause.",
+      "c_oracle_status": "The reviewed crc1=9, positive-len2 witness uses only initialized entries of the C 32-element matrix and produces the established return mismatch; thus a C-defined behavior represented by the differing computation exists.",
+      "reviewed_by": "authors",
+      "paper_summary": "RustAssure detected S21: its return-graph collapse was manually traced to the two erroneous GF(2) matrix substitutions on a C-defined input.",
+      "evidence": [
+        "results/baseline_artifacts/runs/rustassure/S21/result.json",
+        "results/baseline_artifacts/adapters/rustassure/S21/adapter.json",
         "results/rq4_effectiveness/defect_manifest.json"
       ]
     }

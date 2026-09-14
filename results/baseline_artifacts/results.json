@@ -440,17 +440,19 @@
       "defect_id": "S14",
       "pilot": false,
       "gates": {
-        "submitted": false,
-        "accepted": false,
-        "compiled": false,
-        "completed": false,
+        "submitted": true,
+        "accepted": true,
+        "compiled": true,
+        "completed": true,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "missed",
+      "adapter": "results/baseline_artifacts/adapters/rustassure/S14/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_rustassure_pair.sh S14",
+      "result_record": "results/baseline_artifacts/runs/rustassure/S14/result.json",
+      "notes": [
+        "RustAssure completed on S14, but its constant C return graph could not establish the median-to-minimum defect; S14 is recorded as missed."
+      ]
     },
     {
       "baseline": "rustassure",
@@ -597,17 +599,19 @@
       "defect_id": "S21",
       "pilot": true,
       "gates": {
-        "submitted": false,
-        "accepted": false,
-        "compiled": false,
-        "completed": false,
-        "detected": false
+        "submitted": true,
+        "accepted": true,
+        "compiled": true,
+        "completed": true,
+        "detected": true
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "detected",
+      "adapter": "results/baseline_artifacts/adapters/rustassure/S21/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_rustassure_pair.sh S21",
+      "result_record": "results/baseline_artifacts/runs/rustassure/S21/result.json",
+      "notes": [
+        "RustAssure detected S21: its return-graph collapse was manually traced to the two erroneous GF(2) matrix substitutions on a C-defined input."
+      ]
     },
     {
       "baseline": "rustassure",
@@ -669,17 +673,19 @@
       "defect_id": "C3",
       "pilot": false,
       "gates": {
-        "submitted": false,
+        "submitted": true,
         "accepted": false,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "analysis_failure",
+      "adapter": "results/baseline_artifacts/adapters/flourine/C3/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh C3",
+      "result_record": "results/baseline_artifacts/runs/flourine/C3/result.json",
+      "notes": [
+        "The released C instrumenter accepted and compiled the submitted dependency closure, but the released Rust instrumenter rejected the frozen Rust input with `Error: unexpected end of input, expected one of: `fn`, `extern`, `use`, `static`, `const`, `unsafe`, `mod`, `type`, `struct`, `enum`, `union`, `trait`, `auto`, `impl`, `default`, `macro`, identifier, `self`, `super`, `crate`, `::``. No parser workaround or source reduction is attempted."
+      ]
     },
     {
       "baseline": "flourine",
@@ -779,34 +785,38 @@
       "defect_id": "C9",
       "pilot": false,
       "gates": {
-        "submitted": false,
-        "accepted": false,
+        "submitted": true,
+        "accepted": true,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "compile_failure",
+      "adapter": "results/baseline_artifacts/adapters/flourine/C9/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh C9",
+      "result_record": "results/baseline_artifacts/runs/flourine/C9/result.json",
+      "notes": [
+        "For the original zero-argument constructor probe, the released C emitter generated the invalid declaration `void extern_input0`. No ignored argument or interface workaround is scored."
+      ]
     },
     {
       "baseline": "flourine",
       "defect_id": "C10",
       "pilot": false,
       "gates": {
-        "submitted": false,
+        "submitted": true,
         "accepted": false,
         "compiled": false,
         "completed": false,
         "detected": false
       },
-      "outcome": "not_run",
-      "adapter": null,
-      "command_record": null,
-      "result_record": null,
-      "notes": []
+      "outcome": "analysis_failure",
+      "adapter": "results/baseline_artifacts/adapters/flourine/C10/adapter.json",
+      "command_record": "scripts/baseline_artifacts/run_flourine_pair.sh C10",
+      "result_record": "results/baseline_artifacts/runs/flourine/C10/result.json",
+      "notes": [
+        "The released C instrumenter accepted and compiled the submitted dependency closure, but the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`. No parser workaround or source reduction is attempted."
+      ]
     },
     {
       "baseline": "flourine",

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "S14",
+  "target": "mmed3_observe",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": false
+  },
+  "outcome": "missed",
+  "artifact_native_symbolic_analysis": true,
+  "has_baseline_signal": true,
+  "distances": [
+    {
+      "function_name": "mmed3_observe",
+      "argument_name": "arg_value_0",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "mmed3_observe",
+      "argument_name": "arg_value_2",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "mmed3_observe",
+      "argument_name": "arg_value_1",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "mmed3_observe",
+      "argument_name": "ret_value",
+      "best_edit_distances": 1000.0
+    }
+  ],
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "1",
+    "total_arguments": "4",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "0",
+    "overall_unsafe_sum": "3",
+    "overall_safe_lines": "-3",
+    "rust_coverage": "100.0",
+    "c_coverage": "100.0",
+    "execution_time": "0m"
+  },
+  "manual_validation": {
+    "outcome": "missed",
+    "baseline_signal_matches_defect": false,
+    "source_level_validation": "RustAssure reports return distance 1000 because its C return graph is the constant zero while its Rust return graph is a symbolic minimum-of-three expression. The C graph does not encode the original median computation, so the non-comparability signal cannot be attributed to S14's median-to-minimum substitution.",
+    "c_oracle_status": "All three u8 inputs are valid for the pure original median helper; the limitation is in the released symbolic graph, not the C API contract.",
+    "reviewed_by": "authors",
+    "paper_summary": "RustAssure completed on S14, but its constant C return graph could not establish the median-to-minimum defect; S14 is recorded as missed.",
+    "evidence": [
+      "results/baseline_artifacts/runs/rustassure/S14/result.json",
+      "results/baseline_artifacts/adapters/rustassure/S14/adapter.json",
+      "results/rq4_effectiveness/defect_manifest.json"
+    ]
+  },
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_S14/workdir",
+  "hashes": {
+    "result.csv": "a57e649db3ce072f807b4ae32f7f02ff43b6647095d86f6f081f1e74b0c53553",
+    "edit_distance/best_edit_distances.csv": "e4d0862ca536051669d0e383baa38448604eeb5a22db2eca90135882d5c5e95c",
+    "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5"
+  },
+  "interpretation": "RustAssure completed on S14, but its constant C return graph could not establish the median-to-minimum defect; S14 is recorded as missed."
+}

@@ -149,12 +149,15 @@ def detected(
 
 
 def released_rust_parser_failure(
-    defect: str, target: str, external_slug: str | None = None
+    defect: str,
+    target: str,
+    external_slug: str | None = None,
+    expected_message: str = "Error: expected square brackets",
 ) -> dict:
     """Record an unretried released Rust-instrumenter rejection."""
     attempt = EXTERNAL / f"pilot_{external_slug or defect}/attempt-001"
     rust_log = attempt / "instrument-rust.log"
-    if text(rust_log).strip() != "Error: expected square brackets":
+    if text(rust_log).strip() != expected_message:
         raise RuntimeError(f"{defect}: released parser-failure evidence changed")
     if "Built target ground_truth" not in text(attempt / "cmake-build.log"):
         raise RuntimeError(f"{defect}: C ground truth did not compile")
@@ -177,7 +180,7 @@ def released_rust_parser_failure(
             "interpretation": (
                 "The released C instrumenter accepted and compiled the submitted "
                 "dependency closure, but the released Rust instrumenter rejected "
-                "the frozen Rust input with `Error: expected square brackets`. "
+                f"the frozen Rust input with `{expected_message}`. "
                 "No parser workaround or source reduction is attempted."
             ),
         }
@@ -456,6 +459,34 @@ def record_all() -> dict[str, dict]:
         }
     )
 
+    c9_attempt = EXTERNAL / "pilot_C9/attempt-001"
+    c9_compile_log = text(c9_attempt / "cmake-build.log")
+    if "invalid use of type ‘void’ in parameter declaration" not in c9_compile_log:
+        raise RuntimeError("C9 emitter-failure evidence changed")
+    payloads["C9"] = base(
+        "C9",
+        "lil_new_probe",
+        {"submitted": True, "accepted": True, "compiled": False, "completed": False, "detected": False},
+        "compile_failure",
+    )
+    payloads["C9"].update(
+        {
+            "failure_stage": "compile",
+            "interpretation": "For the original zero-argument constructor probe, the released C emitter generated the invalid declaration `void extern_input0`. No ignored argument or interface workaround is scored.",
+        }
+    )
+
+    c3_parser_message = (
+        "Error: unexpected end of input, expected one of: `fn`, `extern`, `use`, "
+        "`static`, `const`, `unsafe`, `mod`, `type`, `struct`, `enum`, `union`, "
+        "`trait`, `auto`, `impl`, `default`, `macro`, identifier, `self`, `super`, "
+        "`crate`, `::`"
+    )
+    if (EXTERNAL / "pilot_C3/attempt-001").is_dir():
+        payloads["C3"] = released_rust_parser_failure(
+            "C3", "do_system_two", expected_message=c3_parser_message
+        )
+
     c16_attempt = EXTERNAL / "pilot_C16/attempt-001"
     c16_log = text(c16_attempt / "verify.log")
     done = re.search(r"Done (\d+) runs in (\d+) second", c16_log)
@@ -511,6 +542,7 @@ def record_all() -> dict[str, dict]:
         ("S11", "bzbuff_decompress_observe", None),
         ("S19", "zlib_compress_observe", None),
         ("S20", "zlib_uncompress_observe", None),
+        ("C10", "lil_parse_generated", None),
     ):
         slug = external_slug or defect
         if (EXTERNAL / f"pilot_{slug}/attempt-001").is_dir():

@@ -27,6 +27,10 @@
       "scored_class": "allowed_exact_source_packaging",
       "basis": "the frozen C initialized table, Rust all-NULL table, and exact target bodies are packaged as RustAssure's documented individual-function input"
     },
+    "C2": {
+      "scored_class": "allowed_input_contract_realization",
+      "basis": "the exact C and Rust target bodies are packaged with fixed 16-byte backing storage and symmetric final-byte NUL termination for the original string interface"
+    },
     "S17": {
       "scored_class": "allowed_exact_source_packaging",
       "basis": "the exact target bodies are packaged with declarations and the original positional argument order"
@@ -76,6 +80,16 @@
       "scored_class": "released_baseline_failure",
       "outcome": "analysis_failure",
       "basis": "C8 and S3 inhabit the same frozen Laertes compression target and submitted output-observing wrapper; the shared submission failed in the released Rust instrumenter before either defect could be analyzed"
+    },
+    "S19": {
+      "scored_class": "released_baseline_failure",
+      "outcome": "analysis_failure",
+      "basis": "the released C instrumenter accepted and compiled the bounded-buffer compression wrapper and exact dependency closure, then the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`; no parser workaround is attempted"
+    },
+    "S20": {
+      "scored_class": "released_baseline_failure",
+      "outcome": "analysis_failure",
+      "basis": "the released C instrumenter accepted and compiled the bounded-buffer decompression wrapper and exact dependency closure, then the released Rust instrumenter rejected the frozen Rust input with `Error: expected square brackets`; no parser workaround is attempted"
     }
   }
 }

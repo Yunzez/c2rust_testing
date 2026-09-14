@@ -192,7 +192,7 @@ def main() -> None:
     payloads.update(
         {
             defect: payload
-            for defect in ["S6", "S21", "S17", "C12"]
+            for defect in ["S6", "S21", "S17", "C12", "C2"]
             if (payload := record(defect, decisions))
         }
     )

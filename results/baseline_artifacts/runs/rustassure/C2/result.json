@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "C2",
+  "target": "url_is_ssh_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": false
+  },
+  "outcome": "missed",
+  "artifact_native_symbolic_analysis": true,
+  "has_baseline_signal": true,
+  "distances": [
+    {
+      "function_name": "url_is_ssh_valid",
+      "argument_name": "arg_value_0",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "url_is_ssh_valid",
+      "argument_name": "ret_value",
+      "best_edit_distances": 1000.0
+    }
+  ],
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "1",
+    "total_arguments": "2",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "0",
+    "overall_unsafe_sum": "1",
+    "overall_safe_lines": "-1",
+    "rust_coverage": "100.0",
+    "c_coverage": "100.0",
+    "execution_time": "180m"
+  },
+  "manual_validation": {
+    "outcome": "missed",
+    "baseline_signal_matches_defect": false,
+    "source_level_validation": "RustAssure reports return distance 1000 because the Rust graph set contains partial byte-equality expressions for the literal `git` that have no comparable C graph. Both sides also contain the same concrete true and false return graphs, and neither termination report contains a signal. The reported graph-set mismatch therefore does not expose C2's non-UTF-8 `to_str().unwrap()` termination root cause.",
+    "c_oracle_status": "The adapter supplies initialized 16-byte storage and fixes the final byte to NUL before the original C string comparison, so the submitted C interface is contract-valid.",
+    "reviewed_by": "authors",
+    "paper_summary": "RustAssure completed on C2, but its unmatched partial return-expression graphs were unrelated to the non-UTF-8 panic and are not promoted; C2 is recorded as missed.",
+    "evidence": [
+      "results/baseline_artifacts/runs/rustassure/C2/result.json",
+      "results/baseline_artifacts/adapters/rustassure/C2/adapter.json",
+      "results/rq4_effectiveness/defect_manifest.json"
+    ]
+  },
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_C2/workdir",
+  "hashes": {
+    "result.csv": "606db42bf21bbc134647a1fb0e7aad80706cb71c00a52ffa3e3f4867194a8d7b",
+    "edit_distance/best_edit_distances.csv": "840130fc997d34a5c59f7ecff7422a1139c5e459af04f1019ec1438a20440eac",
+    "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5"
+  },
+  "interpretation": "RustAssure completed on C2, but its unmatched partial return-expression graphs were unrelated to the non-UTF-8 panic and are not promoted; C2 is recorded as missed."
+}

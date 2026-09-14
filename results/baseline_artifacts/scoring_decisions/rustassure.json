@@ -3,6 +3,19 @@
   "baseline": "rustassure",
   "rule": "A released-artifact signal is scored as detected only after source-level review establishes that it corresponds to the catalogued defect on an input within the C target's contract. Signal extraction alone never updates the canonical result matrix.",
   "decisions": {
+    "C2": {
+      "outcome": "missed",
+      "baseline_signal_matches_defect": false,
+      "source_level_validation": "RustAssure reports return distance 1000 because the Rust graph set contains partial byte-equality expressions for the literal `git` that have no comparable C graph. Both sides also contain the same concrete true and false return graphs, and neither termination report contains a signal. The reported graph-set mismatch therefore does not expose C2's non-UTF-8 `to_str().unwrap()` termination root cause.",
+      "c_oracle_status": "The adapter supplies initialized 16-byte storage and fixes the final byte to NUL before the original C string comparison, so the submitted C interface is contract-valid.",
+      "reviewed_by": "authors",
+      "paper_summary": "RustAssure completed on C2, but its unmatched partial return-expression graphs were unrelated to the non-UTF-8 panic and are not promoted; C2 is recorded as missed.",
+      "evidence": [
+        "results/baseline_artifacts/runs/rustassure/C2/result.json",
+        "results/baseline_artifacts/adapters/rustassure/C2/adapter.json",
+        "results/rq4_effectiveness/defect_manifest.json"
+      ]
+    },
     "C12": {
       "outcome": "detected",
       "baseline_signal_matches_defect": true,

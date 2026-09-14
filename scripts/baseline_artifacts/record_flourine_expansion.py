@@ -509,6 +509,8 @@ def record_all() -> dict[str, dict]:
         ("C8", "bzbuff_compress_observe", None),
         ("S3", "bzbuff_compress_observe", "C8"),
         ("S11", "bzbuff_decompress_observe", None),
+        ("S19", "zlib_compress_observe", None),
+        ("S20", "zlib_uncompress_observe", None),
     ):
         slug = external_slug or defect
         if (EXTERNAL / f"pilot_{slug}/attempt-001").is_dir():

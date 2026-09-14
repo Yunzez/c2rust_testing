@@ -41,7 +41,13 @@ def parse_distances(path: Path) -> list[dict]:
     with path.open(newline="") as handle:
         rows = list(csv.DictReader(handle))
     for row in rows:
-        row["best_edit_distances"] = float(row["best_edit_distances"])
+        try:
+            row["best_edit_distances"] = float(row["best_edit_distances"])
+        except ValueError:
+            # The released artifact uses strings such as `Rust Empty!` when
+            # symbolic execution produced no graph. Preserve that native
+            # signal for manual adjudication rather than coercing it.
+            pass
     return rows
 
 
@@ -78,7 +84,9 @@ def record(defect: str, decisions: dict[str, dict]) -> dict | None:
             "released-artifact failure separately"
         )
 
-    distance_signal = any(row["best_edit_distances"] != 0.0 for row in distances)
+    distance_signal = any(
+        numeric_nonzero(str(row["best_edit_distances"])) for row in distances
+    )
     has_baseline_signal = distance_signal or termination_signal(
         attempt / "rust_klee_terminate_results.csv"
     ) or termination_signal(attempt / "c_klee_terminate_results.csv")
@@ -275,6 +283,51 @@ def record_s9_compile_failure() -> dict:
     return payload
 
 
+def record_compile_failure(defect: str, target: str) -> dict:
+    """Record a released Rust compiler failure without attempting a retry."""
+    attempt = EXTERNAL / f"pilot_{defect}/workdir"
+    logger = attempt / "test_llvm_bitcode_emitter_logger.log"
+    rust_input = attempt / f"testcase/Rust/{target}.rs"
+    c_input = attempt / f"testcase/C/{target}.i"
+    log_text = logger.read_text()
+    assert f"Compilation failed for testcase/Rust/{target}.rs" in log_text
+    assert "Out of 1 total Rust files 0 compiled" in log_text
+    with (attempt / "result.csv").open(newline="") as handle:
+        summary = next(csv.DictReader(handle))
+    assert summary["total_rust_functions_compiled"] == "0"
+    payload = {
+        "schema_version": 1,
+        "baseline": "rustassure",
+        "defect_id": defect,
+        "target": target,
+        "gates": {
+            "submitted": True,
+            "accepted": True,
+            "compiled": False,
+            "completed": False,
+            "detected": False,
+        },
+        "outcome": "compile_failure",
+        "artifact_native_symbolic_analysis": False,
+        "formal_attempt": str(attempt),
+        "summary": summary,
+        "hashes": {
+            str(path.relative_to(attempt)): sha256(path)
+            for path in (logger, rust_input, c_input, attempt / "result.csv")
+        },
+        "interpretation": (
+            f"The released RustAssure emitter accepted the exact {defect} package, "
+            "but its pinned Rust compiler compiled 0/1 Rust functions. The "
+            "subsequent `Rust Empty!` rows contain no Rust execution and are not "
+            "a defect signal; no compiler or source workaround is attempted."
+        ),
+    }
+    out = RUN_ROOT / defect
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "result.json").write_text(json.dumps(payload, indent=2) + "\n")
+    return payload
+
+
 def main() -> None:
     decision_doc = json.loads(DECISIONS.read_text())
     assert decision_doc["baseline"] == "rustassure"
@@ -283,11 +336,19 @@ def main() -> None:
         "C1": record_c1_direct_failure(),
         "S7": record_s7_compile_failure(),
         "S9": record_s9_compile_failure(),
+        "S2": record_compile_failure("S2", "adler32_z_packet"),
+        "S5": record_compile_failure("S5", "genann_cached_initialized"),
+        "S19": record_compile_failure("S19", "zlib_compress_observe"),
+        "C7": record_compile_failure("C7", "bzbuff_compress_observe"),
+        "S10": record_compile_failure("S10", "bzbuff_compress_observe"),
     }
     payloads.update(
         {
             defect: payload
-            for defect in ["S6", "S21", "S14", "S17", "C12", "C2", "C13", "C16"]
+            for defect in [
+                "S6", "S21", "S14", "S17", "C12", "C2", "C13", "C16",
+                "C4", "S15", "S16",
+            ]
             if (payload := record(defect, decisions))
         }
     )

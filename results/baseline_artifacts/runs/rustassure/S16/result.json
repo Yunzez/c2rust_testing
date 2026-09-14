@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "S16",
+  "target": "opng_strcasecmp_packet",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": false
+  },
+  "outcome": "missed",
+  "artifact_native_symbolic_analysis": true,
+  "has_baseline_signal": true,
+  "distances": [
+    {
+      "function_name": "opng_strcasecmp_packet",
+      "argument_name": "arg_value_0",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "opng_strcasecmp_packet",
+      "argument_name": "arg_value_1",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "opng_strcasecmp_packet",
+      "argument_name": "ret_value",
+      "best_edit_distances": 1000.0
+    }
+  ],
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "1",
+    "total_arguments": "3",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "0",
+    "overall_unsafe_sum": "5",
+    "overall_safe_lines": "-5",
+    "rust_coverage": "100.0",
+    "c_coverage": "100.0",
+    "execution_time": "0m"
+  },
+  "manual_validation": {
+    "outcome": "missed",
+    "baseline_signal_matches_defect": false,
+    "source_level_validation": "RustAssure reports return distance 1000 because the C graph set contains byte-wise comparison expressions while the Rust graph set contains only the constant zero. That Rust graph is incomplete even for ordinary valid ASCII inputs such as `a` versus `b`, where the submitted Rust function must return nonzero. The graph collapse therefore reflects released-analysis imprecision and cannot be attributed specifically to S16's lossy UTF-8 conversion; neither termination report supplies another signal.",
+    "c_oracle_status": "Both generated 16-byte arrays are terminated at their final byte before entering the original C byte-wise comparison. Interior bytes remain unconstrained, so the relevant non-UTF-8 strings are contract-valid C inputs.",
+    "reviewed_by": "authors",
+    "paper_summary": "RustAssure completed on S16, but its Rust return graph collapsed to constant zero even for ordinary ASCII differences; the non-comparability signal is not promoted and S16 is recorded as missed.",
+    "evidence": [
+      "results/baseline_artifacts/runs/rustassure/S16/result.json",
+      "results/baseline_artifacts/adapters/rustassure/S16/adapter.json",
+      "results/rq4_effectiveness/defect_manifest.json"
+    ]
+  },
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_S16/workdir",
+  "hashes": {
+    "result.csv": "e3106a4472f2e6266e4f2c4c1384c3a9abe8382a2ba88ef9cfd7855f5f47d939",
+    "edit_distance/best_edit_distances.csv": "8ea23e917946f088045ceaf363857dbeb9a21059b29eafa977ae3db154e20385",
+    "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5"
+  },
+  "interpretation": "RustAssure completed on S16, but its Rust return graph collapsed to constant zero even for ordinary ASCII differences; the non-comparability signal is not promoted and S16 is recorded as missed."
+}

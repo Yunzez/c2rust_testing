@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "S15",
+  "target": "ti_adx_start_valid",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_symbolic_analysis": true,
+  "has_baseline_signal": true,
+  "distances": [
+    {
+      "function_name": "ti_adx_start_valid",
+      "argument_name": "arg_value_0",
+      "best_edit_distances": "Rust Empty!"
+    },
+    {
+      "function_name": "ti_adx_start_valid",
+      "argument_name": "ret_value",
+      "best_edit_distances": "Rust Empty!"
+    }
+  ],
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "1",
+    "total_arguments": "2",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "0",
+    "overall_unsafe_sum": "1",
+    "overall_safe_lines": "-1",
+    "rust_coverage": "75.0",
+    "c_coverage": "100.0",
+    "execution_time": "0m"
+  },
+  "manual_validation": {
+    "outcome": "detected",
+    "baseline_signal_matches_defect": true,
+    "source_level_validation": "RustAssure compiles both sides but emits `Rust Empty!` for the argument and return because the Rust symbolic execution has zero completed paths. The frozen LLVM converts the options pointer itself to i32 and immediately applies checked subtraction and multiplication; KLEE reaches the resulting panic `unreachable` edge before the wrapper can print either output. The C graph completes normally by loading options[0]. This is exactly the catalogued S15 pointer-as-period substitution.",
+    "c_oracle_status": "The adapter supplies one initialized f64 element to the original options pointer. The C target only reads options[0], so its completed return graph is within the target contract.",
+    "reviewed_by": "authors",
+    "paper_summary": "RustAssure detected S15: the artifact's `Rust Empty!` result was traced to zero completed Rust paths caused by the catalogued pointer-to-period conversion and checked-arithmetic panic.",
+    "evidence": [
+      "results/baseline_artifacts/runs/rustassure/S15/result.json",
+      "results/baseline_artifacts/adapters/rustassure/S15/adapter.json",
+      "results/rq4_effectiveness/defect_manifest.json"
+    ]
+  },
+  "external_directory": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_S15/workdir",
+  "hashes": {
+    "result.csv": "a5d96f5958246e327eecc6f9db7d55757850bee62ba4994d9124ce6f4a2a5c85",
+    "edit_distance/best_edit_distances.csv": "864b1a9f4f34bcbe0c1e783dc2d45fd47b29319fcca90bb4c0f32ce309e78e7a",
+    "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5"
+  },
+  "interpretation": "RustAssure detected S15: the artifact's `Rust Empty!` result was traced to zero completed Rust paths caused by the catalogued pointer-to-period conversion and checked-arithmetic panic."
+}

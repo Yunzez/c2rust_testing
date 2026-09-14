@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 
@@ -20,6 +21,20 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def digest(path: Path, algorithm: str) -> str:
+    hasher = hashlib.new(algorithm)
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            hasher.update(block)
+    return hasher.hexdigest()
+
+
+def git_output(directory: Path, *args: str) -> str:
+    return subprocess.check_output(
+        ("git", "-C", str(directory), *args), text=True
+    ).strip()
+
+
 def validate_lock() -> None:
     lock = load("results/baseline_artifacts/artifact_lock.json")
     assert len(lock["rustassure"]["commit"]) == 40
@@ -27,6 +42,30 @@ def validate_lock() -> None:
     assert lock["flourine"]["sha256"] and lock["flourine"]["bytes"] > 0
     assert lock["vert"]["doi"] == "10.5281/zenodo.10927704"
     assert lock["vert"]["checksum"].startswith("md5:")
+
+    checkouts = BASE / "checkouts"
+    repositories = {
+        checkouts / "rustassure-official": lock["rustassure"]["commit"],
+        checkouts / "rustify-klee-official": lock["rustassure"]["dependency"]["commit"],
+        checkouts / "rwasm-official": lock["vert"]["omitted_generation_dependencies"]["rwasm"]["commit"],
+    }
+    for directory, expected_commit in repositories.items():
+        assert git_output(directory, "rev-parse", "HEAD") == expected_commit, directory
+        assert git_output(directory, "status", "--porcelain") == "", (
+            f"official checkout was modified: {directory}"
+        )
+
+    downloads = BASE / "downloads"
+    flourine = downloads / "flourine-artifact.tar.gz"
+    vert = downloads / lock["vert"]["file"]
+    wasi = downloads / "wasi-sdk-12.0-linux.tar.gz"
+    assert flourine.stat().st_size == lock["flourine"]["bytes"]
+    assert digest(flourine, "sha256") == lock["flourine"]["sha256"]
+    assert vert.stat().st_size == lock["vert"]["bytes"]
+    assert digest(vert, "md5") == lock["vert"]["checksum"].removeprefix("md5:")
+    assert digest(wasi, "sha256") == (
+        lock["vert"]["omitted_generation_dependencies"]["wasi_sdk"]["sha256"]
+    )
 
 
 def validate_rustassure_smoke() -> None:

@@ -1,4 +1,8 @@
-# Workflow figure specification
+# Workflow figure specification (v8, superseded)
+
+The current redraw specification is
+[`method_workflow_graph_v9.md`](method_workflow_graph_v9.md). This file is
+retained only to document the design decisions behind `workflow_v8.pdf`.
 
 This file is a specification for redrawing the paper's method figure.  It is
 deliberately much smaller than `method_harness_construction.md`: that document
@@ -288,4 +292,3 @@ The following points are important but should be explained next to the figure:
   budget is spent).  It is a mandatory gate (protocol amendment 2026-09-06) and
   it is protocol, not method: it is **not drawn in the figure**;
 - every harness records the hash of the generator sources that built it.
-

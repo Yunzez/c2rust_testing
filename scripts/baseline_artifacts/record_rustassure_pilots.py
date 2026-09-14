@@ -341,6 +341,92 @@ def record_compile_failure(
     return payload
 
 
+def record_c3_analysis_failure() -> dict:
+    """Record C3 after the released full-budget analysis produced no result."""
+    defect = "C3"
+    target = "do_system_two"
+    attempt = EXTERNAL / f"pilot_{defect}/workdir"
+    result_csv = attempt / "result.csv"
+    distances_path = attempt / "edit_distance/best_edit_distances.csv"
+    rust_termination = attempt / "rust_klee_terminate_results.csv"
+    c_termination = attempt / "c_klee_terminate_results.csv"
+    rust_info = attempt / "klee_ir_files/Rust/klee-out-0/info"
+    rust_messages = attempt / "klee_ir_files/Rust/klee-out-0/messages.txt"
+    c_info = attempt / "klee_ir_files/C/klee-out-0/info"
+    c_messages = attempt / "klee_ir_files/C/klee-out-0/messages.txt"
+    rust_input = attempt / f"testcase/Rust/{target}.rs"
+    c_input = attempt / f"testcase/C/{target}.i"
+
+    with result_csv.open(newline="") as handle:
+        summary = next(csv.DictReader(handle))
+    distances = parse_distances(distances_path)
+    assert summary["total_rust_functions_compiled"] == "1"
+    assert summary["c_coverage"] != "" and summary["rust_coverage"] != ""
+    assert summary["execution_time"] == "180m"
+    assert not distances
+    assert not termination_signal(rust_termination)
+    assert not termination_signal(c_termination)
+
+    rust_info_text = rust_info.read_text()
+    rust_messages_text = rust_messages.read_text()
+    c_info_text = c_info.read_text()
+    assert "--max-time=10800" in rust_info_text
+    assert "completed paths = 0" in rust_info_text
+    assert "generated tests = 0" in rust_info_text
+    assert "HaltTimer invoked" in rust_messages_text
+    assert "completed paths = 0" in c_info_text
+    assert "generated tests = 0" in c_info_text
+
+    evidence = (
+        result_csv,
+        distances_path,
+        rust_termination,
+        c_termination,
+        rust_info,
+        rust_messages,
+        c_info,
+        c_messages,
+        rust_input,
+        c_input,
+    )
+    payload = {
+        "schema_version": 1,
+        "baseline": "rustassure",
+        "defect_id": defect,
+        "target": target,
+        "gates": {
+            "submitted": True,
+            "accepted": True,
+            "compiled": True,
+            "completed": False,
+            "detected": False,
+        },
+        "outcome": "analysis_failure",
+        "artifact_native_symbolic_analysis": True,
+        "formal_attempt": str(attempt),
+        "summary": summary,
+        "distances": distances,
+        "hashes": {
+            str(path.relative_to(attempt)): sha256(path)
+            for path in evidence
+        },
+        "interpretation": (
+            "The released RustAssure artifact compiled both sides and ran its "
+            "documented 180-minute symbolic-analysis budget. Rust KLEE exhausted "
+            "the budget with 959,919 partial paths, zero completed paths, and zero "
+            "generated tests; the official pipeline emitted no graph-distance or "
+            "termination result. Three locationless `unreachable` messages are "
+            "retained as unscored partial evidence because they were not promoted "
+            "by the artifact into a completed result. No runtime, model, or source "
+            "workaround is attempted."
+        ),
+    }
+    out = RUN_ROOT / defect
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "result.json").write_text(json.dumps(payload, indent=2) + "\n")
+    return payload
+
+
 def main() -> None:
     decision_doc = json.loads(DECISIONS.read_text())
     assert decision_doc["baseline"] == "rustassure"
@@ -371,6 +457,12 @@ def main() -> None:
         "C15": record_compile_failure("C15", "zlib_uncompress_observe"),
         "S11": record_compile_failure("S11", "bzbuff_decompress_observe"),
         "S12": record_compile_failure("S12", "bzbuff_compress_packet"),
+        "C3": record_c3_analysis_failure(),
+        "C9": record_compile_failure("C9", "lil_new_probe"),
+        "C10": record_compile_failure("C10", "lil_parse_generated"),
+        "S18": record_compile_failure("S18", "zlib_uncompress_observe"),
+        "C8": record_compile_failure("C8", "bzbuff_compress_observe"),
+        "S3": record_compile_failure("S3", "bzbuff_compress_observe"),
     }
     payloads.update(
         {

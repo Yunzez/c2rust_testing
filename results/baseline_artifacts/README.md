@@ -9,6 +9,12 @@ Large downloaded artifacts and build trees live outside Git under
 checksums, input adapters, commands, logs, gate outcomes, and generated paper
 tables. No baseline implementation is vendored or patched here.
 
+The experiment is complete for the full 3-by-36 matrix. Canonical outcomes
+are in `results.json`; `funnel.json`, `SUMMARY.md`, and
+`c2rust_paper/table/baseline_comparison.tex` are generated from that file.
+`scripts/baseline_artifacts/validate_completion.py --require-complete` audits
+all 108 records and rejects unfinished cells or stale generated summaries.
+
 `adapter_policy.json` is the scored-adapter audit. It distinguishes input-contract
 realization and source packaging from interface changes that work around a
 released baseline failure. The latter may remain under an adapter's `history/`

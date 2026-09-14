@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "C3",
+  "target": "do_system_two",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": false,
+    "detected": false
+  },
+  "outcome": "analysis_failure",
+  "artifact_native_symbolic_analysis": true,
+  "formal_attempt": "/home/yunzez/c2rust_baselines/runs/rustassure/pilot_C3/workdir",
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "1",
+    "total_arguments": "0",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "0",
+    "overall_unsafe_sum": "6",
+    "overall_safe_lines": "-6",
+    "rust_coverage": "94.12",
+    "c_coverage": "95.0",
+    "execution_time": "180m"
+  },
+  "distances": [],
+  "hashes": {
+    "result.csv": "01b779582e0b9db1828d17ca8db060cd2b0ef78c95b0b2b4f3459e734f233fd1",
+    "edit_distance/best_edit_distances.csv": "fe68c76237f735756fdd32a794f8b639efdc1d7b4a487a9441fbb053dd022e8c",
+    "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "klee_ir_files/Rust/klee-out-0/info": "1426d75fbecc0fc7a36fa561cfa3f375f63d1d80064c1cc39af83aa55552c2bc",
+    "klee_ir_files/Rust/klee-out-0/messages.txt": "523e2c0875c7d764c1a2b58ab9551ee9c09308d08cc72d8a9ca667091fcb5e9b",
+    "klee_ir_files/C/klee-out-0/info": "4e68886f8ef0f747ffe30b7749ac2f409551c6a982ea868f9d5636686b6aa716",
+    "klee_ir_files/C/klee-out-0/messages.txt": "322dd65dd8dee684fbd1574e3b015f907d9d6d5298fab20a763763829c617c18",
+    "testcase/Rust/do_system_two.rs": "d233974e3b57f88eeae38a7b63e099385dcffd2d912cf25af5fa3d432195f9a5",
+    "testcase/C/do_system_two.i": "22a5222e6c03c89a63079029324be67a0328b82a58f5f36251c4c71d1ceb8c2a"
+  },
+  "interpretation": "The released RustAssure artifact compiled both sides and ran its documented 180-minute symbolic-analysis budget. Rust KLEE exhausted the budget with 959,919 partial paths, zero completed paths, and zero generated tests; the official pipeline emitted no graph-distance or termination result. Three locationless `unreachable` messages are retained as unscored partial evidence because they were not promoted by the artifact into a completed result. No runtime, model, or source workaround is attempted."
+}

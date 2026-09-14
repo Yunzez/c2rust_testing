@@ -1,6 +1,6 @@
 # Released-validator artifact comparison
 
-Status: active experiment plan, frozen 2026-09-13.
+Status: completed 2026-09-14; protocol frozen 2026-09-13.
 
 ## Question
 
@@ -86,3 +86,20 @@ behavior. All have exact-source provenance in the canonical manifest.
 `missed` is used only when analysis completes on the unmodified defective pair and
 the released artifact reports no discrepancy. This distinction prevents build and
 marshalling limitations from being presented as semantic false negatives.
+
+## Completed experiment
+
+All 108 baseline--defect cells have a terminal outcome. FLOURINE submits 33,
+accepts 20, compiles 17, completes 16, and detects 14 defects. RustAssure
+submits and accepts 34, compiles 12, completes 11, and detects 5. VERT's
+released evaluator does not accept a frozen translated artifact—it generates
+a new Rust program from C—so all 36 cells are recorded as unsupported for this
+artifact-level question. These are applicability and execution funnels, not a
+ranking that treats pre-completion failures as semantic misses.
+
+The machine-readable evidence is under `results/baseline_artifacts/`; the
+strict completion audit is:
+
+```
+python3 scripts/baseline_artifacts/validate_completion.py --require-complete
+```

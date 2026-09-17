@@ -8,18 +8,19 @@
 //! Phase 1: functions (name + line), resolved call edges, and unresolved/indirect
 //! calls. Signature and structural I/O fingerprints come in later phases.
 
-mod io;
 mod consts;
+mod io;
 mod metrics;
 mod ops;
 mod signature;
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
+use std::hash::Hash;
 use std::path::Path;
 
-use hir::{AsAssocItem, CallableKind, Crate, Module, Semantics};
+use hir::{AsAssocItem, CallableKind, Crate, HasSource, Module, Semantics};
 
-/// Stable node identity for a function, used for dedup + call-graph edges + truth keying.
+/// Compatibility label for a function, NOT its resolved symbol identity.
 ///
 /// FIX (hir-id backlog): the analyzer previously keyed functions by their bare name, so two
 /// functions with the same name (e.g. `QuadPoint::new`, `QuadNode::new`, `QuadTree::new` — every
@@ -28,6 +29,8 @@ use hir::{AsAssocItem, CallableKind, Crate, Module, Semantics};
 /// same-named methods. We disambiguate an associated method as `Self::method` (the receiver type
 /// comes from hir resolution); free functions keep their bare name so name-equality against the C
 /// side (whose functions are all free) is preserved for name-preserving translators.
+/// Deduplication and call resolution use `hir::Function`; colliding local labels
+/// are qualified before emitting nodes. Nonlocal callees never use these labels.
 fn fn_id(db: &RootDatabase, func: hir::Function) -> String {
     let name = func.name(db).as_str().to_owned();
     if let Some(assoc) = func.as_assoc_item(db) {
@@ -46,7 +49,7 @@ use load_cargo::{load_workspace_at, LoadCargoConfig, ProcMacroServerChoice};
 use project_model::{CargoConfig, RustLibSource};
 use serde::Serialize;
 use syntax::ast::{HasAttrs, HasName};
-use syntax::{ast, AstNode};
+use syntax::{ast, AstNode, AstToken};
 
 #[derive(Serialize)]
 pub struct FnRec {
@@ -77,13 +80,16 @@ pub struct Indirect {
 #[derive(Serialize)]
 pub struct Excluded {
     pub name: String,
-    /// Why it was dropped: `"test"` or `"trait_boilerplate:<Trait>"`.
+    /// Why it was dropped: `test`, `nested_local`, or `trait_boilerplate:<Trait>`.
     pub reason: String,
 }
 
 #[derive(Serialize)]
 pub struct Output {
     pub functions: Vec<FnRec>,
+    /// Projected call sites. Only exact candidate IDs denote local edges.
+    /// `@nonlocal::...` and acyclic `@nested::...` targets retain site accounting
+    /// without entering the candidate graph. Never resolve them by leaf name.
     pub raw_edges: Vec<Edge>,
     pub indirect_calls: Vec<Indirect>,
     /// Rust-only nodes excluded from the candidate set AND the topology graph because
@@ -100,8 +106,13 @@ pub struct Output {
 fn is_test_scaffolding(fnode: &ast::Fn) -> bool {
     fn marks_test(attrs: impl Iterator<Item = ast::Attr>) -> bool {
         for a in attrs {
-            let t: String =
-                a.syntax().text().to_string().chars().filter(|c| !c.is_whitespace()).collect();
+            let t: String = a
+                .syntax()
+                .text()
+                .to_string()
+                .chars()
+                .filter(|c| !c.is_whitespace())
+                .collect();
             if t == "#[test]" || t == "#[bench]" || t.contains("cfg(test)") {
                 return true;
             }
@@ -123,8 +134,23 @@ fn is_test_scaffolding(fnode: &ast::Fn) -> bool {
 /// (Add/Sub/Mul/Index/Iterator/...) and Display-of-real-logic stays a judgment call —
 /// these listed traits are the safe, unambiguous boilerplate set.
 const BOILERPLATE_TRAITS: &[&str] = &[
-    "Default", "Clone", "Copy", "Debug", "Display", "Hash", "PartialEq", "Eq", "PartialOrd",
-    "Ord", "From", "Into", "TryFrom", "TryInto", "Serialize", "Deserialize", "Drop",
+    "Default",
+    "Clone",
+    "Copy",
+    "Debug",
+    "Display",
+    "Hash",
+    "PartialEq",
+    "Eq",
+    "PartialOrd",
+    "Ord",
+    "From",
+    "Into",
+    "TryFrom",
+    "TryInto",
+    "Serialize",
+    "Deserialize",
+    "Drop",
 ];
 
 /// If this fn is a method of a boilerplate trait impl (`impl Default for T { fn default }`,
@@ -139,6 +165,105 @@ fn boilerplate_trait(fnode: &ast::Fn) -> Option<String> {
         _ => return None,
     };
     BOILERPLATE_TRAITS.contains(&name.as_str()).then_some(name)
+}
+
+struct Definition {
+    func: hir::Function,
+    owner: hir::Function,
+    node: ast::Fn,
+    file: EditionedFileId,
+}
+
+/// A qualified display path. Equality is still decided by HIR identity, not this
+/// string: different impls may have identical module/name paths.
+fn qualified_label(db: &RootDatabase, func: hir::Function) -> String {
+    let module = func.module(db);
+    let mut parts = vec![module
+        .krate(db)
+        .display_name(db)
+        .map(|n| n.to_string())
+        .unwrap_or_else(|| "crate".to_owned())];
+    parts.extend(
+        module
+            .path_to_root(db)
+            .into_iter()
+            .rev()
+            .filter_map(|m| m.name(db).map(|n| n.as_str().to_owned())),
+    );
+    parts.push(fn_id(db, func));
+    parts.join("::")
+}
+
+fn reachable<T: Copy + Eq + Hash>(start: T, edges: &HashMap<T, HashSet<T>>) -> HashSet<T> {
+    let mut seen = HashSet::new();
+    let mut pending = vec![start];
+    while let Some(node) = pending.pop() {
+        if seen.insert(node) {
+            if let Some(next) = edges.get(&node) {
+                pending.extend(next.iter().copied());
+            }
+        }
+    }
+    seen
+}
+
+/// Only explicit linker contracts may bridge an extern declaration to a body.
+/// Bare source-name equality is insufficient (e.g. std::mem::swap vs local swap).
+/// Conditional/expanded attributes are deliberately not guessed here.
+fn symbol_attribute(node: &ast::Fn, key: &str) -> Option<String> {
+    for attr in node.attrs() {
+        let compact: String = attr
+            .syntax()
+            .text()
+            .to_string()
+            .chars()
+            .filter(|c| !c.is_whitespace())
+            .collect();
+        if key == "no_mangle" && (compact == "#[no_mangle]" || compact == "#[unsafe(no_mangle)]") {
+            return node.name().map(|n| n.text().to_string());
+        }
+        if compact.starts_with(&format!("#[{key}="))
+            || compact.starts_with(&format!("#[unsafe({key}="))
+        {
+            return attr
+                .syntax()
+                .descendants_with_tokens()
+                .filter_map(|n| n.into_token())
+                .find_map(ast::String::cast)
+                .and_then(|s| s.value().ok().map(|v| v.into_owned()));
+        }
+    }
+    None
+}
+
+fn resolve_link_target(
+    db: &RootDatabase,
+    callee: hir::Function,
+    exports: &HashMap<(Crate, String), Vec<hir::Function>>,
+) -> hir::Function {
+    let Some(source) = callee.source(db) else {
+        return callee;
+    };
+    let node = source.value;
+    if node.body().is_some()
+        || !node
+            .syntax()
+            .ancestors()
+            .any(|n| ast::ExternBlock::cast(n).is_some())
+    {
+        return callee;
+    }
+    let symbol =
+        symbol_attribute(&node, "link_name").unwrap_or_else(|| callee.name(db).as_str().to_owned());
+    match exports
+        .get(&(callee.module(db).krate(db), symbol))
+        .map(Vec::as_slice)
+    {
+        Some([target]) => *target,
+        // Ambiguous exports or a symbol defined outside this analyzed crate:
+        // retain nonlocal identity, without guessing from names or signatures.
+        _ => callee,
+    }
 }
 
 /// A loaded crate, ready to analyze. Owns the rust-analyzer database.
@@ -167,7 +292,9 @@ pub fn load_crate(dir: &Path) -> anyhow::Result<AnalyzedCrate> {
     };
     let (db, _vfs, _proc_macro) =
         load_workspace_at(dir, &cargo_config, &load_cargo_config, &|_| {})?;
-    Ok(AnalyzedCrate { host: AnalysisHost::with_database(db) })
+    Ok(AnalyzedCrate {
+        host: AnalysisHost::with_database(db),
+    })
 }
 
 impl AnalyzedCrate {
@@ -187,119 +314,212 @@ impl AnalyzedCrate {
             indirect_calls: Vec::new(),
             excluded_scaffolding: Vec::new(),
         };
-        let mut seen: HashSet<String> = HashSet::new();
-        let mut excluded_seen: HashSet<String> = HashSet::new();
-
+        let mut seen = HashSet::new();
+        let mut definitions = Vec::new();
+        // First collect symbol identities. Calls can target definitions in a
+        // later file, or an external function with exactly the same spelling.
         for efile in local_files(db) {
-            // Parse THROUGH Semantics so call expressions can be type-resolved
-            // (`type_of_expr` only accepts nodes derived from this Semantics).
             let source_file = sema.parse(efile);
-            let vfile = efile.file_id(db);
-            let li = ide_db::line_index(db, vfile);
-
-            // Every `ast::Fn` in the file: free fns AND `impl` assoc fns / nested fns.
-            for node in source_file.syntax().descendants() {
-                let fnode = match ast::Fn::cast(node) {
-                    Some(f) => f,
-                    None => continue,
+            for fnode in source_file.syntax().descendants().filter_map(ast::Fn::cast) {
+                let Some(func) = sema.to_def(&fnode) else {
+                    continue;
                 };
-                let func: hir::Function = match sema.to_def(&fnode) {
-                    Some(f) => f,
-                    None => continue,
+                if fnode.body().is_none() || !seen.insert(func) {
+                    continue;
+                }
+                let enclosing = fnode
+                    .syntax()
+                    .ancestors()
+                    .skip(1)
+                    .filter_map(ast::Fn::cast)
+                    .last();
+                let owner = match enclosing {
+                    Some(ref parent) => match sema.to_def(parent) {
+                        Some(owner) => owner,
+                        None => continue,
+                    },
+                    None => func,
                 };
-                let name = func.name(db).as_str().to_owned();
-
-                // Only list actual definitions (with a body); skip `extern "C"`
-                // declarations of external symbols (libc printf/strcmp/...). The C
-                // side likewise lists definitions only.
-                let body = match fnode.body() {
-                    Some(b) => b,
-                    None => continue,
-                };
-
-                // Rust-only non-targets (test scaffolding, boilerplate trait impls,
-                // locally-nested helper fns): keep out of BOTH the candidate set and the
-                // topology graph (skip the body walk -> no edges), report with a reason.
-                //
-                // A fn whose ancestors include another `ast::Fn` is defined inside that
-                // fn's body. C has no nested functions, so such locals have no C
-                // counterpart and only act as distractors during matching (and can collide
-                // by name with a top-level fn). Their call edges are NOT lost: the
-                // enclosing fn's recursive body walk already attributes them to the parent.
-                let is_nested_local =
-                    fnode.syntax().ancestors().skip(1).any(|a| ast::Fn::cast(a).is_some());
-                let exclude_reason = if is_test_scaffolding(&fnode) {
+                let reason = if is_test_scaffolding(&fnode) {
                     Some("test".to_owned())
-                } else if is_nested_local {
+                } else if owner != func {
                     Some("nested_local".to_owned())
                 } else {
                     boilerplate_trait(&fnode).map(|t| format!("trait_boilerplate:{t}"))
                 };
-                if let Some(reason) = exclude_reason {
-                    if excluded_seen.insert(name.clone()) {
-                        out.excluded_scaffolding.push(Excluded { name, reason });
-                    }
-                    continue;
-                }
-
-                let name_offset = fnode
-                    .name()
-                    .map(|n| n.syntax().text_range().start())
-                    .unwrap_or_else(|| fnode.syntax().text_range().start());
-                let line = li.line_col(name_offset).line as usize + 1;
-                // Node identity: `Self::method` for impl methods, bare name for free fns.
-                let id = fn_id(db, func);
-                if seen.insert(id.clone()) {
-                    out.functions.push(FnRec {
-                        name: id.clone(),
-                        line,
-                        signature: signature::signature_of(&fnode),
-                        io: io::io_of(db, func),
-                        ops: ops::ops_of(&fnode),
-                        consts: consts::consts_of(&fnode),
-                        strings: consts::strings_of(&fnode),
-                        metrics: if enable_metrics {
-                            Some(metrics::metrics_of(&fnode))
-                        } else {
-                            None
-                        },
+                if let Some(ref reason) = reason {
+                    out.excluded_scaffolding.push(Excluded {
+                        name: func.name(db).as_str().to_owned(),
+                        reason: reason.clone(),
                     });
                 }
-                for n in body.syntax().descendants() {
-                    if let Some(call) = ast::CallExpr::cast(n.clone()) {
-                        let resolved = call
-                            .expr()
-                            .as_ref()
-                            .and_then(|e| sema.type_of_expr(e))
-                            .and_then(|t| t.original.as_callable(db))
-                            .map(|c| c.kind());
-                        match resolved {
-                            Some(CallableKind::Function(callee)) => out.raw_edges.push(Edge {
-                                from: id.clone(),
-                                to: fn_id(db, callee),
-                            }),
-                            _ => out.indirect_calls.push(Indirect {
-                                from: id.clone(),
+                // Nested helpers remain available for graph projection, not as
+                // matching candidates. Excluded owners are removed below.
+                if reason.as_deref().is_none_or(|r| r == "nested_local") {
+                    definitions.push(Definition {
+                        func,
+                        owner,
+                        node: fnode,
+                        file: efile,
+                    });
+                }
+            }
+        }
+
+        let mut counts = HashMap::new();
+        for d in definitions.iter().filter(|d| d.func == d.owner) {
+            *counts.entry(fn_id(db, d.func)).or_insert(0usize) += 1;
+        }
+        let mut labels = HashMap::new();
+        let mut used_labels = HashSet::new();
+        for d in definitions.iter().filter(|d| d.func == d.owner) {
+            let base = fn_id(db, d.func);
+            let mut label = if counts[&base] == 1 {
+                base
+            } else {
+                qualified_label(db, d.func)
+            };
+            // Rare same-module impl-name collisions. Keep the leaf name intact
+            // and avoid silently losing either function. The suffix is only an
+            // identity discriminator; matching never uses it as a feature.
+            let mut disambiguator = 1;
+            let original = label.clone();
+            while !used_labels.insert(label.clone()) {
+                label = format!("@{disambiguator}::{original}");
+                disambiguator += 1;
+            }
+            labels.insert(d.func, label.clone());
+            let li = ide_db::line_index(db, d.file.file_id(db));
+            let name_offset = d
+                .node
+                .name()
+                .map(|n| n.syntax().text_range().start())
+                .unwrap_or_else(|| d.node.syntax().text_range().start());
+            out.functions.push(FnRec {
+                name: label,
+                line: li.line_col(name_offset).line as usize + 1,
+                signature: signature::signature_of(&d.node),
+                io: io::io_of(db, d.func),
+                ops: ops::ops_of(&d.node),
+                consts: consts::consts_of(&d.node),
+                strings: consts::strings_of(&d.node),
+                metrics: enable_metrics.then(|| metrics::metrics_of(&d.node)),
+            });
+        }
+        definitions.retain(|d| labels.contains_key(&d.owner));
+        let owners: HashMap<_, _> = definitions.iter().map(|d| (d.func, d.owner)).collect();
+        let mut exports: HashMap<_, Vec<_>> = HashMap::new();
+        for d in &definitions {
+            if let Some(symbol) = symbol_attribute(&d.node, "export_name")
+                .or_else(|| symbol_attribute(&d.node, "no_mangle"))
+            {
+                exports
+                    .entry((d.func.module(db).krate(db), symbol))
+                    .or_default()
+                    .push(d.func);
+            }
+        }
+        let mut calls = Vec::new();
+        let mut indirect = Vec::new();
+        for d in &definitions {
+            let li = ide_db::line_index(db, d.file.file_id(db));
+            for n in d.node.body().unwrap().syntax().descendants() {
+                // A nested body's calls belong to its actual function, not to
+                // every lexical ancestor. Projection happens after resolution.
+                if n.ancestors().find_map(ast::Fn::cast).as_ref() != Some(&d.node) {
+                    continue;
+                }
+                if let Some(call) = ast::CallExpr::cast(n.clone()) {
+                    let resolved = call
+                        .expr()
+                        .as_ref()
+                        .and_then(|e| sema.type_of_expr(e))
+                        .and_then(|t| t.original.as_callable(db))
+                        .map(|c| c.kind());
+                    match resolved {
+                        Some(CallableKind::Function(callee)) => {
+                            calls.push((d.func, resolve_link_target(db, callee, &exports)))
+                        }
+                        _ => indirect.push((
+                            d.func,
+                            Indirect {
+                                from: labels[&d.owner].clone(),
                                 line: li.line_col(n.text_range().start()).line as usize + 1,
                                 kind: "call_unresolved".to_owned(),
-                            }),
+                            },
+                        )),
+                    }
+                } else if let Some(mc) = ast::MethodCallExpr::cast(n.clone()) {
+                    match sema.resolve_method_call(&mc) {
+                        Some(callee) => {
+                            calls.push((d.func, resolve_link_target(db, callee, &exports)))
                         }
-                    } else if let Some(mc) = ast::MethodCallExpr::cast(n.clone()) {
-                        match sema.resolve_method_call(&mc) {
-                            Some(callee) => out.raw_edges.push(Edge {
-                                from: id.clone(),
-                                to: fn_id(db, callee),
-                            }),
-                            None => out.indirect_calls.push(Indirect {
-                                from: id.clone(),
+                        None => indirect.push((
+                            d.func,
+                            Indirect {
+                                from: labels[&d.owner].clone(),
                                 line: li.line_col(n.text_range().start()).line as usize + 1,
                                 kind: "method_unresolved".to_owned(),
-                            }),
-                        }
+                            },
+                        )),
                     }
                 }
             }
         }
+
+        let mut internal: HashMap<_, HashSet<_>> = HashMap::new();
+        let mut local: HashMap<_, HashSet<_>> = HashMap::new();
+        for &(from, to) in &calls {
+            if owners.contains_key(&to) {
+                local.entry(from).or_default().insert(to);
+            }
+            if owners.get(&from) == owners.get(&to) {
+                internal.entry(from).or_default().insert(to);
+            }
+        }
+        // Ignore uncalled nested definitions. This is syntactic direct-call
+        // reachability, not a claim of whole-program/control-flow reachability.
+        let live: HashSet<_> = labels
+            .keys()
+            .flat_map(|&root| reachable(root, &local))
+            .collect();
+        let mut reach_cache = HashMap::new();
+        for (from, to) in calls {
+            if !live.contains(&from) {
+                continue;
+            }
+            let owner = owners[&from];
+            let target = if let Some(&target_owner) = owners.get(&to) {
+                if owner != target_owner {
+                    labels[&target_owner].clone()
+                } else if reach_cache
+                    .entry(to)
+                    .or_insert_with(|| reachable(to, &internal))
+                    .contains(&from)
+                {
+                    // Only an actual cycle projects to a recursive self-edge.
+                    labels[&owner].clone()
+                } else {
+                    // Preserve resolved call-site accounting, but keep an
+                    // acyclic wrapper/helper hop outside the candidate graph.
+                    format!("@nested::{}", qualified_label(db, to))
+                }
+            } else {
+                // Includes external, bodyless and deliberately excluded symbols.
+                // The reserved prefix cannot alias any ordinary local label.
+                format!("@nonlocal::{}", qualified_label(db, to))
+            };
+            out.raw_edges.push(Edge {
+                from: labels[&owner].clone(),
+                to: target,
+            });
+        }
+        out.indirect_calls.extend(
+            indirect
+                .into_iter()
+                .filter(|(from, _)| live.contains(from))
+                .map(|(_, site)| site),
+        );
         out
     }
 }
@@ -335,7 +555,10 @@ fn local_modules(db: &RootDatabase) -> Vec<Module> {
 }
 
 fn crate_is_library(db: &RootDatabase, krate: Crate) -> bool {
-    let file_id = krate.root_module(db).definition_source_file_id(db).original_file(db);
+    let file_id = krate
+        .root_module(db)
+        .definition_source_file_id(db)
+        .original_file(db);
     let source_root = db.file_source_root(file_id.file_id(db)).source_root_id(db);
     db.source_root(source_root).source_root(db).is_library
 }

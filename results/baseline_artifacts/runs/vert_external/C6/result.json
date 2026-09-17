@@ -1,0 +1,84 @@
+{
+  "adapter": "frozen_external_pair_v1",
+  "baseline": "vert",
+  "defect_id": "C6",
+  "inputs": {
+    "c": "results/baseline_artifacts/adapters/flourine/C6/input/sample_main_packet.json",
+    "c_sha256": "8ec853335402706a345186568a90294bd73dff470cf26d57cec89b29c1fedeb5",
+    "rust": "results/baseline_artifacts/adapters/flourine/C6/input/sample_main_packet.rs",
+    "rust_sha256": "1ad3fd11c569f86f6f5cef6cee1e5c02aa2c5118e5561dd36a1cb729aa5e100d",
+    "target": "sample_main_packet"
+  },
+  "outcome": "compile_failure",
+  "policy": {
+    "array_extent": 2,
+    "baseline_repairs": false,
+    "candidate_source": "audited frozen per-function payload",
+    "max_cargo_jobs": 4,
+    "observation": "return value only",
+    "reference_input_injection": "released PARAM1-only semantics"
+  },
+  "raw_workdir": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C6/attempt-001",
+  "reason": "reference construction failed",
+  "reference_stages": {
+    "clang_original": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/bin/clang",
+        "-fno-exceptions",
+        "-Wno-implicit-int",
+        "--sysroot=/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/share/wasi-sysroot",
+        "-o",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C6/attempt-001/original.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C6/attempt-001/reference_original.c"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C6/attempt-001",
+      "exit_code": 1,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C6/attempt-001/clang_original.log",
+      "seconds": 0.276,
+      "timeout": false
+    }
+  },
+  "schema_version": 1,
+  "signature": {
+    "args": [
+      {
+        "array": false,
+        "ctype": "unsigned char",
+        "extent": null,
+        "name": "argc_selector",
+        "raw": "unsigned char argc_selector"
+      },
+      {
+        "array": true,
+        "ctype": "signed char",
+        "extent": 32,
+        "name": "arg0",
+        "raw": "signed char arg0[32]"
+      },
+      {
+        "array": true,
+        "ctype": "signed char",
+        "extent": 32,
+        "name": "arg1",
+        "raw": "signed char arg1[32]"
+      },
+      {
+        "array": true,
+        "ctype": "signed char",
+        "extent": 32,
+        "name": "arg2",
+        "raw": "signed char arg2[32]"
+      },
+      {
+        "array": true,
+        "ctype": "signed char",
+        "extent": 32,
+        "name": "arg3",
+        "raw": "signed char arg3[32]"
+      }
+    ],
+    "name": "sample_main_packet",
+    "return": "int"
+  },
+  "status": "complete"
+}

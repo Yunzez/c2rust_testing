@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "status": "unscored_exploratory_pilot",
+  "baseline": "vert",
+  "defect": "S14",
+  "date_utc": "2026-09-14",
+  "question": "Can a frozen defective candidate be inserted at VERT's generated-candidate slot without changing its oracle or harness?",
+  "project": "benchmark/c_transcoder/MIDDLE_OF_THREE_USING_MINIMUM_COMPARISONS/out-rwasm-bolero",
+  "selection_reason": "VERT ships a median-of-three benchmark with the same three-scalar, return-value observation shape as S14.",
+  "candidate_adapter": {
+    "kind": "generated_candidate_body_replacement",
+    "scored": false,
+    "changes": [
+      "Copied the deposited generated project.",
+      "Replaced only the f_gold body inside the existing LLM Output delimiters with S14's minimum-of-three computation widened from u8 to VERT's deposited i32 signature."
+    ],
+    "unchanged": [
+      "C source and rWasm oracle",
+      "argument globals and input forwarding",
+      "Bolero harness and equality assertion",
+      "Cargo manifest and dependencies",
+      "VERT checkout"
+    ],
+    "original_main_sha256": "350c86e667f699e4f8435fbc035dd0fdcaedb23bab8f25006eba991bba2681ab",
+    "injected_main_sha256": "06b64505253da5073721edb6ee03b7608fbfe050abbe1118567f4bb3e49100ef",
+    "external_workdir": "/home/yunzez/c2rust_baselines/runs/vert/external_s14/attempt-001"
+  },
+  "gates": {
+    "injected_candidate_compiles_with_cargo_test": true,
+    "bolero_macro_test_completed": true,
+    "valid_relational_comparison": false,
+    "official_cargo_bolero_completed": false,
+    "scored_detection": false
+  },
+  "observations": {
+    "injected_candidate_test": {
+      "command": "CARGO_HOME=/home/yunzez/c2rust_baselines/cargo/vert CARGO_BUILD_JOBS=4 cargo test --release bolero_wasm_eq --locked -- --nocapture",
+      "input_reported_by_bolero": [0, 0, 0],
+      "rust_result": 0,
+      "wasm_result": 2,
+      "outcome": "test_failure"
+    },
+    "untouched_deposited_candidate_control": {
+      "command": "CARGO_HOME=/home/yunzez/c2rust_baselines/cargo/vert CARGO_TARGET_DIR=/home/yunzez/c2rust_baselines/runs/vert/original_middle3_target CARGO_BUILD_JOBS=4 cargo test --release bolero_wasm_eq --locked -- --nocapture",
+      "input_reported_by_bolero": [0, 0, 0],
+      "rust_result": 0,
+      "wasm_result": 2,
+      "outcome": "same_test_failure"
+    },
+    "official_cli_attempt": {
+      "cargo_bolero_version": "0.10.0",
+      "documented_profile_adapter": "--profile release",
+      "stable_outcome": "requires nightly-only -Zsanitizer",
+      "rustc_bootstrap_outcome": "link failure because the generated command requires the unavailable gold linker",
+      "action": "stopped without installing an undocumented linker or changing VERT"
+    }
+  },
+  "root_cause": {
+    "candidate_side": "The Bolero harness writes PARAM1, PARAM2, and PARAM3 and calls the Rust candidate with all three dynamic values.",
+    "reference_side": "The deposited rWasm wrapper injects only PARAM1. Its call to the C-derived function retains constants 2 and 29 for the second and third arguments.",
+    "source_locations": [
+      "deposited main.rs:1-4",
+      "deposited main.rs:580-590",
+      "deposited main.rs:725-734",
+      "generate_utils.py:194-218"
+    ]
+  },
+  "classification": "invalid_comparison_from_released_harness",
+  "interpretation": "The minimal external-candidate injection compiles, but it cannot produce a valid S14 detection because VERT's deposited multi-argument wrapper does not give the C/Wasm and Rust sides the same logical input. The untouched correct candidate fails identically. Per the frozen-baseline policy, the wrapper and tool setup were not repaired; the pilot is unscored and VERT remains unsupported for the 36-pair comparison.",
+  "single_parameter_native_control": {
+    "status": "successful_unscored_control",
+    "project": "benchmark/c_transcoder/ADD_1_TO_A_GIVEN_NUMBER/out-rwasm-bolero",
+    "purpose": "Separate VERT's checker sensitivity in its native one-scalar envelope from applicability to the frozen 36-pair corpus.",
+    "candidate_adapter": {
+      "changes": [
+        "Copied the deposited generated project.",
+        "Replaced only the generated Rust f_gold body: the deposited candidate computes x + 1 and the injected incorrect candidate returns x."
+      ],
+      "unchanged": [
+        "C source and rWasm oracle",
+        "single-parameter forwarding",
+        "Bolero harness and equality assertion",
+        "Cargo manifest and dependencies",
+        "VERT checkout"
+      ],
+      "original_main_sha256": "1d9074186f37aea891ee83751c9ac473e191b0d116c05a702dccba843b218de2",
+      "injected_main_sha256": "410c3fbfd5be4451008269891e0b61dd2abf9979c1929b648a51baaae269009d",
+      "external_workdir": "/home/yunzez/c2rust_baselines/runs/vert/external_single_param_control/attempt-001"
+    },
+    "untouched_control": {
+      "outcome": "pass",
+      "bolero_macro_input": 0,
+      "rust_result": 1,
+      "wasm_result": 1
+    },
+    "injected_candidate": {
+      "outcome": "test_failure",
+      "bolero_macro_input": 0,
+      "rust_result": 0,
+      "wasm_result": 1
+    },
+    "interpretation": "With one scalar argument, VERT's deposited oracle and Bolero harness distinguish a correct candidate from an injected incorrect candidate. This establishes checker sensitivity only inside VERT's native generated-project format. It is not one of the frozen 36 defects and does not change the scored applicability result."
+  },
+  "all_36_intake": {
+    "frozen_defects": 36,
+    "documented_external_pair_interface": 0,
+    "deposited_exact_source_oracles_for_frozen_pairs": 0,
+    "external_adapter_executed": true,
+    "external_adapter": "scripts/baseline_artifacts/run_vert_external_pairs.py",
+    "summary": "results/baseline_artifacts/runs/vert_external/summary.json",
+    "outcomes": {
+      "unsupported_input": 4,
+      "compile_failure": 10,
+      "analysis_failure": 21,
+      "completed_miss": 1,
+      "detected": 0
+    },
+    "apparent_counterexamples": {
+      "count": 8,
+      "valid_detections": 0,
+      "basis": "The released wrapper synchronizes only PARAM1. The Rust candidate receives all dynamic arguments, so these are not relational comparisons over the same input; the untouched correct S14 control fails identically."
+    },
+    "completed_comparison": {
+      "defect": "C13",
+      "outcome": "completed_miss",
+      "basis": "Its audited one-scalar contract wrapper fits VERT's native input envelope, but the release-mode run completes without exposing the free(NULL) defect."
+    },
+    "end_to_end_reading": "All 36 frozen pairs were submitted through one fixed external adapter without repairing VERT. VERT validly completed one comparison and missed it; all other pairs stopped before a valid result. End-to-end detection is 0/36."
+  }
+}

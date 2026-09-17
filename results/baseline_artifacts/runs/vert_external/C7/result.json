@@ -1,0 +1,100 @@
+{
+  "adapter": "frozen_external_pair_v1",
+  "baseline": "vert",
+  "defect_id": "C7",
+  "inputs": {
+    "c": "results/baseline_artifacts/adapters/flourine/C7/input/bzbuff_compress_observe.json",
+    "c_sha256": "19a45d005d58415f6c2239ab5383697b3b44fac91041d73be9e9bd104b535037",
+    "rust": "results/baseline_artifacts/adapters/flourine/C7/input/bzbuff_compress_observe.rs",
+    "rust_sha256": "f6a60978f2935bee46d38128ab8abb5cdd382aa21d260ef5af9fe0865e04e064",
+    "target": "bzbuff_compress_observe"
+  },
+  "outcome": "analysis_failure",
+  "policy": {
+    "array_extent": 2,
+    "baseline_repairs": false,
+    "candidate_source": "audited frozen per-function payload",
+    "max_cargo_jobs": 4,
+    "observation": "return value only",
+    "reference_input_injection": "released PARAM1-only semantics"
+  },
+  "raw_workdir": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001",
+  "reason": "external VERT adapter failed: RuntimeError: VERT fallback window has no nested call",
+  "reference_stages": {
+    "clang_mutated": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/bin/clang",
+        "-fno-exceptions",
+        "-Wno-implicit-int",
+        "--sysroot=/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/share/wasi-sysroot",
+        "-o",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/mutated.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/reference_mutated.c"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001",
+      "exit_code": 0,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/clang_mutated.log",
+      "seconds": 0.336,
+      "timeout": false
+    },
+    "clang_original": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/bin/clang",
+        "-fno-exceptions",
+        "-Wno-implicit-int",
+        "--sysroot=/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/share/wasi-sysroot",
+        "-o",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/original.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/reference_original.c"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001",
+      "exit_code": 0,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/clang_original.log",
+      "seconds": 0.342,
+      "timeout": false
+    },
+    "rwasm_mutated": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/checkouts/rwasm-official/target/release/rwasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/mutated.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/out-rwasm-mutated",
+        "--prevent-reformat",
+        "--wasi-executable"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001",
+      "exit_code": 0,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/rwasm_mutated.log",
+      "seconds": 0.071,
+      "timeout": false
+    },
+    "rwasm_original": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/checkouts/rwasm-official/target/release/rwasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/original.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/out-rwasm-original",
+        "--prevent-reformat",
+        "--wasi-executable"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001",
+      "exit_code": 0,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/C7/attempt-001/rwasm_original.log",
+      "seconds": 0.074,
+      "timeout": false
+    }
+  },
+  "schema_version": 1,
+  "signature": {
+    "args": [
+      {
+        "array": true,
+        "ctype": "int8_t",
+        "extent": 322,
+        "name": "packet",
+        "raw": "int8_t packet[322]"
+      }
+    ],
+    "name": "bzbuff_compress_observe",
+    "return": "int"
+  },
+  "status": "complete"
+}

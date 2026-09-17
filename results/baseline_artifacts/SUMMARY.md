@@ -8,7 +8,7 @@ Generated from `results/baseline_artifacts/results.json`; do not edit counts by 
 |---|---:|---:|---:|---:|---:|---:|
 | RustAssure | 34/36 | 34/36 | 12/36 | 11/36 | 5/36 | 5/11 |
 | FLOURINE | 33/36 | 20/36 | 17/36 | 16/36 | 14/36 | 14/16 |
-| VERT | 0/36 | 0/36 | 0/36 | 0/36 | 0/36 | -- |
+| VERT | 36/36 | 32/36 | 14/36 | 1/36 | 0/36 | 0/1 |
 
 ## Final outcomes
 
@@ -16,7 +16,7 @@ Generated from `results/baseline_artifacts/results.json`; do not edit counts by 
 |---|---:|---:|---:|---:|---:|---:|
 | RustAssure | 5 | 6 | 2 | 1 | 22 | 0 |
 | FLOURINE | 14 | 2 | 3 | 14 | 3 | 0 |
-| VERT | 0 | 0 | 36 | 0 | 0 | 0 |
+| VERT | 0 | 1 | 4 | 21 | 10 | 0 |
 
 ## Defect IDs
 
@@ -41,8 +41,8 @@ Generated from `results/baseline_artifacts/results.json`; do not edit counts by 
 ### VERT
 
 - `detected`: none
-- `missed`: none
-- `unsupported_input`: C1, C10, C11, C12, C13, C15, C16, C2, C3, C4, C5, C6, C7, C8, C9, S1, S10, S11, S12, S13, S14, S15, S16, S17, S18, S19, S2, S20, S21, S3, S4, S5, S6, S7, S8, S9
-- `analysis_failure`: none
-- `compile_failure`: none
+- `missed`: C13
+- `unsupported_input`: C3, C5, S13, S8
+- `analysis_failure`: C12, C16, C2, C4, C7, C8, C9, S1, S10, S11, S12, S14, S15, S16, S17, S2, S21, S3, S4, S7, S9
+- `compile_failure`: C1, C10, C11, C15, C6, S18, S19, S20, S5, S6
 - `not_run`: none

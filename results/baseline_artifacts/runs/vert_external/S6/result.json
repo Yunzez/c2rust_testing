@@ -1,0 +1,137 @@
+{
+  "adapter": "frozen_external_pair_v1",
+  "baseline": "vert",
+  "defect_id": "S6",
+  "generated_main_sha256": "5e06ce5aa8c6b6952e7b3a6557215e4a945e78f9a4e4b1e9d67d2c6bb5008eac",
+  "injection": {
+    "changed_line_after": "v0 = TaggedVal::from(self.func_4(v0.try_as_i32()?, v1.try_as_i32()?, v2.try_as_i32()?)?);",
+    "changed_line_before": "v0 = TaggedVal::from(self.func_4(v0.try_as_i32()?, v1.try_as_i32()?, v2.try_as_i32()?)?);",
+    "diff_lines": 11,
+    "injected_parameter": "PARAM1",
+    "released_middle_function_fallback": true
+  },
+  "inputs": {
+    "c": "results/baseline_artifacts/adapters/flourine/S6/input/quick_sort.json",
+    "c_sha256": "e7d657115a0b0a1ad1c1999e6ff8f626783efa855e8f7cb308abf0c9e2e88ccf",
+    "rust": "results/baseline_artifacts/adapters/flourine/S6/input/quick_sort.rs",
+    "rust_sha256": "717008ffbf94a38247847918821e86487d004b5fd09c32f9335788570b3d876c",
+    "target": "quick_sort"
+  },
+  "outcome": "compile_failure",
+  "policy": {
+    "array_extent": 2,
+    "baseline_repairs": false,
+    "candidate_source": "audited frozen per-function payload",
+    "max_cargo_jobs": 4,
+    "observation": "return value only",
+    "reference_input_injection": "released PARAM1-only semantics"
+  },
+  "raw_workdir": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001",
+  "reason": "generated VERT project did not compile",
+  "reference_stages": {
+    "clang_mutated": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/bin/clang",
+        "-fno-exceptions",
+        "-Wno-implicit-int",
+        "--sysroot=/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/share/wasi-sysroot",
+        "-o",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/mutated.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/reference_mutated.c"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001",
+      "exit_code": 0,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/clang_mutated.log",
+      "seconds": 0.026,
+      "timeout": false
+    },
+    "clang_original": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/bin/clang",
+        "-fno-exceptions",
+        "-Wno-implicit-int",
+        "--sysroot=/home/yunzez/c2rust_baselines/toolchains/wasi-sdk-12.0/share/wasi-sysroot",
+        "-o",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/original.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/reference_original.c"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001",
+      "exit_code": 0,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/clang_original.log",
+      "seconds": 0.026,
+      "timeout": false
+    },
+    "rwasm_mutated": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/checkouts/rwasm-official/target/release/rwasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/mutated.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/out-rwasm-mutated",
+        "--prevent-reformat",
+        "--wasi-executable"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001",
+      "exit_code": 0,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/rwasm_mutated.log",
+      "seconds": 0.003,
+      "timeout": false
+    },
+    "rwasm_original": {
+      "command": [
+        "/home/yunzez/c2rust_baselines/checkouts/rwasm-official/target/release/rwasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/original.wasm",
+        "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/out-rwasm-original",
+        "--prevent-reformat",
+        "--wasi-executable"
+      ],
+      "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001",
+      "exit_code": 0,
+      "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/rwasm_original.log",
+      "seconds": 0.002,
+      "timeout": false
+    }
+  },
+  "schema_version": 1,
+  "signature": {
+    "args": [
+      {
+        "array": true,
+        "ctype": "int",
+        "extent": null,
+        "name": "arr",
+        "raw": "int arr[]"
+      },
+      {
+        "array": false,
+        "ctype": "int",
+        "extent": null,
+        "name": "low",
+        "raw": "int low"
+      },
+      {
+        "array": false,
+        "ctype": "int",
+        "extent": null,
+        "name": "high",
+        "raw": "int high"
+      }
+    ],
+    "name": "quick_sort",
+    "return": "void"
+  },
+  "status": "complete",
+  "test_stage": {
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "bolero_wasm_eq",
+      "--",
+      "--nocapture"
+    ],
+    "cwd": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/out-rwasm-bolero",
+    "exit_code": 101,
+    "log": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S6/attempt-001/cargo_test.log",
+    "seconds": 0.671,
+    "timeout": false
+  }
+}

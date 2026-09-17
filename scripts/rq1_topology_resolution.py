@@ -6,7 +6,8 @@ For each Rust artifact, run the rust-analyzer-based analyzer and report:
   unique_local_edges  deduplicated (from, to) call edges with both endpoints local
   unique_local_noself same, self-loops removed  (the density topology propagation consumes)
   edges_per_fn        unique_local_noself / fns
-  local_sites / nonlocal_sites   raw call sites by target locality
+  local_sites / nonlocal_sites   projected call sites inside/outside the candidate node set
+                                (outside includes acyclic nested-helper hops)
   unresolved          `indirect_calls` (call_unresolved)
   unresolved_rate     unresolved / (all sites + unresolved)
 
@@ -64,21 +65,25 @@ def topo(label, crate):
     os.makedirs(RAW, exist_ok=True)
     open(f"{RAW}/{label}.analyzer.json", "w").write(r.stdout)
     d = json.loads(r.stdout)
+    return {"label": label, "status": "ok", **topology_counts(d)}
+
+
+def topology_counts(d):
+    """Use exact emitted node IDs, just like matcher.adjacency.
+
+    Leaf-name fallback would turn a qualified nonlocal/nested homonym back into
+    the false local edge that the analyzer deliberately disambiguated.
+    """
     local = {f["name"] for f in d["functions"]}
-    leaf = {n.split("::")[-1] for n in local}
-
-    def is_local(t):
-        return t in local or t.split("::")[-1] in leaf
-
     edges = d["raw_edges"]
     unres = len(d["indirect_calls"])
-    local_sites = [e for e in edges if is_local(e["to"])]
+    local_sites = [e for e in edges if e["from"] in local and e["to"] in local]
     uniq_local = {(e["from"], e["to"]) for e in local_sites}
     uniq_noself = {(a, b) for a, b in uniq_local if a != b}
     total_sites = len(edges) + unres
     n = len(local)
     return {
-        "label": label, "status": "ok", "fns": n,
+        "fns": n,
         "unique_local_edges": len(uniq_local),
         "unique_local_noself": len(uniq_noself),
         "edges_per_fn": round(len(uniq_noself) / n, 2) if n else 0,

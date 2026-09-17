@@ -114,9 +114,10 @@ def latex(summary: dict) -> str:
             if gates["completed"]
             else "--"
         )
+        display = DISPLAY[baseline] + ("$^{\\dagger}$" if baseline == "vert" else "")
         rows.append(
             prefix
-            + f"{DISPLAY[baseline]} & {gates['submitted']} & {gates['accepted']} & "
+            + f"{display} & {gates['submitted']} & {gates['accepted']} & "
             + f"{gates['compiled']} & {gates['completed']} & \\textbf{{{gates['detected']}}} & "
             + f"{conditional} & {outcomes['missed']} & {outcomes['unsupported_input']} & "
             + f"{outcomes['analysis_failure']} & {outcomes['compile_failure']} \\\\"
@@ -147,7 +148,9 @@ analysis failures, compilation failures, and completed misses are separate.}
 
 \vspace{2pt}
 \parbox{0.92\textwidth}{\scriptsize All funnel columns use the full
-36-defect denominator. A defect is a miss only when the released artifact
+36-defect denominator. $^{\dagger}$VERT has no released external-candidate
+interface and is exercised through the fixed adapter described in the text.
+A defect is a miss only when the released artifact
 completed its analysis without exposing it; unsupported inputs and tool
 failures are not counted as semantic misses. A-fail and C-fail denote analysis
 and compilation failures.}

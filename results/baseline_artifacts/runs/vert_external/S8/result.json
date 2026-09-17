@@ -1,0 +1,25 @@
+{
+  "adapter": "frozen_external_pair_v1",
+  "baseline": "vert",
+  "defect_id": "S8",
+  "inputs": {
+    "c": "results/baseline_artifacts/adapters/flourine/cjson_parse_string/input/parse_string_valid.json",
+    "c_sha256": "f481647a4e2b756ce102002b76e8bcd2a833642c5b285c388e521f73c3f35f81",
+    "rust": "results/baseline_artifacts/adapters/rustassure/S8/input/parse_string.rs",
+    "rust_sha256": "6447186a0e67df12d3b7ba0240e69c94fe4523ab007ed4a3fc0741bf55b1b63f",
+    "target": "parse_string"
+  },
+  "outcome": "unsupported_input",
+  "policy": {
+    "array_extent": 2,
+    "baseline_repairs": false,
+    "candidate_source": "audited frozen per-function payload",
+    "max_cargo_jobs": 4,
+    "observation": "return value only",
+    "reference_input_injection": "released PARAM1-only semantics"
+  },
+  "raw_workdir": "/home/yunzez/c2rust_baselines/runs/vert/external_pairs/S8/attempt-001",
+  "reason": "audited C target parse_string_valid does not match Rust target parse_string",
+  "schema_version": 1,
+  "status": "complete"
+}

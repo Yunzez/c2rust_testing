@@ -1,0 +1,30 @@
+{
+  "frozen_on": "2026-09-22",
+  "klee": {
+    "version": "3.2",
+    "distribution": "official snap revision 20",
+    "solver": "STP/MiniSat",
+    "libc": "uclibc",
+    "posix_runtime": true,
+    "search": "nurs:covnew",
+    "watchdog": true,
+    "use_forked_solver": true,
+    "max_solver_time_seconds": 300,
+    "max_memory_mib": 2048
+  },
+  "budget": {
+    "primary_seconds": 7200,
+    "extension_total_seconds": 28800,
+    "checkpoints_seconds": [600, 1800, 3600, 7200, 28800]
+  },
+  "llvm_ir": {
+    "compiler": "tools/frameworks/ptrtrans_rebuild/SVF/llvm-14.0.0.obj/bin/clang-14",
+    "format": "textual LLVM IR",
+    "reason": "KLEE's LLVM 13 reader rejected some LLVM 14 binary bitcode records"
+  },
+  "counting": {
+    "diagnostic_runs_excluded": true,
+    "successful_run_stops_at_witness": true,
+    "timeout_means": "not lifted within the stated bound, not unreachable"
+  }
+}

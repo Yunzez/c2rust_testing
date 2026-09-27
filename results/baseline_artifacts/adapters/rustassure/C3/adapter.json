@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "defect": "C3",
+  "baseline": "rustassure",
+  "target": "do_system_two",
+  "adapter_kind": "documented_individual_function_input_with_contract_surface",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "tools/frameworks/crown/c-code/lil/main.c",
+    "rust": "benchmark/pairs/rq4/lil_c2saferrust/translated/lil_c2saferrust.rs"
+  },
+  "notes": [
+    "The exact do_system bodies are copied from the frozen C source and C2SaferRust translation.",
+    "Two unconstrained byte arrays are terminated only at their final byte and assembled into the original argc/argv contract.",
+    "The adapter does not replace or mock popen/system-command execution; any released-analyzer limitation at that call remains visible."
+  ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
+  "input_sha256": {
+    "do_system_two.i": "62e6c1a8bdbf0e0bc3349a5410981b8ea9d654ef8bdf9d1ea2536ce29854cbcc",
+    "do_system_two.rs": "adbc97768879203f4e99de77e0f251ade267c3b17b5d7cb2a3d00cda480ebe42",
+    "do_system_two_raw.inc": "282b29f88eff49bc6a72fc3e2fd4c073a8f3e9206d2b05ad98650ada4aec6ac8",
+    "argument_order_map.json": "d8f8034e1944e6ebe6e511c42fd666671db5cacb4b5f06a54317c2f189d72ca0"
+  }
+}

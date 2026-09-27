@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "defect": "S16",
+  "baseline": "rustassure",
+  "target": "opng_strcasecmp_packet",
+  "adapter_kind": "documented_individual_function_input_with_contract_surface",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/optipng_c2saferrust/source/optipng/optipng.c",
+    "rust": "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs"
+  },
+  "notes": [
+    "The exact opng_strcasecmp bodies are copied from the frozen C2SaferRust pair.",
+    "Both generated arrays are terminated only at their final byte, realizing the original C-string contract without fixing their contents."
+  ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
+  "input_sha256": {
+    "opng_strcasecmp_packet.i": "c26e77ed6dc2bed794726d75c357ac1dc70f2520084d3478044a75474149592c",
+    "opng_strcasecmp_packet.rs": "9e8ebe653b2e0280717130053154e5e56871bc3ede7e35f7b23d23e2e4a48314",
+    "opng_strcasecmp_packet_raw.inc": "de253c9443a6d9a629eb7f6de1a799febc37734ae5c604bf6b1f8406cf8f2444",
+    "argument_order_map.json": "54a95f1291706aa0c5d0a8c990a0c2106c915f9f762b7c7c6b3f83d70565ca56"
+  }
+}

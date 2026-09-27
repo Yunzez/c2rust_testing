@@ -1,0 +1,949 @@
+[
+ {
+  "boundary": "get_part",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "format",
+    "c_decoder": "input_string",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "max_elems": 1048576
+    },
+    "evidence": [
+     {
+      "rule": "const_char_star_without_length_is_a_string",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "format is a const char* with no length parameter and no provable extent"
+     }
+    ],
+    "rust_type": "*const std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "l",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": 1024,
+     "derivation": [
+      "policy_trip_clamp"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "loop_trip_count_controlled_by_param_via_callee",
+      "file": "url.h",
+      "line": 206,
+      "col": 13,
+      "snippet": "fmt_url = strff(fmt_url, l);",
+      "note": "l is passed to strff(n), where n controls a loop"
+     },
+     {
+      "rule": "policy_trip_clamp",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_trip = 1024",
+      "note": "l controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+     }
+    ],
+    "rust_type": "std::os::raw::c_int",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "l",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param_via_callee",
+     "file": "url.h",
+     "line": 206,
+     "col": 13,
+     "snippet": "fmt_url = strff(fmt_url, l);",
+     "note": "l is passed to strff(n), where n controls a loop"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "main",
+  "status": "planned",
+  "inputs": [],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "strdup",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "str",
+    "c_decoder": "input_string",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "max_elems": 1048576
+    },
+    "evidence": [
+     {
+      "rule": "const_char_star_without_length_is_a_string",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "str is a const char* with no length parameter and no provable extent"
+     }
+    ],
+    "rust_type": "*const std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "strff",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "ptr",
+    "c_decoder": "inout_buffer",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "n",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "parameter_carried_length",
+     "length_param": "n",
+     "fills_from_fuzz": true,
+     "max_elems": 1048576,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "ptr's element count is fuzz-decoded and capped by the global policy; it defines n"
+     }
+    },
+    "evidence": [
+     {
+      "rule": "pointer_advanced_in_body",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "ptr is incremented or reassigned in the body, so its accesses do not bound its extent: policy allocation, with the loop-trip parameters clamped by the policy"
+     }
+    ],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "n",
+    "c_decoder": "length",
+    "detail": {
+     "of_buffer": "ptr"
+    },
+    "evidence": [
+     {
+      "rule": "length_of_buffer_not_decoded_independently",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "n is the element count of ptr"
+     }
+    ],
+    "rust_type": "std::os::raw::c_int",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [
+   {
+    "param": "n",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "url.h",
+     "line": 171,
+     "col": 3,
+     "snippet": "for (int i = 0; i < n; ++i) {",
+     "note": "n appears in this loop's control expressions"
+    }
+   }
+  ],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "strrwd",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "ptr",
+    "c_decoder": "inout_buffer",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "param",
+      "p": "n",
+      "mul": 1,
+      "div": 1,
+      "add": 0
+     },
+     "extent_source": "parameter_carried_length",
+     "length_param": "n",
+     "fills_from_fuzz": true,
+     "max_elems": 1048576,
+     "max_elems_evidence": {
+      "rule": "policy_buffer_bound",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+      "note": "ptr's element count is fuzz-decoded and capped by the global policy; it defines n"
+     }
+    },
+    "evidence": [
+     {
+      "rule": "pointer_advanced_in_body",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "ptr is incremented or reassigned in the body, so its accesses do not bound its extent: policy allocation, with the loop-trip parameters clamped by the policy"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   },
+   {
+    "param": "n",
+    "c_decoder": "length",
+    "detail": {
+     "of_buffer": "ptr"
+    },
+    "evidence": [
+     {
+      "rule": "length_of_buffer_not_decoded_independently",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "n is the element count of ptr"
+     }
+    ],
+    "rust_type": null,
+    "rust_bridge": null
+   }
+  ],
+  "liveness": [
+   {
+    "param": "n",
+    "obligation": "controls a loop trip count",
+    "resolution": "clamped by GeneratorPolicy.max_trip",
+    "evidence": {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "url.h",
+     "line": 181,
+     "col": 3,
+     "snippet": "for (int i = 0; i < n; ++i) {",
+     "note": "n appears in this loop's control expressions"
+    }
+   }
+  ],
+  "failures": [
+   "ptr: no lossless Rust bridge -- Rust signature has 1 parameters, C has 2: reshaped API, no positional bridge"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_data_inspect",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "data",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "url_parse",
+     "producer_lowered": [
+      {
+       "name": "url",
+       "role": "plan_array",
+       "decode": "plan_array",
+       "elem": "i8",
+       "elem_width": 1,
+       "elems": "4096",
+       "fill": "zero",
+       "const": false,
+       "one_elem": false
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "url_data_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": false,
+     "producer_rust_types": [
+      "*mut std::os::raw::c_char"
+     ],
+     "destructor": "url_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "url_data_t",
+     "c_struct": "url_data_t",
+     "const": false,
+     "elem": "url_data_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": []
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "data is built by url_parse() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "&url_data_t",
+    "rust_bridge": "ref_obj"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_free",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "data",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "url_parse",
+     "producer_lowered": [
+      {
+       "name": "url",
+       "role": "plan_array",
+       "decode": "plan_array",
+       "elem": "i8",
+       "elem_width": 1,
+       "elems": "4096",
+       "fill": "zero",
+       "const": false,
+       "one_elem": false
+      }
+     ],
+     "producer_owner": "raw",
+     "producer_rust_owner": "url_data_t",
+     "cleanup": "rust_destructor",
+     "consumed_by_target": true,
+     "producer_rust_types": [
+      "*mut std::os::raw::c_char"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "none",
+     "seed": 42,
+     "struct": "url_data_t",
+     "c_struct": "url_data_t",
+     "const": false,
+     "elem": "url_data_t",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": []
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "data is built by url_parse() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "*mut url_data_t",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_auth",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_hash",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_host",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_hostname",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_path",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_pathname",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_port",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_protocol",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_query",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_get_search",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_inspect",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "&str",
+    "rust_bridge": null
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "url: no lossless Rust bridge -- input buffer of i8 has Rust type &str, which is not a raw pointer, a slice, a Vec or a Box<[T]> of the same element type"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_is_protocol",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "str",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_is_ssh",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "str",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer advanced in the body"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [
+     {
+      "rule": "pointer_advanced_in_body",
+      "file": null,
+      "line": 0,
+      "col": 0,
+      "snippet": null,
+      "note": "str is incremented or reassigned in the body, so its accesses do not bound its extent: policy allocation, with the loop-trip parameters clamped by the policy"
+     }
+    ],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "url_parse",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "url",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "i8",
+     "elem_width": 1,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "*mut std::os::raw::c_char",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ }
+]

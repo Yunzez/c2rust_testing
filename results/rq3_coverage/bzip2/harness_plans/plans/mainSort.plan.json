@@ -1,0 +1,326 @@
+{
+ "boundary": "mainSort",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "ptr",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "j is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 811,
+     "col": 7,
+     "snippet": "ptr[j] = i;",
+     "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 815,
+     "col": 7,
+     "snippet": "ptr[j] = i-1;",
+     "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 819,
+     "col": 7,
+     "snippet": "ptr[j] = i-2;",
+     "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 823,
+     "col": 7,
+     "snippet": "ptr[j] = i-3;",
+     "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 829,
+     "col": 7,
+     "snippet": "ptr[j] = i;",
+     "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 924,
+     "col": 17,
+     "snippet": "k = ptr[j]-1; if (k < 0) k += nblock;",
+     "note": "ptr[unknown(j is not a loop induction variable in scope)] read"
+    }
+   ]
+  },
+  {
+   "param": "block",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u8",
+    "elem_width": 1,
+    "extent": {
+     "k": "unknown",
+     "why": "i is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 772,
+     "col": 8,
+     "snippet": "j = block[0] << 8;",
+     "note": "block[0] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 776,
+     "col": 33,
+     "snippet": "j = (j >> 8) | ( ((UInt16)block[i]) << 8);",
+     "note": "block[unknown(i is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 779,
+     "col": 33,
+     "snippet": "j = (j >> 8) | ( ((UInt16)block[i-1]) << 8);",
+     "note": "block[unknown(i is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 782,
+     "col": 33,
+     "snippet": "j = (j >> 8) | ( ((UInt16)block[i-2]) << 8);",
+     "note": "block[unknown(i is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 785,
+     "col": 33,
+     "snippet": "j = (j >> 8) | ( ((UInt16)block[i-3]) << 8);",
+     "note": "block[unknown(i is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 790,
+     "col": 33,
+     "snippet": "j = (j >> 8) | ( ((UInt16)block[i]) << 8);",
+     "note": "block[unknown(i is not a loop induction variable in scope)] read"
+    }
+   ]
+  },
+  {
+   "param": "quadrant",
+   "adapter": "output_array",
+   "detail": {
+    "elem": "u16",
+    "elem_width": 2,
+    "extent": {
+     "k": "unknown",
+     "why": "i is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": false
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 775,
+     "col": 7,
+     "snippet": "quadrant[i] = 0;",
+     "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 778,
+     "col": 7,
+     "snippet": "quadrant[i-1] = 0;",
+     "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 781,
+     "col": 7,
+     "snippet": "quadrant[i-2] = 0;",
+     "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 784,
+     "col": 7,
+     "snippet": "quadrant[i-3] = 0;",
+     "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 789,
+     "col": 7,
+     "snippet": "quadrant[i] = 0;",
+     "note": "quadrant[unknown(i is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 797,
+     "col": 7,
+     "snippet": "quadrant[nblock+i] = 0;",
+     "note": "quadrant[unknown(sum of two non-constants)] written"
+    }
+   ]
+  },
+  {
+   "param": "ftab",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "i is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 770,
+     "col": 33,
+     "snippet": "for (i = 65536; i >= 0; i--) ftab[i] = 0;",
+     "note": "ftab[unknown(i is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 777,
+     "col": 7,
+     "snippet": "ftab[j]++;",
+     "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 780,
+     "col": 7,
+     "snippet": "ftab[j]++;",
+     "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 783,
+     "col": 7,
+     "snippet": "ftab[j]++;",
+     "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 786,
+     "col": 7,
+     "snippet": "ftab[j]++;",
+     "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 791,
+     "col": 7,
+     "snippet": "ftab[j]++;",
+     "note": "ftab[unknown(j is not a loop induction variable in scope)] written"
+    }
+   ]
+  },
+  {
+   "param": "nblock",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "nblock can influence an index into ptr; the harness allocates 4096 elements, so nblock <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "verb",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  },
+  {
+   "param": "budget",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "const",
+     "v": 1
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "blocksort.c",
+     "line": 902,
+     "col": 23,
+     "snippet": "if (*budget < 0) return;",
+     "note": "*budget is read"
+    }
+   ]
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

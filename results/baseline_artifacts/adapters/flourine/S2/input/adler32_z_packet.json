@@ -1,0 +1,16 @@
+{
+  "Includes": [
+    "#include <string.h>"
+  ],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "unsigned long adler32_z_packet(unsigned char packet[25]);"
+  ],
+  "Function Implementations": [
+    "typedef unsigned long uLong;\ntypedef unsigned char Bytef;\ntypedef unsigned long z_size_t;\n#define ZEXPORT\n#define Z_NULL 0\n#define BASE 65521U\n#define NMAX 5552\n#define MOD(a) a %= BASE\n#define MOD28(a) a %= BASE\n#define MOD63(a) a %= BASE\n#define DO1(buf,i) {adler += (buf)[i]; sum2 += adler;}\n#define DO2(buf,i) DO1(buf,i); DO1(buf,i+1);\n#define DO4(buf,i) DO2(buf,i); DO2(buf,i+2);\n#define DO8(buf,i) DO4(buf,i); DO4(buf,i+4);\n#define DO16(buf) DO8(buf,0); DO8(buf,8);\nuLong ZEXPORT adler32_z(adler, buf, len)\n    uLong adler;\n    const Bytef *buf;\n    z_size_t len;\n{\n    unsigned long sum2;\n    unsigned n;\n\n    /* split Adler-32 into component sums */\n    sum2 = (adler >> 16) & 0xffff;\n    adler &= 0xffff;\n\n    /* in case user likes doing a byte at a time, keep it fast */\n    if (len == 1) {\n        adler += buf[0];\n        if (adler >= BASE)\n            adler -= BASE;\n        sum2 += adler;\n        if (sum2 >= BASE)\n            sum2 -= BASE;\n        return adler | (sum2 << 16);\n    }\n\n    /* initial Adler-32 value (deferred check for len == 1 speed) */\n    if (buf == Z_NULL)\n        return 1L;\n\n    /* in case short lengths are provided, keep it somewhat fast */\n    if (len < 16) {\n        while (len--) {\n            adler += *buf++;\n            sum2 += adler;\n        }\n        if (adler >= BASE)\n            adler -= BASE;\n        MOD28(sum2);            /* only added so many BASE's */\n        return adler | (sum2 << 16);\n    }\n\n    /* do length NMAX blocks -- requires just one modulo operation */\n    while (len >= NMAX) {\n        len -= NMAX;\n        n = NMAX / 16;          /* NMAX is divisible by 16 */\n        do {\n            DO16(buf);          /* 16 sums unrolled */\n            buf += 16;\n        } while (--n);\n        MOD(adler);\n        MOD(sum2);\n    }\n\n    /* do remaining bytes (less than NMAX, still just one modulo) */\n    if (len) {                  /* avoid modulos if none remaining */\n        while (len >= 16) {\n            len -= 16;\n            DO16(buf);\n            buf += 16;\n        }\n        while (len--) {\n            adler += *buf++;\n            sum2 += adler;\n        }\n        MOD(adler);\n        MOD(sum2);\n    }\n\n    /* return recombined sums */\n    return adler | (sum2 << 16);\n}\nunsigned long adler32_z_packet(unsigned char packet[25]) {\n    unsigned long adler = 0;\n    memcpy(&adler, packet, sizeof(adler));\n    z_size_t len = packet[24] % 16;\n    return adler32_z(adler, packet + 8, len);\n}\n"
+  ],
+  "Enums": []
+}

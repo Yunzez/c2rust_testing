@@ -1,0 +1,114 @@
+FAIL BZ2_blockSort                  inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL BZ2_bsInitWrite                inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+OK  BZ2_bzBuffToBuffCompress       inputs= 7
+OK  BZ2_bzBuffToBuffDecompress     inputs= 6
+FAIL BZ2_bzCompress                 inputs= 0
+       - signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)
+FAIL BZ2_bzCompressEnd              inputs= 0
+       - signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)
+FAIL BZ2_bzCompressInit             inputs= 0
+       - signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)
+FAIL BZ2_bzDecompress               inputs= 0
+       - signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)
+FAIL BZ2_bzDecompressEnd            inputs= 0
+       - signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)
+FAIL BZ2_bzDecompressInit           inputs= 0
+       - signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)
+FAIL BZ2_bzRead                     inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzReadClose                inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzReadGetUnused            inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzReadOpen                 inputs= 0
+       - signature: struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)
+FAIL BZ2_bzWrite                    inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzWriteClose               inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzWriteClose64             inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzWriteOpen                inputs= 0
+       - signature: struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)
+OK  BZ2_bz__AssertH__fail          inputs= 1
+FAIL BZ2_bzclose                    inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzdopen                    inputs= 2
+       - fd: environment input -- it flows into bzopen_or_bzdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+       - mode: environment input -- it flows into bzopen_or_bzdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL BZ2_bzerror                    inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzflush                    inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+OK  BZ2_bzlibVersion               inputs= 0
+FAIL BZ2_bzopen                     inputs= 2
+       - path: environment input -- it flows into bzopen_or_bzdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+       - mode: environment input -- it flows into bzopen_or_bzdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL BZ2_bzread                     inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_bzwrite                    inputs= 0
+       - signature: unsupported pointer target for b: unsupported BZFILE
+FAIL BZ2_compressBlock              inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL BZ2_decompress                 inputs= 0
+       - signature: struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)
+OK  BZ2_hbAssignCodes              inputs= 5
+OK  BZ2_hbCreateDecodeTables       inputs= 7
+OK  BZ2_hbMakeCodeLengths          inputs= 4
+OK  BZ2_indexIntoF                 inputs= 2
+FAIL add_pair_to_block              inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL bsFinishWrite                  inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL bsPutUChar                     inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL bsPutUInt32                    inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL bsW                            inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+OK  bz_config_ok                   inputs= 0
+FAIL bzopen_or_bzdopen              inputs= 4
+       - path: environment input -- it flows into fopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+       - fd: environment input -- it flows into fdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter
+FAIL copy_input_until_stop          inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL copy_output_until_stop         inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+OK  default_bzalloc                inputs= 3
+OK  default_bzfree                 inputs= 2
+OK  fallbackQSort3                 inputs= 4
+OK  fallbackSimpleSort             inputs= 4
+OK  fallbackSort                   inputs= 5
+FAIL flush_RL                       inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL generateMTFValues              inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL handle_compress                inputs= 0
+       - signature: struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)
+FAIL init_RL                        inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL isempty_RL                     inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+OK  mainGtU                        inputs= 6
+OK  mainQSort3                     inputs= 8
+OK  mainSimpleSort                 inputs= 8
+OK  mainSort                       inputs= 7
+FAIL makeMaps_d                     inputs= 0
+       - signature: struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)
+FAIL makeMaps_e                     inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+OK  mmed3                          inputs= 3
+FAIL myfeof                         inputs= 0
+       - signature: struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)
+FAIL prepare_new_block              inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL sendMTFValues                  inputs= 0
+       - signature: struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)
+FAIL unRLE_obuf_to_output_FAST      inputs= 0
+       - signature: struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)
+FAIL unRLE_obuf_to_output_SMALL     inputs= 0
+       - signature: struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)
+
+planned 19 / 64

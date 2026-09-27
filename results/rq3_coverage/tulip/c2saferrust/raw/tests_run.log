@@ -1,0 +1,36 @@
+TI TEST SUITE
+
+thread 'main' (1425510) panicked at src/lib.rs:21399:1:
+index out of bounds: the len is 1 but the index is 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (1425510) panicked at library/core/src/panicking.rs:225:5:
+panic in a function that cannot unwind
+stack backtrace:
+   0:     0x562652b5a182 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::hf5c071f3d4d6a673
+   1:     0x562652b8a86f - core::fmt::write::h64fea00ae71370e8
+   2:     0x562652b0be11 - std::io::Write::write_fmt::ha55b41ddcc107117
+   3:     0x562652b21082 - std::sys::backtrace::BacktraceLock::print::h389e77e20d4ee0c2
+   4:     0x562652b2940a - std::panicking::default_hook::{{closure}}::h651d615136fd3f3b
+   5:     0x562652b29264 - std::panicking::default_hook::h8e12d412917b3552
+   6:     0x562652b29b35 - std::panicking::panic_with_hook::h5f7ef3efbb7c445c
+   7:     0x562652b298e6 - std::panicking::panic_handler::{{closure}}::h7bc4d3cbd7b0aab4
+   8:     0x562652b211b9 - std::sys::backtrace::__rust_end_short_backtrace::h4ede48052c8c6d63
+   9:     0x562652afd13d - __rustc[8dad1328f75840d5]::rust_begin_unwind
+  10:     0x562652b9ac8d - core::panicking::panic_nounwind_fmt::h84cadb72d758e0ce
+  11:     0x562652b9ab52 - core::panicking::panic_nounwind::h1097543fb7453764
+  12:     0x562652b9ade7 - core::panicking::panic_cannot_unwind::h41f8ac9b208e4a23
+  13:     0x562652acc492 - test_buffer
+  14:     0x562652ac53e3 - tulip_c2saferrust[48a078ce842a5462]::smoke::main_0
+  15:     0x562652ac533e - tulip_c2saferrust[48a078ce842a5462]::smoke::main
+  16:     0x562652ac18c3 - std[d7852cb937e3e663]::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17:     0x562652ac18d9 - std[d7852cb937e3e663]::rt::lang_start::<()>::{closure#0}
+  18:     0x562652b0fd90 - std::rt::lang_start_internal::h161b22de8ce80149
+  19:     0x562652ac1955 - main
+  20:     0x7ff15b22a601 - __libc_start_call_main
+                               at ./csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+  21:     0x7ff15b22a718 - __libc_start_main_impl
+                               at ./csu/../csu/libc-start.c:360:3
+  22:     0x562652ac17d5 - _start
+  23:                0x0 - <unknown>
+thread caused non-unwinding panic. aborting.

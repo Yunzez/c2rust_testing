@@ -1,0 +1,178 @@
+{
+ "boundary": "fallbackQSort3",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "fmap",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "lo is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 128,
+     "col": 33,
+     "snippet": "if (r3 == 0) med = eclass[fmap[lo]]; else",
+     "note": "fmap[unknown(lo is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 129,
+     "col": 33,
+     "snippet": "if (r3 == 1) med = eclass[fmap[(lo+hi)>>1]]; else",
+     "note": "fmap[unknown(div)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 130,
+     "col": 33,
+     "snippet": "med = eclass[fmap[hi]];",
+     "note": "fmap[unknown(hi is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 138,
+     "col": 31,
+     "snippet": "n = (Int32)eclass[fmap[unLo]] - (Int32)med;",
+     "note": "fmap[unknown(unLo is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 140,
+     "col": 16,
+     "snippet": "fswap(fmap[unLo], fmap[ltLo]);",
+     "note": "fmap[unknown(unLo is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 140,
+     "col": 16,
+     "snippet": "fswap(fmap[unLo], fmap[ltLo]);",
+     "note": "fmap[unknown(unLo is not a loop induction variable in scope)] written"
+    }
+   ]
+  },
+  {
+   "param": "eclass",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "const",
+     "v": 4294967296
+    },
+    "extent_source": "policy_allocation_capped",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 128,
+     "col": 26,
+     "snippet": "if (r3 == 0) med = eclass[fmap[lo]]; else",
+     "note": "eclass[4294967295] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 129,
+     "col": 26,
+     "snippet": "if (r3 == 1) med = eclass[fmap[(lo+hi)>>1]]; else",
+     "note": "eclass[4294967295] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 130,
+     "col": 26,
+     "snippet": "med = eclass[fmap[hi]];",
+     "note": "eclass[4294967295] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 138,
+     "col": 24,
+     "snippet": "n = (Int32)eclass[fmap[unLo]] - (Int32)med;",
+     "note": "eclass[4294967295] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 149,
+     "col": 24,
+     "snippet": "n = (Int32)eclass[fmap[unHi]] - (Int32)med;",
+     "note": "eclass[4294967295] read"
+    }
+   ]
+  },
+  {
+   "param": "loSt",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "loSt can influence an index into fmap; the harness allocates 4096 elements, so loSt <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "hiSt",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "hiSt can influence an index into fmap; the harness allocates 4096 elements, so hiSt <= 4095"
+    }
+   ]
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

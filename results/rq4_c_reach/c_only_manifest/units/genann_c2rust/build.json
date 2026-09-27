@@ -1,0 +1,244 @@
+{
+ "provenance": {
+  "git_head": "4a2eba380850834e18c5840d05fdb7e7b52b9579",
+  "generator": "fd1f75b4716a1d45",
+  "protocol": "single-c-companion",
+  "files": {
+   "scripts/rq4/c_guided_cell.py": "69c5692b73aa6fb476e2a0c5c14fc96217aa5d54106eafa1725c54c5e4d9be8d",
+   "scripts/rq4/c_reach.py": "bf15745952cc2321ab2d3fc03ffbb47adac12cd20987ad30947d874d75e01a52",
+   "scripts/rq4/cell.py": "9ef8e4fe14c4e97917d5d16cde12c292c89738812e4cfd29f53c1ba8e915346a",
+   "tools/stu_selector/gen_diff_harness.py": "bf3437734d5d79cb24c88668e2dc8b96dd118833c7a592f4523bc9f3a9f45da4"
+  }
+ },
+ "expected": [
+  "genann_act_linear",
+  "genann_act_sigmoid",
+  "genann_act_sigmoid_cached",
+  "genann_act_threshold",
+  "genann_copy",
+  "genann_free",
+  "genann_init",
+  "genann_randomize",
+  "genann_run",
+  "genann_train"
+ ],
+ "rows": [
+  {
+   "boundary": "genann_act_linear",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_act_sigmoid",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_act_sigmoid_cached",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_act_threshold",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_copy",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_free",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_init",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_randomize",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_run",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  },
+  {
+   "boundary": "genann_train",
+   "built": true,
+   "error": null,
+   "c_static": false,
+   "initial_corpus": [
+    "seed_fixed"
+   ]
+  }
+ ],
+ "harness_drift": {
+  "genann_act_linear": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 1,
+   "sample": [
+    "-            if c_ret != r_ret { c2r_div(\"return value\"); }"
+   ]
+  },
+  "genann_act_sigmoid": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 1,
+   "sample": [
+    "-            if c_ret != r_ret { c2r_div(\"return value\"); }"
+   ]
+  },
+  "genann_act_sigmoid_cached": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 1,
+   "sample": [
+    "-            if c_ret != r_ret { c2r_div(\"return value\"); }"
+   ]
+  },
+  "genann_act_threshold": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 1,
+   "sample": [
+    "-            if c_ret != r_ret { c2r_div(\"return value\"); }"
+   ]
+  },
+  "genann_copy": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 14,
+   "sample": [
+    "-    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "-    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__hidden = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__outputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "+    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + (1 as i32)));",
+    "+    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + (1 as i32)));"
+   ]
+  },
+  "genann_free": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 18,
+   "sample": [
+    "-    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "-    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__hidden = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__outputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "+    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + (1 as i32)));",
+    "+    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + (1 as i32)));"
+   ]
+  },
+  "genann_init": {
+   "identical_modulo_oracle": true,
+   "diff_lines": 0,
+   "sample": []
+  },
+  "genann_randomize": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 18,
+   "sample": [
+    "-    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "-    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__hidden = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__outputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "+    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + (1 as i32)));",
+    "+    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + (1 as i32)));"
+   ]
+  },
+  "genann_run": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 15,
+   "sample": [
+    "-    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "-    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__hidden = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__outputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "+    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + (1 as i32)));",
+    "+    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + (1 as i32)));"
+   ]
+  },
+  "genann_train": {
+   "identical_modulo_oracle": false,
+   "diff_lines": 16,
+   "sample": [
+    "-    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "-    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__hidden = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + 1));",
+    "-    let ann__outputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + 1));",
+    "+    let ann__inputs = (1 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (1 as i32) + (1 as i32)));",
+    "+    let ann__hidden_layers = (0 as i32) + (cur.take_i32().rem_euclid(((32) as i32) - (0 as i32) + (1 as i32)));"
+   ]
+  }
+ },
+ "seed_manifest": {
+  "genann_act_linear": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_act_sigmoid": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_act_sigmoid_cached": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_act_threshold": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_copy": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_free": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_init": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_randomize": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_run": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  },
+  "genann_train": {
+   "seed_fixed": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+  }
+ }
+}

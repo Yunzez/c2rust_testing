@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "baseline": "vert",
+  "artifact": "Zenodo 10.5281/zenodo.10927704",
+  "question": "Can the released artifact evaluate an already-produced C-to-Rust translation pair?",
+  "answer": false,
+  "evidence": [
+    {
+      "file": "readme.md",
+      "lines": "20-49",
+      "finding": "The documented evaluator accepts only a deposited benchmark name; rebuilding from scratch invokes torust.py on a benchmark corpus."
+    },
+    {
+      "file": "evaluation.py",
+      "lines": "22-50",
+      "finding": "Evaluation locates pre-generated out-rwasm-bolero and out-rwasm-mutated directories under the artifact's benchmark tree; it has no argument for an external Rust candidate."
+    },
+    {
+      "file": "torust.py",
+      "lines": "286-444",
+      "finding": "The rebuild path calls the configured LLM to produce compiled_rust and appends that generated candidate and its harness to rWasm output."
+    },
+    {
+      "file": "torust.py",
+      "lines": "341-425",
+      "finding": "The deposited harness maps C long to wasm32 i32, models arrays as length two, and compares only the function return value."
+    }
+  ],
+  "classification": "unsupported_input",
+  "rationale": "Injecting an independently produced translation into a generated VERT project would require an undocumented modification of the released pipeline rather than documented setup or input adaptation.",
+  "clean_smoke": "results/baseline_artifacts/setup/vert/shipped_smoke.json"
+}

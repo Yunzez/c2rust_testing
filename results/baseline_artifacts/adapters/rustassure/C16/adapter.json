@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "defect": "C16",
+  "baseline": "rustassure",
+  "target": "optimize_cmf_packet",
+  "adapter_kind": "documented_individual_function_input_with_contract_surface",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/optipng_c2saferrust/source/libpng/pngwutil.c",
+    "rust": "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs"
+  },
+  "notes": [
+    "The exact optimize_cmf bodies are copied from the frozen C2SaferRust pair.",
+    "The two-byte array supplies exactly the storage read and written by the target; data_size remains symbolic and unconstrained.",
+    "No valid zlib header or defect-triggering size is seeded."
+  ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; using its frozen Clang 14 avoids host-header drift"
+  },
+  "input_sha256": {
+    "optimize_cmf_packet.i": "5d10094237a9c7822bac83acdd92ad56447d5ad74c01861354e73e062d5b04ac",
+    "optimize_cmf_packet.rs": "4dc86269a32588a388b9f68564baa1eb14bf1fdb7699a1dd471349b169670838",
+    "optimize_cmf_packet_raw.inc": "eac12c1808434aaa2b5b18e52553da1de38c75ad964828549136dda2d4199de3",
+    "argument_order_map.json": "881cb9466ff21d02d501ab07777b9968e9eb2c5b1426ea589dd9e03c428e7ca3"
+  }
+}

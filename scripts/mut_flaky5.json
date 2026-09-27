@@ -1,0 +1,57 @@
+[
+ {
+  "id": "dm_div_intmin_drop",
+  "program": "div_mod",
+  "pair": "benchmark/pairs/div_mod",
+  "entry": "div_mod_safe",
+  "operator": "guard-weakening",
+  "reach": "boundary",
+  "site": "div_signed_guarded: drop INT_MIN/-1 guard",
+  "find": "    if a == INT32_MIN as int32_t && b == -(1 as int32_t) {\n        return INT32_MIN as int32_t;\n    }\n",
+  "replace": ""
+ },
+ {
+  "id": "na_final_sub",
+  "program": "negate_abs",
+  "pair": "benchmark/pairs/negate_abs",
+  "entry": "negate_abs_safe",
+  "operator": "operator-replacement",
+  "reach": "high",
+  "site": "negate_abs_safe: wrapping_add -> wrapping_sub",
+  "find": "return (negate_u_safe(x) as uint32_t).wrapping_add(abs_magnitude_u32(x));",
+  "replace": "return (negate_u_safe(x) as uint32_t).wrapping_sub(abs_magnitude_u32(x));"
+ },
+ {
+  "id": "so_mask15",
+  "program": "shift_ops",
+  "pair": "benchmark/pairs/shift_ops",
+  "entry": "shift_ops_safe",
+  "operator": "constant-perturbation",
+  "reach": "high",
+  "site": "shl_u32_masked: mask 31 -> 15",
+  "find": "return v << (count & 31 as uint32_t);",
+  "replace": "return v << (count & 15 as uint32_t);"
+ },
+ {
+  "id": "su_sat_min_const",
+  "program": "sub_overflow",
+  "pair": "benchmark/pairs/sub_overflow",
+  "entry": "sub_overflow_safe",
+  "operator": "constant-perturbation",
+  "reach": "moderate",
+  "site": "sub_signed_sat: low-sat returns INT32_MIN -> INT32_MAX",
+  "find": "    if b > 0 as int32_t && a < INT32_MIN as int32_t + b {\n        return INT32_MIN as int32_t;\n    }",
+  "replace": "    if b > 0 as int32_t && a < INT32_MIN as int32_t + b {\n        return INT32_MAX as int32_t;\n    }"
+ },
+ {
+  "id": "im_isqrt_const",
+  "program": "intmath",
+  "pair": "benchmark/pairs/intmath",
+  "entry": "intmath_eval",
+  "operator": "constant-perturbation",
+  "reach": "op-gated",
+  "site": "isqrt_u64: n<2 -> n<3",
+  "find": "    if n < 2 as uint64_t {\n        return n;\n    }",
+  "replace": "    if n < 3 as uint64_t {\n        return n;\n    }"
+ }
+]

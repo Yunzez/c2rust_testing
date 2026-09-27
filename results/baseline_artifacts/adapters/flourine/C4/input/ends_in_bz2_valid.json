@@ -1,0 +1,19 @@
+{
+  "Includes": [
+    "#include <stdint.h>",
+    "#include <string.h>"
+  ],
+  "Defines": [
+    "#define False 0"
+  ],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "int ends_in_bz2_valid(int8_t value[16]);"
+  ],
+  "Function Implementations": [
+    "typedef char Char; typedef int Bool; typedef int Int32;\nstatic Bool endsInBz2 ( Char* name )\n{\n   Int32 n = strlen ( name );\n   if (n <= 4) return False;\n   return\n      (name[n-4] == '.' &&\n       name[n-3] == 'b' &&\n       name[n-2] == 'z' &&\n       name[n-1] == '2');\n}\n\nint ends_in_bz2_valid(int8_t value[16]) { value[15] = 0; return endsInBz2((Char *)value); }"
+  ],
+  "Enums": []
+}

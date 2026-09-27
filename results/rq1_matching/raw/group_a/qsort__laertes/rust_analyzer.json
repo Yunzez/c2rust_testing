@@ -1,0 +1,3215 @@
+{
+  "functions": [
+    {
+      "name": "swap",
+      "line": 8,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "Option<&'a1 mut std::os::raw::c_int>",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "b",
+            "ty": "Option<&'a2 mut std::os::raw::c_int>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<&'a1 mut i32>",
+            "shape": "Option<&i32>"
+          },
+          {
+            "ty": "Option<&'a2 mut i32>",
+            "shape": "Option<&i32>"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 3,
+        "nodes": 35,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 4,
+        "allocs": 0,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "partition",
+      "line": 15,
+      "signature": {
+        "params": [
+          {
+            "name": "arr",
+            "ty": "* mut std::os::raw::c_int",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "low",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "high",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "std::os::raw::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i32",
+            "shape": "*i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "+": 4,
+        "-": 2,
+        "<=": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 9,
+        "nodes": 88,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 6,
+        "allocs": 0,
+        "method_calls": 6
+      }
+    },
+    {
+      "name": "quickSort",
+      "line": 33,
+      "signature": {
+        "params": [
+          {
+            "name": "arr",
+            "ty": "* mut std::os::raw::c_int",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "low",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "high",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i32",
+            "shape": "*i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "-": 1,
+        "<": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 31,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "get_add",
+      "line": 56,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_sub",
+      "line": 60,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_offset",
+      "line": 64,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_add_mut",
+      "line": 72,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_sub_mut",
+      "line": 76,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_offset_mut",
+      "line": 80,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "T",
+          "shape": "T"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "into_slice_add",
+      "line": 88,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "into_slice_sub",
+      "line": 92,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "into_slice_offset",
+      "line": 96,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_add",
+      "line": 104,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_sub",
+      "line": 108,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_offset",
+      "line": 112,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_add_mut",
+      "line": 120,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "add"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_sub_mut",
+      "line": 124,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "sub"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "slice_offset_mut",
+      "line": 128,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "isize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "S"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "isize",
+            "shape": "i64"
+          }
+        ],
+        "output": {
+          "ty": "S",
+          "shape": "S"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "offset"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "SliceIndex::apply",
+      "line": 141,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "offset",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "usize"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "usize",
+          "shape": "u64"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 0,
+        "nodes": 26,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 6
+      }
+    },
+    {
+      "name": "CustomSlice::new",
+      "line": 165,
+      "signature": {
+        "params": [
+          {
+            "name": "slice",
+            "ty": "S",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'a, T, S>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "S",
+            "shape": "S"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'a, T, S>",
+          "shape": "CustomSlice<T,S>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice",
+        "phantomdata"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "CustomSlice::boxed_from_vec",
+      "line": 175,
+      "signature": {
+        "params": [
+          {
+            "name": "vec",
+            "ty": "Vec<T>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'a, T, Box<[T]>>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Vec<T, Global>",
+            "shape": "Vec<T,{}>"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'a, T, Box<[T], Global>>",
+          "shape": "CustomSlice<T,Box<[T],{}>>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "CustomSlice::from_vec",
+      "line": 185,
+      "signature": {
+        "params": [
+          {
+            "name": "vec",
+            "ty": "Vec<T>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'a, T, S>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Vec<T, Global>",
+            "shape": "Vec<T,{}>"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'a, T, S>",
+          "shape": "CustomSlice<T,S>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 16,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "CustomSlice::into_slice",
+      "line": 197,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "self",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'a, T, S>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'a, T, S>",
+          "shape": "CustomSlice<T,S>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "CustomSlice::slice",
+      "line": 211,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'s, T, &'s [T]>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'s, T, &'s [T]>",
+          "shape": "CustomSlice<T,&[T]>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "CustomSlice::slice_mut",
+      "line": 247,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'s mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "CustomSlice<'s, T, &'s mut [T]>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "CustomSlice<'s, T, &'s mut [T]>",
+          "shape": "CustomSlice<T,&[T]>"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "customslice"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "CustomSlice::get",
+      "line": 263,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "&'g T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "&'g T",
+          "shape": "&T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "CustomSlice::get_mut",
+      "line": 269,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'g mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "index",
+            "ty": "SliceIndex",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "&'g mut T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "SliceIndex",
+            "shape": "enum"
+          }
+        ],
+        "output": {
+          "ty": "&'g mut T",
+          "shape": "&T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "get_ptr",
+      "line": 291,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const ()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "*const ()",
+          "shape": "*()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "Box::get_ptr",
+      "line": 315,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const ()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "*const ()",
+          "shape": "*()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "offset_from",
+      "line": 326,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "isize"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "isize",
+          "shape": "i64"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "-": 1,
+        "==": 1
+      },
+      "consts": [],
+      "strings": [
+        "tried to compare non-null and null pointers"
+      ],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 3,
+        "nodes": 44,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 9
+      }
+    },
+    {
+      "name": "partial_cmp",
+      "line": 347,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<Ordering>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<Ordering>",
+          "shape": "Option<enum>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 0,
+        "nodes": 30,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 7
+      }
+    },
+    {
+      "name": "partial_lt",
+      "line": 362,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<bool>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<bool>",
+          "shape": "Option<bool>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [
+        "less"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "partial_gt",
+      "line": 368,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<bool>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<bool>",
+          "shape": "Option<bool>"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [
+        "greater"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "partial_le",
+      "line": 374,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<bool>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<bool>",
+          "shape": "Option<bool>"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [
+        "greater"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "partial_ge",
+      "line": 380,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<bool>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<bool>",
+          "shape": "Option<bool>"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [
+        "less"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_eq",
+      "line": 387,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [
+        "equal",
+        "false"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_ne",
+      "line": 393,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "compare_lt",
+      "line": 400,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_gt",
+      "line": 406,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_le",
+      "line": 412,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compare_ge",
+      "line": 418,
+      "signature": {
+        "params": [
+          {
+            "name": "l",
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "r",
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<CustomSlice<'a, T, L>>",
+            "shape": "&Option<CustomSlice<T,L>>"
+          },
+          {
+            "ty": "&Option<CustomSlice<'a, T, R>>",
+            "shape": "&Option<CustomSlice<T,R>>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "borrow",
+      "line": 425,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&'b Option<S>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<T>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'b Option<S>",
+            "shape": "&Option<S>"
+          }
+        ],
+        "output": {
+          "ty": "Option<T>",
+          "shape": "Option<T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "borrow_mut",
+      "line": 428,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&'b mut Option<S>",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Option<T>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'b mut Option<S>",
+            "shape": "&Option<S>"
+          }
+        ],
+        "output": {
+          "ty": "Option<T>",
+          "shape": "Option<T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "Option::borrow",
+      "line": 450,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'a self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a T>"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "Option<&'a T>",
+          "shape": "Option<&T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "Option::borrow_mut",
+      "line": 459,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&'a mut self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a mut T>"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "Option<&'a mut T>",
+          "shape": "Option<&T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 9,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "owned_as_ref",
+      "line": 495,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "&'a Option<Box<T>>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<&'a T>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'a Option<Box<T, Global>>",
+            "shape": "&Option<Box<T,{}>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<&'a T>",
+          "shape": "Option<&T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "owned_as_mut",
+      "line": 499,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "&'a mut Option<Box<T>>",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Option<&'a mut T>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&'a mut Option<Box<T, Global>>",
+            "shape": "&Option<Box<T,{}>>"
+          }
+        ],
+        "output": {
+          "ty": "Option<&'a mut T>",
+          "shape": "Option<&T>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "option_to_raw",
+      "line": 503,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "&Option<P>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const ()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<P>",
+            "shape": "&Option<P>"
+          }
+        ],
+        "output": {
+          "ty": "*const ()",
+          "shape": "*()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "_ref_eq",
+      "line": 508,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "Option<L>",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "q",
+            "ty": "Option<R>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<L>",
+            "shape": "Option<L>"
+          },
+          {
+            "ty": "Option<R>",
+            "shape": "Option<R>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "==": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "_ref_ne",
+      "line": 512,
+      "signature": {
+        "params": [
+          {
+            "name": "p",
+            "ty": "Option<L>",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "q",
+            "ty": "Option<R>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<L>",
+            "shape": "Option<L>"
+          },
+          {
+            "ty": "Option<R>",
+            "shape": "Option<R>"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 10,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "_as_ptr",
+      "line": 517,
+      "signature": {
+        "params": [
+          {
+            "name": "r",
+            "ty": "&Option<P>",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "*const T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&Option<P>",
+            "shape": "&Option<P>"
+          }
+        ],
+        "output": {
+          "ty": "*const T",
+          "shape": "*T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 5,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "_as_mut_ptr",
+      "line": 521,
+      "signature": {
+        "params": [
+          {
+            "name": "r",
+            "ty": "&mut Option<P>",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut Option<P>",
+            "shape": "&Option<P>"
+          }
+        ],
+        "output": {
+          "ty": "*mut T",
+          "shape": "*T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "_move_to_ptr",
+      "line": 525,
+      "signature": {
+        "params": [
+          {
+            "name": "b",
+            "ty": "Option<Box<T>>",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut T"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "Option<Box<T, Global>>",
+            "shape": "Option<Box<T,{}>>"
+          }
+        ],
+        "output": {
+          "ty": "*mut T",
+          "shape": "*T"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 6,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "trans",
+      "line": 529,
+      "signature": {
+        "params": [
+          {
+            "name": "_",
+            "ty": "T",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "U"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "T",
+            "shape": "T"
+          }
+        ],
+        "output": {
+          "ty": "U",
+          "shape": "U"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 0,
+        "nodes": 3,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "swap",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "swap",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "swap",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "swap",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "swap",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "swap",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "swap",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "swap",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "swap"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "swap"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "quickSort",
+      "to": "partition"
+    },
+    {
+      "from": "quickSort",
+      "to": "quickSort"
+    },
+    {
+      "from": "quickSort",
+      "to": "quickSort"
+    },
+    {
+      "from": "get_add",
+      "to": "get"
+    },
+    {
+      "from": "get_sub",
+      "to": "get"
+    },
+    {
+      "from": "get_offset",
+      "to": "get"
+    },
+    {
+      "from": "get_add_mut",
+      "to": "get_mut"
+    },
+    {
+      "from": "get_sub_mut",
+      "to": "get_mut"
+    },
+    {
+      "from": "get_offset_mut",
+      "to": "get_mut"
+    },
+    {
+      "from": "into_slice_add",
+      "to": "into_slice"
+    },
+    {
+      "from": "into_slice_sub",
+      "to": "into_slice"
+    },
+    {
+      "from": "into_slice_offset",
+      "to": "into_slice"
+    },
+    {
+      "from": "slice_add",
+      "to": "slice"
+    },
+    {
+      "from": "slice_sub",
+      "to": "slice"
+    },
+    {
+      "from": "slice_offset",
+      "to": "slice"
+    },
+    {
+      "from": "slice_add_mut",
+      "to": "slice_mut"
+    },
+    {
+      "from": "slice_sub_mut",
+      "to": "slice_mut"
+    },
+    {
+      "from": "slice_offset_mut",
+      "to": "slice_mut"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "checked_add"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "checked_sub"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "checked_sub"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "wrapping_abs"
+    },
+    {
+      "from": "SliceIndex::apply",
+      "to": "checked_add"
+    },
+    {
+      "from": "CustomSlice::boxed_from_vec",
+      "to": "Vec::into_boxed_slice"
+    },
+    {
+      "from": "CustomSlice::boxed_from_vec",
+      "to": "default"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "CustomSlice::new"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "Result::unwrap_or_else"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "try_into"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "collect"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "map"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "Vec::into_iter"
+    },
+    {
+      "from": "CustomSlice::from_vec",
+      "to": "RefCell::new"
+    },
+    {
+      "from": "CustomSlice::into_slice",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::slice",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::slice",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::slice",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::slice",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::slice_mut",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::slice_mut",
+      "to": "as_mut"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::get_mut",
+      "to": "as_mut"
+    },
+    {
+      "from": "CustomSlice::get_mut",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "RefCell::borrow"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "RefCell::borrow_mut"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "as_ref"
+    },
+    {
+      "from": "CustomSlice::get",
+      "to": "SliceIndex::apply"
+    },
+    {
+      "from": "get_ptr",
+      "to": "as_ptr"
+    },
+    {
+      "from": "get_ptr",
+      "to": "as_ptr"
+    },
+    {
+      "from": "Box::get_ptr",
+      "to": "as_ptr"
+    },
+    {
+      "from": "Box::get_ptr",
+      "to": "Box::as_ref"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::expect"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::and_then"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::map"
+    },
+    {
+      "from": "offset_from",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "offset_from",
+      "to": "get_ptr"
+    },
+    {
+      "from": "offset_from",
+      "to": "get_ptr"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "Option::and_then"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "Option::and_then"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "get_ptr"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "get_ptr"
+    },
+    {
+      "from": "partial_cmp",
+      "to": "cmp"
+    },
+    {
+      "from": "partial_lt",
+      "to": "Option::map"
+    },
+    {
+      "from": "partial_lt",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "partial_gt",
+      "to": "Option::map"
+    },
+    {
+      "from": "partial_gt",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "partial_le",
+      "to": "Option::map"
+    },
+    {
+      "from": "partial_le",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "partial_ge",
+      "to": "Option::map"
+    },
+    {
+      "from": "partial_ge",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "compare_eq",
+      "to": "Option::map_or"
+    },
+    {
+      "from": "compare_eq",
+      "to": "partial_cmp"
+    },
+    {
+      "from": "compare_ne",
+      "to": "compare_eq"
+    },
+    {
+      "from": "compare_lt",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compare_lt",
+      "to": "partial_lt"
+    },
+    {
+      "from": "compare_gt",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compare_gt",
+      "to": "partial_gt"
+    },
+    {
+      "from": "compare_le",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compare_le",
+      "to": "partial_le"
+    },
+    {
+      "from": "compare_ge",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compare_ge",
+      "to": "partial_ge"
+    },
+    {
+      "from": "borrow",
+      "to": "Option::map"
+    },
+    {
+      "from": "borrow",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "borrow",
+      "to": "slice_add"
+    },
+    {
+      "from": "borrow_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "borrow_mut",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "borrow_mut",
+      "to": "slice_add_mut"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Option::map"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Option::map"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "Option::borrow",
+      "to": "Box::as_ref"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "Option::borrow_mut",
+      "to": "Box::as_mut"
+    },
+    {
+      "from": "borrow",
+      "to": "borrow"
+    },
+    {
+      "from": "borrow_mut",
+      "to": "borrow_mut"
+    },
+    {
+      "from": "owned_as_ref",
+      "to": "Option::map"
+    },
+    {
+      "from": "owned_as_ref",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "owned_as_ref",
+      "to": "Box::as_ref"
+    },
+    {
+      "from": "owned_as_mut",
+      "to": "Option::map"
+    },
+    {
+      "from": "owned_as_mut",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "owned_as_mut",
+      "to": "Box::as_mut"
+    },
+    {
+      "from": "option_to_raw",
+      "to": "Option::map_or"
+    },
+    {
+      "from": "option_to_raw",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "option_to_raw",
+      "to": "null"
+    },
+    {
+      "from": "option_to_raw",
+      "to": "get_ptr"
+    },
+    {
+      "from": "_ref_eq",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_ref_eq",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_ref_ne",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_ref_ne",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_as_ptr",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_as_mut_ptr",
+      "to": "option_to_raw"
+    },
+    {
+      "from": "_move_to_ptr",
+      "to": "Option::map_or"
+    },
+    {
+      "from": "_move_to_ptr",
+      "to": "null_mut"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "partition",
+      "line": 24,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "partition",
+      "line": 24,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "partition",
+      "line": 28,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "partition",
+      "line": 29,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_add",
+      "line": 57,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_sub",
+      "line": 61,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_offset",
+      "line": 65,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_add_mut",
+      "line": 73,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_sub_mut",
+      "line": 77,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "get_offset_mut",
+      "line": 81,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "into_slice_add",
+      "line": 89,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "into_slice_sub",
+      "line": 93,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "into_slice_offset",
+      "line": 97,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_add",
+      "line": 105,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_sub",
+      "line": 109,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_offset",
+      "line": 113,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_add_mut",
+      "line": 121,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_sub_mut",
+      "line": 125,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "slice_offset_mut",
+      "line": 129,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "partial_cmp",
+      "line": 354,
+      "kind": "call_unresolved"
+    }
+  ],
+  "excluded_scaffolding": []
+}

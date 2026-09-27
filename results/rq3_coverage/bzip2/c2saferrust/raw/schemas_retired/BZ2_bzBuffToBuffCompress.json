@@ -1,0 +1,77 @@
+{
+ "schema_version": 1,
+ "program": "bzip2_c2saferrust",
+ "entry": "BZ2_bzBuffToBuffCompress",
+ "params": [
+  {
+   "name": "dest",
+   "elem": "i8",
+   "elem_width": 1,
+   "role": "output_buffer",
+   "decode": "vector",
+   "observable_length": {
+    "kind": "capacity_ptr_writeback",
+    "param": "destLen"
+   },
+   "capacity_param": "destLen",
+   "cap": 1179648
+  },
+  {
+   "name": "destLen",
+   "elem": "u32",
+   "elem_width": 4,
+   "role": "capacity_ptr",
+   "decode": "capacity_ptr_inout",
+   "of_buffer": "dest"
+  },
+  {
+   "name": "source",
+   "elem": "i8",
+   "elem_width": 1,
+   "role": "inout_buffer",
+   "decode": "vector",
+   "length_param": "sourceLen",
+   "max_len": 1048576
+  },
+  {
+   "name": "sourceLen",
+   "rust": "u32",
+   "width": 4,
+   "role": "length",
+   "decode": "derived_from_buffer",
+   "of_buffer": "source"
+  },
+  {
+   "name": "blockSize100k",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 1,
+   "max_value": 9
+  },
+  {
+   "name": "verbosity",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 0,
+   "max_value": 4
+  },
+  {
+   "name": "workFactor",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 0,
+   "max_value": 250
+  }
+ ],
+ "return": {
+  "rust": "i32"
+ },
+ "decode_scalars_first": true,
+ "provenance": "hand-authored for the RQ4 coverage experiment; every bound is a documented bzip2 1.0.8 requirement, see make_schemas.py"
+}

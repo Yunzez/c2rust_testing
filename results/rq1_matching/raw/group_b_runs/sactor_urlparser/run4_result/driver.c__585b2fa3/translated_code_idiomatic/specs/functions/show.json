@@ -1,0 +1,55 @@
+{
+  "function_name": "show",
+  "fields": [
+    {
+      "u_field": {
+        "name": "label",
+        "type": "*const c_char",
+        "shape": {
+          "ptr": {
+            "kind": "cstring",
+            "null": "forbidden"
+          }
+        }
+      },
+      "i_field": {
+        "name": "label",
+        "type": "&str"
+      },
+      "ownership": "transient",
+      "compare": "by_value"
+    },
+    {
+      "u_field": {
+        "name": "v",
+        "type": "*mut c_char",
+        "shape": {
+          "ptr": {
+            "kind": "cstring",
+            "null": "nullable"
+          }
+        }
+      },
+      "i_field": {
+        "name": "v",
+        "type": "Option<String>"
+      },
+      "ownership": "owning",
+      "compare": "by_value",
+      "llm_note": "Idiomatic Rust takes ownership of the string (if non-null) and is responsible for eventually dropping it instead of manually calling free."
+    },
+    {
+      "u_field": {
+        "name": "ret",
+        "type": "()",
+        "shape": "scalar"
+      },
+      "i_field": {
+        "name": "ret",
+        "type": "()"
+      },
+      "compare": "skip"
+    }
+  ],
+  "idiomatic_name": "show"
+}

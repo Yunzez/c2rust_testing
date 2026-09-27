@@ -1,0 +1,36 @@
+# Reviewed 2026-09-08 on the optipng x c2rust preflight. Every boundary below crashes on the C side
+# too -- c-only on the EMPTY input, and 1 135-1 148 of ~1 145 jobs in the 60 s run, corpus 0 -- so the
+# reason is a fact about the C reference and holds for any translation of it; pre-accepted for all
+# three optipng pairs.
+#
+# (a) The function's CONTRACT is to terminate the process, so there is no return to compare:
+#     gifread/gifread.c:704  DefaultError(msg)          -> fprintf(stderr, ..); exit(EXIT_FAILURE);
+#     minitiff/tiffutil.c:58 default_error_handler(msg) -> fprintf(stderr, ..); exit(EXIT_FAILURE);
+#     gifread/gifread.c:685  ErrorAlloc()               -> GIFError(..), a function pointer whose
+#                                                          default target is DefaultError
+DefaultError
+default_error_handler
+ErrorAlloc
+#
+# (b) The function needs a live libpng context that the harness cannot construct: pngx_gif_error and
+#     pngx_tiff_error end in png_error(err_png_ptr, msg), a longjmp through a static png_structp that
+#     only pngx_set_gif_error/pngx_set_tiff_error assign; called directly it is NULL. opng_get_alpha_row
+#     wants a real libpng row of a real image.
+pngx_gif_error
+pngx_tiff_error
+opng_get_alpha_row
+#
+# Note on the verdict these will carry: the C side exits non-zero deterministically and by design, so
+# confirmation labels them `ub_associated` ("C provides no clean reference execution"). That bucket is
+# never promoted, which is the right outcome, but the cause here is an intended termination, not UB.
+#
+# (c) OUR INPUT MODEL IS INVALID -- second instance of the range-pair gap (the first is
+#     lodepng_chunk_find). `png_format_number(png_const_charp start, png_charp end, int format,
+#     png_alloc_size_t number)` (libpng/pngerror.c:133) bounds ONE buffer with start/end and writes
+#     BACKWARDS from end: its first statement is `*--end = '\0';`. The plan allocates `start` as an
+#     independent NUL-terminated string and `end` as an independent output array whose extent it
+#     PROVES to be exactly 1 (from `*--end`), so the very first write is out of bounds on every
+#     input, and which side faults is allocator layout: c-only is clean on the empty input while
+#     rust-only crashed 1132 of 1133 jobs. Not a translation defect; expect
+#     out_of_contract_access / instrument_only at confirmation.
+png_format_number

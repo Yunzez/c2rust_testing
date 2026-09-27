@@ -1,0 +1,20 @@
+{
+  "sources": {
+    "c": "benchmark/pairs/rq4/urlparser_laertes/source/url.h",
+    "rust": "benchmark/pairs/rq4/urlparser_laertes/translated/urlparser_laertes.rs"
+  },
+  "wrapper_contract": "Generate a 16-byte string as int8_t (FLOURINE has no char-array serializer), force NUL termination, cast to the platform-equivalent char pointer, then invoke the frozen target.",
+  "defective_state": "The frozen Rust URL_SCHEMES definition remains the all-NULL table used by url_is_protocol.",
+  "schema_version": 1,
+  "defect": "C12",
+  "baseline": "flourine",
+  "target": "url_is_protocol_valid",
+  "adapter_kind": "documented_per_function_json_with_valid_buffer_wrapper",
+  "semantic_rewrite": false,
+  "known_witness_encoded": false,
+  "input_sha256": {
+    "url_is_protocol_valid.json": "cbe85ed6df1178dc3167de9bcfbf453c715935bd6abefab5fc9dc5a885d1b2ae",
+    "url_is_protocol_valid.rs": "2bd17110460f7eb4fbfbecdd33d08d7680c85c9f295cad9f80125bdac8433d39",
+    "url_is_protocol_raw.inc": "0df7f023092b75312d85fbc03b2f20b4fc2c8d8f909c5fa86175fd3df910d9b7"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "question": "Can the released function-level validators execute defects whose semantic boundary is a generated process-entry wrapper?",
+  "defects": {
+    "C5": {
+      "application": "optipng",
+      "translation": "C2SaferRust",
+      "boundary": "process argv and the caller-side conversion immediately before opng_os_create_dir",
+      "finding": "unsupported_input",
+      "reason": "The translated main obtains Unicode Strings from std::env::args, while the C program receives raw argv bytes. The failure occurs before opng_os_create_dir, at CStr::from_ptr(options.dir_name).to_str().unwrap(). Submitting opng_os_create_dir directly bypasses the defect. A wrapper that copies the failing conversion would replace the artifact boundary with hand-written defect logic.",
+      "source_evidence": [
+        "benchmark/pairs/rq4/optipng_c2saferrust/source/optipng/optim.c:1722-1723",
+        "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:56577-56585",
+        "benchmark/pairs/rq4/optipng_c2saferrust/translated/optipng_c2saferrust.rs:58157-58166"
+      ]
+    },
+    "S13": {
+      "application": "tulipindicators",
+      "translation": "C2SaferRust",
+      "boundary": "the no-argument Rust main wrapper that reads process arguments, computes argc, and exits",
+      "finding": "unsupported_input",
+      "reason": "The defect is args.len() - 1 in the translated main wrapper. Calling main_0 with a shared argc/argv bypasses the defect. Reproducing the subtraction in an adapter would hand-copy the defective computation rather than execute the original wrapper. The released validators expose function arguments and returns, not a documented common raw process-argv injection point for C main(argc, argv) and Rust main().",
+      "source_evidence": [
+        "tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_WIP/sample.rs:362-377",
+        "tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators/sample.rs:409-419",
+        "results/rq4_effectiveness/bugs/tulip_c2saferrust/excerpt_argc_offbyone.rs"
+      ]
+    }
+  },
+  "baseline_evidence": {
+    "rustassure": {
+      "finding": "unsupported_input for C5 and S13",
+      "evidence": [
+        "The released README, symbolic execution step 5, states that input arguments and return values of each function are symbolized.",
+        "The released interface accepts paired individual .i/.rs functions and an argument-order map; it documents no process argv/environment injection interface."
+      ]
+    },
+    "flourine": {
+      "finding": "unsupported_input for C5 and S13",
+      "evidence": [
+        "The released Differential_Tester generates an in-process call harness from a selected C/Rust function signature.",
+        "Its optional stdout capture rewrites supported output calls inside that function; it does not provide a common process environment/argv adapter for differing C and Rust entry signatures."
+      ]
+    }
+  },
+  "excluded_shortcuts": [
+    "submit opng_os_create_dir after the failing C-to-str conversion",
+    "copy CStr::to_str().unwrap() into a hand-written C5 proxy",
+    "call Tulip main_0 with the correct shared argc and thereby skip S13",
+    "copy the erroneous args.len() - 1 computation into an S13 adapter"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "_what": "urlparser's shipped target is `make test` = test.c (assert-based; exit 0 = pass) over the header-only url.h. The translation unit IS the test program, so every translation carries the driver (test.rs): adapter = scripts/rq4/tests_side_urlparser.sh (c2rust/Laertes/C2SaferRust: test::main(); CROWN: src::test::main_0(), main commented out). The driver's own main_0 sits inside the scored module `test` and is reported by name; `main` is excluded from the boundary set (exclude.txt). Universe from the rlib's instrumented objects. Recorded 2026-09-07.",
+  "_c_source": {"all": "laertes_benchmarks/urlparser/{url.h,test.c} (byte-identical to crown/c-code/urlparser); the C reference heap-overflows in url_parse->get_part on every normal URL (translation_matrix #27), which is why E1 excluded four cells -- here the gate acts per input in confirmation"},
+  "c2rust":      {"status": "PASS", "baseline": true, "observation": "test program exits 0; raw/tests_run.log"},
+  "laertes":     {"status": "TEST-FAILS", "baseline": false, "observation": "exit 139 (SIGSEGV) with no output: the Laertes translation crashes inside the suite's first url_parse; denominator only"},
+  "c2saferrust": {"status": "TEST-FAILS", "baseline": false, "observation": "exit 134: `free(): double free detected in tcache 2` -- the C2SaferRust translation double-frees inside the suite; denominator only"},
+  "crown":       {"status": "PASS", "baseline": true, "observation": "test program exits 0; raw/tests_run.log"}
+}

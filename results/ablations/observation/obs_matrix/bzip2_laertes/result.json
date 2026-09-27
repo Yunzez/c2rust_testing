@@ -1,0 +1,62 @@
+{
+ "pilot": "OBS matrix cell",
+ "subject": "bzip2 x Laertes (OOPSLA'21 lifter; BZ2_crc32Table zeroed static, laertes_init_* never called)",
+ "defect": "BZ2_bzBuffToBuffCompress returns BZ_OK; output stream carries wrong block/combined CRC (see results/rq4_effectiveness/bugs/bzip2_laertes/README.md)",
+ "date": "2026-08-25",
+ "git_commit": "747f5f09eac314bc4e32687e71497e269af36848",
+ "seed": 42,
+ "corpus": {
+  "generator": "libFuzzer via cargo-fuzz 0.13 (+nightly-2025-09-01), target obs_ft (Laertes compress, same decoding as drivers), scratchpad copy of fuzz/bzip2_laertes_e3 with FRESH empty corpus dir",
+  "args": "-seed=42 -max_total_time=300 -max_len=4096 -fork=1 -ignore_crashes=1",
+  "wall_s": 317,
+  "execs": 641171,
+  "cov_edges": 895,
+  "features": 3756,
+  "crashes_during_fuzz": 0,
+  "files": 529,
+  "size_bytes_min_med_max": [1, 51, 330],
+  "path": "corpus_seed42/",
+  "decoding": "stdin bytes = src buffer (cap 64 KiB); BZ2_bzBuffToBuffCompress(dest,&dl,src,len, blockSize100k=1, verbosity=0, workFactor=30)"
+ },
+ "buildable": {
+  "C silent (clang ASan+UBSan, crown/c-code/bzip2)": true,
+  "C print (same binary, argv mode)": true,
+  "Rust silent (Laertes crate verbatim, bin driver)": true,
+  "Rust print": true
+ },
+ "harnessable": {"silent": true, "print": true},
+ "reached_functions": "n/a (not instrumented in replay; libFuzzer cov=895 edges over the compress path)",
+ "ub_gate": "C driver under -fsanitize=address,undefined -fno-sanitize-recover=all, halt_on_error=1; excluded if exit!=0 or sanitizer report in either mode; repeated C replay for C-unstable",
+ "inputs_total": 529,
+ "inputs_excluded_c_ub": 0,
+ "inputs_excluded_c_unstable": 0,
+ "valid_differential_records": 529,
+ "classification": {"C-UB": 0, "C-unstable": 0, "Rust-failure": 0, "semantic-difference": 528, "abstention": 0, "agree": 1},
+ "divergence_shape": "528/528 divergent outputs have identical length to C and differ ONLY in the block-CRC bytes (offset 10..13) and/or the trailer combined-CRC; Huffman payload byte-identical. rc==0 (BZ_OK) on both sides for all 529.",
+ "agree_input": "df9b6967... = ff ff ff ff 00 00 (6 bytes): the zeroed-table recurrence happens to yield the same CRC as the real table",
+ "cells": {
+  "silent": {
+   "O-R": {"divergences": 0, "time_to_first_divergence_s": "none", "first_div_input": null},
+   "O-P": {"divergences": 0, "time_to_first_divergence_s": "none", "first_div_input": null},
+   "O-S": {"divergences": 528, "time_to_first_divergence_s": 0.021, "first_div_input": "0022692f3165590427823b1a68c39167be4c5866", "first_div_idx": 0},
+   "O-F": {"divergences": 528, "time_to_first_divergence_s": 0.021, "first_div_input": "0022692f3165590427823b1a68c39167be4c5866", "first_div_idx": 0}
+  },
+  "print": {
+   "O-R": {"divergences": 0, "time_to_first_divergence_s": "none", "first_div_input": null},
+   "O-P": {"divergences": 528, "time_to_first_divergence_s": 0.021, "first_div_input": "0022692f3165590427823b1a68c39167be4c5866", "first_div_idx": 0},
+   "O-S": {"divergences": 528, "time_to_first_divergence_s": 0.021, "first_div_input": "0022692f3165590427823b1a68c39167be4c5866", "first_div_idx": 0},
+   "O-F": {"divergences": 528, "time_to_first_divergence_s": 0.021, "first_div_input": "0022692f3165590427823b1a68c39167be4c5866", "first_div_idx": 0}
+  }
+ },
+ "expected_pattern": "O-R blind both; O-S/O-F detect both; O-P blind under silent, detects under print",
+ "expected_pattern_holds": true,
+ "replay_wall_s": 7.17,
+ "commands": [
+  "clang -fsanitize=address,undefined -fno-sanitize-recover=all -O1 -g -I tools/frameworks/crown/c-code/bzip2 harness/driver.c tools/frameworks/crown/c-code/bzip2/{bzlib,blocksort,compress,decompress,crctable,randtable,huffman}.c -o driver_c",
+  "cp -r fuzz/bzip2_laertes_e3 <scratch>/rs; add src/bin/obs_rs_driver.rs + fuzz/fuzz_targets/obs_ft.rs; cargo +nightly-2025-09-01 build --release --bin obs_rs_driver",
+  "cargo +nightly-2025-09-01 fuzz run obs_ft <fresh corpus_seed42> -- -seed=42 -max_total_time=300 -max_len=4096 -fork=1 -ignore_crashes=1",
+  "OBS_TIMEOUT=60 python3 harness/replay.py corpus_seed42 raw/ driver_c obs_rs_driver"
+ ],
+ "raw_logs": ["raw/libfuzzer_seed42.log", "raw/replay_stdout.log", "raw/replay_summary.json", "raw/replay_records.jsonl"],
+ "what_did_not_work": "Nothing failed. -fork=1 -ignore_crashes=1 was used pre-emptively (zeroed BZ2_rNums can crash on large inputs); 0 crashes occurred at max_len=4096 / blockSize 1."
+}

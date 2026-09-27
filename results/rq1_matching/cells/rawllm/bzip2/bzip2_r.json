@@ -1,0 +1,5905 @@
+{
+  "functions": [
+    {
+      "name": "initialise_crc",
+      "line": 213,
+      "signature": {
+        "params": [],
+        "ret": "u32"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "u32",
+          "shape": "u32"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 2,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "finalise_crc",
+      "line": 217,
+      "signature": {
+        "params": [
+          {
+            "name": "crc",
+            "ty": "u32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "u32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "u32",
+            "shape": "u32"
+          }
+        ],
+        "output": {
+          "ty": "u32",
+          "shape": "u32"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 3,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "update_crc",
+      "line": 221,
+      "signature": {
+        "params": [
+          {
+            "name": "crc",
+            "ty": "u32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "byte",
+            "ty": "u8",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "u32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "u32",
+            "shape": "u32"
+          },
+          {
+            "ty": "u8",
+            "shape": "u8"
+          }
+        ],
+        "output": {
+          "ty": "u32",
+          "shape": "u32"
+        }
+      },
+      "ops": {
+        "<<": 1,
+        ">>": 1,
+        "^": 2
+      },
+      "consts": [
+        "table"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 19,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "is_config_ok",
+      "line": 230,
+      "signature": {
+        "params": [],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 2,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "prepare_new_block",
+      "line": 240,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut CompressorState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut CompressorState",
+            "shape": "&{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1
+      },
+      "consts": [
+        "false"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 7,
+        "nodes": 38,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "init_run_length",
+      "line": 251,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut CompressorState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut CompressorState",
+            "shape": "&{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "run_length_is_empty",
+      "line": 256,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&CompressorState",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&CompressorState",
+            "shape": "&{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "&&": 1,
+        "<": 1,
+        ">": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "add_pair_to_block",
+      "line": 260,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut CompressorState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut CompressorState",
+            "shape": "&{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 6,
+        "-": 1
+      },
+      "consts": [
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 8,
+        "stmts": 19,
+        "nodes": 150,
+        "loops": 3,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "flush_run_length",
+      "line": 297,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut CompressorState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut CompressorState",
+            "shape": "&{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 3,
+        "nodes": 16,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "add_char_to_block",
+      "line": 304,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut CompressorState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "ch_u32",
+            "ty": "u32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut CompressorState",
+            "shape": "&{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          },
+          {
+            "ty": "u32",
+            "shape": "u32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "&&": 1,
+        "+": 2,
+        "<": 1,
+        "==": 2,
+        "||": 1
+      },
+      "consts": [
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 12,
+        "nodes": 93,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "copy_input_until_stop",
+      "line": 324,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "&mut BzStream",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut BzStream",
+            "shape": "&{u64,Vec<u8,{}>,u64,Vec<u8,{}>,u32,u32,u32,u32,u32,u32,Option<{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;4];258]}>,Option<{i32,u8,i32,bool,i32,i32,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;258];6],[i32;6],i32}>}"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "+": 2,
+        "-": 3,
+        "==": 6,
+        ">=": 2
+      },
+      "consts": [
+        "false",
+        "running",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 30,
+        "nodes": 171,
+        "loops": 2,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 6
+      }
+    },
+    {
+      "name": "copy_output_until_stop",
+      "line": 372,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "&mut BzStream",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut BzStream",
+            "shape": "&{u64,Vec<u8,{}>,u64,Vec<u8,{}>,u32,u32,u32,u32,u32,u32,Option<{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;4];258]}>,Option<{i32,u8,i32,bool,i32,i32,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;258];6],[i32;6],i32}>}"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "+": 2,
+        "-": 1,
+        "==": 3,
+        ">=": 1
+      },
+      "consts": [
+        "false",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 17,
+        "nodes": 102,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 6
+      }
+    },
+    {
+      "name": "handle_compress",
+      "line": 402,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "&mut BzStream",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut BzStream",
+            "shape": "&{u64,Vec<u8,{}>,u64,Vec<u8,{}>,u32,u32,u32,u32,u32,u32,Option<{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;4];258]}>,Option<{i32,u8,i32,bool,i32,i32,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;258];6],[i32;6],i32}>}"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "&&": 5,
+        "<": 1,
+        "==": 9,
+        ">=": 1,
+        "|": 2,
+        "||": 1
+      },
+      "consts": [
+        "false",
+        "finishing",
+        "flushing",
+        "input",
+        "output",
+        "running"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 10,
+        "stmts": 21,
+        "nodes": 155,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "index_into_f",
+      "line": 456,
+      "signature": {
+        "params": [
+          {
+            "name": "indx",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "cftab",
+            "ty": "&[i32; 257]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "i32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "&[i32; 257]",
+            "shape": "&[i32;257]"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!=": 1,
+        "+": 1,
+        "-": 1,
+        ">=": 1,
+        ">>": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 6,
+        "nodes": 38,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "un_rle_obuf_to_output_fast",
+      "line": 472,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "&mut BzStream",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut BzStream",
+            "shape": "&{u64,Vec<u8,{}>,u64,Vec<u8,{}>,u32,u32,u32,u32,u32,u32,Option<{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;4];258]}>,Option<{i32,u8,i32,bool,i32,i32,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;258];6],[i32;6],i32}>}"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "false"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 1,
+        "nodes": 13,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "un_rle_obuf_to_output_small",
+      "line": 485,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "&mut BzStream",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut BzStream",
+            "shape": "&{u64,Vec<u8,{}>,u64,Vec<u8,{}>,u32,u32,u32,u32,u32,u32,Option<{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;4];258]}>,Option<{i32,u8,i32,bool,i32,i32,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;258];6],[i32;6],i32}>}"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "false"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "compress_block_stub",
+      "line": 497,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut CompressorState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "is_last_block",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut CompressorState",
+            "shape": "&{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258]}"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "<<": 1,
+        ">>": 1,
+        "^": 1,
+        "|": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 9,
+        "nodes": 66,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "decompress_core_stub",
+      "line": 517,
+      "signature": {
+        "params": [
+          {
+            "name": "_s",
+            "ty": "&mut DecompressorState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "strm",
+            "ty": "&mut BzStream",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "i32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut DecompressorState",
+            "shape": "&{i32,u8,i32,bool,i32,i32,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[i32;258];6],[i32;6],i32}"
+          },
+          {
+            "ty": "&mut BzStream",
+            "shape": "&{u64,Vec<u8,{}>,u64,Vec<u8,{}>,u32,u32,u32,u32,u32,u32,Option<{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;4];258]}>,Option<{i32,u8,i32,bool,i32,i32,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;258];6],[i32;6],i32}>}"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "+": 2,
+        "-": 2,
+        "==": 1,
+        ">": 2
+      },
+      "consts": [
+        "end"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 11,
+        "nodes": 79,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "compress_buffer",
+      "line": 544,
+      "signature": {
+        "params": [
+          {
+            "name": "source",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "block_size_100k",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "verbosity",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "work_factor",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<Vec<u8>, i32>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "Result<Vec<u8, Global>, i32>",
+          "shape": "Result<Vec<u8,{}>,i32>"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "!=": 1,
+        "*": 2,
+        "+": 2,
+        "-": 1,
+        "<": 4,
+        "==": 2,
+        ">": 3,
+        "||": 5
+      },
+      "consts": [
+        "compressorstate",
+        "end",
+        "error",
+        "false",
+        "finish",
+        "groups",
+        "input",
+        "running",
+        "selectors",
+        "size"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 9,
+        "stmts": 36,
+        "nodes": 280,
+        "loops": 2,
+        "max_loop_depth": 1,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 12
+      }
+    },
+    {
+      "name": "compress_step",
+      "line": 655,
+      "signature": {
+        "params": [
+          {
+            "name": "strm",
+            "ty": "&mut BzStream",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "action",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "i32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut BzStream",
+            "shape": "&{u64,Vec<u8,{}>,u64,Vec<u8,{}>,u32,u32,u32,u32,u32,u32,Option<{i32,i32,u32,Vec<u32,{}>,Vec<u32,{}>,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,Vec<u8,{}>,Vec<u32,{}>,i32,u32,i32,i32,i32,i32,i32,i32,i32,i32,[bool;256],[u8;256],u32,i32,u32,u32,i32,i32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;4];258]}>,Option<{i32,u8,i32,bool,i32,i32,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[_;258];6],[[_;258];6],[[_;258];6],[[_;258];6],[i32;6],i32}>}"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 3,
+        "!=": 6,
+        "&&": 2,
+        "<": 2,
+        "==": 6,
+        ">": 2,
+        "||": 7
+      },
+      "consts": [
+        "end",
+        "error",
+        "finish",
+        "finishing",
+        "flush",
+        "flushing",
+        "idle",
+        "run",
+        "running"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 18,
+        "stmts": 30,
+        "nodes": 209,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "decompress_buffer",
+      "line": 721,
+      "signature": {
+        "params": [
+          {
+            "name": "source",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "small",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "verbosity",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<Vec<u8>, i32>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "Result<Vec<u8, Global>, i32>",
+          "shape": "Result<Vec<u8,{}>,i32>"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "!=": 4,
+        "&&": 1,
+        "*": 2,
+        "+": 3,
+        "/": 1,
+        "<": 1,
+        "<<": 1,
+        "==": 5,
+        ">": 1,
+        ">=": 1,
+        ">>": 1,
+        "^": 1,
+        "|": 1,
+        "||": 1
+      },
+      "consts": [
+        "1",
+        "decompressorstate",
+        "end",
+        "error",
+        "false",
+        "groups",
+        "idle",
+        "output",
+        "selectors",
+        "size"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 15,
+        "stmts": 37,
+        "nodes": 354,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 13
+      }
+    },
+    {
+      "name": "bzlib_version",
+      "line": 838,
+      "signature": {
+        "params": [],
+        "ret": "&'static str"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "&'static str",
+          "shape": "&str"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "version"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 2,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "assert_h",
+      "line": 43,
+      "signature": {
+        "params": [
+          {
+            "name": "cond",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "_errcode",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bool",
+            "shape": "bool"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 1,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "assert_d",
+      "line": 49,
+      "signature": {
+        "params": [
+          {
+            "name": "cond",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "_msg",
+            "ty": "&str",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "bool",
+            "shape": "bool"
+          },
+          {
+            "ty": "&str",
+            "shape": "&str"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 1,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "fallback_simple_sort",
+      "line": 59,
+      "signature": {
+        "params": [
+          {
+            "name": "fmap",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "eclass",
+            "ty": "&[UInt32]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "lo",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hi",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "&[u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "&&": 2,
+        "+": 4,
+        "-": 9,
+        "<=": 2,
+        "==": 3,
+        ">": 3,
+        ">=": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 9,
+        "stmts": 32,
+        "nodes": 200,
+        "loops": 4,
+        "max_loop_depth": 2,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "fallback_qsort3",
+      "line": 104,
+      "signature": {
+        "params": [
+          {
+            "name": "fmap",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "eclass",
+            "ty": "&[UInt32]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "lo_st",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hi_st",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "&[u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "%": 2,
+        "+": 17,
+        "-": 24,
+        "<": 4,
+        "==": 5,
+        ">": 8,
+        ">>": 1
+      },
+      "consts": [
+        "size",
+        "thresh"
+      ],
+      "strings": [
+        "fallbackQSort3(2)"
+      ],
+      "metrics": {
+        "cyclomatic": 19,
+        "stmts": 86,
+        "nodes": 483,
+        "loops": 6,
+        "max_loop_depth": 3,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 9
+      }
+    },
+    {
+      "name": "fallback_sort",
+      "line": 242,
+      "signature": {
+        "params": [
+          {
+            "name": "fmap",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "eclass_buf",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "bhtab",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "nblock",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "_verb",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "!=": 8,
+        "&": 21,
+        "&&": 2,
+        "*": 3,
+        "+": 17,
+        "-": 7,
+        "/": 1,
+        "<": 2,
+        "<<": 11,
+        "==": 6,
+        ">": 2,
+        ">=": 2,
+        ">>": 13,
+        "neg": 2,
+        "|": 3,
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 30,
+        "stmts": 118,
+        "nodes": 716,
+        "loops": 20,
+        "max_loop_depth": 3,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "main_gt_u",
+      "line": 447,
+      "signature": {
+        "params": [
+          {
+            "name": "i1",
+            "ty": "UInt32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "i2",
+            "ty": "UInt32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "block",
+            "ty": "&[UChar]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "quadrant",
+            "ty": "&[UInt16]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "nblock",
+            "ty": "UInt32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "budget",
+            "ty": "&mut Int32",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "u32",
+            "shape": "u32"
+          },
+          {
+            "ty": "u32",
+            "shape": "u32"
+          },
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "&[u16]",
+            "shape": "&[u16]"
+          },
+          {
+            "ty": "u32",
+            "shape": "u32"
+          },
+          {
+            "ty": "&mut i32",
+            "shape": "&i32"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 10,
+        "+": 11,
+        "-": 4,
+        "<": 1,
+        ">": 9,
+        ">=": 3
+      },
+      "consts": [
+        "false"
+      ],
+      "strings": [
+        "mainGtU"
+      ],
+      "metrics": {
+        "cyclomatic": 15,
+        "stmts": 57,
+        "nodes": 292,
+        "loops": 2,
+        "max_loop_depth": 1,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "main_simple_sort",
+      "line": 558,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "block",
+            "ty": "&[UChar]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "quadrant",
+            "ty": "&[UInt16]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "nblock",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "lo",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hi",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "d",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "budget",
+            "ty": "&mut Int32",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "&[u16]",
+            "shape": "&[u16]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "&mut i32",
+            "shape": "&i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 15,
+        "-": 15,
+        "<": 4,
+        "<=": 3,
+        "==": 2,
+        ">": 4
+      },
+      "consts": [
+        "incs"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 18,
+        "stmts": 46,
+        "nodes": 326,
+        "loops": 6,
+        "max_loop_depth": 3,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "mmed3",
+      "line": 666,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "UChar",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "b",
+            "ty": "UChar",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "c",
+            "ty": "UChar",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "UChar"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "u8",
+            "shape": "u8"
+          },
+          {
+            "ty": "u8",
+            "shape": "u8"
+          },
+          {
+            "ty": "u8",
+            "shape": "u8"
+          }
+        ],
+        "output": {
+          "ty": "u8",
+          "shape": "u8"
+        }
+      },
+      "ops": {
+        ">": 3
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 8,
+        "nodes": 40,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "main_qsort3",
+      "line": 682,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "block",
+            "ty": "&[UChar]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "quadrant",
+            "ty": "&[UInt16]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "nblock",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "lo_st",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "hi_st",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "d_st",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "budget",
+            "ty": "&mut Int32",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "&[u16]",
+            "shape": "&[u16]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "&mut i32",
+            "shape": "&i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 24,
+        "-": 24,
+        "<": 8,
+        "==": 3,
+        ">": 8,
+        ">=": 2,
+        ">>": 1,
+        "||": 1
+      },
+      "consts": [
+        "qsort",
+        "radix",
+        "size",
+        "thresh"
+      ],
+      "strings": [
+        "mainQSort3(2)",
+        "mainQSort3(8)",
+        "mainQSort3(9)"
+      ],
+      "metrics": {
+        "cyclomatic": 21,
+        "stmts": 115,
+        "nodes": 757,
+        "loops": 7,
+        "max_loop_depth": 3,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 7
+      }
+    },
+    {
+      "name": "main_sort",
+      "line": 870,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "block",
+            "ty": "&mut [UChar]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "quadrant",
+            "ty": "&mut [UInt16]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "ftab",
+            "ty": "&mut [UInt32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "nblock",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "_verb",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "budget",
+            "ty": "&mut Int32",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "&mut [u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "&mut [u16]",
+            "shape": "&[u16]"
+          },
+          {
+            "ty": "&mut [u32]",
+            "shape": "&[u32]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "&mut i32",
+            "shape": "&i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 5,
+        "!=": 1,
+        "&": 9,
+        "&&": 1,
+        "*": 1,
+        "+": 24,
+        "-": 41,
+        "/": 1,
+        "<": 6,
+        "<<": 23,
+        "<=": 3,
+        "==": 7,
+        ">": 4,
+        ">=": 4,
+        ">>": 13,
+        "|": 12,
+        "||": 1
+      },
+      "consts": [
+        "clearmask",
+        "false",
+        "overshoot",
+        "radix",
+        "setmask",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 35,
+        "stmts": 142,
+        "nodes": 1187,
+        "loops": 20,
+        "max_loop_depth": 3,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "block_sort",
+      "line": 1123,
+      "signature": {
+        "params": [
+          {
+            "name": "state",
+            "ty": "&mut BlockSortState<'_>",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Int32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut BlockSortState<'_>",
+            "shape": "&{&[u32],&[u8],&[u32],i32,i32,i32}"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "&": 1,
+        "*": 1,
+        "+": 8,
+        "-": 1,
+        "/": 3,
+        "<": 3,
+        "==": 1,
+        ">": 2,
+        ">=": 3,
+        "neg": 2
+      },
+      "consts": [
+        "overshoot"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 8,
+        "stmts": 41,
+        "nodes": 279,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 12
+      }
+    },
+    {
+      "name": "crc_initial",
+      "line": 104,
+      "signature": {
+        "params": [],
+        "ret": "u32"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "u32",
+          "shape": "u32"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 2,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "crc_update",
+      "line": 108,
+      "signature": {
+        "params": [
+          {
+            "name": "crc",
+            "ty": "u32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "byte",
+            "ty": "u8",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "u32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "u32",
+            "shape": "u32"
+          },
+          {
+            "ty": "u8",
+            "shape": "u8"
+          }
+        ],
+        "output": {
+          "ty": "u32",
+          "shape": "u32"
+        }
+      },
+      "ops": {
+        "<<": 1,
+        ">>": 1,
+        "^": 2
+      },
+      "consts": [
+        "table"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 23,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "crc_finalize",
+      "line": 114,
+      "signature": {
+        "params": [
+          {
+            "name": "crc",
+            "ty": "u32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "u32"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "u32",
+            "shape": "u32"
+          }
+        ],
+        "output": {
+          "ty": "u32",
+          "shape": "u32"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 3,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "EncoderState::new",
+      "line": 174,
+      "signature": {
+        "params": [
+          {
+            "name": "block_size_100k",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "nblock_max",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Self"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "EncoderState",
+          "shape": "{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "encoderstate",
+        "false",
+        "groups",
+        "selectors",
+        "size"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 63,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "EncoderState::reset_bit_writer",
+      "line": 207,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&mut self",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 4,
+        "nodes": 20,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "EncoderState::output",
+      "line": 215,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&self",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "&[u8]"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "&[u8]",
+          "shape": "&[u8]"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 4,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "init_bit_write",
+      "line": 224,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "finish_bit_write",
+      "line": 229,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "-": 1,
+        "<<": 1,
+        ">": 1,
+        ">>": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 34,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "bit_write_need_bytes",
+      "line": 239,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "-": 1,
+        "<<": 1,
+        ">=": 1,
+        ">>": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 34,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "bit_write",
+      "line": 249,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "n",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "v",
+            "ty": "u32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "u32",
+            "shape": "u32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "-": 2,
+        "<<": 1,
+        "|": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 5,
+        "nodes": 27,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "bit_write_u32",
+      "line": 257,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "u",
+            "ty": "u32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          },
+          {
+            "ty": "u32",
+            "shape": "u32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "&": 4,
+        ">>": 3
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 4,
+        "nodes": 42,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "bit_write_uchar",
+      "line": 264,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "c",
+            "ty": "u8",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          },
+          {
+            "ty": "u8",
+            "shape": "u8"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "build_used_byte_map",
+      "line": 272,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 3,
+        "nodes": 31,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "generate_mtf_values",
+      "line": 286,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 3,
+        "&": 2,
+        "+": 18,
+        "-": 5,
+        "/": 2,
+        "<": 3,
+        "==": 1,
+        ">": 2
+      },
+      "consts": [
+        "runa",
+        "runb"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 15,
+        "stmts": 61,
+        "nodes": 367,
+        "loops": 6,
+        "max_loop_depth": 2,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "hb_make_code_lengths",
+      "line": 383,
+      "signature": {
+        "params": [
+          {
+            "name": "len",
+            "ty": "&mut [u8]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "freq",
+            "ty": "&[i32]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "alpha_size",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "max_len",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "&[i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "+": 4,
+        "==": 1,
+        ">": 2
+      },
+      "consts": [
+        "node",
+        "reverse"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 14,
+        "stmts": 35,
+        "nodes": 276,
+        "loops": 6,
+        "max_loop_depth": 1,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 25
+      }
+    },
+    {
+      "name": "hb_assign_codes",
+      "line": 497,
+      "signature": {
+        "params": [
+          {
+            "name": "code",
+            "ty": "&mut [i32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "len",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "min_len",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "max_len",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "alpha_size",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<<": 1,
+        "==": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 6,
+        "nodes": 39,
+        "loops": 2,
+        "max_loop_depth": 2,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "send_mtf_values",
+      "line": 515,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 3,
+        "%": 1,
+        "&": 3,
+        "&&": 8,
+        "*": 2,
+        "+": 28,
+        "-": 17,
+        "/": 1,
+        "<": 10,
+        "<<": 3,
+        "<=": 1,
+        "==": 8,
+        ">": 4,
+        ">=": 5,
+        ">>": 3,
+        "neg": 1,
+        "|": 3
+      },
+      "consts": [
+        "false",
+        "groups",
+        "icost",
+        "iters",
+        "max",
+        "size",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 60,
+        "stmts": 190,
+        "nodes": 1311,
+        "loops": 38,
+        "max_loop_depth": 4,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "block_sort_stub",
+      "line": 861,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 26,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "compress_block",
+      "line": 883,
+      "signature": {
+        "params": [
+          {
+            "name": "state",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "is_last_block",
+            "ty": "bool",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          },
+          {
+            "ty": "bool",
+            "shape": "bool"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<<": 1,
+        "==": 1,
+        ">": 3,
+        ">>": 1,
+        "^": 1,
+        "|": 1
+      },
+      "consts": [
+        "0",
+        "b",
+        "h",
+        "z"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 35,
+        "nodes": 203,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "push_byte_to_block",
+      "line": 955,
+      "signature": {
+        "params": [
+          {
+            "name": "state",
+            "ty": "&mut EncoderState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "byte",
+            "ty": "u8",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut EncoderState",
+            "shape": "&{i32,i32,i32,Vec<u32,{}>,Vec<u8,{}>,Vec<u16,{}>,i32,[bool;256],[u8;256],u32,i32,Vec<u8,{}>,i32,u32,u32,i32,i32,[i32;258],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[u32;4];258],i32}"
+          },
+          {
+            "ty": "u8",
+            "shape": "u8"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "*": 1,
+        "+": 1,
+        ">=": 2,
+        "||": 1
+      },
+      "consts": [
+        "false",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 8,
+        "nodes": 61,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "build_byte_usage_map",
+      "line": 252,
+      "signature": {
+        "params": [
+          {
+            "name": "s",
+            "ty": "&mut DecompressState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut DecompressState",
+            "shape": "&{{u64,u64,u32,u32},i32,u8,i32,bool,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[i32;258];6],[i32;6],i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,Option<u64>,Option<u64>,Option<u64>}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 3,
+        "nodes": 32,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "DecompressState::pull_byte",
+      "line": 265,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&mut self",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "input",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Option<u8>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          }
+        ],
+        "output": {
+          "ty": "Option<u8>",
+          "shape": "Option<u8>"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "-": 1,
+        "==": 2,
+        ">=": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 11,
+        "nodes": 73,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "DecompressState::get_bits",
+      "line": 283,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&mut self",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "input",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "state_label",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "nbits",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<Option<UInt32>, Int32>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "Result<Option<u32>, i32>",
+          "shape": "Result<Option<u32>,i32>"
+        }
+      },
+      "ops": {
+        "&": 1,
+        "+": 1,
+        "-": 3,
+        "<<": 2,
+        "==": 1,
+        ">=": 1,
+        ">>": 1,
+        "|": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 12,
+        "nodes": 96,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "DecompressState::get_uchar",
+      "line": 310,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&mut self",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "input",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "label",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<Option<UChar>, Int32>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "Result<Option<u8>, i32>",
+          "shape": "Result<Option<u8>,i32>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 17,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "DecompressState::get_bit",
+      "line": 317,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&mut self",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "input",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "label",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<Option<UChar>, Int32>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "Result<Option<u8>, i32>",
+          "shape": "Result<Option<u8>,i32>"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 0,
+        "nodes": 17,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "create_huffman_decode_tables",
+      "line": 327,
+      "signature": {
+        "params": [
+          {
+            "name": "limit",
+            "ty": "&mut [Int32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "base",
+            "ty": "&mut [Int32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "perm",
+            "ty": "&mut [Int32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "lengths",
+            "ty": "&[UChar]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "min_len",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "max_len",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "alpha_size",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 5,
+        "-": 3,
+        "<<": 2,
+        "==": 1,
+        ">": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 24,
+        "nodes": 158,
+        "loops": 8,
+        "max_loop_depth": 2,
+        "derefs": 3,
+        "allocs": 0,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "DecompressState::rand_init_mask",
+      "line": 401,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&mut self",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "rand_mask_update",
+      "line": 407,
+      "signature": {
+        "params": [
+          {
+            "name": "rn_to_go",
+            "ty": "&mut Int32",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "rt_pos",
+            "ty": "&mut Int32",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "Bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut i32",
+            "shape": "&i32"
+          },
+          {
+            "ty": "&mut i32",
+            "shape": "&i32"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "%": 1,
+        "+": 1,
+        "-": 1,
+        "==": 3
+      },
+      "consts": [
+        "rnums"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 45,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 8,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "bwt_get_fast",
+      "line": 421,
+      "signature": {
+        "params": [
+          {
+            "name": "state",
+            "ty": "&mut DecompressState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "c_block_size_100k",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<Option<UChar>, Int32>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut DecompressState",
+            "shape": "&{{u64,u64,u32,u32},i32,u8,i32,bool,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[i32;258];6],[i32;6],i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,Option<u64>,Option<u64>,Option<u64>}"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "Result<Option<u8>, i32>",
+          "shape": "Result<Option<u8>,i32>"
+        }
+      },
+      "ops": {
+        "&": 1,
+        "*": 1,
+        ">=": 1,
+        ">>": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 39,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "bwt_get_small",
+      "line": 430,
+      "signature": {
+        "params": [
+          {
+            "name": "state",
+            "ty": "&mut DecompressState",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "c_block_size_100k",
+            "ty": "Int32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<Option<UChar>, Int32>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut DecompressState",
+            "shape": "&{{u64,u64,u32,u32},i32,u8,i32,bool,u32,i32,i32,bool,i32,i32,i32,u32,i32,[i32;256],i32,[i32;257],[i32;257],Vec<u32,{}>,Vec<u16,{}>,Vec<u8,{}>,u32,u32,u32,u32,i32,[bool;256],[bool;16],[u8;256],[u8;4096],[i32;16],[u8;18002],[u8;18002],[[u8;258];6],[[i32;258];6],[[i32;258];6],[[i32;258];6],[i32;6],i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,i32,Option<u64>,Option<u64>,Option<u64>}"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "Result<Option<u8>, i32>",
+          "shape": "Result<Option<u8>,i32>"
+        }
+      },
+      "ops": {
+        "*": 1,
+        ">=": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 42,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "DecompressState::step_decompress_header_and_block",
+      "line": 466,
+      "signature": {
+        "params": [
+          {
+            "name": "self",
+            "ty": "&mut self",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "input",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<Int32, Int32>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          }
+        ],
+        "output": {
+          "ty": "Result<i32, i32>",
+          "shape": "Result<i32,i32>"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "!=": 15,
+        "%": 1,
+        "&": 1,
+        "&&": 1,
+        "*": 10,
+        "+": 36,
+        "-": 32,
+        "/": 3,
+        "<": 11,
+        "<<": 4,
+        "==": 17,
+        ">": 17,
+        ">=": 6,
+        ">>": 1,
+        "neg": 2,
+        "|": 4,
+        "||": 9
+      },
+      "consts": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "b",
+        "false",
+        "groups",
+        "h",
+        "idle",
+        "output",
+        "randbit",
+        "runa",
+        "runb",
+        "selectors",
+        "size",
+        "true",
+        "z"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 174,
+        "stmts": 373,
+        "nodes": 2614,
+        "loops": 41,
+        "max_loop_depth": 4,
+        "derefs": 3,
+        "allocs": 0,
+        "method_calls": 39
+      }
+    },
+    {
+      "name": "make_code_lengths",
+      "line": 40,
+      "signature": {
+        "params": [
+          {
+            "name": "lengths",
+            "ty": "&mut [u8]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "freq",
+            "ty": "&[i32]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "alpha_size",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "max_len",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(), HuffmanError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "&[i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "Result<(), HuffmanError>",
+          "shape": "Result<(),enum>"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "&": 2,
+        "&&": 1,
+        "*": 7,
+        "+": 15,
+        "-": 3,
+        "/": 1,
+        "<": 6,
+        "<<": 3,
+        "<=": 1,
+        "==": 2,
+        ">": 6,
+        ">=": 3,
+        ">>": 4,
+        "neg": 3,
+        "|": 1,
+        "||": 5
+      },
+      "consts": [
+        "false",
+        "invalidinput",
+        "len",
+        "size",
+        "true"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 20,
+        "stmts": 77,
+        "nodes": 581,
+        "loops": 9,
+        "max_loop_depth": 3,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "assign_codes",
+      "line": 206,
+      "signature": {
+        "params": [
+          {
+            "name": "code",
+            "ty": "&mut [i32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "length",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "min_len",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "max_len",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "alpha_size",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(), HuffmanError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Result<(), HuffmanError>",
+          "shape": "Result<(),enum>"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<": 4,
+        "<<": 1,
+        "==": 2,
+        ">": 2,
+        "||": 6
+      },
+      "consts": [
+        "invalidinput",
+        "len",
+        "size"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 8,
+        "nodes": 78,
+        "loops": 2,
+        "max_loop_depth": 2,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "create_decode_tables",
+      "line": 245,
+      "signature": {
+        "params": [
+          {
+            "name": "limit",
+            "ty": "&mut [i32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "base",
+            "ty": "&mut [i32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "perm",
+            "ty": "&mut [i32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "length",
+            "ty": "&[u8]",
+            "ptr_kind": "ref",
+            "dir": "in"
+          },
+          {
+            "name": "min_len",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "max_len",
+            "ty": "i32",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "alpha_size",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "Result<(), HuffmanError>"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "&[u8]",
+            "shape": "&[u8]"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "Result<(), HuffmanError>",
+          "shape": "Result<(),enum>"
+        }
+      },
+      "ops": {
+        "+": 9,
+        "-": 5,
+        "<": 7,
+        "<<": 2,
+        "==": 2,
+        ">": 2,
+        "||": 8
+      },
+      "consts": [
+        "invalidinput",
+        "len",
+        "size"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 12,
+        "stmts": 24,
+        "nodes": 217,
+        "loops": 8,
+        "max_loop_depth": 2,
+        "derefs": 2,
+        "allocs": 0,
+        "method_calls": 8
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "prepare_new_block",
+      "to": "initialise_crc"
+    },
+    {
+      "from": "prepare_new_block",
+      "to": "iter_mut"
+    },
+    {
+      "from": "add_pair_to_block",
+      "to": "update_crc"
+    },
+    {
+      "from": "flush_run_length",
+      "to": "add_pair_to_block"
+    },
+    {
+      "from": "flush_run_length",
+      "to": "init_run_length"
+    },
+    {
+      "from": "add_char_to_block",
+      "to": "update_crc"
+    },
+    {
+      "from": "add_char_to_block",
+      "to": "add_pair_to_block"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "add_char_to_block"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "copy_input_until_stop",
+      "to": "add_char_to_block"
+    },
+    {
+      "from": "copy_output_until_stop",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "copy_output_until_stop",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "copy_output_until_stop",
+      "to": "Vec::len"
+    },
+    {
+      "from": "copy_output_until_stop",
+      "to": "Vec::push"
+    },
+    {
+      "from": "copy_output_until_stop",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "copy_output_until_stop",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "handle_compress",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "handle_compress",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "handle_compress",
+      "to": "copy_output_until_stop"
+    },
+    {
+      "from": "handle_compress",
+      "to": "run_length_is_empty"
+    },
+    {
+      "from": "handle_compress",
+      "to": "prepare_new_block"
+    },
+    {
+      "from": "handle_compress",
+      "to": "run_length_is_empty"
+    },
+    {
+      "from": "handle_compress",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "handle_compress",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "handle_compress",
+      "to": "copy_input_until_stop"
+    },
+    {
+      "from": "handle_compress",
+      "to": "flush_run_length"
+    },
+    {
+      "from": "handle_compress",
+      "to": "compress_block_stub"
+    },
+    {
+      "from": "handle_compress",
+      "to": "compress_block_stub"
+    },
+    {
+      "from": "un_rle_obuf_to_output_fast",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "un_rle_obuf_to_output_fast",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "un_rle_obuf_to_output_small",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "un_rle_obuf_to_output_small",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "compress_block_stub",
+      "to": "Vec::clear"
+    },
+    {
+      "from": "compress_block_stub",
+      "to": "Vec::extend_from_slice"
+    },
+    {
+      "from": "compress_block_stub",
+      "to": "Vec::len"
+    },
+    {
+      "from": "compress_block_stub",
+      "to": "finalise_crc"
+    },
+    {
+      "from": "compress_block_stub",
+      "to": "finalise_crc"
+    },
+    {
+      "from": "decompress_core_stub",
+      "to": "Vec::len"
+    },
+    {
+      "from": "decompress_core_stub",
+      "to": "Vec::push"
+    },
+    {
+      "from": "decompress_core_stub",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "decompress_core_stub",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "is_config_ok"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "default"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "to_vec"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "len"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "Vec::new"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "enumerate"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "iter_mut"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "Vec::len"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "init_run_length"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "prepare_new_block"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "Vec::with_capacity"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "len"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "len"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "compress_step"
+    },
+    {
+      "from": "compress_buffer",
+      "to": "Vec::truncate"
+    },
+    {
+      "from": "compress_step",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "compress_step",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "compress_step",
+      "to": "handle_compress"
+    },
+    {
+      "from": "compress_step",
+      "to": "handle_compress"
+    },
+    {
+      "from": "compress_step",
+      "to": "run_length_is_empty"
+    },
+    {
+      "from": "compress_step",
+      "to": "handle_compress"
+    },
+    {
+      "from": "compress_step",
+      "to": "run_length_is_empty"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "is_config_ok"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "default"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "to_vec"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "len"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Vec::with_capacity"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "len"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "len"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Vec::new"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Vec::new"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Vec::new"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Option::as_ref"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "un_rle_obuf_to_output_small"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "un_rle_obuf_to_output_fast"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "finalise_crc"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Option::as_mut"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "decompress_core_stub"
+    },
+    {
+      "from": "decompress_buffer",
+      "to": "Vec::truncate"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "assert_h"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "fallback_simple_sort"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "assert_d"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "min"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "min"
+    },
+    {
+      "from": "fallback_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "fallback_sort",
+      "to": "from_raw_parts_mut"
+    },
+    {
+      "from": "fallback_sort",
+      "to": "as_mut_ptr"
+    },
+    {
+      "from": "fallback_sort",
+      "to": "iter_mut"
+    },
+    {
+      "from": "fallback_sort",
+      "to": "enumerate"
+    },
+    {
+      "from": "fallback_sort",
+      "to": "iter"
+    },
+    {
+      "from": "fallback_sort",
+      "to": "fallback_qsort3"
+    },
+    {
+      "from": "fallback_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "main_gt_u",
+      "to": "assert_d"
+    },
+    {
+      "from": "main_simple_sort",
+      "to": "len"
+    },
+    {
+      "from": "main_simple_sort",
+      "to": "len"
+    },
+    {
+      "from": "main_simple_sort",
+      "to": "main_gt_u"
+    },
+    {
+      "from": "main_simple_sort",
+      "to": "main_gt_u"
+    },
+    {
+      "from": "main_simple_sort",
+      "to": "main_gt_u"
+    },
+    {
+      "from": "mmed3",
+      "to": "swap"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "assert_h"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "main_simple_sort"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "mmed3"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "assert_d"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "min"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "min"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "swap"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "assert_d"
+    },
+    {
+      "from": "main_qsort3",
+      "to": "assert_d"
+    },
+    {
+      "from": "main_sort",
+      "to": "take"
+    },
+    {
+      "from": "main_sort",
+      "to": "iter_mut"
+    },
+    {
+      "from": "main_sort",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "main_sort",
+      "to": "main_qsort3"
+    },
+    {
+      "from": "main_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "main_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "main_sort",
+      "to": "rev"
+    },
+    {
+      "from": "main_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "block_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "block_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "block_sort",
+      "to": "len"
+    },
+    {
+      "from": "block_sort",
+      "to": "split_at_mut"
+    },
+    {
+      "from": "block_sort",
+      "to": "from_raw_parts_mut"
+    },
+    {
+      "from": "block_sort",
+      "to": "as_mut_ptr"
+    },
+    {
+      "from": "block_sort",
+      "to": "fallback_sort"
+    },
+    {
+      "from": "block_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "block_sort",
+      "to": "len"
+    },
+    {
+      "from": "block_sort",
+      "to": "add"
+    },
+    {
+      "from": "block_sort",
+      "to": "as_mut_ptr"
+    },
+    {
+      "from": "block_sort",
+      "to": "from_raw_parts_mut"
+    },
+    {
+      "from": "block_sort",
+      "to": "main_sort"
+    },
+    {
+      "from": "block_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "block_sort",
+      "to": "len"
+    },
+    {
+      "from": "block_sort",
+      "to": "split_at_mut"
+    },
+    {
+      "from": "block_sort",
+      "to": "from_raw_parts_mut"
+    },
+    {
+      "from": "block_sort",
+      "to": "as_mut_ptr"
+    },
+    {
+      "from": "block_sort",
+      "to": "fallback_sort"
+    },
+    {
+      "from": "block_sort",
+      "to": "take"
+    },
+    {
+      "from": "block_sort",
+      "to": "enumerate"
+    },
+    {
+      "from": "block_sort",
+      "to": "iter"
+    },
+    {
+      "from": "block_sort",
+      "to": "assert_h"
+    },
+    {
+      "from": "EncoderState::new",
+      "to": "max"
+    },
+    {
+      "from": "EncoderState::new",
+      "to": "Vec::new"
+    },
+    {
+      "from": "EncoderState::new",
+      "to": "crc_initial"
+    },
+    {
+      "from": "EncoderState::reset_bit_writer",
+      "to": "Vec::clear"
+    },
+    {
+      "from": "finish_bit_write",
+      "to": "Vec::push"
+    },
+    {
+      "from": "bit_write_need_bytes",
+      "to": "Vec::push"
+    },
+    {
+      "from": "bit_write",
+      "to": "bit_write_need_bytes"
+    },
+    {
+      "from": "bit_write_u32",
+      "to": "bit_write"
+    },
+    {
+      "from": "bit_write_u32",
+      "to": "bit_write"
+    },
+    {
+      "from": "bit_write_u32",
+      "to": "bit_write"
+    },
+    {
+      "from": "bit_write_u32",
+      "to": "bit_write"
+    },
+    {
+      "from": "bit_write_uchar",
+      "to": "bit_write"
+    },
+    {
+      "from": "generate_mtf_values",
+      "to": "build_used_byte_map"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Vec::with_capacity"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Vec::push"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Vec::is_empty"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Ordering::then"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "cmp"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "cmp"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Node::cmp"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Vec::new"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "BinaryHeap::new"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "enumerate"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Vec::into_iter"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Vec::push"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "BinaryHeap::push"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Vec::len"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "BinaryHeap::len"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "BinaryHeap::pop"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "BinaryHeap::pop"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Vec::push"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "BinaryHeap::push"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "assign_depths"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "assign_depths"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Option::unwrap"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "BinaryHeap::peek"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "assign_depths"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "enumerate"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "iter"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "Option::is_none"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "min"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "to": "max"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "hb_make_code_lengths"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "hb_assign_codes"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "send_mtf_values",
+      "to": "bit_write"
+    },
+    {
+      "from": "block_sort_stub",
+      "to": "max"
+    },
+    {
+      "from": "compress_block",
+      "to": "crc_finalize"
+    },
+    {
+      "from": "compress_block",
+      "to": "Vec::clear"
+    },
+    {
+      "from": "compress_block",
+      "to": "block_sort_stub"
+    },
+    {
+      "from": "compress_block",
+      "to": "init_bit_write"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_u32"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write"
+    },
+    {
+      "from": "compress_block",
+      "to": "generate_mtf_values"
+    },
+    {
+      "from": "compress_block",
+      "to": "send_mtf_values"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_uchar"
+    },
+    {
+      "from": "compress_block",
+      "to": "bit_write_u32"
+    },
+    {
+      "from": "compress_block",
+      "to": "finish_bit_write"
+    },
+    {
+      "from": "push_byte_to_block",
+      "to": "Vec::len"
+    },
+    {
+      "from": "push_byte_to_block",
+      "to": "crc_update"
+    },
+    {
+      "from": "DecompressState::pull_byte",
+      "to": "len"
+    },
+    {
+      "from": "DecompressState::pull_byte",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "DecompressState::pull_byte",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "DecompressState::get_bits",
+      "to": "DecompressState::pull_byte"
+    },
+    {
+      "from": "DecompressState::get_uchar",
+      "to": "DecompressState::get_bits"
+    },
+    {
+      "from": "DecompressState::get_bit",
+      "to": "DecompressState::get_bits"
+    },
+    {
+      "from": "create_huffman_decode_tables",
+      "to": "iter_mut"
+    },
+    {
+      "from": "create_huffman_decode_tables",
+      "to": "iter_mut"
+    },
+    {
+      "from": "create_huffman_decode_tables",
+      "to": "iter_mut"
+    },
+    {
+      "from": "rand_mask_update",
+      "to": "len"
+    },
+    {
+      "from": "bwt_get_small",
+      "to": "index_into_f"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bits"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "Vec::is_empty"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "Vec::is_empty"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "Vec::is_empty"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bits"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bit"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "iter_mut"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bit"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "build_byte_usage_map"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bits"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bits"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bit"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bits"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bit"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_bit"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "create_huffman_decode_tables"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "iter_mut"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "rev"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "rev"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "rev"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "rev"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "iter_mut"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::rand_init_mask"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "bwt_get_small"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "bwt_get_small"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::rand_init_mask"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "bwt_get_fast"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "bwt_get_fast"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "to": "DecompressState::get_uchar"
+    },
+    {
+      "from": "make_code_lengths",
+      "to": "len"
+    },
+    {
+      "from": "make_code_lengths",
+      "to": "len"
+    },
+    {
+      "from": "make_code_lengths",
+      "to": "weight_of"
+    },
+    {
+      "from": "make_code_lengths",
+      "to": "weight_of"
+    },
+    {
+      "from": "make_code_lengths",
+      "to": "my_max"
+    },
+    {
+      "from": "make_code_lengths",
+      "to": "depth_of"
+    },
+    {
+      "from": "make_code_lengths",
+      "to": "depth_of"
+    },
+    {
+      "from": "make_code_lengths",
+      "to": "add_weights"
+    },
+    {
+      "from": "assign_codes",
+      "to": "len"
+    },
+    {
+      "from": "assign_codes",
+      "to": "len"
+    },
+    {
+      "from": "create_decode_tables",
+      "to": "len"
+    },
+    {
+      "from": "create_decode_tables",
+      "to": "len"
+    },
+    {
+      "from": "create_decode_tables",
+      "to": "len"
+    },
+    {
+      "from": "create_decode_tables",
+      "to": "len"
+    },
+    {
+      "from": "create_decode_tables",
+      "to": "take"
+    },
+    {
+      "from": "create_decode_tables",
+      "to": "iter_mut"
+    },
+    {
+      "from": "create_decode_tables",
+      "to": "take"
+    },
+    {
+      "from": "create_decode_tables",
+      "to": "iter_mut"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "compress_buffer",
+      "line": 551,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "compress_buffer",
+      "line": 560,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "compress_buffer",
+      "line": 628,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "compress_buffer",
+      "line": 648,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "compress_buffer",
+      "line": 652,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 727,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 730,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 786,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 791,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 800,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 806,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 821,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 827,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "decompress_buffer",
+      "line": 834,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 842,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 842,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 843,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 845,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 845,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 846,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 848,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 848,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 849,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 853,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 853,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 857,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_qsort3",
+      "line": 857,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_sort",
+      "line": 987,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "main_sort",
+      "line": 987,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "line": 426,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "line": 435,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "line": 449,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "line": 450,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "hb_make_code_lengths",
+      "line": 452,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::pull_byte",
+      "line": 280,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_bits",
+      "line": 294,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_bits",
+      "line": 294,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_bits",
+      "line": 298,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_bits",
+      "line": 305,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_uchar",
+      "line": 312,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_uchar",
+      "line": 312,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_uchar",
+      "line": 313,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_bit",
+      "line": 319,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_bit",
+      "line": 319,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::get_bit",
+      "line": 320,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "bwt_get_fast",
+      "line": 423,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "bwt_get_fast",
+      "line": 427,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "bwt_get_fast",
+      "line": 427,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "bwt_get_small",
+      "line": 432,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "bwt_get_small",
+      "line": 437,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "bwt_get_small",
+      "line": 437,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 594,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 605,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 616,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 625,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 653,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 667,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 677,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 687,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 697,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 707,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 719,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 728,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 735,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 751,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 764,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 781,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 788,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 799,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 839,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 848,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 855,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1106,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1113,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1132,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1139,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1149,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1159,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1169,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1179,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1189,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1199,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "DecompressState::step_decompress_header_and_block",
+      "line": 1241,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "make_code_lengths",
+      "line": 53,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "make_code_lengths",
+      "line": 138,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "make_code_lengths",
+      "line": 143,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "make_code_lengths",
+      "line": 150,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "make_code_lengths",
+      "line": 155,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "make_code_lengths",
+      "line": 165,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "make_code_lengths",
+      "line": 169,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "make_code_lengths",
+      "line": 198,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "assign_codes",
+      "line": 221,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "assign_codes",
+      "line": 235,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "create_decode_tables",
+      "line": 264,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "create_decode_tables",
+      "line": 313,
+      "kind": "call_unresolved"
+    }
+  ],
+  "excluded_scaffolding": [
+    {
+      "name": "cmp",
+      "reason": "nested_local"
+    },
+    {
+      "name": "partial_cmp",
+      "reason": "nested_local"
+    },
+    {
+      "name": "assign_depths",
+      "reason": "nested_local"
+    },
+    {
+      "name": "default",
+      "reason": "trait_boilerplate:Default"
+    },
+    {
+      "name": "fmt",
+      "reason": "trait_boilerplate:Display"
+    },
+    {
+      "name": "weight_of",
+      "reason": "nested_local"
+    },
+    {
+      "name": "depth_of",
+      "reason": "nested_local"
+    },
+    {
+      "name": "my_max",
+      "reason": "nested_local"
+    },
+    {
+      "name": "add_weights",
+      "reason": "nested_local"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+ "schema": 4,
+ "cell": "genann_sactor",
+ "protocol": "single-c-companion-batched",
+ "boundaries": [
+  "genann_act_hidden_indirect",
+  "genann_act_linear",
+  "genann_act_output_indirect",
+  "genann_act_sigmoid",
+  "genann_act_sigmoid_cached",
+  "genann_act_threshold",
+  "genann_copy",
+  "genann_free",
+  "genann_init",
+  "genann_init_sigmoid_lookup",
+  "genann_randomize",
+  "genann_run",
+  "genann_train"
+ ],
+ "batch_size": 28,
+ "batch_count": 1,
+ "max_concurrent_fuzzers": 13,
+ "campaign_params": {
+  "max_total_time_s": 3600,
+  "seed": 42,
+  "timeout_s": 25,
+  "rss_limit_mb": 2048,
+  "max_len": 4096
+ },
+ "batches": [
+  {
+   "batch": 0,
+   "boundaries": [
+    "genann_act_hidden_indirect",
+    "genann_act_linear",
+    "genann_act_output_indirect",
+    "genann_act_sigmoid",
+    "genann_act_sigmoid_cached",
+    "genann_act_threshold",
+    "genann_copy",
+    "genann_free",
+    "genann_init",
+    "genann_init_sigmoid_lookup",
+    "genann_randomize",
+    "genann_run",
+    "genann_train"
+   ],
+   "corpus_sizes": {
+    "genann_act_hidden_indirect": 24,
+    "genann_act_linear": 19,
+    "genann_act_output_indirect": 24,
+    "genann_act_sigmoid": 24,
+    "genann_act_sigmoid_cached": 24,
+    "genann_act_threshold": 19,
+    "genann_copy": 13,
+    "genann_free": 15,
+    "genann_init": 30,
+    "genann_init_sigmoid_lookup": 14,
+    "genann_randomize": 15,
+    "genann_run": 44,
+    "genann_train": 73
+   },
+   "inputs": {
+    "completed": 337,
+    "crash": 1
+   },
+   "seconds": 3734,
+   "identity_sha256": "789e6a260e3ed59a55af1ef37b1edba6071b47f1399a3c97b26d53b35527291b"
+  }
+ ],
+ "matrix": {
+  "archived_rust_guided_c_replay": {
+   "functions_total": 15,
+   "functions_reached": 13,
+   "regions_total": 182,
+   "regions_reached": 149,
+   "function_reach": 0.8666666666666667,
+   "region_reach": 0.8186813186813187,
+   "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+   "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+  },
+  "new_c_guided": {
+   "C": {
+    "functions_total": 15,
+    "functions_reached": 13,
+    "regions_total": 182,
+    "regions_reached": 151,
+    "function_reach": 0.8666666666666667,
+    "region_reach": 0.8296703296703297
+   },
+   "C_inputs": {
+    "completed": 337,
+    "crash": 1
+   }
+  }
+ },
+ "checks": {
+  "all_batches_valid": true,
+  "boundary_union_exact": true,
+  "fuzzer_cap_respected": true,
+  "only_c_was_fuzzed": true,
+  "c_measurement_nonempty": true
+ },
+ "interpretation": "Only C was fuzzed and measured; coverage is the identity union of validated batches."
+}

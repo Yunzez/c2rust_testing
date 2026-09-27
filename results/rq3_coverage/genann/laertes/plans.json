@@ -1,0 +1,1383 @@
+[
+ {
+  "boundary": "genann_act_linear",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "a",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "std::os::raw::c_double",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_act_sigmoid",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "a",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "std::os::raw::c_double",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_act_sigmoid_cached",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "a",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "std::os::raw::c_double",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_act_threshold",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "a",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "std::os::raw::c_double",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_copy",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "ann",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "genann_init",
+     "producer_inputs": [
+      {
+       "param": "inputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "inputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 86,
+         "col": 5,
+         "snippet": "if (inputs < 1) return 0;",
+         "note": "accepted domain of inputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden_layers",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 0,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden_layers is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 85,
+         "col": 5,
+         "snippet": "if (hidden_layers < 0) return 0;",
+         "note": "accepted domain of hidden_layers narrowed to [0, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "rust": "i32",
+        "width": 4,
+        "max": 32,
+        "min": 0,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "outputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "outputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 87,
+         "col": 5,
+         "snippet": "if (outputs < 1) return 0;",
+         "note": "accepted domain of outputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      }
+     ],
+     "producer_rust_types": [
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int"
+     ],
+     "destructor": "genann_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "libc",
+     "seed": 42,
+     "struct": "genann",
+     "c_struct": "genann",
+     "const": true,
+     "elem": "genann",
+     "producer_evidence": "sole candidate under rules 1-4",
+     "producer_alternatives": []
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "ann is built by genann_init() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "* const crate::example1::genann",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_free",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "ann",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "genann_init",
+     "producer_inputs": [
+      {
+       "param": "inputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "inputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 86,
+         "col": 5,
+         "snippet": "if (inputs < 1) return 0;",
+         "note": "accepted domain of inputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden_layers",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 0,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden_layers is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 85,
+         "col": 5,
+         "snippet": "if (hidden_layers < 0) return 0;",
+         "note": "accepted domain of hidden_layers narrowed to [0, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "rust": "i32",
+        "width": 4,
+        "max": 32,
+        "min": 0,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "outputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "outputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 87,
+         "col": 5,
+         "snippet": "if (outputs < 1) return 0;",
+         "note": "accepted domain of outputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      }
+     ],
+     "producer_rust_types": [
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int"
+     ],
+     "destructor": null,
+     "lifecycle": "not claimed (no destructor found)",
+     "seed_reset": "libc",
+     "seed": 42,
+     "struct": "genann",
+     "c_struct": "genann",
+     "const": false,
+     "elem": "genann",
+     "producer_evidence": "fewest parameters among candidates (driver call-graph evidence not in this pair's compilation database)",
+     "producer_alternatives": [
+      {
+       "fn": "genann_copy",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "ann is built by genann_init() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "* mut crate::example1::genann",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_init",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "inputs",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 1,
+     "max": null,
+     "derivation": [
+      "rejection_guard"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "guard_negated_lt",
+      "file": "genann.c",
+      "line": 86,
+      "col": 5,
+      "snippet": "if (inputs < 1) return 0;",
+      "note": "accepted domain of inputs narrowed to [1, None] by the entry's own rejection guard"
+     }
+    ],
+    "rust_type": "std::os::raw::c_int",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "hidden_layers",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 0,
+     "max": null,
+     "derivation": [
+      "rejection_guard"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "guard_negated_lt",
+      "file": "genann.c",
+      "line": 85,
+      "col": 5,
+      "snippet": "if (hidden_layers < 0) return 0;",
+      "note": "accepted domain of hidden_layers narrowed to [0, None] by the entry's own rejection guard"
+     }
+    ],
+    "rust_type": "std::os::raw::c_int",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "hidden",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "std::os::raw::c_int",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "outputs",
+    "c_decoder": "bounded_scalar",
+    "detail": {
+     "min": 1,
+     "max": null,
+     "derivation": [
+      "rejection_guard"
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "guard_negated_lt",
+      "file": "genann.c",
+      "line": 87,
+      "col": 5,
+      "snippet": "if (outputs < 1) return 0;",
+      "note": "accepted domain of outputs narrowed to [1, None] by the entry's own rejection guard"
+     }
+    ],
+    "rust_type": "std::os::raw::c_int",
+    "rust_bridge": "scalar_copy"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_randomize",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "ann",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "genann_init",
+     "producer_inputs": [
+      {
+       "param": "inputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "inputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 86,
+         "col": 5,
+         "snippet": "if (inputs < 1) return 0;",
+         "note": "accepted domain of inputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden_layers",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 0,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden_layers is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 85,
+         "col": 5,
+         "snippet": "if (hidden_layers < 0) return 0;",
+         "note": "accepted domain of hidden_layers narrowed to [0, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "rust": "i32",
+        "width": 4,
+        "max": 32,
+        "min": 0,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "outputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "outputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 87,
+         "col": 5,
+         "snippet": "if (outputs < 1) return 0;",
+         "note": "accepted domain of outputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      }
+     ],
+     "producer_rust_types": [
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int"
+     ],
+     "destructor": "genann_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "libc",
+     "seed": 42,
+     "struct": "genann",
+     "c_struct": "genann",
+     "const": false,
+     "elem": "genann",
+     "producer_evidence": "fewest parameters among candidates (driver call-graph evidence not in this pair's compilation database)",
+     "producer_alternatives": [
+      {
+       "fn": "genann_copy",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "ann is built by genann_init() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "* mut crate::example1::genann",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_read",
+  "status": "failed",
+  "inputs": [],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param in_: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_run",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "inputs",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "f64",
+     "elem_width": 8,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "* const std::os::raw::c_double",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "ann",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "genann_init",
+     "producer_inputs": [
+      {
+       "param": "inputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "inputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 86,
+         "col": 5,
+         "snippet": "if (inputs < 1) return 0;",
+         "note": "accepted domain of inputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden_layers",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 0,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden_layers is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 85,
+         "col": 5,
+         "snippet": "if (hidden_layers < 0) return 0;",
+         "note": "accepted domain of hidden_layers narrowed to [0, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "rust": "i32",
+        "width": 4,
+        "max": 32,
+        "min": 0,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "outputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "outputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 87,
+         "col": 5,
+         "snippet": "if (outputs < 1) return 0;",
+         "note": "accepted domain of outputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      }
+     ],
+     "producer_rust_types": [
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int"
+     ],
+     "destructor": "genann_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "libc",
+     "seed": 42,
+     "struct": "genann",
+     "c_struct": "genann",
+     "const": true,
+     "elem": "genann",
+     "producer_evidence": "fewest parameters among candidates (driver call-graph evidence not in this pair's compilation database)",
+     "producer_alternatives": [
+      {
+       "fn": "genann_copy",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "ann is built by genann_init() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "* const crate::example1::genann",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_train",
+  "status": "planned",
+  "inputs": [
+   {
+    "param": "inputs",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "f64",
+     "elem_width": 8,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "* const std::os::raw::c_double",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "desired_outputs",
+    "c_decoder": "input_array",
+    "detail": {
+     "elem": "f64",
+     "elem_width": 8,
+     "extent": {
+      "k": "unknown",
+      "why": "pointer is never dereferenced"
+     },
+     "extent_source": "policy_allocation",
+     "alloc_elems": 4096,
+     "fills_from_fuzz": false
+    },
+    "evidence": [],
+    "rust_type": "* const std::os::raw::c_double",
+    "rust_bridge": "c_abi"
+   },
+   {
+    "param": "learning_rate",
+    "c_decoder": "scalar",
+    "detail": {},
+    "evidence": [],
+    "rust_type": "std::os::raw::c_double",
+    "rust_bridge": "scalar_copy"
+   },
+   {
+    "param": "ann",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "genann_init",
+     "producer_inputs": [
+      {
+       "param": "inputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "inputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 86,
+         "col": 5,
+         "snippet": "if (inputs < 1) return 0;",
+         "note": "accepted domain of inputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden_layers",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 0,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden_layers is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 85,
+         "col": 5,
+         "snippet": "if (hidden_layers < 0) return 0;",
+         "note": "accepted domain of hidden_layers narrowed to [0, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "rust": "i32",
+        "width": 4,
+        "max": 32,
+        "min": 0,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "outputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "outputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 87,
+         "col": 5,
+         "snippet": "if (outputs < 1) return 0;",
+         "note": "accepted domain of outputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      }
+     ],
+     "producer_rust_types": [
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int"
+     ],
+     "destructor": "genann_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "libc",
+     "seed": 42,
+     "struct": "genann",
+     "c_struct": "genann",
+     "const": true,
+     "elem": "genann",
+     "producer_evidence": "fewest parameters among candidates (driver call-graph evidence not in this pair's compilation database)",
+     "producer_alternatives": [
+      {
+       "fn": "genann_copy",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "ann is built by genann_init() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "* const crate::example1::genann",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ },
+ {
+  "boundary": "genann_write",
+  "status": "failed",
+  "inputs": [
+   {
+    "param": "ann",
+    "c_decoder": "produced_object",
+    "detail": {
+     "producer": "genann_init",
+     "producer_inputs": [
+      {
+       "param": "inputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "inputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 86,
+         "col": 5,
+         "snippet": "if (inputs < 1) return 0;",
+         "note": "accepted domain of inputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden_layers",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 0,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden_layers is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 85,
+         "col": 5,
+         "snippet": "if (hidden_layers < 0) return 0;",
+         "note": "accepted domain of hidden_layers narrowed to [0, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "hidden",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "rust": "i32",
+        "width": 4,
+        "max": 32,
+        "min": 0,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "hidden is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      },
+      {
+       "param": "outputs",
+       "c_decoder": "bounded_scalar",
+       "detail": {
+        "min": 1,
+        "max": 32,
+        "derivation": [
+         "rejection_guard"
+        ],
+        "rust": "i32",
+        "width": 4,
+        "evidence": [
+         {
+          "rule": "policy_producer_scalar_cap",
+          "file": "tools/stu_selector/harness_plan.py",
+          "line": 0,
+          "col": 0,
+          "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+          "note": "outputs is a producer scalar; the produced object's allocation and the target's array extents are expressions over it, so it is capped at 32"
+         }
+        ]
+       },
+       "evidence": [
+        {
+         "rule": "guard_negated_lt",
+         "file": "genann.c",
+         "line": 87,
+         "col": 5,
+         "snippet": "if (outputs < 1) return 0;",
+         "note": "accepted domain of outputs narrowed to [1, None] by the entry's own rejection guard"
+        }
+       ],
+       "rust_type": "std::os::raw::c_int",
+       "rust_bridge": "scalar_copy"
+      }
+     ],
+     "producer_rust_types": [
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int",
+      "std::os::raw::c_int"
+     ],
+     "destructor": "genann_free",
+     "lifecycle": "init -> target -> free",
+     "seed_reset": "libc",
+     "seed": 42,
+     "struct": "genann",
+     "c_struct": "genann",
+     "const": true,
+     "elem": "genann",
+     "producer_evidence": "fewest parameters among candidates (driver call-graph evidence not in this pair's compilation database)",
+     "producer_alternatives": [
+      {
+       "fn": "genann_copy",
+       "excluded": "takes a struct-with-pointers itself (pilot is depth 1)"
+      }
+     ]
+    },
+    "evidence": [
+     {
+      "rule": "producer_bridge",
+      "file": "tools/stu_selector/harness_plan.py",
+      "line": 0,
+      "col": 0,
+      "snippet": "GeneratorPolicy.producer_scalar_max = 32",
+      "note": "ann is built by genann_init() on each side; see docs/producer_bridge_pilot.md"
+     }
+    ],
+    "rust_type": "* const crate::example1::genann",
+    "rust_bridge": "c_abi"
+   }
+  ],
+  "liveness": [],
+  "failures": [
+   "signature: struct-invariant param out: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction); no producer for FILE*: no function returns it"
+  ],
+  "policy": {
+   "max_buffer_bytes": 1048576,
+   "unproven_extent_elems": 4096,
+   "max_trip": 1024,
+   "max_table_rows": 16,
+   "producer_scalar_max": 32
+  },
+  "plan_version": 1
+ }
+]

@@ -1,0 +1,148 @@
+{
+ "pilot": "OBS matrix cell",
+ "subject": "cJSON x PtrTrans (FSE'26, gpt-5.1, Trans_PA) parse_string",
+ "date": "2026-08-25",
+ "git_commit": "747f5f09eac314bc4e32687e71497e269af36848",
+ "seed": 42,
+ "corpus": {
+  "generator": "libFuzzer via cargo-fuzz (nightly-2025-09-01), target obs_ps.rs on a scratchpad copy of the translated crate, FRESH corpus dir",
+  "args": "-seed=42 -max_total_time=300 -max_len=256 -dict=obs.dict",
+  "wall_s": 301,
+  "execs": 82789918,
+  "cov_edges": 104,
+  "features": 329,
+  "files": 139,
+  "bytes": 3122,
+  "path": "corpus_seed42/",
+  "decoding": "whole stdin = parse_buffer content, one parse_string call at offset 0 (identical in fuzz target, C driver, Rust driver)"
+ },
+ "c_reference": "cJSON v1.7.19 (upstream tag; sha256 in harness/cJSON.c.sha256), clang -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all",
+ "buildable": {
+  "C silent (clang ASan+UBSan)": true,
+  "C print (same binary, argv mode)": true,
+  "Rust silent (PtrTrans crate verbatim + obsdrv bin)": true,
+  "Rust print": true
+ },
+ "harnessable": {
+  "silent": true,
+  "print": true
+ },
+ "reached_functions": "n/a (not instrumented in replay; libFuzzer cov=104 edges over parse_string/utf16_literal_to_utf8/parse_hex4)",
+ "ub_gate": "C driver under ASan+UBSan halt_on_error; excluded if exit!=0 or sanitizer report in either mode; repeated C replay (C-unstable)",
+ "inputs_total": 139,
+ "inputs_excluded_c_ub": 0,
+ "inputs_excluded_c_unstable": 0,
+ "valid_differential_records": 139,
+ "classification": {
+  "C-UB": 0,
+  "C-unstable": 0,
+  "Rust-failure": 0,
+  "semantic-difference": 113,
+  "abstention": 0,
+  "agree": 26
+ },
+ "divergence_classes": {
+  "a_ret_differs_C1_R0": {
+   "records": 31,
+   "sub": {
+    "non_utf8_payload": 30,
+    "u_escape": 1
+   },
+   "seen_by": {
+    "O-R": 31,
+    "O-P/silent": 0,
+    "O-P/print": 31,
+    "O-S": 31,
+    "O-F": 31
+   }
+  },
+  "b_ret_equal_valuestring_lost": {
+   "records": 80,
+   "seen_by": {
+    "O-R": 0,
+    "O-P/silent": 0,
+    "O-P/print": 80,
+    "O-S": 80,
+    "O-F": 80
+   }
+  },
+  "c_ret_and_valuestring_equal_offset_differs": {
+   "records": 2,
+   "seen_by": {
+    "O-R": 0,
+    "O-P/silent": 0,
+    "O-P/print": 0,
+    "O-S": 2,
+    "O-F": 2
+   }
+  }
+ },
+ "cells": {
+  "silent": {
+   "O-R": {
+    "divergences": 31,
+    "time_to_first_divergence_s": 0.086,
+    "first_div_input": "05712e997a9ac6972ef525c7313d0d66f56dd182",
+    "first_div_idx": 6
+   },
+   "O-P": {
+    "divergences": 0,
+    "time_to_first_divergence_s": "none",
+    "first_div_input": null,
+    "first_div_idx": null
+   },
+   "O-S": {
+    "divergences": 113,
+    "time_to_first_divergence_s": 0.015,
+    "first_div_input": "003a28cc843122cb5ce5ec6dbbdecc7212fd2313",
+    "first_div_idx": 0
+   },
+   "O-F": {
+    "divergences": 113,
+    "time_to_first_divergence_s": 0.015,
+    "first_div_input": "003a28cc843122cb5ce5ec6dbbdecc7212fd2313",
+    "first_div_idx": 0
+   }
+  },
+  "print": {
+   "O-R": {
+    "divergences": 31,
+    "time_to_first_divergence_s": 0.086,
+    "first_div_input": "05712e997a9ac6972ef525c7313d0d66f56dd182",
+    "first_div_idx": 6
+   },
+   "O-P": {
+    "divergences": 111,
+    "time_to_first_divergence_s": 0.015,
+    "first_div_input": "003a28cc843122cb5ce5ec6dbbdecc7212fd2313",
+    "first_div_idx": 0
+   },
+   "O-S": {
+    "divergences": 113,
+    "time_to_first_divergence_s": 0.015,
+    "first_div_input": "003a28cc843122cb5ce5ec6dbbdecc7212fd2313",
+    "first_div_idx": 0
+   },
+   "O-F": {
+    "divergences": 113,
+    "time_to_first_divergence_s": 0.015,
+    "first_div_input": "003a28cc843122cb5ce5ec6dbbdecc7212fd2313",
+    "first_div_idx": 0
+   }
+  }
+ },
+ "expected_pattern": "O-R blind to valuestring loss, O-S detects, O-P only under print",
+ "expected_pattern_holds": "yes for class (b) (O-R 0/80, O-S 80/80, O-P 0/80 silent vs 80/80 print); whole-cell O-R is 31/113 because sibling classes (a) flip the return code",
+ "replay_wall_s": 1.615,
+ "deviations": [
+  "no 1.7-API cJSON.c in repo -> fetched upstream v1.7.19",
+  "libFuzzer dict needs \\\\ for a backslash; first run aborted, corpus wiped, rerun from empty",
+  "generic shared replay.py (O-R = first state-file line)"
+ ],
+ "raw_logs": [
+  "raw/libfuzzer_seed42.log",
+  "raw/replay_stdout.log",
+  "raw/replay_summary.json",
+  "raw/replay_records.jsonl"
+ ]
+}

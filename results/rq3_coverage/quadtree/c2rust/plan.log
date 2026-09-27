@@ -1,0 +1,33 @@
+OK  elision_                       inputs= 1
+OK  find_                          inputs= 3
+OK  get_quadrant_                  inputs= 2
+FAIL insert_                        inputs= 4
+       - signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed
+OK  node_contains_                 inputs= 2
+OK  quadtree_bounds_extend         inputs= 3
+OK  quadtree_bounds_free           inputs= 1
+OK  quadtree_bounds_new            inputs= 0
+OK  quadtree_free                  inputs= 1
+OK  quadtree_insert                inputs= 4
+OK  quadtree_new                   inputs= 4
+FAIL quadtree_node_free             inputs= 0
+       - signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported
+OK  quadtree_node_isempty          inputs= 1
+OK  quadtree_node_isleaf           inputs= 1
+OK  quadtree_node_ispointer        inputs= 1
+OK  quadtree_node_new              inputs= 0
+FAIL quadtree_node_reset            inputs= 0
+       - signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported
+OK  quadtree_node_with_bounds      inputs= 4
+FAIL quadtree_point_free            inputs= 1
+       - point: the boundary passes this POD struct pointer to free(); the harness owns the value and has no heap-owned struct adapter
+OK  quadtree_point_new             inputs= 2
+OK  quadtree_search                inputs= 3
+FAIL quadtree_walk                  inputs= 0
+       - signature: callback parameter descent deferred: function pointers (callback binding) not yet supported
+FAIL reset_node_                    inputs= 2
+       - signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed
+FAIL split_node_                    inputs= 2
+       - signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed
+
+planned 17 / 24

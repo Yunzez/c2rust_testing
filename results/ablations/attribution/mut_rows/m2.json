@@ -1,0 +1,493 @@
+[
+ {
+  "id": "dm_final_or",
+  "program": "div_mod",
+  "operator": "operator-replacement",
+  "entry": "div_mod_safe",
+  "site": "div_mod_safe: + -> |",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    1027423498,
+    10
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "dm_mod_zero_ret",
+  "program": "div_mod",
+  "operator": "guard-weakening",
+  "entry": "div_mod_safe",
+  "site": "mod_signed_guarded: b==0 returns a -> 0",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    10,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "dm_div_zero_ret",
+  "program": "div_mod",
+  "operator": "constant-perturbation",
+  "entry": "div_mod_safe",
+  "site": "div_signed_guarded: b==0 returns 0 -> 1",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    0,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "dm_mod_op",
+  "program": "div_mod",
+  "operator": "operator-replacement",
+  "entry": "div_mod_safe",
+  "site": "mod_signed_guarded tail: % -> /",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    168430090,
+    2570
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "dm_div_op",
+  "program": "div_mod",
+  "operator": "operator-replacement",
+  "entry": "div_mod_safe",
+  "site": "div_signed_guarded tail: / -> %",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    1970631978,
+    122
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "dm_div_intmin_drop",
+  "program": "div_mod",
+  "operator": "guard-weakening",
+  "entry": "div_mod_safe",
+  "site": "div_signed_guarded: drop INT_MIN/-1 guard",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    -2147483648,
+    -1
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "na_final_sub",
+  "program": "negate_abs",
+  "operator": "operator-replacement",
+  "entry": "negate_abs_safe",
+  "site": "negate_abs_safe: wrapping_add -> wrapping_sub",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    10
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "na_negu_const",
+  "program": "negate_abs",
+  "operator": "constant-perturbation",
+  "entry": "negate_abs_safe",
+  "site": "negate_u_safe: +1 -> +2",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "na_negu_op",
+  "program": "negate_abs",
+  "operator": "operator-replacement",
+  "entry": "negate_abs_safe",
+  "site": "negate_u_safe: drop bitwise-not !u -> u",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "na_abs_guard",
+  "program": "negate_abs",
+  "operator": "operator-replacement",
+  "entry": "negate_abs_safe",
+  "site": "abs_magnitude_u32: if x<0 -> if x>0",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    10
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "so_mask15",
+  "program": "shift_ops",
+  "operator": "constant-perturbation",
+  "entry": "shift_ops_safe",
+  "site": "shl_u32_masked: mask 31 -> 15",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    4294967082,
+    11007
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "so_i32_mask30",
+  "program": "shift_ops",
+  "operator": "off-by-one",
+  "entry": "shift_ops_safe",
+  "site": "shl_i32_safe: mask 31 -> 30",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    3270900602,
+    2617
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "so_xor_and",
+  "program": "shift_ops",
+  "operator": "operator-replacement",
+  "entry": "shift_ops_safe",
+  "site": "shift_ops_safe: ^ -> &",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    10,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "so_u32_shift",
+  "program": "shift_ops",
+  "operator": "operator-replacement",
+  "entry": "shift_ops_safe",
+  "site": "shl_u32_masked: << -> >>",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    41353730,
+    2
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "so_i32_shift",
+  "program": "shift_ops",
+  "operator": "operator-replacement",
+  "entry": "shift_ops_safe",
+  "site": "shl_i32_safe: << -> >>",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    4188928429,
+    249
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "su_wrap_add",
+  "program": "sub_overflow",
+  "operator": "operator-replacement",
+  "entry": "sub_overflow_safe",
+  "site": "sub_wrap_u32: wrapping_sub -> wrapping_add",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    1263225841,
+    19275
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "su_xor_or",
+  "program": "sub_overflow",
+  "operator": "operator-replacement",
+  "entry": "sub_overflow_safe",
+  "site": "sub_overflow_safe: ^ -> |",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    10,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "su_sat_max_const",
+  "program": "sub_overflow",
+  "operator": "constant-perturbation",
+  "entry": "sub_overflow_safe",
+  "site": "sub_signed_sat: high-sat returns INT32_MAX -> INT32_MIN",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    1242218399,
+    -2122219135
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "su_sat_off1",
+  "program": "sub_overflow",
+  "operator": "off-by-one",
+  "entry": "sub_overflow_safe",
+  "site": "sub_signed_sat: a > .. -> a >= ..",
+  "outcome": "NOT_DETECTED",
+  "rq2_verdict": "TN",
+  "n_artifacts": 0,
+  "evidence": null
+ },
+ {
+  "id": "su_sat_min_const",
+  "program": "sub_overflow",
+  "operator": "constant-perturbation",
+  "entry": "sub_overflow_safe",
+  "site": "sub_signed_sat: low-sat returns INT32_MIN -> INT32_MAX",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    -1061109750,
+    2117074944
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "su_sat_final_xor",
+  "program": "sub_overflow",
+  "operator": "operator-replacement",
+  "entry": "sub_overflow_safe",
+  "site": "sub_signed_sat tail: a - b -> a ^ b",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    134217728,
+    35338
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "im_gcd_base",
+  "program": "intmath",
+  "operator": "guard-weakening",
+  "entry": "intmath_eval",
+  "site": "gcd_u64: base returns a -> b(=0)",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    0,
+    251658240,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "im_ipow_op",
+  "program": "intmath",
+  "operator": "operator-replacement",
+  "entry": "intmath_eval",
+  "site": "ipow_mod: modmul rem -> add",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    2,
+    0,
+    9223372036854775808
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "im_isqrt_loop",
+  "program": "intmath",
+  "operator": "off-by-one",
+  "entry": "intmath_eval",
+  "site": "isqrt_u64: while lo <= hi -> lo < hi",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    3,
+    3677410304,
+    0
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ },
+ {
+  "id": "im_isqrt_const",
+  "program": "intmath",
+  "operator": "constant-perturbation",
+  "entry": "intmath_eval",
+  "site": "isqrt_u64: n<2 -> n<3",
+  "outcome": "DETECTED_UB_FREE",
+  "rq2_verdict": "BUG_KEPT",
+  "n_artifacts": 1,
+  "evidence": {
+   "args": [
+    3,
+    2,
+    2450949931008
+   ],
+   "ub_reports": [],
+   "is_ub": false,
+   "tier": null,
+   "ret": 0
+  }
+ }
+]

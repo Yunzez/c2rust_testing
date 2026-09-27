@@ -1,0 +1,200 @@
+{
+  "functions": [
+    {
+      "name": "swap",
+      "line": 8,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "*mut std::os::raw::c_int",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "*mut std::os::raw::c_int",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i32",
+            "shape": "*i32"
+          },
+          {
+            "ty": "*mut i32",
+            "shape": "*i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "partition",
+      "line": 15,
+      "signature": {
+        "params": [
+          {
+            "name": "arr",
+            "ty": "*mut std::os::raw::c_int",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "low",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "high",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "std::os::raw::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i32",
+            "shape": "*i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "+": 4,
+        "-": 2,
+        "<=": 2
+      },
+      "consts": [],
+      "strings": []
+    },
+    {
+      "name": "quickSort",
+      "line": 33,
+      "signature": {
+        "params": [
+          {
+            "name": "arr",
+            "ty": "*mut std::os::raw::c_int",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "low",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "high",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i32",
+            "shape": "*i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "-": 1,
+        "<": 1
+      },
+      "consts": [],
+      "strings": []
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "swap"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "swap"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "quickSort",
+      "to": "partition"
+    },
+    {
+      "from": "quickSort",
+      "to": "quickSort"
+    },
+    {
+      "from": "quickSort",
+      "to": "quickSort"
+    }
+  ],
+  "indirect_calls": [],
+  "excluded_scaffolding": []
+}

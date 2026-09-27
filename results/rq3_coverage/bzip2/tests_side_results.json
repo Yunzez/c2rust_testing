@@ -1,0 +1,15 @@
+{
+  "_what": "The library's shipped acceptance suite (Makefile `test:` — 3 compress + 3 decompress, each `cmp`'d against the shipped reference) run through each translated crate via the three-line CLI adapter in scripts/rq4/tests_side.sh. Recomputed 2026-09-04 by re-running the six `cmp`s over the preserved run/ outputs; not transcribed from memory (an earlier note said Laertes 3/6 — that was wrong).",
+  "_rule": "PROTOCOL.md section 2: the tests side is a baseline only if the suite passes completely. Anything else is a recorded outcome, never converted to 0 % coverage; the universe then comes from a `denom` build with -C link-dead-code.",
+  "commands": ["-1 < sample1.ref", "-2 < sample2.ref", "-3 < sample3.ref", "-d < sample1.bz2", "-d < sample2.bz2", "-ds < sample3.bz2"],
+  "reference_sizes": {"sample1.bz2": 32348, "sample2.bz2": 73732, "sample3.bz2": 235, "sample1.ref": 98696, "sample2.ref": 212340, "sample3.ref": 120244},
+  "c2rust":      {"status": "PASS", "passed": 6, "failed": 0, "baseline": true},
+  "laertes":     {"status": "TEST-FAILS", "passed": 0, "failed": 6, "baseline": false,
+                  "output_sizes": [0, 0, 0, 95000, 200000, 120000],
+                  "observation": "compress: empty output. decompress: truncated at a multiple of 5000 bytes (the CLI's write block); the final partial block is never emitted. CLI-level observation only — not a defect until confirmed at a boundary."},
+  "c2saferrust": {"status": "TEST-FAILS", "passed": 0, "failed": 6, "baseline": false,
+                  "output_sizes": [0, 0, 0, 0, 0, 0],
+                  "observation": "every command produced no output; consistent with the reshaped-API SIGSEGV recorded in INVENTORY.md."},
+  "crown":       {"status": "TEST-ADAPTER-FAILS", "passed": null, "failed": null, "baseline": false,
+                  "observation": "the adapter bin does not compile: `bzip2_crown::bzip2::main` not found (CROWN comments out the CLI main). Universe from denom_crown."}
+}

@@ -1,0 +1,202 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  6.144kB
+Step 1/16 : FROM ubuntu:22.04
+ ---> 4f838adc7181
+Step 2/16 : ARG DEBIAN_FRONTEND=noninteractive
+ ---> Using cache
+ ---> 4d7ed73b9303
+Step 3/16 : ARG RUSTASSURE_COMMIT=39618406bd0c6acb1c5ca2cd697c3781a8e4c296
+ ---> Using cache
+ ---> 4fdd08315fcb
+Step 4/16 : ARG RUSTIFY_KLEE_COMMIT=d880ceb4a521126a243e6126430e39a215abed06
+ ---> Using cache
+ ---> 9b7dbd1b79d0
+Step 5/16 : ARG NLOHMANN_JSON_COMMIT=d33ecd3f3bd11e30aa8bbabb00e0a9cd3f2456d8
+ ---> Using cache
+ ---> 898a29cfb70a
+Step 6/16 : RUN apt-get update && apt-get install -y --no-install-recommends         build-essential         ca-certificates         clang-14         cmake         curl         git         graphviz         libgraphviz-dev         libsqlite3-dev         libz3-dev         llvm-14         llvm-14-dev         llvm-14-tools         ninja-build         pkg-config         python3         python3-dev         python3-pip         z3         zlib1g-dev     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> a43a39aa894d
+Step 7/16 : ENV PATH=/root/.cargo/bin:/usr/lib/llvm-14/bin:/opt/rustify-klee/bin:${PATH}
+ ---> Using cache
+ ---> 7610d0d3f6f1
+Step 8/16 : ENV LLVM_DIR=/usr/lib/llvm-14/lib/cmake/llvm
+ ---> Using cache
+ ---> 65926a3417e0
+Step 9/16 : RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs         | sh -s -- -y --profile minimal --default-toolchain 1.64.0     && rustc --version     && rustc -vV | grep 'LLVM version: 14\.'
+ ---> Using cache
+ ---> d9eafc43ae6f
+Step 10/16 : RUN git clone https://github.com/davsec-lab/rustify-klee.git /opt/src/rustify-klee     && git -C /opt/src/rustify-klee checkout --detach "${RUSTIFY_KLEE_COMMIT}"     && test "$(git -C /opt/src/rustify-klee rev-parse HEAD)" = "${RUSTIFY_KLEE_COMMIT}"     && cmake -S /opt/src/rustify-klee -B /opt/build/rustify-klee -G Ninja         -DCMAKE_BUILD_TYPE=Release         -DCMAKE_INSTALL_PREFIX=/opt/rustify-klee         -DLLVM_DIR=/usr/lib/llvm-14/lib/cmake/llvm         -DLLVMCC=/usr/bin/clang-14         -DLLVMCXX=/usr/bin/clang++-14         -DENABLE_TCMALLOC=OFF         -DENABLE_SOLVER_STP=OFF         -DENABLE_SOLVER_Z3=ON         -DENABLE_SOLVER_METASMT=OFF         -DENABLE_POSIX_RUNTIME=OFF         -DENABLE_UNIT_TESTS=OFF         -DENABLE_SYSTEM_TESTS=OFF         -DENABLE_DOCS=OFF     && cmake --build /opt/build/rustify-klee -j4     && cmake --install /opt/build/rustify-klee
+ ---> Using cache
+ ---> 191a0cfabb6b
+Step 11/16 : RUN git clone https://github.com/davsec-lab/rustassure.git /opt/rustassure     && git -C /opt/rustassure checkout --detach "${RUSTASSURE_COMMIT}"     && test "$(git -C /opt/rustassure rev-parse HEAD)" = "${RUSTASSURE_COMMIT}"     && git clone https://github.com/nlohmann/json.git /opt/rustassure/src/Symbolizer/json     && git -C /opt/rustassure/src/Symbolizer/json checkout --detach "${NLOHMANN_JSON_COMMIT}"     && test "$(git -C /opt/rustassure/src/Symbolizer/json rev-parse HEAD)" = "${NLOHMANN_JSON_COMMIT}"
+ ---> Using cache
+ ---> 52a965321a44
+Step 12/16 : RUN cmake -S /opt/rustassure/src/Symbolizer -B /opt/rustassure/src/Symbolizer/build -G Ninja         -DCMAKE_BUILD_TYPE=RelWithDebInfo         -DCMAKE_C_COMPILER=/usr/bin/clang-14         -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14         -DLLVM_DIR=/usr/lib/llvm-14/lib/cmake/llvm     && cmake --build /opt/rustassure/src/Symbolizer/build -j4
+ ---> Using cache
+ ---> 008b23865827
+Step 13/16 : RUN apt-get update     && apt-get install -y --no-install-recommends fdupes     && rm -rf /var/lib/apt/lists/*     && rustup toolchain install 1.70.0 --profile minimal     && cargo +1.70.0 install rustfilt --version 0.2.1     && rustup toolchain uninstall 1.70.0
+ ---> Using cache
+ ---> 5ebb518707cf
+Step 14/16 : RUN python3 -m pip install --no-cache-dir         antlr4-python3-runtime==4.13.2         llvmlite==0.40.1         more-itertools==10.7.0         networkx==3.1         numpy==1.24.4         openai==1.109.1         pandas==2.0.3         pydot==3.0.4         pygraphviz==1.11         pycparser==2.23         scipy==1.10.1         sympy==1.12         tabulate==0.9.0         tiktoken==0.11.0         tree-sitter==0.25.2         tree-sitter-c==0.23.6         tree-sitter-rust==0.23.2
+ ---> Running in 1ee39d63e16e
+Collecting antlr4-python3-runtime==4.13.2
+  Downloading antlr4_python3_runtime-4.13.2-py3-none-any.whl (144 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 144.5/144.5 KB 4.4 MB/s eta 0:00:00
+Collecting llvmlite==0.40.1
+  Downloading llvmlite-0.40.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (42.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.1/42.1 MB 79.5 MB/s eta 0:00:00
+Collecting more-itertools==10.7.0
+  Downloading more_itertools-10.7.0-py3-none-any.whl (65 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 65.3/65.3 KB 259.1 MB/s eta 0:00:00
+Collecting networkx==3.1
+  Downloading networkx-3.1-py3-none-any.whl (2.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 44.0 MB/s eta 0:00:00
+Collecting numpy==1.24.4
+  Downloading numpy-1.24.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.3/17.3 MB 50.8 MB/s eta 0:00:00
+Collecting openai==1.109.1
+  Downloading openai-1.109.1-py3-none-any.whl (948 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 948.6/948.6 KB 69.4 MB/s eta 0:00:00
+Collecting pandas==2.0.3
+  Downloading pandas-2.0.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 54.4 MB/s eta 0:00:00
+Collecting pydot==3.0.4
+  Downloading pydot-3.0.4-py3-none-any.whl (35 kB)
+Collecting pygraphviz==1.11
+  Downloading pygraphviz-1.11.zip (120 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 120.8/120.8 KB 289.4 MB/s eta 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting pycparser==2.23
+  Downloading pycparser-2.23-py3-none-any.whl (118 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 118.1/118.1 KB 292.8 MB/s eta 0:00:00
+Collecting scipy==1.10.1
+  Downloading scipy-1.10.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (34.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 34.4/34.4 MB 57.3 MB/s eta 0:00:00
+Collecting sympy==1.12
+  Downloading sympy-1.12-py3-none-any.whl (5.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.7/5.7 MB 52.6 MB/s eta 0:00:00
+Collecting tabulate==0.9.0
+  Downloading tabulate-0.9.0-py3-none-any.whl (35 kB)
+Collecting tiktoken==0.11.0
+  Downloading tiktoken-0.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 64.6 MB/s eta 0:00:00
+Collecting tree-sitter==0.25.2
+  Downloading tree_sitter-0.25.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (627 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 627.7/627.7 KB 120.4 MB/s eta 0:00:00
+Collecting tree-sitter-c==0.23.6
+  Downloading tree_sitter_c-0.23.6-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (98 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 98.1/98.1 KB 342.4 MB/s eta 0:00:00
+Collecting tree-sitter-rust==0.23.2
+  Downloading tree_sitter_rust-0.23.2-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (157 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 157.6/157.6 KB 322.8 MB/s eta 0:00:00
+Collecting tqdm>4
+  Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 KB 251.4 MB/s eta 0:00:00
+Collecting jiter<1,>=0.4.0
+  Downloading jiter-0.17.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (348 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 348.8/348.8 KB 156.3 MB/s eta 0:00:00
+Collecting pydantic<3,>=1.9.0
+  Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 472.6/472.6 KB 102.0 MB/s eta 0:00:00
+Collecting anyio<5,>=3.5.0
+  Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 132.1/132.1 KB 319.0 MB/s eta 0:00:00
+Collecting sniffio
+  Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+Collecting typing-extensions<5,>=4.11
+  Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 KB 241.8 MB/s eta 0:00:00
+Collecting httpx<1,>=0.23.0
+  Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 KB 321.6 MB/s eta 0:00:00
+Collecting distro<2,>=1.7.0
+  Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+Collecting tzdata>=2022.1
+  Downloading tzdata-2026.4-py2.py3-none-any.whl (347 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 347.5/347.5 KB 158.4 MB/s eta 0:00:00
+Collecting python-dateutil>=2.8.2
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 229.9/229.9 KB 178.2 MB/s eta 0:00:00
+Collecting pytz>=2020.1
+  Downloading pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 508.3/508.3 KB 115.8 MB/s eta 0:00:00
+Collecting pyparsing>=3.0.9
+  Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 122.8/122.8 KB 345.1 MB/s eta 0:00:00
+Collecting mpmath>=0.19
+  Downloading mpmath-1.4.1-py3-none-any.whl (567 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 567.8/567.8 KB 106.4 MB/s eta 0:00:00
+Collecting requests>=2.26.0
+  Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.1/73.1 KB 196.5 MB/s eta 0:00:00
+Collecting regex>=2022.1.18
+  Downloading regex-2026.9.10-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (796 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 796.3/796.3 KB 66.3 MB/s eta 0:00:00
+Collecting exceptiongroup>=1.0.2
+  Downloading exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+Collecting idna>=2.8
+  Downloading idna-3.19-py3-none-any.whl (68 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.5/68.5 KB 312.5 MB/s eta 0:00:00
+Collecting httpcore==1.*
+  Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 KB 271.1 MB/s eta 0:00:00
+Collecting certifi
+  Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.0/137.0 KB 352.3 MB/s eta 0:00:00
+Collecting h11>=0.16
+  Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Collecting typing-inspection>=0.4.2
+  Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Collecting annotated-types>=0.6.0
+  Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Collecting pydantic-core==2.46.5
+  Downloading pydantic_core-2.46.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 62.0 MB/s eta 0:00:00
+Collecting six>=1.5
+  Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Collecting urllib3<3,>=1.26
+  Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.1/131.1 KB 319.2 MB/s eta 0:00:00
+Collecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.5.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (261 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 261.6/261.6 KB 323.5 MB/s eta 0:00:00
+Building wheels for collected packages: pygraphviz
+  Building wheel for pygraphviz (setup.py): started
+  Building wheel for pygraphviz (setup.py): finished with status 'done'
+  Created wheel for pygraphviz: filename=pygraphviz-1.11-cp310-cp310-linux_x86_64.whl size=175927 sha256=832acb3a06c37ad41f9eb2a06103b70eca8a1a3b224493712561a3f05861f660
+  Stored in directory: /tmp/pip-ephem-wheel-cache-7z44ckw3/wheels/5b/ee/36/f47a0d35664fbe1a2b5a433ae33c6ad636b00bb231f68a9aaa
+Successfully built pygraphviz
+Installing collected packages: pytz, antlr4-python3-runtime, urllib3, tzdata, typing-extensions, tree-sitter-rust, tree-sitter-c, tree-sitter, tqdm, tabulate, sniffio, six, regex, pyparsing, pygraphviz, pycparser, numpy, networkx, mpmath, more-itertools, llvmlite, jiter, idna, h11, distro, charset_normalizer, certifi, annotated-types, typing-inspection, sympy, scipy, requests, python-dateutil, pydot, pydantic-core, httpcore, exceptiongroup, tiktoken, pydantic, pandas, anyio, httpx, openai
+Successfully installed annotated-types-0.8.0 antlr4-python3-runtime-4.13.2 anyio-4.15.1 certifi-2026.7.22 charset_normalizer-3.5.1 distro-1.9.0 exceptiongroup-1.3.1 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.19 jiter-0.17.0 llvmlite-0.40.1 more-itertools-10.7.0 mpmath-1.4.1 networkx-3.1 numpy-1.24.4 openai-1.109.1 pandas-2.0.3 pycparser-2.23 pydantic-2.13.5 pydantic-core-2.46.5 pydot-3.0.4 pygraphviz-1.11 pyparsing-3.3.2 python-dateutil-2.9.0.post0 pytz-2026.3.post1 regex-2026.9.10 requests-2.34.2 scipy-1.10.1 six-1.17.0 sniffio-1.3.1 sympy-1.12 tabulate-0.9.0 tiktoken-0.11.0 tqdm-4.70.1 tree-sitter-0.25.2 tree-sitter-c-0.23.6 tree-sitter-rust-0.23.2 typing-extensions-4.16.0 typing-inspection-0.4.4 tzdata-2026.4 urllib3-2.7.0
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m ---> Removed intermediate container 1ee39d63e16e
+ ---> a059b9d3f434
+Step 15/16 : RUN klee --version     && klee --help | grep -- '--target-function-name'     && clang --version | grep 'version 14\.'     && opt --version | grep 'LLVM version 14\.'     && rustfilt --version     && fdupes --version     && python3 -c 'from tree_sitter import Language, Parser; import llvmlite, networkx, tree_sitter_c, tree_sitter_rust; Parser(Language(tree_sitter_c.language())); Parser(Language(tree_sitter_rust.language()))'     && cd /opt/rustassure/src/python/kquery-parser     && python3 -c 'import KqueryGrapher; assert KqueryGrapher.logging.__name__ == "logging"'
+ ---> Running in 75b8074fa1fb
+KLEE 3.2-pre (https://klee-se.org/)
+  Build mode: Release (Asserts: ON)
+  Build revision: d880ceb4a521126a243e6126430e39a215abed06
+
+Ubuntu LLVM version 14.0.0
+  
+  Optimized build.
+  Default target: x86_64-pc-linux-gnu
+  Host CPU: znver2
+  --target-function-name=<string>                         - Target function name
+Ubuntu clang version 14.0.0-1ubuntu1.1
+Ubuntu LLVM version 14.0.0
+rust_demangle 0.2.1
+fdupes 2.1.2
+ ---> Removed intermediate container 75b8074fa1fb
+ ---> 463a3ca74f49
+Step 16/16 : WORKDIR /opt/rustassure/src/python
+ ---> Running in f8dedbc41aca
+ ---> Removed intermediate container f8dedbc41aca
+ ---> 28ac9eb6fa72
+Successfully built 28ac9eb6fa72
+Successfully tagged c2r-baseline-rustassure:39618406

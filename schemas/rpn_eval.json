@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "program": "rpn_eval",
+  "entry": "rpn_eval",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "i32"
+  },
+  "params": [
+    {
+      "name": "prog",
+      "role": "input_buffer",
+      "decode": "vector",
+      "elem": "u8",
+      "elem_width": 1,
+      "length_param": "len"
+    },
+    {
+      "name": "len",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "prog",
+      "rust": "usize",
+      "width": 8
+    },
+    {
+      "name": "result",
+      "role": "out_scalar",
+      "decode": "out_scalar_zero",
+      "elem": "i64",
+      "elem_width": 8
+    }
+  ]
+}

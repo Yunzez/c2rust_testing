@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "defect": "S4",
+  "baseline": "flourine",
+  "target": "crc32_z_packet",
+  "adapter_kind": "documented_per_function_json_with_safe_fixed_shape_wrapper",
+  "semantic_rewrite": false,
+  "known_witness_encoded": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/optipng_laertes/source/zlib/crc32.c",
+    "c_table": "benchmark/pairs/rq4/optipng_laertes/source/zlib/crc32.h",
+    "rust": "benchmark/pairs/rq4/optipng_laertes/translated/optipng_laertes.rs"
+  },
+  "wrapper_contract": "Decode a generated packet into CRC state, a 16-byte non-NULL buffer, and a length in [0,16]; call the exact target and its exact BYFOUR helpers on both sides.",
+  "input_sha256": {
+    "crc32_z_packet.json": "e1407058108653335785c1bf1a9f4d94dbcbf058e496be6c4b1dfd1de4a23ea1",
+    "crc32_z_packet.rs": "41f35be9916cf7820733d6c147abb1c6fb8b555829ac9dafd320482f6233f11f",
+    "crc32_z_packet_raw.inc": "d25c6408e4a286e15b46e367b1b4ddc5288733d3de23be205a629844994695e3"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "baseline": "rustassure",
+  "defect_id": "C12",
+  "target": "url_is_protocol",
+  "gates": {
+    "submitted": true,
+    "accepted": true,
+    "compiled": true,
+    "completed": true,
+    "detected": true
+  },
+  "outcome": "detected",
+  "artifact_native_symbolic_analysis": true,
+  "has_baseline_signal": true,
+  "distances": [
+    {
+      "function_name": "url_is_protocol",
+      "argument_name": "arg_value_0",
+      "best_edit_distances": 0.0
+    },
+    {
+      "function_name": "url_is_protocol",
+      "argument_name": "ret_value",
+      "best_edit_distances": 1.0
+    }
+  ],
+  "summary": {
+    "code_base": "custom",
+    "model": "custom",
+    "total_functions": "1",
+    "total_rust_functions_compiled": "1",
+    "total_arguments": "2",
+    "edit_distance_equal_0": "0",
+    "overall_lines_sum": "14",
+    "overall_unsafe_sum": "14",
+    "overall_safe_lines": "0",
+    "rust_coverage": "55.0",
+    "c_coverage": "100.0",
+    "execution_time": "0m"
+  },
+  "manual_validation": {
+    "outcome": "detected",
+    "baseline_signal_matches_defect": true,
+    "source_level_validation": "RustAssure reports edit distance 1 for url_is_protocol's return graph. The submitted exact C package initializes URL_SCHEMES, while the frozen Rust translation leaves the corresponding table NULL; this is the catalogued C12 initialization-loss root cause reached by the analyzed target.",
+    "c_oracle_status": "The adapter supplies a NUL-terminated generated string to the original const-char-pointer interface; the reviewed C execution is within that interface contract.",
+    "reviewed_by": "authors",
+    "paper_summary": "RustAssure detected C12: its nonzero return-graph distance was manually traced to the catalogued lost URL_SCHEMES initialization on a contract-valid C input.",
+    "evidence": [
+      "results/baseline_artifacts/runs/rustassure/C12/result.json",
+      "results/baseline_artifacts/adapters/rustassure/C12/adapter.json",
+      "results/rq4_effectiveness/defect_manifest.json"
+    ]
+  },
+  "external_directory": "/home/anonym/c2rust_baselines/runs/rustassure/pilot_C12/attempt-002",
+  "hashes": {
+    "result.csv": "1627e1b0dff9143631541e4ced4c79641f1d3846a85904c713b254e944506dfa",
+    "edit_distance/best_edit_distances.csv": "7865226ed034612754e2aa686532d567725e58a9a782b4675b331c66ed677fba",
+    "rust_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5",
+    "c_klee_terminate_results.csv": "a3a23a1807f9540f5e993060877f91c7053c171a89fd48c5a453a43340fe53f5"
+  },
+  "interpretation": "RustAssure detected C12: its nonzero return-graph distance was manually traced to the catalogued lost URL_SCHEMES initialization on a contract-valid C input."
+}

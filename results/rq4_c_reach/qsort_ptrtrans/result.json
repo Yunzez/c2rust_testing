@@ -1,0 +1,103 @@
+{
+ "cell": "qsort_ptrtrans",
+ "generator": "fd1f75b4716a1d45",
+ "c_source": "qsort.c",
+ "mode": "c-only",
+ "build": "cargo fuzz build --sanitizer none; C: -O1 -g sancov + ub-free + -fprofile-instr-generate -fcoverage-mapping",
+ "boundaries_archived_built": 3,
+ "boundaries_measured": 3,
+ "rows": [
+  {
+   "boundary": "partition",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 42,
+   "outcomes": {
+    "completed": 42
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 3,
+   "c_regions_reached": 7,
+   "c_regions_total": 10
+  },
+  {
+   "boundary": "quickSort",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 81,
+   "outcomes": {
+    "completed": 81
+   },
+   "profiles": 1,
+   "c_functions_reached": 3,
+   "c_functions_total": 3,
+   "c_regions_reached": 10,
+   "c_regions_total": 10
+  },
+  {
+   "boundary": "swap",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 8,
+   "outcomes": {
+    "completed": 8
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 3,
+   "c_regions_reached": 1,
+   "c_regions_total": 10
+  }
+ ],
+ "inputs": {
+  "completed": 131
+ },
+ "c": {
+  "functions_total": 3,
+  "functions_reached": 3,
+  "regions_total": 10,
+  "regions_reached": 10,
+  "function_reach": 1.0,
+  "region_reach": 1.0,
+  "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+  "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+ },
+ "rust_archived": {
+  "functions_total": 3,
+  "functions_reached": 3,
+  "regions_total": 120,
+  "regions_reached": 105,
+  "function_reach": 1.0,
+  "region_reach": 0.875,
+  "names_in_scope": 3,
+  "names_reached": 3
+ },
+ "matched": {
+  "map": "results/rq1_matching/raw/group_b/ptrtrans_qsort/matcher_output.json",
+  "config": {
+   "topo": true,
+   "abstain_eps": 0.01
+  },
+  "accepted_pairs": 2,
+  "counts": {
+   "both": 2,
+   "c_only": 0,
+   "rust_only": 0,
+   "neither": 0,
+   "c_only_rust_terminated": 0,
+   "rust_only_c_terminated": 0
+  },
+  "exclusive_provenance": {},
+  "ambiguous": 1,
+  "c_unmatched": 0,
+  "rust_unmatched": 0,
+  "c_unmatched_reached": 0,
+  "rust_unmatched_reached": 0,
+  "accepted_pairs_out_of_scope": 0
+ },
+ "seconds": 0
+}

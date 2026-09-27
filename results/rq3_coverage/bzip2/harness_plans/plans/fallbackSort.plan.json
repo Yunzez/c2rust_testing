@@ -1,0 +1,219 @@
+{
+ "boundary": "fallbackSort",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "fmap",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "k is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 240,
+     "col": 7,
+     "snippet": "fmap[k] = i;",
+     "note": "fmap[unknown(k is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 269,
+     "col": 14,
+     "snippet": "k = fmap[i] - H; if (k < 0) k += nblock;",
+     "note": "fmap[nblock-1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 302,
+     "col": 29,
+     "snippet": "cc1 = eclass[fmap[i]];",
+     "note": "fmap[unknown(r is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 326,
+     "col": 15,
+     "snippet": "eclass8[fmap[i]] = (UChar)j;",
+     "note": "fmap[nblock-1] read"
+    }
+   ]
+  },
+  {
+   "param": "eclass",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "k is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 270,
+     "col": 10,
+     "snippet": "eclass[k] = j;",
+     "note": "eclass[unknown(k is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 302,
+     "col": 22,
+     "snippet": "cc1 = eclass[fmap[i]];",
+     "note": "eclass[4294967295] read"
+    }
+   ]
+  },
+  {
+   "param": "bhtab",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "nBhtab is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 244,
+     "col": 33,
+     "snippet": "for (i = 0; i < nBhtab; i++) bhtab[i] = 0;",
+     "note": "bhtab[unknown(nBhtab is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 245,
+     "col": 30,
+     "snippet": "for (i = 0; i < 256; i++) SET_BH(ftab[i]);",
+     "note": "bhtab[67108863] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 255,
+     "col": 7,
+     "snippet": "SET_BH(nblock + 2*i);",
+     "note": "bhtab[unknown(div)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 256,
+     "col": 7,
+     "snippet": "CLEAR_BH(nblock + 2*i + 1);",
+     "note": "bhtab[unknown(div)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 268,
+     "col": 14,
+     "snippet": "if (ISSET_BH(i)) j = i;",
+     "note": "bhtab[unknown(div)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 279,
+     "col": 17,
+     "snippet": "while (ISSET_BH(k) && UNALIGNED_BH(k)) k++;",
+     "note": "bhtab[unknown(div)] read"
+    }
+   ]
+  },
+  {
+   "param": "nblock",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 1024,
+    "derivation": [
+     "policy_trip_clamp",
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "blocksort.c",
+     "line": 232,
+     "col": 4,
+     "snippet": "for (i = 0; i < nblock; i++) ftab[eclass8[i]]++;",
+     "note": "nblock appears in this loop's control expressions"
+    },
+    {
+     "rule": "policy_trip_clamp",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_trip = 1024",
+     "note": "nblock controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+    },
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "nblock can influence an index into fmap; the harness allocates 4096 elements, so nblock <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "verb",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  }
+ ],
+ "liveness": [
+  {
+   "param": "nblock",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "blocksort.c",
+    "line": 232,
+    "col": 4,
+    "snippet": "for (i = 0; i < nblock; i++) ftab[eclass8[i]]++;",
+    "note": "nblock appears in this loop's control expressions"
+   }
+  }
+ ],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

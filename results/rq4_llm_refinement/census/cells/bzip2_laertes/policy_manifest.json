@@ -1,0 +1,4064 @@
+{
+ "policy": "docs/seeding_policy_plan.md section 3 (frozen 2026-09-10)",
+ "plans_sha256": "9d6db5544a6fdb3894d73590c85260832bad00553ba08c98e38d07c407562242",
+ "prng_seed": 7,
+ "max_seeds": 16,
+ "max_bytes": 2097152,
+ "boundaries": {
+  "BZ2_bzBuffToBuffCompress": {
+   "kind": "plan-guided",
+   "fields": [
+    "blockSize100k",
+    "verbosity",
+    "workFactor"
+   ],
+   "first_opaque": "source",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "blockSize100k": 1,
+      "verbosity": 0,
+      "workFactor": 0
+     },
+     "length": 268,
+     "sha256": "85c8fecdfba022a3",
+     "layout": {
+      "blockSize100k": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "workFactor": [
+       8,
+       4
+      ],
+      "source": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "blockSize100k": 2,
+      "verbosity": 1,
+      "workFactor": 1
+     },
+     "length": 268,
+     "sha256": "1e03244f34f71236",
+     "layout": {
+      "blockSize100k": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "workFactor": [
+       8,
+       4
+      ],
+      "source": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "blockSize100k": 5,
+      "verbosity": 2,
+      "workFactor": 125
+     },
+     "length": 268,
+     "sha256": "00a37b964e5eb844",
+     "layout": {
+      "blockSize100k": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "workFactor": [
+       8,
+       4
+      ],
+      "source": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "blockSize100k": 8,
+      "verbosity": 3,
+      "workFactor": 249
+     },
+     "length": 268,
+     "sha256": "f533ee6e2927057c",
+     "layout": {
+      "blockSize100k": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "workFactor": [
+       8,
+       4
+      ],
+      "source": [
+       12,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "blockSize100k": 9,
+      "verbosity": 4,
+      "workFactor": 250
+     },
+     "length": 268,
+     "sha256": "aa190d662e65879b",
+     "layout": {
+      "blockSize100k": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "workFactor": [
+       8,
+       4
+      ],
+      "source": [
+       12,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "blockSize100k",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      1,
+      9
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "verbosity",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "workFactor",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      250
+     ],
+     "float": false
+    },
+    {
+     "node": "Zero",
+     "name": "dest",
+     "why": "output buffer with capacity pointer, zero-filled"
+    },
+    {
+     "node": "Opaque",
+     "name": "source",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "BZ2_bzBuffToBuffDecompress": {
+   "kind": "plan-guided",
+   "fields": [
+    "small",
+    "verbosity"
+   ],
+   "first_opaque": "source",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "small": 0,
+      "verbosity": 0
+     },
+     "length": 264,
+     "sha256": "197c560a55378c2e",
+     "layout": {
+      "small": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "source": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "small": 1,
+      "verbosity": 1
+     },
+     "length": 264,
+     "sha256": "6a1502d88a53651f",
+     "layout": {
+      "small": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "source": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "small": 0,
+      "verbosity": 2
+     },
+     "length": 264,
+     "sha256": "9ed6b320977ab423",
+     "layout": {
+      "small": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "source": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "small": 1,
+      "verbosity": 3
+     },
+     "length": 264,
+     "sha256": "2052fe61077db0ed",
+     "layout": {
+      "small": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "source": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "small": 0,
+      "verbosity": 4
+     },
+     "length": 264,
+     "sha256": "0f773420fd2f7589",
+     "layout": {
+      "small": [
+       0,
+       4
+      ],
+      "verbosity": [
+       4,
+       4
+      ],
+      "source": [
+       8,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "small",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "verbosity",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4
+     ],
+     "float": false
+    },
+    {
+     "node": "Zero",
+     "name": "dest",
+     "why": "output buffer with capacity pointer, zero-filled"
+    },
+    {
+     "node": "Opaque",
+     "name": "source",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    }
+   ]
+  },
+  "BZ2_bz__AssertH__fail": {
+   "kind": "plan-guided",
+   "fields": [
+    "errcode"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "errcode": 0
+     },
+     "length": 4,
+     "sha256": "df3f619804a92fdb",
+     "layout": {
+      "errcode": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "errcode": 1
+     },
+     "length": 4,
+     "sha256": "67abdd721024f0ff",
+     "layout": {
+      "errcode": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "errcode": 2
+     },
+     "length": 4,
+     "sha256": "26b25d457597a7b0",
+     "layout": {
+      "errcode": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "errcode": 3
+     },
+     "length": 4,
+     "sha256": "9d9f290527a6be62",
+     "layout": {
+      "errcode": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "errcode": 5
+     },
+     "length": 4,
+     "sha256": "2594b6a92ebfb1c3",
+     "layout": {
+      "errcode": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "errcode": 10
+     },
+     "length": 4,
+     "sha256": "075de2b906dbd706",
+     "layout": {
+      "errcode": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "errcode": 20
+     },
+     "length": 4,
+     "sha256": "447e12701a0d03cf",
+     "layout": {
+      "errcode": [
+       0,
+       4
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "errcode": -1
+     },
+     "length": 4,
+     "sha256": "ad95131bc0b799c0",
+     "layout": {
+      "errcode": [
+       0,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "errcode",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "BZ2_bzlibVersion": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": []
+  },
+  "BZ2_hbAssignCodes": {
+   "kind": "plan-guided",
+   "fields": [
+    "minLen",
+    "maxLen"
+   ],
+   "first_opaque": "length",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "minLen": 0,
+      "maxLen": 0
+     },
+     "length": 264,
+     "sha256": "562f24e2d86e7b2a",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "length": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "minLen": 1,
+      "maxLen": 1
+     },
+     "length": 264,
+     "sha256": "671a7ff0f13050eb",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "length": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "minLen": 512,
+      "maxLen": 512
+     },
+     "length": 264,
+     "sha256": "0d921221823a8ec3",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "length": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "minLen": 1023,
+      "maxLen": 1023
+     },
+     "length": 264,
+     "sha256": "ec0ae943ad5df3a7",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "length": [
+       8,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "minLen": 1024,
+      "maxLen": 1024
+     },
+     "length": 264,
+     "sha256": "4cfad455aea4eaee",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "length": [
+       8,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "minLen",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "maxLen",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "length",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "code",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "BZ2_hbCreateDecodeTables": {
+   "kind": "plan-guided",
+   "fields": [
+    "minLen",
+    "maxLen"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "minLen": 0,
+      "maxLen": 0
+     },
+     "length": 8212,
+     "sha256": "5c5483a53574e432",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "limit": [
+       8,
+       4100
+      ],
+      "base": [
+       4108,
+       4104
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "minLen": 1,
+      "maxLen": 1
+     },
+     "length": 8212,
+     "sha256": "b34a1110add8fa27",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "limit": [
+       8,
+       4100
+      ],
+      "base": [
+       4108,
+       4104
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "minLen": 512,
+      "maxLen": 512
+     },
+     "length": 8212,
+     "sha256": "323ebca2c741daa9",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "limit": [
+       8,
+       4100
+      ],
+      "base": [
+       4108,
+       4104
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "minLen": 1023,
+      "maxLen": 1023
+     },
+     "length": 8212,
+     "sha256": "84d145c12742805f",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "limit": [
+       8,
+       4100
+      ],
+      "base": [
+       4108,
+       4104
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "minLen": 1024,
+      "maxLen": 1024
+     },
+     "length": 8212,
+     "sha256": "8368f363e2e80727",
+     "layout": {
+      "minLen": [
+       0,
+       4
+      ],
+      "maxLen": [
+       4,
+       4
+      ],
+      "limit": [
+       8,
+       4100
+      ],
+      "base": [
+       4108,
+       4104
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "minLen",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "maxLen",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Zero",
+     "name": "perm",
+     "why": "output buffer with capacity pointer, zero-filled"
+    },
+    {
+     "node": "Repeat",
+     "name": "limit",
+     "elem": "i32",
+     "count": {
+      "kind": "const",
+      "value": 1025,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "base",
+     "elem": "i32",
+     "count": {
+      "kind": "const",
+      "value": 1026,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "BZ2_hbMakeCodeLengths": {
+   "kind": "plan-guided",
+   "fields": [
+    "maxLen"
+   ],
+   "first_opaque": "freq",
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "maxLen": 0
+     },
+     "length": 260,
+     "sha256": "04889200f574428e",
+     "layout": {
+      "maxLen": [
+       0,
+       4
+      ],
+      "freq": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "maxLen": 1
+     },
+     "length": 260,
+     "sha256": "d0e104f307546baf",
+     "layout": {
+      "maxLen": [
+       0,
+       4
+      ],
+      "freq": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "maxLen": 2
+     },
+     "length": 260,
+     "sha256": "27deb193e62edd75",
+     "layout": {
+      "maxLen": [
+       0,
+       4
+      ],
+      "freq": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "maxLen": 3
+     },
+     "length": 260,
+     "sha256": "af59dc3e578dbd23",
+     "layout": {
+      "maxLen": [
+       0,
+       4
+      ],
+      "freq": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "maxLen": 5
+     },
+     "length": 260,
+     "sha256": "932a930e7ee4daa9",
+     "layout": {
+      "maxLen": [
+       0,
+       4
+      ],
+      "freq": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "maxLen": 10
+     },
+     "length": 260,
+     "sha256": "a35885be6985d4e5",
+     "layout": {
+      "maxLen": [
+       0,
+       4
+      ],
+      "freq": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "maxLen": 20
+     },
+     "length": 260,
+     "sha256": "3164a2d9fe52f849",
+     "layout": {
+      "maxLen": [
+       0,
+       4
+      ],
+      "freq": [
+       4,
+       256
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "maxLen": -1
+     },
+     "length": 260,
+     "sha256": "eadfbce47d551760",
+     "layout": {
+      "maxLen": [
+       0,
+       4
+      ],
+      "freq": [
+       4,
+       256
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "maxLen",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Opaque",
+     "name": "freq",
+     "why": "input_buffer (length-prefixed / rest-taking; not modelled)"
+    },
+    {
+     "node": "Zero",
+     "name": "len",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "BZ2_indexIntoF": {
+   "kind": "plan-guided",
+   "fields": [
+    "indx"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "indx": 0
+     },
+     "length": 16388,
+     "sha256": "f0e1018a24569cde",
+     "layout": {
+      "indx": [
+       0,
+       4
+      ],
+      "cftab": [
+       4,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "indx": 1
+     },
+     "length": 16388,
+     "sha256": "272a8b55985bd5d5",
+     "layout": {
+      "indx": [
+       0,
+       4
+      ],
+      "cftab": [
+       4,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "indx": 2
+     },
+     "length": 16388,
+     "sha256": "148d965378286449",
+     "layout": {
+      "indx": [
+       0,
+       4
+      ],
+      "cftab": [
+       4,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "indx": 3
+     },
+     "length": 16388,
+     "sha256": "6b4d28d6df8a6dc2",
+     "layout": {
+      "indx": [
+       0,
+       4
+      ],
+      "cftab": [
+       4,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "indx": 5
+     },
+     "length": 16388,
+     "sha256": "ef357c9b6d165f24",
+     "layout": {
+      "indx": [
+       0,
+       4
+      ],
+      "cftab": [
+       4,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "indx": 10
+     },
+     "length": 16388,
+     "sha256": "35e905eb0ba3414c",
+     "layout": {
+      "indx": [
+       0,
+       4
+      ],
+      "cftab": [
+       4,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "indx": 20
+     },
+     "length": 16388,
+     "sha256": "41ec2a83f16bb12b",
+     "layout": {
+      "indx": [
+       0,
+       4
+      ],
+      "cftab": [
+       4,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "indx": -1
+     },
+     "length": 16388,
+     "sha256": "399a855ff9014678",
+     "layout": {
+      "indx": [
+       0,
+       4
+      ],
+      "cftab": [
+       4,
+       16384
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "indx",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "cftab",
+     "elem": "i32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "bz_config_ok": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": []
+  },
+  "default_bzalloc": {
+   "kind": "plan-guided",
+   "fields": [
+    "items",
+    "size"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "items": 0,
+      "size": 0
+     },
+     "length": 8,
+     "sha256": "af5570f5a1810b7a",
+     "layout": {
+      "items": [
+       0,
+       4
+      ],
+      "size": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "items": 1,
+      "size": 1
+     },
+     "length": 8,
+     "sha256": "64ed86b909d6d050",
+     "layout": {
+      "items": [
+       0,
+       4
+      ],
+      "size": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "items": 2,
+      "size": 2
+     },
+     "length": 8,
+     "sha256": "41d805e613efbe1a",
+     "layout": {
+      "items": [
+       0,
+       4
+      ],
+      "size": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "items": 3,
+      "size": 3
+     },
+     "length": 8,
+     "sha256": "f9815db16d8d228c",
+     "layout": {
+      "items": [
+       0,
+       4
+      ],
+      "size": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "items": 5,
+      "size": 5
+     },
+     "length": 8,
+     "sha256": "a23a868b85672de9",
+     "layout": {
+      "items": [
+       0,
+       4
+      ],
+      "size": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "items": 10,
+      "size": 10
+     },
+     "length": 8,
+     "sha256": "df4877f08b83167c",
+     "layout": {
+      "items": [
+       0,
+       4
+      ],
+      "size": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "items": 20,
+      "size": 20
+     },
+     "length": 8,
+     "sha256": "dac6ac5672b274b5",
+     "layout": {
+      "items": [
+       0,
+       4
+      ],
+      "size": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "items": -1,
+      "size": -1
+     },
+     "length": 8,
+     "sha256": "12a3ae445661ce5d",
+     "layout": {
+      "items": [
+       0,
+       4
+      ],
+      "size": [
+       4,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "opaque",
+     "why": "null pointer"
+    },
+    {
+     "node": "Scalar",
+     "name": "items",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "size",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  },
+  "default_bzfree": {
+   "kind": "fallback",
+   "why": "no policy field",
+   "ir": [
+    {
+     "node": "Zero",
+     "name": "opaque",
+     "why": "null pointer"
+    },
+    {
+     "node": "Zero",
+     "name": "addr",
+     "why": "null pointer"
+    }
+   ]
+  },
+  "fallbackQSort3": {
+   "kind": "plan-guided",
+   "fields": [
+    "loSt",
+    "hiSt"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "loSt": 0,
+      "hiSt": 0
+     },
+     "length": 32776,
+     "sha256": "db112d0cc02c4a9e",
+     "layout": {
+      "loSt": [
+       0,
+       4
+      ],
+      "hiSt": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "loSt": 1,
+      "hiSt": 1
+     },
+     "length": 32776,
+     "sha256": "c9822a5f04a5ea47",
+     "layout": {
+      "loSt": [
+       0,
+       4
+      ],
+      "hiSt": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "loSt": 2047,
+      "hiSt": 2047
+     },
+     "length": 32776,
+     "sha256": "f7b2645c02fc21ea",
+     "layout": {
+      "loSt": [
+       0,
+       4
+      ],
+      "hiSt": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "loSt": 4094,
+      "hiSt": 4094
+     },
+     "length": 32776,
+     "sha256": "925a6db236fb4019",
+     "layout": {
+      "loSt": [
+       0,
+       4
+      ],
+      "hiSt": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "loSt": 4095,
+      "hiSt": 4095
+     },
+     "length": 32776,
+     "sha256": "09def65479f6a8f4",
+     "layout": {
+      "loSt": [
+       0,
+       4
+      ],
+      "hiSt": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "loSt",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "hiSt",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "fmap",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "eclass",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "fallbackSimpleSort": {
+   "kind": "plan-guided",
+   "fields": [
+    "lo",
+    "hi"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "lo": 0,
+      "hi": 0
+     },
+     "length": 32776,
+     "sha256": "80f6ff597b665e6b",
+     "layout": {
+      "lo": [
+       0,
+       4
+      ],
+      "hi": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "lo": 1,
+      "hi": 1
+     },
+     "length": 32776,
+     "sha256": "f4ff15f8d455461c",
+     "layout": {
+      "lo": [
+       0,
+       4
+      ],
+      "hi": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "lo": 512,
+      "hi": 512
+     },
+     "length": 32776,
+     "sha256": "a603e493df61b11b",
+     "layout": {
+      "lo": [
+       0,
+       4
+      ],
+      "hi": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "lo": 1023,
+      "hi": 1023
+     },
+     "length": 32776,
+     "sha256": "6dcffd185af99c1c",
+     "layout": {
+      "lo": [
+       0,
+       4
+      ],
+      "hi": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "lo": 1024,
+      "hi": 1024
+     },
+     "length": 32776,
+     "sha256": "46b5fde888f1ef85",
+     "layout": {
+      "lo": [
+       0,
+       4
+      ],
+      "hi": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "lo",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "hi",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "fmap",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "eclass",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "fallbackSort": {
+   "kind": "plan-guided",
+   "fields": [
+    "nblock",
+    "verb"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "nblock": 0,
+      "verb": 0
+     },
+     "length": 49160,
+     "sha256": "4fafaafb2dd04a31",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ],
+      "bhtab": [
+       32776,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "nblock": 1,
+      "verb": 1
+     },
+     "length": 49160,
+     "sha256": "bc6999c1c5cb35a6",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ],
+      "bhtab": [
+       32776,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "nblock": 512,
+      "verb": 2
+     },
+     "length": 49160,
+     "sha256": "84596c21acc7043e",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ],
+      "bhtab": [
+       32776,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "nblock": 1023,
+      "verb": 3
+     },
+     "length": 49160,
+     "sha256": "a77a24ad7fb96333",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ],
+      "bhtab": [
+       32776,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "nblock": 1024,
+      "verb": 5
+     },
+     "length": 49160,
+     "sha256": "2f94e4e27e796551",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ],
+      "bhtab": [
+       32776,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "nblock": 0,
+      "verb": 10
+     },
+     "length": 49160,
+     "sha256": "c8372e292e911d69",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ],
+      "bhtab": [
+       32776,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "nblock": 1,
+      "verb": 20
+     },
+     "length": 49160,
+     "sha256": "99fafeeef8fabf87",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ],
+      "bhtab": [
+       32776,
+       16384
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "nblock": 512,
+      "verb": -1
+     },
+     "length": 49160,
+     "sha256": "7b5f913537e560e3",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "fmap": [
+       8,
+       16384
+      ],
+      "eclass": [
+       16392,
+       16384
+      ],
+      "bhtab": [
+       32776,
+       16384
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "nblock",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      1024
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "verb",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "fmap",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "eclass",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "bhtab",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "mainGtU": {
+   "kind": "plan-guided",
+   "fields": [
+    "i1",
+    "i2",
+    "nblock"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "i1": 0,
+      "i2": 0,
+      "nblock": 0
+     },
+     "length": 12300,
+     "sha256": "7ab807f0d6b9f157",
+     "layout": {
+      "i1": [
+       0,
+       4
+      ],
+      "i2": [
+       4,
+       4
+      ],
+      "nblock": [
+       8,
+       4
+      ],
+      "block": [
+       12,
+       4096
+      ],
+      "quadrant": [
+       4108,
+       8192
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "i1": 1,
+      "i2": 1,
+      "nblock": 1
+     },
+     "length": 12300,
+     "sha256": "15d92db4fc9549aa",
+     "layout": {
+      "i1": [
+       0,
+       4
+      ],
+      "i2": [
+       4,
+       4
+      ],
+      "nblock": [
+       8,
+       4
+      ],
+      "block": [
+       12,
+       4096
+      ],
+      "quadrant": [
+       4108,
+       8192
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "i1": 2047,
+      "i2": 2047,
+      "nblock": 2
+     },
+     "length": 12300,
+     "sha256": "66b6233392b820fb",
+     "layout": {
+      "i1": [
+       0,
+       4
+      ],
+      "i2": [
+       4,
+       4
+      ],
+      "nblock": [
+       8,
+       4
+      ],
+      "block": [
+       12,
+       4096
+      ],
+      "quadrant": [
+       4108,
+       8192
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "i1": 4094,
+      "i2": 4094,
+      "nblock": 3
+     },
+     "length": 12300,
+     "sha256": "a3c3abac2b20873d",
+     "layout": {
+      "i1": [
+       0,
+       4
+      ],
+      "i2": [
+       4,
+       4
+      ],
+      "nblock": [
+       8,
+       4
+      ],
+      "block": [
+       12,
+       4096
+      ],
+      "quadrant": [
+       4108,
+       8192
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "i1": 4095,
+      "i2": 4095,
+      "nblock": 5
+     },
+     "length": 12300,
+     "sha256": "d6c32a5252182e9b",
+     "layout": {
+      "i1": [
+       0,
+       4
+      ],
+      "i2": [
+       4,
+       4
+      ],
+      "nblock": [
+       8,
+       4
+      ],
+      "block": [
+       12,
+       4096
+      ],
+      "quadrant": [
+       4108,
+       8192
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "i1": 0,
+      "i2": 0,
+      "nblock": 10
+     },
+     "length": 12300,
+     "sha256": "80d74ec34c73b49c",
+     "layout": {
+      "i1": [
+       0,
+       4
+      ],
+      "i2": [
+       4,
+       4
+      ],
+      "nblock": [
+       8,
+       4
+      ],
+      "block": [
+       12,
+       4096
+      ],
+      "quadrant": [
+       4108,
+       8192
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "i1": 1,
+      "i2": 1,
+      "nblock": 20
+     },
+     "length": 12300,
+     "sha256": "1796173a02002c65",
+     "layout": {
+      "i1": [
+       0,
+       4
+      ],
+      "i2": [
+       4,
+       4
+      ],
+      "nblock": [
+       8,
+       4
+      ],
+      "block": [
+       12,
+       4096
+      ],
+      "quadrant": [
+       4108,
+       8192
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "i1",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "i2",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "nblock",
+     "rust": "std::os::raw::c_uint",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "block",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "quadrant",
+     "elem": "u16",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Zero",
+     "name": "budget",
+     "why": "plan array, zero-filled"
+    }
+   ]
+  },
+  "mainQSort3": {
+   "kind": "plan-guided",
+   "fields": [
+    "nblock",
+    "loSt",
+    "hiSt",
+    "dSt",
+    "budget"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "nblock": 0,
+      "loSt": 0,
+      "hiSt": 0,
+      "dSt": 0,
+      "budget": [
+       0
+      ]
+     },
+     "length": 28692,
+     "sha256": "0664c38121ceb5f1",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "loSt": [
+       4,
+       4
+      ],
+      "hiSt": [
+       8,
+       4
+      ],
+      "dSt": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "nblock": 1,
+      "loSt": 1,
+      "hiSt": 1,
+      "dSt": 1,
+      "budget": [
+       1
+      ]
+     },
+     "length": 28692,
+     "sha256": "1c3fd7765cc25f18",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "loSt": [
+       4,
+       4
+      ],
+      "hiSt": [
+       8,
+       4
+      ],
+      "dSt": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "nblock": 2,
+      "loSt": 2047,
+      "hiSt": 2047,
+      "dSt": 2047,
+      "budget": [
+       2
+      ]
+     },
+     "length": 28692,
+     "sha256": "e404b1654cbf72d4",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "loSt": [
+       4,
+       4
+      ],
+      "hiSt": [
+       8,
+       4
+      ],
+      "dSt": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "nblock": 3,
+      "loSt": 4094,
+      "hiSt": 4094,
+      "dSt": 4094,
+      "budget": [
+       3
+      ]
+     },
+     "length": 28692,
+     "sha256": "ed7122a68ed41b81",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "loSt": [
+       4,
+       4
+      ],
+      "hiSt": [
+       8,
+       4
+      ],
+      "dSt": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "nblock": 5,
+      "loSt": 4095,
+      "hiSt": 4095,
+      "dSt": 4095,
+      "budget": [
+       5
+      ]
+     },
+     "length": 28692,
+     "sha256": "a21f391f8abb489f",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "loSt": [
+       4,
+       4
+      ],
+      "hiSt": [
+       8,
+       4
+      ],
+      "dSt": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "nblock": 10,
+      "loSt": 0,
+      "hiSt": 0,
+      "dSt": 0,
+      "budget": [
+       10
+      ]
+     },
+     "length": 28692,
+     "sha256": "0975532e4179ddaf",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "loSt": [
+       4,
+       4
+      ],
+      "hiSt": [
+       8,
+       4
+      ],
+      "dSt": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "nblock": 20,
+      "loSt": 1,
+      "hiSt": 1,
+      "dSt": 1,
+      "budget": [
+       20
+      ]
+     },
+     "length": 28692,
+     "sha256": "4263780e337d20c5",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "loSt": [
+       4,
+       4
+      ],
+      "hiSt": [
+       8,
+       4
+      ],
+      "dSt": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "nblock": -1,
+      "loSt": 2047,
+      "hiSt": 2047,
+      "dSt": 2047,
+      "budget": [
+       -1
+      ]
+     },
+     "length": 28692,
+     "sha256": "e550d8f93eda62cf",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "loSt": [
+       4,
+       4
+      ],
+      "hiSt": [
+       8,
+       4
+      ],
+      "dSt": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "nblock",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "loSt",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "hiSt",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "dSt",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "ptr",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "block",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "quadrant",
+     "elem": "u16",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "budget",
+     "elem": "i32",
+     "count": {
+      "kind": "const",
+      "value": 1,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "mainSimpleSort": {
+   "kind": "plan-guided",
+   "fields": [
+    "nblock",
+    "lo",
+    "hi",
+    "d",
+    "budget"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "nblock": 0,
+      "lo": 0,
+      "hi": 0,
+      "d": 0,
+      "budget": [
+       0
+      ]
+     },
+     "length": 28692,
+     "sha256": "cf1c80c92f9ac5b1",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "lo": [
+       4,
+       4
+      ],
+      "hi": [
+       8,
+       4
+      ],
+      "d": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "nblock": 1,
+      "lo": 1,
+      "hi": 1,
+      "d": 1,
+      "budget": [
+       1
+      ]
+     },
+     "length": 28692,
+     "sha256": "5e1000618bd6323d",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "lo": [
+       4,
+       4
+      ],
+      "hi": [
+       8,
+       4
+      ],
+      "d": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "nblock": 2,
+      "lo": 2047,
+      "hi": 2,
+      "d": 2,
+      "budget": [
+       2
+      ]
+     },
+     "length": 28692,
+     "sha256": "44b33ddadb9c4dbd",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "lo": [
+       4,
+       4
+      ],
+      "hi": [
+       8,
+       4
+      ],
+      "d": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "nblock": 3,
+      "lo": 4094,
+      "hi": 3,
+      "d": 3,
+      "budget": [
+       3
+      ]
+     },
+     "length": 28692,
+     "sha256": "d5918e2417f52fdc",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "lo": [
+       4,
+       4
+      ],
+      "hi": [
+       8,
+       4
+      ],
+      "d": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "nblock": 5,
+      "lo": 4095,
+      "hi": 5,
+      "d": 5,
+      "budget": [
+       5
+      ]
+     },
+     "length": 28692,
+     "sha256": "3691ee412aef0508",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "lo": [
+       4,
+       4
+      ],
+      "hi": [
+       8,
+       4
+      ],
+      "d": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "nblock": 10,
+      "lo": 0,
+      "hi": 10,
+      "d": 10,
+      "budget": [
+       10
+      ]
+     },
+     "length": 28692,
+     "sha256": "b7779fc01d3583ee",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "lo": [
+       4,
+       4
+      ],
+      "hi": [
+       8,
+       4
+      ],
+      "d": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "nblock": 20,
+      "lo": 1,
+      "hi": 20,
+      "d": 20,
+      "budget": [
+       20
+      ]
+     },
+     "length": 28692,
+     "sha256": "3a2c422d9c16c232",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "lo": [
+       4,
+       4
+      ],
+      "hi": [
+       8,
+       4
+      ],
+      "d": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "nblock": -1,
+      "lo": 2047,
+      "hi": -1,
+      "d": -1,
+      "budget": [
+       -1
+      ]
+     },
+     "length": 28692,
+     "sha256": "5bddb4a955f029a4",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "lo": [
+       4,
+       4
+      ],
+      "hi": [
+       8,
+       4
+      ],
+      "d": [
+       12,
+       4
+      ],
+      "ptr": [
+       16,
+       16384
+      ],
+      "block": [
+       16400,
+       4096
+      ],
+      "quadrant": [
+       20496,
+       8192
+      ],
+      "budget": [
+       28688,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "nblock",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "lo",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "hi",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "d",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "ptr",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "block",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "quadrant",
+     "elem": "u16",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "budget",
+     "elem": "i32",
+     "count": {
+      "kind": "const",
+      "value": 1,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "mainSort": {
+   "kind": "plan-guided",
+   "fields": [
+    "nblock",
+    "verb",
+    "budget"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "nblock": 0,
+      "verb": 0,
+      "budget": [
+       0
+      ]
+     },
+     "length": 36876,
+     "sha256": "5ed81fc2153f93a5",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "ptr": [
+       8,
+       16384
+      ],
+      "block": [
+       16392,
+       4096
+      ],
+      "ftab": [
+       20488,
+       16384
+      ],
+      "budget": [
+       36872,
+       4
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "nblock": 1,
+      "verb": 1,
+      "budget": [
+       1
+      ]
+     },
+     "length": 36876,
+     "sha256": "e0c1041b65868481",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "ptr": [
+       8,
+       16384
+      ],
+      "block": [
+       16392,
+       4096
+      ],
+      "ftab": [
+       20488,
+       16384
+      ],
+      "budget": [
+       36872,
+       4
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "nblock": 2047,
+      "verb": 2,
+      "budget": [
+       2
+      ]
+     },
+     "length": 36876,
+     "sha256": "969fc9db7c3f2e5c",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "ptr": [
+       8,
+       16384
+      ],
+      "block": [
+       16392,
+       4096
+      ],
+      "ftab": [
+       20488,
+       16384
+      ],
+      "budget": [
+       36872,
+       4
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "nblock": 4094,
+      "verb": 3,
+      "budget": [
+       3
+      ]
+     },
+     "length": 36876,
+     "sha256": "0c34c913790e718c",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "ptr": [
+       8,
+       16384
+      ],
+      "block": [
+       16392,
+       4096
+      ],
+      "ftab": [
+       20488,
+       16384
+      ],
+      "budget": [
+       36872,
+       4
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "nblock": 4095,
+      "verb": 5,
+      "budget": [
+       5
+      ]
+     },
+     "length": 36876,
+     "sha256": "bb1d3e25d46e4860",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "ptr": [
+       8,
+       16384
+      ],
+      "block": [
+       16392,
+       4096
+      ],
+      "ftab": [
+       20488,
+       16384
+      ],
+      "budget": [
+       36872,
+       4
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "nblock": 0,
+      "verb": 10,
+      "budget": [
+       10
+      ]
+     },
+     "length": 36876,
+     "sha256": "72d0a41fd13daaba",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "ptr": [
+       8,
+       16384
+      ],
+      "block": [
+       16392,
+       4096
+      ],
+      "ftab": [
+       20488,
+       16384
+      ],
+      "budget": [
+       36872,
+       4
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "nblock": 1,
+      "verb": 20,
+      "budget": [
+       20
+      ]
+     },
+     "length": 36876,
+     "sha256": "c3960d613b40d084",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "ptr": [
+       8,
+       16384
+      ],
+      "block": [
+       16392,
+       4096
+      ],
+      "ftab": [
+       20488,
+       16384
+      ],
+      "budget": [
+       36872,
+       4
+      ]
+     }
+    },
+    {
+     "k": 7,
+     "assignments": {
+      "nblock": 2047,
+      "verb": -1,
+      "budget": [
+       -1
+      ]
+     },
+     "length": 36876,
+     "sha256": "fe8a7a844c4412d5",
+     "layout": {
+      "nblock": [
+       0,
+       4
+      ],
+      "verb": [
+       4,
+       4
+      ],
+      "ptr": [
+       8,
+       16384
+      ],
+      "block": [
+       16392,
+       4096
+      ],
+      "ftab": [
+       20488,
+       16384
+      ],
+      "budget": [
+       36872,
+       4
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "nblock",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": [
+      0,
+      4095
+     ],
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "verb",
+     "rust": "std::os::raw::c_int",
+     "width": 4,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Repeat",
+     "name": "ptr",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "block",
+     "elem": "u8",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Zero",
+     "name": "quadrant",
+     "why": "plan array, zero-filled"
+    },
+    {
+     "node": "Repeat",
+     "name": "ftab",
+     "elem": "u32",
+     "count": {
+      "kind": "const",
+      "value": 4096,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    },
+    {
+     "node": "Repeat",
+     "name": "budget",
+     "elem": "i32",
+     "count": {
+      "kind": "const",
+      "value": 1,
+      "param": "",
+      "mul": 1,
+      "div": 1,
+      "add": 0,
+      "cap": 0,
+      "of": []
+     }
+    }
+   ]
+  },
+  "mmed3": {
+   "kind": "plan-guided",
+   "fields": [
+    "a",
+    "b",
+    "c"
+   ],
+   "first_opaque": null,
+   "seeds": [
+    {
+     "k": 0,
+     "assignments": {
+      "a": 0,
+      "b": 0,
+      "c": 0
+     },
+     "length": 3,
+     "sha256": "709e80c88487a241",
+     "layout": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       1,
+       1
+      ],
+      "c": [
+       2,
+       1
+      ]
+     }
+    },
+    {
+     "k": 1,
+     "assignments": {
+      "a": 1,
+      "b": 1,
+      "c": 1
+     },
+     "length": 3,
+     "sha256": "75c8fd04ad916aec",
+     "layout": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       1,
+       1
+      ],
+      "c": [
+       2,
+       1
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "assignments": {
+      "a": 2,
+      "b": 2,
+      "c": 2
+     },
+     "length": 3,
+     "sha256": "970bec7483984728",
+     "layout": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       1,
+       1
+      ],
+      "c": [
+       2,
+       1
+      ]
+     }
+    },
+    {
+     "k": 3,
+     "assignments": {
+      "a": 3,
+      "b": 3,
+      "c": 3
+     },
+     "length": 3,
+     "sha256": "99f5eb64687cc7b7",
+     "layout": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       1,
+       1
+      ],
+      "c": [
+       2,
+       1
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "assignments": {
+      "a": 5,
+      "b": 5,
+      "c": 5
+     },
+     "length": 3,
+     "sha256": "348fbb44967377ce",
+     "layout": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       1,
+       1
+      ],
+      "c": [
+       2,
+       1
+      ]
+     }
+    },
+    {
+     "k": 5,
+     "assignments": {
+      "a": 10,
+      "b": 10,
+      "c": 10
+     },
+     "length": 3,
+     "sha256": "6a3cf5192354f716",
+     "layout": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       1,
+       1
+      ],
+      "c": [
+       2,
+       1
+      ]
+     }
+    },
+    {
+     "k": 6,
+     "assignments": {
+      "a": 20,
+      "b": 20,
+      "c": 20
+     },
+     "length": 3,
+     "sha256": "20b7f604c7757ed6",
+     "layout": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       1,
+       1
+      ],
+      "c": [
+       2,
+       1
+      ]
+     }
+    }
+   ],
+   "dropped_by_cap": 0,
+   "ir": [
+    {
+     "node": "Scalar",
+     "name": "a",
+     "rust": "std::os::raw::c_uchar",
+     "width": 1,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "b",
+     "rust": "std::os::raw::c_uchar",
+     "width": 1,
+     "bounds": null,
+     "float": false
+    },
+    {
+     "node": "Scalar",
+     "name": "c",
+     "rust": "std::os::raw::c_uchar",
+     "width": 1,
+     "bounds": null,
+     "float": false
+    }
+   ]
+  }
+ },
+ "summary": {
+  "plan_guided": 16,
+  "fallback": 3
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "schema_version": 1,
+ "program": "bzip2_c2saferrust",
+ "entry": "BZ2_hbMakeCodeLengths",
+ "params": [
+  {
+   "name": "len",
+   "elem": "u8",
+   "elem_width": 1,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 258
+  },
+  {
+   "name": "freq",
+   "elem": "i32",
+   "elem_width": 4,
+   "role": "inout_buffer",
+   "decode": "vector",
+   "length_param": "alphaSize",
+   "max_len": 258
+  },
+  {
+   "name": "alphaSize",
+   "rust": "i32",
+   "width": 4,
+   "role": "length",
+   "decode": "derived_from_buffer",
+   "of_buffer": "freq"
+  },
+  {
+   "name": "maxLen",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 1,
+   "max_value": 23
+  }
+ ],
+ "return": {
+  "rust": "void"
+ },
+ "decode_scalars_first": true,
+ "provenance": "hand-authored for the RQ4 coverage experiment; every bound is a documented bzip2 1.0.8 requirement, see make_schemas.py"
+}

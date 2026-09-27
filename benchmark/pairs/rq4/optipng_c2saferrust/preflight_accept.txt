@@ -1,0 +1,70 @@
+# Reviewed 2026-09-08 on the optipng x c2rust preflight. Every boundary below crashes on the C side
+# too -- c-only on the EMPTY input, and 1 135-1 148 of ~1 145 jobs in the 60 s run, corpus 0 -- so the
+# reason is a fact about the C reference and holds for any translation of it; pre-accepted for all
+# three optipng pairs.
+#
+# (a) The function's CONTRACT is to terminate the process, so there is no return to compare:
+#     gifread/gifread.c:704  DefaultError(msg)          -> fprintf(stderr, ..); exit(EXIT_FAILURE);
+#     minitiff/tiffutil.c:58 default_error_handler(msg) -> fprintf(stderr, ..); exit(EXIT_FAILURE);
+#     gifread/gifread.c:685  ErrorAlloc()               -> GIFError(..), a function pointer whose
+#                                                          default target is DefaultError
+DefaultError
+default_error_handler
+ErrorAlloc
+#
+# (b) The function needs a live libpng context that the harness cannot construct: pngx_gif_error and
+#     pngx_tiff_error end in png_error(err_png_ptr, msg), a longjmp through a static png_structp that
+#     only pngx_set_gif_error/pngx_set_tiff_error assign; called directly it is NULL. opng_get_alpha_row
+#     wants a real libpng row of a real image.
+pngx_gif_error
+pngx_tiff_error
+opng_get_alpha_row
+#
+# Note on the verdict these will carry: the C side exits non-zero deterministically and by design, so
+# confirmation labels them `ub_associated` ("C provides no clean reference execution"). That bucket is
+# never promoted, which is the right outcome, but the cause here is an intended termination, not UB.
+#
+# (c) OUR INPUT MODEL IS INVALID -- second instance of the range-pair gap (the first is
+#     lodepng_chunk_find). `png_format_number(png_const_charp start, png_charp end, int format,
+#     png_alloc_size_t number)` (libpng/pngerror.c:133) bounds ONE buffer with start/end and writes
+#     BACKWARDS from end: its first statement is `*--end = '\0';`. The plan allocates `start` as an
+#     independent NUL-terminated string and `end` as an independent output array whose extent it
+#     PROVES to be exactly 1 (from `*--end`), so the very first write is out of bounds on every
+#     input, and which side faults is allocator layout: c-only is clean on the empty input while
+#     rust-only crashed 1132 of 1133 jobs. Not a translation defect; expect
+#     out_of_contract_access / instrument_only at confirmation.
+png_format_number
+#
+# --- reviewed 2026-09-08, PREFLIGHT_REVIEW on this cell (12 further boundaries) ---
+#
+# (d) The C reference crashes too (c-only on the EMPTY input AND ~730 of ~730 jobs, corpus 0):
+#     option checkers that reject and terminate, the iteration driver that needs a live optimizer
+#     state, and optipng's own `panic`. Unconstructible preconditions, not translation defects.
+check_num_option
+check_obj_option
+check_power2_option
+check_rangeset_option
+err_option_arg
+opng_init_iterations
+opng_iterate
+opng_optimize_impl
+panic
+#
+# (e) Flagged ONLY because the C side crashes on the EMPTY input; the translation is fine and the
+#     boundary explores normally (2.87 M and 2.69 M executions, 0 crashes, corpora 11 and 9 in the
+#     60 s run). Accepted so the cell runs them; per-input C crashes are handled by the UB gate.
+opng_print_fsize_difference
+opng_print_fsize_ratio
+#
+# (f) TRANSLATION crash-all -- a DEFECT CANDIDATE, accepted so the campaign produces its evidence.
+#     C: `void opng_free(void *ptr) { free(ptr); }` (optipng/optim.c:390), whose own comment says it
+#     "must be compatible with libpng's memory allocation routines, png_malloc() and png_free()".
+#     C2SaferRust: `fn opng_free(ptr: *mut c_void) { unsafe { drop(Box::from_raw(ptr as *mut _)); } }`
+#     Two independent problems, neither present in the faithful c2rust control (`free(ptr)`):
+#       1. `free(NULL)` is a defined no-op that optipng relies on (`opng_free(image.row_pointers[i])`)
+#          and that png_free guarantees; `Box::from_raw(NULL)` is UB and aborts. C-only is clean on
+#          every input here (the void* adapter passes NULL); the translation crashed 714 of 715 jobs.
+#       2. Independently of NULL: the pointers come from png_malloc/malloc, so reconstructing a Box
+#          and dropping it releases C-allocated memory through RUST's global allocator.
+#     Expect confirmed_termination (a Rust-side abort with the panic marker, deterministic).
+opng_free

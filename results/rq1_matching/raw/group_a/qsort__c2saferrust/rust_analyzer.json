@@ -1,0 +1,237 @@
+{
+  "functions": [
+    {
+      "name": "swap",
+      "line": 10,
+      "signature": {
+        "params": [
+          {
+            "name": "a",
+            "ty": "&mut i32",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "b",
+            "ty": "&mut i32",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut i32",
+            "shape": "&i32"
+          },
+          {
+            "ty": "&mut i32",
+            "shape": "&i32"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 3,
+        "nodes": 15,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 4,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "partition",
+      "line": 17,
+      "signature": {
+        "params": [
+          {
+            "name": "arr",
+            "ty": "*mut std::os::raw::c_int",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "low",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "high",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "std::os::raw::c_int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i32",
+            "shape": "*i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "+": 4,
+        "-": 2,
+        "<=": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 11,
+        "nodes": 87,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 6,
+        "allocs": 0,
+        "method_calls": 6
+      }
+    },
+    {
+      "name": "quickSort",
+      "line": 36,
+      "signature": {
+        "params": [
+          {
+            "name": "arr",
+            "ty": "&mut [i32]",
+            "ptr_kind": "mut_ref",
+            "dir": "inout"
+          },
+          {
+            "name": "low",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "high",
+            "ty": "usize",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "&mut [i32]",
+            "shape": "&[i32]"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          },
+          {
+            "ty": "usize",
+            "shape": "u64"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 3,
+        "nodes": 33,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 2
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "swap"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "swap"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "partition",
+      "to": "offset"
+    },
+    {
+      "from": "quickSort",
+      "to": "partition"
+    },
+    {
+      "from": "quickSort",
+      "to": "as_mut_ptr"
+    },
+    {
+      "from": "quickSort",
+      "to": "quickSort"
+    },
+    {
+      "from": "quickSort",
+      "to": "wrapping_sub"
+    },
+    {
+      "from": "quickSort",
+      "to": "quickSort"
+    }
+  ],
+  "indirect_calls": [],
+  "excluded_scaffolding": []
+}

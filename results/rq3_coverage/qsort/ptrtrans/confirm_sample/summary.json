@@ -1,0 +1,45 @@
+{
+ "mode": "confirm_sample",
+ "sample_per_boundary": 200,
+ "boundaries": [
+  {
+   "boundary": "partition",
+   "candidates_total": 31,
+   "adjudicated": 31,
+   "tally": {
+    "confirmed_divergence": 31
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 31,
+     "example": "divergence-240eae245fbc9276499e772848cba6907e0a11d0"
+    }
+   ],
+   "seconds": 19
+  },
+  {
+   "boundary": "quickSort",
+   "candidates_total": 26,
+   "adjudicated": 26,
+   "tally": {
+    "confirmed_divergence": 26
+   },
+   "clusters": [
+    {
+     "verdict": "confirmed_divergence",
+     "sanitizer": "ERROR: libFuzzer: deadly signal",
+     "frame": "#0 __sanitizer_print_stack_trace ??:?",
+     "artifacts": 26,
+     "example": "divergence-052e20aa16d688132effb76a35f541c327c2133a"
+    }
+   ],
+   "seconds": 20
+  }
+ ],
+ "total": {
+  "confirmed_divergence": 57
+ }
+}

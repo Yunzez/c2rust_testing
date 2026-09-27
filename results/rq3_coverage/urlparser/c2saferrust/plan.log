@@ -1,0 +1,25 @@
+OK  get_part                       inputs= 3
+OK  main                           inputs= 0
+OK  strdup                         inputs= 1
+OK  strff                          inputs= 2
+FAIL strrwd                         inputs= 2
+       - ptr: no lossless Rust bridge -- Rust signature has 1 parameters, C has 2: reshaped API, no positional bridge
+OK  url_data_inspect               inputs= 1
+OK  url_free                       inputs= 1
+OK  url_get_auth                   inputs= 1
+OK  url_get_hash                   inputs= 1
+OK  url_get_host                   inputs= 1
+OK  url_get_hostname               inputs= 1
+OK  url_get_path                   inputs= 1
+OK  url_get_pathname               inputs= 1
+OK  url_get_port                   inputs= 1
+OK  url_get_protocol               inputs= 1
+OK  url_get_query                  inputs= 1
+OK  url_get_search                 inputs= 1
+FAIL url_inspect                    inputs= 1
+       - url: no lossless Rust bridge -- input buffer of i8 has Rust type &str, which is not a raw pointer, a slice, a Vec or a Box<[T]> of the same element type
+OK  url_is_protocol                inputs= 1
+OK  url_is_ssh                     inputs= 1
+OK  url_parse                      inputs= 1
+
+planned 19 / 21

@@ -1,0 +1,18 @@
+static bzerrorstrings: [*const ::core::ffi::c_char; 16] = [
+    b"OK\0" as *const u8 as *const ::core::ffi::c_char,
+    b"SEQUENCE_ERROR\0" as *const u8 as *const ::core::ffi::c_char,
+    b"PARAM_ERROR\0" as *const u8 as *const ::core::ffi::c_char,
+    b"MEM_ERROR\0" as *const u8 as *const ::core::ffi::c_char,
+    b"DATA_ERROR\0" as *const u8 as *const ::core::ffi::c_char,
+    b"DATA_ERROR_MAGIC\0" as *const u8 as *const ::core::ffi::c_char,
+    b"IO_ERROR\0" as *const u8 as *const ::core::ffi::c_char,
+    b"UNEXPECTED_EOF\0" as *const u8 as *const ::core::ffi::c_char,
+    b"OUTBUFF_FULL\0" as *const u8 as *const ::core::ffi::c_char,
+    b"CONFIG_ERROR\0" as *const u8 as *const ::core::ffi::c_char,
+    b"???\0" as *const u8 as *const ::core::ffi::c_char,
+    b"???\0" as *const u8 as *const ::core::ffi::c_char,
+    b"???\0" as *const u8 as *const ::core::ffi::c_char,
+    b"???\0" as *const u8 as *const ::core::ffi::c_char,
+    b"???\0" as *const u8 as *const ::core::ffi::c_char,
+    b"???\0" as *const u8 as *const ::core::ffi::c_char,
+];

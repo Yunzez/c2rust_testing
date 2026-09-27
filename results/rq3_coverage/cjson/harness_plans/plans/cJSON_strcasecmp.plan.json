@@ -1,0 +1,69 @@
+{
+ "boundary": "cJSON_strcasecmp",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "s1",
+   "c_decoder": "input_array",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "extent": {
+     "k": "const",
+     "v": 1
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "cJSON.c",
+     "line": 42,
+     "col": 16,
+     "snippet": "for(; tolower(*s1) == tolower(*s2); ++s1, ++s2)\tif(*s1 == 0)\treturn 0;",
+     "note": "*s1 is read"
+    }
+   ],
+   "rust_type": "*const ::core::ffi::c_char",
+   "rust_bridge": "c_abi"
+  },
+  {
+   "param": "s2",
+   "c_decoder": "input_array",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "extent": {
+     "k": "const",
+     "v": 1
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "cJSON.c",
+     "line": 42,
+     "col": 32,
+     "snippet": "for(; tolower(*s1) == tolower(*s2); ++s1, ++s2)\tif(*s1 == 0)\treturn 0;",
+     "note": "*s2 is read"
+    }
+   ],
+   "rust_type": "*const ::core::ffi::c_char",
+   "rust_bridge": "c_abi"
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024,
+  "max_table_rows": 16
+ },
+ "plan_version": 1
+}

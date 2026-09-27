@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "program": "mergesort_search",
+  "entry": "sort_and_find",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "i32"
+  },
+  "params": [
+    {
+      "name": "a",
+      "role": "inout_buffer",
+      "decode": "vector",
+      "elem": "i32",
+      "elem_width": 4,
+      "length_param": "n"
+    },
+    {
+      "name": "n",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "a",
+      "rust": "usize",
+      "width": 8
+    },
+    {
+      "name": "key",
+      "role": "scalar",
+      "decode": "scalar",
+      "rust": "i32",
+      "width": 4
+    }
+  ]
+}

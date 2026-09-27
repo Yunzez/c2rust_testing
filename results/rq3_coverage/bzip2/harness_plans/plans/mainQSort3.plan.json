@@ -1,0 +1,246 @@
+{
+ "boundary": "mainQSort3",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "ptr",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "lo is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 657,
+     "col": 27,
+     "snippet": "mmed3 ( block[ptr[ lo         ]+d],",
+     "note": "ptr[unknown(lo is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 658,
+     "col": 27,
+     "snippet": "block[ptr[ hi         ]+d],",
+     "note": "ptr[unknown(hi is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 659,
+     "col": 27,
+     "snippet": "block[ptr[ (lo+hi)>>1 ]+d] );",
+     "note": "ptr[unknown(div)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 667,
+     "col": 31,
+     "snippet": "n = ((Int32)block[ptr[unLo]+d]) - med;",
+     "note": "ptr[unknown(unLo is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 669,
+     "col": 16,
+     "snippet": "mswap(ptr[unLo], ptr[ltLo]);",
+     "note": "ptr[unknown(unLo is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 669,
+     "col": 16,
+     "snippet": "mswap(ptr[unLo], ptr[ltLo]);",
+     "note": "ptr[unknown(unLo is not a loop induction variable in scope)] written"
+    }
+   ]
+  },
+  {
+   "param": "block",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "u8",
+    "elem_width": 1,
+    "extent": {
+     "k": "unknown",
+     "why": "sum of two non-constants"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 657,
+     "col": 21,
+     "snippet": "mmed3 ( block[ptr[ lo         ]+d],",
+     "note": "block[unknown(sum of two non-constants)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 658,
+     "col": 21,
+     "snippet": "block[ptr[ hi         ]+d],",
+     "note": "block[unknown(sum of two non-constants)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 659,
+     "col": 21,
+     "snippet": "block[ptr[ (lo+hi)>>1 ]+d] );",
+     "note": "block[unknown(sum of two non-constants)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 667,
+     "col": 25,
+     "snippet": "n = ((Int32)block[ptr[unLo]+d]) - med;",
+     "note": "block[unknown(sum of two non-constants)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 677,
+     "col": 25,
+     "snippet": "n = ((Int32)block[ptr[unHi]+d]) - med;",
+     "note": "block[unknown(sum of two non-constants)] read"
+    }
+   ]
+  },
+  {
+   "param": "quadrant",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "u16",
+    "elem_width": 2,
+    "extent": {
+     "k": "unknown",
+     "why": "pointer is never dereferenced"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": false
+   },
+   "evidence": []
+  },
+  {
+   "param": "nblock",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  },
+  {
+   "param": "loSt",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "loSt can influence an index into ptr; the harness allocates 4096 elements, so loSt <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "hiSt",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "hiSt can influence an index into ptr; the harness allocates 4096 elements, so hiSt <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "dSt",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "dSt can influence an index into ptr; the harness allocates 4096 elements, so dSt <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "budget",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "const",
+     "v": 1
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "blocksort.c",
+     "line": 652,
+     "col": 14,
+     "snippet": "if (*budget < 0) return;",
+     "note": "*budget is read"
+    }
+   ]
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

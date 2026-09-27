@@ -1,0 +1,24 @@
+{
+    "ti_buffer": {
+        "type": "struct",
+        "errors": [],
+        "status": "success",
+        "attempts": [
+            1
+        ]
+    },
+    "ti_hma_start": {
+        "type": "function",
+        "errors": [
+            {
+                "type": "COMPILE_ERROR",
+                "message": "    Updating crates.io index\n     Locking 1 package to latest compatible version\n   Compiling libc v0.2.189\n   Compiling build_attempt v0.1.0 (/tmp/sactor/tmperyrxm74/build/build_attempt)\nerror[E0425]: cannot find function `sqrt` in crate `libc`\n --> src/lib.rs:3:28\n  |\n3 |     let periodsqrt = libc::sqrt(period as libc::c_double) as libc::c_int;\n  |                            ^^^^ not found in `libc`\n\nFor more information about this error, try `rustc --explain E0425`.\nerror: could not compile `build_attempt` (lib) due to 1 previous error\n",
+                "translation": "pub unsafe fn ti_hma_start(options: *const libc::c_double) -> libc::c_int {\n    let period = *options as libc::c_int;\n    let periodsqrt = libc::sqrt(period as libc::c_double) as libc::c_int;\n    period + periodsqrt - 2\n}\n"
+            }
+        ],
+        "status": "failure",
+        "attempts": [
+            2
+        ]
+    }
+}

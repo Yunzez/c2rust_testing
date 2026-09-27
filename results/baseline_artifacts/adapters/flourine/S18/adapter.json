@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "defect": "S18",
+  "baseline": "flourine",
+  "target": "zlib_uncompress_observe",
+  "adapter_kind": "documented_per_function_json_with_bounded_buffer_wrapper",
+  "semantic_rewrite": false,
+  "known_witness_encoded": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/optipng_laertes/source/zlib/uncompr.c",
+    "rust": "benchmark/pairs/rq4/optipng_laertes/translated/optipng_laertes.rs"
+  },
+  "wrapper_contract": "Generate all source and destination bytes, derive source length in [1,192], provide 319 destination bytes, and expose the original return, written length, and destination content. No valid stream or known defect witness is seeded.",
+  "input_sha256": {
+    "zlib_uncompress_observe.json": "d7c4b2260b8fb7783d65d8360c6440f96a1128235edbf7863363a26acf9756bf",
+    "zlib_uncompress_observe.rs": "35372a6f0e1043392149788167fb50b5a2827f6e400c5b788ed2ba7d3b52f48d",
+    "zlib_uncompress_observe_raw.inc": "194cfd545c1f01938e20c218d47b74f83b6a1e8b89a2ea8ee65daef11cf4e703"
+  }
+}

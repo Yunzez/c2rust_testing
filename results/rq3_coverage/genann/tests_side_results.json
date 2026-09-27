@@ -1,0 +1,38 @@
+{
+  "_what": "genann's shipped test suite (test.c, minctest: 9 lrun groups, 38 assertions) run through the TRANSPILED driver test.rs each translation carries, via scripts/rq4/tests_side_genann.sh (two-line adapter bin; CROWN's private main_0 exposed at packaging level, like --expose-entry). Pass = process exit 0 (minctest's main returns the failure count). Recorded 2026-09-05 05:16.",
+  "_rule": "PROTOCOL.md section 2: the tests side is a baseline only if the suite passes completely; otherwise the universe comes from the denom bin (link-dead-code) and the partition collapses to Ours / Neither.",
+  "_c_source": {
+    "c2rust": "genann 2015 (12 fns, sha 49128acbe4)",
+    "laertes": "same",
+    "c2saferrust": "same",
+    "crown": "genann 2015 (12 fns, sha 49128acbe4) — CROWN is a Rust->Rust lifter applied to the Laertes-benchmark c2rust translation; the 1.0.0 copy under crown/c-code is CROWN's own benchmark, not this crate's input (first pairing used it by mistake and was discarded 2026-09-05 09:15)",
+    "sactor": "genann-1.0.0 (15 fns, sha df0dee7dc3)"
+  },
+  "c2rust": {
+    "status": "PASS",
+    "baseline": true,
+    "exit": 0
+  },
+  "laertes": {
+    "status": "PASS",
+    "baseline": true,
+    "exit": 0
+  },
+  "crown": {
+    "status": "PASS",
+    "baseline": true,
+    "exit": 0,
+    "adapter": "src::test::main_0(argc, argv) — CROWN comments out `pub fn main`; main_0 made pub inside the test module only"
+  },
+  "c2saferrust": {
+    "status": "TEST-FAILS",
+    "baseline": false,
+    "exit": 134,
+    "observation": "groups basic..copy pass (7 assertions each), then `persist` aborts: genann_write(ann, &mut std::fs::File) -> writeln!(..).unwrap() on EBADF (Bad file descriptor). C2SaferRust reshaped FILE* into &mut File; the transpiled test's tmpfile() path does not produce a usable File. Driver-level observation; not a fuzz finding."
+  },
+  "sactor": {
+    "status": "TEST-UNAVAILABLE",
+    "baseline": false,
+    "observation": "single lib.rs, no transpiled driver; universe from the denom bin"
+  }
+}

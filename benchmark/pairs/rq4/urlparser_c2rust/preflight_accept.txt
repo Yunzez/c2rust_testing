@@ -1,0 +1,20 @@
+# Reviewed crash-alls: the C reference itself. url.h's get_part does `malloc(1)` + sscanf into it (url.h:208), a heap
+# overflow on every normal URL (translation_matrix #27, jwerle/url.h issue #3). Every boundary that reaches get_part
+# crashes on the C side under the harness's sanitizer -- a property of the library, not of the translation. Confirmation
+# adjudicates each input (expected: ub_associated). UB-free boundaries are NOT listed: strdup, strff, strrwd,
+# url_is_protocol, url_is_ssh.
+get_part
+url_parse
+url_get_auth
+url_get_hash
+url_get_host
+url_get_hostname
+url_get_path
+url_get_pathname
+url_get_port
+url_get_protocol
+url_get_query
+url_get_search
+url_inspect
+url_data_inspect   # takes a url_data_t* the producer url_parse builds through get_part
+url_free           # same producer

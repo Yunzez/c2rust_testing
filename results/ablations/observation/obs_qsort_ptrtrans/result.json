@@ -1,0 +1,121 @@
+{
+ "pilot": "OBS (observation-axis)",
+ "subject": "qsort x PtrTrans (FSE'26, gpt-5.1, Trans_PA; our corpus extension)",
+ "date": "2026-08-25",
+ "git_commit": "dda70a4d5228453aa8850ae7b59b2bb033680065",
+ "seed": 42,
+ "corpus": {
+  "generator": "libFuzzer via cargo-fuzz (fuzz/qsort_ptrtrans_e3 target q_ft, copied to scratchpad, FRESH corpus dir)",
+  "args": "-seed=42 -max_total_time=300 -max_len=1024",
+  "wall_s": 310,
+  "execs": 6466519,
+  "cov_edges": 46,
+  "features": 237,
+  "files": 104,
+  "path": "corpus_seed42/",
+  "decoding": "raw bytes -> i32 LE chunks, take 256 (identical in fuzz target, C driver, Rust driver)"
+ },
+ "buildable": {
+  "C silent (clang ASan+UBSan)": true,
+  "C print (same binary, argv mode)": true,
+  "Rust silent (PtrTrans verbatim)": true,
+  "Rust print": true
+ },
+ "harnessable": {
+  "silent": true,
+  "print": true
+ },
+ "reached_functions": "n/a (not instrumented in replay; libFuzzer cov=46 edges over swap/partition/quick_sort)",
+ "ub_gate": "C driver under -fsanitize=address,undefined -fno-sanitize-recover=all; input excluded if exit!=0 or sanitizer report on stderr; plus repeated C replay (C-unstable check)",
+ "inputs_total": 104,
+ "inputs_excluded_c_ub": 0,
+ "inputs_excluded_c_unstable": 0,
+ "valid_differential_records": 104,
+ "classification": {
+  "C-UB": 0,
+  "C-unstable": 0,
+  "Rust-failure": 0,
+  "semantic-difference": 71,
+  "abstention": 0,
+  "agree": 33
+ },
+ "agree_breakdown": {
+  "already-sorted input": 31,
+  "constant array": 1,
+  "n<=1": 1
+ },
+ "cells": {
+  "silent": {
+   "O-R": {
+    "divergences": 0,
+    "time_to_first_divergence_s": "none",
+    "first_div_input": null
+   },
+   "O-P": {
+    "divergences": 0,
+    "time_to_first_divergence_s": "none",
+    "first_div_input": null
+   },
+   "O-S": {
+    "divergences": 71,
+    "time_to_first_divergence_s": 0.013,
+    "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-F": {
+    "divergences": 71,
+    "time_to_first_divergence_s": 0.013,
+    "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+   }
+  },
+  "print": {
+   "O-R": {
+    "divergences": 0,
+    "time_to_first_divergence_s": "none",
+    "first_div_input": null
+   },
+   "O-P": {
+    "divergences": 71,
+    "time_to_first_divergence_s": 0.013,
+    "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-S": {
+    "divergences": 71,
+    "time_to_first_divergence_s": 0.013,
+    "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+   },
+   "O-F": {
+    "divergences": 71,
+    "time_to_first_divergence_s": 0.013,
+    "first_div_input": "00a3050bececa7bc72f42e94405f9ca101464b57"
+   }
+  }
+ },
+ "replay_wall_s": 1.213,
+ "expected_pattern": {
+  "O-R": "blind/blind",
+  "O-P": "blind/detect",
+  "O-S": "detect/detect",
+  "O-F": "detect/detect"
+ },
+ "pattern_holds": true,
+ "commands": [
+  "cp -r fuzz/qsort_ptrtrans_e3 $S/fuzzcrate && rm -rf corpus artifacts coverage target",
+  "cd $S/fuzzcrate && cargo +nightly fuzz run q_ft $S/corpus -- -seed=42 -max_total_time=300 -max_len=1024 -print_final_stats=1",
+  "clang -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o driver_c driver.c   (qsort.c = original_qsort.c)",
+  "cargo build --release   (src/ptrans_qsort.rs = translated_qsort.rs verbatim)",
+  "ASAN_OPTIONS=detect_leaks=0:abort_on_error=1 UBSAN_OPTIONS=halt_on_error=1 python3 replay.py $S/corpus results/ablations/observation/obs_qsort_ptrtrans/raw"
+ ],
+ "raw_logs": [
+  "raw/libfuzzer_seed42.log",
+  "raw/replay_summary.json",
+  "raw/replay_records.jsonl",
+  "raw/replay_stdout.log"
+ ],
+ "harness_files": [
+  "harness/driver.c",
+  "harness/main.rs",
+  "harness/Cargo.toml",
+  "harness/replay.py",
+  "harness/q_ft.rs"
+ ]
+}

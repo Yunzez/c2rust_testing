@@ -1,0 +1,91 @@
+{
+ "schema": 4,
+ "cell": "cjson_ptrtrans",
+ "protocol": "single-c-companion-batched",
+ "boundaries": [
+  "cJSON_CreateArray",
+  "cJSON_CreateBool",
+  "cJSON_CreateFalse",
+  "cJSON_CreateNull",
+  "cJSON_CreateNumber",
+  "cJSON_CreateObject",
+  "cJSON_CreateTrue",
+  "cJSON_GetErrorPtr",
+  "cJSON_Version"
+ ],
+ "batch_size": 28,
+ "batch_count": 1,
+ "max_concurrent_fuzzers": 9,
+ "campaign_params": {
+  "max_total_time_s": 3600,
+  "seed": 42,
+  "timeout_s": 25,
+  "rss_limit_mb": 2048,
+  "max_len": 4096
+ },
+ "batches": [
+  {
+   "batch": 0,
+   "boundaries": [
+    "cJSON_CreateArray",
+    "cJSON_CreateBool",
+    "cJSON_CreateFalse",
+    "cJSON_CreateNull",
+    "cJSON_CreateNumber",
+    "cJSON_CreateObject",
+    "cJSON_CreateTrue",
+    "cJSON_GetErrorPtr",
+    "cJSON_Version"
+   ],
+   "corpus_sizes": {
+    "cJSON_CreateArray": 1,
+    "cJSON_CreateBool": 5,
+    "cJSON_CreateFalse": 1,
+    "cJSON_CreateNull": 1,
+    "cJSON_CreateNumber": 11,
+    "cJSON_CreateObject": 1,
+    "cJSON_CreateTrue": 1,
+    "cJSON_GetErrorPtr": 1,
+    "cJSON_Version": 1
+   },
+   "inputs": {
+    "completed": 23
+   },
+   "seconds": 3716,
+   "identity_sha256": "9f2bbf22b77718a3ab77e3176f42bcb84e71bb9a72efcb07e2c1ec467ef08654"
+  }
+ ],
+ "matrix": {
+  "archived_rust_guided_c_replay": {
+   "functions_total": 113,
+   "functions_reached": 10,
+   "regions_total": 1618,
+   "regions_reached": 33,
+   "function_reach": 0.08849557522123894,
+   "region_reach": 0.0203955500618047,
+   "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+   "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+  },
+  "new_c_guided": {
+   "C": {
+    "functions_total": 113,
+    "functions_reached": 10,
+    "regions_total": 1618,
+    "regions_reached": 37,
+    "function_reach": 0.08849557522123894,
+    "region_reach": 0.022867737948084055
+   },
+   "C_inputs": {
+    "completed": 23
+   }
+  }
+ },
+ "checks": {
+  "all_batches_valid": true,
+  "boundary_union_exact": true,
+  "fuzzer_cap_respected": true,
+  "only_c_was_fuzzed": true,
+  "c_measurement_nonempty": true
+ },
+ "interpretation": "Only C was fuzzed and measured; coverage is the identity union of validated batches."
+}

@@ -1,0 +1,100 @@
+{
+ "pilot": "OBS matrix cell",
+ "subject": "tulipindicators x C2SaferRust (laertes_benchmarks/tulipindicators_WIP), CLI-level defects: argc off-by-one in main() wrapper (bug 2) + zero-arg NULL argv[1] SIGSEGV (bug 1)",
+ "date": "2026-08-25",
+ "git_commit": "747f5f09eac314bc4e32687e71497e269af36848",
+ "seed": 42,
+ "corpus": {
+  "generator": "SEEDED GENERATOR (random.seed(42)) -- NOT coverage-guided; libFuzzer is not the natural mechanism at a CLI boundary",
+  "files": 202,
+  "path": "corpus_seed42/",
+  "decoding": "byte0 = indicator index into indicators.txt (mod 104; 0xFF = no args); byte1 = k options (mod 5); next k bytes -> option value b%20+1 as decimal argv strings",
+  "composition": "2 canonical (000: no args; 001: sma 5) + 104 one-per-indicator + 96 random-indicator records, k uniform in 0..4"
+ },
+ "buildable": {
+  "C sample (clang ASan+UBSan, sample.c+tiamalgamation.c)": true,
+  "Rust sample bin (tulipindicators_WIP, nightly-2025-09-01)": true
+ },
+ "harnessable": {
+  "silent": true,
+  "print": true
+ },
+ "reached_functions": "n/a (not instrumented)",
+ "boundary": "process/CLI. O-R = CLI exit code (ret line in state file), O-P = (wrapper exit code, forwarded stdout), O-S = O-R (no designated output memory at a CLI boundary; globals:none), O-F = O-S U O-P",
+ "ub_gate": "C sample under -fsanitize=address,undefined -fno-sanitize-recover=all, halt_on_error=1 exitcode=99; input excluded iff sanitizer report on stderr / exit 99 / signal (>=128) / timeout. C exit 1 (usage error) is NOT UB and stays a valid record (cell-specific patch of replay.py). Repeated C replay for C-unstable.",
+ "inputs_total": 202,
+ "inputs_excluded_c_ub": 1,
+ "inputs_excluded_c_unstable": 0,
+ "valid_differential_records": 201,
+ "classification": {
+  "C-UB": 1,
+  "C-unstable": 0,
+  "Rust-failure": 1,
+  "semantic-difference": 77,
+  "abstention": 0,
+  "agree": 123
+ },
+ "divergence_visibility_breakdown": {
+  "exit-code-visible (C 0 / Rust 1; argc off-by-one on exactly-supplied options)": 47,
+  "Rust-failure (no args -> SIGSEGV 139, C exit 1)": 1,
+  "stdout-only, both exit 1 (C: NOT ENOUGH/INVALID OPTION echo; Rust: 'No indicator given' or shorter echo -- argc bug shifts the error path)": 21,
+  "stdout-only, both exit 0 (input-column printing differs in WIP sample.rs: alt-input 'input' column dropped x5, extra 'close' column for dx/adxr x4 -- SEPARATE untriaged WIP divergence, not the argc bug)": 9,
+  "agree": 123
+ },
+ "cells": {
+  "silent": {
+   "O-R": {
+    "divergences": 48,
+    "time_to_first_divergence_s": 2.408,
+    "first_div_input": "000_85e53271e1"
+   },
+   "O-P": {
+    "divergences": 48,
+    "time_to_first_divergence_s": 2.408,
+    "first_div_input": "000_85e53271e1"
+   },
+   "O-S": {
+    "divergences": 48,
+    "time_to_first_divergence_s": 2.408,
+    "first_div_input": "000_85e53271e1"
+   },
+   "O-F": {
+    "divergences": 48,
+    "time_to_first_divergence_s": 2.408,
+    "first_div_input": "000_85e53271e1"
+   }
+  },
+  "print": {
+   "O-R": {
+    "divergences": 48,
+    "time_to_first_divergence_s": 2.408,
+    "first_div_input": "000_85e53271e1"
+   },
+   "O-P": {
+    "divergences": 78,
+    "time_to_first_divergence_s": 2.408,
+    "first_div_input": "000_85e53271e1"
+   },
+   "O-S": {
+    "divergences": 48,
+    "time_to_first_divergence_s": 2.408,
+    "first_div_input": "000_85e53271e1"
+   },
+   "O-F": {
+    "divergences": 78,
+    "time_to_first_divergence_s": 2.408,
+    "first_div_input": "000_85e53271e1"
+   }
+  }
+ },
+ "replay_wall_s": 70.95,
+ "raw_logs": [
+  "raw/replay_summary.json",
+  "raw/replay_records.jsonl",
+  "raw/replay_stdout.log"
+ ],
+ "what_did_not_work": [
+  "First run: C 'hma 1 4' hit a real ASan global-buffer-overflow, but ASAN_OPTIONS=abort_on_error=1 hung after the report; wrapper's 20 s timeout raised an uncaught TimeoutExpired -> no state file, no sanitizer text reached replay.py, record slipped past the gate as a bogus semantic-difference. Fix: halt_on_error=1:exitcode=99 (no abort), wrapper catches timeout -> exit 137 + '[TIMEOUT]' on stderr, gate also keys on rc==99/[TIMEOUT]. Rerun: that record is now C-UB (excluded).",
+  "Generic replay.py treats C rc!=0 as UB and Rust rc!=0 as Rust-failure; both wrong at a CLI boundary (exit 1 = usage error is the normal return). Patched copy in harness/replay.py: C gate = sanitizer/signal/timeout only; Rust-failure = signal or panic(101) only."
+ ]
+}

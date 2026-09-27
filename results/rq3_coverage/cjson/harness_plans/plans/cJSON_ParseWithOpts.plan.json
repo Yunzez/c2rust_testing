@@ -1,0 +1,46 @@
+{
+ "boundary": "cJSON_ParseWithOpts",
+ "status": "failed",
+ "inputs": [
+  {
+   "param": "value",
+   "c_decoder": "input_string",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "max_elems": 1048576
+   },
+   "evidence": [
+    {
+     "rule": "const_char_star_without_length_is_a_string",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "value is a const char* with no length parameter and no provable extent"
+    }
+   ],
+   "rust_type": "*const ::core::ffi::c_char",
+   "rust_bridge": "c_abi"
+  },
+  {
+   "param": "require_null_terminated",
+   "c_decoder": "scalar",
+   "detail": {},
+   "evidence": [],
+   "rust_type": "::core::ffi::c_int",
+   "rust_bridge": "scalar_copy"
+  }
+ ],
+ "liveness": [],
+ "failures": [
+  "return_parse_end: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings"
+ ],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024,
+  "max_table_rows": 16
+ },
+ "plan_version": 1
+}

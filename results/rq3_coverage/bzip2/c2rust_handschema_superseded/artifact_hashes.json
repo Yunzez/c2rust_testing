@@ -1,0 +1,84 @@
+{
+ "cell": "bzip2__c2rust",
+ "rust_artifact": {
+  "canonical_path": "tools/frameworks/c2saferrust/laertes_benchmarks/bzip2/ (gitignored; library .rs byte-identical to git-tracked fuzz/bzip2_c2rust_e3/src/, verified by cmp)",
+  "translator": "c2rust (mechanical), transpiled on macOS \u2014 references __stdinp/__stdoutp/__stderrp/__maskrune/_DefaultRuneLocale/__error",
+  "sha256_scoped_sources": {
+   "blocksort.rs": "8edc09042ffcf5d2bd14028dafd62208f9ca7449c9c40476d94fdf17c1ed3ae4",
+   "bzlib.rs": "ea5e6587b005b33d11f68c134654901d3009d7861d397cbdc43393a0f066fe00",
+   "compress.rs": "6e428234b698f71871d8445e1a9790e4d5aa14be28aeeaa34d75f7d17367397f",
+   "crctable.rs": "cbafa26200524cf153750d00f328058accf6a73e71286b71bacf706a72fcaf69",
+   "decompress.rs": "abc5bf47e5d8692ec2e9b230df7025eca4dde6723b90289153541b60215610f9",
+   "huffman.rs": "bdd000f52d4758fa2a9a7c8ea29e4055a8125bc06618843a842c3067747c83d0",
+   "randtable.rs": "7708ba6b00946f604c63bcfcd85eebbe097c01fd77cff7533eb6b4b71a86b829"
+  },
+  "sha256_flattened_crate": "c0522bc19b66448c78d509026c914beca015ef6a7636031efb1f0ca7d204b1ee"
+ },
+ "c_source": {
+  "path": "tools/frameworks/crown/c-code/bzip2/",
+  "identity": "bzip2 1.0.8",
+  "sha256": {
+   "bzlib.c": "d06cf1bd991df1f2dc8ef4f7713d186eb636767111cbd4807ef5fc4a54ca6838",
+   "blocksort.c": "4e48cd2ccff44699e67a7c949b0e9576c05b8dcbe20f863475c4fcc8db11a409",
+   "compress.c": "75995bd6e8c5f1e1dad05178f3cf53137df99ce860a1984324f78591f28deed3",
+   "decompress.c": "31a89f8bf408ef0e4acae83e8be60a8eb4edece6c866d6e32b8f7e557ca54bc6",
+   "huffman.c": "bdeb45f3f535546a672811b68aa87cc58fd395b28ecebc34fa3566a656a4d1d1",
+   "crctable.c": "2fb7a564629386456e731f431a5cf4f5026747bace4cd10be8f5ecf082066a92",
+   "randtable.c": "407054ca6f54cd737dbc26ceb6b7874b55a0fcff86c2eb23cbec2fbdbb884815",
+   "bzlib.h": "6ac62e811669598ee30c9e1c379b9e627f6ff17a5a3dc1e0b4fa8b8ea75e580d",
+   "bzlib_private.h": "c0cda4f35ee1f2d54c9beacd524f8d28e0dbf8494aca30d854af3f143af4341b",
+   "Makefile": "d8955bf6fbd0b136fb2c20ccc1c93b1320cfe10ae9f9dcbb7a8f0dc6fb4140ea"
+  },
+  "amalgamation_sha256": "d4378051f781933805b118de356768b3e0515dd004188607dfe1df66fd096821",
+  "matches_translator_input": "unknown \u2014 Phase 0 (results/rq2_attribution/harness_manifest.json) records that no bzip2 harness ever bound a C hash to the translator input; only the version string matches"
+ },
+ "matcher_output": {
+  "path": "results/rq1_matching/raw/group_a/bzip2__c2rust/matcher_output.json",
+  "sha256": "83231e8ff814f2c18d51f2f7e0fd66363f7d46727f88746163e87fea83316182",
+  "forced_pairs": 64
+ },
+ "generator": {
+  "base": "tools/stu_selector/gen_diff_harness.py",
+  "GEN_VERSION": "0.5+rq4fix2026-09-03b",
+  "copy_used": "scratchpad rq4_gen/ (repo copies of gen_diff_harness.py and harness_schema.py untouched)",
+  "diffs": [
+   "raw/generator_rq4_fixes.diff",
+   "raw/schema_module_rq4_fixes.diff"
+  ]
+ },
+ "toolchain": {
+  "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)\nbinary: rustc\ncommit-hash: 07d246fc6dc227903da2955b38a59e060539a485\ncommit-date: 2025-08-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.91.0-nightly\nLLVM version: 21.1.0",
+  "llvm_cov": "LLVM version 21.1.0-rust-1.91.0-nightly",
+  "clang": "Ubuntu clang version 21.1.8 (6ubuntu1)",
+  "cargo_fuzz": "cargo-fuzz 0.13.2",
+  "tests_side_rustflags": "-C instrument-coverage -C codegen-units=1 -C link-dead-code -C debug-assertions --cfg fuzzing",
+  "ours_side_rustflags": "set by cargo-fuzz: sancov + -Zsanitizer=address -Cdebug-assertions -Ccodegen-units=1, plus -C instrument-coverage for ",
+  "flag_note": "-C debug-assertions and --cfg fuzzing were added to the TESTS side so both sides compile the same MIR; cargo-fuzz forces them on the ours side and cannot be told otherwise"
+ },
+ "schemas": {
+  "BZ2_bzBuffToBuffCompress": "7e978a8fb9a60ff327856cd5a16cab187417714f2b09e92e0d2c9be821f60340",
+  "BZ2_bzBuffToBuffDecompress": "bf49902d409515f684f4d7bfad92656c516b7f4bdb655f1e912de8369c153a74",
+  "BZ2_hbAssignCodes": "e3cb6e92e81bd3d4407e4d4eac8c7fa137bde1c7ae867ac92ca276744ac7c6a6",
+  "BZ2_hbCreateDecodeTables": "bcb8043f0dbaff7bce9cbc53e0fd4148bd118fd437fec77874195a7f0411fdad",
+  "BZ2_hbMakeCodeLengths": "fc848ebce31fe41805cb2bed9c2ab78b2b6bb937ac464a3525ce9d9ece29fc86",
+  "BZ2_indexIntoF": "943afb471678319228a12642350c133c584df1385ca50cd4bb7eb6f35667f2ef",
+  "fallbackQSort3": "75dff54a0f807b9f82efbab84750012b1292e9fd525806e9e5a29ecd44add3d4",
+  "fallbackSimpleSort": "85749b8c50653ad5e33b3ddf91c1000339cfee1e35258d09e4d452bc63ad7f69",
+  "fallbackSort": "869a9a6766d681b349fb6fc2c41f1b6d215505ef75a1f4de5354cbfeb796086b",
+  "mmed3": "2bbd5607a7751d55c3d708f45cdb83b400362be6cc03c338029a187fe42f62ca"
+ },
+ "campaign": {
+  "round": 2,
+  "budget": "compress 3600 s, decompress 3600 s, eight other runnable boundaries 600 s each",
+  "concurrency": "all ten harnesses run concurrently on 32 cores; artifact wall clock 3600 s",
+  "libfuzzer": "-seed=42 -max_len=1048576 (long) / 65536 (short) -rss_limit_mb=8192 -timeout=25 -fork=1 -ignore_crashes=1",
+  "seeded": "compress 22 seeds, decompress 30 seeds (raw/make_seeds.py); all other harnesses unseeded",
+  "checkpoints": [
+   1,
+   5,
+   10,
+   30,
+   60
+  ]
+ }
+}

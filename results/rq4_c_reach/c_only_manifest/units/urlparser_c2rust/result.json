@@ -1,0 +1,126 @@
+{
+ "schema": 4,
+ "cell": "urlparser_c2rust",
+ "protocol": "single-c-companion-batched",
+ "boundaries": [
+  "get_part",
+  "strdup",
+  "strff",
+  "strrwd",
+  "url_data_inspect",
+  "url_free",
+  "url_get_auth",
+  "url_get_hash",
+  "url_get_host",
+  "url_get_hostname",
+  "url_get_path",
+  "url_get_pathname",
+  "url_get_port",
+  "url_get_protocol",
+  "url_get_query",
+  "url_get_search",
+  "url_inspect",
+  "url_is_protocol",
+  "url_is_ssh",
+  "url_parse"
+ ],
+ "batch_size": 28,
+ "batch_count": 1,
+ "max_concurrent_fuzzers": 20,
+ "campaign_params": {
+  "max_total_time_s": 3600,
+  "seed": 42,
+  "timeout_s": 25,
+  "rss_limit_mb": 2048,
+  "max_len": 4096
+ },
+ "batches": [
+  {
+   "batch": 0,
+   "boundaries": [
+    "get_part",
+    "strdup",
+    "strff",
+    "strrwd",
+    "url_data_inspect",
+    "url_free",
+    "url_get_auth",
+    "url_get_hash",
+    "url_get_host",
+    "url_get_hostname",
+    "url_get_path",
+    "url_get_pathname",
+    "url_get_port",
+    "url_get_protocol",
+    "url_get_query",
+    "url_get_search",
+    "url_inspect",
+    "url_is_protocol",
+    "url_is_ssh",
+    "url_parse"
+   ],
+   "corpus_sizes": {
+    "get_part": 1,
+    "strdup": 16,
+    "strff": 13,
+    "strrwd": 1,
+    "url_data_inspect": 2,
+    "url_free": 2,
+    "url_get_auth": 1,
+    "url_get_hash": 1,
+    "url_get_host": 1,
+    "url_get_hostname": 1,
+    "url_get_path": 1,
+    "url_get_pathname": 1,
+    "url_get_port": 1,
+    "url_get_protocol": 1,
+    "url_get_query": 1,
+    "url_get_search": 1,
+    "url_inspect": 1,
+    "url_is_protocol": 1,
+    "url_is_ssh": 1,
+    "url_parse": 1
+   },
+   "inputs": {
+    "crash": 11,
+    "completed": 38
+   },
+   "seconds": 3718,
+   "identity_sha256": "9bc8a2af837487fa32b8d025bda058da61a0d1cd46aeeb3b039e6eb388395a26"
+  }
+ ],
+ "matrix": {
+  "archived_rust_guided_c_replay": {
+   "functions_total": 21,
+   "functions_reached": 9,
+   "regions_total": 307,
+   "regions_reached": 57,
+   "function_reach": 0.42857142857142855,
+   "region_reach": 0.18566775244299674,
+   "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+   "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+  },
+  "new_c_guided": {
+   "C": {
+    "functions_total": 21,
+    "functions_reached": 7,
+    "regions_total": 307,
+    "regions_reached": 39,
+    "function_reach": 0.3333333333333333,
+    "region_reach": 0.1270358306188925
+   },
+   "C_inputs": {
+    "crash": 11,
+    "completed": 38
+   }
+  }
+ },
+ "checks": {
+  "all_batches_valid": true,
+  "boundary_union_exact": true,
+  "fuzzer_cap_respected": true,
+  "only_c_was_fuzzed": true,
+  "c_measurement_nonempty": true
+ },
+ "interpretation": "Only C was fuzzed and measured; coverage is the identity union of validated batches."
+}

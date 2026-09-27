@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "defect": "C6",
+  "baseline": "flourine",
+  "target": "sample_main_packet",
+  "adapter_kind": "documented_per_function_json_with_argv_contract_surface",
+  "semantic_rewrite": false,
+  "known_witness_encoded": false,
+  "sources": {
+    "c_library": "benchmark/pairs/rq4/tulip_c2saferrust/source",
+    "c_sample_commit": "41e59fb33cef5bc97b03d2751dab2b006525c23f",
+    "c_sample_path": "sample.c",
+    "c_sample_sha256": "8752f447be4c8b7ed00bcbfa6a4bc634494bd0b5f7054bacc5a6f2da80ff4b49",
+    "rust_crate": "tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_WIP",
+    "rust_sample": "tools/frameworks/c2saferrust/laertes_benchmarks/tulipindicators_WIP/sample.rs"
+  },
+  "identity_evidence": [
+    "sample.c is byte-identical from Tulip commit 41e59fb3 through 0bc8dfc4",
+    "the frozen base c2rust sample reports TI_VERSION 0.8.4 and TI_BUILD 1537377628 and preserves the historical sample.c guards and messages",
+    "the C2SaferRust WIP sample retains the same constants and computation but moves the argv[1] read before the argc guard"
+  ],
+  "wrapper_contract": "A generated selector ranges over argc 1..4; four independently generated 32-byte strings are only final-byte NUL terminated and assembled into a valid argv before the exact historical C sample and exact C2SaferRust main_0 are called.",
+  "packaging_provenance": {
+    "source_adapter": "results/baseline_artifacts/adapters/rustassure/C6/adapter.json",
+    "c_input": "The exact C package is already preprocessed by the frozen RustAssure Clang 14; FLOURINE receives those bytes verbatim inside its documented Function Implementations field.",
+    "rust_input": "The exact flattened WIP translation and its original nightly attributes are copied byte-for-byte; a released instrumenter failure is scored and must not be repaired."
+  },
+  "input_sha256": {
+    "sample_main_packet.json": "8ec853335402706a345186568a90294bd73dff470cf26d57cec89b29c1fedeb5",
+    "sample_main_packet.rs": "1ad3fd11c569f86f6f5cef6cee1e5c02aa2c5118e5561dd36a1cb729aa5e100d",
+    "sample_main_packet_preprocessed.inc": "e33bebd870152ee8ae247bcd553ed98a61fce3780b2f8bda38dbb13d48b1f560"
+  }
+}

@@ -1,0 +1,97 @@
+FAIL cJSON_AddItemReferenceToArray  inputs= 0
+       - signature: struct-invariant param array: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_AddItemReferenceToObject inputs= 0
+       - signature: struct-invariant param object: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_AddItemToArray           inputs= 0
+       - signature: struct-invariant param array: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_AddItemToObject          inputs= 0
+       - signature: struct-invariant param object: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_AddItemToObjectCS        inputs= 0
+       - signature: struct-invariant param object: cJSON has pointer field 'next' (needs invariant reconstruction)
+OK  cJSON_CreateArray              inputs= 0
+OK  cJSON_CreateBool               inputs= 1
+OK  cJSON_CreateDoubleArray        inputs= 2
+OK  cJSON_CreateFalse              inputs= 0
+OK  cJSON_CreateFloatArray         inputs= 2
+OK  cJSON_CreateIntArray           inputs= 2
+OK  cJSON_CreateNull               inputs= 0
+OK  cJSON_CreateNumber             inputs= 1
+OK  cJSON_CreateObject             inputs= 0
+OK  cJSON_CreateString             inputs= 1
+OK  cJSON_CreateStringArray        inputs= 2
+OK  cJSON_CreateTrue               inputs= 0
+FAIL cJSON_Delete                   inputs= 0
+       - signature: struct-invariant param c: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_DeleteItemFromArray      inputs= 0
+       - signature: struct-invariant param array: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_DeleteItemFromObject     inputs= 0
+       - signature: struct-invariant param object: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_DetachItemFromArray      inputs= 0
+       - signature: struct-invariant param array: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_DetachItemFromObject     inputs= 0
+       - signature: struct-invariant param object: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_Duplicate                inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_GetArrayItem             inputs= 0
+       - signature: struct-invariant param array: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_GetArraySize             inputs= 0
+       - signature: struct-invariant param array: cJSON has pointer field 'next' (needs invariant reconstruction)
+OK  cJSON_GetErrorPtr              inputs= 0
+FAIL cJSON_GetObjectItem            inputs= 0
+       - signature: struct-invariant param object: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_InitHooks                inputs= 0
+       - signature: struct-invariant param hooks: cJSON_Hooks has pointer field 'malloc_fn' (needs invariant reconstruction)
+FAIL cJSON_InsertItemInArray        inputs= 0
+       - signature: struct-invariant param array: cJSON has pointer field 'next' (needs invariant reconstruction)
+OK  cJSON_Minify                   inputs= 1
+OK  cJSON_New_Item                 inputs= 0
+OK  cJSON_Parse                    inputs= 1
+FAIL cJSON_ParseWithOpts            inputs= 2
+       - return_parse_end: T** is not a constructible input here -- it is dereferenced and written rather than indexed, so it is an OUT pointer whose value is an interior pointer into another argument, not a table of strings
+FAIL cJSON_Print                    inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_PrintBuffered            inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_PrintUnformatted         inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_ReplaceItemInArray       inputs= 0
+       - signature: struct-invariant param array: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL cJSON_ReplaceItemInObject      inputs= 0
+       - signature: struct-invariant param object: cJSON has pointer field 'next' (needs invariant reconstruction)
+OK  cJSON_strcasecmp               inputs= 2
+OK  cJSON_strdup                   inputs= 1
+FAIL create_reference               inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL ensure                         inputs= 0
+       - signature: struct-invariant param p: printbuffer has pointer field 'buffer' (needs invariant reconstruction)
+FAIL parse_array                    inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+OK  parse_hex4                     inputs= 1
+FAIL parse_number                   inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL parse_object                   inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL parse_string                   inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL parse_value                    inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+OK  pow2gt                         inputs= 1
+FAIL print_array                    inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL print_number                   inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL print_object                   inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL print_string                   inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL print_string_ptr               inputs= 0
+       - signature: struct-invariant param p: printbuffer has pointer field 'buffer' (needs invariant reconstruction)
+FAIL print_value                    inputs= 0
+       - signature: struct-invariant param item: cJSON has pointer field 'next' (needs invariant reconstruction)
+OK  skip                           inputs= 1
+FAIL suffix_object                  inputs= 0
+       - signature: struct-invariant param prev: cJSON has pointer field 'next' (needs invariant reconstruction)
+FAIL update                         inputs= 0
+       - signature: struct-invariant param p: printbuffer has pointer field 'buffer' (needs invariant reconstruction)
+
+planned 21 / 58

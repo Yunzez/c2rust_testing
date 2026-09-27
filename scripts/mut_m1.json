@@ -1,0 +1,57 @@
+[
+ {
+  "id": "div_safe_xor",
+  "program": "div_mod",
+  "pair": "benchmark/pairs/div_mod",
+  "entry": "div_mod_safe",
+  "operator": "operator-replacement",
+  "site": "div_mod_safe: + -> ^",
+  "find": "return div_signed_guarded(a, b) + mod_signed_guarded(a, b);",
+  "replace": "return div_signed_guarded(a, b) ^ mod_signed_guarded(a, b);",
+  "expected": "C computes div+mod, mutant computes div^mod; UB-free (both guarded)."
+ },
+ {
+  "id": "negate_sub",
+  "program": "negate_abs",
+  "pair": "benchmark/pairs/negate_abs",
+  "entry": "negate_abs_safe",
+  "operator": "operator-replacement",
+  "site": "negate_abs_safe: wrapping_add -> wrapping_sub",
+  "find": "return (negate_u_safe(x) as uint32_t).wrapping_add(abs_magnitude_u32(x));",
+  "replace": "return (negate_u_safe(x) as uint32_t).wrapping_sub(abs_magnitude_u32(x));",
+  "expected": "C adds the two magnitudes, mutant subtracts; wrapping so UB-free."
+ },
+ {
+  "id": "shl_mask15",
+  "program": "shift_ops",
+  "pair": "benchmark/pairs/shift_ops",
+  "entry": "shift_ops_safe",
+  "operator": "constant-perturbation",
+  "site": "shl_u32_masked: mask 31 -> 15",
+  "find": "return v << (count & 31 as uint32_t);",
+  "replace": "return v << (count & 15 as uint32_t);",
+  "expected": "For count in [16,31] the masked shift amount differs; masked so UB-free."
+ },
+ {
+  "id": "shl_mask7",
+  "program": "shift_ops",
+  "pair": "benchmark/pairs/shift_ops",
+  "entry": "shift_ops_safe",
+  "operator": "constant-perturbation",
+  "site": "shl_i32_safe: mask 31 -> 7",
+  "find": "return (u << (count & 31 as uint32_t)) as int32_t;",
+  "replace": "return (u << (count & 7 as uint32_t)) as int32_t;",
+  "expected": "For count in [8,31] the masked shift amount differs; masked so UB-free."
+ },
+ {
+  "id": "div_noguard",
+  "program": "div_mod",
+  "pair": "benchmark/pairs/div_mod",
+  "entry": "div_mod_safe",
+  "operator": "guard-weakening",
+  "site": "div_signed_guarded: drop the b==0 guard",
+  "find": "unsafe extern \"C\" fn div_signed_guarded(mut a: int32_t, mut b: int32_t) -> int32_t {\n    if b == 0 as int32_t {\n        return 0 as int32_t;\n    }\n",
+  "replace": "unsafe extern \"C\" fn div_signed_guarded(mut a: int32_t, mut b: int32_t) -> int32_t {\n",
+  "expected": "Dropping the b==0 guard makes the mutant divide by zero at b=0, where the C entry (guarded) is UB-free and returns a."
+ }
+]

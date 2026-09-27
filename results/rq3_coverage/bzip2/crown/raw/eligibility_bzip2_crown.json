@@ -1,0 +1,743 @@
+{
+ "cell": "bzip2_crown",
+ "generator": {
+  "module": "tools/stu_selector/gen_diff_harness.py",
+  "GEN_VERSION": "0.6",
+  "GEN_CAPABILITIES": [
+   "scalar",
+   "bounded_scalar",
+   "input_buffer",
+   "inout_buffer",
+   "output_buffer",
+   "out_scalar",
+   "input_string",
+   "input_fixed_array_buffer",
+   "input_rectangular_pointer_table",
+   "input_string_pointer_table",
+   "input_struct",
+   "inout_struct",
+   "input_struct_array",
+   "inout_struct_array",
+   "output_array",
+   "output_buffer_with_capacity_ptr"
+  ]
+ },
+ "matched_pairs": 64,
+ "eligible": 14,
+ "rows": [
+  {
+   "c_entry": "BZ2_blockSort",
+   "rust_entry": "BZ2_blockSort",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bsInitWrite",
+   "rust_entry": "BZ2_bsInitWrite",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bzBuffToBuffCompress",
+   "rust_entry": "BZ2_bzBuffToBuffCompress",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "i32",
+   "abi_roles": [
+    [
+     "dest",
+     "out_scalar"
+    ],
+    [
+     "destLen",
+     "out_scalar"
+    ],
+    [
+     "source",
+     "inout_buffer"
+    ],
+    [
+     "sourceLen",
+     "length"
+    ],
+    [
+     "blockSize100k",
+     "scalar"
+    ],
+    [
+     "verbosity",
+     "scalar"
+    ],
+    [
+     "workFactor",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "BZ2_bzBuffToBuffDecompress",
+   "rust_entry": "BZ2_bzBuffToBuffDecompress",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "i32",
+   "abi_roles": [
+    [
+     "dest",
+     "out_scalar"
+    ],
+    [
+     "destLen",
+     "out_scalar"
+    ],
+    [
+     "source",
+     "inout_buffer"
+    ],
+    [
+     "sourceLen",
+     "length"
+    ],
+    [
+     "small",
+     "scalar"
+    ],
+    [
+     "verbosity",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "BZ2_bzCompress",
+   "rust_entry": "BZ2_bzCompress",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bzCompressEnd",
+   "rust_entry": "BZ2_bzCompressEnd",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bzCompressInit",
+   "rust_entry": "BZ2_bzCompressInit",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bzDecompress",
+   "rust_entry": "BZ2_bzDecompress",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bzDecompressEnd",
+   "rust_entry": "BZ2_bzDecompressEnd",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bzDecompressInit",
+   "rust_entry": "BZ2_bzDecompressInit",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bzRead",
+   "rust_entry": "BZ2_bzRead",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzReadClose",
+   "rust_entry": "BZ2_bzReadClose",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzReadGetUnused",
+   "rust_entry": "BZ2_bzReadGetUnused",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzReadOpen",
+   "rust_entry": "BZ2_bzReadOpen",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bzWrite",
+   "rust_entry": "BZ2_bzWrite",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzWriteClose",
+   "rust_entry": "BZ2_bzWriteClose",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzWriteClose64",
+   "rust_entry": "BZ2_bzWriteClose64",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzWriteOpen",
+   "rust_entry": "BZ2_bzWriteOpen",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_bz__AssertH__fail",
+   "rust_entry": "BZ2_bz__AssertH__fail",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "void",
+   "abi_roles": [
+    [
+     "errcode",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "BZ2_bzclose",
+   "rust_entry": "BZ2_bzclose",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzdopen",
+   "rust_entry": "BZ2_bzdopen",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "i32",
+   "abi_roles": [
+    [
+     "fd",
+     "scalar"
+    ],
+    [
+     "mode",
+     "input_string"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "BZ2_bzerror",
+   "rust_entry": "BZ2_bzerror",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzflush",
+   "rust_entry": "BZ2_bzflush",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzlibVersion",
+   "rust_entry": "BZ2_bzlibVersion",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "entry not found in the C translation unit, or it takes no parameters, so no logical input can be constructed"
+  },
+  {
+   "c_entry": "BZ2_bzopen",
+   "rust_entry": "BZ2_bzopen",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "i32",
+   "abi_roles": [
+    [
+     "path",
+     "input_string"
+    ],
+    [
+     "mode",
+     "input_string"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "BZ2_bzread",
+   "rust_entry": "BZ2_bzread",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_bzwrite",
+   "rust_entry": "BZ2_bzwrite",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for b: unsupported BZFILE"
+  },
+  {
+   "c_entry": "BZ2_compressBlock",
+   "rust_entry": "BZ2_compressBlock",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_decompress",
+   "rust_entry": "BZ2_decompress",
+   "in_deployment_set": false,
+   "eligible": false,
+   "reason": "struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "BZ2_hbAssignCodes",
+   "rust_entry": "BZ2_hbAssignCodes",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "void",
+   "abi_roles": [
+    [
+     "code",
+     "output_array"
+    ],
+    [
+     "length",
+     "inout_buffer"
+    ],
+    [
+     "minLen",
+     "length"
+    ],
+    [
+     "maxLen",
+     "scalar"
+    ],
+    [
+     "alphaSize",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "BZ2_hbCreateDecodeTables",
+   "rust_entry": "BZ2_hbCreateDecodeTables",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "void",
+   "abi_roles": [
+    [
+     "limit",
+     "output_array"
+    ],
+    [
+     "base",
+     "output_array"
+    ],
+    [
+     "perm",
+     "output_array"
+    ],
+    [
+     "length",
+     "inout_buffer"
+    ],
+    [
+     "minLen",
+     "length"
+    ],
+    [
+     "maxLen",
+     "scalar"
+    ],
+    [
+     "alphaSize",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "BZ2_hbMakeCodeLengths",
+   "rust_entry": "BZ2_hbMakeCodeLengths",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "void",
+   "abi_roles": [
+    [
+     "len",
+     "output_array"
+    ],
+    [
+     "freq",
+     "inout_buffer"
+    ],
+    [
+     "alphaSize",
+     "length"
+    ],
+    [
+     "maxLen",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "BZ2_indexIntoF",
+   "rust_entry": "BZ2_indexIntoF",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "i32",
+   "abi_roles": [
+    [
+     "indx",
+     "scalar"
+    ],
+    [
+     "cftab",
+     "output_array"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "add_pair_to_block",
+   "rust_entry": "add_pair_to_block",
+   "in_deployment_set": false,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "bsFinishWrite",
+   "rust_entry": "bsFinishWrite",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "bsPutUChar",
+   "rust_entry": "bsPutUChar",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "bsPutUInt32",
+   "rust_entry": "bsPutUInt32",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "bsW",
+   "rust_entry": "bsW",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "bz_config_ok",
+   "rust_entry": "bz_config_ok",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "entry not found in the C translation unit, or it takes no parameters, so no logical input can be constructed"
+  },
+  {
+   "c_entry": "bzopen_or_bzdopen",
+   "rust_entry": "bzopen_or_bzdopen",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "i32",
+   "abi_roles": [
+    [
+     "path",
+     "input_buffer"
+    ],
+    [
+     "fd",
+     "length"
+    ],
+    [
+     "mode",
+     "input_buffer"
+    ],
+    [
+     "open_mode",
+     "length"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "copy_input_until_stop",
+   "rust_entry": "copy_input_until_stop",
+   "in_deployment_set": false,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "copy_output_until_stop",
+   "rust_entry": "copy_output_until_stop",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "default_bzalloc",
+   "rust_entry": "default_bzalloc",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for opaque: unsupported void"
+  },
+  {
+   "c_entry": "default_bzfree",
+   "rust_entry": "default_bzfree",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for opaque: unsupported void"
+  },
+  {
+   "c_entry": "fallbackQSort3",
+   "rust_entry": "fallbackQSort3",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "void",
+   "abi_roles": [
+    [
+     "fmap",
+     "output_array"
+    ],
+    [
+     "eclass",
+     "inout_buffer"
+    ],
+    [
+     "loSt",
+     "length"
+    ],
+    [
+     "hiSt",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "fallbackSimpleSort",
+   "rust_entry": "fallbackSimpleSort",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "void",
+   "abi_roles": [
+    [
+     "fmap",
+     "output_array"
+    ],
+    [
+     "eclass",
+     "inout_buffer"
+    ],
+    [
+     "lo",
+     "length"
+    ],
+    [
+     "hi",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "fallbackSort",
+   "rust_entry": "fallbackSort",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "void",
+   "abi_roles": [
+    [
+     "fmap",
+     "output_array"
+    ],
+    [
+     "eclass",
+     "output_array"
+    ],
+    [
+     "bhtab",
+     "inout_buffer"
+    ],
+    [
+     "nblock",
+     "length"
+    ],
+    [
+     "verb",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "flush_RL",
+   "rust_entry": "flush_RL",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "generateMTFValues",
+   "rust_entry": "generateMTFValues",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "handle_compress",
+   "rust_entry": "handle_compress",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param strm: bz_stream has pointer field 'next_in' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "init_RL",
+   "rust_entry": "init_RL",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "isempty_RL",
+   "rust_entry": "isempty_RL",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "mainGtU",
+   "rust_entry": "mainGtU",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for quadrant: unsupported UInt16"
+  },
+  {
+   "c_entry": "mainQSort3",
+   "rust_entry": "mainQSort3",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for quadrant: unsupported UInt16"
+  },
+  {
+   "c_entry": "mainSimpleSort",
+   "rust_entry": "mainSimpleSort",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for quadrant: unsupported UInt16"
+  },
+  {
+   "c_entry": "mainSort",
+   "rust_entry": "mainSort",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "unsupported pointer target for quadrant: unsupported UInt16"
+  },
+  {
+   "c_entry": "makeMaps_d",
+   "rust_entry": "makeMaps_d",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "makeMaps_e",
+   "rust_entry": "makeMaps_e",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "mmed3",
+   "rust_entry": "mmed3",
+   "in_deployment_set": true,
+   "eligible": true,
+   "ret": "u8",
+   "abi_roles": [
+    [
+     "a",
+     "scalar"
+    ],
+    [
+     "b",
+     "scalar"
+    ],
+    [
+     "c",
+     "scalar"
+    ]
+   ],
+   "reason": null
+  },
+  {
+   "c_entry": "myfeof",
+   "rust_entry": "myfeof",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param f: FILE has pointer field '_IO_read_ptr' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "prepare_new_block",
+   "rust_entry": "prepare_new_block",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "sendMTFValues",
+   "rust_entry": "sendMTFValues",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: EState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "unRLE_obuf_to_output_FAST",
+   "rust_entry": "unRLE_obuf_to_output_FAST",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)"
+  },
+  {
+   "c_entry": "unRLE_obuf_to_output_SMALL",
+   "rust_entry": "unRLE_obuf_to_output_SMALL",
+   "in_deployment_set": true,
+   "eligible": false,
+   "reason": "struct-invariant param s: DState has pointer field 'strm' (needs invariant reconstruction)"
+  }
+ ]
+}

@@ -1,0 +1,293 @@
+SVF Struct Analysis Start
+Initializing SVF...
+Building SVFIR...
+Collecting struct information...
+Struct information collection completed, found 9 structs
+Executing Context-Sensitive Pointer Analysis...
+
+*********General Stats***************
+################ (program : tulipindicators.ll)###############
+AddrsNum            3354
+BBWith2Succ         1303
+BBWith3Succ         0
+CallsNum            453
+ConstArrayObj       2
+ConstStructObj      2
+ConstantObj         0
+CopysNum            2461
+FIObjNum            1
+FSObjNum            2707
+FunctionObjs        299
+GepsNum             5573
+GlobalObjs          4
+HeapObjs            7
+IndCallSites        2
+LoadsNum            12429
+MaxStructSize       1979
+NonPtrObj           1741
+ReturnsNum          250
+StackObjs           2397
+StoresNum           5932
+TotalCallSite       741
+TotalFieldObjects   567
+TotalObjects        2709
+TotalPTASVFStmts    15663
+TotalPointers       39532
+TotalSVFStmts       38462
+VarArrayObj         2
+VarStructObj        60
+----------------Time and memory stats--------------------
+LLVMIRTime          0.301
+SVFIRTime           0.247
+SymbolTableTime     0.039
+#######################################################
+
+*********CallGraph Stats (Andersen analysis)***************
+################ (program : tulipindicators.ll)###############
+----------------Numbers stats----------------------------
+CalRetPairInCycle   0
+MaxNodeInCycle      0
+NodeInCycle         0
+TotalCycle          0
+TotalEdge           739
+TotalNode           299
+#######################################################
+
+*********Andersen Pointer Analysis Stats***************
+################ (program : tulipindicators.ll)###############
+----------------Time and memory stats--------------------
+AvgIn/OutAddrEdge   0.194661
+AvgIn/OutCopyEdge   0.679439
+AvgIn/OutEdge       1.26939
+AvgIn/OutLoadEdge   0.247924
+AvgIn/OutStoreEdge  0.147365
+AvgPtsSetSize       0.151785
+AvgTopLvlPtsSize    0.472909
+CollapseTime        0
+CopyGepTime         0
+LoadStoreTime       0
+MemoryUsageVmrss    44656
+MemoryUsageVmsize   44296
+SCCDetectTime       0
+SCCMergeTime        0
+TotalTime           0.146
+UpdateCGTime        0
+----------------Numbers stats----------------------------
+AddrProcessed       3165
+CopyProcessed       1101
+DummyFieldPtrs      10
+FieldObjs           567
+GepProcessed        2783
+IndCallSites        2
+IndEdgeSolved       0
+LoadProcessed       3567
+LocalVarInRecur     0
+MaxInAddrEdge       1
+MaxInCopyEdge       346
+MaxInLoadEdge       1
+MaxInStoreEdge      26
+MaxNodesInSCC       7
+MaxOutAddrEdge      458
+MaxOutCopyEdge      1653
+MaxOutLoadEdge      138
+MaxOutStoreEdge     412
+MaxPtsSetSize       160
+MemObjects          2709
+NodesInCycles       337
+NullPointer         2404
+NumOfAddrs          3165
+NumOfCGEdge         17474
+NumOfCGNode         16654
+NumOfCopys          5599
+NumOfFieldExpand    0
+NumOfGeps           5448
+NumOfLoads          4031
+NumOfSCCDetect      3
+NumOfSFRs           0
+NumOfStores         2396
+NumOfValidNode      16259
+NumOfValidObjNode   3049
+Pointers            39522
+PointsToBlkPtr      0
+PointsToConstPtr    0
+SolveIterations     3
+StoreProcessed      2427
+TotalCycleNum       87
+TotalObjects        3276
+TotalPWCCycleNum    0
+TotalPointers       39532
+#######################################################
+
+****Persistent Points-To Cache Statistics: Andersen's analysis bitvector****
+################ (program : tulipindicators.ll)###############
+UniquePointsToSets       3463
+TotalUnions              7673
+PropertyUnions           6927
+UniqueUnions             187
+LookupUnions             185
+PreemptiveUnions         374
+TotalComplements         49639
+PropertyComplements      49639
+UniqueComplements        0
+LookupComplements        0
+PreemptiveComplements    0
+TotalIntersections       5678
+PropertyIntersections    5678
+UniqueIntersections      0
+LookupIntersections      0
+PreemptiveIntersections  0
+#######################################################
+
+*********Memory SSA Statistics***************
+################ (program : tulipindicators.ll)###############
+----------------Time and memory stats--------------------
+AverageRegSize      1
+GenMUCHITime        0.02
+GenRegionTime       0.036
+InsertPHITime       0.001
+SSARenameTime       0.007
+TotalMSSATime       0.064
+----------------Numbers stats----------------------------
+BBHasMSSAPhi        190
+CSChiNode           19
+CSHasChi            19
+CSHasMu             21
+CSMuNode            21
+FunEntryChi         993
+FunHasEntryChi      262
+FunHasRetMu         269
+FunRetMu            993
+LoadHasMu           4069
+LoadMuNode          3567
+MSSAPhi             247
+MaxRegSize          1
+MemRegions          986
+StoreChiNode        1098
+StoreHasChi         1105
+#######################################################
+
+*********SVFG Statistics***************
+################ (program : tulipindicators.ll)###############
+----------------Time and memory stats--------------------
+ATNodeTime          0.004
+AvgWeight           1
+ConnDirEdgeTime     0
+ConnIndEdgeTime     0.007
+OptTime             0
+TLNodeTime          0
+TotalTime           0.011
+----------------Numbers stats----------------------------
+ActualIn            21
+ActualOut           19
+ActualParam         583
+ActualRet           13
+Addr                3165
+AvgInDegree         1
+AvgIndInDeg         1
+AvgIndOutDeg        2
+AvgOutDegree        1
+Copy                89
+DirectCallEdge      308
+DirectEdge          15527
+DirectRetEdge       13
+FormalIn            993
+FormalOut           993
+FormalParam         539
+FormalRet           11
+Gep                 5573
+IndCallEdge         14
+IndRetEdge          12
+IndirectEdge        6202
+IndirectEdgeLabels  6202
+Load                4069
+MSSAPhi             247
+MaxInDegree         52
+MaxIndInDeg         12
+MaxIndOutDeg        139
+MaxOutDegree        1653
+PHI                 11
+Store               2435
+TotalEdge           21729
+TotalNode           18762
+#######################################################
+
+*********Memory SSA Statistics***************
+################ (program : tulipindicators.ll)###############
+----------------Time and memory stats--------------------
+AverageRegSize      1
+GenMUCHITime        0.043
+GenRegionTime       0.034
+InsertPHITime       0.001
+SSARenameTime       0.014
+TotalMSSATime       0.065
+----------------Numbers stats----------------------------
+BBHasMSSAPhi        190
+CSChiNode           19
+CSHasChi            19
+CSHasMu             21
+CSMuNode            21
+FunEntryChi         993
+FunHasEntryChi      262
+FunHasRetMu         269
+FunRetMu            993
+LoadHasMu           4069
+LoadMuNode          3567
+MSSAPhi             247
+MaxRegSize          1
+MemRegions          986
+StoreChiNode        1098
+StoreHasChi         1105
+#######################################################
+
+*********SVFG Statistics***************
+################ (program : tulipindicators.ll)###############
+----------------Time and memory stats--------------------
+ATNodeTime          0.003
+AvgWeight           1
+ConnDirEdgeTime     0
+ConnIndEdgeTime     0.006
+OptTime             0
+TLNodeTime          0
+TotalTime           0.009
+----------------Numbers stats----------------------------
+ActualIn            21
+ActualOut           19
+ActualParam         583
+ActualRet           13
+Addr                3165
+AvgInDegree         1
+AvgIndInDeg         1
+AvgIndOutDeg        2
+AvgOutDegree        1
+Copy                89
+DirectCallEdge      308
+DirectEdge          15527
+DirectRetEdge       13
+FormalIn            993
+FormalOut           993
+FormalParam         539
+FormalRet           11
+Gep                 5573
+IndCallEdge         14
+IndRetEdge          12
+IndirectEdge        6202
+IndirectEdgeLabels  6202
+Load                4069
+MSSAPhi             247
+MaxInDegree         52
+MaxIndInDeg         12
+MaxIndOutDeg        139
+MaxOutDegree        1653
+PHI                 11
+Store               2435
+TotalEdge           21729
+TotalNode           18762
+#######################################################
+Analyzing structs with pointer fields...
+Analyzing structs with pointer fields...
+Collecting struct information...
+Struct information collection completed, found 9 structs
+Analyzing struct: struct.ti_indicator_info
+  Getting the usage scenario of the structure...
+terminate called after throwing an instance of 'std::invalid_argument'
+  what():  stoul

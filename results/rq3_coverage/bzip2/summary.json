@@ -1,0 +1,140 @@
+{
+ "library": "bzip2",
+ "protocol": "results/rq3_coverage/bzip2/PROTOCOL.md",
+ "date": "2026-09-03",
+ "cells": {
+  "c2rust": {
+   "outcome": "PAIRED",
+   "round": 2,
+   "matched_pairs": 64,
+   "eligible": 14,
+   "harnesses_built": 11,
+   "harnesses_run": 10,
+   "harnesses_executed": 10,
+   "fuzz_budget": "compress 3600 s + decompress 3600 s + 8 x 600 s, run concurrently; artifact wall clock 3600 s",
+   "tests": {
+    "discovered": 6,
+    "executed": 6,
+    "passed": 6,
+    "failed": 0
+   },
+   "function": {
+    "total_in_scope": 66,
+    "covered_tests": 51,
+    "covered_ours": 45,
+    "covered_both": 43,
+    "only_tests": 8,
+    "only_ours": 2,
+    "union": 53,
+    "tests_coverage": 0.772727,
+    "ours_coverage": 0.681818,
+    "growth": -0.090909
+   },
+   "region": {
+    "total_in_scope": 8789,
+    "covered_tests": 7007,
+    "covered_ours": 7018,
+    "covered_both": 6609,
+    "only_tests": 398,
+    "only_ours": 409,
+    "union": 7416,
+    "tests_coverage": 0.797247,
+    "ours_coverage": 0.798498,
+    "growth": 0.001252
+   },
+   "ub_gate_excluded_total": 7,
+   "curve": [
+    {
+     "minute": 1,
+     "harnesses": 10,
+     "corpus_inputs": 755,
+     "functions_covered": 45,
+     "regions_covered": 6970,
+     "function_coverage": 0.681818,
+     "region_coverage": 0.793037,
+     "identities_outside_universe": {
+      "functions": 0,
+      "regions": 0
+     }
+    },
+    {
+     "minute": 5,
+     "harnesses": 10,
+     "corpus_inputs": 1263,
+     "functions_covered": 45,
+     "regions_covered": 6982,
+     "function_coverage": 0.681818,
+     "region_coverage": 0.794402,
+     "identities_outside_universe": {
+      "functions": 0,
+      "regions": 0
+     }
+    },
+    {
+     "minute": 10,
+     "harnesses": 10,
+     "corpus_inputs": 1426,
+     "functions_covered": 45,
+     "regions_covered": 6998,
+     "function_coverage": 0.681818,
+     "region_coverage": 0.796223,
+     "identities_outside_universe": {
+      "functions": 0,
+      "regions": 0
+     }
+    },
+    {
+     "minute": 30,
+     "harnesses": 10,
+     "corpus_inputs": 1495,
+     "functions_covered": 45,
+     "regions_covered": 7005,
+     "function_coverage": 0.681818,
+     "region_coverage": 0.797019,
+     "identities_outside_universe": {
+      "functions": 0,
+      "regions": 0
+     }
+    },
+    {
+     "minute": 60,
+     "harnesses": 10,
+     "corpus_inputs": 1563,
+     "functions_covered": 45,
+     "regions_covered": 7018,
+     "function_coverage": 0.681818,
+     "region_coverage": 0.798498,
+     "identities_outside_universe": {
+      "functions": 0,
+      "regions": 0
+     }
+    }
+   ],
+   "saturation": "the artifact-level union is unchanged in functions after minute 1 and gains 48 of 8789 regions between minute 1 and minute 60",
+   "caveat": "the 8 only-tests functions are the FILE*/BZFILE* stream API, which the eligibility rule rejects for needing process-owned state; none is a boundary the validator drove and missed"
+  },
+  "laertes": {
+   "outcome": "NOT ATTEMPTED"
+  },
+  "c2saferrust": {
+   "outcome": "NOT ATTEMPTED"
+  },
+  "crown": {
+   "outcome": "NOT ATTEMPTED"
+  },
+  "sactor": {
+   "outcome": "NON-BUILDING",
+   "reason": "translation process failed at parse; no artifact"
+  },
+  "ptrtrans": {
+   "outcome": "NON-BUILDING",
+   "reason": "assembled crate does not compile (73 errors, 55/78 stub-reverts)"
+  }
+ },
+ "library_mean": null,
+ "library_mean_note": "NOT computed: only one cell has been run and the user stopped the sequence after the corrected c2rust pilot. A mean over one artifact is not a library result.",
+ "superseded": {
+  "c2rust_round1": "broken input model (output capacity 0, 63-byte buffer cap, unbounded scalars); numbers in c2rust/RUN.md section 8, must not be cited",
+  "c2rust_diagnostic_pilot": "single Rust-only archived harness"
+ }
+}

@@ -1,0 +1,21 @@
+{
+  "Includes": [
+    "#include <stddef.h>",
+    "#include <stdint.h>",
+    "#include <stdio.h>",
+    "#include <stdlib.h>",
+    "#include <string.h>",
+    "#include <sys/types.h>"
+  ],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "char *do_system_two(int8_t first[16], int8_t second[16]);"
+  ],
+  "Function Implementations": [
+    "static char* do_system(size_t argc, char** argv)\n{\n    #if defined(WIN32) || defined(WATCOMC)\n    return NULL;\n    #else\n    char* cmd = NULL;\n    int cmdlen = 0;\n    size_t i;\n    FILE* p;\n    for (i=0; i<argc; i++) {\n        size_t len = strlen(argv[i]);\n        if (i != 0) {\n            cmd = realloc(cmd, cmdlen + 1);\n            cmd[cmdlen++] = ' ';\n        }\n        cmd = realloc(cmd, cmdlen + len);\n        memcpy(cmd + cmdlen, argv[i], len);\n        cmdlen += len;\n    }\n    cmd = realloc(cmd, cmdlen + 1);\n    cmd[cmdlen] = 0;\n    p = popen(cmd, \"r\");\n    free(cmd);\n    if (p) {\n        char* retval = NULL;\n        size_t size = 0;\n        char buff[1024];\n        ssize_t bytes;\n        while ((bytes = fread(buff, 1, 1024, p))) {\n            retval = realloc(retval, size + bytes);\n            memcpy(retval + size, buff, bytes);\n            size += bytes;\n        }\n        retval = realloc(retval, size + 1);\n        retval[size] = 0;\n        pclose(p);\n        return retval;\n    } else {\n        return NULL;\n    }\n    #endif\n}\n\nchar *do_system_two(int8_t first[16], int8_t second[16])\n{\n    char *argv[2];\n    first[15] = 0;\n    second[15] = 0;\n    argv[0] = (char *)first;\n    argv[1] = (char *)second;\n    return do_system(2, argv);\n}\n"
+  ],
+  "Enums": []
+}

@@ -1,0 +1,81 @@
+{
+ "cell": "qsort_crown",
+ "generator": "fd1f75b4716a1d45",
+ "c_source": "qsort.c",
+ "mode": "c-only",
+ "build": "cargo fuzz build --sanitizer none; C: -O1 -g sancov + ub-free + -fprofile-instr-generate -fcoverage-mapping",
+ "boundaries_archived_built": 3,
+ "boundaries_measured": 3,
+ "rows": [
+  {
+   "boundary": "partition",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 41,
+   "outcomes": {
+    "completed": 41
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 3,
+   "c_regions_reached": 7,
+   "c_regions_total": 10
+  },
+  {
+   "boundary": "quickSort",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 71,
+   "outcomes": {
+    "completed": 71
+   },
+   "profiles": 1,
+   "c_functions_reached": 3,
+   "c_functions_total": 3,
+   "c_regions_reached": 10,
+   "c_regions_total": 10
+  },
+  {
+   "boundary": "swap",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 8,
+   "outcomes": {
+    "completed": 8
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 3,
+   "c_regions_reached": 1,
+   "c_regions_total": 10
+  }
+ ],
+ "inputs": {
+  "completed": 120
+ },
+ "c": {
+  "functions_total": 3,
+  "functions_reached": 3,
+  "regions_total": 10,
+  "regions_reached": 10,
+  "function_reach": 1.0,
+  "region_reach": 1.0,
+  "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+  "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+ },
+ "rust_archived": {
+  "functions_total": 3,
+  "functions_reached": 3,
+  "regions_total": 61,
+  "regions_reached": 61,
+  "function_reach": 1.0,
+  "region_reach": 1.0,
+  "names_in_scope": 3,
+  "names_reached": 3
+ },
+ "matched": null,
+ "seconds": 0
+}

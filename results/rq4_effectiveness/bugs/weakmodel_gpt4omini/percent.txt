@@ -1,0 +1,51 @@
+```rust
+pub fn percent_decode(input: &[u8], out_cap: usize) -> Option<Vec<u8>> {
+    let mut output = Vec::with_capacity(out_cap);
+    let mut i = 0;
+
+    while i < input.len() {
+        let c = input[i];
+
+        if c == b'%' {
+            if i + 2 < input.len() {
+                let hi = hexval(input[i + 1]);
+                let lo = hexval(input[i + 2]);
+                if let (Some(hi), Some(lo)) = (hi, lo) {
+                    if output.len() < out_cap {
+                        output.push((hi << 4 | lo) as u8);
+                        i += 3;
+                        continue;
+                    } else {
+                        return None;
+                    }
+                }
+            }
+            // Malformed '%': copy it literally
+            if output.len() < out_cap {
+                output.push(b'%');
+                i += 1;
+            } else {
+                return None;
+            }
+        } else {
+            if output.len() < out_cap {
+                output.push(c);
+                i += 1;
+            } else {
+                return None;
+            }
+        }
+    }
+
+    Some(output)
+}
+
+fn hexval(c: u8) -> Option<u8> {
+    match c {
+        b'0'..=b'9' => Some(c - b'0'),
+        b'a'..=b'f' => Some(c - b'a' + 10),
+        b'A'..=b'F' => Some(c - b'A' + 10),
+        _ => None,
+    }
+}
+```

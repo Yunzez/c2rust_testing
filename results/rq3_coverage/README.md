@@ -1,0 +1,79 @@
+# RQ4 — Reach of the generated differential campaigns
+
+**Status 2026-09-09: COMPLETE. Ten libraries, 37 cells, every cell verified by
+`scripts/rq4/check_cell.py` (37 OK / 0 BAD). The question is no longer "coverage beyond shipped
+tests": it is how much of each translated artifact the generated campaigns exercise, and what limits
+their reach (per-artifact reach against the artifact's own instrumented objects, the
+matched → planned → built → productive funnel, the input-construction mode, and the named causes of
+low reach). The tests side is recorded where a shipped suite exists but is not compared in the paper.**
+
+| | |
+|---|---|
+| runbook | [`docs/rq4_runbook.md`](../../docs/rq4_runbook.md) — the operational lessons (quota, serial cells, detached launches, noise classes, generator traps); read before running another library |
+| protocol | [`PROTOCOL.md`](PROTOCOL.md) — pre-registered, budget amended 300 s → 3 600 s on 2026-09-04 *before* any cell under it produced a number |
+| paired cells complete | **1** — bzip2 × c2rust, outcome PAIRED ([`bzip2/c2rust_handschema_superseded/RUN.md`](bzip2/c2rust_handschema_superseded/RUN.md)): fn 0.773 tests / 0.682 ours, region 0.797 / 0.798, only-ours 409 of 8 789 regions |
+| …but produced by | the **retired hand-schema pipeline** (14 eligible → 10 harnesses, 35 hand-written constants). The plan generator reaches **19 of 64** boundaries on the same library, so that cell describes a pipeline we no longer have and its numbers are **not** the ones to quote. |
+| **complete under the plan pipeline** | **bzip2 × {c2rust, Laertes, CROWN, C2SaferRust}**, 3 600 s each, serial — [`bzip2/SUMMARY.md`](bzip2/SUMMARY.md). c2rust: region 0.807 ours / 0.797 tests, only-ours 481, 0 divergences (negative control); Laertes 299 / CROWN 242 / C2SaferRust 3 replay divergences; S3, S10, S11, S14 re-found; **new defect C8** (Laertes zeroed `incs`) |
+| **complete under the producer-bridge pilot** | **genann × {c2rust, Laertes, CROWN, C2SaferRust, SACTOR}** — [`genann/SUMMARY.md`](genann/SUMMARY.md). Three translations pass the suite; validator 0.806 / 0.796 / 0.814 vs suite 0.895 / 0.882 / 0.895 (gap = `FILE*` I/O); four negative controls clean; **SACTOR #32 re-found on three boundaries, 51/51 confirmed**; bridge ablation 0.17–0.23 → 0.71–0.82 of regions |
+| **complete: cJSON × {c2rust, PtrTrans}** | [`cjson/SUMMARY.md`](cjson/SUMMARY.md) — producer bridge generalised (`cJSON_Parse` → target → `cJSON_Delete`, plugin object state); region ours **0.812** vs 0.354 without the bridge; negative control 0 / 8 796 replay divergences, 0 confirmed; PtrTrans: 64 boundaries **construction unsupported** under the frozen bridge (`Option<&mut T>` producer, no `cJSON_Delete`); the 9 direct boundaries that build show 18/18 confirmed nullness divergences from the `cJSON_New_Item` stub (CAND-5), region 0.032 |
+| **complete: lil × {c2rust, Laertes, C2SaferRust, CROWN}** | [`lil/SUMMARY.md`](lil/SUMMARY.md) — no suite (TEST-UNAVAILABLE ×4); c2rust region **0.872** / Laertes 0.818 / CROWN 0.826, both faithful translations 0 confirmed; **two new defects**: C9 (C2SaferRust: C-string literals without NUL — the root of its CRASH-ALL; 23 boundaries never run) and C10 (CROWN: dropped NULL→empty-list fallback in `lil_subst_to_list`, on an E1-**certified** cell) |
+| **complete: tulip × {c2rust, Laertes, C2SaferRust, CROWN}** | [`tulip/SUMMARY.md`](tulip/SUMMARY.md) — the first strict paired cells (c2rust and CROWN pass the transpiled smoke): validator reaches every function the suite reaches but **0.34 of its regions vs 0.93** — the option domain (`(int)options[0]` guards on a derived local) is the input-model limit, recorded; **two new defects**: C11 (Laertes: all-default `ti_indicators` table, severed init, on a certified cell — caught by the preflight, confirmed under the zero-page rule) and S15 (C2SaferRust: `ti_adx_start` casts the options pointer instead of loading it); faithful translations 0 confirmed |
+| **complete: qsort × {c2rust, Laertes, C2SaferRust, CROWN, SACTOR, PtrTrans}** | [`qsort/SUMMARY.md`](qsort/SUMMARY.md) — the whole tool row; four translations reach 100 % of functions and regions; S6 re-found (PtrTrans, 57 confirmed_divergence); C1 corroborated, not re-promoted |
+| **complete: quadtree × {c2rust, CROWN, PtrTrans}** | [`quadtree/SUMMARY.md`](quadtree/SUMMARY.md) — first library under the `nullable owned object` bridge (generator 0.8; PtrTrans 5 → 11 planned); nothing confirmed |
+| **complete: urlparser × {c2rust, C2SaferRust, CROWN, Laertes}** | [`urlparser/SUMMARY.md`](urlparser/SUMMARY.md) — reach ≈ 9 % of regions on every cell for one C-side reason (`get_part` heap overflow, E1 #27); **C12** new (Laertes `URL_SCHEMES` severed init) |
+| **complete: lodepng × {c2rust, CROWN}** | [`lodepng/SUMMARY.md`](lodepng/SUMMARY.md) — 171–178 of 235 boundaries fail at the signature (struct-invariant parameters); nothing confirmed; 12 classifier false positives re-classified |
+| **complete: optipng × {c2rust, C2SaferRust, Laertes}** | [`optipng/SUMMARY.md`](optipng/SUMMARY.md) — the largest artifact (552 boundaries, 52 units); C2SaferRust's 1 199 confirmed records fully triaged ([`optipng/c2saferrust/TRIAGE.md`](optipng/c2saferrust/TRIAGE.md)): **S19, S20, C15, S21, C16, C13, S16** new, S1/S2 re-found; Laertes **S17, S18** new, S4 re-found |
+| **all ten libraries complete** | [`SUMMARY_ALL.md`](SUMMARY_ALL.md) — 37 cells; RQ4 first found C8–C11, S15, C12, C13, S16–S21, C15, C16 (15); re-found S1–S6, S10, S11, S14, C7; manifest **36** |
+| denominator | every cell's universe is the translation's own instrumented rlib objects ([`../../docs/rq4_denominator_decision_2026-09-08.md`](../../docs/rq4_denominator_decision_2026-09-08.md), step 2 executed 2026-09-09: 11 rebuilt, all identical to the archived ones) |
+
+A first attempt at these four cells ran them **concurrently** and died in the build phase at
+`built 6/19` with `EDQUOT` — four simultaneous cargo target dirs exhausted the scratchpad's quota.
+No data was produced, so no result was affected; the re-run is serial with a free-space
+precondition. Recorded because the failure mode (counting cores and RAM, but not the filesystem the
+builds actually write to) is a property of the harness, not of any translation.
+
+> **RQ4.** *How much code does our differential validator exercise beyond the test suites shipped with
+> existing translators and translated libraries?* See `results/EVALUATION_PLAN.md`.
+
+The directory retains its historical `rq3_coverage` name so existing evidence
+links do not break.
+
+## What the experiment requires
+
+For the same translated artifact, instrumented with one common coverage mechanism and run under a
+reported common budget:
+
+1. run the **shipped acceptance tests** (the suite that was used to accept that translation);
+2. run **our differential fuzzing campaign**;
+3. report function, region, and branch coverage for each; and
+4. partition the reached code into three sets: shipped-only, both, validator-only.
+
+The claim is about *exploration*, not correctness, and the comparison is against the tests that accepted
+the shipped translations — never against a fuzzer supplied by another system.
+
+## What exists today and why it does not count
+
+[`../rq4_effectiveness/reach_census.md`](../rq4_effectiveness/reach_census.md) (33/33 cells) is a
+**one-sided** reach measurement: the "their tests" side is 0 by construction, so it cannot answer a
+paired question. It also carries two limits that any reuse must inherit — 9 of its 33 cells have median
+0, and its execution budgets span 4,000 to 2,000,000 runs (500×), so cross-library magnitudes are
+invalid. It is retained under RQ4 as an interpretation limit on defects and bounded no-difference
+results, which is how `evaluation.tex` cites it.
+
+## Open questions — settled in `PROTOCOL.md` before the first cell ran
+
+- **"Shipped tests" is undefined for tools that ship no suite.** Settled as one rule applied per cell
+  (§2): the tests side runs iff the project ships a test or acceptance target **and** that driver is
+  present in the translation; otherwise the cell records `TEST-UNAVAILABLE` with its reason and still
+  reports the validator side. We do not transpile a test driver ourselves — that would be our
+  construction rather than the evidence that accepted the translation. The measured fact that
+  **0 of 55 translated crates ship any test** is reported as motivation, never as the baseline.
+- **Common budget.** Settled in §3 and pre-registered: 3 600 s wall, `-seed=42`, fixed stopping rule,
+  no extension for a cell that looks interesting. Seeding is part of the measurement, not a
+  convenience — the shipped-sample table in §3 shows a boundary going from 438 corpus inputs to 39
+  when the samples are dropped.
+- **Common coverage mechanism.** Settled in §5: one toolchain (`nightly-2025-09-01`) with its own
+  `llvm-profdata`/`llvm-cov`, never the system LLVM; both sides compiled with the same flags so the
+  partition is not an artifact of two instrumentations. Identity is `(file, start line)` for
+  functions and `(file, l1, c1, l2, c2)` for regions — **never symbol names**, whose
+  crate-disambiguator hashes differ per build.

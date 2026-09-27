@@ -1,0 +1,16 @@
+[package]
+name = "qsort_crown_e3lite-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+[package.metadata]
+cargo-fuzz = true
+[dependencies]
+libfuzzer-sys = "0.4"
+[dependencies.qsort_crown_e3lite]
+path = ".."
+[[bin]]
+name = "ft"
+path = "fuzz_targets/ft.rs"
+test = false
+doc = false

@@ -1,0 +1,66 @@
+{
+ "boundary": "cJSON_Minify",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "json",
+   "c_decoder": "input_array",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "extent": {
+     "k": "const",
+     "v": 2
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 2,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "cJSON.c",
+     "line": 744,
+     "col": 26,
+     "snippet": "else if (*json=='/' && json[1]=='/')  while (*json && *json!='\\n') json++;\t/* double-slash comments, to end of line. */",
+     "note": "json[1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "cJSON.c",
+     "line": 745,
+     "col": 26,
+     "snippet": "else if (*json=='/' && json[1]=='*') {while (*json && !(*json=='*' && json[1]=='/')) json++;json+=2;}\t/* multiline comments. */",
+     "note": "json[1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "cJSON.c",
+     "line": 745,
+     "col": 73,
+     "snippet": "else if (*json=='/' && json[1]=='*') {while (*json && !(*json=='*' && json[1]=='/')) json++;json+=2;}\t/* multiline comments. */",
+     "note": "json[1] read"
+    },
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "cJSON.c",
+     "line": 738,
+     "col": 9,
+     "snippet": "while (*json)",
+     "note": "*json is read"
+    }
+   ],
+   "rust_type": "*mut ::core::ffi::c_char",
+   "rust_bridge": "c_abi"
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024,
+  "max_table_rows": 16
+ },
+ "plan_version": 1
+}

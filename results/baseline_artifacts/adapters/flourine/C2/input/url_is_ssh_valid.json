@@ -1,0 +1,19 @@
+{
+  "Includes": [
+    "#include <stdbool.h>",
+    "#include <stdint.h>",
+    "#include <stdlib.h>",
+    "#include <string.h>"
+  ],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "bool url_is_ssh_valid(int8_t value[16]);"
+  ],
+  "Function Implementations": [
+    "bool\nurl_is_ssh (char *str) {\n  str = strdup(str);\n  if (0 == strcmp(str, \"ssh\") ||\n      0 == strcmp(str, \"git\")) {\n    free(str);\n    return true;\n\n  }\n\n  return false;\n}\n\nbool url_is_ssh_valid(int8_t value[16]) { value[15] = 0; return url_is_ssh((char *)value); }"
+  ],
+  "Enums": []
+}

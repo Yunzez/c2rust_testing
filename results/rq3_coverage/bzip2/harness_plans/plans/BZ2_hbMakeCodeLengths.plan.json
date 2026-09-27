@@ -1,0 +1,124 @@
+{
+ "boundary": "BZ2_hbMakeCodeLengths",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "len",
+   "adapter": "output_buffer",
+   "detail": {
+    "elem": "u8",
+    "elem_width": 1,
+    "extent": {
+     "k": "param",
+     "p": "alphaSize",
+     "mul": 1,
+     "div": 1,
+     "add": 0
+    },
+    "extent_source": "proven_index_bound",
+    "capacity_param": "alphaSize",
+    "fills_from_fuzz": false
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 119,
+     "col": 10,
+     "snippet": "len[i-1] = j;",
+     "note": "len[alphaSize-1] written"
+    }
+   ]
+  },
+  {
+   "param": "freq",
+   "adapter": "input_buffer",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "param",
+     "p": "alphaSize",
+     "mul": 1,
+     "div": 1,
+     "add": 0
+    },
+    "extent_source": "proven_index_bound",
+    "length_param": "alphaSize",
+    "fills_from_fuzz": true,
+    "max_elems": 262144,
+    "max_elems_evidence": {
+     "rule": "policy_buffer_bound",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+     "note": "freq's element count is fuzz-decoded and capped by the global policy; it defines alphaSize"
+    }
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 80,
+     "col": 22,
+     "snippet": "weight[i+1] = (freq[i] == 0 ? 1 : freq[i]) << 8;",
+     "note": "freq[alphaSize-1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 80,
+     "col": 41,
+     "snippet": "weight[i+1] = (freq[i] == 0 ? 1 : freq[i]) << 8;",
+     "note": "freq[alphaSize-1] read"
+    }
+   ]
+  },
+  {
+   "param": "alphaSize",
+   "adapter": "length",
+   "detail": {
+    "of_buffer": "freq"
+   },
+   "evidence": [
+    {
+     "rule": "length_of_buffer_not_decoded_independently",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "alphaSize is the element count of freq"
+    }
+   ]
+  },
+  {
+   "param": "maxLen",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  }
+ ],
+ "liveness": [
+  {
+   "param": "alphaSize",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "huffman.c",
+    "line": 79,
+    "col": 4,
+    "snippet": "for (i = 0; i < alphaSize; i++)",
+    "note": "alphaSize appears in this loop's control expressions"
+   }
+  }
+ ],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

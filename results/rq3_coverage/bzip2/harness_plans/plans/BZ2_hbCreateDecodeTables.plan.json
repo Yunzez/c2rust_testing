@@ -1,0 +1,338 @@
+{
+ "boundary": "BZ2_hbCreateDecodeTables",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "limit",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "max",
+     "of": [
+      {
+       "k": "param",
+       "p": "maxLen",
+       "mul": 1,
+       "div": 1,
+       "add": 1
+      },
+      {
+       "k": "const",
+       "v": 23
+      }
+     ]
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1025,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 190,
+     "col": 42,
+     "snippet": "for (i = 0; i < BZ_MAX_CODE_LEN; i++) limit[i] = 0;",
+     "note": "limit[22] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 195,
+     "col": 7,
+     "snippet": "limit[i] = vec-1;",
+     "note": "limit[maxLen] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 199,
+     "col": 19,
+     "snippet": "base[i] = ((limit[i-1] + 1) << 1) - base[i];",
+     "note": "limit[maxLen-1] read"
+    }
+   ]
+  },
+  {
+   "param": "base",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "max",
+     "of": [
+      {
+       "k": "param",
+       "p": "maxLen",
+       "mul": 1,
+       "div": 1,
+       "add": 2
+      },
+      {
+       "k": "const",
+       "v": 257
+      }
+     ]
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1026,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 185,
+     "col": 42,
+     "snippet": "for (i = 0; i < BZ_MAX_CODE_LEN; i++) base[i] = 0;",
+     "note": "base[22] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 186,
+     "col": 36,
+     "snippet": "for (i = 0; i < alphaSize; i++) base[length[i]+1]++;",
+     "note": "base[256] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 188,
+     "col": 42,
+     "snippet": "for (i = 1; i < BZ_MAX_CODE_LEN; i++) base[i] += base[i-1];",
+     "note": "base[22] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 188,
+     "col": 53,
+     "snippet": "for (i = 1; i < BZ_MAX_CODE_LEN; i++) base[i] += base[i-1];",
+     "note": "base[21] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 194,
+     "col": 15,
+     "snippet": "vec += (base[i+1] - base[i]);",
+     "note": "base[maxLen+1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 194,
+     "col": 27,
+     "snippet": "vec += (base[i+1] - base[i]);",
+     "note": "base[maxLen] read"
+    }
+   ]
+  },
+  {
+   "param": "perm",
+   "adapter": "output_array",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "pp is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": false
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 183,
+     "col": 32,
+     "snippet": "if (length[j] == i) { perm[pp] = j; pp++; };",
+     "note": "perm[unknown(pp is not a loop induction variable in scope)] written"
+    }
+   ]
+  },
+  {
+   "param": "length",
+   "adapter": "input_buffer",
+   "detail": {
+    "elem": "u8",
+    "elem_width": 1,
+    "extent": {
+     "k": "param",
+     "p": "alphaSize",
+     "mul": 1,
+     "div": 1,
+     "add": 0
+    },
+    "extent_source": "proven_index_bound",
+    "length_param": "alphaSize",
+    "fills_from_fuzz": true,
+    "max_elems": 1048576,
+    "max_elems_evidence": {
+     "rule": "policy_buffer_bound",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+     "note": "length's element count is fuzz-decoded and capped by the global policy; it defines alphaSize"
+    }
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 183,
+     "col": 14,
+     "snippet": "if (length[j] == i) { perm[pp] = j; pp++; };",
+     "note": "length[alphaSize-1] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 186,
+     "col": 41,
+     "snippet": "for (i = 0; i < alphaSize; i++) base[length[i]+1]++;",
+     "note": "length[alphaSize-1] read"
+    }
+   ]
+  },
+  {
+   "param": "minLen",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 1024,
+    "derivation": [
+     "policy_trip_clamp"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 181,
+     "col": 4,
+     "snippet": "for (i = minLen; i <= maxLen; i++)",
+     "note": "minLen appears in this loop's control expressions"
+    },
+    {
+     "rule": "policy_trip_clamp",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_trip = 1024",
+     "note": "minLen controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+    }
+   ]
+  },
+  {
+   "param": "maxLen",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 1024,
+    "derivation": [
+     "policy_trip_clamp",
+     "extent_fits_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 181,
+     "col": 4,
+     "snippet": "for (i = minLen; i <= maxLen; i++)",
+     "note": "maxLen appears in this loop's control expressions"
+    },
+    {
+     "rule": "policy_trip_clamp",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_trip = 1024",
+     "note": "maxLen controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+    },
+    {
+     "rule": "extent_fits_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "maxLen appears in the proven required extent of limit; the harness allocates 4096 elements, so maxLen <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "alphaSize",
+   "adapter": "length",
+   "detail": {
+    "of_buffer": "length"
+   },
+   "evidence": [
+    {
+     "rule": "length_of_buffer_not_decoded_independently",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "alphaSize is the element count of length"
+    }
+   ]
+  }
+ ],
+ "liveness": [
+  {
+   "param": "minLen",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "huffman.c",
+    "line": 181,
+    "col": 4,
+    "snippet": "for (i = minLen; i <= maxLen; i++)",
+    "note": "minLen appears in this loop's control expressions"
+   }
+  },
+  {
+   "param": "maxLen",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "huffman.c",
+    "line": 181,
+    "col": 4,
+    "snippet": "for (i = minLen; i <= maxLen; i++)",
+    "note": "maxLen appears in this loop's control expressions"
+   }
+  },
+  {
+   "param": "alphaSize",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "huffman.c",
+    "line": 182,
+    "col": 7,
+    "snippet": "for (j = 0; j < alphaSize; j++)",
+    "note": "alphaSize appears in this loop's control expressions"
+   }
+  }
+ ],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

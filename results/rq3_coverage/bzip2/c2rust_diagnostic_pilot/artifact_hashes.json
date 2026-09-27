@@ -1,0 +1,54 @@
+{
+ "cell": "bzip2__c2rust",
+ "rust_artifact": {
+  "canonical_path": "tools/frameworks/c2saferrust/laertes_benchmarks/bzip2/ (gitignored; library .rs byte-identical to git-tracked fuzz/bzip2_c2rust_e3/src/)",
+  "translator": "c2rust (mechanical transpiler), transpiled on macOS \u2014 the crate references __stdinp/__stdoutp/__stderrp/__maskrune/_DefaultRuneLocale/__error",
+  "translator_version": "not recorded by the artifact; shipped as part of the Laertes benchmark set",
+  "sha256_scoped_sources": {
+   "blocksort.rs": "8edc09042ffcf5d2bd14028dafd62208f9ca7449c9c40476d94fdf17c1ed3ae4",
+   "bzlib.rs": "ea5e6587b005b33d11f68c134654901d3009d7861d397cbdc43393a0f066fe00",
+   "compress.rs": "6e428234b698f71871d8445e1a9790e4d5aa14be28aeeaa34d75f7d17367397f",
+   "crctable.rs": "cbafa26200524cf153750d00f328058accf6a73e71286b71bacf706a72fcaf69",
+   "decompress.rs": "abc5bf47e5d8692ec2e9b230df7025eca4dde6723b90289153541b60215610f9",
+   "huffman.rs": "bdd000f52d4758fa2a9a7c8ea29e4055a8125bc06618843a842c3067747c83d0",
+   "randtable.rs": "7708ba6b00946f604c63bcfcd85eebbe097c01fd77cff7533eb6b4b71a86b829"
+  },
+  "sha256_out_of_scope_sources": {
+   "bzip2.rs": "78326dcea35dcf32fe9dfd2934693cacb396d490e6ddc4203c0740e54dd735e4",
+   "bzip2recover.rs": "66d284b6d8353e9d5bfdd0e36e3b377aaf577d215385fb3a1653859ea81f9595"
+  }
+ },
+ "c_source": {
+  "path": "tools/frameworks/crown/c-code/bzip2/",
+  "identity": "bzip2 1.0.8 (BZ_VERSION '1.0.8, 13-Jul-2019')",
+  "sha256": {
+   "bzlib.c": "d06cf1bd991df1f2dc8ef4f7713d186eb636767111cbd4807ef5fc4a54ca6838",
+   "blocksort.c": "4e48cd2ccff44699e67a7c949b0e9576c05b8dcbe20f863475c4fcc8db11a409",
+   "compress.c": "75995bd6e8c5f1e1dad05178f3cf53137df99ce860a1984324f78591f28deed3",
+   "decompress.c": "31a89f8bf408ef0e4acae83e8be60a8eb4edece6c866d6e32b8f7e557ca54bc6",
+   "huffman.c": "bdeb45f3f535546a672811b68aa87cc58fd395b28ecebc34fa3566a656a4d1d1",
+   "crctable.c": "2fb7a564629386456e731f431a5cf4f5026747bace4cd10be8f5ecf082066a92",
+   "randtable.c": "407054ca6f54cd737dbc26ceb6b7874b55a0fcff86c2eb23cbec2fbdbb884815",
+   "bzip2.c": "1b307b0992e78311dd06a4b67c5e66e96b40012f4459c66a3f0850d4cef49ccf",
+   "Makefile": "d8955bf6fbd0b136fb2c20ccc1c93b1320cfe10ae9f9dcbb7a8f0dc6fb4140ea"
+  },
+  "matches_translator_input": "unknown \u2014 Phase 0 (results/rq2_attribution/harness_manifest.json) records that no bzip2 harness ever bound a C hash to the translator input; the crate ships no .c and only the version string matches"
+ },
+ "toolchain": {
+  "rustc": "rustc 1.91.0-nightly (07d246fc6 2025-08-31)\nbinary: rustc\ncommit-hash: 07d246fc6dc227903da2955b38a59e060539a485\ncommit-date: 2025-08-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.91.0-nightly\nLLVM version: 21.1.0",
+  "llvm_profdata": "LLVM (http://llvm.org/):\n  LLVM version 21.1.0-rust-1.91.0-nightly\n  Optimized build.",
+  "llvm_cov": "LLVM (http://llvm.org/):\n  LLVM version 21.1.0-rust-1.91.0-nightly\n  Optimized build.",
+  "cc": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "rustflags": "-C instrument-coverage -C codegen-units=1 -C link-dead-code",
+  "profile": "release",
+  "note": "the system llvm-profdata-21 (LLVM 21.1.8) was deliberately NOT used; the tools above ship with the same toolchain that produced the instrumented binaries"
+ },
+ "corpus": {
+  "path": "fuzz/bzip2_c2rust_e3/fuzz/corpus/ft/",
+  "inputs": 1163,
+  "origin": "libFuzzer campaign grown from 8 urandom seeds by scripts/eval_rq3_depth.sh (-runs=100000, --sanitizer=none) on the E3 reach cell",
+  "differential": false,
+  "label": "campaign corpus generated on the translated artifact with NO C reference executed at generation time (relaxed reading, user decision 2026-09-03); the archived DIFFERENTIAL corpus for this cell (scratchpad/bz_crown_diff/, 1608 records) is lost",
+  "c_ub_gate_exclusions": "n/a \u2014 no C side is executed in this replay, so no input can be excluded by a C-UB gate"
+ }
+}

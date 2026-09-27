@@ -1,0 +1,1648 @@
+{
+  "functions": [
+    {
+      "name": "quadtree_bounds_extend",
+      "line": 4,
+      "signature": {
+        "params": [
+          {
+            "name": "bounds",
+            "ty": "quadtree_bounds_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "x",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_bounds_t *",
+            "shape": "*{*{f64,f64},*{f64,f64},f64,f64}"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "-": 2
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 65,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 26
+      }
+    },
+    {
+      "name": "quadtree_bounds_free",
+      "line": 14,
+      "signature": {
+        "params": [
+          {
+            "name": "bounds",
+            "ty": "quadtree_bounds_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_bounds_t *",
+            "shape": "*{*{f64,f64},*{f64,f64},f64,f64}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 12,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "quadtree_bounds_new",
+      "line": 22,
+      "signature": {
+        "params": [],
+        "ret": "quadtree_bounds_t *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "quadtree_bounds_t *",
+          "shape": "*{*{f64,f64},*{f64,f64},f64,f64}"
+        }
+      },
+      "ops": {
+        "==": 1,
+        "neg": 2
+      },
+      "consts": [
+        "infinity",
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 54,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 5
+      }
+    },
+    {
+      "name": "quadtree_node_ispointer",
+      "line": 6,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "&&": 4,
+        "!=": 4,
+        "!": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 2,
+        "nodes": 34,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "quadtree_node_isempty",
+      "line": 15,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "&&": 4,
+        "==": 4,
+        "!": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 2,
+        "nodes": 34,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "quadtree_node_isleaf",
+      "line": 24,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "quadtree_node_reset",
+      "line": 29,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "key_free",
+            "ty": "void (*)(void *)",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          },
+          {
+            "ty": "void (*)(void *)",
+            "shape": "*fn"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 11,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": true,
+        "returns_pointer": false,
+        "fuzzability": 0.1,
+        "norm_burden": 0.4,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "quadtree_node_new",
+      "line": 36,
+      "signature": {
+        "params": [],
+        "ret": "quadtree_node_t *"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "quadtree_node_t *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 61,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 0,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 8
+      }
+    },
+    {
+      "name": "quadtree_node_with_bounds",
+      "line": 51,
+      "signature": {
+        "params": [
+          {
+            "name": "minx",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "miny",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxx",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxy",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "quadtree_node_t *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "quadtree_node_t *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+        }
+      },
+      "ops": {
+        "!": 2
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 7,
+        "nodes": 39,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "quadtree_node_free",
+      "line": 63,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "key_free",
+            "ty": "void (*)(void *)",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          },
+          {
+            "ty": "void (*)(void *)",
+            "shape": "*fn"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 4
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 5,
+        "nodes": 60,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": true,
+        "returns_pointer": false,
+        "fuzzability": 0.1,
+        "norm_burden": 0.4,
+        "derefs": 9
+      }
+    },
+    {
+      "name": "quadtree_point_new",
+      "line": 4,
+      "signature": {
+        "params": [
+          {
+            "name": "x",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "quadtree_point_t *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "quadtree_point_t *",
+          "shape": "*{f64,f64}"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 27,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 2,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "quadtree_point_free",
+      "line": 14,
+      "signature": {
+        "params": [
+          {
+            "name": "point",
+            "ty": "quadtree_point_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_point_t *",
+            "shape": "*{f64,f64}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 4,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "node_contains_",
+      "line": 18,
+      "signature": {
+        "params": [
+          {
+            "name": "outer",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "it",
+            "ty": "quadtree_point_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          },
+          {
+            "ty": "quadtree_point_t *",
+            "shape": "*{f64,f64}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "&&": 4,
+        "!=": 1,
+        "<": 2,
+        ">": 2
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 2,
+        "nodes": 40,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 17
+      }
+    },
+    {
+      "name": "elision_",
+      "line": 27,
+      "signature": {
+        "params": [
+          {
+            "name": "key",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "void *",
+            "shape": "*()"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 1,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 0
+      }
+    },
+    {
+      "name": "reset_node_",
+      "line": 30,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "quadtree_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "node",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_t *",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()},*fn,u32}"
+          },
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 19,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 2
+      }
+    },
+    {
+      "name": "get_quadrant_",
+      "line": 39,
+      "signature": {
+        "params": [
+          {
+            "name": "root",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "point",
+            "ty": "quadtree_point_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "quadtree_node_t *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          },
+          {
+            "ty": "quadtree_point_t *",
+            "shape": "*{f64,f64}"
+          }
+        ],
+        "output": {
+          "ty": "quadtree_node_t *",
+          "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 10,
+        "nodes": 41,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.7,
+        "norm_burden": 0.9,
+        "derefs": 8
+      }
+    },
+    {
+      "name": "split_node_",
+      "line": 49,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "quadtree_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "node",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_t *",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()},*fn,u32}"
+          },
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "/": 2,
+        "!": 4,
+        "-": 6,
+        "+": 6,
+        "*": 4
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 20,
+        "nodes": 152,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 2,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 18
+      }
+    },
+    {
+      "name": "find_",
+      "line": 81,
+      "signature": {
+        "params": [
+          {
+            "name": "node",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "x",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "quadtree_point_t *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "quadtree_point_t *",
+          "shape": "*{f64,f64}"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "==": 2
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 9,
+        "nodes": 45,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 5
+      }
+    },
+    {
+      "name": "insert_",
+      "line": 97,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "quadtree_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "root",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "point",
+            "ty": "quadtree_point_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "key",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_t *",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()},*fn,u32}"
+          },
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          },
+          {
+            "ty": "quadtree_point_t *",
+            "shape": "*{f64,f64}"
+          },
+          {
+            "ty": "void *",
+            "shape": "*()"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "&&": 1,
+        "==": 3,
+        "!": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 7,
+        "stmts": 19,
+        "nodes": 94,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 4,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.4,
+        "norm_burden": 0.8,
+        "derefs": 10
+      }
+    },
+    {
+      "name": "quadtree_new",
+      "line": 123,
+      "signature": {
+        "params": [
+          {
+            "name": "minx",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "miny",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxx",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "maxy",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "quadtree_t *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "quadtree_t *",
+          "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()},*fn,u32}"
+        }
+      },
+      "ops": {
+        "!": 2
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 7,
+        "nodes": 47,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 4,
+        "n_pointer_params": 0,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 1.0,
+        "norm_burden": 0.5,
+        "derefs": 5
+      }
+    },
+    {
+      "name": "quadtree_insert",
+      "line": 136,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "quadtree_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "x",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "key",
+            "ty": "void *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "int"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_t *",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()},*fn,u32}"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "void *",
+            "shape": "*()"
+          }
+        ],
+        "output": {
+          "ty": "int",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 3
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 9,
+        "nodes": 38,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 4,
+        "n_pointer_params": 2,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.7,
+        "norm_burden": 0.4,
+        "derefs": 3
+      }
+    },
+    {
+      "name": "quadtree_search",
+      "line": 146,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "quadtree_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "x",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          },
+          {
+            "name": "y",
+            "ty": "double",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "quadtree_point_t *"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_t *",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()},*fn,u32}"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          },
+          {
+            "ty": "double",
+            "shape": "f64"
+          }
+        ],
+        "output": {
+          "ty": "quadtree_point_t *",
+          "shape": "*{f64,f64}"
+        }
+      },
+      "ops": {},
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 2,
+        "nodes": 8,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": true,
+        "fuzzability": 0.85,
+        "norm_burden": 0.7,
+        "derefs": 1
+      }
+    },
+    {
+      "name": "quadtree_free",
+      "line": 151,
+      "signature": {
+        "params": [
+          {
+            "name": "tree",
+            "ty": "quadtree_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_t *",
+            "shape": "*{*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()},*fn,u32}"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 1
+      },
+      "consts": [
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 24,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 1,
+        "n_params": 1,
+        "n_pointer_params": 1,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": false,
+        "returns_pointer": false,
+        "fuzzability": 0.85,
+        "norm_burden": 0.2,
+        "derefs": 4
+      }
+    },
+    {
+      "name": "quadtree_walk",
+      "line": 161,
+      "signature": {
+        "params": [
+          {
+            "name": "root",
+            "ty": "quadtree_node_t *",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "descent",
+            "ty": "void (*)(quadtree_node_t *)",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "ascent",
+            "ty": "void (*)(quadtree_node_t *)",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "void"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "quadtree_node_t *",
+            "shape": "*{*<rec>,*<rec>,*<rec>,*<rec>,*{*{f64,f64},*{f64,f64},f64,f64},*{f64,f64},*()}"
+          },
+          {
+            "ty": "void (*)(quadtree_node_t *)",
+            "shape": "*fn"
+          },
+          {
+            "ty": "void (*)(quadtree_node_t *)",
+            "shape": "*fn"
+          }
+        ],
+        "output": {
+          "ty": "void",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!=": 4
+      },
+      "consts": [
+        "node",
+        "t"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 5,
+        "nodes": 63,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "allocs": 0,
+        "n_params": 3,
+        "n_pointer_params": 3,
+        "n_nested_pointer_params": 0,
+        "has_fn_pointer_param": true,
+        "returns_pointer": false,
+        "fuzzability": 0.0,
+        "norm_burden": 0.6,
+        "derefs": 10
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "find_",
+      "to": "find_"
+    },
+    {
+      "from": "find_",
+      "to": "get_quadrant_"
+    },
+    {
+      "from": "find_",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "get_quadrant_",
+      "to": "node_contains_"
+    },
+    {
+      "from": "insert_",
+      "to": "get_quadrant_"
+    },
+    {
+      "from": "insert_",
+      "to": "insert_"
+    },
+    {
+      "from": "insert_",
+      "to": "quadtree_node_isempty"
+    },
+    {
+      "from": "insert_",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "insert_",
+      "to": "quadtree_node_ispointer"
+    },
+    {
+      "from": "insert_",
+      "to": "reset_node_"
+    },
+    {
+      "from": "insert_",
+      "to": "split_node_"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fabs"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fmax"
+    },
+    {
+      "from": "quadtree_bounds_extend",
+      "to": "fmin"
+    },
+    {
+      "from": "quadtree_bounds_free",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_bounds_free",
+      "to": "quadtree_point_free"
+    },
+    {
+      "from": "quadtree_bounds_new",
+      "to": "__builtin_inff"
+    },
+    {
+      "from": "quadtree_bounds_new",
+      "to": "malloc"
+    },
+    {
+      "from": "quadtree_bounds_new",
+      "to": "quadtree_point_new"
+    },
+    {
+      "from": "quadtree_free",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_free",
+      "to": "quadtree_node_free"
+    },
+    {
+      "from": "quadtree_insert",
+      "to": "insert_"
+    },
+    {
+      "from": "quadtree_insert",
+      "to": "node_contains_"
+    },
+    {
+      "from": "quadtree_insert",
+      "to": "quadtree_point_new"
+    },
+    {
+      "from": "quadtree_new",
+      "to": "malloc"
+    },
+    {
+      "from": "quadtree_new",
+      "to": "quadtree_node_with_bounds"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_bounds_free"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_node_free"
+    },
+    {
+      "from": "quadtree_node_free",
+      "to": "quadtree_node_reset"
+    },
+    {
+      "from": "quadtree_node_isempty",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "quadtree_node_ispointer",
+      "to": "quadtree_node_isleaf"
+    },
+    {
+      "from": "quadtree_node_new",
+      "to": "malloc"
+    },
+    {
+      "from": "quadtree_node_reset",
+      "to": "quadtree_point_free"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "quadtree_bounds_extend"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "quadtree_bounds_new"
+    },
+    {
+      "from": "quadtree_node_with_bounds",
+      "to": "quadtree_node_new"
+    },
+    {
+      "from": "quadtree_point_free",
+      "to": "free"
+    },
+    {
+      "from": "quadtree_point_new",
+      "to": "malloc"
+    },
+    {
+      "from": "quadtree_search",
+      "to": "find_"
+    },
+    {
+      "from": "quadtree_walk",
+      "to": "quadtree_walk"
+    },
+    {
+      "from": "reset_node_",
+      "to": "quadtree_node_reset"
+    },
+    {
+      "from": "split_node_",
+      "to": "insert_"
+    },
+    {
+      "from": "split_node_",
+      "to": "quadtree_node_with_bounds"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "from": "quadtree_node_reset",
+      "line": 31,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_walk",
+      "line": 163,
+      "kind": "call_unresolved"
+    },
+    {
+      "from": "quadtree_walk",
+      "line": 168,
+      "kind": "call_unresolved"
+    }
+  ]
+}

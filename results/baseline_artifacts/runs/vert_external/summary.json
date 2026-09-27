@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "baseline": "vert",
+  "experiment": "frozen_external_pair_v1",
+  "denominator": 36,
+  "detected": [],
+  "detected_count": 0,
+  "outcome_counts": {
+    "analysis_failure": 21,
+    "compile_failure": 10,
+    "completed_miss": 1,
+    "unsupported_input": 4
+  },
+  "outcomes": {
+    "analysis_failure": [
+      "C12",
+      "C16",
+      "C2",
+      "C4",
+      "C7",
+      "C8",
+      "C9",
+      "S1",
+      "S10",
+      "S11",
+      "S12",
+      "S14",
+      "S15",
+      "S16",
+      "S17",
+      "S2",
+      "S21",
+      "S3",
+      "S4",
+      "S7",
+      "S9"
+    ],
+    "compile_failure": [
+      "C1",
+      "C10",
+      "C11",
+      "C15",
+      "C6",
+      "S18",
+      "S19",
+      "S20",
+      "S5",
+      "S6"
+    ],
+    "completed_miss": [
+      "C13"
+    ],
+    "unsupported_input": [
+      "C3",
+      "C5",
+      "S13",
+      "S8"
+    ]
+  },
+  "failure_subtypes": {
+    "c_to_wasm_compile_failure": {
+      "count": 1,
+      "defects": [
+        "C6"
+      ]
+    },
+    "generated_project_compile_failure": {
+      "count": 9,
+      "defects": [
+        "C1",
+        "C10",
+        "C11",
+        "C15",
+        "S18",
+        "S19",
+        "S20",
+        "S5",
+        "S6"
+      ]
+    },
+    "generated_reference_terminates": {
+      "count": 5,
+      "defects": [
+        "C12",
+        "C16",
+        "C4",
+        "S1",
+        "S15"
+      ]
+    },
+    "invalid_counterexample_from_input_mismatch": {
+      "count": 8,
+      "defects": [
+        "C2",
+        "S14",
+        "S16",
+        "S2",
+        "S21",
+        "S4",
+        "S7",
+        "S9"
+      ]
+    },
+    "no_common_audited_wrapper": {
+      "count": 1,
+      "defects": [
+        "S8"
+      ]
+    },
+    "pointer_return_unrepresented": {
+      "count": 1,
+      "defects": [
+        "C3"
+      ]
+    },
+    "process_entry_without_function_payload": {
+      "count": 2,
+      "defects": [
+        "C5",
+        "S13"
+      ]
+    },
+    "released_fallback_cannot_locate_call": {
+      "count": 7,
+      "defects": [
+        "C7",
+        "C8",
+        "S10",
+        "S11",
+        "S12",
+        "S17",
+        "S3"
+      ]
+    },
+    "released_injection_has_no_mutation": {
+      "count": 1,
+      "defects": [
+        "C9"
+      ]
+    },
+    "valid_completed_comparison": {
+      "count": 1,
+      "defects": [
+        "C13"
+      ]
+    }
+  },
+  "candidate_counterexamples": {
+    "count": 8,
+    "valid_detections": 0,
+    "reason": "The released VERT wrapper injects only PARAM1 into the C/rWasm reference while the candidate receives every dynamic argument.",
+    "control": "For S14, the untouched correct deposited candidate fails the same comparison; the remaining cases use the same released injection path."
+  },
+  "valid_completed_comparisons": {
+    "count": 1,
+    "defects": [
+      "C13"
+    ],
+    "result": "completed_miss",
+    "note": "The one-scalar opng_free contract wrapper completes in VERT's release test configuration without exposing C13."
+  },
+  "interpretation": "All 36 frozen defects were submitted through one fixed external-pair adapter without repairing VERT. VERT validly completed one comparison and missed it; every other pair stopped at applicability, compilation, or analysis. Eight apparent counterexamples were rejected because the two sides did not receive the same logical input. End-to-end detection is therefore 0/36."
+}

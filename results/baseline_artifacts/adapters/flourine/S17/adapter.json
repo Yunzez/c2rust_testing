@@ -1,0 +1,20 @@
+{
+  "sources": {
+    "c": "benchmark/pairs/rq4/optipng_laertes/source/optipng/ioutil.c",
+    "rust": "benchmark/pairs/rq4/optipng_laertes/translated/optipng_laertes.rs"
+  },
+  "wrapper_contract": "Generate both byte buffers as int8_t (FLOURINE has no char-array serializer); force NUL termination; cast to the platform-equivalent char pointers; invoke the frozen target with capacity 32 (the largest array extent supported by the released serde dependency); compare the mutable output buffer.",
+  "observation": "FLOURINE compares mutable reference arguments after both calls.",
+  "schema_version": 1,
+  "defect": "S17",
+  "baseline": "flourine",
+  "target": "opng_path_make_backup_valid",
+  "adapter_kind": "documented_per_function_json_with_valid_buffer_wrapper",
+  "semantic_rewrite": false,
+  "known_witness_encoded": false,
+  "input_sha256": {
+    "opng_path_make_backup_valid.json": "df9165fbf8cdeef230a45abc63dee3c92ee48788a2bc1c14200f20ddafacd07e",
+    "opng_path_make_backup_valid.rs": "407adccca71f851eac22a565f46fbf603c30ce30b5b09f465b44e2aed4b01190",
+    "opng_path_make_backup_raw.inc": "2ba06b9c0bfa2cc34479dcf7690f16f2017213413f207baae0e2f142413c8540"
+  }
+}

@@ -1,0 +1,154 @@
+{
+ "boundary": "BZ2_bzBuffToBuffDecompress",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "dest",
+   "adapter": "output_buffer",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "extent": {
+     "k": "param",
+     "p": "destLen",
+     "mul": 1,
+     "div": 1,
+     "add": 0
+    },
+    "extent_source": "parameter_carried_length",
+    "capacity_param": "destLen",
+    "fills_from_fuzz": false,
+    "max_elems": 1048576,
+    "max_elems_evidence": {
+     "rule": "policy_buffer_bound",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+     "note": "dest's element count is fuzz-decoded and capped by the global policy; it defines destLen"
+    }
+   },
+   "evidence": []
+  },
+  {
+   "param": "destLen",
+   "adapter": "capacity_ptr",
+   "detail": {
+    "of_buffer": "dest"
+   },
+   "evidence": [
+    {
+     "rule": "capacity_passed_by_pointer",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "destLen carries dest's capacity in and its written length out"
+    }
+   ]
+  },
+  {
+   "param": "source",
+   "adapter": "input_buffer",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "extent": {
+     "k": "param",
+     "p": "sourceLen",
+     "mul": 1,
+     "div": 1,
+     "add": 0
+    },
+    "extent_source": "parameter_carried_length",
+    "length_param": "sourceLen",
+    "fills_from_fuzz": true,
+    "max_elems": 1048576,
+    "max_elems_evidence": {
+     "rule": "policy_buffer_bound",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+     "note": "source's element count is fuzz-decoded and capped by the global policy; it defines sourceLen"
+    }
+   },
+   "evidence": []
+  },
+  {
+   "param": "sourceLen",
+   "adapter": "length",
+   "detail": {
+    "of_buffer": "source"
+   },
+   "evidence": [
+    {
+     "rule": "length_of_buffer_not_decoded_independently",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "sourceLen is the element count of source"
+    }
+   ]
+  },
+  {
+   "param": "small",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 1,
+    "derivation": [
+     "rejection_guard"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "guard_negated_inequality_set",
+     "file": "bzlib.c",
+     "line": 1310,
+     "col": 4,
+     "snippet": "if (dest == NULL || destLen == NULL ||",
+     "note": "accepted domain of small narrowed to [0, 1] by the entry's own rejection guard"
+    }
+   ]
+  },
+  {
+   "param": "verbosity",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4,
+    "derivation": [
+     "rejection_guard"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "guard_negated_lt",
+     "file": "bzlib.c",
+     "line": 1310,
+     "col": 4,
+     "snippet": "if (dest == NULL || destLen == NULL ||",
+     "note": "accepted domain of verbosity narrowed to [0, None] by the entry's own rejection guard"
+    },
+    {
+     "rule": "guard_negated_gt",
+     "file": "bzlib.c",
+     "line": 1310,
+     "col": 4,
+     "snippet": "if (dest == NULL || destLen == NULL ||",
+     "note": "accepted domain of verbosity narrowed to [0, 4] by the entry's own rejection guard"
+    }
+   ]
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

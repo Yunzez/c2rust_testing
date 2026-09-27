@@ -1,0 +1,175 @@
+{
+ "boundary": "mainSimpleSort",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "ptr",
+   "adapter": "inout_array",
+   "detail": {
+    "elem": "u32",
+    "elem_width": 4,
+    "extent": {
+     "k": "unknown",
+     "why": "i is not a loop induction variable in scope"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 512,
+     "col": 14,
+     "snippet": "v = ptr[i];",
+     "note": "ptr[unknown(i is not a loop induction variable in scope)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 515,
+     "col": 21,
+     "snippet": "ptr[j-h]+d, v+d, block, quadrant, nblock, budget",
+     "note": "ptr[unknown(operator BinaryOperator.Sub)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 517,
+     "col": 13,
+     "snippet": "ptr[j] = ptr[j-h];",
+     "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 517,
+     "col": 22,
+     "snippet": "ptr[j] = ptr[j-h];",
+     "note": "ptr[unknown(operator BinaryOperator.Sub)] read"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 521,
+     "col": 10,
+     "snippet": "ptr[j] = v;",
+     "note": "ptr[unknown(j is not a loop induction variable in scope)] written"
+    },
+    {
+     "rule": "index_bound_from_body",
+     "file": "blocksort.c",
+     "line": 526,
+     "col": 14,
+     "snippet": "v = ptr[i];",
+     "note": "ptr[unknown(i is not a loop induction variable in scope)] read"
+    }
+   ]
+  },
+  {
+   "param": "block",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "u8",
+    "elem_width": 1,
+    "extent": {
+     "k": "unknown",
+     "why": "pointer is never dereferenced"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": false
+   },
+   "evidence": []
+  },
+  {
+   "param": "quadrant",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "u16",
+    "elem_width": 2,
+    "extent": {
+     "k": "unknown",
+     "why": "pointer is never dereferenced"
+    },
+    "extent_source": "policy_allocation",
+    "alloc_elems": 4096,
+    "fills_from_fuzz": false
+   },
+   "evidence": []
+  },
+  {
+   "param": "nblock",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  },
+  {
+   "param": "lo",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 4095,
+    "derivation": [
+     "index_clamped_to_allocation"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "index_clamped_to_allocation",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.unproven_extent_elems = 4096",
+     "note": "lo can influence an index into ptr; the harness allocates 4096 elements, so lo <= 4095"
+    }
+   ]
+  },
+  {
+   "param": "hi",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  },
+  {
+   "param": "d",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  },
+  {
+   "param": "budget",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "const",
+     "v": 1
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "blocksort.c",
+     "line": 552,
+     "col": 14,
+     "snippet": "if (*budget < 0) return;",
+     "note": "*budget is read"
+    }
+   ]
+  }
+ ],
+ "liveness": [],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

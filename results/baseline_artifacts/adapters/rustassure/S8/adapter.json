@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "defect": "S8",
+  "baseline": "rustassure",
+  "target": "parse_string",
+  "adapter_kind": "documented_direct_individual_function_input",
+  "semantic_rewrite": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/cjson_ptrtrans/source/cJSON.c",
+    "c_header": "benchmark/pairs/rq4/cjson_ptrtrans/source/cJSON.h",
+    "rust": "benchmark/pairs/rq4/cjson_ptrtrans/translated/cjson_ptrtrans.rs"
+  },
+  "notes": [
+    "The original parse_string signature, return value, mutable cJSON argument, and parse_buffer argument are submitted without an observation wrapper.",
+    "This leaves construction of recursive Rust references, allocator hooks, and post-call argument-state observation entirely to released RustAssure.",
+    "No known witness or output proxy is added; a compiler or symbolizer failure is scored as released-baseline failure."
+  ],
+  "preprocessing": {
+    "command": "docker run --rm --cpus 1 -i c2r-baseline-rustassure:39618406 clang -E -P -x c -",
+    "purpose": "RustAssure documents preprocessed .i files as its C input format; the local cJSON header is concatenated before preprocessing"
+  },
+  "input_sha256": {
+    "parse_string.i": "4af928dd729481ced1bf88c96b94fa483cd17768ef65eee1b31688558d95cc97",
+    "parse_string.rs": "6447186a0e67df12d3b7ba0240e69c94fe4523ab007ed4a3fc0741bf55b1b63f",
+    "argument_order_map.json": "1f33594395f81ec6c9623dddda1fd54d1358816b05145c4925bdfc8b6d60f5a0"
+  }
+}

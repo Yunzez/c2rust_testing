@@ -1,0 +1,17 @@
+{
+  "Includes": [
+    "#include <ctype.h>",
+    "#include <stdint.h>"
+  ],
+  "Defines": [],
+  "TypeDefs": [],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "int opng_strcasecmp_valid(int8_t left[16], int8_t right[16]);"
+  ],
+  "Function Implementations": [
+    "opng_strcasecmp(const char *str1, const char *str2)\n{\n    int ch1, ch2;\n\n    /* Perform a case-insensitive string comparison. */\n    for ( ; ; )\n    {\n        ch1 = tolower(*str1++);\n        ch2 = tolower(*str2++);\n        if (ch1 != ch2)\n            return ch1 - ch2;\n        if (ch1 == 0)\n            return 0;\n    }\n    /* FIXME: This function is not MBCS-aware. */\n}\n\nint opng_strcasecmp_valid(int8_t left[16], int8_t right[16]) { left[15]=0; right[15]=0; return opng_strcasecmp((char *)left,(char *)right); }"
+  ],
+  "Enums": []
+}

@@ -1,0 +1,349 @@
+{
+ "cell": "bzip2_crown",
+ "generator": "fd1f75b4716a1d45",
+ "c_source": "bzip2lib.c",
+ "mode": "c-only",
+ "build": "cargo fuzz build --sanitizer none; C: -O1 -g sancov + ub-free + -fprofile-instr-generate -fcoverage-mapping",
+ "boundaries_archived_built": 19,
+ "boundaries_measured": 18,
+ "rows": [
+  {
+   "boundary": "BZ2_bzBuffToBuffCompress",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 187,
+   "outcomes": {
+    "completed": 187
+   },
+   "profiles": 1,
+   "c_functions_reached": 35,
+   "c_functions_total": 64,
+   "c_regions_reached": 970,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "BZ2_bzBuffToBuffDecompress",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 527,
+   "outcomes": {
+    "completed": 527
+   },
+   "profiles": 1,
+   "c_functions_reached": 13,
+   "c_functions_total": 64,
+   "c_regions_reached": 716,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "BZ2_bz__AssertH__fail",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 64,
+   "c_regions_reached": 0,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "BZ2_bzlibVersion",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 1,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "BZ2_hbAssignCodes",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 47,
+   "outcomes": {
+    "completed": 47
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 9,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "BZ2_hbCreateDecodeTables",
+   "status": "rebuild failed",
+   "error": "error[E0425]: cannot find value `alphaSize` in this scope\nerror[E0425]: cannot find value `alphaSize` in this scope\nerror[E0425]: cannot find value `alphaSize` in this scope",
+   "corpus": 52
+  },
+  {
+   "boundary": "BZ2_hbMakeCodeLengths",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 7,
+   "outcomes": {
+    "completed": 6,
+    "timeout": 1
+   },
+   "profiles": 7,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 20,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "BZ2_indexIntoF",
+   "status": "ok",
+   "c_static": false,
+   "objects": 1,
+   "corpus": 21,
+   "outcomes": {
+    "completed": 21
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 6,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "bz_config_ok",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 7,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "default_bzalloc",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 6,
+   "outcomes": {
+    "completed": 6
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 1,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "default_bzfree",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 1,
+   "outcomes": {
+    "completed": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 3,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "fallbackQSort3",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 19,
+   "outcomes": {
+    "completed": 19
+   },
+   "profiles": 1,
+   "c_functions_reached": 2,
+   "c_functions_total": 64,
+   "c_regions_reached": 49,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "fallbackSimpleSort",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 21,
+   "outcomes": {
+    "completed": 21
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 18,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "fallbackSort",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 32,
+   "outcomes": {
+    "completed": 32
+   },
+   "profiles": 1,
+   "c_functions_reached": 3,
+   "c_functions_total": 64,
+   "c_regions_reached": 129,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "mainGtU",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 5,
+   "outcomes": {
+    "completed": 5
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 65,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "mainQSort3",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 39,
+   "outcomes": {
+    "completed": 38,
+    "crash": 1
+   },
+   "profiles": 39,
+   "c_functions_reached": 4,
+   "c_functions_total": 64,
+   "c_regions_reached": 120,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "mainSimpleSort",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 31,
+   "outcomes": {
+    "completed": 30,
+    "crash": 1
+   },
+   "profiles": 31,
+   "c_functions_reached": 2,
+   "c_functions_total": 64,
+   "c_regions_reached": 87,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "mainSort",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 1,
+   "outcomes": {
+    "crash": 1
+   },
+   "profiles": 1,
+   "c_functions_reached": 0,
+   "c_functions_total": 64,
+   "c_regions_reached": 0,
+   "c_regions_total": 2212
+  },
+  {
+   "boundary": "mmed3",
+   "status": "ok",
+   "c_static": true,
+   "objects": 1,
+   "corpus": 4,
+   "outcomes": {
+    "completed": 4
+   },
+   "profiles": 1,
+   "c_functions_reached": 1,
+   "c_functions_total": 64,
+   "c_regions_reached": 7,
+   "c_regions_total": 2212
+  }
+ ],
+ "inputs": {
+  "completed": 946,
+  "crash": 4,
+  "timeout": 1
+ },
+ "c": {
+  "functions_total": 64,
+  "functions_reached": 46,
+  "regions_total": 2212,
+  "regions_reached": 1676,
+  "function_reach": 0.71875,
+  "region_reach": 0.7576853526220615,
+  "universe": "all instrumented C object files of each boundary (libc_oracle.a members), helper units excluded, union over boundaries",
+  "region_kind": "llvm-cov CodeRegion (kind 0) in files that define functions (macro bodies attributed to headers excluded); lines aligned to the pair's source where the fixups edited a file, edited lines dropped"
+ },
+ "rust_archived": {
+  "functions_total": 74,
+  "functions_reached": 51,
+  "regions_total": 9084,
+  "regions_reached": 5414,
+  "function_reach": 0.6891891891891891,
+  "region_reach": 0.595993,
+  "names_in_scope": 68,
+  "names_reached": 47
+ },
+ "matched": {
+  "map": "results/rq1_matching/raw/group_a/bzip2__crown/matcher_output.json",
+  "config": {
+   "topo": true,
+   "abstain_eps": 0.01
+  },
+  "accepted_pairs": 60,
+  "counts": {
+   "both": 41,
+   "c_only": 1,
+   "rust_only": 0,
+   "neither": 18,
+   "c_only_rust_terminated": 0,
+   "rust_only_c_terminated": 0
+  },
+  "exclusive_provenance": {
+   "mainSort": {
+    "reached_via": [
+     "BZ2_bzBuffToBuffCompress"
+    ],
+    "archived_rust_coverage": {
+     "BZ2_bzBuffToBuffCompress": "per-input (168/187 completed)"
+    },
+    "rust_terminated": false
+   }
+  },
+  "ambiguous": 3,
+  "c_unmatched": 1,
+  "rust_unmatched": 5,
+  "c_unmatched_reached": 1,
+  "rust_unmatched_reached": 3,
+  "accepted_pairs_out_of_scope": 1
+ },
+ "seconds": 18
+}

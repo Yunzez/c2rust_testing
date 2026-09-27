@@ -1,0 +1,1 @@
+/* optipng: multi-TU pair -- the library is compiled as 52 translation units (build/compile_commands.json), exactly as its own build does. This file is the generator's nominal main unit and defines nothing. */

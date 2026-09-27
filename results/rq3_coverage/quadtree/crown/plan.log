@@ -1,0 +1,41 @@
+OK  elision_                       inputs= 1
+OK  find_                          inputs= 3
+OK  get_quadrant_                  inputs= 2
+FAIL insert_                        inputs= 4
+       - signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed
+       - tree: no lossless Rust bridge -- the produced object is owned as Option<Box<quadtree_t>> in Rust and the target takes *mut quadtree_t: the nullable-owned-object bridge lends a borrowed view (Option<&T>, Option<&mut T>, &T, &mut T) and never transfers the box
+OK  node_contains_                 inputs= 2
+FAIL quadtree_bounds_extend         inputs= 3
+       - bounds: no lossless Rust bridge -- the produced object is owned as Option<Box<quadtree_bounds_t>> in Rust and the target takes *mut quadtree_bounds_t: the nullable-owned-object bridge lends a borrowed view (Option<&T>, Option<&mut T>, &T, &mut T) and never transfers the box
+FAIL quadtree_bounds_free           inputs= 1
+       - bounds: no lossless Rust bridge -- the produced object is owned as Option<Box<quadtree_bounds_t>> in Rust and the target takes Option<Box<quadtree_bounds_t>>: the nullable-owned-object bridge lends a borrowed view (Option<&T>, Option<&mut T>, &T, &mut T) and never transfers the box
+OK  quadtree_bounds_new            inputs= 0
+FAIL quadtree_free                  inputs= 1
+       - tree: no lossless Rust bridge -- the produced object is owned as Option<Box<quadtree_t>> in Rust and the target takes Option<Box<quadtree_t>>: the nullable-owned-object bridge lends a borrowed view (Option<&T>, Option<&mut T>, &T, &mut T) and never transfers the box
+FAIL quadtree_insert                inputs= 4
+       - tree: no lossless Rust bridge -- the produced object is owned as Option<Box<quadtree_t>> in Rust and the target takes *mut quadtree_t: the nullable-owned-object bridge lends a borrowed view (Option<&T>, Option<&mut T>, &T, &mut T) and never transfers the box
+OK  quadtree_new                   inputs= 4
+FAIL quadtree_node_free             inputs= 0
+       - signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported
+OK  quadtree_node_isempty          inputs= 1
+OK  quadtree_node_isleaf           inputs= 1
+OK  quadtree_node_ispointer        inputs= 1
+OK  quadtree_node_new              inputs= 0
+FAIL quadtree_node_reset            inputs= 0
+       - signature: callback parameter key_free deferred: function pointers (callback binding) not yet supported
+OK  quadtree_node_with_bounds      inputs= 4
+FAIL quadtree_point_free            inputs= 1
+       - point: the boundary passes this POD struct pointer to free(); the harness owns the value and has no heap-owned struct adapter
+       - point: no lossless Rust bridge -- struct parameter has Rust type Option<Box<quadtree_point_t>>
+OK  quadtree_point_new             inputs= 2
+OK  quadtree_search                inputs= 3
+FAIL quadtree_walk                  inputs= 0
+       - signature: callback parameter descent deferred: function pointers (callback binding) not yet supported
+FAIL reset_node_                    inputs= 2
+       - signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed
+       - tree: no lossless Rust bridge -- the produced object is owned as Option<Box<quadtree_t>> in Rust and the target takes *mut quadtree_t: the nullable-owned-object bridge lends a borrowed view (Option<&T>, Option<&mut T>, &T, &mut T) and never transfers the box
+FAIL split_node_                    inputs= 2
+       - signature: 2 produced objects in one call; ownership transfer between them cannot be ruled out, so the lifecycle cannot be claimed
+       - tree: no lossless Rust bridge -- the produced object is owned as Option<Box<quadtree_t>> in Rust and the target takes *mut quadtree_t: the nullable-owned-object bridge lends a borrowed view (Option<&T>, Option<&mut T>, &T, &mut T) and never transfers the box
+
+planned 13 / 24

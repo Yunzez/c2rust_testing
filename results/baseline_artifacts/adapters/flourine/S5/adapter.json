@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "defect": "S5",
+  "baseline": "flourine",
+  "target": "genann_cached_initialized",
+  "adapter_kind": "documented_per_function_json_with_library_initializer",
+  "semantic_rewrite": false,
+  "known_witness_encoded": false,
+  "sources": {
+    "c": "benchmark/pairs/rq4/genann_sactor/source/genann.c",
+    "c_header": "benchmark/pairs/rq4/genann_sactor/source/genann.h",
+    "rust": "benchmark/pairs/rq4/genann_sactor/translated/genann_sactor.rs"
+  },
+  "wrapper_contract": "Call each implementation's exact lookup initializer, then its exact cached activation with one artifact-generated f64. NaN is mapped identically to 0.0 to satisfy the target's explicit assert(!isnan(a)) contract. The unused ann argument is NULL, as in the library's shipped C tests.",
+  "input_sha256": {
+    "genann_cached_initialized.json": "1f7e4554d603ad30cd1e71a21f23679fd1bc61fbe20563d6b4fa0dc5276ae3b6",
+    "genann_cached_initialized.rs": "810de5b75bbccc418e97f4566488229824dbc006190467c0864294d9fafd69c0",
+    "genann_cached_initialized_raw.inc": "58b8cd263858b1b1318d233a2fd4cc2c5bb6bd5f7bab823636e24270d6e460e8"
+  }
+}

@@ -1,0 +1,72 @@
+{
+ "schema_version": 1,
+ "program": "bzip2_c2rust",
+ "entry": "BZ2_hbCreateDecodeTables",
+ "params": [
+  {
+   "name": "limit",
+   "elem": "i32",
+   "elem_width": 4,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 257
+  },
+  {
+   "name": "base",
+   "elem": "i32",
+   "elem_width": 4,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 257
+  },
+  {
+   "name": "perm",
+   "elem": "i32",
+   "elem_width": 4,
+   "role": "output_array",
+   "decode": "output_array_vector",
+   "cap": 258
+  },
+  {
+   "name": "length",
+   "elem": "u8",
+   "elem_width": 1,
+   "role": "inout_buffer",
+   "decode": "vector",
+   "length_param": "alphaSize",
+   "max_len": 258
+  },
+  {
+   "name": "minLen",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 0,
+   "max_value": 23
+  },
+  {
+   "name": "maxLen",
+   "rust": "i32",
+   "width": 4,
+   "role": "scalar",
+   "decode": "bounded_scalar",
+   "min_value": 0,
+   "max_value": 23,
+   "min_var": "minLen"
+  },
+  {
+   "name": "alphaSize",
+   "rust": "i32",
+   "width": 4,
+   "role": "length",
+   "decode": "derived_from_buffer",
+   "of_buffer": "length"
+  }
+ ],
+ "return": {
+  "rust": "void"
+ },
+ "decode_scalars_first": true,
+ "provenance": "hand-authored for the RQ4 coverage experiment; every bound is a documented bzip2 1.0.8 requirement, see make_schemas.py"
+}

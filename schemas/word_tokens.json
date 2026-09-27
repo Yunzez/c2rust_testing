@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "program": "word_tokens",
+  "entry": "fold_unique_words",
+  "provenance": "auto-derived from libclang signature + classify(); REVIEW roles (output_buffer vs inout_buffer, capacity vs length, written_length) before trusting \u2014 decode kinds mirror the pre-migration generator exactly.",
+  "return": {
+    "rust": "u64"
+  },
+  "params": [
+    {
+      "name": "words",
+      "role": "input_string_pointer_table",
+      "decode": "string_pointer_table",
+      "elem": "i8",
+      "elem_width": 1,
+      "length_param": "count",
+      "count_max": 16,
+      "mutation": "backing_observable"
+    },
+    {
+      "name": "count",
+      "role": "length",
+      "decode": "derived_from_buffer",
+      "of_buffer": "words",
+      "rust": "usize",
+      "width": 8
+    }
+  ]
+}

@@ -1,0 +1,1694 @@
+{
+ "mode": "confirm_sample",
+ "sample_per_boundary": 200,
+ "boundaries": [
+  {
+   "boundary": "cJSON_CreateBool",
+   "candidates_total": 1,
+   "adjudicated": 1,
+   "tally": {
+    "not_reproducible": 1
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "oom-da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    }
+   ],
+   "seconds": 18
+  },
+  {
+   "boundary": "cJSON_CreateDoubleArray",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "not_reproducible": 2,
+    "ub_associated": 1
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 2,
+     "example": "oom-3580b2aa1e02b461c6e604bb45e78c8224b50721"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: -nan is outside the range of representable values of type 'int'",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "oom-c4b31bc4ee84b62daff71b3362df8517b2f2ca4f"
+    }
+   ],
+   "seconds": 19
+  },
+  {
+   "boundary": "cJSON_CreateFloatArray",
+   "candidates_total": 1,
+   "adjudicated": 1,
+   "tally": {
+    "not_reproducible": 1
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "oom-da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    }
+   ],
+   "seconds": 19
+  },
+  {
+   "boundary": "cJSON_CreateIntArray",
+   "candidates_total": 3,
+   "adjudicated": 3,
+   "tally": {
+    "not_reproducible": 3
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 3,
+     "example": "oom-605cb7b4c11de44b91bba8fb460efd7070ada6b1"
+    }
+   ],
+   "seconds": 19
+  },
+  {
+   "boundary": "cJSON_Delete",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 190,
+    "not_reproducible": 6,
+    "ub_associated_termination": 4
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 121,
+     "example": "crash-000af18f8ad96e9027c739df75b26d0c1793dfc3"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 29,
+     "example": "crash-000004ef3f28a6b15c7de833c3f36a0bda30d964"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 21,
+     "example": "crash-0057e120367d04dc6791d3df9925073e43d8ac28"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 12,
+     "example": "crash-00212cec0c774b9d153cd0818d03ce702ba46e54"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 6,
+     "example": "crash-027d23471c1cb84cb6c5ab7d5362e173ea645623"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 5,
+     "example": "crash-0001209201ef53fb515cc69091ecaf2a6faa805b"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 2,
+     "example": "crash-03ff65429e4ed1a966024064d00a76b752ebb4e4"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 2,
+     "example": "crash-04b8eebeac69253060d99ec22aed1cc864af8ad0"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 2,
+     "example": "crash-06b02c3e445361a9dd464e7e218da4035ee3e78a"
+    }
+   ],
+   "seconds": 90
+  },
+  {
+   "boundary": "cJSON_DeleteItemFromArray",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 192,
+    "not_reproducible": 2,
+    "ub_associated_termination": 6
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 133,
+     "example": "crash-00182393dccd42dd453d835570824e176d6f8693"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 20,
+     "example": "crash-00203840c653f8de7130d90f62363fb7d9fef582"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 18,
+     "example": "crash-00844899d5622c196323d632efb3a0568dd7431f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 14,
+     "example": "crash-004370d0a379c18164d92cd0a3d84287f6970f8c"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 4,
+     "example": "crash-008ab7d7fee7e35c5a7288ac9d4ae45a3ab33e3f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:212",
+     "artifacts": 3,
+     "example": "crash-00164ce7133383338f63d1d4e5af0fc03c8671b7"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 3,
+     "example": "crash-0128557bf5bca7ecdfa1ad8ff3ec88c33d5fd7fa"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 3,
+     "example": "crash-03394ae9c2b39cefb9d3c308abac790c1b211cad"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 2,
+     "example": "crash-00a6215bfe6ab834602ab4ac594bb4fdcb9f0b56"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "cJSON_DeleteItemFromObject",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 178,
+    "ub_associated_termination": 14,
+    "not_reproducible": 8
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 126,
+     "example": "crash-00370986b039091cae914db62952db25a1c80ef5"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 22,
+     "example": "crash-007c8c4ecae2629aecdadcdeb8c9ca0866cfd909"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 14,
+     "example": "crash-01a60d30b53ce0af0badd5d8c6fc098ba62dcf7a"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 12,
+     "example": "crash-003fe34c8a0cc78241b12bc9b29c824635d16588"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 10,
+     "example": "crash-02ba1399ac43a902639b04081cde8f28aa1b52b9"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 8,
+     "example": "crash-009c3411150c99208668b6894bbe0e48b84aa81a"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:575",
+     "artifacts": 2,
+     "example": "crash-0336b0476396387a01d268f9ee9e74aac6078c6b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 2,
+     "example": "crash-056d7cf3a57ae926aaf08470444f7c552ae5cae9"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:214",
+     "artifacts": 1,
+     "example": "crash-00df3ddb6f10da432549db246cbd4c3d32a9927a"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:235",
+     "artifacts": 1,
+     "example": "crash-010b009dcc74f29739d9e12be5d93154953aed2b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 1,
+     "example": "crash-051ac8056372f48d57a87f022fc467eb8b3ac8a0"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:212",
+     "artifacts": 1,
+     "example": "crash-085787a7b624e305c08fe9d3d00755e96f6ed6d2"
+    }
+   ],
+   "seconds": 88
+  },
+  {
+   "boundary": "cJSON_DetachItemFromArray",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 193,
+    "not_reproducible": 6,
+    "ub_associated_termination": 1
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 115,
+     "example": "crash-001298d20e033f1ba5079206ba66c5359675f3ea"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 30,
+     "example": "crash-000f85546eeb810605435013a012ad97759d7c37"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 27,
+     "example": "crash-0034ac0e4970ef647af38993ec7eaf10a711bd91"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 8,
+     "example": "crash-0158200bfdb61f094be23ceca0a3fb43a3a994aa"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 6,
+     "example": "crash-000a51fc767f5a6a6eaab7c3c2b6aabf4b9264f4"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 6,
+     "example": "crash-00270cab2a3353a987a1f8151a4cef32a43a348a"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 6,
+     "example": "crash-00696ca491bd79c13a0bf4192af9abde029edcf6"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-033853045d3569223e23252fdee230ffe43d0873"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:215",
+     "artifacts": 1,
+     "example": "crash-064f8a2341f875477573eacdab1a7d183e6f7ad5"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "cJSON_DetachItemFromObject",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 196,
+    "ub_associated_termination": 3,
+    "not_reproducible": 1
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 116,
+     "example": "crash-000866f1e22194f10cf073bbf88679628972e2d6"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 29,
+     "example": "crash-0102af184d94cea56c04640c14d46196a5ffcb6e"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 24,
+     "example": "crash-00a3313661a8c2e11638521c776279e557eb0033"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 15,
+     "example": "crash-0137a6d3d246a5c2ba364ac5d8230cd1c18a3564"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 6,
+     "example": "crash-015f5baee55d8a53edf23b22ed8e0602e1e9db5f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 5,
+     "example": "crash-01fc776f73f89a051c6adecd5ea425fa50bc2218"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 2,
+     "example": "crash-023f00147b7f42d9bb46b0839ce36d8dc7f0baaf"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:235",
+     "artifacts": 1,
+     "example": "crash-03d4be817cf8a98608ebe36b9bd000ec6673d7b6"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-05a7437068e4377a60a58c4d1b9b668d475a9eb1"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-072a630982eb39e33dc44a88695ca25b569f9399"
+    }
+   ],
+   "seconds": 88
+  },
+  {
+   "boundary": "cJSON_Duplicate",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 196,
+    "not_reproducible": 4
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 107,
+     "example": "crash-00010965594c578ca6a63622ba6dd28047398080"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 31,
+     "example": "crash-003c0c5da3fc019542c458eb9722d000ba220a20"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 27,
+     "example": "crash-00504697ff6004f77bb05e8c6c8280a3cd8b2f8e"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 20,
+     "example": "crash-0004b60e1db7bb8cc38ae2c12cd2fa38da81466d"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 6,
+     "example": "crash-009ce10381d35fedc3baccffcd736751488530e4"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 5,
+     "example": "crash-0085372bdd4c343dfbde5ec53c80ea01f6b9c2ec"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 4,
+     "example": "crash-00b867bf6c2d889dec6a6b5d01b438537b25049b"
+    }
+   ],
+   "seconds": 88
+  },
+  {
+   "boundary": "cJSON_GetArrayItem",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 194,
+    "ub_associated_termination": 4,
+    "not_reproducible": 2
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 119,
+     "example": "crash-0001c339aa5fc12775d1f39f124c25733f5260fc"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 32,
+     "example": "crash-00083cd38363975f56bf20f67c66360b778acc4b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 22,
+     "example": "crash-013e678616c6edf6897a4a5d9c19296d07a028cb"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 14,
+     "example": "crash-0012a79c761c9e2d5e106c6b6d281acd261f889b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 4,
+     "example": "crash-042a8f340449c2fe1b2ab768c0dbbfe3beccc303"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 2,
+     "example": "crash-005f68effe11a879f73fa7fd05d36b3cb568dc48"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 2,
+     "example": "crash-00b9878a5718ad2262bf087fbffd44e9ea11079c"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 2,
+     "example": "crash-02ca3bff502a9704265e3fc91c2331a666221157"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 2,
+     "example": "crash-05aa5bef1c97b0c3cb4483844a4304132e6f8c08"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:214",
+     "artifacts": 1,
+     "example": "crash-0609a08cd4f55ea8c454b0ae6f0a3690587e4890"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "cJSON_GetArraySize",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 186,
+    "ub_associated_termination": 9,
+    "not_reproducible": 5
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 107,
+     "example": "crash-0034696a98163743e0977694b90363fa48c871cc"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 50,
+     "example": "crash-00111f4448214e178e04d93d5ef3131d9524eb63"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 21,
+     "example": "crash-00971e515f725106bb1efb7038627096369c8762"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 9,
+     "example": "crash-00344544462849287e87e3ea1e955dfb6f3357db"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 5,
+     "example": "crash-01599f7e3870203f8a7ec1d98b01dc76e67cadf2"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 4,
+     "example": "crash-00069d0c044e1a51b828bffd84fa2534efd5d6d4"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 2,
+     "example": "crash-0239cbfa3628f9e38bba5519e03e351740128257"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 1,
+     "example": "crash-034099f55630ed5fff14bc48716d3270f4ae73e9"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:235",
+     "artifacts": 1,
+     "example": "crash-0a9158b8f2d137375ee62f516dbd4f35d7df29b1"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "cJSON_GetObjectItem",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 191,
+    "not_reproducible": 4,
+    "ub_associated_termination": 5
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 136,
+     "example": "crash-000506dfb50e5cab9f40687e37015ef9be2f7dbf"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 25,
+     "example": "crash-0149803ecdf5bc3c62bc2452899c4457c56eaa60"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 17,
+     "example": "crash-001e9ebcc61e026f21f9d824250c6f5f3cf58bb4"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 8,
+     "example": "crash-003646a1f4784af47232e7c57040f08d26e426f4"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 4,
+     "example": "crash-00fec49986f75b3fd4bf1a6572538176fee3a3a5"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 4,
+     "example": "crash-015f48f9604be742de0f26ecdf9658a3fc621797"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 3,
+     "example": "crash-0150bd9459ead54b8e3339075d49464cbeeda3a3"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:575",
+     "artifacts": 1,
+     "example": "crash-018585e684cc8e1317685944b1d3caf18c8c5681"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:235",
+     "artifacts": 1,
+     "example": "crash-02a971b6c58c14d125db578aa224a0e7d76e63f8"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 1,
+     "example": "crash-05f9460e52fedfe8c11ca67ae6171ac69e819642"
+    }
+   ],
+   "seconds": 88
+  },
+  {
+   "boundary": "cJSON_Minify",
+   "candidates_total": 1,
+   "adjudicated": 1,
+   "tally": {
+    "not_reproducible": 1
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-35243f371fba4063294ea343b7f670d19a818e3e"
+    }
+   ],
+   "seconds": 18
+  },
+  {
+   "boundary": "cJSON_New_Item",
+   "candidates_total": 1,
+   "adjudicated": 1,
+   "tally": {
+    "not_reproducible": 1
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "oom-da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    }
+   ],
+   "seconds": 18
+  },
+  {
+   "boundary": "cJSON_Parse",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 196,
+    "ub_associated_termination": 1,
+    "not_reproducible": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 132,
+     "example": "crash-0015dfc7d253a7293574df90d5f6f362a28af5c4"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 29,
+     "example": "crash-004591cbe94292871c085ee757b2fc0181f90e7b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 14,
+     "example": "crash-007f6b6bb7e511e0618a047c6ba903af201fe81b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 12,
+     "example": "crash-00327b0571470da3f6e64e0e2b90896354652b7b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 6,
+     "example": "crash-008451041b60b31ee3f70baecbed85be53b7241d"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 3,
+     "example": "crash-01bee44af1bd16dbd4f326867e8387f9d712baa6"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-01543880b5f8d160043def60f48775e334cdf625"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:215",
+     "artifacts": 1,
+     "example": "crash-04e4c0adb3dde29e20d5f969f5e4efe8f0260985"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:213",
+     "artifacts": 1,
+     "example": "crash-06a235039da1496ad2c7a2620c030e2382e1d501"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 1,
+     "example": "crash-0993a22b4c5680dff0a6714e3be6d497abdef822"
+    }
+   ],
+   "seconds": 44
+  },
+  {
+   "boundary": "cJSON_Print",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 188,
+    "not_reproducible": 6,
+    "ub_associated_termination": 6
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 127,
+     "example": "crash-0011870f5546ce4a737b804751c8cdc98a94f6b0"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 27,
+     "example": "crash-0079aa1097109988647b99a9f9ce7e206dece3d9"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 21,
+     "example": "crash-0043b8464744bcf4879cca02ca4cd191c636763a"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 10,
+     "example": "crash-00369bf5b879340e8114ae0c6ba45bca3e4df814"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 6,
+     "example": "crash-01f8d03b317c2c89ba4af4998833b68fad75d04c"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 3,
+     "example": "crash-06eda9ec0b8e3a9a8c6433576bf1eaa30f4e0237"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 3,
+     "example": "crash-07137bda7371408cdd8805d5541632c9007d8d83"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 2,
+     "example": "crash-0184f5ed5046c3697dbcf2ac977be2f79cc32c75"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 1,
+     "example": "crash-0514aa4812e726dd45ba80aa8a004a6ae9a11a14"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "cJSON_PrintBuffered",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 193,
+    "ub_associated_termination": 2,
+    "not_reproducible": 5
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 95,
+     "example": "crash-0040526dc89dab14677f6391715e0c69e2034e34"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 61,
+     "example": "crash-0013824d152751e3a56ff1a1548ad207f26f28ad"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 20,
+     "example": "crash-00519bb63dc1988461123342c26758903ea83964"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 13,
+     "example": "crash-00ef18029b3a0b0fd00c628bff651327dd97f22c"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 5,
+     "example": "crash-027effbc28d6800c18cd5793cd9ace340457415a"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 1,
+     "example": "crash-003670197c54de307a31803c365a4efdf6f87f46"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-036a85a48616d6372a657ab02b95a6339b34e443"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:235",
+     "artifacts": 1,
+     "example": "crash-05f48cebaffc8f74df56d891d3043ff6dacb99ec"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 1,
+     "example": "crash-080e64b1d6deef40d5c6df83a9c1466e19aa1f36"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 1,
+     "example": "crash-08aaf47cd4988722102385b8e1a5a51ebb749f6a"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: 1e+77 is outside the range of representable values of type 'int'",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-0923091f042bc0d859d8d5ecc9767945c2ab2074"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "cJSON_PrintUnformatted",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 194,
+    "not_reproducible": 4,
+    "ub_associated_termination": 2
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 100,
+     "example": "crash-0007571687f0ad07de8f2cbdd52a6d1e51d6ede5"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 55,
+     "example": "crash-00884889e561a48d41ce5a95bb7496f327a19725"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 21,
+     "example": "crash-000f4ff4101e29bf9b0970e3dc9dd1a6106c69eb"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 7,
+     "example": "crash-013ace4485c4751a5de8e3d19f5e77d2c7d4ec30"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 5,
+     "example": "crash-0063584c58f9c3881a31787d84aa35fc64863225"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 4,
+     "example": "crash-0075a3eed86edb69a53fc9a10b8850ccf207a204"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 3,
+     "example": "crash-0180ecb568a249fe25dcc90582d1713f8fe8895b"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 2,
+     "example": "crash-02ad62b64b94440387a9aa05cb912a7897e44161"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:214",
+     "artifacts": 1,
+     "example": "crash-009cdcf4f6a86e548af4ab1e44dd6355d1175c91"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: 1.11111e+17 is outside the range of representable values of type 'int'",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-02e0ba4a96c6241d178e17d292e81feeaa4972d5"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:215",
+     "artifacts": 1,
+     "example": "crash-0715b18517d1011ff53a5a246c2795af8902b6d4"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "cJSON_strcasecmp",
+   "candidates_total": 1,
+   "adjudicated": 1,
+   "tally": {
+    "ub_associated": 1
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_cJSON_strcasecmp cJSON.c:42",
+     "artifacts": 1,
+     "example": "crash-ae2e6124769835d83c3f4c6eed55287bafda6ad3"
+    }
+   ],
+   "seconds": 18
+  },
+  {
+   "boundary": "create_reference",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 195,
+    "not_reproducible": 5
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 119,
+     "example": "crash-00053299e29b5f93e80f2582dd32f301f3928dfe"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 33,
+     "example": "crash-00204ca4a40815280bc87dada240f93e4a681492"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 18,
+     "example": "crash-000d9335d25e1cf30386b6c66328d6eb989fc640"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 11,
+     "example": "crash-0047b5e7debc37a4f89970c5736f0343507e5ab6"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:215",
+     "artifacts": 7,
+     "example": "crash-0078e946486b0a85b6fb58e6100778bb3c7fcda6"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 5,
+     "example": "crash-018e2abf62bc85fabf336c339fab690f9f7202c9"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 4,
+     "example": "crash-03adb47dcf08dae245e9060b7b8e1742165c036d"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 2,
+     "example": "crash-02f7f8c1cf9a007ab8cb0dfbc452e7ec6d876a0c"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:213",
+     "artifacts": 1,
+     "example": "crash-0664e1dfda3d7e21e2e3116ad002878e86b369a4"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "parse_array",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 187,
+    "ub_associated_termination": 7,
+    "not_reproducible": 6
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 112,
+     "example": "crash-001d02cdfa0dc52745083e8bfff66946b18fc747"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 34,
+     "example": "crash-0019b5f4f338d87efe4768e13182bea0ee075364"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 25,
+     "example": "crash-001e1695bd599b90ee6888223b93ba304a80492e"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 8,
+     "example": "crash-01ad9fb2a1e0a755441248745fe0952244079a44"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 7,
+     "example": "crash-00c5b0fa0bbb36ad07528bb69f277103bac78759"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 6,
+     "example": "crash-01f6480c99effd9dba5d54c0a0c050cddea49c98"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 4,
+     "example": "crash-02e8ddcfa9a49b0f847434046aedd8325644143d"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 3,
+     "example": "crash-02eb49c618efef90d3892b4db55559da868a1a8d"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "runtime error: inf is outside the range of representable values of type 'int'",
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-07c7c4138efaf410766c0d5df11c42c6c20b9182"
+    }
+   ],
+   "seconds": 88
+  },
+  {
+   "boundary": "parse_hex4",
+   "candidates_total": 11,
+   "adjudicated": 11,
+   "tally": {
+    "ub_associated": 4,
+    "not_reproducible": 7
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 7,
+     "example": "crash-356a192b7913b04c54574d18c28d46e6395428ab"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_hex4 cJSON.c:182",
+     "artifacts": 4,
+     "example": "crash-15b15f5e8ecf7286b61fe05ca8de57c393b352c6"
+    }
+   ],
+   "seconds": 19
+  },
+  {
+   "boundary": "parse_number",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 194,
+    "ub_associated_termination": 3,
+    "not_reproducible": 3
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 116,
+     "example": "crash-0003191dac65f070d0327477c96906676f888672"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 41,
+     "example": "crash-002c6dc74be957d86dca04d6f5fecb9a85b21381"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 20,
+     "example": "crash-003db63119c839541001d8efb3efc4d8992dbfc4"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 11,
+     "example": "crash-00fddd3075e0137914dc88ef36f8178f4395b09f"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 3,
+     "example": "crash-013a924bc101cff61d22b888ee9d5be7873ba312"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 3,
+     "example": "crash-05793fdbc89559bfc7fd131d2ac74d77f5847968"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 3,
+     "example": "crash-06e1a67a87535c7aac609ce2978d668da82dbf15"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:215",
+     "artifacts": 2,
+     "example": "crash-05713310885aff0098a91b04cf55b9483f97cdde"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:214",
+     "artifacts": 1,
+     "example": "crash-09501f8558f2c69ad4974ee8c9dd692fe176a4c0"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "parse_object",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 195,
+    "not_reproducible": 4,
+    "ub_associated_termination": 1
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 100,
+     "example": "crash-000829f799b465b8d226041b384f4d3e305004d9"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 52,
+     "example": "crash-00358870869f37e760dc88dd98ac27e4df1b632f"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 21,
+     "example": "crash-0013daba1c7c97df0aebb289cf054f5dd06b0117"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 8,
+     "example": "crash-019b2192a23455a8661bdf3f44f423cf5620cf52"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 6,
+     "example": "crash-01b3888b7458e84eaacc075f309cb83886e0244c"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 4,
+     "example": "crash-01a6f06d55452ba1a0cf7e05dfeb6b298398d4ef"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 3,
+     "example": "crash-0034370841b876d798a4f8d2961656e9d137d9c0"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:214",
+     "artifacts": 3,
+     "example": "crash-0156241b7cf4e285b8ef4cbea82bbdb07736eb1c"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:215",
+     "artifacts": 2,
+     "example": "crash-012a1b8da7f9aff57f2e85cc7be1529c52090d26"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 cjson_c2rust::parse_string lib.rs:470",
+     "artifacts": 1,
+     "example": "crash-06b83eebbe4442afe5f0ef7fa50526a06b720de3"
+    }
+   ],
+   "seconds": 89
+  },
+  {
+   "boundary": "parse_string",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 190,
+    "not_reproducible": 8,
+    "ub_associated_termination": 2
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 116,
+     "example": "crash-0004ee2a9bd13539282ae793b4154ed18e09fe41"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 25,
+     "example": "crash-001a280b4b3408e5acdc45982340600b1a01ea76"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 23,
+     "example": "crash-005e1ee20f5c3ccc62bb02c2e59a24b8277b2e44"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 16,
+     "example": "crash-012ad3203b3e0db0a53af7f95f25f11a85c54167"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 9,
+     "example": "crash-00f8b61dbc97042f63de042f5114aefc8f5fe873"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 8,
+     "example": "crash-00435b3b7913ef4045ca5e506a3cef8d34f47d25"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 1,
+     "example": "crash-011f8410259e414afe4d43a76315ba0d05b620f3"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 1,
+     "example": "crash-0148fe5f3cf7db38ab678bdb5661189e517bbcdc"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 parse_string lib.rs:471",
+     "artifacts": 1,
+     "example": "crash-02bc65e638ce4d44a1f0832327c20dbe0f3d8084"
+    }
+   ],
+   "seconds": 88
+  },
+  {
+   "boundary": "parse_value",
+   "candidates_total": 500,
+   "adjudicated": 200,
+   "tally": {
+    "ub_associated": 195,
+    "not_reproducible": 5
+   },
+   "clusters": [
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:205",
+     "artifacts": 137,
+     "example": "crash-001273135863797f4db15f3f82c5fcf94dd2b280"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:203",
+     "artifacts": 26,
+     "example": "crash-00338d8987dea530dd6d7a5439d1843a721f45fa"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:197",
+     "artifacts": 22,
+     "example": "crash-006c8d9d6d1b4352811b9a7626547603791f3a9b"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:244",
+     "artifacts": 6,
+     "example": "crash-0365426d06e008cc1342ce220f13aed25a4d84d0"
+    },
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 5,
+     "example": "crash-02739198f7e89867e6bf08a3df7b23f1d04617f9"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:239",
+     "artifacts": 3,
+     "example": "crash-03796d5a07eb354b039e3cad47433984982785b3"
+    },
+    {
+     "verdict": "ub_associated",
+     "sanitizer": "ERROR: AddressSanitizer: heap-buffer-overflow",
+     "frame": "#0 c_parse_string cJSON.c:233",
+     "artifacts": 1,
+     "example": "crash-09c341486dbe6d5e5b48ec3eea8a7ac2366e4ebf"
+    }
+   ],
+   "seconds": 88
+  },
+  {
+   "boundary": "pow2gt",
+   "candidates_total": 22,
+   "adjudicated": 22,
+   "tally": {
+    "ub_associated_termination": 10,
+    "not_reproducible": 12
+   },
+   "clusters": [
+    {
+     "verdict": "not_reproducible",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 12,
+     "example": "crash-0d27f82d77c90af3211bb8ffea97b43c61cf53c6"
+    },
+    {
+     "verdict": "ub_associated_termination",
+     "sanitizer": null,
+     "frame": "<no frame>",
+     "artifacts": 10,
+     "example": "crash-079c0bfe7b35e12d465d738b5f07ce7d7338b298"
+    }
+   ],
+   "seconds": 21
+  }
+ ],
+ "total": {
+  "not_reproducible": 115,
+  "ub_associated": 3649,
+  "ub_associated_termination": 80
+ }
+}

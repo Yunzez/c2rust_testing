@@ -1,0 +1,62 @@
+rust_function,file,line,signature,same_name_in_c,duplicate_leaf,tool_claimed_by,matcher_proposed_for
+mmed3,src/blocksort.rs,30,"(a: u8, b: u8, c: u8) -> u8",yes,,mmed3,mmed3
+fallback_simple_sort,src/blocksort.rs,46,"(fmap: Option<&mut [i32]>, eclass: Option<&[i32]>, lo: i32, hi: i32) -> ()",,,fallbackSimpleSort,fallbackSimpleSort
+main_gt_u,src/blocksort.rs,184,"(i1: u32, i2: u32, block: Option<&[u8]>, quadrant: Option<&[u16]>, nblock: u32, budget: Option<&mut i32>) -> u8",,,mainGtU,mainGtU
+fallback_q_sort3,src/blocksort.rs,384,"(fmap: Option<&mut [i32]>, eclass: Option<&[i32]>, lo_st: i32, hi_st: i32) -> ()",,,fallbackQSort3,BZ2_bzRead
+main_simple_sort,src/blocksort.rs,396,"(ptr: Option<&mut [u32]>, block: Option<&[u8]>, quadrant: Option<&[u16]>, nblock: i32, lo: i32, hi: i32, d: i32, budget: Option<&mut i32>) -> ()",,,mainSimpleSort,mainQSort3
+fallback_sort,src/blocksort.rs,408,"(fmap: Option<&mut [u32]>, eclass: Option<&mut [u32]>, bhtab: Option<&mut [i32]>, nblock: i32, verb: i32) -> ()",,,fallbackSort,fallbackSort
+main_q_sort3,src/blocksort.rs,421,"(ptr: Option<&mut [u32]>, block: Option<&[u8]>, quadrant: Option<&[u16]>, nblock: i32, lo_st: i32, hi_st: i32, d_st: i32, budget: Option<&mut i32>) -> ()",,,mainQSort3,mainSimpleSort
+main_sort,src/blocksort.rs,436,"(ptr: Option<&mut [u32]>, block: Option<&mut [u8]>, quadrant: Option<&mut [u16]>, ftab: Option<&mut [u32]>, nblock: i32, verb: i32, budget: Option<&mut i32>) -> ()",,,mainSort,BZ2_bzBuffToBuffCompress
+BZ2_blockSort,src/blocksort.rs,451,(s: Option<&mut crate::EState>) -> (),yes,,BZ2_blockSort,
+bz_config_ok,src/bzlib.rs,60,() -> i32,yes,,bz_config_ok,bz_config_ok
+BZ2_bzlibVersion,src/bzlib.rs,90,() -> Option<&'static str>,yes,,BZ2_bzlibVersion,BZ2_bzlibVersion
+BZ2_bz__AssertH__fail,src/bzlib.rs,95,(errcode: i32) -> (),yes,,BZ2_bz__AssertH__fail,BZ2_bz__AssertH__fail
+BZ2_bzflush,src/bzlib.rs,145,(b: Option<&BZFILE>) -> i32,yes,,BZ2_bzflush,BZ2_bzflush
+default_bzalloc,src/bzlib.rs,150,"(opaque: Option<&()>, items: i32, size: i32) -> Option<Box<[u8]>>",yes,,default_bzalloc,BZ2_bzerror
+bz2_index_into_f,src/bzlib.rs,201,"(indx: i32, cftab: Option<&[i32; 257]>) -> i32",,,BZ2_indexIntoF,BZ2_indexIntoF
+prepare_new_block,src/bzlib.rs,204,(s: Option<&mut EState>) -> (),yes,,prepare_new_block,
+init_RL,src/bzlib.rs,207,(s: Option<&mut EState>) -> (),yes,,init_RL,
+isempty_RL,src/bzlib.rs,212,(s: Option<&EState>) -> bool,yes,,isempty_RL,prepare_new_block
+copy_output_until_stop,src/bzlib.rs,215,(s: Option<&mut EState>) -> bool,yes,,copy_output_until_stop,copy_output_until_stop
+add_pair_to_block,src/bzlib.rs,218,(s: Option<&mut EState>) -> (),yes,,add_pair_to_block,
+un_rle_obuf_to_output_fast,src/bzlib.rs,225,(s: Option<&mut DState>) -> bool,,,unRLE_obuf_to_output_FAST,isempty_RL
+BZ2_bzDecompressInit,src/bzlib.rs,228,"(strm: Option<&mut bz_stream>, verbosity: i32, small: i32) -> i32",yes,,BZ2_bzDecompressInit,default_bzalloc
+bz2_bz_read_get_unused,src/bzlib.rs,231,"(bzerror: Option<&mut Int32>, b: Option<&'a BzFile<'a>>, unused: Option<&mut Option<*mut u8>>, n_unused: Option<&mut Int32>) -> ()",,,BZ2_bzReadGetUnused,BZ2_bzCompressInit
+bz2_bzerror,src/bzlib.rs,241,"(b: Option<&'a BzFile<'a>>, errnum: Option<&'a mut i32>) -> Option<&'a str>",,,BZ2_bzerror,bsPutUInt32
+myfeof,src/bzlib.rs,249,(f: Option<&'a File>) -> Bool,yes,,myfeof,handle_compress
+un_rle_obuf_to_output_small,src/bzlib.rs,253,(s: Option<&mut DState>) -> bool,,,unRLE_obuf_to_output_SMALL,unRLE_obuf_to_output_SMALL
+BZ2_bzCompressInit,src/bzlib.rs,258,"(strm: Option<&mut bz_stream>, blockSize100k: i32, verbosity: i32, workFactor: i32) -> i32",yes,,BZ2_bzCompressInit,BZ2_bzReadGetUnused
+flush_RL,src/bzlib.rs,267,(s: Option<&mut EState>) -> (),yes,,flush_RL,
+copy_input_until_stop,src/bzlib.rs,272,(s: Option<&mut EState>) -> bool,yes,,copy_input_until_stop,myfeof
+BZ2_bzReadOpen,src/bzlib.rs,277,"(bzerror: Option<&mut i32>, f: Option<File>, verbosity: i32, small: i32, unused: Option<&[u8]>, n_unused: i32) -> Option<BzFile<'a>>",yes,,BZ2_bzReadOpen,BZ2_hbMakeCodeLengths
+bz2_bz_read_close,src/bzlib.rs,291,"(bzerror: Option<&mut i32>, b: Option<&mut BzFile<'a>>) -> ()",,,BZ2_bzReadClose,BZ2_compressBlock
+BZ2_bzWriteOpen,src/bzlib.rs,297,"(bzerror: Option<&mut i32>, f: Option<File>, blockSize100k: i32, verbosity: i32, workFactor: i32) -> Option<Box<BzFile<'static>>>",yes,,BZ2_bzWriteOpen,BZ2_bzwrite
+bz2_bz_decompress,src/bzlib.rs,310,(strm: Option<&mut bz_stream>) -> i32,,,BZ2_bzDecompress,BZ2_bzCompressEnd
+bzopen_or_bzdopen,src/bzlib.rs,315,"(path: Option<&c_char>, fd: i32, mode: Option<&c_char>, open_mode: i32) -> Option<BzFile<'static>>",yes,,bzopen_or_bzdopen,bzopen_or_bzdopen
+bz2_bz_read,src/bzlib.rs,332,"(bzerror: Option<&mut Int32>, b: Option<&mut BzFile<'a>>, buf: Option<&mut [u8]>, len: Int32) -> Int32",,,BZ2_bzRead,makeMaps_e
+BZ2_bzBuffToBuffDecompress,src/bzlib.rs,340,"(dest: Option<&mut u8>, dest_len: Option<&mut u32>, source: Option<&mut u8>, source_len: u32, small: i32, verbosity: i32) -> i32",yes,,BZ2_bzBuffToBuffDecompress,BZ2_bzBuffToBuffDecompress
+BZ2_bzopen,src/bzlib.rs,351,"(path: Option<&c_char>, mode: Option<&c_char>) -> Option<BzFile<'static>>",yes,,BZ2_bzopen,BZ2_bzopen
+BZ2_bzdopen,src/bzlib.rs,355,"(fd: i32, mode: Option<&c_char>) -> Option<BzFile<'static>>",yes,,BZ2_bzdopen,BZ2_bzdopen
+bz2_bzread,src/bzlib.rs,358,"(b: Option<&mut BzFile<'a>>, buf: Option<Vec<i8>>, len: Int32) -> Int32",,,BZ2_bzread,BZ2_bzDecompressInit
+handle_compress,src/bzlib.rs,371,(strm: Option<&mut crate::bz_stream>) -> bool,yes,,handle_compress,copy_input_until_stop
+BZ2_bzCompress,src/bzlib.rs,376,"(strm: Option<&mut bz_stream>, action: i32) -> i32",yes,,BZ2_bzCompress,BZ2_bzReadClose
+BZ2_bzWrite,src/bzlib.rs,384,"(bzerror: Option<&mut i32>, b: Option<&mut BzFile<'a>>, buf: Option<&[u8]>, len: i32) -> ()",yes,,BZ2_bzWrite,bsPutUChar
+BZ2_bzWriteClose64,src/bzlib.rs,419,"(bzerror: Option<&mut i32>, b: Option<&mut BzFile<'a>>, abandon: i32, nbytes_in_lo32: Option<&mut i32>, nbytes_in_hi32: Option<&mut i32>, nbytes_out_lo32: Option<&mut i32>, nbytes_out_hi32: Option<&mut i32>) -> ()",yes,,BZ2_bzWriteClose64,flush_RL
+BZ2_bzBuffToBuffCompress,src/bzlib.rs,431,"(dest: Option<&mut [u8]>, dest_len: Option<&mut u32>, source: Option<&mut [u8]>, source_len: u32, blockSize100k: i32, verbosity: i32, workFactor: i32) -> i32",yes,,BZ2_bzBuffToBuffCompress,mainSort
+BZ2_bzwrite,src/bzlib.rs,444,"(b: Option<&mut BzFile<'a>>, buf: Option<&[u8]>, len: i32) -> i32",yes,,BZ2_bzwrite,bsW
+BZ2_bzWriteClose,src/bzlib.rs,462,"(bzerror: Option<&mut i32>, b: Option<&mut BzFile<'a>>, abandon: i32, nbytes_in: Option<&mut i32>, nbytes_out: Option<&mut i32>) -> ()",yes,,BZ2_bzWriteClose,BZ2_hbAssignCodes
+BZ2_bzclose,src/bzlib.rs,476,(b: Option<&mut BzFile<'a>>) -> (),yes,,BZ2_bzclose,bsFinishWrite
+BZ2_bsInitWrite,src/compress.rs,14,(s: Option<&mut EState>) -> (),yes,,BZ2_bsInitWrite,makeMaps_d
+bsFinishWrite,src/compress.rs,22,(s: Option<&mut EState>) -> (),yes,,bsFinishWrite,BZ2_bzDecompress
+bsW,src/compress.rs,25,"(s: Option<&mut EState>, n: i32, v: u32) -> ()",yes,,bsW,BZ2_bzWriteClose
+makeMaps_e,src/compress.rs,29,(s: Option<&mut EState>) -> (),yes,,makeMaps_e,init_RL
+bsPutUInt32,src/compress.rs,33,"(s: Option<&mut EState>, u: u32) -> ()",yes,,bsPutUInt32,BZ2_bzCompress
+bsPutUChar,src/compress.rs,36,"(s: Option<&mut EState>, c: u8) -> ()",yes,,bsPutUChar,BZ2_bzclose
+generateMTFValues,src/compress.rs,41,(s: Option<&mut EState>) -> (),yes,,generateMTFValues,
+sendMTFValues,src/compress.rs,47,(s: Option<&mut EState>) -> (),yes,,sendMTFValues,BZ2_bsInitWrite
+BZ2_compressBlock,src/compress.rs,58,"(s: Option<&mut EState>, is_last_block: u8) -> ()",yes,,BZ2_compressBlock,default_bzfree
+makeMaps_d,src/decompress.rs,3,(s: Option<&mut DState>) -> (),yes,,makeMaps_d,
+bz2_decompress,src/decompress.rs,6,(s: Option<&mut DState>) -> i32,,,BZ2_decompress,BZ2_bzDecompressEnd
+bz2_hb_assign_codes,src/huffman.rs,3,"(code: Option<&mut i32>, length: Option<&i32>, min_len: i32, max_len: i32, alpha_size: i32) -> ()",,,BZ2_hbAssignCodes,BZ2_bzread
+BZ2_hbMakeCodeLengths,src/huffman.rs,19,"(len: Option<&mut crate::EState>, freq: Option<&crate::EState>, alphaSize: i32, maxLen: i32) -> ()",yes,,BZ2_hbMakeCodeLengths,BZ2_bzWrite
+bz2_hb_create_decode_tables,src/huffman.rs,27,"(limit: Option<&mut [i32]>, base: Option<&mut [i32]>, perm: Option<&mut [i32]>, length: Option<&[u8]>, min_len: i32, max_len: i32, alpha_size: i32) -> ()",,,BZ2_hbCreateDecodeTables,BZ2_hbCreateDecodeTables

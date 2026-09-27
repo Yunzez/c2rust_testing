@@ -1,0 +1,2747 @@
+{
+  "functions": [
+    {
+      "name": "strdup",
+      "line": 56,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "*const std::os::raw::c_char",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*const i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 5,
+        "nodes": 30,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 1,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_parse",
+      "line": 269,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut url_data_t"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut url_data",
+          "shape": "*{*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8}"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "!=": 4,
+        "+": 10
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 16,
+        "stmts": 70,
+        "nodes": 537,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 11,
+        "allocs": 13,
+        "method_calls": 14
+      }
+    },
+    {
+      "name": "strff",
+      "line": 391,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "n",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 7,
+        "nodes": 35,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "url_get_protocol",
+      "line": 404,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 41,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 1,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_is_protocol",
+      "line": 417,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "+": 1,
+        "<": 1,
+        "==": 1
+      },
+      "consts": [
+        "schemes"
+      ],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 3,
+        "stmts": 5,
+        "nodes": 48,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "get_part",
+      "line": 431,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "format",
+            "ty": "*const std::os::raw::c_char",
+            "ptr_kind": "const_ptr",
+            "dir": "in"
+          },
+          {
+            "name": "l",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          },
+          {
+            "ty": "*const i8",
+            "shape": "*i8"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!=": 4,
+        "||": 3
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 4,
+        "stmts": 17,
+        "nodes": 128,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 5,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "strrwd",
+      "line": 461,
+      "signature": {
+        "params": [
+          {
+            "name": "ptr",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          },
+          {
+            "name": "n",
+            "ty": "std::os::raw::c_int",
+            "ptr_kind": "value",
+            "dir": "in"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          },
+          {
+            "ty": "i32",
+            "shape": "i32"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "+": 1,
+        "<": 1,
+        "neg": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 7,
+        "nodes": 36,
+        "loops": 1,
+        "max_loop_depth": 1,
+        "derefs": 1,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "url_is_ssh",
+      "line": 474,
+      "signature": {
+        "params": [
+          {
+            "name": "str",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "bool"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "bool",
+          "shape": "bool"
+        }
+      },
+      "ops": {
+        "!=": 2,
+        "==": 2,
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 45,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 1,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "url_get_auth",
+      "line": 486,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "+": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 4,
+        "nodes": 30,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "url_get_hostname",
+      "line": 495,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "!=": 1,
+        "+": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 13,
+        "nodes": 100,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 3,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "url_get_host",
+      "line": 524,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 6,
+        "nodes": 39,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 2,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_get_pathname",
+      "line": 536,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 7,
+        "nodes": 46,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 2,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_get_path",
+      "line": 549,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 2,
+        "!=": 2,
+        "+": 4,
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 6,
+        "stmts": 19,
+        "nodes": 146,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 5,
+        "method_calls": 5
+      }
+    },
+    {
+      "name": "url_get_search",
+      "line": 585,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 11,
+        "nodes": 73,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 3,
+        "method_calls": 2
+      }
+    },
+    {
+      "name": "url_get_query",
+      "line": 604,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 6,
+        "nodes": 36,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 2,
+        "method_calls": 1
+      }
+    },
+    {
+      "name": "url_get_hash",
+      "line": 616,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "!": 1,
+        "+": 2
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 5,
+        "stmts": 19,
+        "nodes": 114,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 5,
+        "method_calls": 4
+      }
+    },
+    {
+      "name": "url_get_port",
+      "line": 641,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "*mut std::os::raw::c_char"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "*mut i8",
+          "shape": "*i8"
+        }
+      },
+      "ops": {
+        "||": 1
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 2,
+        "stmts": 9,
+        "nodes": 60,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 3,
+        "method_calls": 3
+      }
+    },
+    {
+      "name": "url_free",
+      "line": 659,
+      "signature": {
+        "params": [
+          {
+            "name": "data",
+            "ty": "*mut url_data_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut url_data",
+            "shape": "*{*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {
+        "!": 9
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 11,
+        "stmts": 19,
+        "nodes": 160,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 18,
+        "allocs": 9,
+        "method_calls": 10
+      }
+    },
+    {
+      "name": "url_inspect",
+      "line": 680,
+      "signature": {
+        "params": [
+          {
+            "name": "url",
+            "ty": "*mut std::os::raw::c_char",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut i8",
+            "shape": "*i8"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 1,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "url_data_inspect",
+      "line": 684,
+      "signature": {
+        "params": [
+          {
+            "name": "data",
+            "ty": "*mut url_data_t",
+            "ptr_kind": "mut_ptr",
+            "dir": "inout"
+          }
+        ],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [
+          {
+            "ty": "*mut url_data",
+            "shape": "*{*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8,*i8}"
+          }
+        ],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 12,
+        "nodes": 117,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 11,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    },
+    {
+      "name": "main_0",
+      "line": 709,
+      "signature": {
+        "params": [],
+        "ret": "std::os::raw::c_int"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "i32",
+          "shape": "i32"
+        }
+      },
+      "ops": {
+        "!": 23,
+        "!=": 43,
+        "==": 16
+      },
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 44,
+        "stmts": 94,
+        "nodes": 1547,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 61,
+        "allocs": 0,
+        "method_calls": 63
+      }
+    },
+    {
+      "name": "main",
+      "line": 1118,
+      "signature": {
+        "params": [],
+        "ret": "()"
+      },
+      "io": {
+        "inputs": [],
+        "output": {
+          "ty": "()",
+          "shape": "()"
+        }
+      },
+      "ops": {},
+      "consts": [],
+      "strings": [],
+      "metrics": {
+        "cyclomatic": 1,
+        "stmts": 0,
+        "nodes": 7,
+        "loops": 0,
+        "max_loop_depth": 0,
+        "derefs": 0,
+        "allocs": 0,
+        "method_calls": 0
+      }
+    }
+  ],
+  "raw_edges": [
+    {
+      "from": "strdup",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "strdup",
+      "to": "strlen"
+    },
+    {
+      "from": "strdup",
+      "to": "malloc"
+    },
+    {
+      "from": "strdup",
+      "to": "is_null"
+    },
+    {
+      "from": "strdup",
+      "to": "strcpy"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strdup"
+    },
+    {
+      "from": "url_parse",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "url_is_ssh"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "strstr"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "strdup"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "get_part"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "sprintf"
+    },
+    {
+      "from": "url_parse",
+      "to": "free"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strcat"
+    },
+    {
+      "from": "url_parse",
+      "to": "strdup"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strff"
+    },
+    {
+      "from": "url_parse",
+      "to": "strcat"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "strlen"
+    },
+    {
+      "from": "url_parse",
+      "to": "free"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strff"
+    },
+    {
+      "from": "url_parse",
+      "to": "strcat"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "free"
+    },
+    {
+      "from": "url_parse",
+      "to": "malloc"
+    },
+    {
+      "from": "url_parse",
+      "to": "size_of"
+    },
+    {
+      "from": "url_parse",
+      "to": "is_null"
+    },
+    {
+      "from": "url_parse",
+      "to": "strff"
+    },
+    {
+      "from": "url_parse",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_parse",
+      "to": "free"
+    },
+    {
+      "from": "strff",
+      "to": "offset"
+    },
+    {
+      "from": "strff",
+      "to": "strdup"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_protocol",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "url_is_protocol",
+      "to": "wrapping_div"
+    },
+    {
+      "from": "url_is_protocol",
+      "to": "size_of"
+    },
+    {
+      "from": "url_is_protocol",
+      "to": "size_of"
+    },
+    {
+      "from": "url_is_protocol",
+      "to": "strcmp"
+    },
+    {
+      "from": "get_part",
+      "to": "malloc"
+    },
+    {
+      "from": "get_part",
+      "to": "size_of"
+    },
+    {
+      "from": "get_part",
+      "to": "strdup"
+    },
+    {
+      "from": "get_part",
+      "to": "strdup"
+    },
+    {
+      "from": "get_part",
+      "to": "malloc"
+    },
+    {
+      "from": "get_part",
+      "to": "size_of"
+    },
+    {
+      "from": "get_part",
+      "to": "is_null"
+    },
+    {
+      "from": "get_part",
+      "to": "is_null"
+    },
+    {
+      "from": "get_part",
+      "to": "is_null"
+    },
+    {
+      "from": "get_part",
+      "to": "is_null"
+    },
+    {
+      "from": "get_part",
+      "to": "strcpy"
+    },
+    {
+      "from": "get_part",
+      "to": "strcpy"
+    },
+    {
+      "from": "get_part",
+      "to": "strff"
+    },
+    {
+      "from": "get_part",
+      "to": "sscanf"
+    },
+    {
+      "from": "get_part",
+      "to": "strcmp"
+    },
+    {
+      "from": "get_part",
+      "to": "strdup"
+    },
+    {
+      "from": "get_part",
+      "to": "strrwd"
+    },
+    {
+      "from": "get_part",
+      "to": "free"
+    },
+    {
+      "from": "get_part",
+      "to": "free"
+    },
+    {
+      "from": "get_part",
+      "to": "free"
+    },
+    {
+      "from": "strrwd",
+      "to": "offset"
+    },
+    {
+      "from": "strrwd",
+      "to": "strdup"
+    },
+    {
+      "from": "url_is_ssh",
+      "to": "strdup"
+    },
+    {
+      "from": "url_is_ssh",
+      "to": "strcmp"
+    },
+    {
+      "from": "url_is_ssh",
+      "to": "strcmp"
+    },
+    {
+      "from": "url_is_ssh",
+      "to": "free"
+    },
+    {
+      "from": "url_get_auth",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "url_get_auth",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_auth",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_auth",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "strdup"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "url_get_auth"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "url_is_ssh"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_hostname",
+      "to": "free"
+    },
+    {
+      "from": "url_get_host",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_host",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_host",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "url_get_host",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_host",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_host",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_host",
+      "to": "free"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "url_get_path"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "strcat"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_pathname",
+      "to": "free"
+    },
+    {
+      "from": "url_get_path",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "url_get_path",
+      "to": "url_get_auth"
+    },
+    {
+      "from": "url_get_path",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "url_get_path",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_path",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_path",
+      "to": "url_is_ssh"
+    },
+    {
+      "from": "url_get_path",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_path",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_path",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_path",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_path",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_path",
+      "to": "get_part"
+    },
+    {
+      "from": "url_get_path",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_path",
+      "to": "wrapping_mul"
+    },
+    {
+      "from": "url_get_path",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_path",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_path",
+      "to": "sprintf"
+    },
+    {
+      "from": "url_get_path",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_path",
+      "to": "free"
+    },
+    {
+      "from": "url_get_path",
+      "to": "free"
+    },
+    {
+      "from": "url_get_path",
+      "to": "free"
+    },
+    {
+      "from": "url_get_path",
+      "to": "free"
+    },
+    {
+      "from": "url_get_search",
+      "to": "url_get_path"
+    },
+    {
+      "from": "url_get_search",
+      "to": "url_get_pathname"
+    },
+    {
+      "from": "url_get_search",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_search",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_search",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_search",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strff"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strcat"
+    },
+    {
+      "from": "url_get_search",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strrwd"
+    },
+    {
+      "from": "url_get_search",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_search",
+      "to": "free"
+    },
+    {
+      "from": "url_get_search",
+      "to": "free"
+    },
+    {
+      "from": "url_get_query",
+      "to": "url_get_search"
+    },
+    {
+      "from": "url_get_query",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_query",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_query",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_query",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_query",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "url_get_path"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "url_get_pathname"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "url_get_search"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strff"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strcat"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "strrwd"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "free"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_hash",
+      "to": "free"
+    },
+    {
+      "from": "url_get_port",
+      "to": "malloc"
+    },
+    {
+      "from": "url_get_port",
+      "to": "size_of"
+    },
+    {
+      "from": "url_get_port",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "url_get_port",
+      "to": "url_get_host"
+    },
+    {
+      "from": "url_get_port",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_port",
+      "to": "is_null"
+    },
+    {
+      "from": "url_get_port",
+      "to": "strff"
+    },
+    {
+      "from": "url_get_port",
+      "to": "wrapping_add"
+    },
+    {
+      "from": "url_get_port",
+      "to": "strlen"
+    },
+    {
+      "from": "url_get_port",
+      "to": "sscanf"
+    },
+    {
+      "from": "url_get_port",
+      "to": "free"
+    },
+    {
+      "from": "url_get_port",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_free",
+      "to": "is_null"
+    },
+    {
+      "from": "url_free",
+      "to": "free"
+    },
+    {
+      "from": "url_inspect",
+      "to": "url_data_inspect"
+    },
+    {
+      "from": "url_inspect",
+      "to": "url_parse"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "url_data_inspect",
+      "to": "printf"
+    },
+    {
+      "from": "main_0",
+      "to": "url_parse"
+    },
+    {
+      "from": "main_0",
+      "to": "url_parse"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_data_inspect"
+    },
+    {
+      "from": "main_0",
+      "to": "url_data_inspect"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "is_null"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_is_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_auth"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_host"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_pathname"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_path"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_search"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_query"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_hash"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_port"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_protocol"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_host"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_hostname"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_auth"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_pathname"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "strcmp"
+    },
+    {
+      "from": "main_0",
+      "to": "url_get_path"
+    },
+    {
+      "from": "main_0",
+      "to": "__assert_rtn"
+    },
+    {
+      "from": "main_0",
+      "to": "as_ptr"
+    },
+    {
+      "from": "main_0",
+      "to": "transmute"
+    },
+    {
+      "from": "main_0",
+      "to": "url_free"
+    },
+    {
+      "from": "main",
+      "to": "exit"
+    },
+    {
+      "from": "main",
+      "to": "main_0"
+    }
+  ],
+  "indirect_calls": [],
+  "excluded_scaffolding": []
+}

@@ -1,0 +1,24 @@
+{
+  "Includes": [
+    "#include <stdint.h>\n"
+  ],
+  "Defines": [
+    "#define GF2_DIM 32\n",
+    "#define local static\n",
+    "#define ZEXPORT\n"
+  ],
+  "TypeDefs": [
+    "typedef unsigned long uLong;\n",
+    "typedef long z_off_t;\n",
+    "typedef long z_off64_t;\n"
+  ],
+  "Globals": [],
+  "Structs": [],
+  "Function Declarations": [
+    "uLong crc32_combine(uLong crc1, uLong crc2, z_off_t len2);"
+  ],
+  "Function Implementations": [
+    "local unsigned long gf2_matrix_times(mat, vec)\n    unsigned long *mat;\n    unsigned long vec;\n{\n    unsigned long sum;\n\n    sum = 0;\n    while (vec) {\n        if (vec & 1)\n            sum ^= *mat;\n        vec >>= 1;\n        mat++;\n    }\n    return sum;\n}\n\n/* ========================================================================= */\nlocal void gf2_matrix_square(square, mat)\n    unsigned long *square;\n    unsigned long *mat;\n{\n    int n;\n\n    for (n = 0; n < GF2_DIM; n++)\n        square[n] = gf2_matrix_times(mat, mat[n]);\n}\n\n/* ========================================================================= */\nlocal uLong crc32_combine_(crc1, crc2, len2)\n    uLong crc1;\n    uLong crc2;\n    z_off64_t len2;\n{\n    int n;\n    unsigned long row;\n    unsigned long even[GF2_DIM];    /* even-power-of-two zeros operator */\n    unsigned long odd[GF2_DIM];     /* odd-power-of-two zeros operator */\n\n    /* degenerate case (also disallow negative lengths) */\n    if (len2 <= 0)\n        return crc1;\n\n    /* put operator for one zero bit in odd */\n    odd[0] = 0xedb88320UL;          /* CRC-32 polynomial */\n    row = 1;\n    for (n = 1; n < GF2_DIM; n++) {\n        odd[n] = row;\n        row <<= 1;\n    }\n\n    /* put operator for two zero bits in even */\n    gf2_matrix_square(even, odd);\n\n    /* put operator for four zero bits in odd */\n    gf2_matrix_square(odd, even);\n\n    /* apply len2 zeros to crc1 (first square will put the operator for one\n       zero byte, eight zero bits, in even) */\n    do {\n        /* apply zeros operator for this bit of len2 */\n        gf2_matrix_square(even, odd);\n        if (len2 & 1)\n            crc1 = gf2_matrix_times(even, crc1);\n        len2 >>= 1;\n\n        /* if no more bits set, then done */\n        if (len2 == 0)\n            break;\n\n        /* another iteration of the loop with odd and even swapped */\n        gf2_matrix_square(odd, even);\n        if (len2 & 1)\n            crc1 = gf2_matrix_times(odd, crc1);\n        len2 >>= 1;\n\n        /* if no more bits set, then done */\n    } while (len2 != 0);\n\n    /* return combined crc */\n    crc1 ^= crc2;\n    return crc1;\n}\n\n/* ========================================================================= */\nuLong ZEXPORT crc32_combine(crc1, crc2, len2)\n    uLong crc1;\n    uLong crc2;\n    z_off_t len2;\n{\n    return crc32_combine_(crc1, crc2, len2);\n}\n"
+  ],
+  "Enums": []
+}

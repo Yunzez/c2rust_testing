@@ -1,0 +1,20 @@
+[package]
+name = "quadtree_c2rust_e3-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+[package.metadata]
+cargo-fuzz = true
+[dependencies]
+libfuzzer-sys = "0.4"
+[dependencies.quadtree_c2rust_e3]
+path = ".."
+[workspace]
+members = ["."]
+[profile.release]
+debug = 1
+[[bin]]
+name = "ft"
+path = "fuzz_targets/ft.rs"
+test = false
+doc = false

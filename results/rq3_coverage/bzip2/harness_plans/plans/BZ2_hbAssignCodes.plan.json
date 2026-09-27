@@ -1,0 +1,194 @@
+{
+ "boundary": "BZ2_hbAssignCodes",
+ "status": "planned",
+ "inputs": [
+  {
+   "param": "code",
+   "adapter": "output_buffer",
+   "detail": {
+    "elem": "i32",
+    "elem_width": 4,
+    "extent": {
+     "k": "param",
+     "p": "alphaSize",
+     "mul": 1,
+     "div": 1,
+     "add": 0
+    },
+    "extent_source": "proven_index_bound",
+    "capacity_param": "alphaSize",
+    "fills_from_fuzz": false
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 163,
+     "col": 32,
+     "snippet": "if (length[i] == n) { code[i] = vec; vec++; };",
+     "note": "code[alphaSize-1] written"
+    }
+   ]
+  },
+  {
+   "param": "length",
+   "adapter": "input_buffer",
+   "detail": {
+    "elem": "u8",
+    "elem_width": 1,
+    "extent": {
+     "k": "param",
+     "p": "alphaSize",
+     "mul": 1,
+     "div": 1,
+     "add": 0
+    },
+    "extent_source": "proven_index_bound",
+    "length_param": "alphaSize",
+    "fills_from_fuzz": true,
+    "max_elems": 262144,
+    "max_elems_evidence": {
+     "rule": "policy_buffer_bound",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_buffer_bytes = 1048576",
+     "note": "length's element count is fuzz-decoded and capped by the global policy; it defines alphaSize"
+    }
+   },
+   "evidence": [
+    {
+     "rule": "index_bound_from_body",
+     "file": "huffman.c",
+     "line": 163,
+     "col": 14,
+     "snippet": "if (length[i] == n) { code[i] = vec; vec++; };",
+     "note": "length[alphaSize-1] read"
+    }
+   ]
+  },
+  {
+   "param": "minLen",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 1024,
+    "derivation": [
+     "policy_trip_clamp"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 161,
+     "col": 4,
+     "snippet": "for (n = minLen; n <= maxLen; n++) {",
+     "note": "minLen appears in this loop's control expressions"
+    },
+    {
+     "rule": "policy_trip_clamp",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_trip = 1024",
+     "note": "minLen controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+    }
+   ]
+  },
+  {
+   "param": "maxLen",
+   "adapter": "bounded_scalar",
+   "detail": {
+    "min": 0,
+    "max": 1024,
+    "derivation": [
+     "policy_trip_clamp"
+    ]
+   },
+   "evidence": [
+    {
+     "rule": "loop_trip_count_controlled_by_param",
+     "file": "huffman.c",
+     "line": 161,
+     "col": 4,
+     "snippet": "for (n = minLen; n <= maxLen; n++) {",
+     "note": "maxLen appears in this loop's control expressions"
+    },
+    {
+     "rule": "policy_trip_clamp",
+     "file": "tools/stu_selector/harness_plan.py",
+     "line": 0,
+     "col": 0,
+     "snippet": "GeneratorPolicy.max_trip = 1024",
+     "note": "maxLen controls a loop trip count and no guard bounds it; clamped by the global policy (liveness only)"
+    }
+   ]
+  },
+  {
+   "param": "alphaSize",
+   "adapter": "length",
+   "detail": {
+    "of_buffer": "length"
+   },
+   "evidence": [
+    {
+     "rule": "length_of_buffer_not_decoded_independently",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "alphaSize is the element count of length"
+    }
+   ]
+  }
+ ],
+ "liveness": [
+  {
+   "param": "minLen",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "huffman.c",
+    "line": 161,
+    "col": 4,
+    "snippet": "for (n = minLen; n <= maxLen; n++) {",
+    "note": "minLen appears in this loop's control expressions"
+   }
+  },
+  {
+   "param": "maxLen",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "huffman.c",
+    "line": 161,
+    "col": 4,
+    "snippet": "for (n = minLen; n <= maxLen; n++) {",
+    "note": "maxLen appears in this loop's control expressions"
+   }
+  },
+  {
+   "param": "alphaSize",
+   "obligation": "controls a loop trip count",
+   "resolution": "clamped by GeneratorPolicy.max_trip",
+   "evidence": {
+    "rule": "loop_trip_count_controlled_by_param",
+    "file": "huffman.c",
+    "line": 162,
+    "col": 7,
+    "snippet": "for (i = 0; i < alphaSize; i++)",
+    "note": "alphaSize appears in this loop's control expressions"
+   }
+  }
+ ],
+ "failures": [],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}

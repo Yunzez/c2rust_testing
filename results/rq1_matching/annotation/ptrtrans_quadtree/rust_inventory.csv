@@ -1,0 +1,18 @@
+rust_function,file,line,signature,same_name_in_c,duplicate_leaf,tool_claimed_by,matcher_proposed_for
+quadtree_bounds_new,src/bounds.rs,3,() -> Option<Box<QuadtreeBounds>>,yes,,quadtree_bounds_new,quadtree_bounds_new
+quadtree_bounds_extend,src/bounds.rs,14,"(bounds: Option<&mut QuadtreeBounds>, x: f64, y: f64) -> ()",yes,,quadtree_bounds_extend,quadtree_bounds_extend
+quadtree_node_new,src/node.rs,2,() -> Option<Box<QuadtreeNode>>,yes,,quadtree_node_new,quadtree_node_new
+quadtree_node_isleaf,src/node.rs,14,(node: Option<&QuadtreeNode>) -> bool,yes,,quadtree_node_isleaf,quadtree_node_isleaf
+quadtree_node_with_bounds,src/node.rs,20,"(minx: f64, miny: f64, maxx: f64, maxy: f64) -> Option<Box<QuadtreeNode>>",yes,,quadtree_node_with_bounds,quadtree_node_with_bounds
+quadtree_node_ispointer,src/node.rs,33,(node: Option<&QuadtreeNode>) -> bool,yes,,quadtree_node_ispointer,quadtree_node_isempty
+quadtree_node_isempty,src/node.rs,44,(node: Option<&QuadtreeNode>) -> bool,yes,,quadtree_node_isempty,quadtree_node_ispointer
+quadtree_point_new,src/point.rs,3,"(x: f64, y: f64) -> Option<Box<QuadtreePoint>>",yes,,quadtree_point_new,quadtree_point_new
+quadtree_walk,src/quadtree.rs,3,"(root: Option<&QuadtreeNode>, descent: Option<&dyn Fn(&QuadtreeNode)>, ascent: Option<&dyn Fn(&QuadtreeNode)>) -> ()",yes,,quadtree_walk,quadtree_walk
+node_contains_,src/quadtree.rs,29,"(outer: Option<&QuadtreeNode>, it: Option<&QuadtreePoint>) -> bool",yes,,node_contains_,node_contains_
+get_quadrant_,src/quadtree.rs,39,"(root: Option<&'a mut QuadtreeNode>, point: Option<&QuadtreePoint>) -> Option<&'a mut QuadtreeNode>",yes,,get_quadrant_,get_quadrant_
+quadtree_new,src/quadtree.rs,59,"(minx: f64, miny: f64, maxx: f64, maxy: f64) -> Option<Box<Quadtree<'a>>>",yes,,quadtree_new,quadtree_new
+find_,src/quadtree.rs,74,"(node: Option<&'a QuadtreeNode>, x: f64, y: f64) -> Option<&'a QuadtreePoint>",yes,,find_,find_
+insert_,src/quadtree.rs,95,"(key_free: Option<& dyn FnMut(&dyn std::any::Any)>, root: Option<&mut QuadtreeNode>, point: Option<Box<QuadtreePoint>>, key: Option<Box<dyn std::any::Any>>) -> bool",yes,,insert_,insert_
+split_node_,src/quadtree.rs,131,"(key_free: Option<&'a dyn FnMut(&dyn std::any::Any)>, node: Option<&'a mut QuadtreeNode>) -> bool",yes,,,split_node_
+quadtree_search,src/quadtree.rs,160,"(tree: Option<&'a Quadtree<'a>>, x: f64, y: f64) -> Option<&'a QuadtreePoint>",yes,,quadtree_search,quadtree_search
+quadtree_insert,src/quadtree.rs,163,"(tree: Option<&mut Quadtree>, x: f64, y: f64, key: Option<Box<dyn Any>>) -> i32",yes,,quadtree_insert,quadtree_insert

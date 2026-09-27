@@ -1,0 +1,73 @@
+{
+ "boundary": "bzopen_or_bzdopen",
+ "status": "failed",
+ "inputs": [
+  {
+   "param": "path",
+   "adapter": "input_string",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "max_elems": 1048576
+   },
+   "evidence": [
+    {
+     "rule": "const_char_star_without_length_is_a_string",
+     "file": null,
+     "line": 0,
+     "col": 0,
+     "snippet": null,
+     "note": "path is a const char* with no length parameter and no provable extent"
+    }
+   ]
+  },
+  {
+   "param": "fd",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  },
+  {
+   "param": "mode",
+   "adapter": "input_array",
+   "detail": {
+    "elem": "i8",
+    "elem_width": 1,
+    "extent": {
+     "k": "const",
+     "v": 1
+    },
+    "extent_source": "proven_extent_in_boundary",
+    "alloc_elems": 1,
+    "fills_from_fuzz": true
+   },
+   "evidence": [
+    {
+     "rule": "pointer_dereferenced_in_body",
+     "file": "bzlib.c",
+     "line": 1402,
+     "col": 11,
+     "snippet": "while (*mode) {",
+     "note": "*mode is read"
+    }
+   ]
+  },
+  {
+   "param": "open_mode",
+   "adapter": "scalar",
+   "detail": {},
+   "evidence": []
+  }
+ ],
+ "liveness": [],
+ "failures": [
+  "path: environment input -- it flows into fopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter",
+  "fd: environment input -- it flows into fdopen(), whose effect the harness cannot undo. What the boundary consumes is external state, not this value; needs an environment adapter"
+ ],
+ "policy": {
+  "max_buffer_bytes": 1048576,
+  "unproven_extent_elems": 4096,
+  "max_trip": 1024
+ },
+ "plan_version": 1
+}
